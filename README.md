@@ -111,16 +111,15 @@ and relevant version details such as:
 ```bash
 $ npm version
 
-# { http_parser: '1.0',
-#   node: '0.10.29',
-#   v8: '3.14.5.9',
+# { http_parser: '2.3',
+#   node: '0.12.0',
+#   v8: '3.28.73',
 #   ares: '1.9.0-DEV',
 #   uv: '0.10.27',
-#   zlib: '1.2.3',
-#   modules: '11',
+#   zlib: '1.2.8',
+#   modules: '14',
 #   openssl: '1.0.1h',
-#   npm: '1.4.20',
-#   frame: '0.0.0' }
+#   npm: '2.5.1'}
 ```
 
 Contributions welcome. Your code should:
@@ -142,7 +141,7 @@ For command line output:
 ```bash
 $ npm test
 
-# > frame@0.0.0 test /Users/andy/joyy/joyyserver
+# > joyyserver@0.0.1 test /Users/andy/joyy/joyyserver
 # > ./node_modules/lab/bin/lab -c
 
 # ..................................................
@@ -163,7 +162,7 @@ With html code coverage report:
 ```bash
 $ npm run test-cover
 
-# > frame@0.0.0 test-cover /Users/andy/joyy/joyyserver
+# > joyyserver@0.0.1 test-cover /Users/andy/joyy/joyyserver
 # > ./node_modules/lab/bin/lab -c -r html -o ./test/artifacts/coverage.html && open ./test/artifacts/coverage.html
 ```
 
@@ -177,4 +176,4 @@ MIT
 
 ## Don't forget
 
-IN JOYY WE TRUST
+IN PEOPLE WE TRUST
