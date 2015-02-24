@@ -1,6 +1,6 @@
-# Frame
+# joyyserver
 
-A user system API for Node.js. Bring your own front-end.
+The Node.js server for joyy.
 
 [![Build Status](https://travis-ci.org/jedireza/frame.svg?branch=master)](https://travis-ci.org/jedireza/frame)
 [![Dependency Status](https://david-dm.org/jedireza/frame.svg?style=flat)](https://david-dm.org/jedireza/frame)
@@ -8,29 +8,17 @@ A user system API for Node.js. Bring your own front-end.
 
 ## Technology
 
-__Primary goal:__ include as few dependencies as possible
+__Primary goal:__ Build a clean and scalable RESTful API for joyy.
 
-Frame is built with the [hapi.js framework](https://github.com/hapijs/hapi) and
+Joyyserver is forked from [Frame](https://github.com/jedireza/frame) which is built with the [hapi.js framework](https://github.com/hapijs/hapi) and
 [toolset](https://github.com/hapijs). We're using
 [MongoDB](https://github.com/mongodb/node-mongodb-native/) as a data store. We
 also use [Nodemailer](https://github.com/andris9/Nodemailer) for email
 transport.
 
-
-## Live demo
-
-| endpoint                                                                 | username | password |
-|:------------------------------------------------------------------------ |:-------- |:-------- |
-| [https://hapiframe.herokuapp.com/](https://hapiframe.herokuapp.com/docs) | root     | root     |
-
 [Postman](http://www.getpostman.com/) is a great tool for testing and
 developing APIs. See the wiki for details on [how to
 login](https://github.com/jedireza/frame/wiki/How-to-login).
-
-__Note:__ The live demo has been modified so you cannot change the root user,
-the root user's linked admin role or the root admin group. This was done in
-order to keep the API ready to use at all times.
-
 
 ## Requirements
 
@@ -46,7 +34,7 @@ page](https://github.com/jedireza/frame/wiki/bcrypt-Installation-Trouble).
 ## Installation
 
 ```bash
-$ git clone git@github.com:jedireza/frame.git && cd ./frame
+$ git clone git@github.com:AndyWei/joyyserver.git && cd ./joyyserver
 $ npm install
 ```
 
@@ -60,17 +48,17 @@ exists.
 ```bash
 $ npm run setup
 
-# > frame@0.0.0 setup /Users/jedireza/projects/frame
+# > joyyserver@0.0.0 setup /Users/andy/joyy/joyyserver
 # > ./setup.js
 
-# Project name: (Frame)
-# MongoDB URL: (mongodb://localhost:27017/frame)
-# Root user email: jedireza@gmail.com
+# Project name: (joyyserver)
+# MongoDB URL: (mongodb://localhost:27017/joyyserver)
+# Root user email: andyweius@gmail.com
 # Root user password:
-# System email: (jedireza@gmail.com)
+# System email: (andyweius@gmail.com)
 # SMTP host: (smtp.gmail.com)
 # SMTP port: (465)
-# SMTP username: (jedireza@gmail.com)
+# SMTP username: (andyweius@gmail.com)
 # SMTP password:
 # Setup complete.
 ```
@@ -81,7 +69,7 @@ $ npm run setup
 ```bash
 $ npm start
 
-# > frame@0.0.0 start /Users/jedireza/projects/frame
+# > joyyserver@0.0.0 start /Users/andy/joyy/joyyserver
 # > ./node_modules/nodemon/bin/nodemon.js -e js,md server
 
 # 20 Sep 03:47:15 - [nodemon] v1.2.1
@@ -97,7 +85,7 @@ This will start the app using [`nodemon`](https://github.com/remy/nodemon).
 
 ## Philosophy
 
- - Create a user system API
+ - Create a RESTful API
  - Don't include a front-end
  - Write code in a simple and consistent way
  - It's just JavaScript
@@ -154,7 +142,7 @@ For command line output:
 ```bash
 $ npm test
 
-# > frame@0.0.0 test /Users/jedireza/projects/frame
+# > frame@0.0.0 test /Users/andy/joyy/joyyserver
 # > ./node_modules/lab/bin/lab -c
 
 # ..................................................
@@ -175,7 +163,7 @@ With html code coverage report:
 ```bash
 $ npm run test-cover
 
-# > frame@0.0.0 test-cover /Users/jedireza/projects/frame
+# > frame@0.0.0 test-cover /Users/andy/joyy/joyyserver
 # > ./node_modules/lab/bin/lab -c -r html -o ./test/artifacts/coverage.html && open ./test/artifacts/coverage.html
 ```
 
@@ -189,4 +177,4 @@ MIT
 
 ## Don't forget
 
-What you build with Frame is more important than Frame.
+IN JOYY WE TRUST
