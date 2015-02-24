@@ -1,7 +1,7 @@
 {
-  "name": "frame",
-  "version": "3.1.0",
-  "description": "A user system API for Node.js",
+  "name": "joyyserver",
+  "version": "0.0.1",
+  "description": "Node.js server for joyy",
   "main": "index.js",
   "scripts": {
     "setup": "./setup.js",
@@ -9,7 +9,7 @@
     "test": "./node_modules/lab/bin/lab -c -L",
     "test-cover": "./node_modules/lab/bin/lab -c -r html -o ./test/artifacts/coverage.html && open ./test/artifacts/coverage.html"
   },
-  "author": "Reza Akhavan <jedireza@gmail.com> (http://reza.akhavan.me/)",
+  "author": "Andy Wei <andyweius@gmail.com>",
   "license": "MIT",
   "dependencies": {
     "async": "^0.9.0",
