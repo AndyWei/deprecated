@@ -11,11 +11,11 @@ exports.register = function (server, options, next) {
 
     server.route({
         method: 'GET',
-        path: options.basePath + '/accounts',
+        path: options.basePath + '/demands',
         config: {
             auth: {
                 strategy: 'simple',
-                scope: 'admin'
+                scope: 'account'
             },
             validate: {
                 query: {
@@ -28,14 +28,14 @@ exports.register = function (server, options, next) {
         },
         handler: function (request, reply) {
 
-            var Account = request.server.plugins['hapi-mongo-models'].Account;
+            var Demand = request.server.plugins['hapi-mongo-models'].Demand;
             var query = {};
             var fields = request.query.fields;
             var sort = request.query.sort;
             var limit = request.query.limit;
             var page = request.query.page;
 
-            Account.pagedFind(query, fields, sort, limit, page, function (err, results) {
+            Demand.pagedFind(query, fields, sort, limit, page, function (err, results) {
 
                 if (err) {
                     return reply(err);
@@ -49,36 +49,7 @@ exports.register = function (server, options, next) {
 
     server.route({
         method: 'GET',
-        path: options.basePath + '/accounts/{id}',
-        config: {
-            auth: {
-                strategy: 'simple',
-                scope: 'admin'
-            }
-        },
-        handler: function (request, reply) {
-
-            var Account = request.server.plugins['hapi-mongo-models'].Account;
-
-            Account.findById(request.params.id, function (err, account) {
-
-                if (err) {
-                    return reply(err);
-                }
-
-                if (!account) {
-                    return reply({ message: 'Document not found.' }).code(404);
-                }
-
-                reply(account);
-            });
-        }
-    });
-
-
-    server.route({
-        method: 'GET',
-        path: options.basePath + '/accounts/my',
+        path: options.basePath + '/demands/{id}',
         config: {
             auth: {
                 strategy: 'simple',
@@ -87,33 +58,62 @@ exports.register = function (server, options, next) {
         },
         handler: function (request, reply) {
 
-            var Account = request.server.plugins['hapi-mongo-models'].Account;
-            var id = request.auth.credentials.roles.account._id.toString();
-            var fields = Account.fieldsAdapter('user name timeCreated');
+            var Demand = request.server.plugins['hapi-mongo-models'].Demand;
 
-            Account.findById(id, fields, function (err, account) {
+            Demand.findById(request.params.id, function (err, demand) {
 
                 if (err) {
                     return reply(err);
                 }
 
-                if (!account) {
-                    return reply({ message: 'Document not found. That is strange.' }).code(404);
+                if (!demand) {
+                    return reply({ message: 'Document not found.' }).code(404);
                 }
 
-                reply(account);
+                reply(demand);
             });
         }
     });
 
-
+//TODO
     server.route({
-        method: 'POST',
-        path: options.basePath + '/accounts',
+        method: 'GET',
+        path: options.basePath + '/demands/my',
         config: {
             auth: {
                 strategy: 'simple',
-                scope: 'admin'
+                scope: 'account'
+            }
+        },
+        handler: function (request, reply) {
+
+            var Demand = request.server.plugins['hapi-mongo-models'].Demand;
+            var id = request.auth.credentials.roles.account._id.toString();
+            var fields = Demand.fieldsAdapter('user name timeCreated');
+
+            Demand.findById(id, fields, function (err, demand) {
+
+                if (err) {
+                    return reply(err);
+                }
+
+                if (!demand) {
+                    return reply({ message: 'Document not found. That is strange.' }).code(404);
+                }
+
+                reply(demand);
+            });
+        }
+    });
+
+//TODO
+    server.route({
+        method: 'POST',
+        path: options.basePath + '/demands',
+        config: {
+            auth: {
+                strategy: 'simple',
+                scope: 'account'
             },
             validate: {
                 payload: {
@@ -123,16 +123,16 @@ exports.register = function (server, options, next) {
         },
         handler: function (request, reply) {
 
-            var Account = request.server.plugins['hapi-mongo-models'].Account;
+            var Demand = request.server.plugins['hapi-mongo-models'].Demand;
             var name = request.payload.name;
 
-            Account.create(name, function (err, account) {
+            Demand.create(name, function (err, demand) {
 
                 if (err) {
                     return reply(err);
                 }
 
-                reply(account);
+                reply(demand);
             });
         }
     });
@@ -140,47 +140,7 @@ exports.register = function (server, options, next) {
 
     server.route({
         method: 'PUT',
-        path: options.basePath + '/accounts/{id}',
-        config: {
-            auth: {
-                strategy: 'simple',
-                scope: 'admin'
-            },
-            validate: {
-                payload: {
-                    name: Joi.object().keys({
-                        first: Joi.string().required(),
-                        middle: Joi.string().allow(''),
-                        last: Joi.string().required()
-                    }).required()
-                }
-            }
-        },
-        handler: function (request, reply) {
-
-            var Account = request.server.plugins['hapi-mongo-models'].Account;
-            var id = request.params.id;
-            var update = {
-                $set: {
-                    name: request.payload.name
-                }
-            };
-
-            Account.findByIdAndUpdate(id, update, function (err, account) {
-
-                if (err) {
-                    return reply(err);
-                }
-
-                reply(account);
-            });
-        }
-    });
-
-
-    server.route({
-        method: 'PUT',
-        path: options.basePath + '/accounts/my',
+        path: options.basePath + '/demands/{id}',
         config: {
             auth: {
                 strategy: 'simple',
@@ -198,24 +158,21 @@ exports.register = function (server, options, next) {
         },
         handler: function (request, reply) {
 
-            var Account = request.server.plugins['hapi-mongo-models'].Account;
-            var id = request.auth.credentials.roles.account._id.toString();
+            var Demand = request.server.plugins['hapi-mongo-models'].Demand;
+            var id = request.params.id;
             var update = {
                 $set: {
                     name: request.payload.name
                 }
             };
-            var options = {
-                fields: Account.fieldsAdapter('user name timeCreated')
-            };
 
-            Account.findByIdAndUpdate(id, update, options, function (err, account) {
+            Demand.findByIdAndUpdate(id, update, function (err, demand) {
 
                 if (err) {
                     return reply(err);
                 }
 
-                reply(account);
+                reply(demand);
             });
         }
     });
@@ -223,11 +180,54 @@ exports.register = function (server, options, next) {
 
     server.route({
         method: 'PUT',
-        path: options.basePath + '/accounts/{id}/user',
+        path: options.basePath + '/demands/my',
         config: {
             auth: {
                 strategy: 'simple',
-                scope: 'admin'
+                scope: 'account'
+            },
+            validate: {
+                payload: {
+                    name: Joi.object().keys({
+                        first: Joi.string().required(),
+                        middle: Joi.string().allow(''),
+                        last: Joi.string().required()
+                    }).required()
+                }
+            }
+        },
+        handler: function (request, reply) {
+
+            var Demand = request.server.plugins['hapi-mongo-models'].Demand;
+            var id = request.auth.credentials.roles.account._id.toString();
+            var update = {
+                $set: {
+                    name: request.payload.name
+                }
+            };
+            var options = {
+                fields: Demand.fieldsAdapter('user name timeCreated')
+            };
+
+            Demand.findByIdAndUpdate(id, update, options, function (err, demand) {
+
+                if (err) {
+                    return reply(err);
+                }
+
+                reply(demand);
+            });
+        }
+    });
+
+
+    server.route({
+        method: 'PUT',
+        path: options.basePath + '/demands/{id}/user',
+        config: {
+            auth: {
+                strategy: 'simple',
+                scope: 'account'
             },
             validate: {
                 payload: {
@@ -238,19 +238,19 @@ exports.register = function (server, options, next) {
                 assign: 'account',
                 method: function (request, reply) {
 
-                    var Account = request.server.plugins['hapi-mongo-models'].Account;
+                    var Demand = request.server.plugins['hapi-mongo-models'].Demand;
 
-                    Account.findById(request.params.id, function (err, account) {
+                    Demand.findById(request.params.id, function (err, demand) {
 
                         if (err) {
                             return reply(err);
                         }
 
-                        if (!account) {
+                        if (!demand) {
                             return reply({ message: 'Document not found.' }).takeover().code(404);
                         }
 
-                        reply(account);
+                        reply(demand);
                     });
                 }
             },{
@@ -291,7 +291,7 @@ exports.register = function (server, options, next) {
                         request.pre.account.user.id !== request.pre.user._id.toString()) {
 
                         var response = {
-                            message: 'Account is already linked to another user. Unlink first.'
+                            message: 'Demand is already linked to another user. Unlink first.'
                         };
 
                         return reply(response).takeover().code(409);
@@ -306,7 +306,7 @@ exports.register = function (server, options, next) {
             Async.auto({
                 account: function (done) {
 
-                    var Account = request.server.plugins['hapi-mongo-models'].Account;
+                    var Demand = request.server.plugins['hapi-mongo-models'].Demand;
                     var id = request.params.id;
                     var update = {
                         $set: {
@@ -317,7 +317,7 @@ exports.register = function (server, options, next) {
                         }
                     };
 
-                    Account.findByIdAndUpdate(id, update, done);
+                    Demand.findByIdAndUpdate(id, update, done);
                 },
                 user: function (done) {
 
@@ -348,19 +348,19 @@ exports.register = function (server, options, next) {
 
     server.route({
         method: 'DELETE',
-        path: options.basePath + '/accounts/{id}/user',
+        path: options.basePath + '/demands/{id}/user',
         config: {
             auth: {
                 strategy: 'simple',
-                scope: 'admin'
+                scope: 'account'
             },
             pre: [{
                 assign: 'account',
                 method: function (request, reply) {
 
-                    var Account = request.server.plugins['hapi-mongo-models'].Account;
+                    var Demand = request.server.plugins['hapi-mongo-models'].Demand;
 
-                    Account.findById(request.params.id, function (err, account) {
+                    Demand.findById(request.params.id, function (err, account) {
 
                         if (err) {
                             return reply(err);
@@ -403,7 +403,7 @@ exports.register = function (server, options, next) {
             Async.auto({
                 account: function (done) {
 
-                    var Account = request.server.plugins['hapi-mongo-models'].Account;
+                    var Demand = request.server.plugins['hapi-mongo-models'].Demand;
                     var id = request.params.id;
                     var update = {
                         $unset: {
@@ -411,7 +411,7 @@ exports.register = function (server, options, next) {
                         }
                     };
 
-                    Account.findByIdAndUpdate(id, update, done);
+                    Demand.findByIdAndUpdate(id, update, done);
                 },
                 user: function (done) {
 
@@ -439,11 +439,11 @@ exports.register = function (server, options, next) {
 
     server.route({
         method: 'POST',
-        path: options.basePath + '/accounts/{id}/notes',
+        path: options.basePath + '/demands/{id}/notes',
         config: {
             auth: {
                 strategy: 'simple',
-                scope: 'admin'
+                scope: 'account'
             },
             validate: {
                 payload: {
@@ -453,7 +453,7 @@ exports.register = function (server, options, next) {
         },
         handler: function (request, reply) {
 
-            var Account = request.server.plugins['hapi-mongo-models'].Account;
+            var Demand = request.server.plugins['hapi-mongo-models'].Demand;
             var id = request.params.id;
             var update = {
                 $push: {
@@ -468,7 +468,7 @@ exports.register = function (server, options, next) {
                 }
             };
 
-            Account.findByIdAndUpdate(id, update, function (err, account) {
+            Demand.findByIdAndUpdate(id, update, function (err, account) {
 
                 if (err) {
                     return reply(err);
@@ -482,11 +482,11 @@ exports.register = function (server, options, next) {
 
     server.route({
         method: 'POST',
-        path: options.basePath + '/accounts/{id}/status',
+        path: options.basePath + '/demands/{id}/status',
         config: {
             auth: {
                 strategy: 'simple',
-                scope: 'admin'
+                scope: 'account'
             },
             validate: {
                 payload: {
@@ -512,7 +512,7 @@ exports.register = function (server, options, next) {
         },
         handler: function (request, reply) {
 
-            var Account = request.server.plugins['hapi-mongo-models'].Account;
+            var Demand = request.server.plugins['hapi-mongo-models'].Demand;
             var id = request.params.id;
             var newStatus = {
                 id: request.pre.status._id.toString(),
@@ -532,13 +532,13 @@ exports.register = function (server, options, next) {
                 }
             };
 
-            Account.findByIdAndUpdate(id, update, function (err, account) {
+            Demand.findByIdAndUpdate(id, update, function (err, demand) {
 
                 if (err) {
                     return reply(err);
                 }
 
-                reply(account);
+                reply(demand);
             });
         }
     });
@@ -546,11 +546,11 @@ exports.register = function (server, options, next) {
 
     server.route({
         method: 'DELETE',
-        path: options.basePath + '/accounts/{id}',
+        path: options.basePath + '/demands/{id}',
         config: {
             auth: {
                 strategy: 'simple',
-                scope: 'admin'
+                scope: 'account'
             },
             pre: [
                 AuthPlugin.preware.ensureAdminGroup('root')
@@ -558,9 +558,9 @@ exports.register = function (server, options, next) {
         },
         handler: function (request, reply) {
 
-            var Account = request.server.plugins['hapi-mongo-models'].Account;
+            var Demand = request.server.plugins['hapi-mongo-models'].Demand;
 
-            Account.findByIdAndRemove(request.params.id, function (err, count) {
+            Demand.findByIdAndRemove(request.params.id, function (err, count) {
 
                 if (err) {
                     return reply(err);
@@ -581,5 +581,5 @@ exports.register = function (server, options, next) {
 
 
 exports.register.attributes = {
-    name: 'accounts'
+    name: 'demands'
 };
