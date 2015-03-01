@@ -25,11 +25,6 @@ var manifest = {
     }],
     plugins: {
         'hapi-auth-basic': {},
-        'lout': {},
-        'visionary': {
-            engines: { jade: 'jade' },
-            path: './server/web'
-        },
         'hapi-mongo-models': {
             mongodb: Config.get('/hapiMongoModels/mongodb'),
             models: {
@@ -43,20 +38,30 @@ var manifest = {
             },
             autoIndex: Config.get('/hapiMongoModels/autoIndex')
         },
+        'hapi-node-postgres': {
+            connectionString: 'postgres://username:password@localhost/database',
+            native: true
+        },
+        'lout': {},
+        'visionary': {
+            engines: { jade: 'jade' },
+            path: './server/web'
+        },
         './server/auth': {},
         './server/mailer': {},
-        './server/api/accounts': { basePath: '/api' },
-        './server/api/admin-groups': { basePath: '/api' },
-        './server/api/admins': { basePath: '/api' },
-        './server/api/auth-attempts': { basePath: '/api' },
-        './server/api/contact': { basePath: '/api' },
-        './server/api/index': { basePath: '/api' },
-        './server/api/login': { basePath: '/api' },
-        './server/api/logout': { basePath: '/api' },
-        './server/api/sessions': { basePath: '/api' },
-        './server/api/signup': { basePath: '/api' },
-        './server/api/statuses': { basePath: '/api' },
-        './server/api/users': { basePath: '/api' },
+        './server/api/accounts': { basePath: '/v1' },
+        './server/api/admin-groups': { basePath: '/v1' },
+        './server/api/admins': { basePath: '/v1' },
+        './server/api/auth-attempts': { basePath: '/v1' },
+        './server/api/contact': { basePath: '/v1' },
+        './server/api/demands': { basePath: '/v1' },
+        './server/api/index': { basePath: '/v1' },
+        './server/api/login': { basePath: '/v1' },
+        './server/api/logout': { basePath: '/v1' },
+        './server/api/sessions': { basePath: '/v1' },
+        './server/api/signup': { basePath: '/v1' },
+        './server/api/statuses': { basePath: '/v1' },
+        './server/api/users': { basePath: '/v1' },
         './server/web/index': {}
     }
 };
