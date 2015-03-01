@@ -1,5 +1,5 @@
 // define is a function that binds "constants" to an object (commonly exports)
-var define = require("node-constants")(exports);
+var define = require('node-constants')(exports);
 
 
 // Error strings
