@@ -17,10 +17,10 @@ CREATE TABLE orders (
    created_at    TIMESTAMP     NOT NULL,
    updated_at    TIMESTAMP     NOT NULL,
    deleted       BOOLEAN       NOT NULL,
-   meeted_by     BIGINT                
+   meeted_by     BIGINT
 );
 
-INSERT INTO orders 
+INSERT INTO orders
     (description,         price, currency, status, created_by, created_at, updated_at, deleted) VALUES
     ('jumpstart',          9.99,    'USD',      1,         1,       now(),      now(),   FALSE),
     ('house clean',       89.99,    'USD',      2,         1,       now(),      now(),    TRUE),

@@ -2,11 +2,11 @@ This guideline is to setup PostgreSQL test DB.
 
 Step A~E only need once, and you can jump to step F directly in later usage.
 
-Note: Step B and C are for creating MAC OSX user, they may be not necessary, and you can try to skip these 2 steps. 
+Note: Step B and C are for creating MAC OSX user, they may be not necessary, and you can try to skip these 2 steps.
 
 
 
-A. let's install postgres.app: 
+A. let's install postgres.app:
 
 	0. Uninstall the homebrew version of postgres: $ brew remove postgresql
 
@@ -28,12 +28,12 @@ A. let's install postgres.app:
 
 
 
-B. Create the user "postgres" by running: 
+B. Create the user "postgres" by running:
 	0. $ postgres_user_mac.sh
 
 
-C. Allow postgres access PostgreSQL data storage folder:  
-	0. In postgres.app Preferences, get the "Data Directory", it should be something like "/Users/awei/Library/Application Support/Postgres/var-9.4" 
+C. Allow postgres access PostgreSQL data storage folder:
+	0. In postgres.app Preferences, get the "Data Directory", it should be something like "/Users/awei/Library/Application Support/Postgres/var-9.4"
 
 	1. $ sudo chmod -R 777 /Users/awei/Library/Application Support/Postgres/var-9.4
 
@@ -46,10 +46,10 @@ D. Create DB superuser "postgres"
 	2. Now we entered the psql command line context, use \l to list all the DBs:
 		postgres=# \l
 		                              List of databases
-		   Name    | Owner | Encoding |   Collate   |    Ctype    | Access privileges 
+		   Name    | Owner | Encoding |   Collate   |    Ctype    | Access privileges
 		-----------+-------+----------+-------------+-------------+-------------------
-		 awei      | awei  | UTF8     | en_US.UTF-8 | en_US.UTF-8 | 
-		 postgres  | awei  | UTF8     | en_US.UTF-8 | en_US.UTF-8 | 
+		 awei      | awei  | UTF8     | en_US.UTF-8 | en_US.UTF-8 |
+		 postgres  | awei  | UTF8     | en_US.UTF-8 | en_US.UTF-8 |
 		 template0 | awei  | UTF8     | en_US.UTF-8 | en_US.UTF-8 | =c/awei          +
 		           |       |          |             |             | awei=CTc/awei
 		 template1 | awei  | UTF8     | en_US.UTF-8 | en_US.UTF-8 | =c/awei          +
@@ -60,12 +60,12 @@ D. Create DB superuser "postgres"
     3. use \du command list all the users:
 		postgres=# \du
 		                             List of roles
-		 Role name |                   Attributes                   | Member of 
+		 Role name |                   Attributes                   | Member of
 		-----------+------------------------------------------------+-----------
 		 awei      | Superuser, Create role, Create DB, Replication | {}
 		 postgres  | Superuser, Create role, Create DB              | {}
-	
-	4. now set password for the superuser postgres: 
+
+	4. now set password for the superuser postgres:
 	   postgres=# ALTER ROLE postgres WITH PASSWORD 'password';
 
 
