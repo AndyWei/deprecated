@@ -39,8 +39,8 @@ var manifest = {
             autoIndex: Config.get('/hapiMongoModels/autoIndex')
         },
         'hapi-node-postgres': {
-            connectionString: 'postgres://username:password@localhost/database',
-            native: true
+            connectionString: Config.get('/db/connectionString'),
+            native: Config.get('/db/natvie')
         },
         'lout': {},
         'visionary': {
@@ -54,10 +54,10 @@ var manifest = {
         './server/api/admins': { basePath: '/v1' },
         './server/api/auth-attempts': { basePath: '/v1' },
         './server/api/contact': { basePath: '/v1' },
-        './server/api/demands': { basePath: '/v1' },
         './server/api/index': { basePath: '/v1' },
         './server/api/login': { basePath: '/v1' },
         './server/api/logout': { basePath: '/v1' },
+        './server/api/orders': { basePath: '/v1' },
         './server/api/sessions': { basePath: '/v1' },
         './server/api/signup': { basePath: '/v1' },
         './server/api/statuses': { basePath: '/v1' },

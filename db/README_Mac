@@ -1,0 +1,86 @@
+This guideline is to setup PostgreSQL test DB.
+
+Step A~E only need once, and you can jump to step F directly in later usage.
+
+Note: Step B and C are for creating MAC OSX user, they may be not necessary, and you can try to skip these 2 steps. 
+
+
+
+A. let's install postgres.app: 
+
+	0. Uninstall the homebrew version of postgres: $ brew remove postgresql
+
+	1. Go to http://postgresapp.com/
+
+	2. Download the zip, unzip, drag it to "Application" folder
+
+	3. Double click the postgres.app icon, and the postgres server will running on port 5432
+
+	4. To use command line tools of postgres.app, add the this line to ~/.local.bash: export PATH=$PATH:/Applications/Postgres.app/Contents/Versions/9.4/bin
+
+	5. Open a new Terminal window, and check if psql works: $ which psql
+
+	6. Terminal should echo "/Applications/Postgres.app/Contents/Versions/9.4/bin/psql"
+
+	7. Now the postgres is ready, for more commands, go to http://postgresapp.com/documentation/
+
+	8. psql is the PostgreSQL command-line interface to your database
+
+
+
+B. Create the user "postgres" by running: 
+	0. $ postgres_user_mac.sh
+
+
+C. Allow postgres access PostgreSQL data storage folder:  
+	0. In postgres.app Preferences, get the "Data Directory", it should be something like "/Users/awei/Library/Application Support/Postgres/var-9.4" 
+
+	1. $ sudo chmod -R 777 /Users/awei/Library/Application Support/Postgres/var-9.4
+
+
+D. Create DB superuser "postgres"
+	0. $ createuser -s postgres
+
+	1. $ psql -U postgres
+
+	2. Now we entered the psql command line context, use \l to list all the DBs:
+		postgres=# \l
+		                              List of databases
+		   Name    | Owner | Encoding |   Collate   |    Ctype    | Access privileges 
+		-----------+-------+----------+-------------+-------------+-------------------
+		 awei      | awei  | UTF8     | en_US.UTF-8 | en_US.UTF-8 | 
+		 postgres  | awei  | UTF8     | en_US.UTF-8 | en_US.UTF-8 | 
+		 template0 | awei  | UTF8     | en_US.UTF-8 | en_US.UTF-8 | =c/awei          +
+		           |       |          |             |             | awei=CTc/awei
+		 template1 | awei  | UTF8     | en_US.UTF-8 | en_US.UTF-8 | =c/awei          +
+		           |       |          |             |             | awei=CTc/awei
+		(4 rows)
+
+
+    3. use \du command list all the users:
+		postgres=# \du
+		                             List of roles
+		 Role name |                   Attributes                   | Member of 
+		-----------+------------------------------------------------+-----------
+		 awei      | Superuser, Create role, Create DB, Replication | {}
+		 postgres  | Superuser, Create role, Create DB              | {}
+	
+	4. now set password for the superuser postgres: 
+	   postgres=# ALTER ROLE postgres WITH PASSWORD 'password';
+
+
+E. Create database "joyy", then quit psql
+    0. postgres=# CREATE DATABASE joyy OWNER postgres;
+
+    1. grant all privileges on database joyy to awei; -- allow your username modify joyy DB
+
+    2. postgres=# \q
+
+
+F. Now you should back to your home folder (not postgres!). Run test script to create tables and test data:
+
+    0. $ psql -f ~/joyy/joyyserver/db/test.sql joyy
+
+
+
+

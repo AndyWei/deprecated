@@ -10,10 +10,10 @@ exports.register = function (server, options, next) {
 
     options = Hoek.applyToDefaults({ basePath: '' }, options);
 
-    // get a single demand record by its id
+    // get a single order record by its id
     server.route({
         method: 'GET',
-        path: options.basePath + '/demand/{id}',
+        path: options.basePath + '/order/{id}',
         config: {
             auth: {
                 strategy: 'simple',
@@ -23,7 +23,7 @@ exports.register = function (server, options, next) {
         handler: function (request, reply) {
 
             var queryConfig = {
-                text: 'SELECT * FROM demands WHERE id = $1',
+                text: 'SELECT * FROM orders WHERE id = $1',
                 values: [request.params.id]
             };
 
@@ -49,5 +49,5 @@ exports.register = function (server, options, next) {
 
 
 exports.register.attributes = {
-    name: 'demands'
+    name: 'orders'
 };
