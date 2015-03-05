@@ -170,10 +170,6 @@ This will run the tests and open a web browser to the visual code coverage
 artifacts. The generated source can be found in `/tests/artifacts/coverage.html`.
 
 
-## License
+## Copyright
 
-MIT
-
-## Don't forget
-
-IN PEOPLE WE TRUST
+© 2015 Ping Yang. All rights reserved.

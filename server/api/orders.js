@@ -1,5 +1,5 @@
 var Async = require('async');
-var AuthPlugin = require('../auth');
+var AuthPlugin = require('../authenticate');
 var Error = require('../error');
 var Hoek = require('hoek');
 var Joi = require('joi');
@@ -16,8 +16,7 @@ exports.register = function (server, options, next) {
         path: options.basePath + '/order/{id}',
         config: {
             auth: {
-                strategy: 'simple',
-                scope: 'account'
+                strategy: 'simple'
             }
         },
         handler: function (request, reply) {
