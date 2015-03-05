@@ -2,28 +2,20 @@
 
 The Node.js server for joyy.
 
-[![Build Status](https://travis-ci.org/jedireza/frame.svg?branch=master)](https://travis-ci.org/jedireza/frame)
-[![Dependency Status](https://david-dm.org/jedireza/frame.svg?style=flat)](https://david-dm.org/jedireza/frame)
-[![devDependency Status](https://david-dm.org/jedireza/frame/dev-status.svg?style=flat)](https://david-dm.org/jedireza/frame#info=devDependencies)
-
 ## Technology
 
 __Primary goal:__ Build a clean and scalable RESTful API for joyy.
 
-Joyyserver is forked from [Frame](https://github.com/jedireza/frame) which is built with the [hapi.js framework](https://github.com/hapijs/hapi) and
+Joyyserver is is built with the [hapi.js framework](https://github.com/hapijs/hapi) and
 [toolset](https://github.com/hapijs). We're using
-[MongoDB](https://github.com/mongodb/node-mongodb-native/) as a data store. We
+[PostgreSQL](https://www.postgresql.org/) as a data store. We
 also use [Nodemailer](https://github.com/andris9/Nodemailer) for email
 transport.
-
-[Postman](http://www.getpostman.com/) is a great tool for testing and
-developing APIs. See the wiki for details on [how to
-login](https://github.com/jedireza/frame/wiki/How-to-login).
 
 ## Requirements
 
 You need [Node.js](http://nodejs.org/download/) and
-[MongoDB](http://www.mongodb.org/downloads) installed and running.
+[PostgreSQL](https://www.postgresql.org/) installed and running.
 
 We use [`bcrypt`](https://github.com/ncb000gt/node.bcrypt.js) for hashing
 secrets. If you have issues during installation related to `bcrypt` then [refer
@@ -52,7 +44,7 @@ $ npm run setup
 # > ./setup.js
 
 # Project name: (joyyserver)
-# MongoDB URL: (mongodb://localhost:27017/joyyserver)
+# Postgres URL: (postgres://postgres:password@localhost:5432/joyy)
 # Root user email: andyweius@gmail.com
 # Root user password:
 # System email: (andyweius@gmail.com)
@@ -96,11 +88,7 @@ This will start the app using [`nodemon`](https://github.com/remy/nodemon).
 
  - Login system with forgot password and reset password
  - Abusive login attempt detection
- - User roles for accounts and admins
  - Facilities for notes and status updates
- - Admin groups with shared permissions
- - Admin level permissions that override group permissions
-
 
 ## Questions and contributing
 
@@ -122,13 +110,9 @@ $ npm version
 #   npm: '2.5.1'}
 ```
 
-Contributions welcome. Your code should:
 
- - include 100% test coverage
- - follow the [hapi.js coding conventions](http://hapijs.com/styleguide)
+## Follow the [hapi.js coding conventions](http://hapijs.com/styleguide)
 
-If you're changing something non-trivial, you may want to submit an issue
-first.
 
 
 ## Running tests
