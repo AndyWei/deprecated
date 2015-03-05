@@ -24,7 +24,7 @@ exports.register = function (server, options, next) {
                 Bcrypt.compare(password, result.rows[0].password, function (err, isValid) {
 
                     callback(err, isValid, { id: user.id, name: username });
-                });                
+                });
             });
         }
     });
