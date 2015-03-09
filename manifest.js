@@ -1,10 +1,10 @@
-var Confidence = require('confidence');
-var Config = require('./config');
+var Confidence = require('confidence')
+var Config = require('./config')
 
 
 var criteria = {
     env: process.env.NODE_ENV
-};
+}
 
 
 var manifest = {
@@ -20,10 +20,16 @@ var manifest = {
         }
     },
     connections: [{
-        port: Config.get('/port/web'),
-        labels: ['web']
+        port: Config.get('/port/api'),
+        labels: ['api']
     }],
     plugins: {
+        'good': {
+            reporters: [{
+                reporter: require('good-console'),
+                args:[{ log: '*', response: '*' }]
+            }]
+        },
         'hapi-auth-basic': {},
         'hapi-node-postgres': {
             connectionString: Config.get('/db/connectionString'),
@@ -36,21 +42,22 @@ var manifest = {
         },
         './server/authenticate': {},
         './server/api/orders': { basePath: '/v1' },
+        './server/api/signup': { basePath: '/v1' },
         './server/web/index': {}
     }
-};
+}
 
 
-var store = new Confidence.Store(manifest);
+var store = new Confidence.Store(manifest)
 
 
 exports.get = function (key) {
 
-    return store.get(key, criteria);
-};
+    return store.get(key, criteria)
+}
 
 
 exports.meta = function (key) {
 
-    return store.meta(key, criteria);
-};
+    return store.meta(key, criteria)
+}

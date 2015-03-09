@@ -1,5 +1,6 @@
 var Bcrypt = require('bcrypt');
-var Basic = require('hapi-auth-basic')
+var Basic = require('hapi-auth-basic');
+var c = require('./constants');
 
 exports.register = function (server, options, next) {
 
@@ -30,7 +31,7 @@ exports.register = function (server, options, next) {
     });
 
     next();
-};
+}
 
 
 exports.register.attributes = {

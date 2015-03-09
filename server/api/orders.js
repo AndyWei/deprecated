@@ -1,10 +1,6 @@
-var Async = require('async');
-var AuthPlugin = require('../authenticate');
-var Error = require('../error');
 var Hoek = require('hoek');
 var Joi = require('joi');
-var Pg = require('pg').native;
-
+var c = require('../constants');
 
 exports.register = function (server, options, next) {
 
@@ -33,7 +29,7 @@ exports.register = function (server, options, next) {
                 }
 
                 if (result.rows.length === 0) {
-                    return reply({ message: Error.RecordNotFound }).code(404);
+                    return reply({ message: c.RecordNotFound }).code(404);
                 }
 
                 var json = JSON.stringify(result.rows);

@@ -1,6 +1,5 @@
 var Composer = require('./index');
 
-
 Composer(function (err, server) {
 
     if (err) {
@@ -8,7 +7,6 @@ Composer(function (err, server) {
     }
 
     server.start(function () {
-
-        console.log('Started the plot device.');
+        console.info('Started joyy server');
     });
 });

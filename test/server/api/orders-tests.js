@@ -1,26 +1,26 @@
-var AuthPlugin = require('../../../server/authenticate');
-var Code = require('code');
-var Config = require('../../../config');
-var Error = require('../../../server/error');
-var Hapi = require('hapi');
-var HapiAuthBasic = require('hapi-auth-basic');
-var Lab = require('lab');
-var Manifest = require('../../../manifest');
-var OrdersPlugin = require('../../../server/api/orders');
-var Path = require('path');
-var PgPlugin = require('hapi-node-postgres');
-var Proxyquire = require('proxyquire');
+var AuthPlugin = require('../../../server/authenticate')
+var Code = require('code')
+var Config = require('../../../config')
+var Hapi = require('hapi')
+var HapiAuthBasic = require('hapi-auth-basic')
+var Lab = require('lab')
+var Manifest = require('../../../manifest')
+var OrdersPlugin = require('../../../server/api/orders')
+var Path = require('path')
+var PgPlugin = require('hapi-node-postgres')
+var Proxyquire = require('proxyquire')
+var c = require('../../../server/constants');
 
 
-var lab = exports.lab = Lab.script();
-var PgPlugin, request, server, stub;
+var lab = exports.lab = Lab.script()
+var PgPlugin, request, server, stub
 
 
 lab.beforeEach(function (done) {
 
     var plugins = [HapiAuthBasic, AuthPlugin, PgPlugin, OrdersPlugin];
     server = new Hapi.Server();
-    server.connection({ port: Config.get('/port/web') });
+    server.connection({ port: Config.get('/port/api') });
     server.register(plugins, function (err) {
 
         if (err) {
@@ -34,10 +34,10 @@ lab.beforeEach(function (done) {
 
 lab.afterEach(function (done) {
 
-    // server.plugins['hapi-mongo-models'].BaseModel.disconnect();
+    // server.plugins['hapi-mongo-models'].BaseModel.disconnect()
 
     done();
-});
+})
 
 
 lab.experiment('Orders GET: ', function () {
@@ -70,11 +70,11 @@ lab.experiment('Orders GET: ', function () {
         server.inject(request, function (response) {
 
             Code.expect(response.statusCode).to.equal(404);
-            Code.expect(response.result.message).to.match(Error.RecordNotFound);
+            Code.expect(response.result.message).to.match(c.RecordNotFound);
 
             done();
         });
-    });
+    })
 
 
     lab.test('return a record successfully', function (done) {
@@ -94,5 +94,3 @@ lab.experiment('Orders GET: ', function () {
         });
     });
 });
-
-
