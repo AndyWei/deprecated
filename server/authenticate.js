@@ -46,12 +46,10 @@ var validate = function (email, password, finish) {
         }
     ], function (err, isValid, user) {
 
-        if (err) {
-            console.error(err);
+        if (err || !isValid) {
             return finish(err, false);
         }
 
-        console.info(user);
         finish(err, isValid, { id: user.id, name: user.name });
     });
 };
