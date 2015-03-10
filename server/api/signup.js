@@ -81,7 +81,6 @@ internals.createUser = function (request, reply) {
         usernameCandidates: function (callback) {
 
             var candidates = internals.getUsernameCandidates(email);
-            console.info('usernameCandidates = %j', candidates);
             callback(null, candidates);
         },
         usernameAvailable: ['usernameCandidates', function (callback, results) {
@@ -94,10 +93,7 @@ internals.createUser = function (request, reply) {
             });
 
             query.on('row', function (row) {
-
-                console.info('row');
                 available = _.without(available, row.username);
-                console.info('available = %j', available);
             });
 
             query.on('error', function(err) {
@@ -114,7 +110,6 @@ internals.createUser = function (request, reply) {
             if (results.usernameAvailable.length === 0) {
                 // generate a base36 name from timestamp + random5
                 name = internals.base36(_.now()) + internals.base36(_.random(10000, 99999));
-                console.info('base36 username = %s', name);
             }
             else {
                 // choose the shortest name
@@ -167,7 +162,7 @@ internals.createUser = function (request, reply) {
             }
         };
 
-        console.info('user created. username=%s, email=%s', results.username, email);
+        console.info('user created. username=%s, email=%s', result.username, email);
         reply(null, message).code(201);
     });
 };
