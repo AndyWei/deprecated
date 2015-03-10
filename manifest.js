@@ -1,10 +1,10 @@
-var Confidence = require('confidence')
-var Config = require('./config')
+var Confidence = require('confidence');
+var Config = require('./config');
 
 
 var criteria = {
     env: process.env.NODE_ENV
-}
+};
 
 
 var manifest = {
@@ -46,19 +46,19 @@ var manifest = {
         './server/api/signup': { basePath: '/v1' },
         './server/web/index': {}
     }
-}
+};
 
 
-var store = new Confidence.Store(manifest)
+var store = new Confidence.Store(manifest);
 
 
 exports.get = function (key) {
 
-    return store.get(key, criteria)
-}
+    return store.get(key, criteria);
+};
 
 
 exports.meta = function (key) {
 
-    return store.meta(key, criteria)
-}
+    return store.meta(key, criteria);
+};

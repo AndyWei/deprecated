@@ -1,19 +1,30 @@
-var AuthPlugin = require('../../../server/authenticate')
-var Code = require('code')
-var Config = require('../../../config')
-var Hapi = require('hapi')
-var HapiAuthBasic = require('hapi-auth-basic')
-var Lab = require('lab')
-var Manifest = require('../../../manifest')
-var OrdersPlugin = require('../../../server/api/orders')
-var Path = require('path')
-var PgPlugin = require('hapi-node-postgres')
-var Proxyquire = require('proxyquire')
+var AuthPlugin = require('../../../server/authenticate');
+var Code = require('code');
+var Config = require('../../../config');
+var Hapi = require('hapi');
+var HapiAuthBasic = require('hapi-auth-basic');
+var Lab = require('lab');
+var OrdersPlugin = require('../../../server/api/orders');
 var c = require('../../../server/constants');
 
 
-var lab = exports.lab = Lab.script()
-var PgPlugin, request, server, stub
+var lab = exports.lab = Lab.script();
+
+var PgPlugin = {
+    register: require('hapi-node-postgres'),
+    options: {
+        connectionString: Config.get('/db/connectionString'),
+        native: Config.get('/db/native'),
+        attach: 'onPreHandler'
+    }
+};
+
+var testUser = {
+    email: 'andy94555@gmail.com',
+    password: 'password'
+};
+
+var request, server;
 
 
 lab.beforeEach(function (done) {
@@ -34,10 +45,8 @@ lab.beforeEach(function (done) {
 
 lab.afterEach(function (done) {
 
-    // server.plugins['hapi-mongo-models'].BaseModel.disconnect()
-
     done();
-})
+});
 
 
 lab.experiment('Orders GET: ', function () {
@@ -47,7 +56,7 @@ lab.experiment('Orders GET: ', function () {
         request = {
             method: 'GET',
             url: '/order/100/100',
-            // credentials: AuthenticatedUser
+            credentials: testUser
         };
 
         server.inject(request, function (response) {
@@ -59,22 +68,55 @@ lab.experiment('Orders GET: ', function () {
     });
 
 
-    lab.test('return a not found when find by id misses', function (done) {
+    lab.test('return RecordNotFound when id not exist', function (done) {
 
         request = {
             method: 'GET',
             url: '/order/100',
-            // credentials: AuthenticatedUser
+            credentials: testUser
         };
 
         server.inject(request, function (response) {
 
             Code.expect(response.statusCode).to.equal(404);
-            Code.expect(response.result.message).to.match(c.RecordNotFound);
+            Code.expect(response.result.message).to.equal(c.RecordNotFound);
 
             done();
         });
-    })
+    });
+
+
+    lab.test('return query error when id is invalid for Joi', function (done) {
+
+        request = {
+            method: 'GET',
+            url: '/order/98765432109876543210',
+            credentials: testUser
+        };
+
+        server.inject(request, function (response) {
+
+            Code.expect(response.statusCode).to.equal(400);
+
+            done();
+        });
+    });
+
+    lab.test('return query error when id is invalid for DB', function (done) {
+
+        request = {
+            method: 'GET',
+            url: '/order/9876543210987654321',
+            credentials: testUser
+        };
+
+        server.inject(request, function (response) {
+
+            Code.expect(response.statusCode).to.equal(500);
+
+            done();
+        });
+    });
 
 
     lab.test('return a record successfully', function (done) {
@@ -82,13 +124,13 @@ lab.experiment('Orders GET: ', function () {
         request = {
             method: 'GET',
             url: '/order/1',
-            // credentials: AuthenticatedUser
+            credentials: testUser
         };
 
         server.inject(request, function (response) {
 
             Code.expect(response.statusCode).to.equal(200);
-            Code.expect(response.result).to.be.an.object();
+            Code.expect(response.result).to.be.a.string();
 
             done();
         });

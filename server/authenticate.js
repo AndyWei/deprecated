@@ -22,7 +22,7 @@ var validate = function (email, password, finish) {
                 values: [email],
                 name: 'users_select_one_by_email'
             };
-            
+
             client.query(queryConfig, function (queryErr, queryResult) {
 
                 done();

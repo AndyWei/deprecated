@@ -3,7 +3,7 @@ var Enum = require('enum');
 
 var exports = module.exports = {};
 
-// consts 
+// consts
 exports.ALPHA_LENGTH = 5;
 
 
