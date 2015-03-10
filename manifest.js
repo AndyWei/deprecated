@@ -33,7 +33,8 @@ var manifest = {
         'hapi-auth-basic': {},
         'hapi-node-postgres': {
             connectionString: Config.get('/db/connectionString'),
-            native: Config.get('/db/natvie')
+            native: Config.get('/db/native'),
+            attach: 'onPreHandler'
         },
         'lout': {},
         'visionary': {

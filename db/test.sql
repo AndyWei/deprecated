@@ -22,6 +22,14 @@ CREATE TABLE users (
     bio           VARCHAR(100)
 );
 
+INSERT INTO users
+    (     username,                                                    password,                 email, role, status, created_at, updated_at, deleted) VALUES
+    (         'jac', '$2a$10$sTaFcBz.lhDXr2bVNZJZeenPJ3qiKG.NaQQ5zqiz0peku0fDvO0YG', 'jac.david@gmail.com',    1,      1,      now(),      now(),   FALSE),
+    (        'andy', '$2a$10$sTaFcBz.lhDXr2bVNZJZeenPJ3qiKG.NaQQ5zqiz0peku0fDvO0YG', 'andy94555@gmail.com',    1,      1,      now(),      now(),   FALSE);
+
+
+
+
 
 /* Create orders table and insert test data */
 CREATE TABLE orders (

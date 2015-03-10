@@ -21,7 +21,7 @@ exports.register = function (server, options, next) {
             validate: {
                 payload: {
                     email: Joi.string().email().lowercase().min(3).max(30).required(),
-                    password: Joi.string().min(6).max(30).required()
+                    password: Joi.string().min(4).max(30).required()
                 }
             },
             pre: [{
@@ -43,11 +43,10 @@ exports.register.attributes = {
 
 internals.emailCheck = function (request, reply) {
 
-    console.info('emailCheck');
-
     var queryConfig = {
         text: 'SELECT id FROM users WHERE email = $1',
-        values: [request.payload.email]
+        values: [request.payload.email],
+        name: 'users_select_id_by_email'
     };
 
     request.pg.client.query(queryConfig, function (err, result) {
@@ -58,7 +57,7 @@ internals.emailCheck = function (request, reply) {
 
         if (result.rows.length > 0) {
             var response = {
-                message: c.UserExists
+                message: c.EmailInUse
             };
 
             return reply(response).takeover().code(409);
@@ -76,7 +75,6 @@ internals.emailCheck = function (request, reply) {
 //   3. Unique: In case the best name from step 1 and 2 has already been taken, some random numbers will be appended
 internals.createUser = function (request, reply) {
 
-    console.info('createUser');
     var email = request.payload.email;
 
     Async.auto({
@@ -91,7 +89,8 @@ internals.createUser = function (request, reply) {
             var available = results.usernameCandidates;
             var query = request.pg.client.query({
                 text: 'SELECT username FROM users WHERE username IN ($1, $2, $3, $4, $5)',
-                values: results.usernameCandidates
+                values: results.usernameCandidates,
+                name: 'users_select_username_in_usernames'
             });
 
             query.on('row', function (row) {
@@ -142,30 +141,33 @@ internals.createUser = function (request, reply) {
 
             var queryConfig = {
                 text: 'INSERT INTO users' +
-                          '(username, password, email, role, created_at, updated_at) VALUES' +
-                          '($1, $2, $3, $4, now(), now())',
-                values: [results.username, results.password, email, c.Role.user.value]
+                          '(username, password, email, role, created_at, updated_at) VALUES ' +
+                          '($1, $2, $3, $4, now(), now()) ' +
+                          'RETURNING id',
+                values: [results.username, results.password, email, c.Role.user.value],
+                name: 'users_create'
             };
 
             request.pg.client.query(queryConfig, function (err, queryResult) {
                 callback(err, queryResult);
             });
         }]
-    }, function (err, results) {
+    }, function (err, result) {
 
         if (err) {
-            console.info('err');
+            console.error(err);
             return reply(err);
         }
 
         var message = {
             user: {
-                username: results.username,
+                id: result.id,
+                username: result.username,
                 email: email
             }
         };
 
-        console.info('user created');
+        console.info('user created. username=%s, email=%s', results.username, email);
         reply(null, message).code(201);
     });
 };

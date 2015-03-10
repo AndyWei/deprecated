@@ -8,8 +8,9 @@ exports.ALPHA_LENGTH = 5;
 
 
 //Error strings
+exports.EmailInUse = 'Email already in use.';
 exports.RecordNotFound = 'Query excuted but no record found.';
-exports.UserExists = 'Username already in use.';
+exports.UserNotFound = 'User not found.';
 
 
 // enums

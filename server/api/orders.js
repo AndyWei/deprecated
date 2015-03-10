@@ -13,13 +13,19 @@ exports.register = function (server, options, next) {
         config: {
             auth: {
                 strategy: 'simple'
+            },
+            validate: {
+                params: {
+                    id: Joi.string().regex(/^[0-9]+$/).max(19)
+                }
             }
         },
         handler: function (request, reply) {
 
             var queryConfig = {
                 text: 'SELECT * FROM orders WHERE id = $1',
-                values: [request.params.id]
+                values: [request.params.id],
+                name: 'orders_select_all_by_id'
             };
 
             request.pg.client.query(queryConfig, function (err, result) {
