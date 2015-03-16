@@ -199,7 +199,23 @@ lab.experiment('Orders GET: ', function () {
 
         request = {
             method: 'GET',
-            url: '/orders/nearby?lon=0&lat=0'
+            url: '/orders/nearby?lon=-122.4376&lat=37.7577'  // San Francisco, CA
+        };
+
+        server.inject(request, function (response) {
+
+            Code.expect(response.statusCode).to.equal(200);
+            Code.expect(response.result).to.be.a.string();
+
+            done();
+        });
+    });
+
+    lab.test('/orders/nearby: before and after', function (done) {
+
+        request = {
+            method: 'GET',
+            url: '/orders/nearby?lon=-122.4376&lat=37.7577&before=3&after=1' // San Francisco, CA
         };
 
         server.inject(request, function (response) {
@@ -215,7 +231,7 @@ lab.experiment('Orders GET: ', function () {
 
         request = {
             method: 'GET',
-            url: '/orders/nearby?lon=10000.0&lat=-345.32'
+            url: '/orders/nearby?lon=-121.3018775&lat=37.9730234' // Stockton, CA
         };
 
         server.inject(request, function (response) {
@@ -241,9 +257,9 @@ lab.experiment('Orders POST: ', function () {
                 currency: 'usd',
                 country: 'us',
                 description: 'jump start',
-                address: '2290 good ave, Fremont, CA 94555',
-                lon: -3.456,
-                lat: 75.84
+                address: '37010 Dusterberry Way Fremont, CA 94536',
+                lon: -122.0135916,
+                lat: 37.555883
             },
             credentials: andy
         };
@@ -263,7 +279,7 @@ lab.experiment('Orders POST: ', function () {
             method: 'POST',
             url: '/order',
             payload: {
-                price: 1.1,
+                price: 1,
                 currency: 'usd',
                 country: 'us',
                 description: 'jump start',
@@ -271,7 +287,7 @@ lab.experiment('Orders POST: ', function () {
                 lon: 180.3,
                 lat: 75.84
             },
-            credentials: andy
+            credentials: jack
         };
 
         server.inject(request, function (response) {

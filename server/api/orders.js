@@ -24,7 +24,7 @@ exports.register = function (server, options, next) {
         handler: function (request, reply) {
 
             var queryConfig = {
-                text: 'SELECT id, uid, price, currency, country, status, created_at, description, address, ST_X(venue) AS lon, ST_Y(venue) AS lat \
+                text: 'SELECT id, uid, initial_price, final_price, currency, country, status, created_at, description, address, ST_X(venue) AS lon, ST_Y(venue) AS lat \
                        FROM orders WHERE id = $1',
                 values: [request.params.id],
                 name: 'orders_select_all_by_id'
@@ -62,7 +62,7 @@ exports.register = function (server, options, next) {
             var uid = internals.getUserId(request);
             console.info('uid = %s', uid);
             var queryConfig = {
-                text: 'SELECT id, price, currency, status, created_at, description, address, ST_X(venue) AS lon, ST_Y(venue) AS lat \
+                text: 'SELECT id, uid, initial_price, final_price, currency, country, status, created_at, description, address, ST_X(venue) AS lon, ST_Y(venue) AS lat \
                        FROM orders \
                        WHERE uid = $1 \
                        ORDER BY id DESC',
@@ -101,7 +101,7 @@ exports.register = function (server, options, next) {
 
             var uid = internals.getUserId(request);
             var queryConfig = {
-                text: 'SELECT id, price, currency, status, created_at, description, address, ST_X(venue) AS lon, ST_Y(venue) AS lat \
+                text: 'SELECT id, uid, initial_price, final_price, currency, country, status, created_at, description, address, ST_X(venue) AS lon, ST_Y(venue) AS lat \
                        FROM orders \
                        WHERE winner_id = $1 \
                        ORDER BY id DESC',
@@ -134,23 +134,24 @@ exports.register = function (server, options, next) {
         config: {
             validate: {
                 query: {
-                    lon: Joi.number(),
-                    lat: Joi.number(),
+                    lon: Joi.number().min(-180).max(180),
+                    lat: Joi.number().min(-90).max(90),
+                    distance: Joi.number().min(1).max(1000).default(80),
                     count: Joi.number().integer().min(1).max(200).default(50),
-                    sinceId: Joi.string().regex(/^[0-9]+$/).max(19).default('0'),
-                    maxId: Joi.string().regex(/^[0-9]+$/).max(19).default('9223372036854775807')
+                    after: Joi.string().regex(/^[0-9]+$/).max(19).default('0'),
+                    before: Joi.string().regex(/^[0-9]+$/).max(19).default('9223372036854775807')
                 }
             }
         },
         handler: function (request, reply) {
 
             var queryConfig = {
-                text: 'SELECT * \
+                text: 'SELECT id, uid, initial_price, final_price, currency, country, status, created_at, description, address, ST_X(venue) AS lon, ST_Y(venue) AS lat \
                        FROM orders \
-                       WHERE ST_DWithin(venue, ST_SetSRID(ST_MakePoint($1, $2), 4326), 1000) AND id > $3 AND id < $4 \
+                       WHERE id > $1 AND id < $2 AND ST_DWithin(venue, ST_SetSRID(ST_MakePoint($3, $4), 4326), $5 / 111.325) \
                        ORDER BY id DESC \
-                       LIMIT $5',
-                values: [request.query.lon, request.query.lat, request.query.sinceId, request.query.maxId, request.query.count],
+                       LIMIT $6',
+                values: [request.query.after, request.query.before, request.query.lon, request.query.lat, request.query.distance, request.query.count],
                 name: 'orders_select_nearby'
             };
 
@@ -182,7 +183,7 @@ exports.register = function (server, options, next) {
             },
             validate: {
                 payload: {
-                    price: Joi.number(),
+                    price: Joi.number().precision(19),
                     currency: Joi.string().length(3).regex(/^[a-z]+$/),
                     country: Joi.string().length(2).regex(/^[a-z]+$/),
                     description: Joi.string().max(1000),
@@ -210,9 +211,10 @@ internals.createOrderHandler = function (request, reply) {
         function (callback) {
 
             var uid = internals.getUserId(request);
+            console.info('uid = %s', uid);
             var queryConfig = {
                 text: 'INSERT INTO orders \
-                           (uid, price, currency, country, description, address, venue, created_at, updated_at) VALUES \
+                           (uid, initial_price, currency, country, description, address, venue, created_at, updated_at) VALUES \
                            ($1, $2, $3, $4, $5, $6, ST_SetSRID(ST_MakePoint($7, $8), 4326), now(), now()) \
                            RETURNING id',
                 values: [uid, request.payload.price, request.payload.currency, request.payload.country, request.payload.description, request.payload.address, request.payload.lon, request.payload.lat],

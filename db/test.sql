@@ -39,7 +39,7 @@ INSERT INTO users
 CREATE TABLE orders (
     id            BIGSERIAL  PRIMARY KEY,
     uid           BIGINT        NOT NULL,  -- the id of the user who placed this order
-    price         NUMERIC(19,2) NOT NULL,
+    initial_price NUMERIC(19,2) NOT NULL,  -- the initial price before bidding and negotiation
     currency      CHAR(3)       NOT NULL DEFAULT 'usd',  -- ISO 4217 Currency Codes
     country       CHAR(2)       NOT NULL DEFAULT 'us',  -- country code
     status        SMALLINT      NOT NULL DEFAULT 1,  -- 1-active, 2-closed, 3-pending, 4-canceled
@@ -49,11 +49,12 @@ CREATE TABLE orders (
     description   VARCHAR(1000) NOT NULL,
     venue GEOMETRY(Point, 4326) NOT NULL,  -- the venue where order should be serviced, used for searching and calculating distance
     address       TEXT                  ,  -- the address where order should be serviced, used for indicating the service seller
-    winner_id     BIGINT
+    winner_id     BIGINT                ,  -- the id of the user who wins this order
+    final_price  NUMERIC(19,2)             -- the final price after bidding and negotiation
 );
 
 INSERT INTO orders
-    (uid, winner_id,     price,  status, created_at, updated_at, description, venue) VALUES
-    (  1,         1,      0.99,       1,      now(),      now(), 'jumpstart', ST_SetSRID(ST_MakePoint(0, 0), 4326)),
-    (  1,         3,     89.99,       2,      now(),      now(),     'clean', ST_SetSRID(ST_MakePoint(3.0, -7.5678), 4326)),
-    (  1,         3, 234567.99,       3,      now(),      now(), 'free ride', ST_SetSRID(ST_MakePoint(-2.5, 3.435), 4326));
+    (uid, winner_id, initial_price,  status, created_at, updated_at, description, venue) VALUES
+    (  1,         1,          0.99,       1,      now(),      now(), 'jumpstart', ST_SetSRID(ST_MakePoint(-122.4164623, 37.7766092), 4326)),
+    (  1,         3,         89.99,       2,      now(),      now(),     'clean', ST_SetSRID(ST_MakePoint(-122.4074981, 37.7879331), 4326)),
+    (  1,         3,     234567.99,       3,      now(),      now(), 'free ride', ST_SetSRID(ST_MakePoint(-121.9989519, 37.5293864), 4326));

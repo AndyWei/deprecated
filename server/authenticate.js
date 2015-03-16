@@ -33,7 +33,7 @@ var validate = function (username, password, finish) {
                     callback(Boom.badImplementation(c.QueryFailed, queryErr));
                 }
                 else if (queryResult.rowCount === 0) {
-                    callback({message: c.UserNotFound});
+                    callback(Boom.unauthorized(c.UserNotFound, 'basic'));
                 }
                 else {
                     callback(null, queryResult.rows[0]);
@@ -43,7 +43,12 @@ var validate = function (username, password, finish) {
         function (user, callback) {
 
             Bcrypt.compare(password, user.password, function (err, isValid) {
-                callback(err, isValid, user);
+                if (err) {
+                    callback(Boom.unauthorized(err, 'basic'));
+                }
+                else {
+                    callback(null, isValid, user);
+                }
             });
         }
     ], function (err, isValid, user) {

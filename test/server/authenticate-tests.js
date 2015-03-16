@@ -81,6 +81,7 @@ lab.experiment('Auth plugin: ', function () {
                 server.auth.test('simple', request, function (err, credentials) {
 
                     Code.expect(err).to.exist();
+                    Code.expect(err.output.statusCode).to.equal(401);
                     Code.expect(credentials).to.be.null();
                     reply('reject');
                 });
@@ -111,6 +112,7 @@ lab.experiment('Auth plugin: ', function () {
                 server.auth.test('simple', request, function (err, credentials) {
 
                     Code.expect(err).to.exist();
+                    Code.expect(err.output.statusCode).to.equal(401);
                     Code.expect(credentials).to.be.null();
                     reply('reject');
                 });
