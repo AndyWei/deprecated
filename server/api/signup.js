@@ -1,12 +1,12 @@
 var Async = require('async');
 var Bcrypt = require('bcrypt');
+var Boom = require('boom');
 var Hoek = require('hoek');
 var Joi = require('joi');
 var c = require('../constants');
 var _ = require('underscore');
 
 
-// Declare internals
 var internals = {};
 
 exports.register = function (server, options, next) {
@@ -52,15 +52,12 @@ internals.emailCheck = function (request, reply) {
     request.pg.client.query(queryConfig, function (err, result) {
 
         if (err) {
-            return reply(err);
+            console.error(c.QueryFailed, err);
+            return reply(Boom.badImplementation(c.QueryFailed, err));
         }
 
         if (result.rows.length > 0) {
-            var response = {
-                message: c.EmailInUse
-            };
-
-            return reply(response).takeover().code(409);
+            return reply(Boom.conflict(c.EmailInUse));
         }
 
         reply(true);
@@ -135,7 +132,7 @@ internals.createUser = function (request, reply) {
         create: ['username', 'password', function (callback, results) {
 
             var queryConfig = {
-                text: 'INSERT INTO users' +
+                text: 'INSERT INTO users ' +
                           '(username, password, email, role, created_at, updated_at) VALUES ' +
                           '($1, $2, $3, $4, now(), now()) ' +
                           'RETURNING id',
@@ -147,7 +144,7 @@ internals.createUser = function (request, reply) {
                 callback(err, queryResult);
             });
         }]
-    }, function (err, result) {
+    }, function (err, results) {
 
         if (err) {
             console.error(err);
@@ -156,13 +153,13 @@ internals.createUser = function (request, reply) {
 
         var message = {
             user: {
-                id: result.id,
-                username: result.username,
+                id: results.create,
+                username: results.username,
                 email: email
             }
         };
 
-        console.info('user created. username=%s, email=%s', result.username, email);
+        console.info('user created. username=%s, email=%s', results.username, email);
         reply(null, message).code(201);
     });
 };

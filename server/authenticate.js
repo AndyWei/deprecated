@@ -1,10 +1,11 @@
 var Async = require('async');
 var Bcrypt = require('bcrypt');
+var Boom = require('boom');
 var Config = require('../config');
 var Pg = require('pg').native;
 var c = require('./constants');
 
-var validate = function (email, password, finish) {
+var validate = function (username, password, finish) {
 
     Async.waterfall([
         function (callback) {
@@ -18,9 +19,9 @@ var validate = function (email, password, finish) {
         function (client, done, callback) {
 
             var queryConfig = {
-                text: 'SELECT id, username, password FROM users WHERE email = $1',
-                values: [email],
-                name: 'users_select_one_by_email'
+                text: 'SELECT id, password FROM users WHERE username = $1',
+                values: [username],
+                name: 'users_select_one_by_username'
             };
 
             client.query(queryConfig, function (queryErr, queryResult) {
@@ -28,7 +29,8 @@ var validate = function (email, password, finish) {
                 done();
 
                 if (queryErr) {
-                    callback(queryErr);
+                    console.error(c.QueryFailed, queryErr);
+                    callback(Boom.badImplementation(c.QueryFailed, queryErr));
                 }
                 else if (queryResult.rowCount === 0) {
                     callback({message: c.UserNotFound});
@@ -50,7 +52,7 @@ var validate = function (email, password, finish) {
             return finish(err, false);
         }
 
-        finish(err, isValid, { id: user.id, name: user.name });
+        finish(err, isValid, { id: user.id, username: username });
     });
 };
 

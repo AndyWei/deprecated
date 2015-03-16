@@ -61,7 +61,7 @@ lab.experiment('Auth plugin: ', function () {
             method: 'GET',
             url: '/',
             headers: {
-                authorization: 'Basic ' + (new Buffer('andy94555@gmail.com:password')).toString('base64')
+                authorization: 'Basic ' + (new Buffer('andy:password')).toString('base64')
             }
         };
 
@@ -91,7 +91,7 @@ lab.experiment('Auth plugin: ', function () {
             method: 'GET',
             url: '/',
             headers: {
-                authorization: 'Basic ' + (new Buffer('andy94555@gmail.com:wrongpassword')).toString('base64')
+                authorization: 'Basic ' + (new Buffer('andy:wrongpassword')).toString('base64')
             }
         };
 
@@ -101,37 +101,7 @@ lab.experiment('Auth plugin: ', function () {
     });
 
 
-    lab.test('detect non-exist email', function (done) {
-
-        server.route({
-            method: 'GET',
-            path: '/',
-            handler: function (request, reply) {
-
-                server.auth.test('simple', request, function (err, credentials) {
-
-                    Code.expect(err).to.exist();
-                    Code.expect(credentials).to.be.null();
-                    reply('reject');
-                });
-            }
-        });
-
-        var getRequest = {
-            method: 'GET',
-            url: '/',
-            headers: {
-                authorization: 'Basic ' + (new Buffer('bahhha@gmail.com:password')).toString('base64')
-            }
-        };
-
-        server.inject(getRequest, function () {
-            done();
-        });
-    });
-
-
-    lab.test('detect invalid email', function (done) {
+    lab.test('detect non-exist username', function (done) {
 
         server.route({
             method: 'GET',
@@ -161,7 +131,7 @@ lab.experiment('Auth plugin: ', function () {
     });
 
 
-    lab.test('detect absent email', function (done) {
+    lab.test('detect absent username', function (done) {
 
         server.route({
             method: 'GET',
@@ -182,37 +152,6 @@ lab.experiment('Auth plugin: ', function () {
             url: '/',
             headers: {
                 authorization: 'Basic ' + (new Buffer(':password')).toString('base64')
-            }
-        };
-
-        server.inject(getRequest, function () {
-            done();
-        });
-    });
-
-
-    lab.test('detect DB disconnect', function (done) {
-
-        server.route({
-            method: 'GET',
-            path: '/',
-            handler: function (request, reply) {
-
-                request.pg.client.end();
-                server.auth.test('simple', request, function (err, credentials) {
-
-                    Code.expect(err).to.exist();
-                    Code.expect(credentials).to.be.null();
-                    reply('reject');
-                });
-            }
-        });
-
-        var getRequest = {
-            method: 'GET',
-            url: '/',
-            headers: {
-                authorization: 'Basic ' + (new Buffer('andy94555@gmail:password')).toString('base64')
             }
         };
 

@@ -5,9 +5,10 @@
   "repository": "git://github.com/AndyWei/joyyserver.git",
   "main": "index.js",
   "scripts": {
+    "lint": "eslint server test",
     "setup": "./setup.js",
     "start": "./node_modules/nodemon/bin/nodemon.js -e js,md server",
-    "test": "./node_modules/lab/bin/lab -c -L",
+    "test": "./node_modules/lab/bin/lab -c",
     "test-cover": "./node_modules/lab/bin/lab -c -r html -o ./test/artifacts/coverage.html && open ./test/artifacts/coverage.html"
   },
   "dependencies": {
@@ -30,7 +31,6 @@
     "lout": "^6.0.0",
     "nodemailer": "^1.3.0",
     "nodemailer-markdown": "^1.0.0",
-    "object-assign": "^2.0.0",
     "pg": "^4.3.0",
     "pg-native": "^1.8.0",
     "slug": "^0.8.0",
@@ -42,8 +42,8 @@
     "code": "^1.2.0",
     "lab": "^5.0.1",
     "nodemon": "^1.2.1",
-    "promptly": "^0.2.0",
-    "proxyquire": "^1.1.0"
+    "object-assign": "^2.0.0",
+    "promptly": "^0.2.0"
   },
   "engines": {
     "node": "0.12.0"
