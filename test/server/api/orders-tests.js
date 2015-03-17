@@ -3,6 +3,7 @@ var Code = require('code');
 var Config = require('../../../config');
 var Hapi = require('hapi');
 var HapiAuthBasic = require('hapi-auth-basic');
+var HapiAuthToken = require('hapi-auth-bearer-token');
 var Lab = require('lab');
 var OrdersPlugin = require('../../../server/api/orders');
 var c = require('../../../server/constants');
@@ -20,15 +21,11 @@ var PgPlugin = {
 };
 
 var jack = {
-    id: 1,
-    username: 'jack',
-    password: 'password'
+    id: 1
 };
 
 var andy = {
-    id: 2,
-    username: 'andy',
-    password: 'password'
+    id: 2
 };
 
 
@@ -37,7 +34,7 @@ var request, server;
 
 lab.beforeEach(function (done) {
 
-    var plugins = [HapiAuthBasic, AuthPlugin, PgPlugin, OrdersPlugin];
+    var plugins = [HapiAuthBasic, HapiAuthToken, AuthPlugin, PgPlugin, OrdersPlugin];
     server = new Hapi.Server();
     server.connection({ port: Config.get('/port/api') });
     server.register(plugins, function (err) {
@@ -63,8 +60,7 @@ lab.experiment('Orders GET: ', function () {
 
         request = {
             method: 'GET',
-            url: '/order/100',
-            credentials: jack
+            url: '/order/100'
         };
 
         server.inject(request, function (response) {
@@ -114,8 +110,7 @@ lab.experiment('Orders GET: ', function () {
 
         request = {
             method: 'GET',
-            url: '/order/1',
-            credentials: jack
+            url: '/order/1'
         };
 
         server.inject(request, function (response) {

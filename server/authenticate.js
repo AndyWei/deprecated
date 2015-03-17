@@ -71,7 +71,7 @@ var validateToken = function (token, callback) {
     if (token === '123456789') {
         callback(null, true, userCredentials);
     } else {
-        callback(null, false, userCredentials);
+        callback(Boom.unauthorized(c.TokenInvalid, 'token'), false, null);
     }
 };
 
