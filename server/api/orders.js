@@ -94,7 +94,7 @@ exports.register = function (server, options, next) {
         path: options.basePath + '/orders/won',
         config: {
             auth: {
-                strategy: 'simple'
+                strategy: 'token'
             }
         },
         handler: function (request, reply) {
@@ -179,7 +179,7 @@ exports.register = function (server, options, next) {
         path: options.basePath + '/order',
         config: {
             auth: {
-                strategy: 'simple'
+                strategy: 'token'
             },
             validate: {
                 payload: {
