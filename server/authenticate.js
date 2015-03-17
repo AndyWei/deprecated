@@ -5,7 +5,7 @@ var Config = require('../config');
 var Pg = require('pg').native;
 var c = require('./constants');
 
-var validate = function (username, password, finish) {
+var validateSimple = function (username, password, finish) {
 
     Async.waterfall([
         function (callback) {
@@ -62,10 +62,28 @@ var validate = function (username, password, finish) {
 };
 
 
+var validateToken = function (token, callback) {
+
+    var userCredentials = {
+        id: 1
+    };
+    // Use a real strategy here to check if the token is valid
+    if (token === '123456789') {
+        callback(null, true, userCredentials);
+    } else {
+        callback(null, false, userCredentials);
+    }
+};
+
+
 exports.register = function (server, options, next) {
 
     server.auth.strategy('simple', 'basic', {
-        validateFunc: validate
+        validateFunc: validateSimple
+    });
+
+    server.auth.strategy('token', 'bearer-access-token', {
+        validateFunc: validateToken
     });
 
     next();

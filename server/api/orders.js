@@ -54,7 +54,7 @@ exports.register = function (server, options, next) {
         path: options.basePath + '/orders/my',
         config: {
             auth: {
-                strategy: 'simple'
+                strategy: 'token'
             }
         },
         handler: function (request, reply) {

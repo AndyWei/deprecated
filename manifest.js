@@ -31,6 +31,7 @@ var manifest = {
             }]
         },
         'hapi-auth-basic': {},
+        'hapi-auth-bearer-token': {},
         'hapi-node-postgres': {
             connectionString: Config.get('/db/connectionString'),
             native: Config.get('/db/native'),
