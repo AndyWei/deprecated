@@ -8,7 +8,7 @@ composer(function (err, server) {
         throw err;
     }
 
-    TokenManager.setCache(server);
+    TokenManager.attach(server);
 
     server.start(function () {
         console.info('Started joyy server');

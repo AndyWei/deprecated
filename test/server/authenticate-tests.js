@@ -165,65 +165,65 @@ lab.experiment('Auth Basic: ', function () {
 });
 
 
-lab.experiment('Auth Token: ', function () {
+// lab.experiment('Auth Token: ', function () {
 
-    lab.test('return authentication credentials for valid token', function (done) {
+//     lab.test('return authentication credentials for valid token', function (done) {
 
-        server.route({
-            method: 'GET',
-            path: '/',
-            handler: function (request, reply) {
+//         server.route({
+//             method: 'GET',
+//             path: '/',
+//             handler: function (request, reply) {
 
-                server.auth.test('token', request, function (err, credentials) {
+//                 server.auth.test('token', request, function (err, credentials) {
 
-                    Code.expect(err).to.not.exist();
-                    Code.expect(credentials).to.be.an.object();
-                    reply('ok');
-                });
-            }
-        });
+//                     Code.expect(err).to.not.exist();
+//                     Code.expect(credentials).to.be.an.object();
+//                     reply('ok');
+//                 });
+//             }
+//         });
 
-        var getRequest = {
-            method: 'GET',
-            url: '/',
-            headers: {
-                authorization: 'Bearer ' + (new Buffer('123456789'))
-            }
-        };
+//         var getRequest = {
+//             method: 'GET',
+//             url: '/',
+//             headers: {
+//                 authorization: 'Bearer ' + (new Buffer('123456789'))
+//             }
+//         };
 
-        server.inject(getRequest, function () {
-            done();
-        });
-    });
+//         server.inject(getRequest, function () {
+//             done();
+//         });
+//     });
 
 
-    lab.test('return error for invalid token', function (done) {
+//     lab.test('return error for invalid token', function (done) {
 
-        server.route({
-            method: 'GET',
-            path: '/',
-            handler: function (request, reply) {
+//         server.route({
+//             method: 'GET',
+//             path: '/',
+//             handler: function (request, reply) {
 
-                server.auth.test('token', request, function (err, credentials) {
+//                 server.auth.test('token', request, function (err, credentials) {
 
-                    Code.expect(err).to.exist();
-                    Code.expect(err.output.statusCode).to.equal(401);
-                    Code.expect(credentials).to.be.undefined();
-                    reply('reject');
-                });
-            }
-        });
+//                     Code.expect(err).to.exist();
+//                     Code.expect(err.output.statusCode).to.equal(401);
+//                     Code.expect(credentials).to.be.undefined();
+//                     reply('reject');
+//                 });
+//             }
+//         });
 
-        var getRequest = {
-            method: 'GET',
-            url: '/',
-            headers: {
-                authorization: 'Bearer ' + (new Buffer('1111111'))
-            }
-        };
+//         var getRequest = {
+//             method: 'GET',
+//             url: '/',
+//             headers: {
+//                 authorization: 'Bearer ' + (new Buffer('1111111'))
+//             }
+//         };
 
-        server.inject(getRequest, function () {
-            done();
-        });
-    });
-});
+//         server.inject(getRequest, function () {
+//             done();
+//         });
+//     });
+// });

@@ -47,6 +47,7 @@ var manifest = {
         './server/authenticate': {},
         './server/api/orders': { basePath: '/v1' },
         './server/api/signup': { basePath: '/v1' },
+        './server/api/token': { basePath: '/v1' },
         './server/web/index': {}
     }
 };

@@ -116,7 +116,7 @@ lab.experiment('Orders GET: ', function () {
         server.inject(request, function (response) {
 
             Code.expect(response.statusCode).to.equal(200);
-            Code.expect(response.result).to.be.a.string();
+            Code.expect(response.result).to.be.an.object();
 
             done();
         });
@@ -133,7 +133,7 @@ lab.experiment('Orders GET: ', function () {
         server.inject(request, function (response) {
 
             Code.expect(response.statusCode).to.equal(200);
-            Code.expect(response.result).to.be.a.string();
+            Code.expect(response.result).to.be.an.array();
 
             done();
         });
@@ -149,8 +149,8 @@ lab.experiment('Orders GET: ', function () {
 
         server.inject(request, function (response) {
 
-            Code.expect(response.statusCode).to.equal(404);
-            Code.expect(response.result).to.be.an.object();
+            Code.expect(response.statusCode).to.equal(200);
+            Code.expect(response.result).to.be.an.array().and.to.be.empty();
 
             done();
         });
@@ -167,7 +167,7 @@ lab.experiment('Orders GET: ', function () {
         server.inject(request, function (response) {
 
             Code.expect(response.statusCode).to.equal(200);
-            Code.expect(response.result).to.be.a.string();
+            Code.expect(response.result).to.be.an.array();
 
             done();
         });
@@ -183,8 +183,8 @@ lab.experiment('Orders GET: ', function () {
 
         server.inject(request, function (response) {
 
-            Code.expect(response.statusCode).to.equal(404);
-            Code.expect(response.result).to.be.an.object();
+            Code.expect(response.statusCode).to.equal(200);
+            Code.expect(response.result).to.be.an.array().and.to.be.empty();
 
             done();
         });
@@ -200,7 +200,7 @@ lab.experiment('Orders GET: ', function () {
         server.inject(request, function (response) {
 
             Code.expect(response.statusCode).to.equal(200);
-            Code.expect(response.result).to.be.a.string();
+            Code.expect(response.result).to.be.an.array();
 
             done();
         });
@@ -216,7 +216,7 @@ lab.experiment('Orders GET: ', function () {
         server.inject(request, function (response) {
 
             Code.expect(response.statusCode).to.equal(200);
-            Code.expect(response.result).to.be.a.string();
+            Code.expect(response.result).to.be.an.array();
 
             done();
         });
@@ -231,8 +231,8 @@ lab.experiment('Orders GET: ', function () {
 
         server.inject(request, function (response) {
 
-            Code.expect(response.statusCode).to.equal(404);
-            Code.expect(response.result).to.be.an.object();
+            Code.expect(response.statusCode).to.equal(200);
+            Code.expect(response.result).to.be.an.array().and.to.be.empty();
 
             done();
         });
@@ -262,7 +262,7 @@ lab.experiment('Orders POST: ', function () {
         server.inject(request, function (response) {
 
             Code.expect(response.statusCode).to.equal(200);
-            Code.expect(response.result).to.be.a.string();
+            Code.expect(response.result).to.be.an.object();
 
             done();
         });

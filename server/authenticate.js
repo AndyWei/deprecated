@@ -6,6 +6,7 @@ var Pg = require('pg').native;
 var TokenManager = require('./tokenmanager');
 var c = require('./constants');
 
+
 var validateSimple = function (username, password, finish) {
 
     Async.waterfall([
@@ -65,26 +66,12 @@ var validateSimple = function (username, password, finish) {
 
 var validateToken = function (token, callback) {
 
-    // var userCredentials = {
-    //     id: 1
-    // };
-    // // Use a real strategy here to check if the token is valid
-    // if (token === '123456789') {
-    //     callback(null, true, userCredentials);
-    // } else {
-    //     callback(Boom.unauthorized(c.TOKEN_INVALID, 'token'), false, null);
-    // }
-
-    TokenManager.validate(token, function (err, uid) {
+    TokenManager.validate(token, function (err, userId) {
         if (err) {
             return callback(Boom.unauthorized(c.TOKEN_INVALID, 'token'), false, null);
         }
 
-        var userCredentials = {
-            id: uid
-        };
-
-        callback(null, true, userCredentials);
+        callback(null, true, {id: userId});
     });
 };
 

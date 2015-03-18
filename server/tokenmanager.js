@@ -5,7 +5,7 @@ var rand = require('rand-token');
 
 var cache;
 
-exports.setCache = function (server) {
+exports.attach = function (server) {
 
     Hoek.assert(!cache, 'Token cache should only be set once.');
     cache = server.cache({

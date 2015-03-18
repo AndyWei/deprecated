@@ -3,6 +3,7 @@ var Config = require('../../../config');
 var Hapi = require('hapi');
 var Lab = require('lab');
 var SignupPlugin = require('../../../server/api/signup');
+var TokenManager = require('../../../server/tokenmanager');
 var c = require('../../../server/constants');
 
 
@@ -20,29 +21,37 @@ var PgPlugin = {
 var request, server;
 
 
-lab.beforeEach(function (done) {
-
-    var plugins = [PgPlugin, SignupPlugin];
-    server = new Hapi.Server();
-    server.connection({ port: Config.get('/port/api') });
-    server.register(plugins, function (err) {
-
-        if (err) {
-            return done(err);
-        }
-
-        done();
-    });
-});
-
-
-lab.afterEach(function (done) {
-
-    done();
-});
-
-
 lab.experiment('Signup: ', function () {
+
+    lab.before(function (done) {
+
+        var plugins = [PgPlugin, SignupPlugin];
+        server = new Hapi.Server();
+        server.connection({ port: Config.get('/port/api') });
+        server.register(plugins, function (err) {
+
+            if (err) {
+                return done(err);
+            }
+
+            TokenManager.attach(server);
+        });
+
+        server.start(function () {
+
+            done();
+        });
+    });
+
+
+    lab.after(function (done) {
+
+        server.stop(function () {
+
+            done();
+        });
+    });
+
 
     lab.test('return an 400 error on password missing', function (done) {
 

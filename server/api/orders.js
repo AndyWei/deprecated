@@ -40,9 +40,7 @@ exports.register = function (server, options, next) {
                     return reply(Boom.notFound(c.RECORD_NOT_FOUND));
                 }
 
-                var json = JSON.stringify(result.rows);
-
-                reply(json);
+                reply(null, result.rows[0]);
             });
         }
     });
@@ -59,14 +57,13 @@ exports.register = function (server, options, next) {
         },
         handler: function (request, reply) {
 
-            var uid = internals.getUserId(request);
-            console.info('uid = %s', uid);
+            var userId = request.auth.credentials.id;
             var queryConfig = {
                 text: 'SELECT id, uid, initial_price, final_price, currency, country, status, created_at, description, address, ST_X(venue) AS lon, ST_Y(venue) AS lat \
                        FROM orders \
                        WHERE uid = $1 \
                        ORDER BY id DESC',
-                values: [uid],
+                values: [userId],
                 name: 'orders_select_my'
             };
 
@@ -76,13 +73,7 @@ exports.register = function (server, options, next) {
                     return reply(err);
                 }
 
-                if (result.rows.length === 0) {
-                    return reply(Boom.notFound(c.RECORD_NOT_FOUND));
-                }
-
-                var json = JSON.stringify(result.rows);
-
-                reply(json);
+                reply(null, result.rows);
             });
         }
     });
@@ -99,13 +90,13 @@ exports.register = function (server, options, next) {
         },
         handler: function (request, reply) {
 
-            var uid = internals.getUserId(request);
+            var userId = request.auth.credentials.id;
             var queryConfig = {
                 text: 'SELECT id, uid, initial_price, final_price, currency, country, status, created_at, description, address, ST_X(venue) AS lon, ST_Y(venue) AS lat \
                        FROM orders \
                        WHERE winner_id = $1 \
                        ORDER BY id DESC',
-                values: [uid],
+                values: [userId],
                 name: 'orders_select_won'
             };
 
@@ -115,13 +106,7 @@ exports.register = function (server, options, next) {
                     return reply(err);
                 }
 
-                if (result.rows.length === 0) {
-                    return reply(Boom.notFound(c.RECORD_NOT_FOUND));
-                }
-
-                var json = JSON.stringify(result.rows);
-
-                reply(json);
+                reply(null, result.rows);
             });
         }
     });
@@ -161,13 +146,7 @@ exports.register = function (server, options, next) {
                     return reply(err);
                 }
 
-                if (result.rows.length === 0) {
-                    return reply(Boom.notFound(c.RECORD_NOT_FOUND));
-                }
-
-                var json = JSON.stringify(result.rows);
-
-                reply(json);
+                reply(null, result.rows);
             });
         }
     });
@@ -210,14 +189,13 @@ internals.createOrderHandler = function (request, reply) {
     Async.waterfall([
         function (callback) {
 
-            var uid = internals.getUserId(request);
-            console.info('uid = %s', uid);
+            var userId = request.auth.credentials.id;
             var queryConfig = {
                 text: 'INSERT INTO orders \
                            (uid, initial_price, currency, country, description, address, venue, created_at, updated_at) VALUES \
                            ($1, $2, $3, $4, $5, $6, ST_SetSRID(ST_MakePoint($7, $8), 4326), now(), now()) \
                            RETURNING id',
-                values: [uid, request.payload.price, request.payload.currency, request.payload.country, request.payload.description, request.payload.address, request.payload.lon, request.payload.lat],
+                values: [userId, request.payload.price, request.payload.currency, request.payload.country, request.payload.description, request.payload.address, request.payload.lon, request.payload.lat],
                 name: 'orders_create'
             };
 
@@ -230,25 +208,16 @@ internals.createOrderHandler = function (request, reply) {
                     callback(Boom.badData(c.QUERY_FAILED));
                 }
                 else {
-                    callback(null, result.rows[0].id);
+                    callback(null, result.rows[0]);
                 }
             });
         }
-    ], function (err, oid) {
+    ], function (err, order) {
 
         if (err) {
             return reply(err);
         }
 
-        var json = JSON.stringify(oid);
-        reply(json);
+        reply(null, order);
     });
-};
-
-
-// Get user id from the request
-// At this step the authentication has succeeded, so the reqeust should contain valid credentials
-internals.getUserId = function (request) {
-
-    return request.auth.credentials.id;
 };
