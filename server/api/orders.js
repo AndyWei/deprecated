@@ -37,7 +37,7 @@ exports.register = function (server, options, next) {
                 }
 
                 if (result.rows.length === 0) {
-                    return reply(Boom.notFound(c.RecordNotFound));
+                    return reply(Boom.notFound(c.RECORD_NOT_FOUND));
                 }
 
                 var json = JSON.stringify(result.rows);
@@ -77,7 +77,7 @@ exports.register = function (server, options, next) {
                 }
 
                 if (result.rows.length === 0) {
-                    return reply(Boom.notFound(c.RecordNotFound));
+                    return reply(Boom.notFound(c.RECORD_NOT_FOUND));
                 }
 
                 var json = JSON.stringify(result.rows);
@@ -116,7 +116,7 @@ exports.register = function (server, options, next) {
                 }
 
                 if (result.rows.length === 0) {
-                    return reply(Boom.notFound(c.RecordNotFound));
+                    return reply(Boom.notFound(c.RECORD_NOT_FOUND));
                 }
 
                 var json = JSON.stringify(result.rows);
@@ -162,7 +162,7 @@ exports.register = function (server, options, next) {
                 }
 
                 if (result.rows.length === 0) {
-                    return reply(Boom.notFound(c.RecordNotFound));
+                    return reply(Boom.notFound(c.RECORD_NOT_FOUND));
                 }
 
                 var json = JSON.stringify(result.rows);
@@ -227,7 +227,7 @@ internals.createOrderHandler = function (request, reply) {
                     callback(err);
                 }
                 else if (result.rows.length === 0) {
-                    callback(Boom.badData(c.QueryFailed));
+                    callback(Boom.badData(c.QUERY_FAILED));
                 }
                 else {
                     callback(null, result.rows[0].id);

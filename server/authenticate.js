@@ -3,6 +3,7 @@ var Bcrypt = require('bcrypt');
 var Boom = require('boom');
 var Config = require('../config');
 var Pg = require('pg').native;
+var TokenManager = require('./tokenmanager');
 var c = require('./constants');
 
 var validateSimple = function (username, password, finish) {
@@ -29,11 +30,11 @@ var validateSimple = function (username, password, finish) {
                 done();
 
                 if (queryErr) {
-                    console.error(c.QueryFailed, queryErr);
-                    callback(Boom.badImplementation(c.QueryFailed, queryErr));
+                    console.error(c.QUERY_FAILED, queryErr);
+                    callback(Boom.badImplementation(c.QUERY_FAILED, queryErr));
                 }
                 else if (queryResult.rowCount === 0) {
-                    callback(Boom.unauthorized(c.UserNotFound, 'basic'));
+                    callback(Boom.unauthorized(c.USER_NOT_FOUND, 'basic'));
                 }
                 else {
                     callback(null, queryResult.rows[0]);
@@ -64,15 +65,27 @@ var validateSimple = function (username, password, finish) {
 
 var validateToken = function (token, callback) {
 
-    var userCredentials = {
-        id: 1
-    };
-    // Use a real strategy here to check if the token is valid
-    if (token === '123456789') {
+    // var userCredentials = {
+    //     id: 1
+    // };
+    // // Use a real strategy here to check if the token is valid
+    // if (token === '123456789') {
+    //     callback(null, true, userCredentials);
+    // } else {
+    //     callback(Boom.unauthorized(c.TOKEN_INVALID, 'token'), false, null);
+    // }
+
+    TokenManager.validate(token, function (err, uid) {
+        if (err) {
+            return callback(Boom.unauthorized(c.TOKEN_INVALID, 'token'), false, null);
+        }
+
+        var userCredentials = {
+            id: uid
+        };
+
         callback(null, true, userCredentials);
-    } else {
-        callback(Boom.unauthorized(c.TokenInvalid, 'token'), false, null);
-    }
+    });
 };
 
 

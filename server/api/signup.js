@@ -3,6 +3,7 @@ var Bcrypt = require('bcrypt');
 var Boom = require('boom');
 var Hoek = require('hoek');
 var Joi = require('joi');
+var TokenManager = require('../tokenmanager');
 var c = require('../constants');
 var _ = require('underscore');
 
@@ -52,12 +53,12 @@ internals.emailCheck = function (request, reply) {
     request.pg.client.query(queryConfig, function (err, result) {
 
         if (err) {
-            console.error(c.QueryFailed, err);
-            return reply(Boom.badImplementation(c.QueryFailed, err));
+            console.error(err);
+            return reply(Boom.badImplementation(c.QUERY_FAILED, err));
         }
 
         if (result.rows.length > 0) {
-            return reply(Boom.conflict(c.EmailInUse));
+            return reply(Boom.conflict(c.EMAIL_IN_USE));
         }
 
         reply(true);
@@ -119,7 +120,7 @@ internals.createUser = function (request, reply) {
         }],
         salt: function (callback) {
 
-            Bcrypt.genSalt(10, function(err, salt) {
+            Bcrypt.genSalt(c.BCRYPT_ROUND, function(err, salt) {
                 callback(err, salt);
             });
         },
@@ -129,7 +130,7 @@ internals.createUser = function (request, reply) {
                  callback(err, hash);
             });
         }],
-        create: ['username', 'password', function (callback, results) {
+        userid: ['username', 'password', function (callback, results) {
 
             var queryConfig = {
                 text: 'INSERT INTO users ' +
@@ -141,7 +142,20 @@ internals.createUser = function (request, reply) {
             };
 
             request.pg.client.query(queryConfig, function (err, queryResult) {
-                callback(err, queryResult);
+                if (err) {
+                    return callback(err);
+                }
+
+                if (queryResult.rowCount === 0) {
+                    return callback(Boom.badImplementation(c.QUERY_FAILED));
+                }
+
+                callback(err, queryResult.rows[0].id);
+            });
+        }],
+        token: ['userid', function (callback, results) {
+            TokenManager.generate(results.userid, function (err, generatedToken) {
+                callback(err, generatedToken);
             });
         }]
     }, function (err, results) {
@@ -153,13 +167,13 @@ internals.createUser = function (request, reply) {
 
         var message = {
             user: {
-                id: results.create,
+                id: results.userid,
                 username: results.username,
-                email: email
+                token: results.token
             }
         };
 
-        console.info('user created. username=%s, email=%s', results.username, email);
+        console.info('user created. username=%s, email=%s, token=%s \n', results.username, email, results.token);
         reply(null, message).code(201);
     });
 };

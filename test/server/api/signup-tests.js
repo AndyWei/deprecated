@@ -78,7 +78,7 @@ lab.experiment('Signup: ', function () {
         server.inject(request, function (response) {
 
             Code.expect(response.statusCode).to.equal(409);
-            Code.expect(response.result.message).to.equal(c.EmailInUse);
+            Code.expect(response.result.message).to.equal(c.EMAIL_IN_USE);
 
             done();
         });

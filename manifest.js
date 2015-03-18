@@ -8,15 +8,17 @@ var criteria = {
 
 
 var manifest = {
-    $meta: 'This file defines the plot device.',
+    $meta: 'This file defines the joyy server.',
     server: {
         debug: {
             request: ['error']
         },
-        connections: {
-            routes: {
-                security: true
-            }
+        cache: {
+            engine: require('catbox-redis'),
+            shared: true,
+            host: Config.get('/redis/host'),
+            // password: Config.get('/redis/password'),
+            partition: 'cache'
         }
     },
     connections: [{

@@ -56,7 +56,7 @@ lab.afterEach(function (done) {
 
 lab.experiment('Orders GET: ', function () {
 
-    lab.test('/order/100: RecordNotFound when id not exist', function (done) {
+    lab.test('/order/100: RECORD_NOT_FOUND when id not exist', function (done) {
 
         request = {
             method: 'GET',
@@ -66,7 +66,7 @@ lab.experiment('Orders GET: ', function () {
         server.inject(request, function (response) {
 
             Code.expect(response.statusCode).to.equal(404);
-            Code.expect(response.result.message).to.equal(c.RecordNotFound);
+            Code.expect(response.result.message).to.equal(c.RECORD_NOT_FOUND);
 
             done();
         });

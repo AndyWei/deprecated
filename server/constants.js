@@ -5,15 +5,16 @@ var exports = module.exports = {};
 
 // consts
 exports.ALPHA_LENGTH = 5;
-
+exports.BCRYPT_ROUND = 10;
+exports.TOKEN_LENGTH = 12;
 
 //Error strings
 
-exports.EmailInUse = 'Email already in use.';
-exports.TokenInvalid = 'Token is invalid';
-exports.RecordNotFound = 'Query excuted but no record found.';
-exports.QueryFailed = 'Error when running query.';
-exports.UserNotFound = 'User not found.';
+exports.EMAIL_IN_USE = 'Email already in use.';
+exports.TOKEN_INVALID = 'Token is invalid';
+exports.RECORD_NOT_FOUND = 'Query excuted but no record found.';
+exports.QUERY_FAILED = 'Error when running query.';
+exports.USER_NOT_FOUND = 'User not found.';
 
 // enums
 exports.OrderStatus = new Enum({

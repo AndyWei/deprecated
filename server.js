@@ -1,10 +1,14 @@
-var Composer = require('./index');
+var TokenManager = require('./server/tokenmanager');
+var composer = require('./index');
 
-Composer(function (err, server) {
+
+composer(function (err, server) {
 
     if (err) {
         throw err;
     }
+
+    TokenManager.setCache(server);
 
     server.start(function () {
         console.info('Started joyy server');
