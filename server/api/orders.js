@@ -122,7 +122,6 @@ exports.register = function (server, options, next) {
                     lon: Joi.number().min(-180).max(180),
                     lat: Joi.number().min(-90).max(90),
                     distance: Joi.number().min(1).max(1000).default(80),
-                    // tag: Joi.array().sparse().unique().items(Joi.string().lowercase().min(3).max(20))
                     count: Joi.number().integer().min(1).max(200).default(50),
                     after: Joi.string().regex(/^[0-9]+$/).max(19).default('0'),
                     before: Joi.string().regex(/^[0-9]+$/).max(19).default('9223372036854775807')
@@ -132,13 +131,16 @@ exports.register = function (server, options, next) {
         handler: function (request, reply) {
 
             var q = request.query;
+            var degree = q.distance / 111.325; // convert km to GPS degree
+
             var queryConfig = {
+                name: 'orders_select_nearby',
                 text: 'SELECT id, uid, initial_price, final_price, currency, country, status, created_at, description, address, ST_X(venue) AS lon, ST_Y(venue) AS lat \
                        FROM orders \
-                       WHERE id > $1 AND id < $2 AND ST_DWithin(venue, ST_SetSRID(ST_MakePoint($3, $4), 4326), $5 / 111.325) \
+                       WHERE id > $1 AND id < $2 AND ST_DWithin(venue, ST_SetSRID(ST_MakePoint($3, $4), 4326), $5) \
                        ORDER BY id DESC \
                        LIMIT $6',
-                values: [q.after, q.before, q.lon, q.lat, q.distance, q.count]
+                values: [q.after, q.before, q.lon, q.lat, degree, q.count]
             };
 
             request.pg.client.query(queryConfig, function (err, result) {
@@ -146,7 +148,7 @@ exports.register = function (server, options, next) {
                 if (err) {
                     return reply(err);
                 }
-console.info('result = %j', result);
+
                 reply(null, result.rows);
             });
         }

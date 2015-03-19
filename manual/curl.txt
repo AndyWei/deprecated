@@ -1,0 +1,18 @@
+### This file contains all curl commands used for manual test
+
+## login (GET a token)
+curl -i -u jack:password "http://localhost:8000/v1/login"
+
+
+
+
+## orders
+
+# GET all of the user's orders:
+curl -i -H "Authorization: Bearer TOKEN" "http://localhost:8000/v1/orders/my"
+
+# GET orders nearby
+curl -i "http://localhost:8000/v1/orders/near?lon=-122.4176&lat=37.7577"
+
+# POST an order
+url -i -H "Authorization: Bearer TOKEN" --data "price=1.1&currency=usd&country=us&description=jumpjump&address='2290 good ave'&lon=-3.456&lat=75.84" "http://localhost:8000/v1/order"

@@ -133,7 +133,7 @@ lab.experiment('Orders GET: ', function () {
         server.inject(request, function (response) {
 
             Code.expect(response.statusCode).to.equal(200);
-            Code.expect(response.result).to.be.an.array();
+            Code.expect(response.result).to.be.an.array().and.to.have.length(3);
 
             done();
         });
@@ -167,7 +167,7 @@ lab.experiment('Orders GET: ', function () {
         server.inject(request, function (response) {
 
             Code.expect(response.statusCode).to.equal(200);
-            Code.expect(response.result).to.be.an.array();
+            Code.expect(response.result).to.be.an.array().and.to.have.length(1);
 
             done();
         });
@@ -200,7 +200,7 @@ lab.experiment('Orders GET: ', function () {
         server.inject(request, function (response) {
 
             Code.expect(response.statusCode).to.equal(200);
-            Code.expect(response.result).to.be.an.array();
+            Code.expect(response.result).to.be.an.array().and.to.have.length(3);
 
             done();
         });
@@ -216,7 +216,7 @@ lab.experiment('Orders GET: ', function () {
         server.inject(request, function (response) {
 
             Code.expect(response.statusCode).to.equal(200);
-            Code.expect(response.result).to.be.an.array();
+            Code.expect(response.result).to.be.an.array().and.to.have.length(1);
 
             done();
         });

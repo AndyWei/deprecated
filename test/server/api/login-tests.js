@@ -7,6 +7,7 @@ var HapiAuthToken = require('hapi-auth-bearer-token');
 var Lab = require('lab');
 var LoginPlugin = require('../../../server/api/login');
 var Token = require('../../../server/token');
+var c = require('../../../server/constants');
 
 
 var lab = exports.lab = Lab.script();
@@ -61,7 +62,7 @@ lab.experiment('Login: ', function () {
         server.inject(request, function (response) {
 
             Code.expect(response.statusCode).to.equal(200);
-            Code.expect(response.result.token).to.exist();
+            Code.expect(response.result.token).to.exist().and.to.have.length(c.TOKEN_LENGTH);
             done();
         });
     });
