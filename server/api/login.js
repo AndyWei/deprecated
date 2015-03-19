@@ -1,5 +1,5 @@
 var Hoek = require('hoek');
-var TokenManager = require('../tokenmanager');
+var Token = require('../token');
 
 
 exports.register = function (server, options, next) {
@@ -9,7 +9,7 @@ exports.register = function (server, options, next) {
     // new user signup
     server.route({
         method: 'GET',
-        path: options.basePath + '/token',
+        path: options.basePath + '/login',
         config: {
             auth: {
                 strategy: 'simple'
@@ -18,17 +18,13 @@ exports.register = function (server, options, next) {
         handler: function (request, reply) {
 
             var userId = request.auth.credentials.id;
-            TokenManager.generate(userId, function (err, generatedToken) {
+            Token.generate(userId, function (err, generatedToken) {
 
                 if (err) {
                     return reply(err);
                 }
 
-                var response = {
-                    token: generatedToken
-                };
-
-                reply(null, response);
+                reply(null, {token: generatedToken});
             });
         }
     });
@@ -38,5 +34,5 @@ exports.register = function (server, options, next) {
 
 
 exports.register.attributes = {
-    name: 'token'
+    name: 'login'
 };

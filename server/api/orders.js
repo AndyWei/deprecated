@@ -24,10 +24,10 @@ exports.register = function (server, options, next) {
         handler: function (request, reply) {
 
             var queryConfig = {
-                text: 'SELECT id, uid, initial_price, final_price, currency, country, status, created_at, description, address, ST_X(venue) AS lon, ST_Y(venue) AS lat \
+                name: 'orders_select_all_by_id',
+                text: 'SELECT id, uid, initial_price, final_price, currency, country, status, created_at, description, address, tag, ST_X(venue) AS lon, ST_Y(venue) AS lat \
                        FROM orders WHERE id = $1',
-                values: [request.params.id],
-                name: 'orders_select_all_by_id'
+                values: [request.params.id]
             };
 
             request.pg.client.query(queryConfig, function (err, result) {
@@ -59,12 +59,12 @@ exports.register = function (server, options, next) {
 
             var userId = request.auth.credentials.id;
             var queryConfig = {
+                name: 'orders_select_my',
                 text: 'SELECT id, uid, initial_price, final_price, currency, country, status, created_at, description, address, ST_X(venue) AS lon, ST_Y(venue) AS lat \
                        FROM orders \
                        WHERE uid = $1 \
                        ORDER BY id DESC',
-                values: [userId],
-                name: 'orders_select_my'
+                values: [userId]
             };
 
             request.pg.client.query(queryConfig, function (err, result) {
@@ -92,12 +92,12 @@ exports.register = function (server, options, next) {
 
             var userId = request.auth.credentials.id;
             var queryConfig = {
+                name: 'orders_select_won',
                 text: 'SELECT id, uid, initial_price, final_price, currency, country, status, created_at, description, address, ST_X(venue) AS lon, ST_Y(venue) AS lat \
                        FROM orders \
                        WHERE winner_id = $1 \
                        ORDER BY id DESC',
-                values: [userId],
-                name: 'orders_select_won'
+                values: [userId]
             };
 
             request.pg.client.query(queryConfig, function (err, result) {
@@ -122,6 +122,7 @@ exports.register = function (server, options, next) {
                     lon: Joi.number().min(-180).max(180),
                     lat: Joi.number().min(-90).max(90),
                     distance: Joi.number().min(1).max(1000).default(80),
+                    // tag: Joi.array().sparse().unique().items(Joi.string().lowercase().min(3).max(20))
                     count: Joi.number().integer().min(1).max(200).default(50),
                     after: Joi.string().regex(/^[0-9]+$/).max(19).default('0'),
                     before: Joi.string().regex(/^[0-9]+$/).max(19).default('9223372036854775807')
@@ -130,14 +131,14 @@ exports.register = function (server, options, next) {
         },
         handler: function (request, reply) {
 
+            var q = request.query;
             var queryConfig = {
                 text: 'SELECT id, uid, initial_price, final_price, currency, country, status, created_at, description, address, ST_X(venue) AS lon, ST_Y(venue) AS lat \
                        FROM orders \
                        WHERE id > $1 AND id < $2 AND ST_DWithin(venue, ST_SetSRID(ST_MakePoint($3, $4), 4326), $5 / 111.325) \
                        ORDER BY id DESC \
                        LIMIT $6',
-                values: [request.query.after, request.query.before, request.query.lon, request.query.lat, request.query.distance, request.query.count],
-                name: 'orders_select_nearby'
+                values: [q.after, q.before, q.lon, q.lat, q.distance, q.count]
             };
 
             request.pg.client.query(queryConfig, function (err, result) {
@@ -145,7 +146,7 @@ exports.register = function (server, options, next) {
                 if (err) {
                     return reply(err);
                 }
-
+console.info('result = %j', result);
                 reply(null, result.rows);
             });
         }
@@ -191,12 +192,12 @@ internals.createOrderHandler = function (request, reply) {
 
             var userId = request.auth.credentials.id;
             var queryConfig = {
+                name: 'orders_create',
                 text: 'INSERT INTO orders \
                            (uid, initial_price, currency, country, description, address, venue, created_at, updated_at) VALUES \
                            ($1, $2, $3, $4, $5, $6, ST_SetSRID(ST_MakePoint($7, $8), 4326), now(), now()) \
                            RETURNING id',
-                values: [userId, request.payload.price, request.payload.currency, request.payload.country, request.payload.description, request.payload.address, request.payload.lon, request.payload.lat],
-                name: 'orders_create'
+                values: [userId, request.payload.price, request.payload.currency, request.payload.country, request.payload.description, request.payload.address, request.payload.lon, request.payload.lat]
             };
 
             request.pg.client.query(queryConfig, function (err, result) {

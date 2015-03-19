@@ -1,4 +1,4 @@
-var TokenManager = require('./server/tokenmanager');
+var Token = require('./server/token');
 var composer = require('./index');
 
 
@@ -8,7 +8,7 @@ composer(function (err, server) {
         throw err;
     }
 
-    TokenManager.attach(server);
+    Token.attach(server);
 
     server.start(function () {
         console.info('Started joyy server');

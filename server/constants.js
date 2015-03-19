@@ -4,9 +4,9 @@ var Enum = require('enum');
 var exports = module.exports = {};
 
 // consts
-exports.ALPHA_LENGTH = 5;
+exports.AUTO_USERNAME_LENGTH = 5;
 exports.BCRYPT_ROUND = 10;
-exports.TOKEN_LENGTH = 12;
+exports.TOKEN_LENGTH = 16;
 
 //Error strings
 

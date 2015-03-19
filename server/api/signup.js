@@ -3,7 +3,7 @@ var Bcrypt = require('bcrypt');
 var Boom = require('boom');
 var Hoek = require('hoek');
 var Joi = require('joi');
-var TokenManager = require('../tokenmanager');
+var Token = require('../token');
 var c = require('../constants');
 var _ = require('underscore');
 
@@ -154,7 +154,7 @@ internals.createUser = function (request, reply) {
             });
         }],
         token: ['userid', function (callback, results) {
-            TokenManager.generate(results.userid, function (err, generatedToken) {
+            Token.generate(results.userid, function (err, generatedToken) {
                 callback(err, generatedToken);
             });
         }]
@@ -189,7 +189,7 @@ internals.getUsernameCandidates = function (email) {
     if (firstname === original ||
         firstname === purename) {
 
-        var end = _.min([firstname.length, c.ALPHA_LENGTH]);
+        var end = _.min([firstname.length, c.AUTO_USERNAME_LENGTH]);
         firstname = purename.slice(0, end);
     }
 

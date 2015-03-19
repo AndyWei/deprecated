@@ -3,7 +3,7 @@ var Hoek = require('hoek');
 var c = require('./constants');
 var rand = require('rand-token');
 
-var cache;
+var cache = null;
 
 exports.attach = function (server) {
 
@@ -15,23 +15,29 @@ exports.attach = function (server) {
 };
 
 
+exports.detach = function () {
+
+    cache = null;
+};
+
+
 // Generate a 12 character alpha-numeric token and store it in cache
 exports.generate = function (userId, callback) {
 
     Hoek.assert(cache, 'Token cache should be set beforehand.');
 
-    console.info('userId = %s', userId);
+    userId = userId.toString();
     Async.auto({
         existedToken: function (next) {
 
-            cache.get(userId, function (err, envelope) {
+            cache.get(userId, function (err, value) {
 
                 if (err) {
                     return next(err);
                 }
 
-                if (envelope) { // there is a token already, so fake a err here to stop generating new token
-                    return next(true, envelope.item);
+                if (value) { // there is a token already, so fake a err here to stop generating new token
+                    return next(true, value);
                 }
 
                 next(null, null);

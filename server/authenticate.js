@@ -3,7 +3,7 @@ var Bcrypt = require('bcrypt');
 var Boom = require('boom');
 var Config = require('../config');
 var Pg = require('pg').native;
-var TokenManager = require('./tokenmanager');
+var Token = require('./token');
 var c = require('./constants');
 
 
@@ -66,7 +66,7 @@ var validateSimple = function (username, password, finish) {
 
 var validateToken = function (token, callback) {
 
-    TokenManager.validate(token, function (err, userId) {
+    Token.validate(token, function (err, userId) {
         if (err) {
             return callback(Boom.unauthorized(c.TOKEN_INVALID, 'token'), false, null);
         }

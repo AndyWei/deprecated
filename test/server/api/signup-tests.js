@@ -3,7 +3,7 @@ var Config = require('../../../config');
 var Hapi = require('hapi');
 var Lab = require('lab');
 var SignupPlugin = require('../../../server/api/signup');
-var TokenManager = require('../../../server/tokenmanager');
+var Token = require('../../../server/token');
 var c = require('../../../server/constants');
 
 
@@ -34,7 +34,7 @@ lab.experiment('Signup: ', function () {
                 return done(err);
             }
 
-            TokenManager.attach(server);
+            Token.attach(server);
         });
 
         server.start(function () {
@@ -48,6 +48,7 @@ lab.experiment('Signup: ', function () {
 
         server.stop(function () {
 
+            Token.detach();
             done();
         });
     });

@@ -48,6 +48,7 @@ CREATE TABLE orders (
     deleted       BOOLEAN       NOT NULL DEFAULT false,
     description   VARCHAR(1000) NOT NULL,
     venue GEOMETRY(Point, 4326) NOT NULL,  -- the venue where order should be serviced, used for searching and calculating distance
+    tag           TEXT                  ,  -- the service category tag
     address       TEXT                  ,  -- the address where order should be serviced, used for indicating the service seller
     winner_id     BIGINT                ,  -- the id of the user who wins this order
     final_price  NUMERIC(19,2)             -- the final price after bidding and negotiation
