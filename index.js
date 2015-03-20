@@ -1,4 +1,4 @@
-var Glue = require('glue');
+var Glue = require('./glue');
 var Manifest = require('./manifest');
 
 

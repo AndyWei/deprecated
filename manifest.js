@@ -39,18 +39,12 @@ var manifest = {
             native: Config.get('/db/native'),
             attach: 'onPreHandler'
         },
-        'lout': {},
-        'visionary': {
-            engines: { jade: 'jade' },
-            path: './server/web'
-        },
         './server/authenticate': {},
         './server/api/bids': { basePath: '/v1' },
         './server/api/login': { basePath: '/v1' },
         './server/api/orders': { basePath: '/v1' },
         './server/api/reviews': { basePath: '/v1' },
-        './server/api/signup': { basePath: '/v1' },
-        './server/web/index': {}
+        './server/api/signup': { basePath: '/v1' }
     }
 };
 
