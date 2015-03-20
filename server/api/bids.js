@@ -154,14 +154,15 @@ internals.createBidHandler = function (request, reply) {
             request.pg.client.query(queryConfig, function (err, result) {
 
                 if (err) {
-                    callback(err);
+                    return callback(err);
                 }
-                else if (result.rows.length === 0) {
-                    callback(Boom.badData(c.QUERY_FAILED));
+
+                if (result.rows.length === 0) {
+                    
+                    return callback(Boom.badData(c.QUERY_FAILED));
                 }
-                else {
-                    callback(null, result.rows[0]);
-                }
+
+                callback(null, result.rows[0]);
             });
         }
     ], function (err, bid) {

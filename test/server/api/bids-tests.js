@@ -56,7 +56,7 @@ lab.afterEach(function (done) {
 });
 
 
-lab.experiment('Bids GET: ', function () {
+lab.experiment('Bids: ', function () {
 
     lab.test('/bid/1: return a record successfully', function (done) {
 
@@ -146,15 +146,15 @@ lab.experiment('Bids GET: ', function () {
 
 lab.experiment('Bids POST: ', function () {
 
-    lab.test('/bid: create successfully', function (done) {
+    lab.test('/bid: create a bid successfully', function (done) {
 
         request = {
             method: 'POST',
             url: '/bid',
             payload: {
-                orderid: 3,
-                price: 9.1,
-                description: 'ssssss'
+                orderid: '3',
+                price: 9.5,
+                description: 'Like it!'
             },
             credentials: jack
         };

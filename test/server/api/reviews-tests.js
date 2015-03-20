@@ -146,10 +146,10 @@ lab.experiment('Reviews POST: ', function () {
             method: 'POST',
             url: '/review',
             payload: {
-                revieweeid: 4,
-                orderid: 3,
+                revieweeid: '4',
+                orderid: '3',
                 rating: 4.5,
-                comment: 'I like his attitude'
+                comment: 'I like his attitude@!!'
             },
             credentials: jack
         };

@@ -11,9 +11,7 @@ var internals = {};
 
 internals.schema = {
     options: Joi.object({
-        relativeTo: Joi.string(),
-        preConnections: Joi.func().allow(false),
-        prePlugins: Joi.func().allow(false)
+        relativeTo: Joi.string()
     }),
     manifest: Joi.object({
         server: Joi.object(),
