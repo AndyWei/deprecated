@@ -25,7 +25,7 @@ exports.register = function (server, options, next) {
 
             var queryConfig = {
                 name: 'orders_select_all_by_id',
-                text: 'SELECT id, uid, initial_price, final_price, currency, country, status, created_at, description, address, category, ST_X(venue) AS lon, ST_Y(venue) AS lat \
+                text: 'SELECT id, user_id, initial_price, final_price, currency, country, status, created_at, description, address, category, ST_X(venue) AS lon, ST_Y(venue) AS lat \
                        FROM orders \
                        WHERE id = $1  AND deleted = false',
                 values: [request.params.id]
@@ -61,9 +61,9 @@ exports.register = function (server, options, next) {
             var userId = request.auth.credentials.id;
             var queryConfig = {
                 name: 'orders_select_my',
-                text: 'SELECT id, uid, initial_price, final_price, currency, country, status, category, created_at, description, address, ST_X(venue) AS lon, ST_Y(venue) AS lat \
+                text: 'SELECT id, user_id, initial_price, final_price, currency, country, status, category, created_at, description, address, ST_X(venue) AS lon, ST_Y(venue) AS lat \
                        FROM orders \
-                       WHERE uid = $1 AND deleted = false \
+                       WHERE user_id = $1 AND deleted = false \
                        ORDER BY id DESC',
                 values: [userId]
             };
@@ -94,7 +94,7 @@ exports.register = function (server, options, next) {
             var userId = request.auth.credentials.id;
             var queryConfig = {
                 name: 'orders_select_won',
-                text: 'SELECT id, uid, initial_price, final_price, currency, country, status, category, created_at, description, address, ST_X(venue) AS lon, ST_Y(venue) AS lat \
+                text: 'SELECT id, user_id, initial_price, final_price, currency, country, status, category, created_at, description, address, ST_X(venue) AS lon, ST_Y(venue) AS lat \
                        FROM orders \
                        WHERE winner_id = $1 AND deleted = false \
                        ORDER BY id DESC',
@@ -136,7 +136,7 @@ exports.register = function (server, options, next) {
 
             var queryConfig = {
                 name: 'orders_select_nearby',
-                text: 'SELECT id, uid, initial_price, final_price, currency, country, status, category, created_at, description, address, ST_X(venue) AS lon, ST_Y(venue) AS lat \
+                text: 'SELECT id, user_id, initial_price, final_price, currency, country, status, category, created_at, description, address, ST_X(venue) AS lon, ST_Y(venue) AS lat \
                        FROM orders \
                        WHERE id > $1 AND id < $2 AND ST_DWithin(venue, ST_SetSRID(ST_MakePoint($3, $4), 4326), $5) AND deleted = false \
                        ORDER BY id DESC \
@@ -239,7 +239,7 @@ internals.createOrderHandler = function (request, reply) {
             var queryConfig = {
                 name: 'orders_create',
                 text: 'INSERT INTO orders \
-                           (uid, initial_price, currency, country, category, description, address, venue, created_at, updated_at) VALUES \
+                           (user_id, initial_price, currency, country, category, description, address, venue, created_at, updated_at) VALUES \
                            ($1, $2, $3, $4, $5, $6, $7, ST_SetSRID(ST_MakePoint($8, $9), 4326), now(), now()) \
                            RETURNING id',
                 values: [userId, p.price, p.currency, p.country, p.category, p.description, p.address, p.lon, p.lat]
@@ -271,7 +271,7 @@ internals.createOrderHandler = function (request, reply) {
 
 internals.createCategoryQueryText = function (categories) {
 
-    var select = 'SELECT id, uid, initial_price, final_price, currency, country, status, category, created_at, description, address, ST_X(venue) AS lon, ST_Y(venue) AS lat ';
+    var select = 'SELECT id, user_id, initial_price, final_price, currency, country, status, category, created_at, description, address, ST_X(venue) AS lon, ST_Y(venue) AS lat ';
     var from = 'FROM orders ';
     var where1 = 'WHERE id > $1 AND id < $2 AND ST_DWithin(venue, ST_SetSRID(ST_MakePoint($3, $4), 4326), $5) AND deleted = false ';
     var order = 'ORDER BY id DESC ';
@@ -292,4 +292,3 @@ internals.degreeFromDistance = function(distance) {
 
     return distance * c.DEGREE_FACTOR;
 };
-
