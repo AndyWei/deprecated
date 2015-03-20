@@ -237,6 +237,38 @@ lab.experiment('Orders GET: ', function () {
             done();
         });
     });
+
+    lab.test('/orders/categorized/nearby: found 2', function (done) {
+
+        request = {
+            method: 'GET',
+            url: '/orders/categorized/nearby?lon=-122.4176&lat=37.7577&categories=1&categories=2'  // San Francisco, CA
+        };
+
+        server.inject(request, function (response) {
+
+            Code.expect(response.statusCode).to.equal(200);
+            Code.expect(response.result).to.be.an.array().and.to.have.length(2);
+
+            done();
+        });
+    });
+
+    lab.test('/orders/categorized/nearby: found 1', function (done) {
+
+        request = {
+            method: 'GET',
+            url: '/orders/categorized/nearby?lon=-122.4176&lat=37.7577&categories=1'  // San Francisco, CA
+        };
+
+        server.inject(request, function (response) {
+
+            Code.expect(response.statusCode).to.equal(200);
+            Code.expect(response.result).to.be.an.array().and.to.have.length(1);
+
+            done();
+        });
+    });
 });
 
 
@@ -251,6 +283,7 @@ lab.experiment('Orders POST: ', function () {
                 price: 1.1,
                 currency: 'usd',
                 country: 'us',
+                category: 6,
                 description: 'jump start',
                 address: '37010 Dusterberry Way Fremont, CA 94536',
                 lon: -122.0135916,

@@ -6,6 +6,7 @@ var exports = module.exports = {};
 // consts
 exports.AUTO_USERNAME_LENGTH = 5;
 exports.BCRYPT_ROUND = 10;
+exports.DEGREE_FACTOR = 0.0089827983;
 exports.TOKEN_LENGTH = 16;
 
 //Error strings

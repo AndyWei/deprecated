@@ -45,7 +45,7 @@ exports.register.attributes = {
 internals.emailCheck = function (request, reply) {
 
     var queryConfig = {
-        text: 'SELECT id FROM users WHERE email = $1',
+        text: 'SELECT id FROM users WHERE email = $1 AND deleted = false ',
         values: [request.payload.email],
         name: 'users_select_id_by_email'
     };
@@ -85,7 +85,7 @@ internals.createUser = function (request, reply) {
 
             var available = results.usernameCandidates;
             var query = request.pg.client.query({
-                text: 'SELECT username FROM users WHERE username IN ($1, $2, $3, $4, $5)',
+                text: 'SELECT username FROM users WHERE username IN ($1, $2, $3, $4, $5) AND deleted = false ',
                 values: results.usernameCandidates,
                 name: 'users_select_username_in_usernames'
             });
@@ -173,7 +173,7 @@ internals.createUser = function (request, reply) {
             }
         };
 
-        console.info('user created. username=%s, email=%s, token=%s \n', results.username, email, results.token);
+        console.log('user created. username=%s, email=%s, token=%s \n', results.username, email, results.token);
         reply(null, message).code(201);
     });
 };
