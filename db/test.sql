@@ -19,8 +19,8 @@ INSERT INTO reviews
 INSERT INTO orders
     (user_id, winner_id, review_id, initial_price,  status, category, created_at, updated_at,  description, venue) VALUES
     (      1,         1,         1,          0.99,       1,        1,      now(),      now(),  'jumpstart', ST_SetSRID(ST_MakePoint(-122.4164623, 37.7766092), 4326)),
-    (      1,         3,         2,         89.99,       2,        5,      now(),      now(),      'clean', ST_SetSRID(ST_MakePoint(-122.4074981, 37.7879331), 4326)),
-    (      1,         3,         3,     234567.99,       3,        2,      now(),      now(), 'ride to LA', ST_SetSRID(ST_MakePoint(-121.9989519, 37.5293864), 4326));
+    (      1,         3,         2,         89.99,       1,        5,      now(),      now(),      'clean', ST_SetSRID(ST_MakePoint(-122.4074981, 37.7879331), 4326)),
+    (      1,         3,         3,     234567.99,       1,        2,      now(),      now(), 'ride to LA', ST_SetSRID(ST_MakePoint(-121.9989519, 37.5293864), 4326));
 
 
 INSERT INTO bids

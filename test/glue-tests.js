@@ -1,16 +1,8 @@
-var Path = require('path');
 var Code = require('code');
 var Glue = require('../glue');
 var Lab = require('lab');
 
-
-// Declare internals
-
-var internals = {};
-
-
 // Test shortcuts
-
 var lab = exports.lab = Lab.script();
 var describe = lab.describe;
 var it = lab.it;
@@ -41,6 +33,7 @@ describe('compose()', function () {
 
         Glue.compose(manifest, function (err, server) {
 
+            expect(server).to.be.an.object();
             expect(err).to.not.exist();
             done();
         });
@@ -56,6 +49,7 @@ describe('compose()', function () {
 
         Glue.compose(manifest, function (err, server) {
 
+            expect(server).to.be.an.object();
             expect(err).to.not.exist();
             done();
         });
@@ -73,6 +67,7 @@ describe('compose()', function () {
 
         Glue.compose(manifest, function (err, server) {
 
+            expect(server).to.be.an.object();
             expect(err).to.not.exist();
             done();
         });
@@ -90,6 +85,7 @@ describe('compose()', function () {
 
         Glue.compose(manifest, function (err, server) {
 
+            expect(server).to.be.an.object();
             expect(err).to.not.exist();
             done();
         });
@@ -211,9 +207,9 @@ describe('compose()', function () {
             server.select('a').inject('/a/plugin', function (response) {
 
                 expect(response.statusCode).to.equal(200);
-                server.select('b').inject('/b/plugin', function (response) {
+                server.select('b').inject('/b/plugin', function (res) {
 
-                    expect(response.statusCode).to.equal(200);
+                    expect(res.statusCode).to.equal(200);
                     done();
                 });
             });

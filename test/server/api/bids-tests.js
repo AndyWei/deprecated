@@ -58,11 +58,11 @@ lab.afterEach(function (done) {
 
 lab.experiment('Bids: ', function () {
 
-    lab.test('/bid/1: return a record successfully', function (done) {
+    lab.test('/bids/1: return a record successfully', function (done) {
 
         request = {
             method: 'GET',
-            url: '/bid/1'
+            url: '/bids/1'
         };
 
         server.inject(request, function (response) {
@@ -74,11 +74,11 @@ lab.experiment('Bids: ', function () {
         });
     });
 
-    lab.test('/bids/my: found', function (done) {
+    lab.test('/bids/from_me: found', function (done) {
 
         request = {
             method: 'GET',
-            url: '/bids/my',
+            url: '/bids/from_me',
             credentials: andy
         };
 
@@ -91,11 +91,11 @@ lab.experiment('Bids: ', function () {
         });
     });
 
-    lab.test('/bids/my: not found', function (done) {
+    lab.test('/bids/from_me: not found', function (done) {
 
         request = {
             method: 'GET',
-            url: '/bids/my',
+            url: '/bids/from_me',
             credentials: jack
         };
 
@@ -108,11 +108,11 @@ lab.experiment('Bids: ', function () {
         });
     });
 
-    lab.test('/bids/won: found', function (done) {
+    lab.test('/bids/won_by_me: found', function (done) {
 
         request = {
             method: 'GET',
-            url: '/bids/won',
+            url: '/bids/won_by_me',
             credentials: mike
         };
 
@@ -125,11 +125,11 @@ lab.experiment('Bids: ', function () {
         });
     });
 
-    lab.test('/bids/won: not found', function (done) {
+    lab.test('/bids/won_by_me: not found', function (done) {
 
         request = {
             method: 'GET',
-            url: '/bids/won',
+            url: '/bids/won_by_me',
             credentials: andy
         };
 
@@ -146,13 +146,13 @@ lab.experiment('Bids: ', function () {
 
 lab.experiment('Bids POST: ', function () {
 
-    lab.test('/bid: create a bid successfully', function (done) {
+    lab.test('/bids: create a bid successfully', function (done) {
 
         request = {
             method: 'POST',
-            url: '/bid',
+            url: '/bids',
             payload: {
-                orderid: '3',
+                order_id: '3',
                 price: 9.5,
                 description: 'Like it!'
             },

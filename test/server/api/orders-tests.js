@@ -6,7 +6,6 @@ var HapiAuthBasic = require('hapi-auth-basic');
 var HapiAuthToken = require('hapi-auth-bearer-token');
 var Lab = require('lab');
 var OrdersPlugin = require('../../../server/api/orders');
-var c = require('../../../server/constants');
 
 
 var lab = exports.lab = Lab.script();
@@ -56,7 +55,7 @@ lab.afterEach(function (done) {
 
 lab.experiment('Orders GET: ', function () {
 
-    lab.test('/order/100: RECORD_NOT_FOUND when id not exist', function (done) {
+    lab.test('/orders/100: RECORD_NOT_FOUND when id not exist', function (done) {
 
         request = {
             method: 'GET',
@@ -66,18 +65,16 @@ lab.experiment('Orders GET: ', function () {
         server.inject(request, function (response) {
 
             Code.expect(response.statusCode).to.equal(404);
-            Code.expect(response.result.message).to.equal(c.RECORD_NOT_FOUND);
-
             done();
         });
     });
 
 
-    lab.test('/order/98765432109876543210: query error when id is invalid for Joi', function (done) {
+    lab.test('/orders/98765432109876543210: query error when id is invalid for Joi', function (done) {
 
         request = {
             method: 'GET',
-            url: '/order/98765432109876543210',
+            url: '/orders/98765432109876543210',
             credentials: jack
         };
 
@@ -89,11 +86,11 @@ lab.experiment('Orders GET: ', function () {
         });
     });
 
-    lab.test('/order/9876543210987654321: query error when id is invalid for DB', function (done) {
+    lab.test('/orders/9876543210987654321: query error when id is invalid for DB', function (done) {
 
         request = {
             method: 'GET',
-            url: '/order/9876543210987654321',
+            url: '/orders/9876543210987654321',
             credentials: jack
         };
 
@@ -106,11 +103,11 @@ lab.experiment('Orders GET: ', function () {
     });
 
 
-    lab.test('/order/1: return a record successfully', function (done) {
+    lab.test('/orders/1: return a record successfully', function (done) {
 
         request = {
             method: 'GET',
-            url: '/order/1'
+            url: '/orders/1'
         };
 
         server.inject(request, function (response) {
@@ -122,11 +119,11 @@ lab.experiment('Orders GET: ', function () {
         });
     });
 
-    lab.test('/orders/my: found', function (done) {
+    lab.test('/orders/from_me: found', function (done) {
 
         request = {
             method: 'GET',
-            url: '/orders/my',
+            url: '/orders/from_me',
             credentials: jack
         };
 
@@ -139,11 +136,11 @@ lab.experiment('Orders GET: ', function () {
         });
     });
 
-    lab.test('/orders/my: not found', function (done) {
+    lab.test('/orders/from_me: not found', function (done) {
 
         request = {
             method: 'GET',
-            url: '/orders/my',
+            url: '/orders/from_me',
             credentials: andy
         };
 
@@ -156,11 +153,11 @@ lab.experiment('Orders GET: ', function () {
         });
     });
 
-    lab.test('/orders/won: found', function (done) {
+    lab.test('/orders/won_by_me: found', function (done) {
 
         request = {
             method: 'GET',
-            url: '/orders/won',
+            url: '/orders/won_by_me',
             credentials: jack
         };
 
@@ -173,11 +170,11 @@ lab.experiment('Orders GET: ', function () {
         });
     });
 
-    lab.test('/orders/won: not found', function (done) {
+    lab.test('/orders/won_by_me: not found', function (done) {
 
         request = {
             method: 'GET',
-            url: '/orders/won',
+            url: '/orders/won_by_me',
             credentials: andy
         };
 
@@ -238,11 +235,11 @@ lab.experiment('Orders GET: ', function () {
         });
     });
 
-    lab.test('/orders/categorized/nearby: found 2', function (done) {
+    lab.test('/orders/nearby: found 2 in categories 1 and 2', function (done) {
 
         request = {
             method: 'GET',
-            url: '/orders/categorized/nearby?lon=-122.4176&lat=37.7577&categories=1&categories=2'  // San Francisco, CA
+            url: '/orders/nearby?lon=-122.4176&lat=37.7577&categories=1&categories=2'  // San Francisco, CA
         };
 
         server.inject(request, function (response) {
@@ -254,11 +251,11 @@ lab.experiment('Orders GET: ', function () {
         });
     });
 
-    lab.test('/orders/categorized/nearby: found 1', function (done) {
+    lab.test('/orders/nearby: found 1 in category 1', function (done) {
 
         request = {
             method: 'GET',
-            url: '/orders/categorized/nearby?lon=-122.4176&lat=37.7577&categories=1'  // San Francisco, CA
+            url: '/orders/nearby?lon=-122.4176&lat=37.7577&categories=1'  // San Francisco, CA
         };
 
         server.inject(request, function (response) {
@@ -274,11 +271,11 @@ lab.experiment('Orders GET: ', function () {
 
 lab.experiment('Orders POST: ', function () {
 
-    lab.test('/order: create successfully', function (done) {
+    lab.test('/orders: create successfully', function (done) {
 
         request = {
             method: 'POST',
-            url: '/order',
+            url: '/orders',
             payload: {
                 price: 1.1,
                 currency: 'usd',
@@ -301,11 +298,11 @@ lab.experiment('Orders POST: ', function () {
         });
     });
 
-    lab.test('/order: create failed due to bad lon', function (done) {
+    lab.test('/orders: create failed due to bad lon', function (done) {
 
         request = {
             method: 'POST',
-            url: '/order',
+            url: '/orders',
             payload: {
                 price: 1,
                 currency: 'usd',

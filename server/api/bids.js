@@ -13,7 +13,7 @@ exports.register = function (server, options, next) {
     // get a single bid by id. no auth.
     server.route({
         method: 'GET',
-        path: options.basePath + '/bid/{id}',
+        path: options.basePath + '/bids/{id}',
         config: {
             validate: {
                 params: {
@@ -24,7 +24,7 @@ exports.register = function (server, options, next) {
         handler: function (request, reply) {
 
             var queryConfig = {
-                name: 'bids_select_all_by_id',
+                name: 'bids_by_id',
                 text: 'SELECT * FROM bids WHERE id = $1 AND deleted = false',
                 values: [request.params.id]
             };
@@ -48,7 +48,7 @@ exports.register = function (server, options, next) {
     // get all bids placed by the current user. auth.
     server.route({
         method: 'GET',
-        path: options.basePath + '/bids/my',
+        path: options.basePath + '/bids/from_me',
         config: {
             auth: {
                 strategy: 'token'
@@ -58,7 +58,7 @@ exports.register = function (server, options, next) {
 
             var userId = request.auth.credentials.id;
             var queryConfig = {
-                name: 'bids_select_my',
+                name: 'bids_from_me',
                 text: 'SELECT * FROM bids WHERE user_id = $1 AND deleted = false \
                        ORDER BY id DESC',
                 values: [userId]
@@ -79,7 +79,7 @@ exports.register = function (server, options, next) {
     // get all bids won by the current user. auth.
     server.route({
         method: 'GET',
-        path: options.basePath + '/bids/won',
+        path: options.basePath + '/bids/won_by_me',
         config: {
             auth: {
                 strategy: 'token'
@@ -89,7 +89,7 @@ exports.register = function (server, options, next) {
 
             var userId = request.auth.credentials.id;
             var queryConfig = {
-                name: 'bids_select_won',
+                name: 'bids_won_by_me',
                 text: 'SELECT * FROM bids WHERE user_id = $1 AND status >= 4 AND deleted = false \
                        ORDER BY id DESC',
                 values: [userId]
@@ -110,14 +110,14 @@ exports.register = function (server, options, next) {
     // Create an bid. auth.
     server.route({
         method: 'POST',
-        path: options.basePath + '/bid',
+        path: options.basePath + '/bids',
         config: {
             auth: {
                 strategy: 'token'
             },
             validate: {
                 payload: {
-                    orderid: Joi.string().regex(/^[0-9]+$/).max(19),
+                    order_id: Joi.string().regex(/^[0-9]+$/).max(19),
                     price: Joi.number().precision(19),
                     description: Joi.string().max(1000)
                 }
@@ -148,7 +148,7 @@ internals.createBidHandler = function (request, reply) {
                            (user_id, order_id, offer_price, description, created_at, updated_at) VALUES \
                            ($1, $2, $3, $4, now(), now()) \
                            RETURNING id',
-                values: [userId, p.orderid, p.price, p.description]
+                values: [userId, p.order_id, p.price, p.description]
             };
 
             request.pg.client.query(queryConfig, function (err, result) {
@@ -158,7 +158,7 @@ internals.createBidHandler = function (request, reply) {
                 }
 
                 if (result.rows.length === 0) {
-                    
+
                     return callback(Boom.badData(c.QUERY_FAILED));
                 }
 

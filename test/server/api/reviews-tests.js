@@ -54,11 +54,11 @@ lab.afterEach(function (done) {
 
 lab.experiment('Reviews GET: ', function () {
 
-    lab.test('/review/1: return a record successfully', function (done) {
+    lab.test('/reviews/1: return a record successfully', function (done) {
 
         request = {
             method: 'GET',
-            url: '/review/1'
+            url: '/reviews/1'
         };
 
         server.inject(request, function (response) {
@@ -70,11 +70,11 @@ lab.experiment('Reviews GET: ', function () {
         });
     });
 
-    lab.test('/reviews/my: found', function (done) {
+    lab.test('/reviews/from_me: found', function (done) {
 
         request = {
             method: 'GET',
-            url: '/reviews/my',
+            url: '/reviews/from_me',
             credentials: andy
         };
 
@@ -87,11 +87,11 @@ lab.experiment('Reviews GET: ', function () {
         });
     });
 
-    lab.test('/reviews/my: not found', function (done) {
+    lab.test('/reviews/from_me: not found', function (done) {
 
         request = {
             method: 'GET',
-            url: '/reviews/my',
+            url: '/reviews/from_me',
             credentials: jack
         };
 
@@ -104,11 +104,11 @@ lab.experiment('Reviews GET: ', function () {
         });
     });
 
-    lab.test('/reviews/reviewee: found', function (done) {
+    lab.test('/reviews/of: found', function (done) {
 
         request = {
             method: 'GET',
-            url: '/reviews/reviewee/2'
+            url: '/reviews/of/2'
         };
 
         server.inject(request, function (response) {
@@ -120,11 +120,11 @@ lab.experiment('Reviews GET: ', function () {
         });
     });
 
-    lab.test('/reviews/reviewee: not found', function (done) {
+    lab.test('/reviews/of: not found', function (done) {
 
         request = {
             method: 'GET',
-            url: '/reviews/reviewee/3'
+            url: '/reviews/of/3'
         };
 
         server.inject(request, function (response) {
@@ -140,11 +140,11 @@ lab.experiment('Reviews GET: ', function () {
 
 lab.experiment('Reviews POST: ', function () {
 
-    lab.test('/review: create successfully', function (done) {
+    lab.test('/reviews: create successfully', function (done) {
 
         request = {
             method: 'POST',
-            url: '/review',
+            url: '/reviews',
             payload: {
                 revieweeid: '4',
                 rating: 4.5,
