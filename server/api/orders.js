@@ -96,7 +96,7 @@ exports.register = function (server, options, next) {
                 name: 'orders_select_won',
                 text: 'SELECT id, user_id, initial_price, final_price, currency, country, status, category, created_at, description, address, ST_X(venue) AS lon, ST_Y(venue) AS lat \
                        FROM orders \
-                       WHERE winner_id = $1 AND deleted = false \
+                       WHERE winner_id IS NOT NULL AND winner_id = $1 AND deleted = false \
                        ORDER BY id DESC',
                 values: [userId]
             };

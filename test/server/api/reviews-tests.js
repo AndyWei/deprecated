@@ -147,7 +147,6 @@ lab.experiment('Reviews POST: ', function () {
             url: '/review',
             payload: {
                 revieweeid: '4',
-                orderid: '3',
                 rating: 4.5,
                 comment: 'I like his attitude@!!'
             },
