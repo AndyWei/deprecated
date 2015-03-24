@@ -130,7 +130,7 @@ lab.experiment('Orders GET: ', function () {
         server.inject(request, function (response) {
 
             Code.expect(response.statusCode).to.equal(200);
-            Code.expect(response.result).to.be.an.array().and.to.have.length(3);
+            Code.expect(response.result).to.be.an.array().and.to.have.length(4);
 
             done();
         });
@@ -320,6 +320,53 @@ lab.experiment('Orders POST: ', function () {
             Code.expect(response.statusCode).to.equal(400);
             Code.expect(response.result).to.be.an.object();
 
+            done();
+        });
+    });
+
+    lab.test('/orders: revoke successfully', function (done) {
+
+        request = {
+            method: 'POST',
+            url: '/orders/revoke/1',
+            credentials: jack
+        };
+
+        server.inject(request, function (response) {
+
+            Code.expect(response.statusCode).to.equal(200);
+            Code.expect(response.result).to.be.an.object();
+
+            done();
+        });
+    });
+
+    lab.test('/orders: revoke failed due to wrong user_id', function (done) {
+
+        request = {
+            method: 'POST',
+            url: '/orders/revoke/2',
+            credentials: andy
+        };
+
+        server.inject(request, function (response) {
+
+            Code.expect(response.statusCode).to.equal(400);
+            done();
+        });
+    });
+
+    lab.test('/orders: revoke failed due to wrong status', function (done) {
+
+        request = {
+            method: 'POST',
+            url: '/orders/revoke/4',
+            credentials: jack
+        };
+
+        server.inject(request, function (response) {
+
+            Code.expect(response.statusCode).to.equal(400);
             done();
         });
     });

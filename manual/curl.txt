@@ -16,12 +16,19 @@ curl -i "http://localhost:8000/v1/orders/near?lon=-122.4176&lat=37.7577"
 curl -i "http://localhost:8000/v1/orders/nearby?lon=-122.4176&lat=37.7577&categories=1"
 curl -i "http://localhost:8000/v1/orders/nearby?lon=-122.4176&lat=37.7577&categories=1&categories=2&categories=5"
 
-# POST an order
+# create an order
 curl -i -H "Authorization: Bearer TOKEN" --data "price=1.1&currency=usd&country=us&category=1&description='jump  start'&address='2290 good ave'&lon=-3.456&lat=75.84" "http://localhost:8000/v1/orders"
+
+# revoke an order
+curl -i -X POST -H "Authorization: Bearer TOKEN" "http://localhost:8000/v1/orders/revoke/1"
+
 
 
 
 ## bids
 
-# POST an bids
-curl -i -H "Authorization: Bearer wwGckEZVhmHm5bEx" --data "order_id=3&price=1.1&description='CHOOSE ME'" "http://localhost:8000/v1/bids"
+# POST an bid
+curl -i -H "Authorization: Bearer TOKEN" --data "order_id=3&price=1.1&description='CHOOSE ME'" "http://localhost:8000/v1/bids"
+
+# revoke an bid
+curl -i -X POST -H "Authorization: Bearer TOKEN" "http://localhost:8000/v1/bid/revoke/1"

@@ -11,10 +11,12 @@ exports.TOKEN_LENGTH = 20;
 
 //Error strings
 
+exports.BID_REVOKE_FAILED = 'The bid is not in active status, cannot be revoked.';
 exports.EMAIL_IN_USE = 'Email already in use.';
-exports.TOKEN_INVALID = 'Token is invalid';
-exports.RECORD_NOT_FOUND = 'Query excuted but no record found.';
+exports.ORDER_REVOKE_FAILED = 'The order is not in active status, cannot be revoked.';
 exports.QUERY_FAILED = 'Error when running query.';
+exports.RECORD_NOT_FOUND = 'Query excuted but no record found.';
+exports.TOKEN_INVALID = 'Token is invalid';
 exports.USER_NOT_FOUND = 'User not found.';
 
 // enums

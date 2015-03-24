@@ -118,7 +118,8 @@ exports.register = function (server, options, next) {
             },
             validate: {
                 payload: {
-                    revieweeid: Joi.string().regex(/^[0-9]+$/).max(19),
+                    reviewee_id: Joi.string().regex(/^[0-9]+$/).max(19),
+                    order_id: Joi.string().regex(/^[0-9]+$/).max(19),
                     rating: Joi.number().precision(2).min(0).max(5.0),
                     comment: Joi.string().max(1000)
                 }
@@ -146,10 +147,10 @@ internals.createReviewHandler = function (request, reply) {
             var queryConfig = {
                 name: 'reviews_create',
                 text: 'INSERT INTO reviews \
-                           (reviewer_id, reviewee_id, rating, comment, created_at, updated_at) VALUES \
-                           ($1, $2, $3, $4, now(), now()) \
+                           (reviewer_id, reviewee_id, order_id, rating, comment, created_at, updated_at) VALUES \
+                           ($1, $2, $3, $4, $5, now(), now()) \
                            RETURNING id',
-                values: [userId, p.revieweeid, p.rating, p.comment]
+                values: [userId, p.reviewee_id, p.order_id, p.rating, p.comment]
             };
 
             request.pg.client.query(queryConfig, function (err, result) {

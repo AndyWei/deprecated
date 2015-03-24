@@ -119,11 +119,52 @@ exports.register = function (server, options, next) {
                 payload: {
                     order_id: Joi.string().regex(/^[0-9]+$/).max(19),
                     price: Joi.number().precision(19),
-                    description: Joi.string().max(1000)
+                    note: Joi.string().max(1000),
+                    expire_at: Joi.number().min(0).default(0)
                 }
             }
         },
         handler: internals.createBidHandler
+    });
+
+
+    // revoke a bid. auth.
+    server.route({
+        method: 'POST',
+        path: options.basePath + '/bids/revoke/{bid_id}',
+        config: {
+            auth: {
+                strategy: 'token'
+            },
+            validate: {
+                params: {
+                    bid_id: Joi.string().regex(/^[0-9]+$/).max(19)
+                }
+            }
+        },
+        handler: function (request, reply) {
+
+            var queryConfig = {
+                name: 'bids_revoke',
+                text: 'UPDATE bids SET status = 1, updated_at = now() ' +
+                      'WHERE id = $1 AND user_id = $2 AND status = 0 AND deleted = false ' +
+                      'RETURNING id, status',
+                values: [request.params.bid_id, request.auth.credentials.id]
+            };
+
+            request.pg.client.query(queryConfig, function (err, result) {
+
+                if (err) {
+                    return reply(err);
+                }
+
+                if (result.rows.length === 0) {
+                    return reply(Boom.badRequest(c.BID_REVOKE_FAILED));
+                }
+
+                reply(null, result.rows[0]);
+            });
+        }
     });
 
     next();
@@ -145,10 +186,10 @@ internals.createBidHandler = function (request, reply) {
             var queryConfig = {
                 name: 'bids_create',
                 text: 'INSERT INTO bids \
-                           (user_id, order_id, offer_price, description, created_at, updated_at) VALUES \
-                           ($1, $2, $3, $4, now(), now()) \
+                           (user_id, order_id, offer_price, note, expire_at, created_at, updated_at) VALUES \
+                           ($1, $2, $3, $4, $5, now(), now()) \
                            RETURNING id',
-                values: [userId, p.order_id, p.price, p.description]
+                values: [userId, p.order_id, p.price, p.note, p.expire_at]
             };
 
             request.pg.client.query(queryConfig, function (err, result) {

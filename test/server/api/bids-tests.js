@@ -154,7 +154,7 @@ lab.experiment('Bids POST: ', function () {
             payload: {
                 order_id: '3',
                 price: 9.5,
-                description: 'Like it!'
+                note: 'I love this job!'
             },
             credentials: jack
         };
@@ -164,6 +164,53 @@ lab.experiment('Bids POST: ', function () {
             Code.expect(response.statusCode).to.equal(200);
             Code.expect(response.result).to.be.an.object();
 
+            done();
+        });
+    });
+
+    lab.test('/bids: revoke successfully', function (done) {
+
+        request = {
+            method: 'POST',
+            url: '/bids/revoke/1',
+            credentials: andy
+        };
+
+        server.inject(request, function (response) {
+
+            Code.expect(response.statusCode).to.equal(200);
+            Code.expect(response.result).to.be.an.object();
+
+            done();
+        });
+    });
+
+    lab.test('/bids: revoke failed due to wrong user_id', function (done) {
+
+        request = {
+            method: 'POST',
+            url: '/bids/revoke/2',
+            credentials: andy
+        };
+
+        server.inject(request, function (response) {
+
+            Code.expect(response.statusCode).to.equal(400);
+            done();
+        });
+    });
+
+    lab.test('/bids: revoke failed due to wrong status', function (done) {
+
+        request = {
+            method: 'POST',
+            url: '/bids/revoke/2',
+            credentials: mike
+        };
+
+        server.inject(request, function (response) {
+
+            Code.expect(response.statusCode).to.equal(400);
             done();
         });
     });

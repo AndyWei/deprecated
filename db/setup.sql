@@ -10,7 +10,7 @@ CREATE EXTENSION postgis;
 
 BEGIN;
 \ir  tables/users.sql
-\ir  tables/reviews.sql
 \ir  tables/orders.sql
 \ir  tables/bids.sql
+\ir  tables/reviews.sql
 COMMIT;
