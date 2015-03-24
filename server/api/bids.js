@@ -118,7 +118,7 @@ exports.register = function (server, options, next) {
             validate: {
                 payload: {
                     order_id: Joi.string().regex(/^[0-9]+$/).max(19),
-                    price: Joi.number().precision(19),
+                    price: Joi.number().precision(2).min(0).max(100000000),
                     note: Joi.string().max(1000),
                     expire_at: Joi.number().min(0).default(0)
                 }
@@ -186,7 +186,7 @@ internals.createBidHandler = function (request, reply) {
             var queryConfig = {
                 name: 'bids_create',
                 text: 'INSERT INTO bids \
-                           (user_id, order_id, offer_price, note, expire_at, created_at, updated_at) VALUES \
+                           (user_id, order_id, price, note, expire_at, created_at, updated_at) VALUES \
                            ($1, $2, $3, $4, $5, now(), now()) \
                            RETURNING id',
                 values: [userId, p.order_id, p.price, p.note, p.expire_at]

@@ -22,6 +22,10 @@ curl -i -H "Authorization: Bearer TOKEN" --data "price=1.1&currency=usd&country=
 # revoke an order
 curl -i -X POST -H "Authorization: Bearer TOKEN" "http://localhost:8000/v1/orders/revoke/1"
 
+# update an order
+curl -i -X POST -H "Authorization: Bearer 6SjrTCgJPqFqOwdblR4Y" "http://localhost:8000/v1/orders/3"
+curl -i -X POST -H "Authorization: Bearer 6SjrTCgJPqFqOwdblR4Y" --data "price=1.1&category=1" "http://localhost:8000/v1/orders/3"
+curl -i -X POST -H "Authorization: Bearer 6SjrTCgJPqFqOwdblR4Y" --data "price=1.1&category=1&description='what ever:)'" "http://localhost:8000/v1/orders/3"
 
 
 

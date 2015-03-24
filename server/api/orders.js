@@ -5,7 +5,7 @@ var Joi = require('joi');
 var c = require('../constants');
 
 var internals = {};
-var selectClause = 'SELECT id, user_id, initial_price, final_price, currency, country, status, category, description, address, winner_id, final_price, created_at, updated_at, ST_X(venue) AS lon, ST_Y(venue) AS lat \
+var selectClause = 'SELECT id, user_id, price, currency, country, status, category, description, address, winner_id, final_price, created_at, updated_at, ST_X(venue) AS lon, ST_Y(venue) AS lat \
                     FROM orders ';
 
 exports.register = function (server, options, next) {
@@ -35,6 +35,7 @@ exports.register = function (server, options, next) {
             request.pg.client.query(queryConfig, function (err, result) {
 
                 if (err) {
+                    console.error(err);
                     return reply(err);
                 }
 
@@ -71,6 +72,7 @@ exports.register = function (server, options, next) {
             request.pg.client.query(queryConfig, function (err, result) {
 
                 if (err) {
+                    console.error(err);
                     return reply(err);
                 }
 
@@ -103,6 +105,7 @@ exports.register = function (server, options, next) {
             request.pg.client.query(queryConfig, function (err, result) {
 
                 if (err) {
+                    console.error(err);
                     return reply(err);
                 }
 
@@ -134,6 +137,7 @@ exports.register = function (server, options, next) {
             request.pg.client.query(queryConfig, function (err, result) {
 
                 if (err) {
+                    console.error(err);
                     return reply(err);
                 }
 
@@ -143,7 +147,7 @@ exports.register = function (server, options, next) {
     });
 
 
-    // Create an order. auth.
+    // create an order. auth.
     server.route({
         method: 'POST',
         path: options.basePath + '/orders',
@@ -153,14 +157,14 @@ exports.register = function (server, options, next) {
             },
             validate: {
                 payload: {
-                    lon: Joi.number().min(-180).max(180),
-                    lat: Joi.number().min(-90).max(90),
-                    price: Joi.number().precision(19),
+                    address: Joi.string(),
+                    category: Joi.number().min(0).max(100),
                     currency: Joi.string().length(3).regex(/^[a-z]+$/),
                     country: Joi.string().length(2).regex(/^[a-z]+$/),
-                    category: Joi.number().min(0).max(100),
                     description: Joi.string().max(1000),
-                    address: Joi.string()
+                    lon: Joi.number().min(-180).max(180),
+                    lat: Joi.number().min(-90).max(90),
+                    price: Joi.number().precision(2).min(0).max(100000000)
                 }
             }
         },
@@ -207,6 +211,68 @@ exports.register = function (server, options, next) {
         }
     });
 
+
+    // update an order. auth.
+    server.route({
+        method: 'POST',
+        path: options.basePath + '/orders/{order_id}',
+        config: {
+            auth: {
+                strategy: 'token'
+            },
+            validate: {
+                params: {
+                    order_id: Joi.string().regex(/^[0-9]+$/).max(19)
+                },
+                payload: {
+                    address: Joi.string().max(100).optional(),
+                    category: Joi.number().min(0).max(100).optional(),
+                    description: Joi.string().max(1000).optional(),
+                    lat: Joi.number().min(-90).max(90).optional(),
+                    lon: Joi.number().min(-180).max(180).optional(),
+                    price: Joi.number().precision(2).min(0).max(100000000).optional()
+                }
+            }
+        },
+        handler: function (request, reply) {
+
+            Async.waterfall([
+                function (callback) {
+
+                    internals.createUpdateQueryConfig(request, function (err, queryConfig) {
+                        if (err) {
+                            return callback(err);
+                        }
+
+                        callback(null, queryConfig);
+                    });
+                },
+                function (queryConfig, callback) {
+
+                    request.pg.client.query(queryConfig, function (err, result) {
+
+                        if (err) {
+                            return callback(err);
+                        }
+                        if (result.rows.length === 0) {
+                            return reply(Boom.badRequest(c.ORDER_UPDATE_FAILED));
+                        }
+
+                        callback(null, result.rows[0]);
+                    });
+                }
+            ], function (err, order) {
+
+                if (err) {
+                    console.error(err);
+                    return reply(err);
+                }
+
+                reply(null, order);
+            });
+        }
+    });
+
     next();
 };
 
@@ -226,7 +292,7 @@ internals.createOrderHandler = function (request, reply) {
             var queryConfig = {
                 name: 'orders_create',
                 text: 'INSERT INTO orders \
-                           (user_id, initial_price, currency, country, category, description, address, venue, created_at, updated_at) VALUES \
+                           (user_id, price, currency, country, category, description, address, venue, created_at, updated_at) VALUES \
                            ($1, $2, $3, $4, $5, $6, $7, ST_SetSRID(ST_MakePoint($8, $9), 4326), now(), now()) \
                            RETURNING id',
                 values: [userId, p.price, p.currency, p.country, p.category, p.description, p.address, p.lon, p.lat]
@@ -235,24 +301,91 @@ internals.createOrderHandler = function (request, reply) {
             request.pg.client.query(queryConfig, function (err, result) {
 
                 if (err) {
-                    callback(err);
+                    return callback(err);
                 }
-                else if (result.rows.length === 0) {
-                    callback(Boom.badData(c.QUERY_FAILED));
+
+                if (result.rows.length === 0) {
+                    return callback(Boom.badData(c.QUERY_FAILED));
                 }
-                else {
-                    callback(null, result.rows[0]);
-                }
+
+                callback(null, result.rows[0]);
             });
         }
     ], function (err, order) {
 
         if (err) {
+            console.error(err);
             return reply(err);
         }
 
         reply(null, order);
     });
+};
+
+
+internals.createUpdateQueryConfig = function (request, callback) {
+
+    var orderId = request.params.order_id;
+    var userId = request.auth.credentials.id;
+    var p = request.payload;
+
+    var queryText = 'UPDATE orders SET ';
+    var queryValues = [];
+    var index = 1;
+
+    if (p.lon && p.lat) {
+        queryText += 'venue = ST_SetSRID(ST_MakePoint($1, $2), 4326),';
+        queryValues.push(p.lon);
+        queryValues.push(p.lat);
+        index += 2;
+    }
+    else if (p.lon || p.lat) {
+        return callback(Boom.badData(c.COORDINATE_INVALID));
+    }
+
+    if (p.address) {
+        queryText += 'address = $' + index.toString() + ',';
+        queryValues.push(p.address);
+        ++index;
+    }
+
+    if (p.category) {
+        queryText += 'category = $' + index.toString() + ',';
+        queryValues.push(p.category);
+        ++index;
+    }
+
+    if (p.description) {
+        queryText += 'description = $' + index.toString() + ',';
+        queryValues.push(p.description);
+        ++index;
+    }
+
+    if (p.price) {
+        queryText += 'price = $' + index.toString() + ',';
+        queryValues.push(p.price);
+        ++index;
+    }
+
+    if (index === 1) {
+        return callback(Boom.badData(c.QUERY_INVALID));
+    }
+
+    queryText += 'updated_at = now() ';
+    queryText += 'WHERE id = $' + index.toString() + ' AND user_id = $' + (index + 1).toString() + ' AND status = 0 AND deleted = false ';
+    queryText += 'RETURNING id, price, status, category, description, address, created_at, updated_at, ST_X(venue) AS lon, ST_Y(venue) AS lat';
+
+    queryValues.push(orderId);
+    queryValues.push(userId);
+
+    var queryConfig = {
+        // Warning: Do not give this query a name!! Because it has variable number of parameters and cannot be a prepared statement.
+        // See https://github.com/brianc/node-postgres/wiki/Client#method-query-prepared
+        text: queryText,
+        values: queryValues
+    };
+
+    callback(null, queryConfig);
 };
 
 

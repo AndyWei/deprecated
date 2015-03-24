@@ -12,9 +12,12 @@ exports.TOKEN_LENGTH = 20;
 //Error strings
 
 exports.BID_REVOKE_FAILED = 'The bid is not in active status, cannot be revoked.';
+exports.COORDINATE_INVALID = 'Lon and lat should occur together.';
 exports.EMAIL_IN_USE = 'Email already in use.';
 exports.ORDER_REVOKE_FAILED = 'The order is not in active status, cannot be revoked.';
+exports.ORDER_UPDATE_FAILED = 'The order is not in active status, cannot be updated.';
 exports.QUERY_FAILED = 'Error when running query.';
+exports.QUERY_INVALID = 'The query must contain at least one parameter.';
 exports.RECORD_NOT_FOUND = 'Query excuted but no record found.';
 exports.TOKEN_INVALID = 'Token is invalid';
 exports.USER_NOT_FOUND = 'User not found.';

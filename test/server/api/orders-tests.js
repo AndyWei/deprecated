@@ -6,6 +6,7 @@ var HapiAuthBasic = require('hapi-auth-basic');
 var HapiAuthToken = require('hapi-auth-bearer-token');
 var Lab = require('lab');
 var OrdersPlugin = require('../../../server/api/orders');
+var c = require('../../../server/constants');
 
 
 var lab = exports.lab = Lab.script();
@@ -277,7 +278,7 @@ lab.experiment('Orders POST: ', function () {
             method: 'POST',
             url: '/orders',
             payload: {
-                price: 1.1,
+                price: 1.13,
                 currency: 'usd',
                 country: 'us',
                 category: 6,
@@ -324,6 +325,163 @@ lab.experiment('Orders POST: ', function () {
         });
     });
 
+    lab.test('/orders: update all fields successfully', function (done) {
+
+        request = {
+            method: 'POST',
+            url: '/orders/3',
+            payload: {
+                address: '37010 Dusterberry Way Fremont, CA 94536',
+                category: 6,
+                description: 'what ever:)',
+                lat: 37.555883,
+                lon: -122.0135916,
+                price: 1.13
+            },
+            credentials: jack
+        };
+
+        server.inject(request, function (response) {
+
+            Code.expect(response.statusCode).to.equal(200);
+            Code.expect(response.result).to.be.an.object();
+
+            done();
+        });
+    });
+
+    lab.test('/orders: update one field successfully', function (done) {
+
+        request = {
+            method: 'POST',
+            url: '/orders/3',
+            payload: {
+                price: 8
+            },
+            credentials: jack
+        };
+
+        server.inject(request, function (response) {
+
+            Code.expect(response.statusCode).to.equal(200);
+            Code.expect(response.result).to.be.an.object();
+
+            done();
+        });
+    });
+
+    lab.test('/orders: update two fields successfully', function (done) {
+
+        request = {
+            method: 'POST',
+            url: '/orders/3',
+            payload: {
+                address: '1 Joyy Way, San Francisco, CA 94101',
+                price: 88.88
+            },
+            credentials: jack
+        };
+
+        server.inject(request, function (response) {
+
+            Code.expect(response.statusCode).to.equal(200);
+            Code.expect(response.result).to.be.an.object();
+
+            done();
+        });
+    });
+
+    lab.test('/orders: update failed due to wrong user_id', function (done) {
+
+        request = {
+            method: 'POST',
+            url: '/orders/3',
+            payload: {
+                address: '37010 Dusterberry Way Fremont, CA 94536',
+                category: 6,
+                description: 'what ever:)',
+                lat: 37.555883,
+                lon: -122.0135916,
+                price: 1.13
+            },
+            credentials: andy
+        };
+
+        server.inject(request, function (response) {
+
+            Code.expect(response.statusCode).to.equal(400);
+            Code.expect(response.result.message).to.equal(c.ORDER_UPDATE_FAILED);
+
+            done();
+        });
+    });
+
+    lab.test('/orders: update failed due to wrong status', function (done) {
+
+        request = {
+            method: 'POST',
+            url: '/orders/4',
+            payload: {
+                address: '37010 Dusterberry Way Fremont, CA 94536',
+                category: 6,
+                description: 'what ever:)',
+                lat: 37.555883,
+                lon: -122.0135916,
+                price: 1.13
+            },
+            credentials: jack
+        };
+
+        server.inject(request, function (response) {
+
+            Code.expect(response.statusCode).to.equal(400);
+            Code.expect(response.result.message).to.equal(c.ORDER_UPDATE_FAILED);
+
+            done();
+        });
+    });
+
+    lab.test('/orders: update failed due to no payload', function (done) {
+
+        request = {
+            method: 'POST',
+            url: '/orders/3',
+            credentials: jack
+        };
+
+        server.inject(request, function (response) {
+
+            Code.expect(response.statusCode).to.equal(422);
+            Code.expect(response.result.message).to.equal(c.QUERY_INVALID);
+
+            done();
+        });
+    });
+
+    lab.test('/orders: update failed due to incomplete coordinate', function (done) {
+
+        request = {
+            method: 'POST',
+            url: '/orders/3',
+            payload: {
+                address: '37010 Dusterberry Way Fremont, CA 94536',
+                category: 6,
+                description: 'what ever:)',
+                lat: 37.555883,
+                price: 1.13
+            },
+            credentials: jack
+        };
+
+        server.inject(request, function (response) {
+
+            Code.expect(response.statusCode).to.equal(422);
+            Code.expect(response.result.message).to.equal(c.COORDINATE_INVALID);
+
+            done();
+        });
+    });
+
     lab.test('/orders: revoke successfully', function (done) {
 
         request = {
@@ -352,6 +510,7 @@ lab.experiment('Orders POST: ', function () {
         server.inject(request, function (response) {
 
             Code.expect(response.statusCode).to.equal(400);
+            Code.expect(response.result.message).to.equal(c.ORDER_REVOKE_FAILED);
             done();
         });
     });
@@ -367,6 +526,7 @@ lab.experiment('Orders POST: ', function () {
         server.inject(request, function (response) {
 
             Code.expect(response.statusCode).to.equal(400);
+            Code.expect(response.result.message).to.equal(c.ORDER_REVOKE_FAILED);
             done();
         });
     });

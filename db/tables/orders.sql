@@ -1,7 +1,7 @@
 CREATE TABLE orders (
     id             BIGSERIAL  PRIMARY KEY,
-    user_id        BIGINT        NOT NULL,  -- the id of the user who placed this order
-    initial_price  NUMERIC(19,2) NOT NULL,  -- the price that the user_id wants
+    user_id        BIGINT        NOT NULL,  -- the id of the consumer who placed this order
+    price          NUMERIC(11,2) NOT NULL,  -- the price that the consumer wants
     currency       CHAR(3)       NOT NULL DEFAULT 'usd',  -- ISO 4217 Currency Codes
     country        CHAR(2)       NOT NULL DEFAULT 'us',  -- country code
     status         SMALLINT      NOT NULL DEFAULT 0,  -- 0-active, 1-revoked, 2-pending, 3-ongoing, 4-finished, 5-paid
@@ -15,7 +15,7 @@ CREATE TABLE orders (
     updated_at     TIMESTAMP     NOT NULL,
     deleted        BOOLEAN       NOT NULL DEFAULT false,
 
-    CHECK (initial_price >= 0),
+    CHECK (price >= 0),
     CHECK (final_price >= 0),
     CHECK (status >= 0),
     CHECK (category >= 0),

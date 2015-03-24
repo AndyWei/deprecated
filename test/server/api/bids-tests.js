@@ -1,11 +1,12 @@
 var AuthPlugin = require('../../../server/authenticate');
+var BidsPlugin = require('../../../server/api/bids');
 var Code = require('code');
 var Config = require('../../../config');
 var Hapi = require('hapi');
 var HapiAuthBasic = require('hapi-auth-basic');
 var HapiAuthToken = require('hapi-auth-bearer-token');
 var Lab = require('lab');
-var BidsPlugin = require('../../../server/api/bids');
+var c = require('../../../server/constants');
 
 
 var lab = exports.lab = Lab.script();
@@ -153,7 +154,7 @@ lab.experiment('Bids POST: ', function () {
             url: '/bids',
             payload: {
                 order_id: '3',
-                price: 9.5,
+                price: 9.55,
                 note: 'I love this job!'
             },
             credentials: jack
@@ -196,6 +197,7 @@ lab.experiment('Bids POST: ', function () {
         server.inject(request, function (response) {
 
             Code.expect(response.statusCode).to.equal(400);
+            Code.expect(response.result.message).to.equal(c.BID_REVOKE_FAILED);
             done();
         });
     });
@@ -211,6 +213,7 @@ lab.experiment('Bids POST: ', function () {
         server.inject(request, function (response) {
 
             Code.expect(response.statusCode).to.equal(400);
+            Code.expect(response.result.message).to.equal(c.BID_REVOKE_FAILED);
             done();
         });
     });
