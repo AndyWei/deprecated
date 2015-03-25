@@ -32,6 +32,8 @@ exports.register = function (server, options, next) {
             request.pg.client.query(queryConfig, function (err, result) {
 
                 if (err) {
+                    console.error(err);
+                    request.pg.kill = true;
                     return reply(err);
                 }
 
@@ -67,6 +69,8 @@ exports.register = function (server, options, next) {
             request.pg.client.query(queryConfig, function (err, result) {
 
                 if (err) {
+                    console.error(err);
+                    request.pg.kill = true;
                     return reply(err);
                 }
 
@@ -99,6 +103,8 @@ exports.register = function (server, options, next) {
             request.pg.client.query(queryConfig, function (err, result) {
 
                 if (err) {
+                    console.error(err);
+                    request.pg.kill = true;
                     return reply(err);
                 }
 
@@ -156,6 +162,7 @@ internals.createReviewHandler = function (request, reply) {
             request.pg.client.query(queryConfig, function (err, result) {
 
                 if (err) {
+                    request.pg.kill = true;
                     return callback(err);
                 }
 
@@ -169,6 +176,7 @@ internals.createReviewHandler = function (request, reply) {
     ], function (err, review) {
 
         if (err) {
+            console.error(err);
             return reply(err);
         }
 

@@ -28,6 +28,9 @@ var andy = {
     id: 2
 };
 
+var ping = {
+    id: 3
+};
 
 var request, server;
 
@@ -159,7 +162,7 @@ lab.experiment('Orders GET: ', function () {
         request = {
             method: 'GET',
             url: '/orders/won_by_me',
-            credentials: jack
+            credentials: ping
         };
 
         server.inject(request, function (response) {
@@ -198,7 +201,7 @@ lab.experiment('Orders GET: ', function () {
         server.inject(request, function (response) {
 
             Code.expect(response.statusCode).to.equal(200);
-            Code.expect(response.result).to.be.an.array().and.to.have.length(3);
+            Code.expect(response.result).to.be.an.array().and.to.have.length(2);
 
             done();
         });
@@ -236,7 +239,7 @@ lab.experiment('Orders GET: ', function () {
         });
     });
 
-    lab.test('/orders/nearby: found 2 in categories 1 and 2', function (done) {
+    lab.test('/orders/nearby: found one in categories 1 and 2', function (done) {
 
         request = {
             method: 'GET',
@@ -246,7 +249,7 @@ lab.experiment('Orders GET: ', function () {
         server.inject(request, function (response) {
 
             Code.expect(response.statusCode).to.equal(200);
-            Code.expect(response.result).to.be.an.array().and.to.have.length(2);
+            Code.expect(response.result).to.be.an.array().and.to.have.length(1);
 
             done();
         });
@@ -329,7 +332,7 @@ lab.experiment('Orders POST: ', function () {
 
         request = {
             method: 'POST',
-            url: '/orders/3',
+            url: '/orders/2',
             payload: {
                 address: '37010 Dusterberry Way Fremont, CA 94536',
                 category: 6,
@@ -354,7 +357,7 @@ lab.experiment('Orders POST: ', function () {
 
         request = {
             method: 'POST',
-            url: '/orders/3',
+            url: '/orders/2',
             payload: {
                 price: 8
             },
@@ -374,7 +377,7 @@ lab.experiment('Orders POST: ', function () {
 
         request = {
             method: 'POST',
-            url: '/orders/3',
+            url: '/orders/2',
             payload: {
                 address: '1 Joyy Way, San Francisco, CA 94101',
                 price: 88.88
@@ -395,7 +398,7 @@ lab.experiment('Orders POST: ', function () {
 
         request = {
             method: 'POST',
-            url: '/orders/3',
+            url: '/orders/2',
             payload: {
                 address: '37010 Dusterberry Way Fremont, CA 94536',
                 category: 6,

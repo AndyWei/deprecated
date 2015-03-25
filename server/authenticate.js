@@ -13,9 +13,9 @@ var validateSimple = function (username, password, finish) {
         function (callback) {
 
             var db = Config.get('/db/connectionString');
-            Pg.connect(db, function (connectErr, client, done) {
+            Pg.connect(db, function (err, client, done) {
 
-                callback(connectErr, client, done);
+                callback(err, client, done);
             });
         },
         function (client, done, callback) {
@@ -26,31 +26,32 @@ var validateSimple = function (username, password, finish) {
                 name: 'users_select_one_by_username'
             };
 
-            client.query(queryConfig, function (queryErr, queryResult) {
+            client.query(queryConfig, function (err, queryResult) {
+
+                if (err) {
+                    console.error(err);
+                    done(err);
+                    return callback(err);
+                }
 
                 done();
 
-                if (queryErr) {
-                    console.error(c.QUERY_FAILED, queryErr);
-                    callback(Boom.badImplementation(c.QUERY_FAILED, queryErr));
+                if (queryResult.rowCount === 0) {
+                    return callback(Boom.unauthorized(c.USER_NOT_FOUND, 'basic'));
                 }
-                else if (queryResult.rowCount === 0) {
-                    callback(Boom.unauthorized(c.USER_NOT_FOUND, 'basic'));
-                }
-                else {
-                    callback(null, queryResult.rows[0]);
-                }
+
+                callback(null, queryResult.rows[0]);
             });
         },
         function (user, callback) {
 
             Bcrypt.compare(password, user.password, function (err, isValid) {
+
                 if (err) {
-                    callback(Boom.unauthorized(err, 'basic'));
+                    return callback(Boom.unauthorized(err, 'basic'));
                 }
-                else {
-                    callback(null, isValid, user);
-                }
+
+                callback(null, isValid, user);
             });
         }
     ], function (err, isValid, user) {

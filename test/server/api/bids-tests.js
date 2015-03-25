@@ -108,40 +108,6 @@ lab.experiment('Bids: ', function () {
             done();
         });
     });
-
-    lab.test('/bids/won_by_me: found', function (done) {
-
-        request = {
-            method: 'GET',
-            url: '/bids/won_by_me',
-            credentials: mike
-        };
-
-        server.inject(request, function (response) {
-
-            Code.expect(response.statusCode).to.equal(200);
-            Code.expect(response.result).to.be.an.array().and.to.have.length(2);
-
-            done();
-        });
-    });
-
-    lab.test('/bids/won_by_me: not found', function (done) {
-
-        request = {
-            method: 'GET',
-            url: '/bids/won_by_me',
-            credentials: andy
-        };
-
-        server.inject(request, function (response) {
-
-            Code.expect(response.statusCode).to.equal(200);
-            Code.expect(response.result).to.be.an.array().and.to.be.empty();
-
-            done();
-        });
-    });
 });
 
 
@@ -169,6 +135,57 @@ lab.experiment('Bids POST: ', function () {
         });
     });
 
+    lab.test('/bids: accept a bid successfully', function (done) {
+
+        request = {
+            method: 'POST',
+            url: '/bids/accept/4',
+            credentials: jack
+        };
+
+        server.inject(request, function (response) {
+
+            Code.expect(response.statusCode).to.equal(200);
+            Code.expect(response.result).to.be.an.object();
+
+            done();
+        });
+    });
+
+    lab.test('/bids: accept a bid fail due to wrong user_id ', function (done) {
+
+        request = {
+            method: 'POST',
+            url: '/bids/accept/1',
+            credentials: andy
+        };
+
+        server.inject(request, function (response) {
+
+            Code.expect(response.statusCode).to.equal(422);
+            Code.expect(response.result.message).to.equal(c.ORDER_UPDATE_FAILED);
+
+            done();
+        });
+    });
+
+    lab.test('/bids: accept a bid fail due to wrong status ', function (done) {
+
+        request = {
+            method: 'POST',
+            url: '/bids/accept/1',
+            credentials: andy
+        };
+
+        server.inject(request, function (response) {
+
+            Code.expect(response.statusCode).to.equal(422);
+            Code.expect(response.result.message).to.equal(c.BID_UPDATE_FAILED);
+
+            done();
+        });
+    });
+
     lab.test('/bids: revoke successfully', function (done) {
 
         request = {
@@ -186,7 +203,7 @@ lab.experiment('Bids POST: ', function () {
         });
     });
 
-    lab.test('/bids: revoke failed due to wrong user_id', function (done) {
+    lab.test('/bids: revoke fail due to wrong user_id', function (done) {
 
         request = {
             method: 'POST',
@@ -202,7 +219,7 @@ lab.experiment('Bids POST: ', function () {
         });
     });
 
-    lab.test('/bids: revoke failed due to wrong status', function (done) {
+    lab.test('/bids: revoke fail due to wrong status', function (done) {
 
         request = {
             method: 'POST',

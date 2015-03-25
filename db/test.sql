@@ -11,8 +11,8 @@ INSERT INTO users
 
 INSERT INTO orders
     (user_id, winner_id,     price,  status, category, created_at, updated_at,  description, venue) VALUES
-    (      1,         1,      0.99,       0,        1,      now(),      now(),  'jumpstart', ST_SetSRID(ST_MakePoint(-122.4164623, 37.7766092), 4326)),
-    (      1,         3,     89.99,       0,        5,      now(),      now(),      'clean', ST_SetSRID(ST_MakePoint(-122.4074981, 37.7879331), 4326)),
+    (      1,      NULL,      0.99,       0,        1,      now(),      now(),  'jumpstart', ST_SetSRID(ST_MakePoint(-122.4164623, 37.7766092), 4326)),
+    (      1,      NULL,     89.99,       0,        5,      now(),      now(),      'clean', ST_SetSRID(ST_MakePoint(-122.4074981, 37.7879331), 4326)),
     (      1,      NULL, 234567.99,       0,        2,      now(),      now(), 'ride to LA', ST_SetSRID(ST_MakePoint(-121.9989519, 37.5293864), 4326)),
     (      1,         3,    567.99,       4,        2,      now(),      now(), 'ride to SF', ST_SetSRID(ST_MakePoint(-121.9989519, 37.5293864), 4326));
 
@@ -20,8 +20,9 @@ INSERT INTO orders
 INSERT INTO bids
     (user_id, order_id, price, status, expire_at, created_at, updated_at,           note) VALUES
     (      2,        1,  3.99,      0, 1427159567,     now(),      now(),     'in 5 mins'),
-    (      4,        1,  2.99,      4, 1427159543,     now(),      now(),  'best quality'),
-    (      4,        1,  0.99,      4, 1427160123,     now(),      now(),    'super pro!');
+    (      3,        1,  2.99,      1, 1427159543,     now(),      now(),  'best quality'),
+    (      3,        1,  0.99,      4, 1427160123,     now(),      now(),    'super pro!'),
+    (      4,        3,  0.99,      0, 1427160123,     now(),      now(),    'accept me!');
 
 
 INSERT INTO reviews

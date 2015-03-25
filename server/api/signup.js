@@ -54,7 +54,8 @@ internals.emailCheck = function (request, reply) {
 
         if (err) {
             console.error(err);
-            return reply(Boom.badImplementation(c.QUERY_FAILED, err));
+            request.pg.kill = true;
+            return reply(err);
         }
 
         if (result.rows.length > 0) {
@@ -95,6 +96,7 @@ internals.createUser = function (request, reply) {
             });
 
             query.on('error', function(err) {
+                request.pg.kill = true;
                 callback(err);
             });
 
@@ -143,6 +145,7 @@ internals.createUser = function (request, reply) {
 
             request.pg.client.query(queryConfig, function (err, queryResult) {
                 if (err) {
+                    request.pg.kill = true;
                     return callback(err);
                 }
 

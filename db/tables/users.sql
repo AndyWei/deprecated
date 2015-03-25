@@ -20,7 +20,6 @@ CREATE TABLE users (
 
 
 /* To reduce index size, we don't use UNIQUE constraint on email field. In stead, we created a expression index to 
- * only index the account part of an email address, which could make the email index about 50% smaller. Of course,
- * we have to add logic into joyyserver to guarantee the unique of email
-*/
+ * only index the account part of an email address, which could make the email index about 50% smaller.
+ */
 CREATE INDEX users_email_index ON users (split_part(email, '@', 1));

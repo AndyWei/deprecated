@@ -13,11 +13,11 @@ exports.register = function (server, options, next) {
     // get a single bid by id. no auth.
     server.route({
         method: 'GET',
-        path: options.basePath + '/bids/{id}',
+        path: options.basePath + '/bids/{bid_id}',
         config: {
             validate: {
                 params: {
-                    id: Joi.string().regex(/^[0-9]+$/).max(19)
+                    bid_id: Joi.string().regex(/^[0-9]+$/).max(19)
                 }
             }
         },
@@ -26,12 +26,14 @@ exports.register = function (server, options, next) {
             var queryConfig = {
                 name: 'bids_by_id',
                 text: 'SELECT * FROM bids WHERE id = $1 AND deleted = false',
-                values: [request.params.id]
+                values: [request.params.bid_id]
             };
 
             request.pg.client.query(queryConfig, function (err, result) {
 
                 if (err) {
+                    console.error(err);
+                    request.pg.kill = true;
                     return reply(err);
                 }
 
@@ -67,37 +69,8 @@ exports.register = function (server, options, next) {
             request.pg.client.query(queryConfig, function (err, result) {
 
                 if (err) {
-                    return reply(err);
-                }
-
-                reply(null, result.rows);
-            });
-        }
-    });
-
-
-    // get all bids won by the current user. auth.
-    server.route({
-        method: 'GET',
-        path: options.basePath + '/bids/won_by_me',
-        config: {
-            auth: {
-                strategy: 'token'
-            }
-        },
-        handler: function (request, reply) {
-
-            var userId = request.auth.credentials.id;
-            var queryConfig = {
-                name: 'bids_won_by_me',
-                text: 'SELECT * FROM bids WHERE user_id = $1 AND status >= 4 AND deleted = false \
-                       ORDER BY id DESC',
-                values: [userId]
-            };
-
-            request.pg.client.query(queryConfig, function (err, result) {
-
-                if (err) {
+                    console.error(err);
+                    request.pg.kill = true;
                     return reply(err);
                 }
 
@@ -155,6 +128,8 @@ exports.register = function (server, options, next) {
             request.pg.client.query(queryConfig, function (err, result) {
 
                 if (err) {
+                    console.error(err);
+                    request.pg.kill = true;
                     return reply(err);
                 }
 
@@ -165,6 +140,23 @@ exports.register = function (server, options, next) {
                 reply(null, result.rows[0]);
             });
         }
+    });
+
+    // accept a bid. auth.
+    server.route({
+        method: 'POST',
+        path: options.basePath + '/bids/accept/{bid_id}',
+        config: {
+            auth: {
+                strategy: 'token'
+            },
+            validate: {
+                params: {
+                    bid_id: Joi.string().regex(/^[0-9]+$/).max(19)
+                }
+            }
+        },
+        handler: internals.acceptBidHandler
     });
 
     next();
@@ -195,6 +187,7 @@ internals.createBidHandler = function (request, reply) {
             request.pg.client.query(queryConfig, function (err, result) {
 
                 if (err) {
+                    request.pg.kill = true;
                     return callback(err);
                 }
 
@@ -209,9 +202,138 @@ internals.createBidHandler = function (request, reply) {
     ], function (err, bid) {
 
         if (err) {
+            console.error(err);
             return reply(err);
         }
 
         reply(null, bid);
+    });
+};
+
+
+internals.acceptBidHandler = function (request, reply) {
+
+    Async.waterfall([
+        function (callback) {
+
+            request.pg.client.query('BEGIN', function(err) {
+                if (err) {
+                    request.pg.kill = true;
+                    callback(err);
+                }
+
+                callback(null);
+            });
+        },
+        function (callback) {
+
+            var queryConfig = {
+                name: 'orders_update_pending',
+                text: 'UPDATE orders AS o ' +
+                      'SET winner_id = b.user_id, status = 2, updated_at = now() ' +
+                      'FROM bids AS b ' +
+                      'WHERE b.id = $1 AND o.user_id = $2 AND o.id = b.order_id AND o.status = 0 ' +
+                      'RETURNING o.id',
+                values: [request.params.bid_id, request.auth.credentials.id]
+            };
+
+            request.pg.client.query(queryConfig, function (err, result) {
+
+                if (err) {
+                    request.pg.kill = true;
+                    return callback(err);
+                }
+
+                if (result.rows.length === 0) {
+
+                    return callback(Boom.badData(c.ORDER_UPDATE_FAILED));
+                }
+
+                callback(null, result.rows[0].id);
+            });
+        },
+        function (orderId, callback) {
+
+            var queryConfig = {
+                name: 'bids_reject_others',
+                text: 'UPDATE bids ' +
+                      'SET status = 2, updated_at = now() ' +
+                      'WHERE order_id = $1 AND id <> $2 AND status = 0 ' +
+                      'RETURNING id',
+                values: [orderId, request.params.bid_id]
+            };
+
+            request.pg.client.query(queryConfig, function (err) {
+
+                if (err) {
+                    request.pg.kill = true;
+                    return callback(err);
+                }
+
+                callback(null, orderId);
+            });
+        },
+        function (orderId, callback) {
+
+            var queryConfig = {
+                name: 'bids_accept',
+                text: 'UPDATE bids ' +
+                      'SET status = 4, updated_at = now() ' +
+                      'WHERE id = $1 AND status = 0 ' +
+                      'RETURNING id, user_id',
+                values: [request.params.bid_id]
+            };
+
+            request.pg.client.query(queryConfig, function (err, result) {
+
+                if (err) {
+                    request.pg.kill = true;
+                    return callback(err);
+                }
+
+                if (result.rows.length === 0) {
+
+                    return callback(Boom.badData(c.BID_UPDATE_FAILED));
+                }
+
+                callback(null, orderId, result.rows[0]);
+            });
+        },
+        function (orderId, row, callback) {
+
+            request.pg.client.query('COMMIT', function(err) {
+                if (err) {
+                    request.pg.kill = true;
+                    callback(err);
+                }
+
+                callback(null, orderId, row);
+            });
+        },
+        function (orderId, row, callback) {
+
+            // TODO: send push notification to row.user_id
+
+            callback(null, orderId, row.id);
+        }
+    ], function (err, orderId, bidId) {
+
+        if (!err) {
+            var result = {
+                order_id: orderId,
+                bid_id: bidId
+            };
+
+            return reply(null, result);
+        }
+
+        console.error(err);
+        request.pg.client.query('ROLLBACK', function(rollbackErr) {
+            if (rollbackErr) {
+                request.pg.kill = true;
+            }
+
+            reply(err);
+        });
     });
 };

@@ -36,6 +36,7 @@ exports.register = function (server, options, next) {
 
                 if (err) {
                     console.error(err);
+                    request.pg.kill = true;
                     return reply(err);
                 }
 
@@ -73,6 +74,7 @@ exports.register = function (server, options, next) {
 
                 if (err) {
                     console.error(err);
+                    request.pg.kill = true;
                     return reply(err);
                 }
 
@@ -106,6 +108,7 @@ exports.register = function (server, options, next) {
 
                 if (err) {
                     console.error(err);
+                    request.pg.kill = true;
                     return reply(err);
                 }
 
@@ -138,6 +141,7 @@ exports.register = function (server, options, next) {
 
                 if (err) {
                     console.error(err);
+                    request.pg.kill = true;
                     return reply(err);
                 }
 
@@ -199,6 +203,8 @@ exports.register = function (server, options, next) {
             request.pg.client.query(queryConfig, function (err, result) {
 
                 if (err) {
+                    console.error(err);
+                    request.pg.kill = true;
                     return reply(err);
                 }
 
@@ -241,6 +247,7 @@ exports.register = function (server, options, next) {
 
                     internals.createUpdateQueryConfig(request, function (err, queryConfig) {
                         if (err) {
+                            request.pg.kill = true;
                             return callback(err);
                         }
 
@@ -252,6 +259,7 @@ exports.register = function (server, options, next) {
                     request.pg.client.query(queryConfig, function (err, result) {
 
                         if (err) {
+                            request.pg.kill = true;
                             return callback(err);
                         }
                         if (result.rows.length === 0) {
@@ -301,6 +309,7 @@ internals.createOrderHandler = function (request, reply) {
             request.pg.client.query(queryConfig, function (err, result) {
 
                 if (err) {
+                    request.pg.kill = true;
                     return callback(err);
                 }
 

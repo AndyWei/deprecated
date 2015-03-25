@@ -21,6 +21,8 @@ exports.register = function (server, options, next) {
             Token.generate(userId, function (err, generatedToken) {
 
                 if (err) {
+                    console.error(err);
+                    request.pg.kill = true;
                     return reply(err);
                 }
 
