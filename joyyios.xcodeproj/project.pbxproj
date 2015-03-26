@@ -1,0 +1,516 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		743498E564A05714440866C9 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8E034C4F8FC61E210B60EDCC /* libPods.a */; };
+		D68DAF961AC4CACD00838E7E /* Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = D68DAF931AC4CACD00838E7E /* Constants.m */; };
+		D68DAF971AC4CACD00838E7E /* JYLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D68DAF951AC4CACD00838E7E /* JYLoginViewController.m */; };
+		D69202B21AC4C7C0001C1C3D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = D69202B11AC4C7C0001C1C3D /* main.m */; };
+		D69202B51AC4C7C0001C1C3D /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D69202B41AC4C7C0001C1C3D /* AppDelegate.m */; };
+		D69202B81AC4C7C0001C1C3D /* FirstViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D69202B71AC4C7C0001C1C3D /* FirstViewController.m */; };
+		D69202BB1AC4C7C0001C1C3D /* SecondViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D69202BA1AC4C7C0001C1C3D /* SecondViewController.m */; };
+		D69202C01AC4C7C0001C1C3D /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D69202BF1AC4C7C0001C1C3D /* Images.xcassets */; };
+		D69202C31AC4C7C0001C1C3D /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = D69202C11AC4C7C0001C1C3D /* LaunchScreen.xib */; };
+		D69202CF1AC4C7C1001C1C3D /* joyyiosTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D69202CE1AC4C7C1001C1C3D /* joyyiosTests.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		D69202C91AC4C7C1001C1C3D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D69202A41AC4C7C0001C1C3D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D69202AB1AC4C7C0001C1C3D;
+			remoteInfo = joyyios;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		47240DA3592328D7C382C992 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
+		8E034C4F8FC61E210B60EDCC /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		D68DAF921AC4CACD00838E7E /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
+		D68DAF931AC4CACD00838E7E /* Constants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Constants.m; sourceTree = "<group>"; };
+		D68DAF941AC4CACD00838E7E /* JYLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYLoginViewController.h; sourceTree = "<group>"; };
+		D68DAF951AC4CACD00838E7E /* JYLoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYLoginViewController.m; sourceTree = "<group>"; };
+		D68DAF981AC4CB0900838E7E /* Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Prefix.pch; path = ../Prefix.pch; sourceTree = "<group>"; };
+		D69202AC1AC4C7C0001C1C3D /* joyyios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = joyyios.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		D69202B01AC4C7C0001C1C3D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D69202B11AC4C7C0001C1C3D /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		D69202B31AC4C7C0001C1C3D /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		D69202B41AC4C7C0001C1C3D /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		D69202B61AC4C7C0001C1C3D /* FirstViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FirstViewController.h; sourceTree = "<group>"; };
+		D69202B71AC4C7C0001C1C3D /* FirstViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FirstViewController.m; sourceTree = "<group>"; };
+		D69202B91AC4C7C0001C1C3D /* SecondViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SecondViewController.h; sourceTree = "<group>"; };
+		D69202BA1AC4C7C0001C1C3D /* SecondViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SecondViewController.m; sourceTree = "<group>"; };
+		D69202BF1AC4C7C0001C1C3D /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		D69202C21AC4C7C0001C1C3D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
+		D69202C81AC4C7C1001C1C3D /* joyyiosTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = joyyiosTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		D69202CD1AC4C7C1001C1C3D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D69202CE1AC4C7C1001C1C3D /* joyyiosTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = joyyiosTests.m; sourceTree = "<group>"; };
+		F67CA15F6F0CAF970CBFB660 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		D69202A91AC4C7C0001C1C3D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				743498E564A05714440866C9 /* libPods.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D69202C51AC4C7C1001C1C3D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		BAFC25926427497A2BE7F7A7 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				47240DA3592328D7C382C992 /* Pods.debug.xcconfig */,
+				F67CA15F6F0CAF970CBFB660 /* Pods.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		D68DAF991AC4CD0800838E7E /* common */ = {
+			isa = PBXGroup;
+			children = (
+				D68DAF921AC4CACD00838E7E /* Constants.h */,
+				D68DAF931AC4CACD00838E7E /* Constants.m */,
+			);
+			name = common;
+			sourceTree = "<group>";
+		};
+		D68DAF9A1AC4CD1800838E7E /* user */ = {
+			isa = PBXGroup;
+			children = (
+				D68DAF941AC4CACD00838E7E /* JYLoginViewController.h */,
+				D68DAF951AC4CACD00838E7E /* JYLoginViewController.m */,
+			);
+			name = user;
+			sourceTree = "<group>";
+		};
+		D69202A31AC4C7C0001C1C3D = {
+			isa = PBXGroup;
+			children = (
+				D69202AE1AC4C7C0001C1C3D /* joyyios */,
+				D69202CB1AC4C7C1001C1C3D /* joyyiosTests */,
+				D69202AD1AC4C7C0001C1C3D /* Products */,
+				BAFC25926427497A2BE7F7A7 /* Pods */,
+				E8953528E7D4E03D9881458B /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		D69202AD1AC4C7C0001C1C3D /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				D69202AC1AC4C7C0001C1C3D /* joyyios.app */,
+				D69202C81AC4C7C1001C1C3D /* joyyiosTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		D69202AE1AC4C7C0001C1C3D /* joyyios */ = {
+			isa = PBXGroup;
+			children = (
+				D68DAF9A1AC4CD1800838E7E /* user */,
+				D68DAF991AC4CD0800838E7E /* common */,
+				D69202B31AC4C7C0001C1C3D /* AppDelegate.h */,
+				D69202B41AC4C7C0001C1C3D /* AppDelegate.m */,
+				D69202B61AC4C7C0001C1C3D /* FirstViewController.h */,
+				D69202B71AC4C7C0001C1C3D /* FirstViewController.m */,
+				D69202B91AC4C7C0001C1C3D /* SecondViewController.h */,
+				D69202BA1AC4C7C0001C1C3D /* SecondViewController.m */,
+				D69202BF1AC4C7C0001C1C3D /* Images.xcassets */,
+				D69202C11AC4C7C0001C1C3D /* LaunchScreen.xib */,
+				D69202AF1AC4C7C0001C1C3D /* Supporting Files */,
+			);
+			path = joyyios;
+			sourceTree = "<group>";
+		};
+		D69202AF1AC4C7C0001C1C3D /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				D68DAF981AC4CB0900838E7E /* Prefix.pch */,
+				D69202B01AC4C7C0001C1C3D /* Info.plist */,
+				D69202B11AC4C7C0001C1C3D /* main.m */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		D69202CB1AC4C7C1001C1C3D /* joyyiosTests */ = {
+			isa = PBXGroup;
+			children = (
+				D69202CE1AC4C7C1001C1C3D /* joyyiosTests.m */,
+				D69202CC1AC4C7C1001C1C3D /* Supporting Files */,
+			);
+			path = joyyiosTests;
+			sourceTree = "<group>";
+		};
+		D69202CC1AC4C7C1001C1C3D /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				D69202CD1AC4C7C1001C1C3D /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		E8953528E7D4E03D9881458B /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				8E034C4F8FC61E210B60EDCC /* libPods.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		D69202AB1AC4C7C0001C1C3D /* joyyios */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D69202D21AC4C7C1001C1C3D /* Build configuration list for PBXNativeTarget "joyyios" */;
+			buildPhases = (
+				78C5DADA68BB4B1A61ED6707 /* Check Pods Manifest.lock */,
+				D69202A81AC4C7C0001C1C3D /* Sources */,
+				D69202A91AC4C7C0001C1C3D /* Frameworks */,
+				D69202AA1AC4C7C0001C1C3D /* Resources */,
+				F05F6610E5D108EE1BB091B1 /* Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = joyyios;
+			productName = joyyios;
+			productReference = D69202AC1AC4C7C0001C1C3D /* joyyios.app */;
+			productType = "com.apple.product-type.application";
+		};
+		D69202C71AC4C7C1001C1C3D /* joyyiosTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D69202D51AC4C7C1001C1C3D /* Build configuration list for PBXNativeTarget "joyyiosTests" */;
+			buildPhases = (
+				D69202C41AC4C7C1001C1C3D /* Sources */,
+				D69202C51AC4C7C1001C1C3D /* Frameworks */,
+				D69202C61AC4C7C1001C1C3D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				D69202CA1AC4C7C1001C1C3D /* PBXTargetDependency */,
+			);
+			name = joyyiosTests;
+			productName = joyyiosTests;
+			productReference = D69202C81AC4C7C1001C1C3D /* joyyiosTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		D69202A41AC4C7C0001C1C3D /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0620;
+				ORGANIZATIONNAME = "Joyy Technologies, Inc";
+				TargetAttributes = {
+					D69202AB1AC4C7C0001C1C3D = {
+						CreatedOnToolsVersion = 6.2;
+					};
+					D69202C71AC4C7C1001C1C3D = {
+						CreatedOnToolsVersion = 6.2;
+						TestTargetID = D69202AB1AC4C7C0001C1C3D;
+					};
+				};
+			};
+			buildConfigurationList = D69202A71AC4C7C0001C1C3D /* Build configuration list for PBXProject "joyyios" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = D69202A31AC4C7C0001C1C3D;
+			productRefGroup = D69202AD1AC4C7C0001C1C3D /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				D69202AB1AC4C7C0001C1C3D /* joyyios */,
+				D69202C71AC4C7C1001C1C3D /* joyyiosTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		D69202AA1AC4C7C0001C1C3D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D69202C31AC4C7C0001C1C3D /* LaunchScreen.xib in Resources */,
+				D69202C01AC4C7C0001C1C3D /* Images.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D69202C61AC4C7C1001C1C3D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		78C5DADA68BB4B1A61ED6707 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		F05F6610E5D108EE1BB091B1 /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		D69202A81AC4C7C0001C1C3D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D68DAF961AC4CACD00838E7E /* Constants.m in Sources */,
+				D69202BB1AC4C7C0001C1C3D /* SecondViewController.m in Sources */,
+				D69202B51AC4C7C0001C1C3D /* AppDelegate.m in Sources */,
+				D69202B81AC4C7C0001C1C3D /* FirstViewController.m in Sources */,
+				D69202B21AC4C7C0001C1C3D /* main.m in Sources */,
+				D68DAF971AC4CACD00838E7E /* JYLoginViewController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D69202C41AC4C7C1001C1C3D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D69202CF1AC4C7C1001C1C3D /* joyyiosTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		D69202CA1AC4C7C1001C1C3D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D69202AB1AC4C7C0001C1C3D /* joyyios */;
+			targetProxy = D69202C91AC4C7C1001C1C3D /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		D69202C11AC4C7C0001C1C3D /* LaunchScreen.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				D69202C21AC4C7C0001C1C3D /* Base */,
+			);
+			name = LaunchScreen.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		D69202D01AC4C7C1001C1C3D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		D69202D11AC4C7C1001C1C3D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		D69202D31AC4C7C1001C1C3D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 47240DA3592328D7C382C992 /* Pods.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				GCC_PREFIX_HEADER = Prefix.pch;
+				INFOPLIST_FILE = joyyios/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		D69202D41AC4C7C1001C1C3D /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = F67CA15F6F0CAF970CBFB660 /* Pods.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				GCC_PREFIX_HEADER = Prefix.pch;
+				INFOPLIST_FILE = joyyios/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		D69202D61AC4C7C1001C1C3D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = joyyiosTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/joyyios.app/joyyios";
+			};
+			name = Debug;
+		};
+		D69202D71AC4C7C1001C1C3D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = joyyiosTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/joyyios.app/joyyios";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		D69202A71AC4C7C0001C1C3D /* Build configuration list for PBXProject "joyyios" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D69202D01AC4C7C1001C1C3D /* Debug */,
+				D69202D11AC4C7C1001C1C3D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D69202D21AC4C7C1001C1C3D /* Build configuration list for PBXNativeTarget "joyyios" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D69202D31AC4C7C1001C1C3D /* Debug */,
+				D69202D41AC4C7C1001C1C3D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D69202D51AC4C7C1001C1C3D /* Build configuration list for PBXNativeTarget "joyyiosTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D69202D61AC4C7C1001C1C3D /* Debug */,
+				D69202D71AC4C7C1001C1C3D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = D69202A41AC4C7C0001C1C3D /* Project object */;
+}
