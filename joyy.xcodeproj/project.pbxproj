@@ -199,6 +199,7 @@
 				TargetAttributes = {
 					D67C59F61AC3672400CB4AA6 = {
 						CreatedOnToolsVersion = 6.2;
+						DevelopmentTeam = 4F23HD53FY;
 					};
 					D67C5A121AC3672400CB4AA6 = {
 						CreatedOnToolsVersion = 6.2;
@@ -415,6 +416,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -427,6 +429,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
