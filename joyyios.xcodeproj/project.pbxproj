@@ -8,8 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		743498E564A05714440866C9 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8E034C4F8FC61E210B60EDCC /* libPods.a */; };
+		D63B69A91AC51302005600A9 /* UIFont+SytemFontOverride.m in Sources */ = {isa = PBXBuildFile; fileRef = D63B69A81AC51302005600A9 /* UIFont+SytemFontOverride.m */; };
+		D63B69AA1AC51302005600A9 /* UIFont+SytemFontOverride.m in Sources */ = {isa = PBXBuildFile; fileRef = D63B69A81AC51302005600A9 /* UIFont+SytemFontOverride.m */; };
+		D63B69B21AC51D61005600A9 /* JYSignBaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D63B69B11AC51D61005600A9 /* JYSignBaseViewController.m */; };
+		D63B69B31AC51D61005600A9 /* JYSignBaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D63B69B11AC51D61005600A9 /* JYSignBaseViewController.m */; };
 		D68DAF961AC4CACD00838E7E /* Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = D68DAF931AC4CACD00838E7E /* Constants.m */; };
-		D68DAF971AC4CACD00838E7E /* JYLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D68DAF951AC4CACD00838E7E /* JYLoginViewController.m */; };
+		D68DAF971AC4CACD00838E7E /* JYSignInViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D68DAF951AC4CACD00838E7E /* JYSignInViewController.m */; };
 		D69202B21AC4C7C0001C1C3D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = D69202B11AC4C7C0001C1C3D /* main.m */; };
 		D69202B51AC4C7C0001C1C3D /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D69202B41AC4C7C0001C1C3D /* AppDelegate.m */; };
 		D69202B81AC4C7C0001C1C3D /* FirstViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D69202B71AC4C7C0001C1C3D /* FirstViewController.m */; };
@@ -32,10 +36,14 @@
 /* Begin PBXFileReference section */
 		47240DA3592328D7C382C992 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		8E034C4F8FC61E210B60EDCC /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		D63B69A71AC51302005600A9 /* UIFont+SytemFontOverride.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIFont+SytemFontOverride.h"; sourceTree = "<group>"; };
+		D63B69A81AC51302005600A9 /* UIFont+SytemFontOverride.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIFont+SytemFontOverride.m"; sourceTree = "<group>"; };
+		D63B69B01AC51D61005600A9 /* JYSignBaseViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYSignBaseViewController.h; sourceTree = "<group>"; };
+		D63B69B11AC51D61005600A9 /* JYSignBaseViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYSignBaseViewController.m; sourceTree = "<group>"; };
 		D68DAF921AC4CACD00838E7E /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
 		D68DAF931AC4CACD00838E7E /* Constants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Constants.m; sourceTree = "<group>"; };
-		D68DAF941AC4CACD00838E7E /* JYLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYLoginViewController.h; sourceTree = "<group>"; };
-		D68DAF951AC4CACD00838E7E /* JYLoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYLoginViewController.m; sourceTree = "<group>"; };
+		D68DAF941AC4CACD00838E7E /* JYSignInViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYSignInViewController.h; sourceTree = "<group>"; };
+		D68DAF951AC4CACD00838E7E /* JYSignInViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYSignInViewController.m; sourceTree = "<group>"; };
 		D68DAF981AC4CB0900838E7E /* Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Prefix.pch; path = ../Prefix.pch; sourceTree = "<group>"; };
 		D69202AC1AC4C7C0001C1C3D /* joyyios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = joyyios.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D69202B01AC4C7C0001C1C3D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -82,22 +90,33 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
-		D68DAF991AC4CD0800838E7E /* common */ = {
+		D63B69AB1AC5184D005600A9 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Components;
+			sourceTree = "<group>";
+		};
+		D68DAF991AC4CD0800838E7E /* Common */ = {
 			isa = PBXGroup;
 			children = (
 				D68DAF921AC4CACD00838E7E /* Constants.h */,
 				D68DAF931AC4CACD00838E7E /* Constants.m */,
+				D63B69A71AC51302005600A9 /* UIFont+SytemFontOverride.h */,
+				D63B69A81AC51302005600A9 /* UIFont+SytemFontOverride.m */,
 			);
-			name = common;
+			name = Common;
 			sourceTree = "<group>";
 		};
-		D68DAF9A1AC4CD1800838E7E /* user */ = {
+		D68DAF9A1AC4CD1800838E7E /* User */ = {
 			isa = PBXGroup;
 			children = (
-				D68DAF941AC4CACD00838E7E /* JYLoginViewController.h */,
-				D68DAF951AC4CACD00838E7E /* JYLoginViewController.m */,
+				D63B69B01AC51D61005600A9 /* JYSignBaseViewController.h */,
+				D63B69B11AC51D61005600A9 /* JYSignBaseViewController.m */,
+				D68DAF941AC4CACD00838E7E /* JYSignInViewController.h */,
+				D68DAF951AC4CACD00838E7E /* JYSignInViewController.m */,
 			);
-			name = user;
+			name = User;
 			sourceTree = "<group>";
 		};
 		D69202A31AC4C7C0001C1C3D = {
@@ -123,8 +142,9 @@
 		D69202AE1AC4C7C0001C1C3D /* joyyios */ = {
 			isa = PBXGroup;
 			children = (
-				D68DAF991AC4CD0800838E7E /* common */,
-				D68DAF9A1AC4CD1800838E7E /* user */,
+				D63B69AB1AC5184D005600A9 /* Components */,
+				D68DAF991AC4CD0800838E7E /* Common */,
+				D68DAF9A1AC4CD1800838E7E /* User */,
 				D69202B31AC4C7C0001C1C3D /* AppDelegate.h */,
 				D69202B41AC4C7C0001C1C3D /* AppDelegate.m */,
 				D69202B61AC4C7C0001C1C3D /* FirstViewController.h */,
@@ -308,11 +328,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				D68DAF961AC4CACD00838E7E /* Constants.m in Sources */,
+				D63B69B21AC51D61005600A9 /* JYSignBaseViewController.m in Sources */,
 				D69202BB1AC4C7C0001C1C3D /* SecondViewController.m in Sources */,
 				D69202B51AC4C7C0001C1C3D /* AppDelegate.m in Sources */,
 				D69202B81AC4C7C0001C1C3D /* FirstViewController.m in Sources */,
 				D69202B21AC4C7C0001C1C3D /* main.m in Sources */,
-				D68DAF971AC4CACD00838E7E /* JYLoginViewController.m in Sources */,
+				D63B69A91AC51302005600A9 /* UIFont+SytemFontOverride.m in Sources */,
+				D68DAF971AC4CACD00838E7E /* JYSignInViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -320,7 +342,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D63B69AA1AC51302005600A9 /* UIFont+SytemFontOverride.m in Sources */,
 				D69202CF1AC4C7C1001C1C3D /* joyyiosTests.m in Sources */,
+				D63B69B31AC51D61005600A9 /* JYSignBaseViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -448,12 +472,14 @@
 		};
 		D69202D61AC4C7C1001C1C3D /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 47240DA3592328D7C382C992 /* Pods.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
 				);
+				GCC_PREFIX_HEADER = Prefix.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -467,12 +493,14 @@
 		};
 		D69202D71AC4C7C1001C1C3D /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = F67CA15F6F0CAF970CBFB660 /* Pods.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
 				);
+				GCC_PREFIX_HEADER = Prefix.pch;
 				INFOPLIST_FILE = joyyiosTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";

@@ -19,8 +19,6 @@
 
 #import "Constants.h"
 #import "ChameleonFramework/Chameleon.h"
-#import "JVFloatLabeledTextField.h"
-#import "JVFloatLabeledTextView.h"
 
 
 #endif

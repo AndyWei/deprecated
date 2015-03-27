@@ -10,12 +10,10 @@
 #define joyy_Constants_h
 
 extern const CGFloat kJVFieldHeight;
-extern const CGFloat kJVFieldHMargin;
-
+extern const CGFloat kJVFieldXMargin;
 extern const CGFloat kJVFieldFontSize;
-
 extern const CGFloat kJVFieldFloatingLabelFontSize;
 
-extern NSString *const kAPIBaseUrl;
+extern NSString *const kUrlApiBase;
 
 #endif
