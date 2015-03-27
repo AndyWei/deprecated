@@ -14,10 +14,14 @@
 
 #ifdef __OBJC__
 
-#import <UIKit/UIKit.h>
 #import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
+
 #import "Constants.h"
+#import "ChameleonFramework/Chameleon.h"
+#import "JVFloatLabeledTextField.h"
+#import "JVFloatLabeledTextView.h"
+
 
 #endif
-
 #endif

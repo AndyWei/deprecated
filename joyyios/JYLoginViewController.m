@@ -7,8 +7,6 @@
 //
 
 
-#import "JVFloatLabeledTextField.h"
-#import "JVFloatLabeledTextView.h"
 #import "JYLoginViewController.h"
 
 
@@ -30,7 +28,7 @@
                  + self.navigationController.navigationBar.frame.size.height);
 #endif
 
-    UIColor *floatingLabelColor = [UIColor brownColor];
+    UIColor *floatingLabelColor = FlatGreen;
 
     JVFloatLabeledTextField *titleField = [[JVFloatLabeledTextField alloc] initWithFrame:
                                            CGRectMake(kJVFieldHMargin,

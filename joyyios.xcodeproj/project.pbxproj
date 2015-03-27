@@ -123,8 +123,8 @@
 		D69202AE1AC4C7C0001C1C3D /* joyyios */ = {
 			isa = PBXGroup;
 			children = (
-				D68DAF9A1AC4CD1800838E7E /* user */,
 				D68DAF991AC4CD0800838E7E /* common */,
+				D68DAF9A1AC4CD1800838E7E /* user */,
 				D69202B31AC4C7C0001C1C3D /* AppDelegate.h */,
 				D69202B41AC4C7C0001C1C3D /* AppDelegate.m */,
 				D69202B61AC4C7C0001C1C3D /* FirstViewController.h */,

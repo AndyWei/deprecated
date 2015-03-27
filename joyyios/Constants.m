@@ -8,13 +8,13 @@
 
 #import <Foundation/Foundation.h>
 
-const CGFloat kJVFieldHeight = 44.0f;
+const CGFloat kJVFieldHeight = 80.0f;
 const CGFloat kJVFieldHMargin = 10.0f;
 
-const CGFloat kJVFieldFontSize = 16.0f;
+const CGFloat kJVFieldFontSize = 30.0f;
 
 const CGFloat kJVFieldFloatingLabelFontSize = 11.0f;
 
 
 
-NSString *const kAPIBaseUrl = @"http://api.joyyapp.com/v1/";
+NSString *const kUrlApiBase = @"http://api.joyyapp.com/v1/";
