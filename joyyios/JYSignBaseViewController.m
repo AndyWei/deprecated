@@ -26,8 +26,6 @@
     CGFloat topOffset = 2 * ([[UIApplication sharedApplication] statusBarFrame].size.height + self.navigationController.navigationBar.frame.size.height);
 
 
-    UIColor *floatingLabelColor = FlatGreen;
-
     JYFloatLabeledTextField *emailField = [[JYFloatLabeledTextField alloc] initWithFrame:
                                            CGRectMake(kJVFieldXMargin,
                                                       topOffset,
@@ -37,13 +35,11 @@
     emailField.attributedPlaceholder = [[NSAttributedString alloc] initWithString: NSLocalizedString(@"Email", @"")attributes: @{NSForegroundColorAttributeName: FlatGrayDark}];
 
     emailField.font = [UIFont systemFontOfSize: kJVFieldFontSize];
-    emailField.floatingLabel.font = [UIFont systemFontOfSize:kJVFieldFloatingLabelFontSize];
-    emailField.floatingLabelTextColor = floatingLabelColor;
-    emailField.keyboardType = UIKeyboardTypeEmailAddress;
-    emailField.clearButtonMode = UITextFieldViewModeWhileEditing;
     emailField.autocompleteDataSource = [JYAutoCompleteDataSource sharedDataSource];
     emailField.autocompleteType = JYAutoCompleteTypeEmail;
-
+    emailField.floatingLabel.font = [UIFont systemFontOfSize:kJVFieldFloatingLabelFontSize];
+    emailField.keyboardType = UIKeyboardTypeEmailAddress;
+    
     [self.view addSubview:emailField];
 
     UIView *partingLine = [UIView new];
@@ -62,10 +58,7 @@
 
     passwordField.font = [UIFont systemFontOfSize:kJVFieldFontSize];
     passwordField.floatingLabel.font = [UIFont systemFontOfSize:kJVFieldFloatingLabelFontSize];
-    passwordField.floatingLabelTextColor = floatingLabelColor;
     passwordField.secureTextEntry = YES;
-    passwordField.clearButtonMode = UITextFieldViewModeWhileEditing;
-    passwordField.autocompleteDisabled = YES;
 
     [self.view addSubview:passwordField];
 

@@ -34,9 +34,9 @@
 
 
 
-#import "HTAutocompleteTextField.h"
+#import "JYAutocompleteTextField.h"
 
-@interface JYFloatLabeledTextField : HTAutocompleteTextField
+@interface JYFloatLabeledTextField : JYAutocompleteTextField
 
 /**
  * Read-only access to the floating label.
@@ -64,7 +64,7 @@
 
 /**
  * Text color to be applied to the floating label. 
- * Defaults to `[UIColor grayColor]`.
+ * Defaults to `FlatGreen`.
  * Provided for the convenience of using as an appearance proxy.
  */
 @property (nonatomic, strong) UIColor * floatingLabelTextColor UI_APPEARANCE_SELECTOR;
@@ -74,6 +74,13 @@
  * Tint color is used by default if an `floatingLabelActiveTextColor` is not provided.
  */
 @property (nonatomic, strong) UIColor * floatingLabelActiveTextColor UI_APPEARANCE_SELECTOR;
+
+/**
+ * Text color to be applied to the floating label while the field contains invalid text
+ * that doesn't match the autocompleteType.
+ * Defaults to `FlatRed`.
+ */
+@property (nonatomic, strong) UIColor * floatingLabelInvalidTextColor UI_APPEARANCE_SELECTOR;
 
 /**
  * Indicates whether the floating label's appearance should be animated regardless of first responder status.

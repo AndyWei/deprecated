@@ -18,12 +18,6 @@
 #define COCOAPODS_VERSION_MINOR_ChameleonFramework 1
 #define COCOAPODS_VERSION_PATCH_ChameleonFramework 2
 
-// HTAutocompleteTextField
-#define COCOAPODS_POD_AVAILABLE_HTAutocompleteTextField
-#define COCOAPODS_VERSION_MAJOR_HTAutocompleteTextField 1
-#define COCOAPODS_VERSION_MINOR_HTAutocompleteTextField 3
-#define COCOAPODS_VERSION_PATCH_HTAutocompleteTextField 2
-
 // ISO8601DateFormatterValueTransformer
 #define COCOAPODS_POD_AVAILABLE_ISO8601DateFormatterValueTransformer
 #define COCOAPODS_VERSION_MAJOR_ISO8601DateFormatterValueTransformer 0

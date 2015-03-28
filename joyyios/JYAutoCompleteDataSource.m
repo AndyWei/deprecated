@@ -25,7 +25,7 @@ static JYAutoCompleteDataSource *sharedDataSource;
 
 #pragma mark - HTAutocompleteTextFieldDelegate
 
-- (NSString *)textField:(HTAutocompleteTextField *)textField
+- (NSString *)textField:(JYAutocompleteTextField *)textField
     completionForPrefix:(NSString *)prefix
              ignoreCase:(BOOL)ignoreCase
 {
