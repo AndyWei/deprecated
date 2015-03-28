@@ -7,11 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		665FCD8CB532AA82E3F40351 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8E034C4F8FC61E210B60EDCC /* libPods.a */; };
 		743498E564A05714440866C9 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8E034C4F8FC61E210B60EDCC /* libPods.a */; };
 		D63B69A91AC51302005600A9 /* UIFont+SytemFontOverride.m in Sources */ = {isa = PBXBuildFile; fileRef = D63B69A81AC51302005600A9 /* UIFont+SytemFontOverride.m */; };
 		D63B69AA1AC51302005600A9 /* UIFont+SytemFontOverride.m in Sources */ = {isa = PBXBuildFile; fileRef = D63B69A81AC51302005600A9 /* UIFont+SytemFontOverride.m */; };
 		D63B69B21AC51D61005600A9 /* JYSignBaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D63B69B11AC51D61005600A9 /* JYSignBaseViewController.m */; };
 		D63B69B31AC51D61005600A9 /* JYSignBaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D63B69B11AC51D61005600A9 /* JYSignBaseViewController.m */; };
+		D63B69B61AC53BB4005600A9 /* JYFloatLabeledTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = D63B69B51AC53BB4005600A9 /* JYFloatLabeledTextField.m */; };
+		D63B69B71AC53BB4005600A9 /* JYFloatLabeledTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = D63B69B51AC53BB4005600A9 /* JYFloatLabeledTextField.m */; };
+		D63B69BA1AC624F8005600A9 /* JYAutoCompleteDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = D63B69B91AC624F8005600A9 /* JYAutoCompleteDataSource.m */; };
+		D63B69BB1AC624F8005600A9 /* JYAutoCompleteDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = D63B69B91AC624F8005600A9 /* JYAutoCompleteDataSource.m */; };
 		D68DAF961AC4CACD00838E7E /* Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = D68DAF931AC4CACD00838E7E /* Constants.m */; };
 		D68DAF971AC4CACD00838E7E /* JYSignInViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D68DAF951AC4CACD00838E7E /* JYSignInViewController.m */; };
 		D69202B21AC4C7C0001C1C3D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = D69202B11AC4C7C0001C1C3D /* main.m */; };
@@ -40,6 +45,10 @@
 		D63B69A81AC51302005600A9 /* UIFont+SytemFontOverride.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIFont+SytemFontOverride.m"; sourceTree = "<group>"; };
 		D63B69B01AC51D61005600A9 /* JYSignBaseViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYSignBaseViewController.h; sourceTree = "<group>"; };
 		D63B69B11AC51D61005600A9 /* JYSignBaseViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYSignBaseViewController.m; sourceTree = "<group>"; };
+		D63B69B41AC53BB4005600A9 /* JYFloatLabeledTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYFloatLabeledTextField.h; sourceTree = "<group>"; };
+		D63B69B51AC53BB4005600A9 /* JYFloatLabeledTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYFloatLabeledTextField.m; sourceTree = "<group>"; };
+		D63B69B81AC624F8005600A9 /* JYAutoCompleteDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYAutoCompleteDataSource.h; sourceTree = "<group>"; };
+		D63B69B91AC624F8005600A9 /* JYAutoCompleteDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYAutoCompleteDataSource.m; sourceTree = "<group>"; };
 		D68DAF921AC4CACD00838E7E /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
 		D68DAF931AC4CACD00838E7E /* Constants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Constants.m; sourceTree = "<group>"; };
 		D68DAF941AC4CACD00838E7E /* JYSignInViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYSignInViewController.h; sourceTree = "<group>"; };
@@ -75,6 +84,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				665FCD8CB532AA82E3F40351 /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -93,6 +103,10 @@
 		D63B69AB1AC5184D005600A9 /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				D63B69B41AC53BB4005600A9 /* JYFloatLabeledTextField.h */,
+				D63B69B51AC53BB4005600A9 /* JYFloatLabeledTextField.m */,
+				D63B69B81AC624F8005600A9 /* JYAutoCompleteDataSource.h */,
+				D63B69B91AC624F8005600A9 /* JYAutoCompleteDataSource.m */,
 			);
 			name = Components;
 			sourceTree = "<group>";
@@ -219,9 +233,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = D69202D51AC4C7C1001C1C3D /* Build configuration list for PBXNativeTarget "joyyiosTests" */;
 			buildPhases = (
+				477902B1FC156F46C902BA80 /* Check Pods Manifest.lock */,
 				D69202C41AC4C7C1001C1C3D /* Sources */,
 				D69202C51AC4C7C1001C1C3D /* Frameworks */,
 				D69202C61AC4C7C1001C1C3D /* Resources */,
+				26935E602DC75A73355956DF /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -290,6 +306,36 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		26935E602DC75A73355956DF /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		477902B1FC156F46C902BA80 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
 		78C5DADA68BB4B1A61ED6707 /* Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -328,10 +374,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				D68DAF961AC4CACD00838E7E /* Constants.m in Sources */,
+				D63B69BA1AC624F8005600A9 /* JYAutoCompleteDataSource.m in Sources */,
 				D63B69B21AC51D61005600A9 /* JYSignBaseViewController.m in Sources */,
 				D69202BB1AC4C7C0001C1C3D /* SecondViewController.m in Sources */,
 				D69202B51AC4C7C0001C1C3D /* AppDelegate.m in Sources */,
 				D69202B81AC4C7C0001C1C3D /* FirstViewController.m in Sources */,
+				D63B69B61AC53BB4005600A9 /* JYFloatLabeledTextField.m in Sources */,
 				D69202B21AC4C7C0001C1C3D /* main.m in Sources */,
 				D63B69A91AC51302005600A9 /* UIFont+SytemFontOverride.m in Sources */,
 				D68DAF971AC4CACD00838E7E /* JYSignInViewController.m in Sources */,
@@ -343,8 +391,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				D63B69AA1AC51302005600A9 /* UIFont+SytemFontOverride.m in Sources */,
+				D63B69BB1AC624F8005600A9 /* JYAutoCompleteDataSource.m in Sources */,
 				D69202CF1AC4C7C1001C1C3D /* joyyiosTests.m in Sources */,
 				D63B69B31AC51D61005600A9 /* JYSignBaseViewController.m in Sources */,
+				D63B69B71AC53BB4005600A9 /* JYFloatLabeledTextField.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

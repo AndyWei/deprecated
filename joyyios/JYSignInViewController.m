@@ -6,8 +6,7 @@
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
-#import "JVFloatLabeledTextField.h"
-#import "JVFloatLabeledTextView.h"
+
 #import "JYSignInViewController.h"
 
 @interface JYSignInViewController ()
