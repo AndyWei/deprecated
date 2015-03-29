@@ -6,8 +6,9 @@
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
 
 @interface UIFont (SytemFontOverride)
+
++ (UIFont *)lightSystemFontOfSize:(CGFloat)size;
 
 @end

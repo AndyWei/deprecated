@@ -19,7 +19,7 @@
 
 #import "Constants.h"
 #import "ChameleonFramework/Chameleon.h"
-
+#import "UIFont+SytemFontOverride.h"
 
 #endif
 #endif

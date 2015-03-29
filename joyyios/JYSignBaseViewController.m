@@ -9,6 +9,7 @@
 #import "JYAutoCompleteDataSource.h"
 #import "JYFloatLabeledTextField.h"
 #import "JYSignBaseViewController.h"
+#import "MRoundedButton.h"
 
 @interface JYSignBaseViewController ()
 
@@ -20,51 +21,97 @@
 {
     [super viewDidLoad];
 
-    self.title = NSLocalizedString(@"Sign In", @"");
     self.view.tintColor = FlatSkyBlue;
 
-    CGFloat topOffset = 200;
+    _emailField = [[JYFloatLabeledTextField alloc]
+        initWithFrame:CGRectMake(kSignFieldXMargin, kSignViewTopOffset, self.view.frame.size.width - 2 * kSignFieldXMargin, kSignFieldHeight)];
 
-    JYFloatLabeledTextField *emailField = [[JYFloatLabeledTextField alloc]
-        initWithFrame:CGRectMake(kJVFieldXMargin, topOffset, self.view.frame.size.width - 2 * kJVFieldXMargin, kJVFieldHeight)];
+    _emailField.attributedPlaceholder =
+        [[NSAttributedString alloc] initWithString:NSLocalizedString(@"Email", nil)
+                                        attributes:@{NSForegroundColorAttributeName:FlatGrayDark}];
 
-    emailField.attributedPlaceholder =
-        [[NSAttributedString alloc] initWithString:NSLocalizedString(@"Email", @"") attributes:@{NSForegroundColorAttributeName : FlatGrayDark}];
+    _emailField.autocompleteDataSource = [JYAutoCompleteDataSource sharedDataSource];
+    _emailField.autocompleteType = JYAutoCompleteTypeEmail;
+    _emailField.delegate = self;
+    _emailField.floatingLabel.font = [UIFont systemFontOfSize:kSignFieldFloatingLabelFontSize];
+    _emailField.font = [UIFont systemFontOfSize:kSignFieldFontSize];
+    _emailField.keyboardType = UIKeyboardTypeEmailAddress;
+    _emailField.returnKeyType = UIReturnKeyNext;
 
-    emailField.font = [UIFont systemFontOfSize:kJVFieldFontSize];
-    emailField.autocompleteDataSource = [JYAutoCompleteDataSource sharedDataSource];
-    emailField.autocompleteType = JYAutoCompleteTypeEmail;
-    emailField.floatingLabel.font = [UIFont systemFontOfSize:kJVFieldFloatingLabelFontSize];
-    emailField.keyboardType = UIKeyboardTypeEmailAddress;
-
-    [self.view addSubview:emailField];
+    [self.view addSubview:_emailField];
 
     UIView *partingLine = [UIView new];
     partingLine.frame =
-        CGRectMake(kJVFieldXMargin, emailField.frame.origin.y + emailField.frame.size.height, self.view.frame.size.width - 2 * kJVFieldXMargin, 1.0f);
+        CGRectMake(kSignFieldXMargin, _emailField.frame.origin.y + _emailField.frame.size.height, self.view.frame.size.width - 2 * kSignFieldXMargin, 1.0f);
     partingLine.backgroundColor = [[UIColor lightGrayColor] colorWithAlphaComponent:0.3f];
     [self.view addSubview:partingLine];
 
-    JYFloatLabeledTextField *passwordField =
-        [[JYFloatLabeledTextField alloc] initWithFrame:CGRectMake(kJVFieldXMargin, partingLine.frame.origin.y + partingLine.frame.size.height,
-                                                                  self.view.frame.size.width - 2 * kJVFieldXMargin, kJVFieldHeight)];
+    _passwordField =
+        [[JYFloatLabeledTextField alloc] initWithFrame:CGRectMake(kSignFieldXMargin, partingLine.frame.origin.y + partingLine.frame.size.height,
+                                                                  self.view.frame.size.width - 2 * kSignFieldXMargin, kSignFieldHeight)];
 
-    passwordField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"Password", @"")
-                                                                          attributes:@{NSForegroundColorAttributeName : FlatGray}];
+    _passwordField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"Password", nil)
+                                                                          attributes:@{NSForegroundColorAttributeName:FlatGray}];
+    _passwordField.delegate = self;
+    _passwordField.floatingLabel.font = [UIFont systemFontOfSize:kSignFieldFloatingLabelFontSize];
+    _passwordField.font = [UIFont systemFontOfSize:kSignFieldFontSize];
+    _passwordField.returnKeyType = UIReturnKeyDone;
+    _passwordField.secureTextEntry = YES;
 
-    passwordField.font = [UIFont systemFontOfSize:kJVFieldFontSize];
-    passwordField.floatingLabel.font = [UIFont systemFontOfSize:kJVFieldFloatingLabelFontSize];
-    passwordField.secureTextEntry = YES;
+    [self.view addSubview:_passwordField];
 
-    [self.view addSubview:passwordField];
+    CGRect signButtonFrame = CGRectMake((self.view.frame.size.width - kSignButtonWidth) / 2,
+                                          self.passwordField.frame.origin.y + self.passwordField.frame.size.height, kSignButtonWidth, kSignButtonWidth);
 
-    [emailField becomeFirstResponder];
+    _signButton = [[MRoundedButton alloc] initWithFrame:signButtonFrame buttonStyle:MRoundedButtonDefault];
+    _signButton.backgroundColor = [UIColor clearColor];
+    _signButton.borderColor = FlatGreen;
+    _signButton.borderWidth = 2;
+    _signButton.contentColor = FlatGreen;
+    _signButton.contentAnimateToColor = FlatWhite;
+    _signButton.cornerRadius = kSignButtonWidth;
+    _signButton.foregroundAnimateToColor = FlatGreen;
+    _signButton.textLabel.font = [UIFont boldSystemFontOfSize:kSignFieldFontSize];
+
+    [self.view addSubview:_signButton];
+
+    [_emailField becomeFirstResponder];
 }
 
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void)touchSignButton
+{
+    _signButton.selected = YES;
+    [self signButtonTouched];
+    _signButton.selected = NO;
+}
+
+- (void)signButtonTouched
+{
+    NSAssert(NO, @"The signButtonTouched method in the base clasee should never been called");
+}
+
+#pragma mark - UITextFieldDelegate
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    if (textField == _emailField) {
+        [_emailField resignFirstResponder];
+        [_passwordField becomeFirstResponder];
+        return NO;
+    }
+    else if (textField == _passwordField)
+    {
+        [_passwordField resignFirstResponder];
+        [self touchSignButton];
+        return NO;
+    }
+
+    return YES;
 }
 
 @end

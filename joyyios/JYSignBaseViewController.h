@@ -6,6 +6,18 @@
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
-@interface JYSignBaseViewController : UIViewController
+@class JYFloatLabeledTextField;
+@class MRoundedButton;
+
+@interface JYSignBaseViewController : UIViewController<UITextFieldDelegate>
+
+@property(nonatomic, strong, readonly) JYFloatLabeledTextField *emailField;
+@property(nonatomic, strong, readonly) JYFloatLabeledTextField *passwordField;
+@property(nonatomic, strong, readonly) MRoundedButton *signButton;
+
+/*
+ * Subclassing:
+ */
+- (void)signButtonTouched;  // Override to handle signButton touched event. Don't call super.
 
 @end

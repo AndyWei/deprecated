@@ -6,7 +6,9 @@
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
+#import "JYFloatLabeledTextField.h"
 #import "JYSignInViewController.h"
+#import "MRoundedButton.h"
 
 @interface JYSignInViewController ()
 
@@ -18,13 +20,28 @@
 {
     [super viewDidLoad];
 
-    self.title = NSLocalizedString(@"Sign In", @"");
+    NSString *signIn = NSLocalizedString(@"Sign In", nil);
+    self.title = signIn;
+
+    self.signButton.textLabel.text = signIn;
+
+    [self.signButton addTarget:self action:@selector(_signIn) forControlEvents:UIControlEventTouchUpInside];
 }
 
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void)signButtonTouched
+{
+    [self _signIn];
+}
+
+- (void)_signIn
+{
+    NSLog(@"Sign in called!!!");
 }
 
 @end

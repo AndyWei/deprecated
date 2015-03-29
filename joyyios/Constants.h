@@ -9,10 +9,13 @@
 #ifndef joyy_Constants_h
 #define joyy_Constants_h
 
-extern const CGFloat kJVFieldHeight;
-extern const CGFloat kJVFieldXMargin;
-extern const CGFloat kJVFieldFontSize;
-extern const CGFloat kJVFieldFloatingLabelFontSize;
+extern const CGFloat kSignButtonWidth;
+extern const CGFloat kSignFieldFloatingLabelFontSize;
+extern const CGFloat kSignFieldFontSize;
+extern const CGFloat kSignFieldHeight;
+extern const CGFloat kSignFieldXMargin;
+
+extern const CGFloat kSignViewTopOffset;
 
 extern NSString *const kUrlApiBase;
 
