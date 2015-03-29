@@ -9,7 +9,7 @@
 @class JYFloatLabeledTextField;
 @class MRoundedButton;
 
-@interface JYSignBaseViewController : UIViewController<UITextFieldDelegate>
+@interface JYSignBaseViewController : UIViewController <UITextFieldDelegate>
 
 @property(nonatomic, strong, readonly) JYFloatLabeledTextField *emailField;
 @property(nonatomic, strong, readonly) JYFloatLabeledTextField *passwordField;
@@ -18,6 +18,6 @@
 /*
  * Subclassing:
  */
-- (void)signButtonTouched;  // Override to handle signButton touched event. Don't call super.
+- (void)signButtonTouched; // Override to handle signButton touched event. Don't call super.
 
 @end
