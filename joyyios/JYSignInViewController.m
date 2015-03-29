@@ -6,7 +6,6 @@
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
-
 #import "JYSignInViewController.h"
 
 @interface JYSignInViewController ()
@@ -27,6 +26,5 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
-
 
 @end

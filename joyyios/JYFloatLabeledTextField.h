@@ -5,7 +5,6 @@
 //  Forked and modified by Ping Yang on 3/26/15 from Github project: JVFloatLabeledTextField
 //  Below is the original license:
 
-
 //  The MIT License (MIT)
 //
 //  Copyright (c) 2013-2015 Jared Verdi
@@ -31,9 +30,6 @@
 //
 //  ---------------------------The end of the original license--------------------
 
-
-
-
 #import "JYAutocompleteTextField.h"
 
 @interface JYFloatLabeledTextField : JYAutocompleteTextField
@@ -41,72 +37,72 @@
 /**
  * Read-only access to the floating label.
  */
-@property (nonatomic, strong, readonly) UILabel * floatingLabel;
+@property(nonatomic, strong, readonly) UILabel *floatingLabel;
 
 /**
  * Padding to be applied to the y coordinate of the floating label upon presentation.
  * Defaults to zero.
  */
-@property (nonatomic) CGFloat floatingLabelYPadding UI_APPEARANCE_SELECTOR;
+@property(nonatomic) CGFloat floatingLabelYPadding UI_APPEARANCE_SELECTOR;
 
 /**
  * Padding to be applied to the y coordinate of the placeholder.
  * Defaults to zero.
  */
-@property (nonatomic) CGFloat placeholderYPadding UI_APPEARANCE_SELECTOR;
+@property(nonatomic) CGFloat placeholderYPadding UI_APPEARANCE_SELECTOR;
 
 /**
- * Font to be applied to the floating label. 
+ * Font to be applied to the floating label.
  * Defaults to `[UIFont boldSystemFontOfSize:12.0f]`.
  * Provided for the convenience of using as an appearance proxy.
  */
-@property (nonatomic, strong) UIFont * floatingLabelFont UI_APPEARANCE_SELECTOR;
+@property(nonatomic, strong) UIFont *floatingLabelFont UI_APPEARANCE_SELECTOR;
 
 /**
- * Text color to be applied to the floating label. 
+ * Text color to be applied to the floating label.
  * Defaults to `FlatGreen`.
  * Provided for the convenience of using as an appearance proxy.
  */
-@property (nonatomic, strong) UIColor * floatingLabelTextColor UI_APPEARANCE_SELECTOR;
+@property(nonatomic, strong) UIColor *floatingLabelTextColor UI_APPEARANCE_SELECTOR;
 
 /**
  * Text color to be applied to the floating label while the field is a first responder.
  * Tint color is used by default if an `floatingLabelActiveTextColor` is not provided.
  */
-@property (nonatomic, strong) UIColor * floatingLabelActiveTextColor UI_APPEARANCE_SELECTOR;
+@property(nonatomic, strong) UIColor *floatingLabelActiveTextColor UI_APPEARANCE_SELECTOR;
 
 /**
  * Text color to be applied to the floating label while the field contains invalid text
  * that doesn't match the autocompleteType.
  * Defaults to `FlatRed`.
  */
-@property (nonatomic, strong) UIColor * floatingLabelInvalidTextColor UI_APPEARANCE_SELECTOR;
+@property(nonatomic, strong) UIColor *floatingLabelInvalidTextColor UI_APPEARANCE_SELECTOR;
 
 /**
  * Indicates whether the floating label's appearance should be animated regardless of first responder status.
  * By default, animation only occurs if the text field is a first responder.
  * Non-zero values indicate truthiness. (BOOL cannot be used with UI_APPEARANCE_SELECTOR on iOS 7).
  */
-@property (nonatomic, assign) NSInteger animateEvenIfNotFirstResponder UI_APPEARANCE_SELECTOR;
+@property(nonatomic, assign) NSInteger animateEvenIfNotFirstResponder UI_APPEARANCE_SELECTOR;
 
 /**
- * Duration of the animation when showing the floating label. 
+ * Duration of the animation when showing the floating label.
  * Defaults to 0.3 seconds.
  */
-@property (nonatomic, assign) NSTimeInterval floatingLabelShowAnimationDuration UI_APPEARANCE_SELECTOR;
+@property(nonatomic, assign) NSTimeInterval floatingLabelShowAnimationDuration UI_APPEARANCE_SELECTOR;
 
 /**
- * Duration of the animation when hiding the floating label. 
+ * Duration of the animation when hiding the floating label.
  * Defaults to 0.3 seconds.
  */
-@property (nonatomic, assign) NSTimeInterval floatingLabelHideAnimationDuration UI_APPEARANCE_SELECTOR;
+@property(nonatomic, assign) NSTimeInterval floatingLabelHideAnimationDuration UI_APPEARANCE_SELECTOR;
 
 /**
  * Indicates whether the clearButton position is adjusted to align with the text
  * Defaults to 1.
  * Non-zero values indicate truthiness. (BOOL cannot be used with UI_APPEARANCE_SELECTOR on iOS 7).
  */
-@property (nonatomic, assign) NSInteger adjustsClearButtonRect UI_APPEARANCE_SELECTOR;
+@property(nonatomic, assign) NSInteger adjustsClearButtonRect UI_APPEARANCE_SELECTOR;
 
 /**
  *  Sets the placeholder and the floating title

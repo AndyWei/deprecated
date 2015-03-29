@@ -5,7 +5,6 @@
 //  Forked and modified by Ping Yang on 3/26/15 from Github project: JVFloatLabeledTextField
 //  Below is the original license:
 
-
 //  The MIT License (MIT)
 //
 //  Copyright (c) 2013-2015 Jared Verdi
@@ -42,8 +41,9 @@
 - (instancetype)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
-    if (self) {
-        [self commonInit];
+    if (self)
+    {
+        [self _commonInit];
     }
     return self;
 }
@@ -51,18 +51,19 @@
 - (instancetype)initWithCoder:(NSCoder *)aDecoder
 {
     self = [super initWithCoder:aDecoder];
-    if (self) {
-        [self commonInit];
+    if (self)
+    {
+        [self _commonInit];
     }
     return self;
 }
 
-- (void)commonInit
+- (void)_commonInit
 {
     _floatingLabel = [UILabel new];
     _floatingLabel.alpha = 0.0f;
     [self addSubview:_floatingLabel];
-	
+
     // some basic default fonts/colors
     _floatingLabelFont = [UIFont boldSystemFontOfSize:12.0f];
     _floatingLabel.font = _floatingLabelFont;
@@ -73,7 +74,7 @@
     _floatingLabelShowAnimationDuration = kFloatingLabelShowAnimationDuration;
     _floatingLabelHideAnimationDuration = kFloatingLabelHideAnimationDuration;
     [self setFloatingLabelText:self.placeholder];
-    
+
     self.clearButtonMode = UITextFieldViewModeWhileEditing;
     _adjustsClearButtonRect = 1;
 }
@@ -82,12 +83,15 @@
 
 - (UIColor *)labelActiveColor
 {
-    if (_floatingLabelActiveTextColor) {
+    if (_floatingLabelActiveTextColor)
+    {
         return _floatingLabelActiveTextColor;
     }
-    else if ([self respondsToSelector:@selector(tintColor)]) {
+    else if ([self respondsToSelector:@selector(tintColor)])
+    {
         return [self performSelector:@selector(tintColor)];
     }
+
     return [UIColor blueColor];
 }
 
@@ -102,21 +106,21 @@
 - (void)showFloatingLabel:(BOOL)animated
 {
     void (^showBlock)() = ^{
-        _floatingLabel.alpha = 1.0f;
-        _floatingLabel.frame = CGRectMake(_floatingLabel.frame.origin.x,
-                                          _floatingLabelYPadding,
-                                          _floatingLabel.frame.size.width,
-                                          _floatingLabel.frame.size.height);
+      _floatingLabel.alpha = 1.0f;
+      _floatingLabel.frame =
+          CGRectMake(_floatingLabel.frame.origin.x, _floatingLabelYPadding, _floatingLabel.frame.size.width, _floatingLabel.frame.size.height);
     };
-    
-    if (animated || 0 != _animateEvenIfNotFirstResponder) {
+
+    if (animated || 0 != _animateEvenIfNotFirstResponder)
+    {
         [UIView animateWithDuration:_floatingLabelShowAnimationDuration
                               delay:0.0f
                             options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseOut
                          animations:showBlock
                          completion:nil];
     }
-    else {
+    else
+    {
         showBlock();
     }
 }
@@ -124,22 +128,22 @@
 - (void)hideFloatingLabel:(BOOL)animated
 {
     void (^hideBlock)() = ^{
-        _floatingLabel.alpha = 0.0f;
-        _floatingLabel.frame = CGRectMake(_floatingLabel.frame.origin.x,
-                                          _floatingLabel.font.lineHeight + _placeholderYPadding,
-                                          _floatingLabel.frame.size.width,
-                                          _floatingLabel.frame.size.height);
+      _floatingLabel.alpha = 0.0f;
+      _floatingLabel.frame = CGRectMake(_floatingLabel.frame.origin.x, _floatingLabel.font.lineHeight + _placeholderYPadding,
+                                        _floatingLabel.frame.size.width, _floatingLabel.frame.size.height);
 
     };
-    
-    if (animated || 0 != _animateEvenIfNotFirstResponder) {
+
+    if (animated || 0 != _animateEvenIfNotFirstResponder)
+    {
         [UIView animateWithDuration:_floatingLabelHideAnimationDuration
                               delay:0.0f
                             options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseIn
                          animations:hideBlock
                          completion:nil];
     }
-    else {
+    else
+    {
         hideBlock();
     }
 }
@@ -147,24 +151,27 @@
 - (void)setLabelOriginForTextAlignment
 {
     CGRect textRect = [self textRectForBounds:self.bounds];
-    
+
     CGFloat originX = textRect.origin.x;
-    
-    if (self.textAlignment == NSTextAlignmentCenter) {
-        originX = textRect.origin.x + (textRect.size.width/2) - (_floatingLabel.frame.size.width/2);
+
+    if (self.textAlignment == NSTextAlignmentCenter)
+    {
+        originX = textRect.origin.x + (textRect.size.width / 2) - (_floatingLabel.frame.size.width / 2);
     }
-    else if (self.textAlignment == NSTextAlignmentRight) {
+    else if (self.textAlignment == NSTextAlignmentRight)
+    {
         originX = textRect.origin.x + textRect.size.width - _floatingLabel.frame.size.width;
     }
-    else if (self.textAlignment == NSTextAlignmentNatural) {
+    else if (self.textAlignment == NSTextAlignmentNatural)
+    {
         JVTextDirection baseDirection = [_floatingLabel.text getBaseDirection];
-        if (baseDirection == JVTextDirectionRightToLeft) {
+        if (baseDirection == JVTextDirectionRightToLeft)
+        {
             originX = textRect.origin.x + textRect.size.width - _floatingLabel.frame.size.width;
         }
     }
-    
-    _floatingLabel.frame = CGRectMake(originX, _floatingLabel.frame.origin.y,
-                                      _floatingLabel.frame.size.width, _floatingLabel.frame.size.height);
+
+    _floatingLabel.frame = CGRectMake(originX, _floatingLabel.frame.origin.y, _floatingLabel.frame.size.width, _floatingLabel.frame.size.height);
 }
 
 - (void)setFloatingLabelText:(NSString *)text
@@ -203,9 +210,10 @@
 - (CGRect)textRectForBounds:(CGRect)bounds
 {
     CGRect rect = [super textRectForBounds:bounds];
-    if ([self.text length]) {
+    if ([self.text length])
+    {
         CGFloat topInset = ceilf(_floatingLabel.font.lineHeight + _placeholderYPadding);
-        topInset = MIN(topInset, [self maxTopInset]);
+        topInset = MIN(topInset, [self _maxTopInset]);
         rect = UIEdgeInsetsInsetRect(rect, UIEdgeInsetsMake(topInset, 0.0f, 0.0f, 0.0f));
     }
     return CGRectIntegral(rect);
@@ -214,9 +222,10 @@
 - (CGRect)editingRectForBounds:(CGRect)bounds
 {
     CGRect rect = [super editingRectForBounds:bounds];
-    if ([self.text length]) {
+    if ([self.text length])
+    {
         CGFloat topInset = ceilf(_floatingLabel.font.lineHeight + _placeholderYPadding);
-        topInset = MIN(topInset, [self maxTopInset]);
+        topInset = MIN(topInset, [self _maxTopInset]);
         rect = UIEdgeInsetsInsetRect(rect, UIEdgeInsetsMake(topInset, 0.0f, 0.0f, 0.0f));
     }
     return CGRectIntegral(rect);
@@ -225,17 +234,19 @@
 - (CGRect)clearButtonRectForBounds:(CGRect)bounds
 {
     CGRect rect = [super clearButtonRectForBounds:bounds];
-    if (0 != self.adjustsClearButtonRect) {
-        if ([self.text length]) {
+    if (0 != self.adjustsClearButtonRect)
+    {
+        if ([self.text length])
+        {
             CGFloat topInset = ceilf(_floatingLabel.font.lineHeight + _placeholderYPadding);
-            topInset = MIN(topInset, [self maxTopInset]);
+            topInset = MIN(topInset, [self _maxTopInset]);
             rect = CGRectMake(rect.origin.x, rect.origin.y + topInset / 2.0f, rect.size.width, rect.size.height);
         }
     }
     return CGRectIntegral(rect);
 }
 
-- (CGFloat)maxTopInset
+- (CGFloat)_maxTopInset
 {
     return MAX(0, floorf(self.bounds.size.height - self.font.lineHeight - 4.0f));
 }
@@ -249,29 +260,60 @@
 - (void)layoutSubviews
 {
     [super layoutSubviews];
-    
+
     [self setLabelOriginForTextAlignment];
-    
-    if (self.floatingLabelFont) {
+
+    if (self.floatingLabelFont)
+    {
         _floatingLabel.font = self.floatingLabelFont;
     }
-    
+
     [_floatingLabel sizeToFit];
-    
+
     BOOL firstResponder = self.isFirstResponder;
-    _floatingLabel.textColor = (firstResponder && self.text && self.text.length > 0 ?
-                                self.labelActiveColor : self.floatingLabelTextColor);
-    if (!self.text || 0 == [self.text length]) {
+    _floatingLabel.textColor = (firstResponder && self.text && self.text.length > 0 ? self.labelActiveColor : self.floatingLabelTextColor);
+
+    if (firstResponder && self.text && self.text.length > 0)
+    {
+        _floatingLabel.textColor = self.labelActiveColor;
+    }
+    else if ([self _isValidText])
+    {
+        _floatingLabel.textColor = self.floatingLabelTextColor;
+    }
+    else
+    {
+        _floatingLabel.textColor = self.floatingLabelInvalidTextColor;
+    }
+
+    if (!self.text || 0 == [self.text length])
+    {
         [self hideFloatingLabel:firstResponder];
     }
-    else {
+    else
+    {
         [self showFloatingLabel:firstResponder];
     }
 }
 
-#pragma mark - email field
+#pragma mark - Validation
 
-- (BOOL)isValidateEmail:(NSString*)text
+- (BOOL)_isValidText
+{
+    BOOL result = YES;
+    switch (self.autocompleteType)
+    {
+    case JYAutoCompleteTypeEmail:
+        result = [self _isValidEmail:self.text];
+        break;
+    default:
+        break;
+    }
+
+    return result;
+}
+
+- (BOOL)_isValidEmail:(NSString *)text
 {
     NSString *emailRegex = @"[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}";
     NSPredicate *emailTest = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", emailRegex];
