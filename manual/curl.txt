@@ -1,7 +1,7 @@
 ### This file contains all curl commands used for manual test
 
 ## login (GET a token)
-curl -i -u jack:password "http://localhost:8000/v1/login"
+curl -i -u jack@gmail.com:password "http://localhost:8000/v1/login"
 
 
 

@@ -51,6 +51,7 @@ var validateSimple = function (email, password, finish) {
                     return callback(Boom.unauthorized(err, 'basic'));
                 }
 
+                delete user.password;
                 callback(null, isValid, user);
             });
         }
