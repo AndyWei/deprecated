@@ -60,3 +60,9 @@
 #define COCOAPODS_VERSION_MINOR_JVFloatLabeledTextField 0
 #define COCOAPODS_VERSION_PATCH_JVFloatLabeledTextField 2
 
+// KVNProgress
+#define COCOAPODS_POD_AVAILABLE_KVNProgress
+#define COCOAPODS_VERSION_MAJOR_KVNProgress 2
+#define COCOAPODS_VERSION_MINOR_KVNProgress 2
+#define COCOAPODS_VERSION_PATCH_KVNProgress 1
+

@@ -120,17 +120,18 @@
 
 - (void)_createSignButton
 {
-    CGRect signButtonFrame = CGRectMake((self.view.frame.size.width - kSignButtonWidth) / 2,
-                                        self.passwordField.frame.origin.y + self.passwordField.frame.size.height, kSignButtonWidth, kSignButtonWidth);
+    CGRect signButtonFrame = CGRectMake(kSignFieldXMargin,
+                                        self.passwordField.frame.origin.y + self.passwordField.frame.size.height + kSignButtonYMargin,
+                                        self.view.frame.size.width - 2 * kSignFieldXMargin,
+                                        kSignButtonHeight);
 
     _signButton = [[MRoundedButton alloc] initWithFrame:signButtonFrame buttonStyle:MRoundedButtonDefault];
     _signButton.backgroundColor = [UIColor clearColor];
-    _signButton.borderColor = FlatGreen;
-    _signButton.borderWidth = 2;
-    _signButton.contentColor = FlatGreen;
-    _signButton.contentAnimateToColor = FlatWhite;
-    _signButton.cornerRadius = kSignButtonWidth;
-    _signButton.foregroundAnimateToColor = FlatGreen;
+    _signButton.contentAnimateToColor = FlatGreen;
+    _signButton.contentColor = FlatWhite;
+    _signButton.cornerRadius = kButtonCornerRadius;
+    _signButton.foregroundAnimateToColor = FlatWhite;
+    _signButton.foregroundColor = FlatGreen;
     _signButton.textLabel.font = [UIFont boldSystemFontOfSize:kSignFieldFontSize];
 
     [self.view addSubview:_signButton];

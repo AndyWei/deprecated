@@ -6,11 +6,16 @@
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
-const CGFloat kSignButtonWidth = 80.0f;
+const CGFloat kButtonCornerRadius = 4.0f;
+const CGFloat kSignButtonHeight = 60.0f;
+const CGFloat kSignButtonYMargin = 20.0f;
 const CGFloat kSignFieldFloatingLabelFontSize = 11.0f;
 const CGFloat kSignFieldFontSize = 22.0f;
 const CGFloat kSignFieldHeight = 70.0f;
 const CGFloat kSignFieldXMargin = 50.0f;
-const CGFloat kSignViewTopOffset = 180;
+const CGFloat kSignViewTopOffset = 152;
 
+NSString *const kErrorAuthenticationFailed = @"Incorrect Email or password";
+NSString *const kKeyUserCredential = @"UserCredential";
 NSString *const kUrlApiBase = @"http://api.joyyapp.com:8000/v1/";
+

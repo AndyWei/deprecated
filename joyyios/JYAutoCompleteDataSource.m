@@ -12,17 +12,17 @@
 
 @end
 
-static JYAutoCompleteDataSource *sharedDataSource;
 
 @implementation JYAutoCompleteDataSource
 
 + (JYAutoCompleteDataSource *)sharedDataSource
 {
+    static JYAutoCompleteDataSource *_sharedDataSource;
     static dispatch_once_t done;
     dispatch_once(&done, ^{
-      sharedDataSource = [[JYAutoCompleteDataSource alloc] init];
+      _sharedDataSource = [[JYAutoCompleteDataSource alloc] init];
     });
-    return sharedDataSource;
+    return _sharedDataSource;
 }
 
 #pragma mark - HTAutocompleteTextFieldDelegate

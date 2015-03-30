@@ -6,10 +6,13 @@
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
-#import "AFNetworking.h"
+#import <AFNetworking/AFNetworking.h>
+#import <KVNProgress/KVNProgress.h>
+
 #import "JYFloatLabeledTextField.h"
 #import "JYSignInViewController.h"
 #import "MRoundedButton.h"
+#import "User.h"
 
 @interface JYSignInViewController ()
 
@@ -51,14 +54,28 @@
 
     NSString *url = [NSString stringWithFormat:@"%@%@", kUrlApiBase, @"signin"];
 
+    [KVNProgress show];
     [manager GET:url parameters:nil
     success:^(AFHTTPRequestOperation *operation, id responseObject)
     {
         NSLog(@"JSON: %@", responseObject);
+        [KVNProgress showSuccess];
+        [User currentUser].credential = responseObject;
     }
     failure:^(AFHTTPRequestOperation *operation, NSError *error)
     {
         NSLog(@"Error: %@", error);
+        NSString *errorMessage = nil;
+        if (error.code == NSURLErrorBadServerResponse)
+        {
+            errorMessage = NSLocalizedString(kErrorAuthenticationFailed, nil);
+        }
+        else
+        {
+            errorMessage = [error.userInfo valueForKey:NSLocalizedDescriptionKey];
+        }
+
+        [KVNProgress showErrorWithStatus:errorMessage];
     }];
 }
 
