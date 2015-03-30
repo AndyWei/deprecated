@@ -174,15 +174,15 @@
 		D69202AE1AC4C7C0001C1C3D /* joyyios */ = {
 			isa = PBXGroup;
 			children = (
-				D63B69AB1AC5184D005600A9 /* Components */,
-				D68DAF991AC4CD0800838E7E /* Common */,
-				D68DAF9A1AC4CD1800838E7E /* User */,
 				D69202B31AC4C7C0001C1C3D /* AppDelegate.h */,
 				D69202B41AC4C7C0001C1C3D /* AppDelegate.m */,
 				D69202B61AC4C7C0001C1C3D /* FirstViewController.h */,
 				D69202B71AC4C7C0001C1C3D /* FirstViewController.m */,
 				D69202B91AC4C7C0001C1C3D /* SecondViewController.h */,
 				D69202BA1AC4C7C0001C1C3D /* SecondViewController.m */,
+				D63B69AB1AC5184D005600A9 /* Components */,
+				D68DAF991AC4CD0800838E7E /* Common */,
+				D68DAF9A1AC4CD1800838E7E /* User */,
 				D69202BF1AC4C7C0001C1C3D /* Images.xcassets */,
 				D69202C11AC4C7C0001C1C3D /* LaunchScreen.xib */,
 				D69202AF1AC4C7C0001C1C3D /* Supporting Files */,

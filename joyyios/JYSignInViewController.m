@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
+#import "AFNetworking.h"
 #import "JYFloatLabeledTextField.h"
 #import "JYSignInViewController.h"
 #import "MRoundedButton.h"
@@ -41,7 +42,24 @@
 
 - (void)_signIn
 {
-    NSLog(@"Sign in called!!!");
+    NSString *email = [self.emailField.text lowercaseString];
+    NSString *password = [self.passwordField.text lowercaseString];
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+
+    manager.requestSerializer = [AFHTTPRequestSerializer serializer];
+    [manager.requestSerializer setAuthorizationHeaderFieldWithUsername:email password:password];
+
+    NSString *url = [NSString stringWithFormat:@"%@%@", kUrlApiBase, @"signin"];
+
+    [manager GET:url parameters:nil
+    success:^(AFHTTPRequestOperation *operation, id responseObject)
+    {
+        NSLog(@"JSON: %@", responseObject);
+    }
+    failure:^(AFHTTPRequestOperation *operation, NSError *error)
+    {
+        NSLog(@"Error: %@", error);
+    }];
 }
 
 @end

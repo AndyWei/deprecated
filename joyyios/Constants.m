@@ -13,4 +13,4 @@ const CGFloat kSignFieldHeight = 70.0f;
 const CGFloat kSignFieldXMargin = 50.0f;
 const CGFloat kSignViewTopOffset = 180;
 
-NSString *const kUrlApiBase = @"http://api.joyyapp.com/v1/";
+NSString *const kUrlApiBase = @"http://api.joyyapp.com:8000/v1/";
