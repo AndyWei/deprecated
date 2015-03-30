@@ -21,7 +21,7 @@ exports.detach = function () {
 };
 
 
-// Generate a 12 character alpha-numeric token and store it in cache
+// Generate a 20 character alpha-numeric token and store it in cache
 exports.generate = function (userId, callback) {
 
     Hoek.assert(cache, 'Token cache should be set beforehand.');

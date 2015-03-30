@@ -41,9 +41,9 @@ var manifest = {
         },
         './server/authenticate': {},
         './server/api/bids': { basePath: '/v1' },
-        './server/api/login': { basePath: '/v1' },
         './server/api/orders': { basePath: '/v1' },
         './server/api/reviews': { basePath: '/v1' },
+        './server/api/signin': { basePath: '/v1' },
         './server/api/signup': { basePath: '/v1' }
     }
 };

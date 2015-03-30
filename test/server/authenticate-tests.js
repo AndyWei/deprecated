@@ -62,7 +62,7 @@ lab.experiment('Auth Basic: ', function () {
             method: 'GET',
             url: '/',
             headers: {
-                authorization: 'Basic ' + (new Buffer('andy:password')).toString('base64')
+                authorization: 'Basic ' + (new Buffer('andy94555@gmail.com:password')).toString('base64')
             }
         };
 
@@ -93,7 +93,7 @@ lab.experiment('Auth Basic: ', function () {
             method: 'GET',
             url: '/',
             headers: {
-                authorization: 'Basic ' + (new Buffer('andy:wrongpassword')).toString('base64')
+                authorization: 'Basic ' + (new Buffer('andy94555@gmail.com:wrongpassword')).toString('base64')
             }
         };
 
@@ -103,7 +103,7 @@ lab.experiment('Auth Basic: ', function () {
     });
 
 
-    lab.test('detect non-exist username', function (done) {
+    lab.test('detect non-exist email', function (done) {
 
         server.route({
             method: 'GET',
@@ -124,7 +124,7 @@ lab.experiment('Auth Basic: ', function () {
             method: 'GET',
             url: '/',
             headers: {
-                authorization: 'Basic ' + (new Buffer('bahhha:password')).toString('base64')
+                authorization: 'Basic ' + (new Buffer('peter@gmail.com:password')).toString('base64')
             }
         };
 

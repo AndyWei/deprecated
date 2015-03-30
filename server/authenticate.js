@@ -7,7 +7,7 @@ var Token = require('./token');
 var c = require('./constants');
 
 
-var validateSimple = function (username, password, finish) {
+var validateSimple = function (email, password, finish) {
 
     Async.waterfall([
         function (callback) {
@@ -21,9 +21,9 @@ var validateSimple = function (username, password, finish) {
         function (client, done, callback) {
 
             var queryConfig = {
-                text: 'SELECT id, password FROM users WHERE username = $1',
-                values: [username],
-                name: 'users_select_one_by_username'
+                text: 'SELECT id, username, password, email FROM users WHERE email = $1',
+                values: [email],
+                name: 'users_select_one_by_email'
             };
 
             client.query(queryConfig, function (err, queryResult) {
@@ -60,7 +60,7 @@ var validateSimple = function (username, password, finish) {
             return finish(err, false);
         }
 
-        finish(err, isValid, { id: user.id, username: username });
+        finish(err, isValid, user);
     });
 };
 

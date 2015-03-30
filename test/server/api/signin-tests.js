@@ -5,7 +5,7 @@ var Hapi = require('hapi');
 var HapiAuthBasic = require('hapi-auth-basic');
 var HapiAuthToken = require('hapi-auth-bearer-token');
 var Lab = require('lab');
-var LoginPlugin = require('../../../server/api/login');
+var SignInPlugin = require('../../../server/api/signin');
 var Token = require('../../../server/token');
 var c = require('../../../server/constants');
 
@@ -19,11 +19,11 @@ var jack = {
 };
 
 
-lab.experiment('Login: ', function () {
+lab.experiment('SignIn: ', function () {
 
     lab.before(function (done) {
 
-        var plugins = [HapiAuthBasic, HapiAuthToken, AuthPlugin, LoginPlugin];
+        var plugins = [HapiAuthBasic, HapiAuthToken, AuthPlugin, SignInPlugin];
         server = new Hapi.Server();
         server.connection({ port: Config.get('/port/api') });
         server.register(plugins, function (err) {
@@ -55,7 +55,7 @@ lab.experiment('Login: ', function () {
 
         request = {
             method: 'GET',
-            url: '/login',
+            url: '/signin',
             credentials: jack
         };
 

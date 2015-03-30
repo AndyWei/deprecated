@@ -9,7 +9,7 @@ exports.register = function (server, options, next) {
     // new user signup
     server.route({
         method: 'GET',
-        path: options.basePath + '/login',
+        path: options.basePath + '/signin',
         config: {
             auth: {
                 strategy: 'simple'
@@ -26,7 +26,10 @@ exports.register = function (server, options, next) {
                     return reply(err);
                 }
 
-                reply(null, {token: generatedToken});
+                var response = request.auth.credentials;
+                response.token = generatedToken;
+
+                reply(null, response);
             });
         }
     });
@@ -36,5 +39,5 @@ exports.register = function (server, options, next) {
 
 
 exports.register.attributes = {
-    name: 'login'
+    name: 'signin'
 };
