@@ -11,7 +11,7 @@
 
 #import "AppDelegate.h"
 #import "JYIntroViewController.h"
-#import "JYSignInViewController.h"
+#import "JYSignViewController.h"
 #import "FirstViewController.h"
 #import "SecondViewController.h"
 #import "User.h"
@@ -114,7 +114,7 @@
 
 -(void)_launchSignController
 {
-    UIViewController *viewController = [JYSignInViewController new];
+    UIViewController *viewController = [JYSignViewController new];
     UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:viewController];
     self.window.rootViewController = navigationController;
 }

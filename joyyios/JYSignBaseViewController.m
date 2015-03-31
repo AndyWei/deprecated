@@ -23,6 +23,7 @@
 {
     [super viewDidLoad];
 
+    self.navigationController.navigationBar.hidden = NO;
     self.view.tintColor = FlatSkyBlue;
 
     [self _createEmailField];
@@ -126,7 +127,7 @@
                                         kSignButtonHeight);
 
     _signButton = [[MRoundedButton alloc] initWithFrame:signButtonFrame buttonStyle:MRoundedButtonDefault];
-    _signButton.backgroundColor = [UIColor clearColor];
+    _signButton.backgroundColor = ClearColor;
     _signButton.contentAnimateToColor = FlatGreen;
     _signButton.contentColor = FlatWhite;
     _signButton.cornerRadius = kButtonCornerRadius;

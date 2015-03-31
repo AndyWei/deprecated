@@ -11,6 +11,7 @@
 
 extern const CGFloat kButtonCornerRadius;
 extern const CGFloat kSignButtonHeight;
+extern const CGFloat kSignButtonWidth;
 extern const CGFloat kSignButtonYMargin;
 extern const CGFloat kSignFieldFloatingLabelFontSize;
 extern const CGFloat kSignFieldFontSize;

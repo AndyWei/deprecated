@@ -8,6 +8,7 @@
 
 const CGFloat kButtonCornerRadius = 4.0f;
 const CGFloat kSignButtonHeight = 60.0f;
+const CGFloat kSignButtonWidth = 120;
 const CGFloat kSignButtonYMargin = 20.0f;
 const CGFloat kSignFieldFloatingLabelFontSize = 11.0f;
 const CGFloat kSignFieldFontSize = 22.0f;
