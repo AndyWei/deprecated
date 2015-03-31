@@ -2,7 +2,7 @@
 //  DataStore.h
 //  joyyios
 //
-//  Created by Andy Wei on 3/30/15.
+//  Created by Ping Yang on 3/30/15.
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
@@ -13,5 +13,8 @@
 
 - (void)saveUserCredential:(NSDictionary *)credential;
 - (NSDictionary *)loadUserCredential;
+
+- (void)saveTokenExpireTime:(NSTimeInterval)seconds;
+- (NSTimeInterval)loadTokenExpireTime;
 
 @end

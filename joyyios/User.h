@@ -15,7 +15,11 @@
 @property(nonatomic, strong, readonly) NSString *email;
 @property(nonatomic, strong, readonly) NSString *username;
 @property(nonatomic, strong, readonly) NSString *password;
-@property(nonatomic, strong, readonly) NSString *token;
 @property(nonatomic, strong, readonly) NSString *userId;
+@property(nonatomic, strong, readonly) NSString *token;
+@property(nonatomic, readonly) NSTimeInterval tokenExpireTimeInSecs;
+
+
+- (BOOL)load;
 
 @end

@@ -16,6 +16,9 @@ const CGFloat kSignFieldXMargin = 50.0f;
 const CGFloat kSignViewTopOffset = 152;
 
 NSString *const kErrorAuthenticationFailed = @"Incorrect Email or password";
+NSString *const kKeyTokenExpireTime = @"TokenExpireTime";
 NSString *const kKeyUserCredential = @"UserCredential";
+NSString *const kNotificationIntroDidFinish = @"IntroDidFinish";
+NSString *const kNotificationSignDidFinish = @"SignDidFinish";
 NSString *const kUrlApiBase = @"http://api.joyyapp.com:8000/v1/";
 

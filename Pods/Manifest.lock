@@ -21,18 +21,24 @@ PODS:
     - AFNetworking/NSURLConnection
     - AFNetworking/NSURLSession
   - ChameleonFramework (1.1.2)
+  - EAIntroView (2.7.0):
+    - EARestrictedScrollView (~> 0.1.0)
+  - EARestrictedScrollView (0.1.0)
   - JVFloatLabeledTextField (1.0.2)
   - KVNProgress (2.2.1)
 
 DEPENDENCIES:
   - AFNetworking (~> 2.5)
   - ChameleonFramework
+  - EAIntroView (~> 2.7.0)
   - JVFloatLabeledTextField
   - KVNProgress
 
 SPEC CHECKSUMS:
   AFNetworking: fefbce9660acb17f48ae0011292d4da0f457bf36
   ChameleonFramework: 1b4588efcae564886e1a176fa02fb0f4c81a69b3
+  EAIntroView: 9becdb1441712405346a3e6bc31b0d9a57b63b10
+  EARestrictedScrollView: 5ab3eadd9ea55282cc72df0daecb09803059e3a0
   JVFloatLabeledTextField: 58a3a32cfb800e5b224f676987e7c13abf50a14d
   KVNProgress: 7001d2d16a2755cee5599e8e485befe056f2197b
 

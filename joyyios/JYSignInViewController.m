@@ -58,13 +58,16 @@
     [manager GET:url parameters:nil
     success:^(AFHTTPRequestOperation *operation, id responseObject)
     {
-        NSLog(@"JSON: %@", responseObject);
+        NSLog(@"SignIn Success responseObject: %@", responseObject);
+
         [KVNProgress showSuccess];
         [User currentUser].credential = responseObject;
+        [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationSignDidFinish object:nil];
     }
     failure:^(AFHTTPRequestOperation *operation, NSError *error)
     {
-        NSLog(@"Error: %@", error);
+        NSLog(@"SignIn Error: %@", error);
+
         NSString *errorMessage = nil;
         if (error.code == NSURLErrorBadServerResponse)
         {

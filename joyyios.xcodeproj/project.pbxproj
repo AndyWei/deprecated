@@ -27,6 +27,8 @@
 		D63F0D721AC9EC060067C5EE /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = D63F0D701AC9EC060067C5EE /* User.m */; };
 		D63F0D751AC9F6F80067C5EE /* DataStore.m in Sources */ = {isa = PBXBuildFile; fileRef = D63F0D741AC9F6F80067C5EE /* DataStore.m */; };
 		D63F0D761AC9F6F80067C5EE /* DataStore.m in Sources */ = {isa = PBXBuildFile; fileRef = D63F0D741AC9F6F80067C5EE /* DataStore.m */; };
+		D63F0D791ACA0C0A0067C5EE /* JYIntroViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D63F0D781ACA0C0A0067C5EE /* JYIntroViewController.m */; };
+		D63F0D7A1ACA0C0A0067C5EE /* JYIntroViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D63F0D781ACA0C0A0067C5EE /* JYIntroViewController.m */; };
 		D68DAF961AC4CACD00838E7E /* Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = D68DAF931AC4CACD00838E7E /* Constants.m */; };
 		D68DAF971AC4CACD00838E7E /* JYSignInViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D68DAF951AC4CACD00838E7E /* JYSignInViewController.m */; };
 		D69202B21AC4C7C0001C1C3D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = D69202B11AC4C7C0001C1C3D /* main.m */; };
@@ -69,6 +71,8 @@
 		D63F0D701AC9EC060067C5EE /* User.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = User.m; sourceTree = "<group>"; };
 		D63F0D731AC9F6F80067C5EE /* DataStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataStore.h; sourceTree = "<group>"; };
 		D63F0D741AC9F6F80067C5EE /* DataStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataStore.m; sourceTree = "<group>"; };
+		D63F0D771ACA0C0A0067C5EE /* JYIntroViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYIntroViewController.h; sourceTree = "<group>"; };
+		D63F0D781ACA0C0A0067C5EE /* JYIntroViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYIntroViewController.m; sourceTree = "<group>"; };
 		D68DAF921AC4CACD00838E7E /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
 		D68DAF931AC4CACD00838E7E /* Constants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Constants.m; sourceTree = "<group>"; };
 		D68DAF941AC4CACD00838E7E /* JYSignInViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYSignInViewController.h; sourceTree = "<group>"; };
@@ -188,6 +192,8 @@
 			children = (
 				D69202B31AC4C7C0001C1C3D /* AppDelegate.h */,
 				D69202B41AC4C7C0001C1C3D /* AppDelegate.m */,
+				D63F0D771ACA0C0A0067C5EE /* JYIntroViewController.h */,
+				D63F0D781ACA0C0A0067C5EE /* JYIntroViewController.m */,
 				D69202B61AC4C7C0001C1C3D /* FirstViewController.h */,
 				D69202B71AC4C7C0001C1C3D /* FirstViewController.m */,
 				D69202B91AC4C7C0001C1C3D /* SecondViewController.h */,
@@ -403,6 +409,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D63F0D791ACA0C0A0067C5EE /* JYIntroViewController.m in Sources */,
 				D68DAF961AC4CACD00838E7E /* Constants.m in Sources */,
 				D63F0D591AC7CFF20067C5EE /* MRoundedButton.m in Sources */,
 				D63B69BA1AC624F8005600A9 /* JYAutoCompleteDataSource.m in Sources */,
@@ -433,6 +440,7 @@
 				D63F0D761AC9F6F80067C5EE /* DataStore.m in Sources */,
 				D69202CF1AC4C7C1001C1C3D /* joyyiosTests.m in Sources */,
 				D63F0D5A1AC7CFF20067C5EE /* MRoundedButton.m in Sources */,
+				D63F0D7A1ACA0C0A0067C5EE /* JYIntroViewController.m in Sources */,
 				D63B69B31AC51D61005600A9 /* JYSignBaseViewController.m in Sources */,
 				D63B69B71AC53BB4005600A9 /* JYFloatLabeledTextField.m in Sources */,
 			);

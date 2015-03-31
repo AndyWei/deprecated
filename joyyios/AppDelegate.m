@@ -6,11 +6,19 @@
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
+#import <AFNetworking/AFNetworking.h>
+#import <KVNProgress/KVNProgress.h>
+
 #import "AppDelegate.h"
+#import "JYIntroViewController.h"
 #import "JYSignInViewController.h"
+#import "FirstViewController.h"
+#import "SecondViewController.h"
+#import "User.h"
 
 @interface AppDelegate ()
-
+{
+}
 @end
 
 @implementation AppDelegate
@@ -19,13 +27,35 @@
 {
 
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    // Override point for customization after application launch.
+
     self.window.backgroundColor = [UIColor whiteColor];
 
-    JYSignInViewController *loginViewController = [JYSignInViewController new];
-    UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:loginViewController];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_introDidFinish) name:kNotificationIntroDidFinish object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_signDidFinish) name:kNotificationSignDidFinish object:nil];
 
-    self.window.rootViewController = navigationController;
+    User *user = [User currentUser];
+    BOOL userExist = [user load];
+    BOOL needIntro = YES;
+
+    if (needIntro)
+    {
+        NSTimeInterval now = [NSDate timeIntervalSinceReferenceDate];
+        if (userExist && user.tokenExpireTimeInSecs < now)
+        {
+            [self _automaticSignIn];
+        }
+
+        [self _launchIntroController];
+    }
+    else if (!userExist)
+    {
+        [self _launchSignController];
+    }
+    else
+    {
+        [self _launchTabController];
+    }
+
     [self.window makeKeyAndVisible];
     return YES;
 }
@@ -61,5 +91,78 @@
 {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
+
+- (void)_introDidFinish
+{
+    User *user = [User currentUser];
+    BOOL userExist = [user load];
+
+    if (!userExist)
+    {
+        [self _launchSignController];
+    }
+    else
+    {
+        [self _launchTabController];
+    }
+}
+
+- (void)_signDidFinish
+{
+    [self _launchTabController];
+}
+
+-(void)_launchSignController
+{
+    UIViewController *viewController = [JYSignInViewController new];
+    UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:viewController];
+    self.window.rootViewController = navigationController;
+}
+
+-(void)_launchIntroController
+{
+    UIViewController *viewController = [JYIntroViewController new];
+    UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:viewController];
+    self.window.rootViewController = navigationController;
+}
+
+-(void)_launchTabController
+{
+    UIViewController *vc1 = [FirstViewController new];
+    UINavigationController *nc1 = [[UINavigationController alloc] initWithRootViewController:vc1];
+    [nc1.navigationBar setTintColor:FlatSkyBlue];
+
+    UIViewController *vc2 = [SecondViewController new];
+    UINavigationController *nc2 = [[UINavigationController alloc] initWithRootViewController:vc2];
+    [nc1.navigationBar setTintColor:FlatSkyBlue];
+
+    UITabBarController *tabBarController = [UITabBarController new];
+    tabBarController.viewControllers = [NSArray arrayWithObjects:nc1, nc2, nil];
+
+    self.window.rootViewController = tabBarController;
+}
+
+// signin in the background
+- (void)_automaticSignIn
+{
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+
+    manager.requestSerializer = [AFHTTPRequestSerializer serializer];
+    [manager.requestSerializer setAuthorizationHeaderFieldWithUsername:[User currentUser].email password:[User currentUser].password];
+
+    NSString *url = [NSString stringWithFormat:@"%@%@", kUrlApiBase, @"signin"];
+
+    [manager GET:url parameters:nil
+         success:^(AFHTTPRequestOperation *operation, id responseObject)
+     {
+         [User currentUser].credential = responseObject;
+
+     }
+         failure:^(AFHTTPRequestOperation *operation, NSError *error)
+     {
+         NSLog(@"_automaticSignIn Error: %@", error);
+     }];
+}
+
 
 @end

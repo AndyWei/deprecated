@@ -20,7 +20,10 @@ extern const CGFloat kSignFieldXMargin;
 extern const CGFloat kSignViewTopOffset;
 
 extern NSString *const kErrorAuthenticationFailed;
+extern NSString *const kKeyTokenExpireTime;
 extern NSString *const kKeyUserCredential;
+extern NSString *const kNotificationIntroDidFinish;
+extern NSString *const kNotificationSignDidFinish;
 extern NSString *const kUrlApiBase;
 
 #endif

@@ -30,9 +30,32 @@
     _password = [_credential valueForKey:@"password"];
     _token = [_credential valueForKey:@"token"];
     _userId = [_credential valueForKey:@"id"];
+    _tokenExpireTimeInSecs = [NSDate timeIntervalSinceReferenceDate] + 30 * 60;
 
-    [[DataStore sharedInstance] saveUserCredential:credential];
+    [[DataStore sharedInstance] saveTokenExpireTime:_tokenExpireTimeInSecs];
+    [[DataStore sharedInstance] saveUserCredential:_credential];
 }
 
+- (BOOL)load
+{
+    if (_credential != nil)
+    {
+        return YES;
+    }
+
+    _credential = [[DataStore sharedInstance] loadUserCredential];
+
+    if (_credential != nil) {
+        _email = [_credential valueForKey:@"email"];
+        _username = [_credential valueForKey:@"username"];
+        _password = [_credential valueForKey:@"password"];
+        _token = [_credential valueForKey:@"token"];
+        _userId = [_credential valueForKey:@"id"];
+        _tokenExpireTimeInSecs = [[DataStore sharedInstance] loadTokenExpireTime];
+        return YES;
+    }
+
+    return NO;
+}
 
 @end
