@@ -1,24 +1,24 @@
 //
-//  SecondViewController.m
+//  JYNearbyViewController.m
 //  joyyios
 //
 //  Created by Ping Yang on 3/26/15.
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
-#import "SecondViewController.h"
+#import "JYNearbyViewController.h"
 
-@interface SecondViewController ()
+@interface JYNearbyViewController ()
 
 @end
 
-@implementation SecondViewController
+@implementation JYNearbyViewController
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-
-    self.title = @"Second";
+    self.navigationItem.title = NSLocalizedString(@"Choose an order you can help ...", nil);
+    self.navigationController.navigationBar.translucent = YES;
 }
 
 - (void)didReceiveMemoryWarning

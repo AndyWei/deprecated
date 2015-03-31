@@ -6,7 +6,6 @@
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
-
 @interface User : NSObject
 
 + (User *)currentUser;
@@ -18,7 +17,6 @@
 @property(nonatomic, strong, readonly) NSString *userId;
 @property(nonatomic, strong, readonly) NSString *token;
 @property(nonatomic, readonly) NSTimeInterval tokenExpireTimeInSecs;
-
 
 - (BOOL)load;
 

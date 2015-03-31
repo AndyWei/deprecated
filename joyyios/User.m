@@ -9,7 +9,6 @@
 #import "DataStore.h"
 #import "User.h"
 
-
 @implementation User
 
 + (User *)currentUser
@@ -17,7 +16,7 @@
     static User *_currentUser;
     static dispatch_once_t done;
     dispatch_once(&done, ^{
-        _currentUser = [User new];
+      _currentUser = [User new];
     });
     return _currentUser;
 }
@@ -45,7 +44,8 @@
 
     _credential = [[DataStore sharedInstance] loadUserCredential];
 
-    if (_credential != nil) {
+    if (_credential != nil)
+    {
         _email = [_credential valueForKey:@"email"];
         _username = [_credential valueForKey:@"username"];
         _password = [_credential valueForKey:@"password"];

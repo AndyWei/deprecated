@@ -15,7 +15,7 @@
     static DataStore *_sharedInstance;
     static dispatch_once_t done;
     dispatch_once(&done, ^{
-        _sharedInstance = [DataStore new];
+      _sharedInstance = [DataStore new];
     });
     return _sharedInstance;
 }

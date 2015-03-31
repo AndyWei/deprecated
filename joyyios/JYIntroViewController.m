@@ -28,7 +28,13 @@ static NSString *const sampleDescription4 = @"Nam libero tempore, cum soluta nob
 {
     [super viewDidLoad];
 
+    // Set the navigationBar to be transparent, which will prevent ugly empty view after the introview dismissed
+    [self.navigationController.navigationBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
+    self.navigationController.navigationBar.shadowImage = [UIImage new];
+    self.navigationController.navigationBar.translucent = YES;
+
     rootView = self.navigationController.view;
+    rootView.backgroundColor = FlatSkyBlue;
     [self _showIntro];
 }
 

@@ -22,4 +22,9 @@
 #import "UIFont+SytemFontOverride.h"
 
 #endif
+
+#ifdef NDEBUG
+#define NSLog(...) /* suppress NSLog when in release mode */
+#endif
+
 #endif

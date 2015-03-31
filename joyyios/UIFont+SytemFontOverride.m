@@ -15,42 +15,48 @@
 
 + (UIFont *)systemFontOfSize:(CGFloat)size
 {
-    return [UIFont fontWithName:@"AvenirNextCondensed-Medium" size:size];
+    return [UIFont fontWithName:kSystemFontRegular size:size];
 }
 
 + (UIFont *)lightSystemFontOfSize:(CGFloat)size
 {
-    return [UIFont fontWithName:@"AvenirNextCondensed-Regular" size:size];
+    return [UIFont fontWithName:kSystemFontLight size:size];
 }
 
 + (UIFont *)boldSystemFontOfSize:(CGFloat)size
 {
-    return [UIFont fontWithName:@"AvenirNextCondensed-Bold" size:size];
+    return [UIFont fontWithName:kSystemFontBold size:size];
 }
 
 + (UIFont *)preferredFontForTextStyle:(NSString *)style
 {
-    if ([style isEqualToString:UIFontTextStyleBody]) {
+    if ([style isEqualToString:UIFontTextStyleBody])
+    {
         return [UIFont systemFontOfSize:17];
     }
 
-    if ([style isEqualToString:UIFontTextStyleHeadline]) {
+    if ([style isEqualToString:UIFontTextStyleHeadline])
+    {
         return [UIFont boldSystemFontOfSize:17];
     }
 
-    if ([style isEqualToString:UIFontTextStyleSubheadline]) {
+    if ([style isEqualToString:UIFontTextStyleSubheadline])
+    {
         return [UIFont systemFontOfSize:15];
     }
 
-    if ([style isEqualToString:UIFontTextStyleFootnote]) {
+    if ([style isEqualToString:UIFontTextStyleFootnote])
+    {
         return [UIFont systemFontOfSize:13];
     }
 
-    if ([style isEqualToString:UIFontTextStyleCaption1]) {
+    if ([style isEqualToString:UIFontTextStyleCaption1])
+    {
         return [UIFont systemFontOfSize:12];
     }
 
-    if ([style isEqualToString:UIFontTextStyleCaption2]) {
+    if ([style isEqualToString:UIFontTextStyleCaption2])
+    {
         return [UIFont systemFontOfSize:11];
     }
 

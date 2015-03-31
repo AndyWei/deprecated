@@ -8,6 +8,7 @@
 
 #import <AFNetworking/AFNetworking.h>
 #import <KVNProgress/KVNProgress.h>
+#import <RKDropdownAlert/RKDropdownAlert.h>
 
 #import "JYFloatLabeledTextField.h"
 #import "JYSignInViewController.h"
@@ -24,10 +25,9 @@
 {
     [super viewDidLoad];
 
-    NSString *signIn = NSLocalizedString(@"Sign In", nil);
-    self.title = signIn;
+    self.title = NSLocalizedString(@"Welcome Back!", nil);
 
-    self.signButton.textLabel.text = signIn;
+    self.signButton.textLabel.text = NSLocalizedString(@"Sign In", nil);
 
     [self.signButton addTarget:self action:@selector(_signIn) forControlEvents:UIControlEventTouchUpInside];
 }
@@ -55,31 +55,37 @@
     NSString *url = [NSString stringWithFormat:@"%@%@", kUrlApiBase, @"signin"];
 
     [KVNProgress show];
-    [manager GET:url parameters:nil
-    success:^(AFHTTPRequestOperation *operation, id responseObject)
-    {
-        NSLog(@"SignIn Success responseObject: %@", responseObject);
+    [manager GET:url
+        parameters:nil
+        success:^(AFHTTPRequestOperation *operation, id responseObject) {
+            NSLog(@"SignIn Success responseObject: %@", responseObject);
 
-        [KVNProgress showSuccess];
-        [User currentUser].credential = responseObject;
-        [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationSignDidFinish object:nil];
-    }
-    failure:^(AFHTTPRequestOperation *operation, NSError *error)
-    {
-        NSLog(@"SignIn Error: %@", error);
-
-        NSString *errorMessage = nil;
-        if (error.code == NSURLErrorBadServerResponse)
-        {
-            errorMessage = NSLocalizedString(kErrorAuthenticationFailed, nil);
+            [KVNProgress showSuccess];
+            [User currentUser].credential = responseObject;
+            [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationSignDidFinish object:nil];
         }
-        else
-        {
-            errorMessage = [error.userInfo valueForKey:NSLocalizedDescriptionKey];
-        }
+        failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+            NSLog(@"SignIn Error: %@", error);
 
-        [KVNProgress showErrorWithStatus:errorMessage];
-    }];
+            [KVNProgress dismiss];
+
+            NSString *errorMessage = nil;
+            if (error.code == NSURLErrorBadServerResponse)
+            {
+                errorMessage = NSLocalizedString(kErrorAuthenticationFailed, nil);
+            }
+            else
+            {
+                errorMessage = [error.userInfo valueForKey:NSLocalizedDescriptionKey];
+            }
+
+            [RKDropdownAlert title:NSLocalizedString(@"Something wrong ...", nil)
+                           message:errorMessage
+                   backgroundColor:FlatYellow
+                         textColor:FlatBlack
+                              time:5];
+
+        }];
 }
 
 @end

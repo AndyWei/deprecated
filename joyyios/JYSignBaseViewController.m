@@ -23,8 +23,8 @@
 {
     [super viewDidLoad];
 
-    self.navigationController.navigationBar.hidden = NO;
     self.view.tintColor = FlatSkyBlue;
+    self.navigationController.navigationBar.tintColor = FlatSkyBlue;
 
     [self _createEmailField];
     [self _createPartingLine];
@@ -121,10 +121,9 @@
 
 - (void)_createSignButton
 {
-    CGRect signButtonFrame = CGRectMake(kSignFieldXMargin,
-                                        self.passwordField.frame.origin.y + self.passwordField.frame.size.height + kSignButtonYMargin,
-                                        self.view.frame.size.width - 2 * kSignFieldXMargin,
-                                        kSignButtonHeight);
+    CGRect signButtonFrame =
+        CGRectMake(kSignFieldXMargin, self.passwordField.frame.origin.y + self.passwordField.frame.size.height + kSignButtonYMargin,
+                   self.view.frame.size.width - 2 * kSignFieldXMargin, kSignButtonHeight);
 
     _signButton = [[MRoundedButton alloc] initWithFrame:signButtonFrame buttonStyle:MRoundedButtonDefault];
     _signButton.backgroundColor = ClearColor;

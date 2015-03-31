@@ -10,10 +10,10 @@
 #import <KVNProgress/KVNProgress.h>
 
 #import "AppDelegate.h"
+#import "JYHomeViewController.h"
 #import "JYIntroViewController.h"
+#import "JYNearbyViewController.h"
 #import "JYSignViewController.h"
-#import "FirstViewController.h"
-#import "SecondViewController.h"
 #import "User.h"
 
 @interface AppDelegate ()
@@ -28,33 +28,8 @@
 
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 
-    self.window.backgroundColor = [UIColor whiteColor];
-
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_introDidFinish) name:kNotificationIntroDidFinish object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_signDidFinish) name:kNotificationSignDidFinish object:nil];
-
-    User *user = [User currentUser];
-    BOOL userExist = [user load];
-    BOOL needIntro = YES;
-
-    if (needIntro)
-    {
-        NSTimeInterval now = [NSDate timeIntervalSinceReferenceDate];
-        if (userExist && user.tokenExpireTimeInSecs < now)
-        {
-            [self _automaticSignIn];
-        }
-
-        [self _launchIntroController];
-    }
-    else if (!userExist)
-    {
-        [self _launchSignController];
-    }
-    else
-    {
-        [self _launchTabController];
-    }
+    [self _setupGlobalAppearance];
+    [self _launchViewController];
 
     [self.window makeKeyAndVisible];
     return YES;
@@ -92,49 +67,94 @@
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
 
+- (void)_setupGlobalAppearance
+{
+    self.window.backgroundColor = [UIColor whiteColor];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_introDidFinish) name:kNotificationIntroDidFinish object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_signDidFinish) name:kNotificationSignDidFinish object:nil];
+
+    [[UINavigationBar appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIFont lightSystemFontOfSize:kNavBarTitleFontSize], NSFontAttributeName, nil]];
+
+    [[UITabBarItem appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIFont lightSystemFontOfSize:kTabBarTitleFontSize], NSFontAttributeName, nil] forState:UIControlStateNormal];
+
+    [[UITabBarItem appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIFont lightSystemFontOfSize:kTabBarTitleFontSize], NSFontAttributeName, nil] forState:UIControlStateSelected];
+
+    [[UITabBarItem appearance] setTitlePositionAdjustment:UIOffsetMake(0.0, -16.0f)];
+}
+
+- (void)_launchViewController
+{
+    User *user = [User currentUser];
+    BOOL userExist = [user load];
+    BOOL needIntro = YES;
+
+    if (needIntro)
+    {
+        NSTimeInterval now = [NSDate timeIntervalSinceReferenceDate];
+        if (userExist && user.tokenExpireTimeInSecs < now)
+        {
+            [self _automaticSignIn];
+        }
+
+        [self _launchIntroViewController];
+    }
+    else if (!userExist)
+    {
+        [self _launchSignViewController];
+    }
+    else
+    {
+        [self _launchTabViewController];
+    }
+}
+
 - (void)_introDidFinish
 {
     User *user = [User currentUser];
     BOOL userExist = [user load];
 
+//[self _launchTabViewController];
     if (!userExist)
     {
-        [self _launchSignController];
+        [self _launchSignViewController];
     }
     else
     {
-        [self _launchTabController];
+        [self _launchTabViewController];
     }
 }
 
 - (void)_signDidFinish
 {
-    [self _launchTabController];
+    [self _launchTabViewController];
 }
 
--(void)_launchSignController
+-(void)_launchSignViewController
 {
     UIViewController *viewController = [JYSignViewController new];
     UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:viewController];
     self.window.rootViewController = navigationController;
 }
 
--(void)_launchIntroController
+-(void)_launchIntroViewController
 {
     UIViewController *viewController = [JYIntroViewController new];
     UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:viewController];
     self.window.rootViewController = navigationController;
 }
 
--(void)_launchTabController
+-(void)_launchTabViewController
 {
-    UIViewController *vc1 = [FirstViewController new];
+    UIViewController *vc1 = [JYHomeViewController new];
     UINavigationController *nc1 = [[UINavigationController alloc] initWithRootViewController:vc1];
     [nc1.navigationBar setTintColor:FlatSkyBlue];
+    nc1.title  = NSLocalizedString(@"I need", nil);
 
-    UIViewController *vc2 = [SecondViewController new];
+    UIViewController *vc2 = [JYNearbyViewController new];
     UINavigationController *nc2 = [[UINavigationController alloc] initWithRootViewController:vc2];
-    [nc1.navigationBar setTintColor:FlatSkyBlue];
+    [nc2.navigationBar setTintColor:FlatSkyBlue];
+    nc2.title = NSLocalizedString(@"I can", nil);
 
     UITabBarController *tabBarController = [UITabBarController new];
     tabBarController.viewControllers = [NSArray arrayWithObjects:nc1, nc2, nil];
