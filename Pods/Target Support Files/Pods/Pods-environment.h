@@ -48,6 +48,12 @@
 #define COCOAPODS_VERSION_MINOR_AFNetworking_UIKit 5
 #define COCOAPODS_VERSION_PATCH_AFNetworking_UIKit 2
 
+// BMYScrollableNavigationBar
+#define COCOAPODS_POD_AVAILABLE_BMYScrollableNavigationBar
+#define COCOAPODS_VERSION_MAJOR_BMYScrollableNavigationBar 1
+#define COCOAPODS_VERSION_MINOR_BMYScrollableNavigationBar 0
+#define COCOAPODS_VERSION_PATCH_BMYScrollableNavigationBar 0
+
 // ChameleonFramework
 #define COCOAPODS_POD_AVAILABLE_ChameleonFramework
 #define COCOAPODS_VERSION_MAJOR_ChameleonFramework 1

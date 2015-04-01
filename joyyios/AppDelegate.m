@@ -8,6 +8,7 @@
 
 #import <AFNetworking/AFNetworking.h>
 #import <KVNProgress/KVNProgress.h>
+#import <BMYScrollableNavigationBar/BMYScrollableNavigationBar.h>
 
 #import "AppDelegate.h"
 #import "JYHomeViewController.h"
@@ -146,14 +147,24 @@
 
 -(void)_launchTabViewController
 {
+//    UIViewController *vc1 = [JYHomeViewController new];
+//    UINavigationController *nc1 = [[UINavigationController alloc] initWithRootViewController:vc1];
+//    [nc1.navigationBar setTintColor:FlatSkyBlue];
+//    nc1.title  = NSLocalizedString(@"I need", nil);
+//
+//    UIViewController *vc2 = [JYNearbyViewController new];
+//    UINavigationController *nc2 = [[UINavigationController alloc] initWithRootViewController:vc2];
+//    [nc2.navigationBar setTintColor:FlatSkyBlue];
+//    nc2.title = NSLocalizedString(@"I can", nil);
+
     UIViewController *vc1 = [JYHomeViewController new];
-    UINavigationController *nc1 = [[UINavigationController alloc] initWithRootViewController:vc1];
-    [nc1.navigationBar setTintColor:FlatSkyBlue];
+    UINavigationController *nc1 = [[UINavigationController alloc] initWithNavigationBarClass:[BMYScrollableNavigationBar class] toolbarClass:nil];
+    [nc1 setViewControllers:@[vc1] animated:NO];
     nc1.title  = NSLocalizedString(@"I need", nil);
 
-    UIViewController *vc2 = [JYNearbyViewController new];
-    UINavigationController *nc2 = [[UINavigationController alloc] initWithRootViewController:vc2];
-    [nc2.navigationBar setTintColor:FlatSkyBlue];
+    UIViewController *vc2 = [JYHomeViewController new];
+    UINavigationController *nc2 = [[UINavigationController alloc] initWithNavigationBarClass:[BMYScrollableNavigationBar class] toolbarClass:nil];
+    [nc2 setViewControllers:@[vc2] animated:NO];
     nc2.title = NSLocalizedString(@"I can", nil);
 
     UITabBarController *tabBarController = [UITabBarController new];

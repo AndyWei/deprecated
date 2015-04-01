@@ -6,8 +6,9 @@
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
+#import <BMYScrollableNavigationBar/BMYScrollableNavigationBarViewController.h>
 #import "JYModestViewController.h"
 
-@interface JYHomeViewController : JYModestViewController<UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
+@interface JYHomeViewController : BMYScrollableNavigationBarViewController<UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
 
 @end
