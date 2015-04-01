@@ -17,6 +17,7 @@ const CGFloat kSignFieldFontSize = 18.0f;
 const CGFloat kSignFieldHeight = 70.0f;
 const CGFloat kSignFieldXMargin = 50.0f;
 const CGFloat kSignViewTopOffset = 152;
+const CGFloat kServiceCategoryCellFontSize = 18.0f;
 
 NSString *const kErrorAuthenticationFailed = @"Incorrect Email or password";
 NSString *const kKeyTokenExpireTime = @"TokenExpireTime";
@@ -27,4 +28,3 @@ NSString *const kSystemFontBold = @"HelveticaNeue-Bold";
 NSString *const kSystemFontLight = @"HelveticaNeue-Thin";
 NSString *const kSystemFontRegular = @"HelveticaNeue-Light";
 NSString *const kUrlApiBase = @"http://api.joyyapp.com:8000/v1/";
-

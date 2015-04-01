@@ -12,7 +12,6 @@
 
 @end
 
-
 @implementation JYAutoCompleteDataSource
 
 + (JYAutoCompleteDataSource *)sharedDataSource

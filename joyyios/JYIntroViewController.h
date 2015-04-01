@@ -8,6 +8,6 @@
 
 #import <EAIntroView/EAIntroView.h>
 
-@interface JYIntroViewController : UIViewController<EAIntroDelegate>
+@interface JYIntroViewController : UIViewController <EAIntroDelegate>
 
 @end

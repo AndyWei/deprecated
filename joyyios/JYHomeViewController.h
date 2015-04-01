@@ -7,8 +7,7 @@
 //
 
 #import <BMYScrollableNavigationBar/BMYScrollableNavigationBarViewController.h>
-#import "JYModestViewController.h"
 
-@interface JYHomeViewController : BMYScrollableNavigationBarViewController<UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
+@interface JYHomeViewController : BMYScrollableNavigationBarViewController <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
 
 @end

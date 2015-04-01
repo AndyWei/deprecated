@@ -6,11 +6,15 @@
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
+#import "JYCollectionViewCell.h"
 #import "JYHomeViewController.h"
 
 @interface JYHomeViewController ()
 {
+    CGFloat _cellWidth;
+    CGFloat _cellHeight;
     UICollectionView *_collectionView;
+    NSArray *_serviceCategories;
 }
 @end
 
@@ -19,6 +23,23 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+
+    _cellWidth = self.view.center.x - 1;
+    _cellHeight = _cellWidth;
+
+    _serviceCategories = @[
+        NSLocalizedString(@"Roadside Aid", nil),
+        NSLocalizedString(@"Ride", nil),
+        NSLocalizedString(@"Moving", nil),
+        NSLocalizedString(@"Delivery", nil),
+        NSLocalizedString(@"Plumbing", nil),
+        NSLocalizedString(@"Cleaning", nil),
+        NSLocalizedString(@"Handyman", nil),
+        NSLocalizedString(@"Gardener", nil),
+        NSLocalizedString(@"Personal Assistant", nil),
+        NSLocalizedString(@"Other", nil)
+    ];
+
     self.navigationItem.title = NSLocalizedString(@"Choose a category ...", nil);
 
     UICollectionViewFlowLayout *layout = [UICollectionViewFlowLayout new];
@@ -29,9 +50,9 @@
     [_collectionView setDataSource:self];
     [_collectionView setDelegate:self];
 
-    [_collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:@"homeCellIdentifier"];
-    [_collectionView setBackgroundColor:FlatWhite];
+    [_collectionView registerClass:[JYCollectionViewCell class] forCellWithReuseIdentifier:@"homeCellIdentifier"];
 
+    _collectionView.backgroundColor = FlatWhite;
     _collectionView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
     [self bindNavigationBarToScrollView:_collectionView];
 
@@ -48,20 +69,23 @@
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-    return 20;
+    return _serviceCategories.count;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    UICollectionViewCell *cell=[collectionView dequeueReusableCellWithReuseIdentifier:@"homeCellIdentifier" forIndexPath:indexPath];
+    JYCollectionViewCell *cell =
+        (JYCollectionViewCell *)[collectionView dequeueReusableCellWithReuseIdentifier:@"homeCellIdentifier" forIndexPath:indexPath];
 
-    cell.backgroundColor = FlatSand;
+    CGFloat cellFrameHeight = 40.0f;
+    cell.label.frame = CGRectMake(0, (_cellHeight - cellFrameHeight) / 2, _cellWidth, cellFrameHeight);
+    cell.label.text = _serviceCategories[indexPath.item];
     return cell;
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-//    UICollectionViewCell *cell = [collectionView cellForItemAtIndexPath:indexPath];
+    //    UICollectionViewCell *cell = [collectionView cellForItemAtIndexPath:indexPath];
 
     JYHomeViewController *viewController = [JYHomeViewController new];
     [self.navigationController pushViewController:viewController animated:YES];
@@ -69,10 +93,11 @@
 
 #pragma mark - UICollectionViewDelegateFlowLayout
 
-- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
+- (CGSize)collectionView:(UICollectionView *)collectionView
+                    layout:(UICollectionViewLayout *)collectionViewLayout
+    sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    CGFloat cellWidth =  self.view.center.x - 1;
-    return CGSizeMake(cellWidth, cellWidth);
+    return CGSizeMake(_cellWidth, _cellWidth);
 }
 
 @end

@@ -18,8 +18,7 @@
 #import "User.h"
 
 @interface AppDelegate ()
-{
-}
+
 @end
 
 @implementation AppDelegate
@@ -75,11 +74,17 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_introDidFinish) name:kNotificationIntroDidFinish object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_signDidFinish) name:kNotificationSignDidFinish object:nil];
 
-    [[UINavigationBar appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIFont lightSystemFontOfSize:kNavBarTitleFontSize], NSFontAttributeName, nil]];
+    [[UINavigationBar appearance]
+        setTitleTextAttributes:[NSDictionary
+                                   dictionaryWithObjectsAndKeys:[UIFont lightSystemFontOfSize:kNavBarTitleFontSize], NSFontAttributeName, nil]];
 
-    [[UITabBarItem appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIFont lightSystemFontOfSize:kTabBarTitleFontSize], NSFontAttributeName, nil] forState:UIControlStateNormal];
+    [[UITabBarItem appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIFont lightSystemFontOfSize:kTabBarTitleFontSize],
+                                                                                                 NSFontAttributeName, nil]
+                                             forState:UIControlStateNormal];
 
-    [[UITabBarItem appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIFont lightSystemFontOfSize:kTabBarTitleFontSize], NSFontAttributeName, nil] forState:UIControlStateSelected];
+    [[UITabBarItem appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIFont lightSystemFontOfSize:kTabBarTitleFontSize],
+                                                                                                 NSFontAttributeName, nil]
+                                             forState:UIControlStateSelected];
 
     [[UITabBarItem appearance] setTitlePositionAdjustment:UIOffsetMake(0.0, -16.0f)];
 }
@@ -115,7 +120,7 @@
     User *user = [User currentUser];
     BOOL userExist = [user load];
 
-//[self _launchTabViewController];
+    //[self _launchTabViewController];
     if (!userExist)
     {
         [self _launchSignViewController];
@@ -131,40 +136,30 @@
     [self _launchTabViewController];
 }
 
--(void)_launchSignViewController
+- (void)_launchSignViewController
 {
     UIViewController *viewController = [JYSignViewController new];
     UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:viewController];
     self.window.rootViewController = navigationController;
 }
 
--(void)_launchIntroViewController
+- (void)_launchIntroViewController
 {
     UIViewController *viewController = [JYIntroViewController new];
     UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:viewController];
     self.window.rootViewController = navigationController;
 }
 
--(void)_launchTabViewController
+- (void)_launchTabViewController
 {
-//    UIViewController *vc1 = [JYHomeViewController new];
-//    UINavigationController *nc1 = [[UINavigationController alloc] initWithRootViewController:vc1];
-//    [nc1.navigationBar setTintColor:FlatSkyBlue];
-//    nc1.title  = NSLocalizedString(@"I need", nil);
-//
-//    UIViewController *vc2 = [JYNearbyViewController new];
-//    UINavigationController *nc2 = [[UINavigationController alloc] initWithRootViewController:vc2];
-//    [nc2.navigationBar setTintColor:FlatSkyBlue];
-//    nc2.title = NSLocalizedString(@"I can", nil);
-
     UIViewController *vc1 = [JYHomeViewController new];
     UINavigationController *nc1 = [[UINavigationController alloc] initWithNavigationBarClass:[BMYScrollableNavigationBar class] toolbarClass:nil];
-    [nc1 setViewControllers:@[vc1] animated:NO];
-    nc1.title  = NSLocalizedString(@"I need", nil);
+    [nc1 setViewControllers:@[ vc1 ] animated:NO];
+    nc1.title = NSLocalizedString(@"I need", nil);
 
     UIViewController *vc2 = [JYHomeViewController new];
     UINavigationController *nc2 = [[UINavigationController alloc] initWithNavigationBarClass:[BMYScrollableNavigationBar class] toolbarClass:nil];
-    [nc2 setViewControllers:@[vc2] animated:NO];
+    [nc2 setViewControllers:@[ vc2 ] animated:NO];
     nc2.title = NSLocalizedString(@"I can", nil);
 
     UITabBarController *tabBarController = [UITabBarController new];
@@ -183,17 +178,15 @@
 
     NSString *url = [NSString stringWithFormat:@"%@%@", kUrlApiBase, @"signin"];
 
-    [manager GET:url parameters:nil
-         success:^(AFHTTPRequestOperation *operation, id responseObject)
-     {
-         [User currentUser].credential = responseObject;
+    [manager GET:url
+        parameters:nil
+        success:^(AFHTTPRequestOperation *operation, id responseObject) {
+          [User currentUser].credential = responseObject;
 
-     }
-         failure:^(AFHTTPRequestOperation *operation, NSError *error)
-     {
-         NSLog(@"_automaticSignIn Error: %@", error);
-     }];
+        }
+        failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+          NSLog(@"_automaticSignIn Error: %@", error);
+        }];
 }
-
 
 @end

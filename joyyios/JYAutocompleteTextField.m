@@ -185,7 +185,7 @@
     return ![currentText isEqualToString:self.text];
 }
 
-- (void)_textDidChange: (NSNotification *)notification
+- (void)_textDidChange:(NSNotification *)notification
 {
     [self _refreshAutocompleteText];
 }
