@@ -11,21 +11,24 @@
 
 extern const CGFloat kButtonCornerRadius;
 extern const CGFloat kNavBarTitleFontSize;
+extern const CGFloat kNextButtonHeight;
+extern const CGFloat kNextButtonMarginLeft;
+extern const CGFloat kNextButtonMarginBottom;
 extern const CGFloat kTabBarTitleFontSize;
 extern const CGFloat kSignButtonHeight;
 extern const CGFloat kSignButtonWidth;
-extern const CGFloat kSignButtonYMargin;
+extern const CGFloat kSignButtonMarginTop;
 extern const CGFloat kSignFieldFloatingLabelFontSize;
 extern const CGFloat kSignFieldFontSize;
 extern const CGFloat kSignFieldHeight;
-extern const CGFloat kSignFieldXMargin;
+extern const CGFloat kSignFieldMarginLeft;
 extern const CGFloat kSignViewTopOffset;
 extern const CGFloat kServiceCategoryCellFontSize;
 
 extern NSString *const kErrorAuthenticationFailed;
 extern NSString *const kKeyTokenExpireTime;
 extern NSString *const kKeyUserCredential;
-extern NSString *const kNotificationIntroDidFinish;
+extern NSString *const kNotificationIntroduceDidFinish;
 extern NSString *const kNotificationSignDidFinish;
 extern NSString *const kSystemFontBold;
 extern NSString *const kSystemFontLight;

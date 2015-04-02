@@ -18,7 +18,8 @@
 #import <UIKit/UIKit.h>
 
 #import "Constants.h"
-#import "ChameleonFramework/Chameleon.h"
+#import "Chameleon.h"
+#import "UIColor+Joyy.h"
 #import "UIFont+SytemFontOverride.h"
 
 #endif

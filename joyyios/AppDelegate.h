@@ -6,10 +6,12 @@
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+@import CoreLocation;
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate>
+@interface AppDelegate : UIResponder <UIApplicationDelegate, CLLocationManagerDelegate>
 
-@property(strong, nonatomic) UIWindow *window;
+@property(nonatomic) UIWindow *window;
+@property(nonatomic) CLLocationManager *locationManager;
+@property(nonatomic) CLLocation *currentLocation;
 
 @end

@@ -44,5 +44,9 @@
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 	</array>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>The other users will not see your location.</string>
+	<key>NSLocationUsageDescription</key>
+	<string>The other users will not see your location.</string>
 </dict>
 </plist>

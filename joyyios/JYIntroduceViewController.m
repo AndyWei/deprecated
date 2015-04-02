@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
-#import "JYIntroViewController.h"
+#import "JYIntroduceViewController.h"
 
 static NSString *const sampleDescription1 =
     @"Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
@@ -16,13 +16,13 @@ static NSString *const sampleDescription3 = @"Neque porro quisquam est, qui dolo
     @"non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem.";
 static NSString *const sampleDescription4 = @"Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit.";
 
-@interface JYIntroViewController ()
+@interface JYIntroduceViewController ()
 {
     UIView *rootView;
 }
 @end
 
-@implementation JYIntroViewController
+@implementation JYIntroduceViewController
 
 - (void)viewDidLoad
 {
@@ -35,7 +35,7 @@ static NSString *const sampleDescription4 = @"Nam libero tempore, cum soluta nob
 
     rootView = self.navigationController.view;
     rootView.backgroundColor = FlatSkyBlue;
-    [self _showIntro];
+    [self _introduce];
 }
 
 - (void)didReceiveMemoryWarning
@@ -44,7 +44,7 @@ static NSString *const sampleDescription4 = @"Nam libero tempore, cum soluta nob
     // Dispose of any resources that can be recreated.
 }
 
-- (void)_showIntro
+- (void)_introduce
 {
     EAIntroPage *page1 = [EAIntroPage page];
     page1.title = @"Hello world";
@@ -70,18 +70,18 @@ static NSString *const sampleDescription4 = @"Nam libero tempore, cum soluta nob
     //    page4.bgImage = [UIImage imageNamed:@"bg4"];
     //    page4.titleIconView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"title4"]];
 
-    EAIntroView *intro = [[EAIntroView alloc] initWithFrame:rootView.bounds andPages:@[ page1, page2, page3, page4 ]];
-    [intro setDelegate:self];
-    intro.backgroundColor = FlatSkyBlue;
+    EAIntroView *introduceView = [[EAIntroView alloc] initWithFrame:rootView.bounds andPages:@[ page1, page2, page3, page4 ]];
+    [introduceView setDelegate:self];
+    introduceView.backgroundColor = FlatSkyBlue;
 
-    [intro showInView:rootView animateDuration:0.3];
+    [introduceView showInView:rootView animateDuration:0.3];
 }
 
 #pragma mark - EAIntroView delegate
 
 - (void)introDidFinish:(EAIntroView *)introView
 {
-    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationIntroDidFinish object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationIntroduceDidFinish object:nil];
 }
 
 @end

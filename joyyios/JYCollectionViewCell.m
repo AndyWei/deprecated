@@ -18,19 +18,19 @@
         self.contentView.opaque = YES;
         self.contentView.backgroundColor = FlatSkyBlueDark;
 
-        _imageView = [UIImageView new];
-        _imageView.clipsToBounds = YES;
-        _imageView.contentMode = UIViewContentModeScaleAspectFill;
-        _imageView.opaque = YES;
+        self.imageView = [UIImageView new];
+        self.imageView.clipsToBounds = YES;
+        self.imageView.contentMode = UIViewContentModeScaleAspectFill;
+        self.imageView.opaque = YES;
         [self.contentView addSubview:_imageView];
 
-        _label = [UILabel new];
-        _label.backgroundColor = ClearColor;
-        _label.opaque = YES;
-        _label.font = [UIFont boldSystemFontOfSize:kServiceCategoryCellFontSize];
-        _label.textColor = FlatWhite;
-        _label.textAlignment = NSTextAlignmentCenter;
-        [self.contentView addSubview:_label];
+        self.label = [UILabel new];
+        self.label.backgroundColor = ClearColor;
+        self.label.opaque = YES;
+        self.label.font = [UIFont boldSystemFontOfSize:kServiceCategoryCellFontSize];
+        self.label.textColor = FlatWhite;
+        self.label.textAlignment = NSTextAlignmentCenter;
+        [self.contentView addSubview:self.label];
     }
     return self;
 }

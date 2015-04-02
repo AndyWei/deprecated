@@ -11,8 +11,8 @@
 #import <BMYScrollableNavigationBar/BMYScrollableNavigationBar.h>
 
 #import "AppDelegate.h"
-#import "JYHomeViewController.h"
-#import "JYIntroViewController.h"
+#import "JYOrderCategoryCollectionViewController.h"
+#import "JYIntroduceViewController.h"
 #import "JYNearbyViewController.h"
 #import "JYSignViewController.h"
 #import "User.h"
@@ -29,6 +29,7 @@
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 
     [self _setupGlobalAppearance];
+    [self _setupLocationManager];
     [self _launchViewController];
 
     [self.window makeKeyAndVisible];
@@ -67,33 +68,79 @@
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
 
+#pragma mark - Private methods
+
 - (void)_setupGlobalAppearance
 {
     self.window.backgroundColor = [UIColor whiteColor];
 
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_introDidFinish) name:kNotificationIntroDidFinish object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_introduceDidFinish) name:kNotificationIntroduceDidFinish object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_signDidFinish) name:kNotificationSignDidFinish object:nil];
 
-    [[UINavigationBar appearance]
-        setTitleTextAttributes:[NSDictionary
-                                   dictionaryWithObjectsAndKeys:[UIFont lightSystemFontOfSize:kNavBarTitleFontSize], NSFontAttributeName, nil]];
+    [[UINavigationBar appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIFont lightSystemFontOfSize:kNavBarTitleFontSize], NSFontAttributeName, nil]];
 
-    [[UITabBarItem appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIFont lightSystemFontOfSize:kTabBarTitleFontSize],
-                                                                                                 NSFontAttributeName, nil]
-                                             forState:UIControlStateNormal];
+    [[UINavigationBar appearance] setTintColor:JoyyBlue];
 
-    [[UITabBarItem appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIFont lightSystemFontOfSize:kTabBarTitleFontSize],
-                                                                                                 NSFontAttributeName, nil]
-                                             forState:UIControlStateSelected];
+    [[UITabBar appearance] setTintColor:JoyyBlue];
+
+    [[UITabBarItem appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIFont lightSystemFontOfSize:kTabBarTitleFontSize], NSFontAttributeName, nil] forState:UIControlStateNormal];
+
+    [[UITabBarItem appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIFont lightSystemFontOfSize:kTabBarTitleFontSize], NSFontAttributeName, nil] forState:UIControlStateSelected];
 
     [[UITabBarItem appearance] setTitlePositionAdjustment:UIOffsetMake(0.0, -16.0f)];
+}
+
+- (void)_setupLocationManager
+{
+    self.locationManager = [CLLocationManager new];
+    self.locationManager.delegate = self;
+    self.locationManager.distanceFilter = kCLDistanceFilterNone;
+    self.locationManager.desiredAccuracy = kCLLocationAccuracyBest;
+
+    if([CLLocationManager locationServicesEnabled])
+    {
+        if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusDenied ||
+            [CLLocationManager authorizationStatus] == kCLAuthorizationStatusNotDetermined)
+        {
+            if ([self.locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)])
+            {
+                [self.locationManager requestWhenInUseAuthorization];
+            }
+            else
+            {
+                NSString *title = NSLocalizedString(@"Hey, Joyy need your location", nil);
+                NSString *message = NSLocalizedString(@"You can allow it in 'Settings -> Privacy -> Location Services'", nil);
+
+                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:title
+                                                                    message:message
+                                                                   delegate:self
+                                                          cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
+                                                          otherButtonTitles:NSLocalizedString(@"Settings", nil), nil];
+                [alertView show];
+            }
+        }
+        else
+        {
+            [self.locationManager startUpdatingLocation];
+        }
+    }
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (buttonIndex == 1)
+    {
+        // Send the user to the Settings for this app
+        NSURL *settingsURL = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
+        [[UIApplication sharedApplication] openURL:settingsURL];
+    }
 }
 
 - (void)_launchViewController
 {
     User *user = [User currentUser];
     BOOL userExist = [user load];
-    BOOL needIntro = YES;
+    BOOL needIntro = NO;
 
     if (needIntro)
     {
@@ -115,7 +162,7 @@
     }
 }
 
-- (void)_introDidFinish
+- (void)_introduceDidFinish
 {
     User *user = [User currentUser];
     BOOL userExist = [user load];
@@ -145,19 +192,19 @@
 
 - (void)_launchIntroViewController
 {
-    UIViewController *viewController = [JYIntroViewController new];
+    UIViewController *viewController = [JYIntroduceViewController new];
     UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:viewController];
     self.window.rootViewController = navigationController;
 }
 
 - (void)_launchTabViewController
 {
-    UIViewController *vc1 = [JYHomeViewController new];
+    UIViewController *vc1 = [JYOrderCategoryCollectionViewController new];
     UINavigationController *nc1 = [[UINavigationController alloc] initWithNavigationBarClass:[BMYScrollableNavigationBar class] toolbarClass:nil];
     [nc1 setViewControllers:@[ vc1 ] animated:NO];
     nc1.title = NSLocalizedString(@"I need", nil);
 
-    UIViewController *vc2 = [JYHomeViewController new];
+    UIViewController *vc2 = [JYOrderCategoryCollectionViewController new];
     UINavigationController *nc2 = [[UINavigationController alloc] initWithNavigationBarClass:[BMYScrollableNavigationBar class] toolbarClass:nil];
     [nc2 setViewControllers:@[ vc2 ] animated:NO];
     nc2.title = NSLocalizedString(@"I can", nil);
@@ -189,4 +236,44 @@
         }];
 }
 
+#pragma mark - CLLocationManagerDelegate
+
+- (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations
+{
+    self.currentLocation = [locations lastObject];
+    [self.locationManager stopUpdatingLocation];
+//    CLGeocoder *geocoder = [[CLGeocoder alloc] init] ;
+//    [geocoder reverseGeocodeLocation:currentLocation completionHandler:^(NSArray *placemarks, NSError *error)
+//     {
+//         if (!(error))
+//         {
+//             CLPlacemark *placemark = [placemarks objectAtIndex:0];
+//             NSLog(@"\nCurrent Location Detected\n");
+//             NSLog(@"placemark %@",placemark);
+//             NSString *locatedAt = [[placemark.addressDictionary valueForKey:@"FormattedAddressLines"] componentsJoinedByString:@", "];
+//             NSString *Address = [[NSString alloc]initWithString:locatedAt];
+//             NSString *Area = [[NSString alloc]initWithString:placemark.locality];
+//             NSString *Country = [[NSString alloc]initWithString:placemark.country];
+//             NSString *CountryArea = [NSString stringWithFormat:@"%@, %@", Area,Country];
+//             NSLog(@"%@",CountryArea);
+//         }
+//         else
+//         {
+//             NSLog(@"Geocode failed with error %@", error);
+//             NSLog(@"\nCurrent Location Not Detected\n");
+//             //return;
+//             CountryArea = NULL;
+//         }
+//         /*---- For more results
+//          placemark.region);
+//          placemark.country);
+//          placemark.locality);
+//          placemark.name);
+//          placemark.ocean);
+//          placemark.postalCode);
+//          placemark.subLocality);
+//          placemark.location);
+//          ------*/
+//     }];
+}
 @end

@@ -55,36 +55,38 @@
     NSString *url = [NSString stringWithFormat:@"%@%@", kUrlApiBase, @"signin"];
 
     [KVNProgress show];
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
     [manager GET:url
         parameters:nil
         success:^(AFHTTPRequestOperation *operation, id responseObject) {
-          NSLog(@"SignIn Success responseObject: %@", responseObject);
+            NSLog(@"SignIn Success responseObject: %@", responseObject);
 
-          [KVNProgress showSuccess];
-          [User currentUser].credential = responseObject;
-          [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationSignDidFinish object:nil];
+            [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+            [KVNProgress dismiss];
+            [User currentUser].credential = responseObject;
+            [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationSignDidFinish object:nil];
         }
         failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-          NSLog(@"SignIn Error: %@", error);
+            NSLog(@"SignIn Error: %@", error);
 
-          [KVNProgress dismiss];
+            [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+            [KVNProgress dismiss];
 
-          NSString *errorMessage = nil;
-          if (error.code == NSURLErrorBadServerResponse)
-          {
-              errorMessage = NSLocalizedString(kErrorAuthenticationFailed, nil);
-          }
-          else
-          {
-              errorMessage = [error.userInfo valueForKey:NSLocalizedDescriptionKey];
-          }
+            NSString *errorMessage = nil;
+            if (error.code == NSURLErrorBadServerResponse)
+            {
+                errorMessage = NSLocalizedString(kErrorAuthenticationFailed, nil);
+            }
+            else
+            {
+                errorMessage = [error.userInfo valueForKey:NSLocalizedDescriptionKey];
+            }
 
-          [RKDropdownAlert title:NSLocalizedString(@"Something wrong ...", nil)
-                         message:errorMessage
-                 backgroundColor:FlatYellow
-                       textColor:FlatBlack
-                            time:5];
-
+            [RKDropdownAlert title:NSLocalizedString(@"Something wrong ...", nil)
+                           message:errorMessage
+                   backgroundColor:FlatYellow
+                         textColor:FlatBlack
+                              time:5];
         }];
 }
 

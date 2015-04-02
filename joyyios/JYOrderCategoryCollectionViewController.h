@@ -1,5 +1,5 @@
 //
-//  JYHomeViewController.h
+//  JYOrderCategoryCollectionViewController.h
 //  joyyios
 //
 //  Created by Ping Yang on 3/26/15.
@@ -8,6 +8,7 @@
 
 #import <BMYScrollableNavigationBar/BMYScrollableNavigationBarViewController.h>
 
-@interface JYHomeViewController : BMYScrollableNavigationBarViewController <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
+@interface JYOrderCategoryCollectionViewController
+    : BMYScrollableNavigationBarViewController <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
 
 @end
