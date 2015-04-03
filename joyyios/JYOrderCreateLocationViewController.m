@@ -51,13 +51,13 @@ static NSString *reuseId = @"pin";
     _mapView = [[MKMapView alloc] initWithFrame:self.view.frame];
     _mapView.delegate = self;
     _mapView.showsUserLocation = YES;
-    _mapView.pitchEnabled = NO;
+    _mapView.pitchEnabled = YES;
     _mapView.rotateEnabled = NO;
 
-    // To resolve the map center moving while zooming issue, distable default scrolling and zooming and
+    // To resolve the map center moving while zooming issue, distable default zooming and
     // use our own pintch and pan gesture recognizer
-    _mapView.scrollEnabled = NO;
-    _mapView.zoomEnabled = YES;
+    _mapView.scrollEnabled = YES;
+    _mapView.zoomEnabled = NO;
 
     _pintchRecognizer = [[JYPinchGestureRecognizer alloc] initWithMapView:_mapView];
     [_mapView addGestureRecognizer: _pintchRecognizer];
@@ -124,7 +124,7 @@ static NSString *reuseId = @"pin";
         else
         {
             _startPointView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"pinBlue"]];
-            CGFloat yOffset = _startPointView.frame.size.height / 2;
+            CGFloat yOffset = _startPointView.frame.size.height / 2 - 7;
             _startPointView.center = CGPointMake(_mapView.center.x, _mapView.center.y - yOffset);
             [_mapView addSubview:_startPointView];
         }

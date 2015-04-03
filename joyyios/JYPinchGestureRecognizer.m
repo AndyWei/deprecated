@@ -11,8 +11,7 @@
 @interface JYPinchGestureRecognizer ()
 
 @property(nonatomic, weak) MKMapView *mapView;
-@property(nonatomic) MKCoordinateRegion originalRegion;
-@property(nonatomic) double lastScale;
+@property(nonatomic) CLLocationDistance originalAltitude;
 
 @end
 
@@ -56,25 +55,12 @@
 
     if (sender.state == UIGestureRecognizerStateBegan)
     {
-        self.originalRegion = sender.mapView.region;
-        self.lastScale = 1.0;
+        self.originalAltitude = sender.mapView.camera.altitude;
     }
 
     double scale = (double)sender.scale;
-    self.lastScale = scale;
-    double latdelta = self.originalRegion.span.latitudeDelta / scale;
-    double londelta = self.originalRegion.span.longitudeDelta / scale;
-
-    latdelta = fmin(80.0f, latdelta);
-    londelta = fmin(80.0f, londelta);
-
-    NSLog(@"scale = %.20f", scale);
-    NSLog(@"latdelta = %.20f", latdelta);
-
-    MKCoordinateSpan span = MKCoordinateSpanMake(latdelta, londelta);
-
-    MKCoordinateRegion newRegion = MKCoordinateRegionMake(self.originalRegion.center, span);
-    [sender.mapView setRegion:newRegion animated:NO];
+    CLLocationDistance altitude = self.originalAltitude / scale;
+    sender.mapView.camera.altitude = altitude;
 }
 
 @end
