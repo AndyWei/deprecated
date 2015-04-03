@@ -9,11 +9,14 @@
 #import "AppDelegate.h"
 #import "JYOrderCreateLocationViewController.h"
 #import "JYPinAnnotationView.h"
+#import "JYPinchGestureRecognizer.h"
+#import "JYPinchGestureRecognizer.h"
 #import "JYServiceCategory.h"
 #import "MRoundedButton.h"
 
 @interface JYOrderCreateLocationViewController ()
 {
+    JYPinchGestureRecognizer *_pintchRecognizer;
     MKMapView *_mapView;
     MKPointAnnotation *_startPoint;
     MKPointAnnotation *_endPoint;
@@ -48,14 +51,23 @@ static NSString *reuseId = @"pin";
     _mapView = [[MKMapView alloc] initWithFrame:self.view.frame];
     _mapView.delegate = self;
     _mapView.showsUserLocation = YES;
+    _mapView.pitchEnabled = NO;
+    _mapView.rotateEnabled = NO;
+
+    // To resolve the map center moving while zooming issue, distable default scrolling and zooming and
+    // use our own pintch and pan gesture recognizer
+    _mapView.scrollEnabled = NO;
+    _mapView.zoomEnabled = YES;
+
+    _pintchRecognizer = [[JYPinchGestureRecognizer alloc] initWithMapView:_mapView];
+    [_mapView addGestureRecognizer: _pintchRecognizer];
 
     // The _mapView.userlocation hasn't been initiated at this time point, so use the currentLocation in AppDelegate
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     CLLocationCoordinate2D coordinate = appDelegate.currentLocation.coordinate;
 
-    MKCoordinateRegion viewRegion = MKCoordinateRegionMakeWithDistance(coordinate, 1000, 1000);
-    MKCoordinateRegion adjustedRegion = [_mapView regionThatFits:viewRegion];
-    [_mapView setRegion:adjustedRegion animated:YES];
+    MKCoordinateRegion region = MKCoordinateRegionMakeWithDistance(coordinate, 1000, 1000);
+    [_mapView setRegion:region animated:YES];
 
     [self _showStartPointView:YES];
     [self _showEndPointView:NO];

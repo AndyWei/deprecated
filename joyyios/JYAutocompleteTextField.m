@@ -6,15 +6,15 @@
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
-#import "JYAutocompleteTextField.h"
+#import "JYAutoCompleteTextField.h"
 
-@interface JYAutocompleteTextField ()
+@interface JYAutoCompleteTextField ()
 
 @property(nonatomic, strong) NSString *autocompleteString;
 
 @end
 
-@implementation JYAutocompleteTextField
+@implementation JYAutoCompleteTextField
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -151,11 +151,11 @@
 {
     if (self.autocompleteType != JYAutoCompleteTypeNone)
     {
-        id<JYAutocompleteDataSource> dataSource = nil;
+        id<JYAutoCompleteDataSourceDelegate> dataSource = nil;
 
         if ([self.autocompleteDataSource respondsToSelector:@selector(textField:completionForPrefix:ignoreCase:)])
         {
-            dataSource = (id<JYAutocompleteDataSource>)self.autocompleteDataSource;
+            dataSource = (id<JYAutoCompleteDataSourceDelegate>)self.autocompleteDataSource;
         }
 
         if (dataSource)

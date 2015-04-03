@@ -26,7 +26,7 @@
 
 #pragma mark - HTAutocompleteTextFieldDelegate
 
-- (NSString *)textField:(JYAutocompleteTextField *)textField completionForPrefix:(NSString *)prefix ignoreCase:(BOOL)ignoreCase
+- (NSString *)textField:(JYAutoCompleteTextField *)textField completionForPrefix:(NSString *)prefix ignoreCase:(BOOL)ignoreCase
 {
     NSString *suggest = @"";
     switch (textField.autocompleteType)

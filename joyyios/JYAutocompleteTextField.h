@@ -13,30 +13,30 @@ typedef enum
     JYAutoCompleteTypeColor
 } JYAutoCompleteType;
 
-@class JYAutocompleteTextField;
+@class JYAutoCompleteTextField;
 
-@protocol JYAutocompleteDataSource <NSObject>
+@protocol JYAutoCompleteDataSourceDelegate <NSObject>
 
-- (NSString *)textField:(JYAutocompleteTextField *)textField completionForPrefix:(NSString *)prefix ignoreCase:(BOOL)ignoreCase;
+- (NSString *)textField:(JYAutoCompleteTextField *)textField completionForPrefix:(NSString *)prefix ignoreCase:(BOOL)ignoreCase;
 
 @end
 
-@protocol JYAutocompleteTextFieldDelegate <NSObject>
+@protocol JYAutoCompleteTextFieldDelegate <NSObject>
 
 @optional
-- (void)autoCompleteTextFieldDidAutoComplete:(JYAutocompleteTextField *)autoCompleteField;
-- (void)autocompleteTextField:(JYAutocompleteTextField *)autocompleteTextField didChangeAutocompleteText:(NSString *)autocompleteText;
+- (void)autoCompleteTextFieldDidAutoComplete:(JYAutoCompleteTextField *)autoCompleteField;
+- (void)autocompleteTextField:(JYAutoCompleteTextField *)autocompleteTextField didChangeAutocompleteText:(NSString *)autocompleteText;
 
 @end
 
-@interface JYAutocompleteTextField : UITextField
+@interface JYAutoCompleteTextField : UITextField
 
 /*
  * Autocomplete behavior
  */
 @property(nonatomic, assign) JYAutoCompleteType autocompleteType; // default to JYAutoCompleteTypeNone
 @property(nonatomic, assign) BOOL ignoreCase;
-@property(nonatomic, assign) id<JYAutocompleteTextFieldDelegate> autoCompleteTextFieldDelegate;
+@property(nonatomic, assign) id<JYAutoCompleteTextFieldDelegate> autoCompleteTextFieldDelegate;
 
 /*
  * Configure text field appearance
@@ -47,7 +47,7 @@ typedef enum
 /*
  * Specify a data source responsible for determining autocomplete text.
  */
-@property(nonatomic, assign) id<JYAutocompleteDataSource> autocompleteDataSource;
+@property(nonatomic, assign) id<JYAutoCompleteDataSourceDelegate> autocompleteDataSource;
 
 /*
  * Subclassing:

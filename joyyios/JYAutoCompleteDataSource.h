@@ -6,9 +6,9 @@
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
-#import "JYAutocompleteTextField.h"
+#import "JYAutoCompleteTextField.h"
 
-@interface JYAutoCompleteDataSource : NSObject <JYAutocompleteDataSource>
+@interface JYAutoCompleteDataSource : NSObject <JYAutoCompleteDataSourceDelegate>
 
 + (JYAutoCompleteDataSource *)sharedDataSource;
 

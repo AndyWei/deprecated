@@ -30,9 +30,9 @@
 //
 //  ---------------------------The end of the original license--------------------
 
-#import "JYAutocompleteTextField.h"
+#import "JYAutoCompleteTextField.h"
 
-@interface JYFloatLabeledTextField : JYAutocompleteTextField
+@interface JYFloatLabeledTextField : JYAutoCompleteTextField
 
 /**
  * Read-only access to the floating label.
