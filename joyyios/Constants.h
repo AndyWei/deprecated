@@ -25,6 +25,8 @@ extern const CGFloat kSignFieldMarginLeft;
 extern const CGFloat kSignViewTopOffset;
 extern const CGFloat kServiceCategoryCellFontSize;
 
+extern NSString *const kAnnotationTitleEnd;
+extern NSString *const kAnnotationTitleStart;
 extern NSString *const kErrorAuthenticationFailed;
 extern NSString *const kKeyTokenExpireTime;
 extern NSString *const kKeyUserCredential;

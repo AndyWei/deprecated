@@ -11,7 +11,7 @@ const CGFloat kNavBarTitleFontSize = 18.0f;
 const CGFloat kNextButtonHeight = 50.0f;
 const CGFloat kNextButtonMarginLeft = 50.0f;
 const CGFloat kNextButtonMarginBottom = 12.0f;
-const CGFloat kTabBarTitleFontSize = 18.0f;
+const CGFloat kTabBarTitleFontSize = 20.0f;
 const CGFloat kSignButtonHeight = 60.0f;
 const CGFloat kSignButtonWidth = 120;
 const CGFloat kSignButtonMarginTop = 20.0f;
@@ -22,6 +22,8 @@ const CGFloat kSignFieldMarginLeft = 50.0f;
 const CGFloat kSignViewTopOffset = 152;
 const CGFloat kServiceCategoryCellFontSize = 18.0f;
 
+NSString *const kAnnotationTitleEnd = @"endPoint";
+NSString *const kAnnotationTitleStart = @"startPoint";
 NSString *const kErrorAuthenticationFailed = @"Incorrect Email or password";
 NSString *const kKeyTokenExpireTime = @"TokenExpireTime";
 NSString *const kKeyUserCredential = @"UserCredential";
