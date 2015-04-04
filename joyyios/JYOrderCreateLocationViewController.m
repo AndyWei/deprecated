@@ -207,7 +207,7 @@ static NSString *reuseId = @"pin";
             if ([self _shouldEditEndPoint])
             {
                 self.mapEditMode = MapEditModeEndPoint;
-                [self _moveMap];
+                [self _zoomAndMoveMap];
             }
             else
             {
@@ -216,6 +216,8 @@ static NSString *reuseId = @"pin";
             break;
         case MapEditModeEndPoint:
             self.mapEditMode = MapEditModeDone;
+            NSAssert(_startPoint && _endPoint, @"Both _startPoint and _endPoint annotations should exist");
+            [_mapView showAnnotations:@[_startPoint, _endPoint] animated:YES];
             break;
         case MapEditModeDone:
             [self _navigateToCreateFormView];
@@ -225,12 +227,13 @@ static NSString *reuseId = @"pin";
     }
 }
 
-- (void)_moveMap
+- (void)_zoomAndMoveMap
 {
-    CLLocationCoordinate2D newCenter = CLLocationCoordinate2DMake(_mapView.centerCoordinate.latitude - 0.001,
-                                                                  _mapView.centerCoordinate.longitude + 0.001);
+    CLLocationCoordinate2D newCenter = CLLocationCoordinate2DMake(_mapView.centerCoordinate.latitude - 0.003,
+                                                                  _mapView.centerCoordinate.longitude + 0.003);
 
-    [_mapView setCenterCoordinate:newCenter animated:YES];
+    MKCoordinateRegion newRegion = MKCoordinateRegionMakeWithDistance(newCenter, 3000, 3000);
+    [_mapView setRegion:newRegion animated:YES];
 }
 
 - (void)_navigateToCreateFormView
@@ -375,12 +378,12 @@ static NSString *reuseId = @"pin";
         {
             pinView = [[JYPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:reuseId];
             pinView.canShowCallout = NO;
-            pinView.pinColor = [kAnnotationTitleStart isEqualToString:annotation.title] ? JYPinAnnotationColorBlue : JYPinAnnotationColorPink;
         }
         else
         {
             pinView.annotation = annotation;
         }
+        pinView.pinColor = [kAnnotationTitleStart isEqualToString:annotation.title] ? JYPinAnnotationColorBlue : JYPinAnnotationColorPink;
     }
     return pinView;
 }
