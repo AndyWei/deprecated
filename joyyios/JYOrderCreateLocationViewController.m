@@ -7,12 +7,21 @@
 //
 
 #import "AppDelegate.h"
+#import "JYOrderCreateFormViewController.h"
 #import "JYOrderCreateLocationViewController.h"
 #import "JYPinAnnotationView.h"
 #import "JYPinchGestureRecognizer.h"
 #import "JYPinchGestureRecognizer.h"
 #import "JYServiceCategory.h"
 #import "MRoundedButton.h"
+
+typedef NS_ENUM(NSUInteger, MapEditMode)
+{
+    MapEditModeNone = 0,
+    MapEditModeStartPoint,
+    MapEditModeEndPoint,
+    MapEditModeDone
+};
 
 @interface JYOrderCreateLocationViewController ()
 {
@@ -24,20 +33,29 @@
     UIImageView *_startPointView;
     UIImageView *_endPointView;
 }
+
+@property(nonatomic) MapEditMode mapEditMode;
+
 @end
 
 static NSString *reuseId = @"pin";
 
 @implementation JYOrderCreateLocationViewController
 
+- (BOOL)hidesBottomBarWhenPushed
+{
+    return YES;
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
 
-    self.navigationItem.title = [JYServiceCategory names][self.serviceCategoryIndex];
+    self.view.backgroundColor = [UIColor whiteColor];
+    self.navigationItem.title = NSLocalizedString(@"Location", nil);
 
+    _mapEditMode = MapEditModeNone;
     [self _createMapView];
-    [self _createNextButton];
 }
 
 - (void)didReceiveMemoryWarning
@@ -46,12 +64,60 @@ static NSString *reuseId = @"pin";
     // Dispose of any resources that can be recreated.
 }
 
+- (void)setMapEditMode:(MapEditMode)mode
+{
+    if (_mapEditMode == mode)
+    {
+        return;
+    }
+
+    // Finish current mode
+    switch (_mapEditMode)
+    {
+        case MapEditModeStartPoint:
+            [self _showStartPointView:NO];
+            [self _showStartPointAnnotation:YES];
+            break;
+        case MapEditModeEndPoint:
+            [self _showEndPointView:NO];
+            [self _showEndPointAnnotation:YES];
+            break;
+        default:
+            break;
+    }
+
+    _mapEditMode = mode;
+    // Prepare for new mode
+    switch (mode)
+    {
+        case MapEditModeStartPoint:
+            [self _showStartPointView:YES];
+            [self _showStartPointAnnotation:NO];
+            break;
+        case MapEditModeEndPoint:
+            [self _showEndPointView:YES];
+            [self _showEndPointAnnotation:NO];
+            break;
+        case MapEditModeNone:
+            [self _showStartPointView:NO];
+            [self _showEndPointView:NO];
+            [self _showStartPointAnnotation:NO];
+            [self _showEndPointAnnotation:NO];
+            break;
+        default:
+            break;
+    }
+    [self _updateNextButton];
+}
+
 - (void)_createMapView
 {
-    _mapView = [[MKMapView alloc] initWithFrame:self.view.frame];
+    CGFloat bottomMargin = kNextButtonHeight;
+    CGRect frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height - bottomMargin);
+    _mapView = [[MKMapView alloc] initWithFrame:frame];
     _mapView.delegate = self;
     _mapView.showsUserLocation = YES;
-    _mapView.pitchEnabled = YES;
+    _mapView.pitchEnabled = NO;
     _mapView.rotateEnabled = NO;
 
     // To resolve the map center moving while zooming issue, distable default zooming and
@@ -60,7 +126,7 @@ static NSString *reuseId = @"pin";
     _mapView.zoomEnabled = NO;
 
     _pintchRecognizer = [[JYPinchGestureRecognizer alloc] initWithMapView:_mapView];
-    [_mapView addGestureRecognizer: _pintchRecognizer];
+    [_mapView addGestureRecognizer:_pintchRecognizer];
 
     // The _mapView.userlocation hasn't been initiated at this time point, so use the currentLocation in AppDelegate
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
@@ -69,47 +135,181 @@ static NSString *reuseId = @"pin";
     MKCoordinateRegion region = MKCoordinateRegionMakeWithDistance(coordinate, 1000, 1000);
     [_mapView setRegion:region animated:YES];
 
-    [self _showStartPointView:YES];
-    [self _showEndPointView:NO];
-
     [self.view addSubview:_mapView];
+    self.mapEditMode = MapEditModeStartPoint;
 }
 
 - (void)_createNextButton
 {
-    CGFloat tabBarHeight = self.tabBarController.tabBar.frame.size.height;
-    CGFloat y = self.view.frame.size.height - tabBarHeight - kNextButtonHeight - kNextButtonMarginBottom;
-    CGRect frame = CGRectMake(kNextButtonMarginLeft, y, self.view.frame.size.width - 2 * kNextButtonMarginLeft, kNextButtonHeight);
+    CGFloat y = self.view.frame.size.height - kNextButtonHeight;
+    CGRect frame = CGRectMake(0, y, self.view.frame.size.width, kNextButtonHeight);
 
     _nextButton = [[MRoundedButton alloc] initWithFrame:frame buttonStyle:MRoundedButtonDefault];
-    _nextButton.borderWidth = 2;
-    _nextButton.borderColor = ClearColor;
     _nextButton.contentAnimateToColor = FlatGray;
     _nextButton.contentColor = FlatWhite;
-    _nextButton.cornerRadius = kButtonCornerRadius;
-    _nextButton.foregroundColor = JoyyBlue50;
+    _nextButton.foregroundColor = JoyyBlue;
     _nextButton.foregroundAnimateToColor = FlatWhite;
     _nextButton.textLabel.font = [UIFont boldSystemFontOfSize:kSignFieldFontSize];
-    _nextButton.textLabel.text = NSLocalizedString(@"Next", nil);
 
-    [_nextButton addTarget:self action:@selector(_next) forControlEvents:UIControlEventTouchUpInside];
+    [_nextButton addTarget:self action:@selector(_nextButtonPressed) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:_nextButton];
 }
 
-- (void)_addAnnotation:(NSString *)title
+- (void)_updateNextButton
 {
-    if ([kAnnotationTitleStart isEqualToString:title])
+    if (_nextButton == nil)
     {
-        _startPoint = [MKPointAnnotation new];
-        _startPoint.coordinate = _mapView.centerCoordinate;
-        _startPoint.title = title;
-        [_mapView addAnnotation:_startPoint];
+        [self _createNextButton];
     }
-    else if ([kAnnotationTitleEnd isEqualToString:title])
+
+    if (self.mapEditMode == MapEditModeDone)
     {
-        _endPoint = [MKPointAnnotation new];
-        _endPoint.coordinate = _mapView.centerCoordinate;
-        _endPoint.title = kAnnotationTitleEnd;
+        _nextButton.textLabel.text = NSLocalizedString(@"Next", nil);
+        return;
+    }
+
+    NSString *text = nil;
+    switch (self.serviceCategoryIndex)
+    {
+        case JYServiceCategoryIndexCleaning:
+        case JYServiceCategoryIndexGardener:
+        case JYServiceCategoryIndexHandyman:
+        case JYServiceCategoryIndexPersonalAssistant:
+        case JYServiceCategoryIndexPlumbing:
+        case JYServiceCategoryIndexRoadsideAssistance:
+        case JYServiceCategoryIndexOther:
+            text = NSLocalizedString(@"Set Sevice Location", nil);
+            break;
+        case JYServiceCategoryIndexDelivery:
+        case JYServiceCategoryIndexMoving:
+        case JYServiceCategoryIndexRide:
+            if (_mapEditMode == MapEditModeStartPoint)
+            {
+                text = NSLocalizedString(@"Set Pickup Location", nil);
+            }
+            else
+            {
+                text = NSLocalizedString(@"Set Destination Location", nil);
+            }
+            break;
+        default:
+            text = NSLocalizedString(@"Next", nil);
+            break;
+    }
+    _nextButton.textLabel.text = text;
+}
+
+- (void)_nextButtonPressed
+{
+    switch (self.mapEditMode) {
+        case MapEditModeStartPoint:
+            if ([self _shouldEditEndPoint])
+            {
+                self.mapEditMode = MapEditModeEndPoint;
+                [self _moveMap];
+            }
+            else
+            {
+                [self _navigateToCreateFormView];
+            }
+            break;
+        case MapEditModeEndPoint:
+            self.mapEditMode = MapEditModeDone;
+            break;
+        case MapEditModeDone:
+            [self _navigateToCreateFormView];
+            break;
+        default:
+            break;
+    }
+}
+
+- (void)_moveMap
+{
+    CLLocationCoordinate2D newCenter = CLLocationCoordinate2DMake(_mapView.centerCoordinate.latitude - 0.001,
+                                                                  _mapView.centerCoordinate.longitude + 0.001);
+
+    [_mapView setCenterCoordinate:newCenter animated:YES];
+}
+
+- (void)_navigateToCreateFormView
+{
+    UIViewController *viewController = [JYOrderCreateFormViewController new];
+    [self.navigationController pushViewController:viewController animated:YES];
+}
+
+- (BOOL)_shouldEditEndPoint
+{
+    if (self.mapEditMode != MapEditModeStartPoint)
+    {
+        return NO;
+    }
+
+    BOOL result = NO;
+    switch (self.serviceCategoryIndex)
+    {
+        case JYServiceCategoryIndexCleaning:
+        case JYServiceCategoryIndexGardener:
+        case JYServiceCategoryIndexHandyman:
+        case JYServiceCategoryIndexPersonalAssistant:
+        case JYServiceCategoryIndexPlumbing:
+        case JYServiceCategoryIndexRoadsideAssistance:
+        case JYServiceCategoryIndexOther:
+            // do nothing
+            break;
+        case JYServiceCategoryIndexDelivery:
+        case JYServiceCategoryIndexMoving:
+        case JYServiceCategoryIndexRide:
+            result = YES;
+            break;
+        default:
+            // do nothing
+            break;
+    }
+    return result;
+}
+
+- (void)_showStartPointAnnotation:(BOOL)show
+{
+    if (show)
+    {
+        if (_startPoint == nil)
+        {
+            _startPoint = [MKPointAnnotation new];
+            _startPoint.coordinate = _mapView.centerCoordinate;
+            _startPoint.title = kAnnotationTitleStart;
+            [_mapView addAnnotation:_startPoint];
+        }
+    }
+    else
+    {
+        if (_startPoint)
+        {
+            [_mapView removeAnnotation:_startPoint];
+            _startPoint = nil;
+        }
+    }
+}
+
+- (void)_showEndPointAnnotation:(BOOL)show
+{
+    if (show)
+    {
+        if (_endPoint == nil)
+        {
+            _endPoint = [MKPointAnnotation new];
+            _endPoint.coordinate = _mapView.centerCoordinate;
+            _endPoint.title = kAnnotationTitleEnd;
+            [_mapView addAnnotation:_endPoint];
+        }
+    }
+    else
+    {
+        if (_endPoint)
+        {
+            [_mapView removeAnnotation:_endPoint];
+            _endPoint = nil;
+        }
     }
 }
 
@@ -117,15 +317,20 @@ static NSString *reuseId = @"pin";
 {
     if (show)
     {
-        if (_startPointView)
+        if (_startPointView == nil)
         {
-            _startPointView.alpha = 1.0f;
-        }
-        else
-        {
-            _startPointView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"pinBlue"]];
-            CGFloat yOffset = _startPointView.frame.size.height / 2 - 7;
-            _startPointView.center = CGPointMake(_mapView.center.x, _mapView.center.y - yOffset);
+//            _startPointView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"pinBlue"]];
+//            CGFloat yOffset = _startPointView.frame.size.height / 2 - 7;
+//            _startPointView.center = CGPointMake(_mapView.center.x, _mapView.center.y - yOffset);
+
+            UIImage *image = [UIImage imageNamed:@"pinBlue"];
+            CGRect frame = CGRectMake(0, 0, image.size.width, image.size.height * 2);
+            _startPointView = [[UIImageView alloc] initWithFrame:frame];
+            _startPointView.image = image;
+            _startPointView.contentMode = UIViewContentModeTop;
+
+            _startPointView.center = _mapView.center;
+NSLog(@"_mapView.center.x = %f, _mapView.center.y = %f", _mapView.center.x, _mapView.center.y);
             [_mapView addSubview:_startPointView];
         }
     }
@@ -133,7 +338,8 @@ static NSString *reuseId = @"pin";
     {
         if (_startPointView)
         {
-            _startPointView.alpha = 0.0f;
+            [_startPointView removeFromSuperview];
+            _startPointView = nil;
         }
     }
 }
@@ -142,14 +348,10 @@ static NSString *reuseId = @"pin";
 {
     if (show)
     {
-        if (_endPointView)
+        if (_endPointView == nil)
         {
-            _endPointView.alpha = 1.0f;
-        }
-        else
-        {
-            _endPointView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"pinBlue"]];
-            CGFloat yOffset = _endPointView.frame.size.height / 2;
+            _endPointView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"pinPink"]];
+            CGFloat yOffset = _endPointView.frame.size.height / 2 - 7;
             _endPointView.center = CGPointMake(_mapView.center.x, _mapView.center.y - yOffset);
             [_mapView addSubview:_endPointView];
         }
@@ -158,15 +360,10 @@ static NSString *reuseId = @"pin";
     {
         if (_endPointView)
         {
-            _endPointView.alpha = 0.0f;
+            [_endPointView removeFromSuperview];
+            _endPointView = nil;
         }
     }
-}
-
-- (void)_next
-{
-    [self _showStartPointView:NO];
-    [self _addAnnotation:kAnnotationTitleStart];
 }
 
 #pragma mark - MKMapViewDelegate
@@ -193,10 +390,6 @@ static NSString *reuseId = @"pin";
         }
     }
     return pinView;
-}
-
-- (void)mapView:(MKMapView *)mapView regionWillChangeAnimated:(BOOL)animated
-{
 }
 
 @end

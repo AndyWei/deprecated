@@ -6,6 +6,20 @@
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
+typedef NS_ENUM(NSUInteger, JYServiceCategoryIndex)
+{
+    JYServiceCategoryIndexRoadsideAssistance = 0,
+    JYServiceCategoryIndexRide,
+    JYServiceCategoryIndexMoving,
+    JYServiceCategoryIndexDelivery,
+    JYServiceCategoryIndexPlumbing,
+    JYServiceCategoryIndexCleaning,
+    JYServiceCategoryIndexHandyman,
+    JYServiceCategoryIndexGardener,
+    JYServiceCategoryIndexPersonalAssistant,
+    JYServiceCategoryIndexOther
+};
+
 @interface JYServiceCategory : NSObject
 
 + (NSArray *)names;

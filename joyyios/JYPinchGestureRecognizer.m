@@ -24,7 +24,7 @@
         [NSException raise:NSInvalidArgumentException format:@"mapView cannot be nil."];
     }
 
-    if ((self = [super initWithTarget:self action:@selector(_handlePinchGesture:)]))
+    if ((self = [super initWithTarget:self action:@selector(_handlePinchGesture)]))
     {
         self.mapView = mapView;
     }
@@ -46,21 +46,24 @@
     return NO;
 }
 
-- (void)_handlePinchGesture:(JYPinchGestureRecognizer *)sender
+- (void)_handlePinchGesture
 {
-    if ([sender numberOfTouches] < 2)
+    if (self.mapView == nil || [self numberOfTouches] < 2)
     {
         return;
     }
 
-    if (sender.state == UIGestureRecognizerStateBegan)
+    if (self.state == UIGestureRecognizerStateBegan)
     {
-        self.originalAltitude = sender.mapView.camera.altitude;
+        self.originalAltitude = self.mapView.camera.altitude;
     }
-
-    double scale = (double)sender.scale;
-    CLLocationDistance altitude = self.originalAltitude / scale;
-    sender.mapView.camera.altitude = altitude;
+    else
+    {
+        double scale = (double)self.scale;
+        CLLocationDistance altitude = self.originalAltitude / scale;
+        altitude = fmax(altitude, 350.f);
+        self.mapView.camera.altitude = altitude;
+    }
 }
 
 @end

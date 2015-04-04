@@ -25,6 +25,7 @@
 {
     [super viewDidLoad];
 
+    self.view.backgroundColor = [UIColor whiteColor];
     self.navigationItem.title = NSLocalizedString(@"Choose a category ...", nil);
 
     _cellWidth = self.view.center.x - 1;
