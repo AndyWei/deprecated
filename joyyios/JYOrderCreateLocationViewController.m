@@ -112,16 +112,16 @@ static NSString *reuseId = @"pin";
 
 - (void)_createMapView
 {
+    CGFloat topMargin = ([[UIApplication sharedApplication] statusBarFrame].size.height + self.navigationController.navigationBar.frame.size.height);
     CGFloat bottomMargin = kNextButtonHeight;
-    CGRect frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height - bottomMargin);
+    CGRect frame = CGRectMake(0, topMargin, self.view.frame.size.width, self.view.frame.size.height - bottomMargin - topMargin);
     _mapView = [[MKMapView alloc] initWithFrame:frame];
     _mapView.delegate = self;
     _mapView.showsUserLocation = YES;
     _mapView.pitchEnabled = NO;
     _mapView.rotateEnabled = NO;
 
-    // To resolve the map center moving while zooming issue, distable default zooming and
-    // use our own pintch and pan gesture recognizer
+    // To resolve the map center moving while zooming issue, distable default zooming and use our own pintch gesture recognizer
     _mapView.scrollEnabled = YES;
     _mapView.zoomEnabled = NO;
 
@@ -132,8 +132,9 @@ static NSString *reuseId = @"pin";
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     CLLocationCoordinate2D coordinate = appDelegate.currentLocation.coordinate;
 
-    MKCoordinateRegion region = MKCoordinateRegionMakeWithDistance(coordinate, 1000, 1000);
-    [_mapView setRegion:region animated:YES];
+    _mapView.camera.altitude = 500;
+    _mapView.centerCoordinate = coordinate;
+
 
     [self.view addSubview:_mapView];
     self.mapEditMode = MapEditModeStartPoint;
@@ -319,18 +320,10 @@ static NSString *reuseId = @"pin";
     {
         if (_startPointView == nil)
         {
-//            _startPointView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"pinBlue"]];
-//            CGFloat yOffset = _startPointView.frame.size.height / 2 - 7;
-//            _startPointView.center = CGPointMake(_mapView.center.x, _mapView.center.y - yOffset);
+            _startPointView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"pinBlue"]];
+            CGFloat yOffset = _startPointView.frame.size.height / 2;
+            _startPointView.center =  CGPointMake(_mapView.frame.size.width / 2, _mapView.frame.size.height / 2 - yOffset);
 
-            UIImage *image = [UIImage imageNamed:@"pinBlue"];
-            CGRect frame = CGRectMake(0, 0, image.size.width, image.size.height * 2);
-            _startPointView = [[UIImageView alloc] initWithFrame:frame];
-            _startPointView.image = image;
-            _startPointView.contentMode = UIViewContentModeTop;
-
-            _startPointView.center = _mapView.center;
-NSLog(@"_mapView.center.x = %f, _mapView.center.y = %f", _mapView.center.x, _mapView.center.y);
             [_mapView addSubview:_startPointView];
         }
     }
@@ -351,8 +344,8 @@ NSLog(@"_mapView.center.x = %f, _mapView.center.y = %f", _mapView.center.x, _map
         if (_endPointView == nil)
         {
             _endPointView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"pinPink"]];
-            CGFloat yOffset = _endPointView.frame.size.height / 2 - 7;
-            _endPointView.center = CGPointMake(_mapView.center.x, _mapView.center.y - yOffset);
+            CGFloat yOffset = _endPointView.frame.size.height / 2;
+            _endPointView.center = CGPointMake(_mapView.frame.size.width / 2, _mapView.frame.size.height / 2 - yOffset);
             [_mapView addSubview:_endPointView];
         }
     }

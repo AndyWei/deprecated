@@ -12,6 +12,7 @@
 
 @property(nonatomic, weak) MKMapView *mapView;
 @property(nonatomic) CLLocationDistance originalAltitude;
+@property(nonatomic) CLLocationCoordinate2D originalCenterCoordinate;
 
 @end
 
@@ -24,7 +25,7 @@
         [NSException raise:NSInvalidArgumentException format:@"mapView cannot be nil."];
     }
 
-    if ((self = [super initWithTarget:self action:@selector(_handlePinchGesture)]))
+    if ((self = [super initWithTarget:self action:@selector(_handlePinchGesture:)]))
     {
         self.mapView = mapView;
     }
@@ -39,30 +40,28 @@
 
 - (BOOL)canPreventGestureRecognizer:(UIGestureRecognizer *)gestureRecognizer
 {
-    if ([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]])
-    {
-        return YES;
-    }
-    return NO;
+    return YES;
 }
 
-- (void)_handlePinchGesture
+- (void)_handlePinchGesture:(JYPinchGestureRecognizer *)sender
 {
-    if (self.mapView == nil || [self numberOfTouches] < 2)
+    if (sender.mapView == nil || [self numberOfTouches] < 2)
     {
         return;
     }
 
-    if (self.state == UIGestureRecognizerStateBegan)
+    if (sender.state == UIGestureRecognizerStateBegan)
     {
-        self.originalAltitude = self.mapView.camera.altitude;
+        sender.originalAltitude = sender.mapView.camera.altitude;
+        sender.originalCenterCoordinate = sender.mapView.centerCoordinate;
     }
     else
     {
         double scale = (double)self.scale;
-        CLLocationDistance altitude = self.originalAltitude / scale;
+        CLLocationDistance altitude = sender.originalAltitude / scale;
         altitude = fmax(altitude, 350.f);
-        self.mapView.camera.altitude = altitude;
+        sender.mapView.centerCoordinate = sender.originalCenterCoordinate;
+        sender.mapView.camera.altitude = altitude;
     }
 }
 
