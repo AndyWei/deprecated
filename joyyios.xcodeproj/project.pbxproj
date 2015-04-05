@@ -56,6 +56,8 @@
 		D6B2F05C1ACE630F009601B0 /* JYAutoCompleteTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B2F05A1ACE630F009601B0 /* JYAutoCompleteTextField.m */; };
 		D6B2F0631ACF4755009601B0 /* JYOrderCreateFormViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B2F0621ACF4755009601B0 /* JYOrderCreateFormViewController.m */; };
 		D6B2F0641ACF4755009601B0 /* JYOrderCreateFormViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B2F0621ACF4755009601B0 /* JYOrderCreateFormViewController.m */; };
+		D6B2F0671AD1B5EC009601B0 /* JYMapDashBoardView.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B2F0661AD1B5EC009601B0 /* JYMapDashBoardView.m */; };
+		D6B2F0681AD1B5EC009601B0 /* JYMapDashBoardView.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B2F0661AD1B5EC009601B0 /* JYMapDashBoardView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -128,6 +130,8 @@
 		D6B2F05A1ACE630F009601B0 /* JYAutoCompleteTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYAutoCompleteTextField.m; sourceTree = "<group>"; };
 		D6B2F0611ACF4755009601B0 /* JYOrderCreateFormViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYOrderCreateFormViewController.h; sourceTree = "<group>"; };
 		D6B2F0621ACF4755009601B0 /* JYOrderCreateFormViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYOrderCreateFormViewController.m; sourceTree = "<group>"; };
+		D6B2F0651AD1B5EC009601B0 /* JYMapDashBoardView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYMapDashBoardView.h; sourceTree = "<group>"; };
+		D6B2F0661AD1B5EC009601B0 /* JYMapDashBoardView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYMapDashBoardView.m; sourceTree = "<group>"; };
 		F67CA15F6F0CAF970CBFB660 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -179,6 +183,8 @@
 				D63F0DAB1ACE56E30067C5EE /* JYPinchGestureRecognizer.m */,
 				D63F0D571AC7CFF20067C5EE /* MRoundedButton.h */,
 				D63F0D581AC7CFF20067C5EE /* MRoundedButton.m */,
+				D6B2F0651AD1B5EC009601B0 /* JYMapDashBoardView.h */,
+				D6B2F0661AD1B5EC009601B0 /* JYMapDashBoardView.m */,
 			);
 			name = Components;
 			sourceTree = "<group>";
@@ -197,10 +203,10 @@
 			children = (
 				D69202B61AC4C7C0001C1C3D /* JYOrderCategoryCollectionViewController.h */,
 				D69202B71AC4C7C0001C1C3D /* JYOrderCategoryCollectionViewController.m */,
-				D63F0D951ACC95B00067C5EE /* JYOrderCreateLocationViewController.h */,
-				D63F0D961ACC95B00067C5EE /* JYOrderCreateLocationViewController.m */,
 				D6B2F0611ACF4755009601B0 /* JYOrderCreateFormViewController.h */,
 				D6B2F0621ACF4755009601B0 /* JYOrderCreateFormViewController.m */,
+				D63F0D951ACC95B00067C5EE /* JYOrderCreateLocationViewController.h */,
+				D63F0D961ACC95B00067C5EE /* JYOrderCreateLocationViewController.m */,
 			);
 			name = Create;
 			sourceTree = "<group>";
@@ -511,6 +517,7 @@
 				D6B2F0631ACF4755009601B0 /* JYOrderCreateFormViewController.m in Sources */,
 				D63F0D7D1ACA5E260067C5EE /* JYSignViewController.m in Sources */,
 				D63B69B61AC53BB4005600A9 /* JYFloatLabeledTextField.m in Sources */,
+				D6B2F0671AD1B5EC009601B0 /* JYMapDashBoardView.m in Sources */,
 				D69202B21AC4C7C0001C1C3D /* main.m in Sources */,
 				D63F0DA81ACDFD1D0067C5EE /* JYPinAnnotationView.m in Sources */,
 				D63F0D9D1ACCEB420067C5EE /* JYServiceCategory.m in Sources */,
@@ -532,6 +539,7 @@
 				D63F0D561AC7ACB70067C5EE /* JYSignUpViewController.m in Sources */,
 				D63F0D7E1ACA5E260067C5EE /* JYSignViewController.m in Sources */,
 				D63B69BB1AC624F8005600A9 /* JYAutoCompleteDataSource.m in Sources */,
+				D6B2F0681AD1B5EC009601B0 /* JYMapDashBoardView.m in Sources */,
 				D63F0DA91ACDFD1D0067C5EE /* JYPinAnnotationView.m in Sources */,
 				D63F0D761AC9F6F80067C5EE /* DataStore.m in Sources */,
 				D6B2F05C1ACE630F009601B0 /* JYAutoCompleteTextField.m in Sources */,

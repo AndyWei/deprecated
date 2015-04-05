@@ -15,21 +15,13 @@
 #import "JYServiceCategory.h"
 #import "MRoundedButton.h"
 
-typedef NS_ENUM(NSUInteger, MapEditMode)
-{
-    MapEditModeNone = 0,
-    MapEditModeStartPoint,
-    MapEditModeEndPoint,
-    MapEditModeDone
-};
-
 @interface JYOrderCreateLocationViewController ()
 {
+    JYMapDashBoardView *_dashBoard;
     JYPinchGestureRecognizer *_pintchRecognizer;
     MKMapView *_mapView;
     MKPointAnnotation *_startPoint;
     MKPointAnnotation *_endPoint;
-    MRoundedButton *_nextButton;
     UIImageView *_startPointView;
     UIImageView *_endPointView;
 }
@@ -42,6 +34,16 @@ static NSString *reuseId = @"pin";
 
 @implementation JYOrderCreateLocationViewController
 
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+{
+    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    if (self)
+    {
+        _mapEditMode = MapEditModeNone;
+    }
+    return self;
+}
+
 - (BOOL)hidesBottomBarWhenPushed
 {
     return YES;
@@ -52,10 +54,11 @@ static NSString *reuseId = @"pin";
     [super viewDidLoad];
 
     self.view.backgroundColor = [UIColor whiteColor];
-    self.navigationItem.title = NSLocalizedString(@"Location", nil);
+    self.navigationItem.title = [JYServiceCategory names][self.serviceCategoryIndex];
 
-    _mapEditMode = MapEditModeNone;
     [self _createMapView];
+    [self _createDashBoard];
+    self.mapEditMode = MapEditModeStartPoint;
 }
 
 - (void)didReceiveMemoryWarning
@@ -86,8 +89,7 @@ static NSString *reuseId = @"pin";
             break;
     }
 
-    _mapEditMode = mode;
-    // Prepare for new mode
+    // Enter new mode
     switch (mode)
     {
         case MapEditModeStartPoint:
@@ -107,15 +109,18 @@ static NSString *reuseId = @"pin";
         default:
             break;
     }
-    [self _updateNextButton];
+
+    _mapEditMode = mode;
+    _dashBoard.mapEditMode = mode;
 }
 
 - (void)_createMapView
 {
-    CGFloat topMargin = ([[UIApplication sharedApplication] statusBarFrame].size.height + self.navigationController.navigationBar.frame.size.height);
-    CGFloat bottomMargin = kNextButtonHeight;
-    CGRect frame = CGRectMake(0, topMargin, self.view.frame.size.width, self.view.frame.size.height - bottomMargin - topMargin);
-    _mapView = [[MKMapView alloc] initWithFrame:frame];
+    CGRect statusBarFrame = [[UIApplication sharedApplication] statusBarFrame];
+    CGFloat topMargin = CGRectGetHeight(statusBarFrame) + CGRectGetHeight(self.navigationController.navigationBar.frame);
+    CGRect mapFrame = CGRectMake(0, topMargin, CGRectGetWidth(self.view.frame), CGRectGetHeight(self.view.frame) - topMargin);
+
+    _mapView = [[MKMapView alloc] initWithFrame:mapFrame];
     _mapView.delegate = self;
     _mapView.showsUserLocation = YES;
     _mapView.pitchEnabled = NO;
@@ -132,111 +137,33 @@ static NSString *reuseId = @"pin";
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     CLLocationCoordinate2D coordinate = appDelegate.currentLocation.coordinate;
 
-    _mapView.camera.altitude = 500;
+    _mapView.camera.altitude = kMapAltitudeDefault;
     _mapView.centerCoordinate = coordinate;
 
-
     [self.view addSubview:_mapView];
-    self.mapEditMode = MapEditModeStartPoint;
 }
 
-- (void)_createNextButton
+- (void)_createDashBoard
 {
-    CGFloat y = self.view.frame.size.height - kNextButtonHeight;
-    CGRect frame = CGRectMake(0, y, self.view.frame.size.width, kNextButtonHeight);
+    CGFloat y = CGRectGetHeight(self.view.frame) - kMapDashBoardHeight;
+    CGRect frame = CGRectMake(0, y, CGRectGetWidth(self.view.frame), kMapDashBoardHeight);
 
-    _nextButton = [[MRoundedButton alloc] initWithFrame:frame buttonStyle:MRoundedButtonDefault];
-    _nextButton.contentAnimateToColor = FlatGray;
-    _nextButton.contentColor = FlatWhite;
-    _nextButton.foregroundColor = JoyyBlue;
-    _nextButton.foregroundAnimateToColor = FlatWhite;
-    _nextButton.textLabel.font = [UIFont boldSystemFontOfSize:kSignFieldFontSize];
+    _dashBoard = [[JYMapDashBoardView alloc] initWithFrame:frame withStyle:JYMapDashBoardStyleStartOnly];
+    _dashBoard.delegate = self;
 
-    [_nextButton addTarget:self action:@selector(_nextButtonPressed) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:_nextButton];
-}
-
-- (void)_updateNextButton
-{
-    if (_nextButton == nil)
-    {
-        [self _createNextButton];
-    }
-
-    if (self.mapEditMode == MapEditModeDone)
-    {
-        _nextButton.textLabel.text = NSLocalizedString(@"Next", nil);
-        return;
-    }
-
-    NSString *text = nil;
-    switch (self.serviceCategoryIndex)
-    {
-        case JYServiceCategoryIndexCleaning:
-        case JYServiceCategoryIndexGardener:
-        case JYServiceCategoryIndexHandyman:
-        case JYServiceCategoryIndexPersonalAssistant:
-        case JYServiceCategoryIndexPlumbing:
-        case JYServiceCategoryIndexRoadsideAssistance:
-        case JYServiceCategoryIndexOther:
-            text = NSLocalizedString(@"Set Sevice Location", nil);
-            break;
-        case JYServiceCategoryIndexDelivery:
-        case JYServiceCategoryIndexMoving:
-        case JYServiceCategoryIndexRide:
-            if (_mapEditMode == MapEditModeStartPoint)
-            {
-                text = NSLocalizedString(@"Set Pickup Location", nil);
-            }
-            else
-            {
-                text = NSLocalizedString(@"Set Destination Location", nil);
-            }
-            break;
-        default:
-            text = NSLocalizedString(@"Next", nil);
-            break;
-    }
-    _nextButton.textLabel.text = text;
-}
-
-- (void)_nextButtonPressed
-{
-    switch (self.mapEditMode) {
-        case MapEditModeStartPoint:
-            if ([self _shouldEditEndPoint])
-            {
-                self.mapEditMode = MapEditModeEndPoint;
-                [self _zoomAndMoveMap];
-            }
-            else
-            {
-                [self _navigateToCreateFormView];
-            }
-            break;
-        case MapEditModeEndPoint:
-            self.mapEditMode = MapEditModeDone;
-            NSAssert(_startPoint && _endPoint, @"Both _startPoint and _endPoint annotations should exist");
-            [_mapView showAnnotations:@[_startPoint, _endPoint] animated:YES];
-            break;
-        case MapEditModeDone:
-            [self _navigateToCreateFormView];
-            break;
-        default:
-            break;
-    }
+    [self.view addSubview:_dashBoard];
 }
 
 - (void)_zoomAndMoveMap
 {
-    CLLocationCoordinate2D newCenter = CLLocationCoordinate2DMake(_mapView.centerCoordinate.latitude - 0.003,
-                                                                  _mapView.centerCoordinate.longitude + 0.003);
+    CLLocationCoordinate2D newCenter = CLLocationCoordinate2DMake(_mapView.centerCoordinate.latitude + kMapEndPointCenterOffset,
+                                                                  _mapView.centerCoordinate.longitude + kMapEndPointCenterOffset);
 
-    MKCoordinateRegion newRegion = MKCoordinateRegionMakeWithDistance(newCenter, 3000, 3000);
+    MKCoordinateRegion newRegion = MKCoordinateRegionMakeWithDistance(newCenter, kMapSpanDistanceDefault, kMapSpanDistanceDefault);
     [_mapView setRegion:newRegion animated:YES];
 }
 
-- (void)_navigateToCreateFormView
+- (void)_navigateToNextView
 {
     UIViewController *viewController = [JYOrderCreateFormViewController new];
     [self.navigationController pushViewController:viewController animated:YES];
@@ -324,8 +251,8 @@ static NSString *reuseId = @"pin";
         if (_startPointView == nil)
         {
             _startPointView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"pinBlue"]];
-            CGFloat yOffset = _startPointView.frame.size.height / 2;
-            _startPointView.center =  CGPointMake(_mapView.frame.size.width / 2, _mapView.frame.size.height / 2 - yOffset);
+            CGFloat y = (CGRectGetHeight(_mapView.frame) - CGRectGetHeight(_startPointView.frame)) / 2;
+            _startPointView.center =  CGPointMake(CGRectGetWidth(_mapView.frame) / 2, y);
 
             [_mapView addSubview:_startPointView];
         }
@@ -347,8 +274,8 @@ static NSString *reuseId = @"pin";
         if (_endPointView == nil)
         {
             _endPointView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"pinPink"]];
-            CGFloat yOffset = _endPointView.frame.size.height / 2;
-            _endPointView.center = CGPointMake(_mapView.frame.size.width / 2, _mapView.frame.size.height / 2 - yOffset);
+            CGFloat y = (CGRectGetHeight(_mapView.frame) - CGRectGetHeight(_startPointView.frame)) / 2;
+            _endPointView.center = CGPointMake(CGRectGetWidth(_mapView.frame) / 2, y);
             [_mapView addSubview:_endPointView];
         }
     }
@@ -359,6 +286,45 @@ static NSString *reuseId = @"pin";
             [_endPointView removeFromSuperview];
             _endPointView = nil;
         }
+    }
+}
+
+#pragma mark - JYMapDashBoardViewDelegate
+
+- (void)dashBoard:(JYMapDashBoardView *)dashBoard startButtonPressed:(MRoundedButton *)button
+{
+
+}
+
+- (void)dashBoard:(JYMapDashBoardView *)dashBoard endButtonPressed:(MRoundedButton *)button
+{
+
+}
+
+- (void)dashBoard:(JYMapDashBoardView *)dashBoard submitButtonPressed:(MRoundedButton *)button
+{
+    switch (self.mapEditMode) {
+        case MapEditModeStartPoint:
+            if ([self _shouldEditEndPoint])
+            {
+                self.mapEditMode = MapEditModeEndPoint;
+                [self _zoomAndMoveMap];
+            }
+            else
+            {
+                [self _navigateToNextView];
+            }
+            break;
+        case MapEditModeEndPoint:
+            self.mapEditMode = MapEditModeDone;
+            NSAssert(_startPoint && _endPoint, @"Both _startPoint and _endPoint annotations should exist");
+            [_mapView showAnnotations:@[_startPoint, _endPoint] animated:YES];
+            break;
+        case MapEditModeDone:
+            [self _navigateToNextView];
+            break;
+        default:
+            break;
     }
 }
 

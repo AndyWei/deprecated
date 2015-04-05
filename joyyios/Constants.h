@@ -10,10 +10,15 @@
 #define joyy_Constants_h
 
 extern const CGFloat kButtonCornerRadius;
+extern const CGFloat kButtonDefaultHeight;
+extern const CGFloat kMapAltitudeDefault;
+extern const CGFloat kMapDashBoardHeight;
+extern const CGFloat kMapDashBoardSubmitButtonHeight;
+extern const CGFloat kMapEndPointCenterOffset;
+extern const CGFloat kMapSpanDistanceDefault;
 extern const CGFloat kNavBarTitleFontSize;
-extern const CGFloat kNextButtonHeight;
-extern const CGFloat kNextButtonMarginLeft;
-extern const CGFloat kNextButtonMarginBottom;
+extern const CGFloat kPinAnnotationHeight;
+extern const CGFloat kPinAnnotationWidth;
 extern const CGFloat kTabBarTitleFontSize;
 extern const CGFloat kSignButtonHeight;
 extern const CGFloat kSignButtonWidth;

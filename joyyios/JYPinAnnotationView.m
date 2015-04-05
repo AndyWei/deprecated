@@ -41,7 +41,7 @@
 - (void)_commonInit
 {
     _pinColor = JYPinAnnotationColorNone;
-    self.frame = CGRectMake(0.0f, 0.0f, self.annotationImage.size.width, self.annotationImage.size.height * 2);
+    self.frame = CGRectMake(0.0f, 0.0f, kPinAnnotationWidth, kPinAnnotationHeight * 2);
     self.backgroundColor = [UIColor clearColor];
 }
 
@@ -59,15 +59,12 @@
     {
         _annotationImageView = [[UIImageView alloc] initWithImage:[self annotationImage]];
 
-//        // Adjust the image view upper to make sure the pin point is at the center of bounds
-//        CGFloat yOffset = self.frame.size.height / 2 + 7;
-//        _annotationImageView.frame = CGRectMake(0, -yOffset, self.frame.size.width, self.frame.size.height);
-        _annotationImageView.frame = CGRectMake(0, 0, self.annotationImage.size.width,self.annotationImage.size.height);
-
         [self addSubview:_annotationImageView];
     }
-
-    _annotationImageView.image = [self annotationImage];
+    else
+    {
+        _annotationImageView.image = [self annotationImage];
+    }
 }
 
 - (UIImage *)annotationImage
