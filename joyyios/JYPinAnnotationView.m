@@ -16,7 +16,7 @@
 
 @implementation JYPinAnnotationView
 
-- (id)initWithAnnotation:(id<MKAnnotation>)annotation reuseIdentifier:(NSString *)reuseIdentifier
+- (instancetype)initWithAnnotation:(id<MKAnnotation>)annotation reuseIdentifier:(NSString *)reuseIdentifier
 {
     self = [super initWithAnnotation:annotation reuseIdentifier:reuseIdentifier];
 
@@ -27,7 +27,7 @@
     return self;
 }
 
-- (id)initWithFrame:(CGRect)frame
+- (instancetype)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
 
@@ -55,7 +55,7 @@
 
     _pinColor = pinColor;
 
-    if (_annotationImageView == nil)
+    if (!_annotationImageView)
     {
         _annotationImageView = [[UIImageView alloc] initWithImage:[self annotationImage]];
 
@@ -74,16 +74,16 @@
     switch (_pinColor)
     {
         case JYPinAnnotationColorBlue:
-            image = [UIImage imageNamed:@"pinBlue"];
+            image = [UIImage imageNamed:kImageNamePinBlue];
             break;
         case JYPinAnnotationColorGreen:
-            image = [UIImage imageNamed:@"pinGreen"];
+            image = [UIImage imageNamed:kImageNamePinGreen];
             break;
         case JYPinAnnotationColorPink:
-            image = [UIImage imageNamed:@"pinPink"];
+            image = [UIImage imageNamed:kImageNamePinPink];
             break;
         default:
-            image = [UIImage imageNamed:@"pinBlue"];
+            image = [UIImage imageNamed:kImageNamePinBlue];
             break;
     }
 

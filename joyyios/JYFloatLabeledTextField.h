@@ -5,6 +5,7 @@
 //  Forked and modified by Ping Yang on 3/26/15 from Github project: JVFloatLabeledTextField
 //  Below is the original license:
 
+//  ---------------------------Begin of the original license--------------------
 //  The MIT License (MIT)
 //
 //  Copyright (c) 2013-2015 Jared Verdi
@@ -28,7 +29,7 @@
 //  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 //  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
-//  ---------------------------The end of the original license--------------------
+//  ---------------------------End of the original license--------------------
 
 #import "JYAutoCompleteTextField.h"
 

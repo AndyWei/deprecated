@@ -10,6 +10,6 @@
 
 @interface JYPinchGestureRecognizer : UIPinchGestureRecognizer
 
-- (id)initWithMapView:(MKMapView *)mapView;
+- (instancetype)initWithMapView:(MKMapView *)mapView;
 
 @end

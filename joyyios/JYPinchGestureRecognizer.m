@@ -18,9 +18,9 @@
 
 @implementation JYPinchGestureRecognizer
 
-- (id)initWithMapView:(MKMapView *)mapView
+- (instancetype)initWithMapView:(MKMapView *)mapView
 {
-    if (mapView == nil)
+    if (!mapView)
     {
         [NSException raise:NSInvalidArgumentException format:@"mapView cannot be nil."];
     }
@@ -40,12 +40,12 @@
 
 - (BOOL)canPreventGestureRecognizer:(UIGestureRecognizer *)gestureRecognizer
 {
-    return YES;
+    return NO;
 }
 
 - (void)_handlePinchGesture:(JYPinchGestureRecognizer *)sender
 {
-    if (sender.mapView == nil || [self numberOfTouches] < 2)
+    if (!sender.mapView || [self numberOfTouches] < 2)
     {
         return;
     }

@@ -7,13 +7,13 @@
 //
 
 @class JYFloatLabeledTextField;
-@class MRoundedButton;
+@class JYButton;
 
 @interface JYSignBaseViewController : UIViewController <UITextFieldDelegate>
 
 @property(nonatomic, readonly) JYFloatLabeledTextField *emailField;
 @property(nonatomic, readonly) JYFloatLabeledTextField *passwordField;
-@property(nonatomic, readonly) MRoundedButton *signButton;
+@property(nonatomic, readonly) JYButton *signButton;
 
 /*
  * Subclassing:

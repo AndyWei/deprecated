@@ -7,9 +7,9 @@
 //
 
 #import "JYAutoCompleteDataSource.h"
+#import "JYButton.h"
 #import "JYFloatLabeledTextField.h"
 #import "JYSignBaseViewController.h"
-#import "MRoundedButton.h"
 
 @interface JYSignBaseViewController ()
 
@@ -125,7 +125,7 @@
         CGRectMake(kSignFieldMarginLeft, self.passwordField.frame.origin.y + self.passwordField.frame.size.height + kSignButtonMarginTop,
                    self.view.frame.size.width - 2 * kSignFieldMarginLeft, kSignButtonHeight);
 
-    _signButton = [[MRoundedButton alloc] initWithFrame:signButtonFrame buttonStyle:MRoundedButtonDefault];
+    _signButton = [[JYButton alloc] initWithFrame:signButtonFrame buttonStyle:JYButtonStyleDefault];
     _signButton.backgroundColor = ClearColor;
     _signButton.contentAnimateToColor = FlatGreen;
     _signButton.contentColor = FlatWhite;

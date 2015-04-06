@@ -10,9 +10,9 @@
 
 @implementation DataStore
 
-+ (DataStore *)sharedInstance
++ (instancetype)sharedInstance
 {
-    static DataStore *_sharedInstance;
+    static DataStore *_sharedInstance = nil;
     static dispatch_once_t done;
 
     dispatch_once(&done, ^{

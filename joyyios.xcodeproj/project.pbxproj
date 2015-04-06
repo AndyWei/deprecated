@@ -19,8 +19,8 @@
 		D63B69BB1AC624F8005600A9 /* JYAutoCompleteDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = D63B69B91AC624F8005600A9 /* JYAutoCompleteDataSource.m */; };
 		D63F0D551AC7ACB70067C5EE /* JYSignUpViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D63F0D541AC7ACB70067C5EE /* JYSignUpViewController.m */; };
 		D63F0D561AC7ACB70067C5EE /* JYSignUpViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D63F0D541AC7ACB70067C5EE /* JYSignUpViewController.m */; };
-		D63F0D591AC7CFF20067C5EE /* MRoundedButton.m in Sources */ = {isa = PBXBuildFile; fileRef = D63F0D581AC7CFF20067C5EE /* MRoundedButton.m */; };
-		D63F0D5A1AC7CFF20067C5EE /* MRoundedButton.m in Sources */ = {isa = PBXBuildFile; fileRef = D63F0D581AC7CFF20067C5EE /* MRoundedButton.m */; };
+		D63F0D591AC7CFF20067C5EE /* JYButton.m in Sources */ = {isa = PBXBuildFile; fileRef = D63F0D581AC7CFF20067C5EE /* JYButton.m */; };
+		D63F0D5A1AC7CFF20067C5EE /* JYButton.m in Sources */ = {isa = PBXBuildFile; fileRef = D63F0D581AC7CFF20067C5EE /* JYButton.m */; };
 		D63F0D711AC9EC060067C5EE /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = D63F0D701AC9EC060067C5EE /* User.m */; };
 		D63F0D721AC9EC060067C5EE /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = D63F0D701AC9EC060067C5EE /* User.m */; };
 		D63F0D751AC9F6F80067C5EE /* DataStore.m in Sources */ = {isa = PBXBuildFile; fileRef = D63F0D741AC9F6F80067C5EE /* DataStore.m */; };
@@ -83,8 +83,8 @@
 		D63B69B91AC624F8005600A9 /* JYAutoCompleteDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYAutoCompleteDataSource.m; sourceTree = "<group>"; };
 		D63F0D531AC7ACB70067C5EE /* JYSignUpViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYSignUpViewController.h; sourceTree = "<group>"; };
 		D63F0D541AC7ACB70067C5EE /* JYSignUpViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYSignUpViewController.m; sourceTree = "<group>"; };
-		D63F0D571AC7CFF20067C5EE /* MRoundedButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MRoundedButton.h; sourceTree = "<group>"; };
-		D63F0D581AC7CFF20067C5EE /* MRoundedButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MRoundedButton.m; sourceTree = "<group>"; };
+		D63F0D571AC7CFF20067C5EE /* JYButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYButton.h; sourceTree = "<group>"; };
+		D63F0D581AC7CFF20067C5EE /* JYButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYButton.m; sourceTree = "<group>"; };
 		D63F0D6F1AC9EC060067C5EE /* User.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = User.h; sourceTree = "<group>"; };
 		D63F0D701AC9EC060067C5EE /* User.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = User.m; sourceTree = "<group>"; };
 		D63F0D731AC9F6F80067C5EE /* DataStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataStore.h; sourceTree = "<group>"; };
@@ -181,8 +181,8 @@
 				D63F0DA71ACDFD1D0067C5EE /* JYPinAnnotationView.m */,
 				D63F0DAA1ACE56E30067C5EE /* JYPinchGestureRecognizer.h */,
 				D63F0DAB1ACE56E30067C5EE /* JYPinchGestureRecognizer.m */,
-				D63F0D571AC7CFF20067C5EE /* MRoundedButton.h */,
-				D63F0D581AC7CFF20067C5EE /* MRoundedButton.m */,
+				D63F0D571AC7CFF20067C5EE /* JYButton.h */,
+				D63F0D581AC7CFF20067C5EE /* JYButton.m */,
 				D6B2F0651AD1B5EC009601B0 /* JYMapDashBoardView.h */,
 				D6B2F0661AD1B5EC009601B0 /* JYMapDashBoardView.m */,
 			);
@@ -502,7 +502,7 @@
 			files = (
 				D63F0D791ACA0C0A0067C5EE /* JYIntroduceViewController.m in Sources */,
 				D68DAF961AC4CACD00838E7E /* Constants.m in Sources */,
-				D63F0D591AC7CFF20067C5EE /* MRoundedButton.m in Sources */,
+				D63F0D591AC7CFF20067C5EE /* JYButton.m in Sources */,
 				D63F0D8C1ACBBF1F0067C5EE /* JYCollectionViewCell.m in Sources */,
 				D63B69BA1AC624F8005600A9 /* JYAutoCompleteDataSource.m in Sources */,
 				D63B69B21AC51D61005600A9 /* JYSignBaseViewController.m in Sources */,
@@ -544,7 +544,7 @@
 				D63F0D761AC9F6F80067C5EE /* DataStore.m in Sources */,
 				D6B2F05C1ACE630F009601B0 /* JYAutoCompleteTextField.m in Sources */,
 				D69202CF1AC4C7C1001C1C3D /* joyyiosTests.m in Sources */,
-				D63F0D5A1AC7CFF20067C5EE /* MRoundedButton.m in Sources */,
+				D63F0D5A1AC7CFF20067C5EE /* JYButton.m in Sources */,
 				D63F0D9E1ACCEB420067C5EE /* JYServiceCategory.m in Sources */,
 				D63F0D981ACC95B00067C5EE /* JYOrderCreateLocationViewController.m in Sources */,
 				D63F0DA31ACD08260067C5EE /* UIColor+Joyy.m in Sources */,

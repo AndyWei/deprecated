@@ -7,7 +7,7 @@
 //
 
 @class JYMapDashBoardView;
-@class MRoundedButton;
+@class JYButton;
 
 typedef NS_ENUM(NSUInteger, JYMapDashBoardStyle)
 {
@@ -25,9 +25,9 @@ typedef NS_ENUM(NSUInteger, MapEditMode)
 
 @protocol JYMapDashBoardViewDelegate <NSObject>
 
-- (void)dashBoard:(JYMapDashBoardView *)dashBoard startButtonPressed:(MRoundedButton *)button;
-- (void)dashBoard:(JYMapDashBoardView *)dashBoard endButtonPressed:(MRoundedButton *)button;
-- (void)dashBoard:(JYMapDashBoardView *)dashBoard submitButtonPressed:(MRoundedButton *)button;
+- (void)dashBoard:(JYMapDashBoardView *)dashBoard startButtonPressed:(UIControl *)button;
+- (void)dashBoard:(JYMapDashBoardView *)dashBoard endButtonPressed:(UIControl *)button;
+- (void)dashBoard:(JYMapDashBoardView *)dashBoard submitButtonPressed:(UIControl *)button;
 
 @end
 
@@ -35,12 +35,12 @@ typedef NS_ENUM(NSUInteger, MapEditMode)
 
 @interface JYMapDashBoardView : UIView
 
-- (id)initWithFrame:(CGRect)frame withStyle:(JYMapDashBoardStyle)style;
+- (instancetype)initWithFrame:(CGRect)frame withStyle:(JYMapDashBoardStyle)style;
 
 @property(nonatomic, weak) id<JYMapDashBoardViewDelegate> delegate;
 @property(nonatomic) MapEditMode mapEditMode;
-@property(nonatomic) MRoundedButton *startButton;
-@property(nonatomic) MRoundedButton *endButton;
-@property(nonatomic) MRoundedButton *submitButton;
+@property(nonatomic) JYButton *startButton;
+@property(nonatomic) JYButton *endButton;
+@property(nonatomic) JYButton *submitButton;
 
 @end

@@ -13,7 +13,6 @@
 #import "JYPinchGestureRecognizer.h"
 #import "JYPinchGestureRecognizer.h"
 #import "JYServiceCategory.h"
-#import "MRoundedButton.h"
 
 @interface JYOrderCreateLocationViewController ()
 {
@@ -34,7 +33,7 @@ static NSString *reuseId = @"pin";
 
 @implementation JYOrderCreateLocationViewController
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+- (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self)
@@ -137,7 +136,7 @@ static NSString *reuseId = @"pin";
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     CLLocationCoordinate2D coordinate = appDelegate.currentLocation.coordinate;
 
-    _mapView.camera.altitude = kMapAltitudeDefault;
+    _mapView.camera.altitude = kMapDefaultAltitude;
     _mapView.centerCoordinate = coordinate;
 
     [self.view addSubview:_mapView];
@@ -148,7 +147,8 @@ static NSString *reuseId = @"pin";
     CGFloat y = CGRectGetHeight(self.view.frame) - kMapDashBoardHeight;
     CGRect frame = CGRectMake(0, y, CGRectGetWidth(self.view.frame), kMapDashBoardHeight);
 
-    _dashBoard = [[JYMapDashBoardView alloc] initWithFrame:frame withStyle:JYMapDashBoardStyleStartOnly];
+    JYMapDashBoardStyle style = ([self _shouldHaveEndPoint])? JYMapDashBoardStyleStartAndEnd: JYMapDashBoardStyleStartOnly;
+    _dashBoard = [[JYMapDashBoardView alloc] initWithFrame:frame withStyle:style];
     _dashBoard.delegate = self;
 
     [self.view addSubview:_dashBoard];
@@ -159,7 +159,7 @@ static NSString *reuseId = @"pin";
     CLLocationCoordinate2D newCenter = CLLocationCoordinate2DMake(_mapView.centerCoordinate.latitude + kMapEndPointCenterOffset,
                                                                   _mapView.centerCoordinate.longitude + kMapEndPointCenterOffset);
 
-    MKCoordinateRegion newRegion = MKCoordinateRegionMakeWithDistance(newCenter, kMapSpanDistanceDefault, kMapSpanDistanceDefault);
+    MKCoordinateRegion newRegion = MKCoordinateRegionMakeWithDistance(newCenter, kMapDefaultSpanDistance, kMapDefaultSpanDistance);
     [_mapView setRegion:newRegion animated:YES];
 }
 
@@ -176,6 +176,11 @@ static NSString *reuseId = @"pin";
         return NO;
     }
 
+    return [self _shouldHaveEndPoint];
+}
+
+- (BOOL)_shouldHaveEndPoint
+{
     BOOL result = NO;
     switch (self.serviceCategoryIndex)
     {
@@ -204,7 +209,7 @@ static NSString *reuseId = @"pin";
 {
     if (show)
     {
-        if (_startPoint == nil)
+        if (!_startPoint)
         {
             _startPoint = [MKPointAnnotation new];
             _startPoint.coordinate = _mapView.centerCoordinate;
@@ -226,7 +231,7 @@ static NSString *reuseId = @"pin";
 {
     if (show)
     {
-        if (_endPoint == nil)
+        if (!_endPoint)
         {
             _endPoint = [MKPointAnnotation new];
             _endPoint.coordinate = _mapView.centerCoordinate;
@@ -248,9 +253,9 @@ static NSString *reuseId = @"pin";
 {
     if (show)
     {
-        if (_startPointView == nil)
+        if (!_startPointView)
         {
-            _startPointView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"pinBlue"]];
+            _startPointView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:kImageNamePinBlue]];
             CGFloat y = (CGRectGetHeight(_mapView.frame) - CGRectGetHeight(_startPointView.frame)) / 2;
             _startPointView.center =  CGPointMake(CGRectGetWidth(_mapView.frame) / 2, y);
 
@@ -271,9 +276,9 @@ static NSString *reuseId = @"pin";
 {
     if (show)
     {
-        if (_endPointView == nil)
+        if (!_endPointView)
         {
-            _endPointView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"pinPink"]];
+            _endPointView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:kImageNamePinPink]];
             CGFloat y = (CGRectGetHeight(_mapView.frame) - CGRectGetHeight(_startPointView.frame)) / 2;
             _endPointView.center = CGPointMake(CGRectGetWidth(_mapView.frame) / 2, y);
             [_mapView addSubview:_endPointView];
@@ -291,17 +296,17 @@ static NSString *reuseId = @"pin";
 
 #pragma mark - JYMapDashBoardViewDelegate
 
-- (void)dashBoard:(JYMapDashBoardView *)dashBoard startButtonPressed:(MRoundedButton *)button
+- (void)dashBoard:(JYMapDashBoardView *)dashBoard startButtonPressed:(UIButton *)button
 {
 
 }
 
-- (void)dashBoard:(JYMapDashBoardView *)dashBoard endButtonPressed:(MRoundedButton *)button
+- (void)dashBoard:(JYMapDashBoardView *)dashBoard endButtonPressed:(UIButton *)button
 {
 
 }
 
-- (void)dashBoard:(JYMapDashBoardView *)dashBoard submitButtonPressed:(MRoundedButton *)button
+- (void)dashBoard:(JYMapDashBoardView *)dashBoard submitButtonPressed:(UIButton *)button
 {
     switch (self.mapEditMode) {
         case MapEditModeStartPoint:
@@ -340,7 +345,7 @@ static NSString *reuseId = @"pin";
     JYPinAnnotationView *pinView = (JYPinAnnotationView *)[mapView dequeueReusableAnnotationViewWithIdentifier:reuseId];
     if ([annotation.title isEqualToString:kAnnotationTitleStart] || [annotation.title isEqualToString:kAnnotationTitleEnd])
     {
-        if (pinView == nil)
+        if (!pinView)
         {
             pinView = [[JYPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:reuseId];
             pinView.canShowCallout = NO;

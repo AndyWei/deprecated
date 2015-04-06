@@ -8,15 +8,15 @@
 
 #import <EAIntroView/EAIntroView.h>
 
+#import "JYButton.h"
 #import "JYSignInViewController.h"
 #import "JYSignUpViewController.h"
 #import "JYSignViewController.h"
-#import "MRoundedButton.h"
 
 @interface JYSignViewController ()
 {
-    MRoundedButton *_signInButton;
-    MRoundedButton *_signUpButton;
+    JYButton *_signInButton;
+    JYButton *_signUpButton;
     UIView *_partingLineH;
     UIView *_partingLineV;
 }
@@ -50,7 +50,7 @@
 {
     CGRect frame = CGRectMake(0, self.view.frame.size.height - kSignButtonHeight, self.view.frame.size.width / 2, kSignButtonHeight);
 
-    _signInButton = [[MRoundedButton alloc] initWithFrame:frame buttonStyle:MRoundedButtonDefault];
+    _signInButton = [[JYButton alloc] initWithFrame:frame buttonStyle:JYButtonStyleDefault];
     _signInButton.backgroundColor = ClearColor;
     _signInButton.contentAnimateToColor = FlatBlack;
     _signInButton.contentColor = FlatWhite;
@@ -68,7 +68,7 @@
     CGRect frame = CGRectMake(self.view.frame.size.width / 2, self.view.frame.size.height - kSignButtonHeight, self.view.frame.size.width / 2,
                               kSignButtonHeight);
 
-    _signUpButton = [[MRoundedButton alloc] initWithFrame:frame buttonStyle:MRoundedButtonDefault];
+    _signUpButton = [[JYButton alloc] initWithFrame:frame buttonStyle:JYButtonStyleDefault];
     _signUpButton.backgroundColor = ClearColor;
     _signUpButton.contentAnimateToColor = FlatBlack;
     _signUpButton.contentColor = FlatWhite;

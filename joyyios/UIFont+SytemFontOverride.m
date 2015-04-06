@@ -28,6 +28,11 @@
     return [UIFont fontWithName:kSystemFontBold size:size];
 }
 
++ (UIFont *)italicSystemFontOfSize:(CGFloat)size
+{
+    return [UIFont fontWithName:kSystemFontItalic size:size];
+}
+
 + (UIFont *)preferredFontForTextStyle:(NSString *)style
 {
     if ([style isEqualToString:UIFontTextStyleBody])
