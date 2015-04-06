@@ -51,13 +51,6 @@
     return self;
 }
 
-- (void)_commonInit
-{
-    [self _createStartButton];
-    [self _createEndButton];
-    [self _createSubmitButton];
-}
-
 - (void)setMapEditMode:(MapEditMode)mode
 {
     if (mode == _mapEditMode)
@@ -69,6 +62,40 @@
     [self _updateAddressButtons:mode];
 
     _mapEditMode = mode;
+}
+
+- (void)setHidden:(BOOL)hide
+{
+    if (_hidden == hide)
+    {
+        return;
+    }
+    _hidden = hide;
+
+    __weak typeof(self) weakSelf = self;
+    if (_hidden)
+    {
+        [UIView animateWithDuration:0.3 animations:^{
+            CGRect frame = weakSelf.frame;
+            frame.origin.y += kMapDashBoardHeight;
+            weakSelf.frame = frame;
+        }];
+    }
+    else
+    {
+        [UIView animateWithDuration:0.3 animations:^{
+            CGRect frame = weakSelf.frame;
+            frame.origin.y -= kMapDashBoardHeight;
+            weakSelf.frame = frame;
+        }];
+    }
+}
+
+- (void)_commonInit
+{
+    [self _createStartButton];
+    [self _createEndButton];
+    [self _createSubmitButton];
 }
 
 - (void)_createSubmitButton

@@ -10,14 +10,13 @@
 #import "JYOrderCreateFormViewController.h"
 #import "JYOrderCreateLocationViewController.h"
 #import "JYPinAnnotationView.h"
-#import "JYPinchGestureRecognizer.h"
-#import "JYPinchGestureRecognizer.h"
 #import "JYServiceCategory.h"
 
 @interface JYOrderCreateLocationViewController ()
 {
     JYMapDashBoardView *_dashBoard;
-    JYPinchGestureRecognizer *_pintchRecognizer;
+    JYPanGestureRecognizer *_panRecognizer;
+    JYPinchGestureRecognizer *_pinchRecognizer;
     MKMapView *_mapView;
     MKPointAnnotation *_startPoint;
     MKPointAnnotation *_endPoint;
@@ -82,8 +81,14 @@ static NSString *reuseId = @"pin";
     _mapView.scrollEnabled = YES;
     _mapView.zoomEnabled = NO;
 
-    _pintchRecognizer = [[JYPinchGestureRecognizer alloc] initWithMapView:_mapView];
-    [_mapView addGestureRecognizer:_pintchRecognizer];
+    // _panRecognizer only be used to detect begin and of of pans for hidding and showing _dashBoard
+    _panRecognizer = [[JYPanGestureRecognizer alloc] initWithMapView:_mapView];
+    _panRecognizer.delegate = self;
+    [_mapView addGestureRecognizer:_panRecognizer];
+
+    _pinchRecognizer = [[JYPinchGestureRecognizer alloc] initWithMapView:_mapView];
+    _pinchRecognizer.delegate = self;
+    [_mapView addGestureRecognizer:_pinchRecognizer];
 
     // The _mapView.userlocation hasn't been initiated at this time point, so use the currentLocation in AppDelegate
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
@@ -403,4 +408,27 @@ static NSString *reuseId = @"pin";
     return pinView;
 }
 
+#pragma mark - JYPanGestureRecognizerDelegate
+
+- (void)panGestureBegin
+{
+    _dashBoard.hidden = YES;
+}
+
+- (void)panGestureEnd
+{
+    _dashBoard.hidden = NO;
+}
+
+#pragma mark - JYPinchGestureRecognizerDelegate
+
+- (void)pinchGestureBegin
+{
+    _dashBoard.hidden = YES;
+}
+
+- (void)pinchGestureEnd
+{
+    _dashBoard.hidden = NO;
+}
 @end

@@ -58,6 +58,8 @@
 		D6B2F0641ACF4755009601B0 /* JYOrderCreateFormViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B2F0621ACF4755009601B0 /* JYOrderCreateFormViewController.m */; };
 		D6B2F0671AD1B5EC009601B0 /* JYMapDashBoardView.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B2F0661AD1B5EC009601B0 /* JYMapDashBoardView.m */; };
 		D6B2F0681AD1B5EC009601B0 /* JYMapDashBoardView.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B2F0661AD1B5EC009601B0 /* JYMapDashBoardView.m */; };
+		D6B2F0751AD318B6009601B0 /* JYPanGestureRecognizer.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B2F0741AD318B6009601B0 /* JYPanGestureRecognizer.m */; };
+		D6B2F0761AD318B6009601B0 /* JYPanGestureRecognizer.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B2F0741AD318B6009601B0 /* JYPanGestureRecognizer.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -132,6 +134,8 @@
 		D6B2F0621ACF4755009601B0 /* JYOrderCreateFormViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYOrderCreateFormViewController.m; sourceTree = "<group>"; };
 		D6B2F0651AD1B5EC009601B0 /* JYMapDashBoardView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYMapDashBoardView.h; sourceTree = "<group>"; };
 		D6B2F0661AD1B5EC009601B0 /* JYMapDashBoardView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYMapDashBoardView.m; sourceTree = "<group>"; };
+		D6B2F0731AD318B6009601B0 /* JYPanGestureRecognizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYPanGestureRecognizer.h; sourceTree = "<group>"; };
+		D6B2F0741AD318B6009601B0 /* JYPanGestureRecognizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYPanGestureRecognizer.m; sourceTree = "<group>"; };
 		F67CA15F6F0CAF970CBFB660 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -181,6 +185,8 @@
 				D63F0DA71ACDFD1D0067C5EE /* JYPinAnnotationView.m */,
 				D63F0DAA1ACE56E30067C5EE /* JYPinchGestureRecognizer.h */,
 				D63F0DAB1ACE56E30067C5EE /* JYPinchGestureRecognizer.m */,
+				D6B2F0731AD318B6009601B0 /* JYPanGestureRecognizer.h */,
+				D6B2F0741AD318B6009601B0 /* JYPanGestureRecognizer.m */,
 				D63F0D571AC7CFF20067C5EE /* JYButton.h */,
 				D63F0D581AC7CFF20067C5EE /* JYButton.m */,
 				D6B2F0651AD1B5EC009601B0 /* JYMapDashBoardView.h */,
@@ -506,6 +512,7 @@
 				D63F0D8C1ACBBF1F0067C5EE /* JYCollectionViewCell.m in Sources */,
 				D63B69BA1AC624F8005600A9 /* JYAutoCompleteDataSource.m in Sources */,
 				D63B69B21AC51D61005600A9 /* JYSignBaseViewController.m in Sources */,
+				D6B2F0751AD318B6009601B0 /* JYPanGestureRecognizer.m in Sources */,
 				D69202BB1AC4C7C0001C1C3D /* JYNearbyViewController.m in Sources */,
 				D63F0D751AC9F6F80067C5EE /* DataStore.m in Sources */,
 				D69202B51AC4C7C0001C1C3D /* AppDelegate.m in Sources */,
@@ -537,6 +544,7 @@
 				D63F0D8D1ACBBF1F0067C5EE /* JYCollectionViewCell.m in Sources */,
 				D6B2F0641ACF4755009601B0 /* JYOrderCreateFormViewController.m in Sources */,
 				D63F0D561AC7ACB70067C5EE /* JYSignUpViewController.m in Sources */,
+				D6B2F0761AD318B6009601B0 /* JYPanGestureRecognizer.m in Sources */,
 				D63F0D7E1ACA5E260067C5EE /* JYSignViewController.m in Sources */,
 				D63B69BB1AC624F8005600A9 /* JYAutoCompleteDataSource.m in Sources */,
 				D6B2F0681AD1B5EC009601B0 /* JYMapDashBoardView.m in Sources */,

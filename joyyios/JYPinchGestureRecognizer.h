@@ -8,8 +8,19 @@
 
 #import <MapKit/MapKit.h>
 
+@protocol JYPinchGestureRecognizerDelegate <NSObject>
+
+@optional
+- (void)pinchGestureBegin;
+- (void)pinchGestureEnd;
+
+@end
+
+
 @interface JYPinchGestureRecognizer : UIPinchGestureRecognizer
 
 - (instancetype)initWithMapView:(MKMapView *)mapView;
+
+@property(nonatomic, weak) id<JYPinchGestureRecognizerDelegate> delegate;
 
 @end

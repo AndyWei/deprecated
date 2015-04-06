@@ -40,12 +40,12 @@
 
 - (BOOL)canPreventGestureRecognizer:(UIGestureRecognizer *)gestureRecognizer
 {
-    return NO;
+    return YES;
 }
 
 - (void)_handlePinchGesture:(JYPinchGestureRecognizer *)sender
 {
-    if (!sender.mapView || [self numberOfTouches] < 2)
+    if (!sender.mapView)
     {
         return;
     }
@@ -54,14 +54,25 @@
     {
         sender.originalAltitude = sender.mapView.camera.altitude;
         sender.originalCenterCoordinate = sender.mapView.centerCoordinate;
+        if (sender.delegate && [sender.delegate respondsToSelector:@selector(pinchGestureBegin)])
+        {
+            [sender.delegate pinchGestureBegin];
+        }
     }
-    else
+    else if (sender.state == UIGestureRecognizerStateChanged)
     {
         double scale = (double)self.scale;
         CLLocationDistance altitude = sender.originalAltitude / scale;
         altitude = fmax(altitude, 350.f);
         sender.mapView.centerCoordinate = sender.originalCenterCoordinate;
         sender.mapView.camera.altitude = altitude;
+    }
+    else
+    {
+        if (sender.delegate && [sender.delegate respondsToSelector:@selector(pinchGestureEnd)])
+        {
+            [sender.delegate pinchGestureEnd];
+        }
     }
 }
 
