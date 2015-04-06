@@ -28,6 +28,7 @@ typedef NS_ENUM(NSUInteger, MapEditMode)
 - (void)dashBoard:(JYMapDashBoardView *)dashBoard startButtonPressed:(UIControl *)button;
 - (void)dashBoard:(JYMapDashBoardView *)dashBoard endButtonPressed:(UIControl *)button;
 - (void)dashBoard:(JYMapDashBoardView *)dashBoard submitButtonPressed:(UIControl *)button;
+- (void)dashBoard:(JYMapDashBoardView *)dashBoard locateButtonPressed:(UIControl *)button;
 
 @end
 
@@ -42,6 +43,7 @@ typedef NS_ENUM(NSUInteger, MapEditMode)
 @property(nonatomic) MapEditMode mapEditMode;
 @property(nonatomic) JYButton *startButton;
 @property(nonatomic) JYButton *endButton;
+@property(nonatomic) JYButton *locateButton;
 @property(nonatomic) JYButton *submitButton;
 
 @end

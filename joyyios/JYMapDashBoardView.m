@@ -96,6 +96,7 @@
     [self _createStartButton];
     [self _createEndButton];
     [self _createSubmitButton];
+    [self _createUserTrackingButton];
 }
 
 - (void)_createSubmitButton
@@ -175,6 +176,33 @@
     [self addSubview:self.endButton];
 }
 
+- (void)_createUserTrackingButton
+{
+    if (self.locateButton)
+    {
+        return;
+    }
+
+    CGFloat margin = kMapDashBoardHeight - kMapDashBoardSubmitButtonHeight - 2 * kButtonDefaultHeight;
+    CGRect frame = CGRectMake(CGRectGetMaxX(self.frame) - kButtonDefaultHeight - margin,
+                              0,
+                              kButtonDefaultHeight,
+                              kButtonDefaultHeight);
+    self.locateButton = [JYButton buttonWithFrame:frame buttonStyle:JYButtonStyleCentralImage shouldMaskImage:YES];
+    self.locateButton.backgroundColor = [UIColor whiteColor];
+    self.locateButton.borderColor = FlatGray;
+    self.locateButton.borderWidth = 0.5;
+    self.locateButton.cornerRadius = kButtonDefaultHeight / 2;
+    self.locateButton.contentAnimateToColor = FlatWhite;
+    self.locateButton.contentColor = FlatSkyBlue;
+    self.locateButton.contentEdgeInsets = UIEdgeInsetsMake(5, 2, 2, 5);
+    self.locateButton.foregroundAnimateToColor = FlatSkyBlue;
+    self.locateButton.foregroundColor = [UIColor whiteColor];
+    self.locateButton.imageView.image = [UIImage imageNamed:kImageNameLocationArrow];
+    [self.locateButton addTarget:self action:@selector(_locateButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+    [self addSubview:self.locateButton];
+}
+
 - (void)_submitButtonPressed
 {
     if (self.delegate)
@@ -196,6 +224,14 @@
     if (self.delegate)
     {
         [self.delegate dashBoard:self endButtonPressed:self.endButton];
+    }
+}
+
+- (void)_locateButtonPressed
+{
+    if (self.delegate)
+    {
+        [self.delegate dashBoard:self locateButtonPressed:self.locateButton];
     }
 }
 

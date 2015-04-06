@@ -139,7 +139,8 @@
 - (void)_launchViewController
 {
     User *user = [User currentUser];
-    BOOL userExist = [user load];
+    //BOOL userExist = [user load];
+    BOOL userExist = YES;
     BOOL needIntro = NO;
 
     if (needIntro)
@@ -167,7 +168,6 @@
     User *user = [User currentUser];
     BOOL userExist = [user load];
 
-    //[self _launchTabViewController];
     if (!userExist)
     {
         [self _launchSignViewController];

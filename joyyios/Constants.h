@@ -35,6 +35,7 @@ extern const CGFloat kServiceCategoryCellFontSize;
 extern NSString *const kAnnotationTitleEnd;
 extern NSString *const kAnnotationTitleStart;
 extern NSString *const kErrorAuthenticationFailed;
+extern NSString *const kImageNameLocationArrow;
 extern NSString *const kImageNamePinBlue;
 extern NSString *const kImageNamePinGreen;
 extern NSString *const kImageNamePinPink;

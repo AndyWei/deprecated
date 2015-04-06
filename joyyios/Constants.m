@@ -32,6 +32,7 @@ const CGFloat kServiceCategoryCellFontSize = 18.0f;
 NSString *const kAnnotationTitleEnd = @"endPoint";
 NSString *const kAnnotationTitleStart = @"startPoint";
 NSString *const kErrorAuthenticationFailed = @"Incorrect Email or password";
+NSString *const kImageNameLocationArrow = @"locationArrow";
 NSString *const kImageNamePinBlue = @"pinBlue";
 NSString *const kImageNamePinGreen = @"pinGreen";
 NSString *const kImageNamePinPink = @"pinPink";

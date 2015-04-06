@@ -17,15 +17,15 @@
 {
     JYPanGestureRecognizer *_panRecognizer;
     JYPinchGestureRecognizer *_pinchRecognizer;
-    MKMapView *_mapView;
     MKPointAnnotation *_startPoint;
     MKPointAnnotation *_endPoint;
     UIImageView *_startPointView;
     UIImageView *_endPointView;
 }
 
-@property(nonatomic) MapEditMode mapEditMode;
 @property(nonatomic) JYMapDashBoardView *dashBoard;
+@property(nonatomic) MapEditMode mapEditMode;
+@property(nonatomic) MKMapView *mapView;
 
 @end
 
@@ -147,6 +147,20 @@ static NSString *reuseId = @"pin";
                    }];
 }
 
+- (void)_moveMapToUserLocation
+{
+    MKCoordinateRegion newRegion = MKCoordinateRegionMakeWithDistance(_mapView.userLocation.location.coordinate, kMapDefaultSpanDistance, kMapDefaultSpanDistance);
+
+    __weak typeof(self) weakSelf = self;
+    [UIView animateWithDuration:0.5f
+                     animations:^{
+                         [weakSelf.mapView setRegion:newRegion animated:YES];
+                     }
+                     completion:^(BOOL finished) {
+                         [weakSelf _updateAddress];
+                     }];
+}
+
 - (void)_moveMapToPoint:(MKPointAnnotation *)point andEnterMode:(MapEditMode)mode
 {
     // Hide startPointView, show startPointAnnotation
@@ -165,14 +179,15 @@ static NSString *reuseId = @"pin";
     }
 
     MKCoordinateRegion newRegion = MKCoordinateRegionMakeWithDistance(newCenter, kMapDefaultSpanDistance, kMapDefaultSpanDistance);
+    __weak typeof(self) weakSelf = self;
     [UIView animateWithDuration:0.5f
         animations:^{
-            [_mapView setRegion:newRegion animated:YES];
+            [weakSelf.mapView setRegion:newRegion animated:YES];
         }
         completion:^(BOOL finished) {
             if (finished)
             {
-                self.mapEditMode = mode;
+                weakSelf.mapEditMode = mode;
             }
         }];
 }
@@ -417,6 +432,11 @@ static NSString *reuseId = @"pin";
         default:
             break;
     }
+}
+
+- (void)dashBoard:(JYMapDashBoardView *)dashBoard locateButtonPressed:(UIControl *)button
+{
+    [self _moveMapToUserLocation];
 }
 
 #pragma mark - MKMapViewDelegate
