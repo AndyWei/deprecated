@@ -82,6 +82,7 @@
     CGRect frame = CGRectMake(0, y, CGRectGetWidth(self.frame), kMapDashBoardSubmitButtonHeight);
 
     self.submitButton = [[JYButton alloc] initWithFrame:frame buttonStyle:JYButtonStyleDefault];
+    self.submitButton.backgroundColor = [UIColor whiteColor];
     self.submitButton.contentAnimateToColor = FlatGray;
     self.submitButton.contentColor = FlatWhite;
     self.submitButton.foregroundColor = JoyyBlue;
@@ -106,7 +107,7 @@
                               width,
                               kButtonDefaultHeight);
     self.startButton = [JYButton buttonWithFrame:frame buttonStyle:JYButtonStyleImageWithTitle shouldMaskImage:NO];
-
+    self.startButton.backgroundColor = [UIColor whiteColor];
     self.startButton.contentColor = FlatBlack;
     self.startButton.foregroundAnimateToColor = FlatWhite;
     self.startButton.imageView.image = [UIImage imageNamed:kImageNamePinBlue];
@@ -135,6 +136,7 @@
                               CGRectGetWidth(self.frame) * 0.3,
                               CGRectGetHeight(self.startButton.frame));
     self.endButton = [JYButton buttonWithFrame:frame buttonStyle:JYButtonStyleImageWithTitle shouldMaskImage:NO];
+    self.endButton.backgroundColor = [UIColor whiteColor];
     self.endButton.contentColor = FlatBlack;
     self.endButton.foregroundAnimateToColor = [UIColor whiteColor];
     self.endButton.foregroundColor = FlatWhite;
@@ -198,41 +200,42 @@
         return;
     }
 
+    __weak typeof(self) weakSelf = self;
     if (mode == MapEditModeStartPoint)
     {
         [UIView animateWithDuration:0.2f animations:^{
-            self.startButton.foregroundColor = [UIColor whiteColor];
-            self.startButton.textLabel.font = [UIFont systemFontOfSize:kMapDashBoardLeadingFontSize];
-            self.startButton.frame = CGRectMake(CGRectGetMinX(self.startButton.frame),
-                                                CGRectGetMinY(self.startButton.frame),
-                                                CGRectGetWidth(self.frame) * 0.7,
-                                                CGRectGetHeight(self.startButton.frame));
+            weakSelf.startButton.foregroundColor = [UIColor whiteColor];
+            weakSelf.startButton.textLabel.font = [UIFont systemFontOfSize:kMapDashBoardLeadingFontSize];
+            weakSelf.startButton.frame = CGRectMake(CGRectGetMinX(weakSelf.startButton.frame),
+                                                CGRectGetMinY(weakSelf.startButton.frame),
+                                                CGRectGetWidth(weakSelf.frame) * 0.7,
+                                                CGRectGetHeight(weakSelf.startButton.frame));
 
-            self.endButton.foregroundColor = FlatWhite;
-            self.endButton.textLabel.font = [UIFont systemFontOfSize:kMapDashBoardSupportingFontSize];
-            self.endButton.frame = CGRectMake(CGRectGetWidth(self.frame) * 0.7,
-                                              CGRectGetMinY(self.endButton.frame),
-                                              CGRectGetWidth(self.frame) * 0.3,
-                                              CGRectGetHeight(self.endButton.frame));
+            weakSelf.endButton.foregroundColor = FlatWhite;
+            weakSelf.endButton.textLabel.font = [UIFont systemFontOfSize:kMapDashBoardSupportingFontSize];
+            weakSelf.endButton.frame = CGRectMake(CGRectGetWidth(weakSelf.frame) * 0.7,
+                                              CGRectGetMinY(weakSelf.endButton.frame),
+                                              CGRectGetWidth(weakSelf.frame) * 0.3,
+                                              CGRectGetHeight(weakSelf.endButton.frame));
         }];
     }
     else if (mode == MapEditModeEndPoint)
     {
-        NSAssert(self.endButton, @"self.endButton must not be nil in MapEditModeEndPoint mode");
+        NSAssert(weakSelf.endButton, @"endButton must not be nil in MapEditModeEndPoint mode");
         [UIView animateWithDuration:0.2f animations:^{
-            self.endButton.foregroundColor = [UIColor whiteColor];
-            self.endButton.textLabel.font = [UIFont systemFontOfSize:kMapDashBoardLeadingFontSize];
-            self.endButton.frame = CGRectMake(CGRectGetWidth(self.frame) * 0.3,
-                                              CGRectGetMinY(self.endButton.frame),
-                                              CGRectGetWidth(self.frame) * 0.7,
-                                              CGRectGetHeight(self.endButton.frame));
+            weakSelf.endButton.foregroundColor = [UIColor whiteColor];
+            weakSelf.endButton.textLabel.font = [UIFont systemFontOfSize:kMapDashBoardLeadingFontSize];
+            weakSelf.endButton.frame = CGRectMake(CGRectGetWidth(weakSelf.frame) * 0.3,
+                                              CGRectGetMinY(weakSelf.endButton.frame),
+                                              CGRectGetWidth(weakSelf.frame) * 0.7,
+                                              CGRectGetHeight(weakSelf.endButton.frame));
 
-            self.startButton.foregroundColor = FlatWhite;
-            self.startButton.textLabel.font = [UIFont systemFontOfSize:kMapDashBoardSupportingFontSize];
-            self.startButton.frame = CGRectMake(CGRectGetMinX(self.startButton.frame),
-                                                CGRectGetMinY(self.startButton.frame),
-                                                CGRectGetWidth(self.frame) * 0.3,
-                                                CGRectGetHeight(self.startButton.frame));
+            weakSelf.startButton.foregroundColor = FlatWhite;
+            weakSelf.startButton.textLabel.font = [UIFont systemFontOfSize:kMapDashBoardSupportingFontSize];
+            weakSelf.startButton.frame = CGRectMake(CGRectGetMinX(weakSelf.startButton.frame),
+                                                CGRectGetMinY(weakSelf.startButton.frame),
+                                                CGRectGetWidth(weakSelf.frame) * 0.3,
+                                                CGRectGetHeight(weakSelf.startButton.frame));
         }];
     }
 }

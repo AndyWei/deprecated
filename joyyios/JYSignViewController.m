@@ -48,7 +48,10 @@
 
 - (void)_createSignInButton
 {
-    CGRect frame = CGRectMake(0, self.view.frame.size.height - kSignButtonHeight, self.view.frame.size.width / 2, kSignButtonHeight);
+    CGRect frame = CGRectMake(0,
+                              CGRectGetHeight(self.view.frame) - kSignButtonHeight,
+                              CGRectGetMidX(self.view.frame),
+                              kSignButtonHeight);
 
     _signInButton = [[JYButton alloc] initWithFrame:frame buttonStyle:JYButtonStyleDefault];
     _signInButton.backgroundColor = ClearColor;
@@ -65,7 +68,9 @@
 
 - (void)_createSignUpButton
 {
-    CGRect frame = CGRectMake(self.view.frame.size.width / 2, self.view.frame.size.height - kSignButtonHeight, self.view.frame.size.width / 2,
+    CGRect frame = CGRectMake(CGRectGetMidX(self.view.frame),
+                              CGRectGetHeight(self.view.frame) - kSignButtonHeight,
+                              CGRectGetMidX(self.view.frame),
                               kSignButtonHeight);
 
     _signUpButton = [[JYButton alloc] initWithFrame:frame buttonStyle:JYButtonStyleDefault];
@@ -83,13 +88,14 @@
 
 - (void)_createPartingLines
 {
+    CGFloat y = CGRectGetHeight(self.view.frame) - kSignButtonHeight;
     _partingLineH = [UIView new];
-    _partingLineH.frame = CGRectMake(0, self.view.frame.size.height - kSignButtonHeight, self.view.frame.size.width, 0.5f);
+    _partingLineH.frame = CGRectMake(0, y, CGRectGetWidth(self.view.frame), 0.5f);
     _partingLineH.backgroundColor = FlatWhite;
     [self.view addSubview:_partingLineH];
 
     _partingLineV = [UIView new];
-    _partingLineV.frame = CGRectMake(self.view.frame.size.width / 2, self.view.frame.size.height - kSignButtonHeight, 1.0f, kSignButtonHeight);
+    _partingLineV.frame = CGRectMake(CGRectGetMidX(self.view.frame), y, 1.0f, kSignButtonHeight);
     _partingLineV.backgroundColor = FlatWhite;
     [self.view addSubview:_partingLineV];
 }

@@ -191,10 +191,11 @@ static NSString *reuseId = @"pin";
     {
         if (!_startPointView)
         {
-            _startPointView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:kImageNamePinBlue]];
+            _startPointView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, kPinAnnotationWidth, kPinAnnotationHeight)];
             CGFloat y = (CGRectGetHeight(_mapView.frame) - CGRectGetHeight(_startPointView.frame)) / 2;
-            _startPointView.center =  CGPointMake(CGRectGetWidth(_mapView.frame) / 2, y);
+            _startPointView.center =  CGPointMake(CGRectGetMidX(_mapView.frame), y);
 
+            _startPointView.image = [UIImage imageNamed:kImageNamePinBlue];
             [_mapView addSubview:_startPointView];
         }
     }
@@ -214,9 +215,11 @@ static NSString *reuseId = @"pin";
     {
         if (!_endPointView)
         {
-            _endPointView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:kImageNamePinPink]];
-            CGFloat y = (CGRectGetHeight(_mapView.frame) - CGRectGetHeight(_startPointView.frame)) / 2;
-            _endPointView.center = CGPointMake(CGRectGetWidth(_mapView.frame) / 2, y);
+            _endPointView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, kPinAnnotationWidth, kPinAnnotationHeight)];
+            CGFloat y = (CGRectGetHeight(_mapView.frame) - CGRectGetHeight(_endPointView.frame)) / 2;
+            _endPointView.center = CGPointMake(CGRectGetMidX(_mapView.frame), y);
+
+            _endPointView.image = [UIImage imageNamed:kImageNamePinPink];
             [_mapView addSubview:_endPointView];
         }
     }
@@ -345,7 +348,8 @@ static NSString *reuseId = @"pin";
 
 - (void)dashBoard:(JYMapDashBoardView *)dashBoard submitButtonPressed:(UIButton *)button
 {
-    switch (self.mapEditMode) {
+    switch (self.mapEditMode)
+    {
         case MapEditModeStartPoint:
             if ([self _shouldEditEndPoint])
             {

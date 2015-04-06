@@ -41,7 +41,9 @@
 - (void)_commonInit
 {
     _pinColor = JYPinAnnotationColorNone;
-    self.frame = CGRectMake(0.0f, 0.0f, kPinAnnotationWidth, kPinAnnotationHeight * 2);
+
+    // Double the frame height to make sure the pin point is right at the center of annotation view
+    self.frame = CGRectMake(0, 0, kPinAnnotationWidth, kPinAnnotationHeight * 2);
     self.backgroundColor = [UIColor clearColor];
 }
 

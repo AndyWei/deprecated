@@ -16,7 +16,7 @@
     static User *_currentUser;
     static dispatch_once_t done;
     dispatch_once(&done, ^{
-      _currentUser = [User new];
+        _currentUser = [User new];
     });
     return _currentUser;
 }

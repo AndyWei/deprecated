@@ -363,9 +363,10 @@ static CGRect CGRectEdgeInset(CGRect rect, UIEdgeInsets insets)
 - (void)setEnabled:(BOOL)enabled
 {
     [super setEnabled:enabled];
+    __weak typeof(self) weakSelf = self;
     [UIView animateWithDuration:0.2
                      animations:^{
-                         self.foregroundView.alpha = enabled ? 1.0 : 0.5;
+                         weakSelf.foregroundView.alpha = enabled ? 1.0 : 0.5;
                      }];
 }
 
@@ -385,37 +386,38 @@ static CGRect CGRectEdgeInset(CGRect rect, UIEdgeInsets insets)
 #pragma mark - Fade animation
 - (void)fadeInAnimation
 {
+    __weak typeof(self) weakSelf = self;
     [UIView animateWithDuration:0.2
                      animations:^{
-                         if (self.contentAnimateToColor)
+                         if (weakSelf.contentAnimateToColor)
                          {
-                             self.textLayer.backgroundColor = self.contentAnimateToColor;
-                             self.detailTextLayer.backgroundColor = self.contentAnimateToColor;
-                             if (self.shouldMaskImage)
+                             weakSelf.textLayer.backgroundColor = weakSelf.contentAnimateToColor;
+                             weakSelf.detailTextLayer.backgroundColor = weakSelf.contentAnimateToColor;
+                             if (weakSelf.shouldMaskImage)
                              {
-                                 self.imageLayer.backgroundColor = self.contentAnimateToColor;
+                                 weakSelf.imageLayer.backgroundColor = weakSelf.contentAnimateToColor;
                              }
                          }
 
-                         if (self.borderAnimateToColor && self.foregroundAnimateToColor && self.borderAnimateToColor == self.foregroundAnimateToColor)
+                         if (weakSelf.borderAnimateToColor && weakSelf.foregroundAnimateToColor && weakSelf.borderAnimateToColor == weakSelf.foregroundAnimateToColor)
                          {
-                             self.backgroundColorCache = self.backgroundColor;
-                             self.foregroundView.backgroundColor = [UIColor clearColor];
-                             self.backgroundColor = self.borderAnimateToColor;
+                             weakSelf.backgroundColorCache = weakSelf.backgroundColor;
+                             weakSelf.foregroundView.backgroundColor = [UIColor clearColor];
+                             weakSelf.backgroundColor = weakSelf.borderAnimateToColor;
                              return;
                          }
 
-                         if (self.borderAnimateToColor)
+                         if (weakSelf.borderAnimateToColor)
                          {
-                             self.layer.borderColor = self.borderAnimateToColor.CGColor;
+                             weakSelf.layer.borderColor = weakSelf.borderAnimateToColor.CGColor;
                          }
 
-                         if (self.foregroundAnimateToColor)
+                         if (weakSelf.foregroundAnimateToColor)
                          {
-                             self.foregroundView.backgroundColor = self.foregroundAnimateToColor;
-                             if (!self.shouldMaskImage)
+                             weakSelf.foregroundView.backgroundColor = weakSelf.foregroundAnimateToColor;
+                             if (!weakSelf.shouldMaskImage)
                              {
-                                 self.imageLayer.backgroundColor = self.foregroundAnimateToColor;
+                                 weakSelf.imageLayer.backgroundColor = weakSelf.foregroundAnimateToColor;
                              }
                          }
                      }];
@@ -423,23 +425,24 @@ static CGRect CGRectEdgeInset(CGRect rect, UIEdgeInsets insets)
 
 - (void)fadeOutAnimation
 {
+    __weak typeof(self) weakSelf = self;
     [UIView animateWithDuration:0.2
                      animations:^{
-                         self.textLayer.backgroundColor = self.contentColor;
-                         self.detailTextLayer.backgroundColor = self.contentColor;
+                         weakSelf.textLayer.backgroundColor = weakSelf.contentColor;
+                         weakSelf.detailTextLayer.backgroundColor = weakSelf.contentColor;
 
-                         self.imageLayer.backgroundColor = self.shouldMaskImage ? self.contentColor : self.foregroundColor;
+                         weakSelf.imageLayer.backgroundColor = weakSelf.shouldMaskImage ? weakSelf.contentColor : weakSelf.foregroundColor;
 
-                         if (self.borderAnimateToColor && self.foregroundAnimateToColor && self.borderAnimateToColor == self.foregroundAnimateToColor)
+                         if (weakSelf.borderAnimateToColor && weakSelf.foregroundAnimateToColor && weakSelf.borderAnimateToColor == weakSelf.foregroundAnimateToColor)
                          {
-                             self.foregroundView.backgroundColor = self.foregroundColor;
-                             self.backgroundColor = self.backgroundColorCache;
-                             self.backgroundColorCache = nil;
+                             weakSelf.foregroundView.backgroundColor = weakSelf.foregroundColor;
+                             weakSelf.backgroundColor = weakSelf.backgroundColorCache;
+                             weakSelf.backgroundColorCache = nil;
                              return;
                          }
 
-                         self.foregroundView.backgroundColor = self.foregroundColor;
-                         self.layer.borderColor = self.borderColor.CGColor;
+                         weakSelf.foregroundView.backgroundColor = weakSelf.foregroundColor;
+                         weakSelf.layer.borderColor = weakSelf.borderColor.CGColor;
                      }];
 }
 

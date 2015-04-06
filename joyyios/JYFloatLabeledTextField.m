@@ -105,10 +105,11 @@
 
 - (void)showFloatingLabel:(BOOL)animated
 {
+    __weak typeof(self) weakSelf = self;
     void (^showBlock)() = ^{
-      _floatingLabel.alpha = 1.0f;
-      _floatingLabel.frame =
-          CGRectMake(_floatingLabel.frame.origin.x, _floatingLabelYPadding, _floatingLabel.frame.size.width, _floatingLabel.frame.size.height);
+        weakSelf.floatingLabel.alpha = 1.0f;
+        weakSelf.floatingLabel.frame = CGRectMake(weakSelf.floatingLabel.frame.origin.x, weakSelf.floatingLabelYPadding,
+                                                  weakSelf.floatingLabel.frame.size.width, weakSelf.floatingLabel.frame.size.height);
     };
 
     if (animated || 0 != _animateEvenIfNotFirstResponder)
@@ -127,10 +128,12 @@
 
 - (void)hideFloatingLabel:(BOOL)animated
 {
+    __weak typeof(self) weakSelf = self;
     void (^hideBlock)() = ^{
-      _floatingLabel.alpha = 0.0f;
-      _floatingLabel.frame = CGRectMake(_floatingLabel.frame.origin.x, _floatingLabel.font.lineHeight + _placeholderYPadding,
-                                        _floatingLabel.frame.size.width, _floatingLabel.frame.size.height);
+        weakSelf.floatingLabel.alpha = 0.0f;
+        weakSelf.floatingLabel.frame =
+            CGRectMake(weakSelf.floatingLabel.frame.origin.x, weakSelf.floatingLabel.font.lineHeight + weakSelf.placeholderYPadding,
+                       weakSelf.floatingLabel.frame.size.width, weakSelf.floatingLabel.frame.size.height);
 
     };
 
@@ -303,11 +306,11 @@
     BOOL result = YES;
     switch (self.autocompleteType)
     {
-    case JYAutoCompleteTypeEmail:
-        result = [self _isValidEmail:self.text];
-        break;
-    default:
-        break;
+        case JYAutoCompleteTypeEmail:
+            result = [self _isValidEmail:self.text];
+            break;
+        default:
+            break;
     }
 
     return result;

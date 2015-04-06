@@ -76,8 +76,9 @@
 
 - (void)_createEmailField
 {
-    _emailField = [[JYFloatLabeledTextField alloc]
-        initWithFrame:CGRectMake(kSignFieldMarginLeft, kSignViewTopOffset, self.view.frame.size.width - 2 * kSignFieldMarginLeft, kSignFieldHeight)];
+    CGFloat y = kSignViewTopOffset;
+    CGFloat width = CGRectGetWidth(self.view.frame) - 2 * kSignFieldMarginLeft;
+    _emailField = [[JYFloatLabeledTextField alloc] initWithFrame:CGRectMake(kSignFieldMarginLeft, y, width, kSignFieldHeight)];
 
     _emailField.attributedPlaceholder =
         [[NSAttributedString alloc] initWithString:NSLocalizedString(@"Email", nil) attributes:@{NSForegroundColorAttributeName : FlatGrayDark}];
@@ -95,19 +96,19 @@
 
 - (void)_createPartingLine
 {
+    CGFloat y = _emailField.frame.origin.y + _emailField.frame.size.height;
+    CGFloat width = CGRectGetWidth(self.view.frame) - 2 * kSignFieldMarginLeft;
     _partingLine = [UIView new];
-    _partingLine.frame = CGRectMake(kSignFieldMarginLeft, _emailField.frame.origin.y + _emailField.frame.size.height,
-                                    self.view.frame.size.width - 2 * kSignFieldMarginLeft, 1.0f);
+    _partingLine.frame = CGRectMake(kSignFieldMarginLeft, y, width, 1.0f);
     _partingLine.backgroundColor = [FlatGray colorWithAlphaComponent:0.3f];
     [self.view addSubview:_partingLine];
 }
 
 - (void)_createPasswordField
 {
-    _passwordField =
-        [[JYFloatLabeledTextField alloc] initWithFrame:CGRectMake(kSignFieldMarginLeft, _partingLine.frame.origin.y + _partingLine.frame.size.height,
-                                                                  self.view.frame.size.width - 2 * kSignFieldMarginLeft, kSignFieldHeight)];
-
+    CGFloat y = _partingLine.frame.origin.y + _partingLine.frame.size.height;
+    CGFloat width = CGRectGetWidth(self.view.frame) - 2 * kSignFieldMarginLeft;
+    _passwordField = [[JYFloatLabeledTextField alloc] initWithFrame:CGRectMake(kSignFieldMarginLeft, y, width, kSignFieldHeight)];
     _passwordField.attributedPlaceholder =
         [[NSAttributedString alloc] initWithString:NSLocalizedString(@"Password", nil) attributes:@{NSForegroundColorAttributeName : FlatGray}];
     _passwordField.delegate = self;
@@ -121,9 +122,9 @@
 
 - (void)_createSignButton
 {
-    CGRect signButtonFrame =
-        CGRectMake(kSignFieldMarginLeft, self.passwordField.frame.origin.y + self.passwordField.frame.size.height + kSignButtonMarginTop,
-                   self.view.frame.size.width - 2 * kSignFieldMarginLeft, kSignButtonHeight);
+    CGFloat y = self.passwordField.frame.origin.y + self.passwordField.frame.size.height + kSignButtonMarginTop;
+    CGFloat width = CGRectGetWidth(self.view.frame) - 2 * kSignFieldMarginLeft;
+    CGRect signButtonFrame = CGRectMake(kSignFieldMarginLeft, y, width, kSignButtonHeight);
 
     _signButton = [[JYButton alloc] initWithFrame:signButtonFrame buttonStyle:JYButtonStyleDefault];
     _signButton.backgroundColor = ClearColor;
