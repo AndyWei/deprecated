@@ -139,8 +139,7 @@
 - (void)_launchViewController
 {
     User *user = [User currentUser];
-//    BOOL userExist = [user load];
-    BOOL userExist = YES;
+    BOOL userExist = [user load];
     BOOL needIntro = NO;
 
     if (needIntro)
@@ -242,39 +241,5 @@
 - (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations
 {
     self.currentLocation = [locations lastObject];
-//    [self.locationManager stopUpdatingLocation];
-//    CLGeocoder *geocoder = [[CLGeocoder alloc] init] ;
-//    [geocoder reverseGeocodeLocation:currentLocation completionHandler:^(NSArray *placemarks, NSError *error)
-//     {
-//         if (!(error))
-//         {
-//             CLPlacemark *placemark = [placemarks objectAtIndex:0];
-//             NSLog(@"\nCurrent Location Detected\n");
-//             NSLog(@"placemark %@",placemark);
-//             NSString *locatedAt = [[placemark.addressDictionary valueForKey:@"FormattedAddressLines"] componentsJoinedByString:@", "];
-//             NSString *Address = [[NSString alloc]initWithString:locatedAt];
-//             NSString *Area = [[NSString alloc]initWithString:placemark.locality];
-//             NSString *Country = [[NSString alloc]initWithString:placemark.country];
-//             NSString *CountryArea = [NSString stringWithFormat:@"%@, %@", Area,Country];
-//             NSLog(@"%@",CountryArea);
-//         }
-//         else
-//         {
-//             NSLog(@"Geocode failed with error %@", error);
-//             NSLog(@"\nCurrent Location Not Detected\n");
-//             //return;
-//             CountryArea = NULL;
-//         }
-//         /*---- For more results
-//          placemark.region);
-//          placemark.country);
-//          placemark.locality);
-//          placemark.name);
-//          placemark.ocean);
-//          placemark.postalCode);
-//          placemark.subLocality);
-//          placemark.location);
-//          ------*/
-//     }];
 }
 @end

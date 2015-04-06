@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#import "JYButton.h"
 #import "JYOrderCreateFormViewController.h"
 #import "JYOrderCreateLocationViewController.h"
 #import "JYPinAnnotationView.h"
@@ -14,7 +15,6 @@
 
 @interface JYOrderCreateLocationViewController ()
 {
-    JYMapDashBoardView *_dashBoard;
     JYPanGestureRecognizer *_panRecognizer;
     JYPinchGestureRecognizer *_pinchRecognizer;
     MKMapView *_mapView;
@@ -25,6 +25,7 @@
 }
 
 @property(nonatomic) MapEditMode mapEditMode;
+@property(nonatomic) JYMapDashBoardView *dashBoard;
 
 @end
 
@@ -57,6 +58,7 @@ static NSString *reuseId = @"pin";
     [self _createMapView];
     [self _createDashBoard];
     self.mapEditMode = MapEditModeStartPoint;
+    [self _updateAddress];
 }
 
 - (void)didReceiveMemoryWarning
@@ -81,7 +83,7 @@ static NSString *reuseId = @"pin";
     _mapView.scrollEnabled = YES;
     _mapView.zoomEnabled = NO;
 
-    // _panRecognizer only be used to detect begin and of of pans for hidding and showing _dashBoard
+    // _panRecognizer only be used to detect begin and of of pans for hidding and showing self.dashBoard
     _panRecognizer = [[JYPanGestureRecognizer alloc] initWithMapView:_mapView];
     _panRecognizer.delegate = self;
     [_mapView addGestureRecognizer:_panRecognizer];
@@ -105,11 +107,44 @@ static NSString *reuseId = @"pin";
     CGFloat y = CGRectGetHeight(self.view.frame) - kMapDashBoardHeight;
     CGRect frame = CGRectMake(0, y, CGRectGetWidth(self.view.frame), kMapDashBoardHeight);
 
-    JYMapDashBoardStyle style = ([self _shouldHaveEndPoint])? JYMapDashBoardStyleStartAndEnd: JYMapDashBoardStyleStartOnly;
-    _dashBoard = [[JYMapDashBoardView alloc] initWithFrame:frame withStyle:style];
-    _dashBoard.delegate = self;
+    JYMapDashBoardStyle style = ([self _shouldHaveEndPoint]) ? JYMapDashBoardStyleStartAndEnd : JYMapDashBoardStyleStartOnly;
+    self.dashBoard = [[JYMapDashBoardView alloc] initWithFrame:frame withStyle:style];
+    self.dashBoard.delegate = self;
 
-    [self.view addSubview:_dashBoard];
+    [self.view addSubview:self.dashBoard];
+}
+
+- (void)_updateAddress
+{
+    if (self.mapEditMode != MapEditModeStartPoint && self.mapEditMode != MapEditModeEndPoint)
+    {
+        return;
+    }
+
+    CLLocation *location = [[CLLocation alloc] initWithLatitude:_mapView.centerCoordinate.latitude longitude:_mapView.centerCoordinate.longitude];
+    CLGeocoder *geocoder = [[CLGeocoder alloc] init];
+    __weak typeof(self) weakSelf = self;
+    [geocoder reverseGeocodeLocation:location
+                   completionHandler:^(NSArray *placemarks, NSError *error) {
+                       if (error)
+                       {
+                           NSLog(@"Geocode failed with error %@", error);
+                       }
+                       else
+                       {
+                           CLPlacemark *placemark = [placemarks objectAtIndex:0];
+                           NSString *locatedAt = [[placemark.addressDictionary valueForKey:@"FormattedAddressLines"] componentsJoinedByString:@", "];
+                           NSString *address = [[NSString alloc] initWithString:locatedAt];
+                           if (weakSelf.mapEditMode == MapEditModeStartPoint)
+                           {
+                               weakSelf.dashBoard.startButton.textLabel.text = address;
+                           }
+                           else if (weakSelf.mapEditMode == MapEditModeEndPoint)
+                           {
+                               weakSelf.dashBoard.endButton.textLabel.text = address;
+                           }
+                       }
+                   }];
 }
 
 - (void)_moveMapToPoint:(MKPointAnnotation *)point andEnterMode:(MapEditMode)mode
@@ -125,19 +160,21 @@ static NSString *reuseId = @"pin";
     }
     else
     {
-        newCenter= CLLocationCoordinate2DMake(_mapView.centerCoordinate.latitude + kMapEndPointCenterOffset,
-                                              _mapView.centerCoordinate.longitude + kMapEndPointCenterOffset);
+        newCenter = CLLocationCoordinate2DMake(_mapView.centerCoordinate.latitude + kMapEndPointCenterOffset,
+                                               _mapView.centerCoordinate.longitude + kMapEndPointCenterOffset);
     }
 
     MKCoordinateRegion newRegion = MKCoordinateRegionMakeWithDistance(newCenter, kMapDefaultSpanDistance, kMapDefaultSpanDistance);
-    [UIView animateWithDuration:0.5f animations:^{
-        [_mapView setRegion:newRegion animated:YES];
-    } completion:^(BOOL finished){
-        if (finished)
-        {
-            self.mapEditMode = mode;
+    [UIView animateWithDuration:0.5f
+        animations:^{
+            [_mapView setRegion:newRegion animated:YES];
         }
-    }];
+        completion:^(BOOL finished) {
+            if (finished)
+            {
+                self.mapEditMode = mode;
+            }
+        }];
 }
 
 - (void)_navigateToNextView
@@ -198,7 +235,7 @@ static NSString *reuseId = @"pin";
         {
             _startPointView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, kPinAnnotationWidth, kPinAnnotationHeight)];
             CGFloat y = (CGRectGetHeight(_mapView.frame) - CGRectGetHeight(_startPointView.frame)) / 2;
-            _startPointView.center =  CGPointMake(CGRectGetMidX(_mapView.frame), y);
+            _startPointView.center = CGPointMake(CGRectGetMidX(_mapView.frame), y);
 
             _startPointView.image = [UIImage imageNamed:kImageNamePinBlue];
             [_mapView addSubview:_startPointView];
@@ -319,14 +356,14 @@ static NSString *reuseId = @"pin";
         case MapEditModeDone:
             [self _showEndPointAnnotation:YES];
             NSAssert(_startPoint && _endPoint, @"Both startPoint and endPoint annotations should exist");
-            [_mapView showAnnotations:@[_startPoint, _endPoint] animated:YES];
+            [_mapView showAnnotations:@[ _startPoint, _endPoint ] animated:YES];
             break;
         default:
             break;
     }
 
     _mapEditMode = mode;
-    _dashBoard.mapEditMode = mode;
+    self.dashBoard.mapEditMode = mode;
 }
 
 #pragma mark - JYMapDashBoardViewDelegate
@@ -412,23 +449,25 @@ static NSString *reuseId = @"pin";
 
 - (void)panGestureBegin
 {
-    _dashBoard.hidden = YES;
+    self.dashBoard.hidden = YES;
 }
 
 - (void)panGestureEnd
 {
-    _dashBoard.hidden = NO;
+    self.dashBoard.hidden = NO;
+    [self _updateAddress];
 }
 
 #pragma mark - JYPinchGestureRecognizerDelegate
 
 - (void)pinchGestureBegin
 {
-    _dashBoard.hidden = YES;
+    self.dashBoard.hidden = YES;
 }
 
 - (void)pinchGestureEnd
 {
-    _dashBoard.hidden = NO;
+    self.dashBoard.hidden = NO;
+    [self _updateAddress];
 }
 @end
