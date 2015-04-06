@@ -60,9 +60,13 @@
 
 - (void)setMapEditMode:(MapEditMode)mode
 {
+    if (mode == _mapEditMode)
+    {
+        return;
+    }
+
     [self _updateSubmitButton:mode];
-    [self _updateStartButton:mode];
-    [self _updateEndButton:mode];
+    [self _updateAddressButtons:mode];
 
     _mapEditMode = mode;
 }
@@ -126,16 +130,15 @@
         return;
     }
 
-    CGRect frame = CGRectMake(CGRectGetWidth(self.startButton.frame),
-                              CGRectGetHeight(self.frame) - kMapDashBoardSubmitButtonHeight - kButtonDefaultHeight,
+    CGRect frame = CGRectMake(CGRectGetMaxX(self.startButton.frame),
+                              CGRectGetMinY(self.startButton.frame),
                               CGRectGetWidth(self.frame) * 0.3,
-                              kButtonDefaultHeight);
+                              CGRectGetHeight(self.startButton.frame));
     self.endButton = [JYButton buttonWithFrame:frame buttonStyle:JYButtonStyleImageWithTitle shouldMaskImage:NO];
     self.endButton.contentColor = FlatBlack;
     self.endButton.foregroundAnimateToColor = [UIColor whiteColor];
     self.endButton.foregroundColor = FlatWhite;
     self.endButton.imageView.image = [UIImage imageNamed:kImageNamePinPink];
-    self.endButton.textLabel.font = [UIFont italicSystemFontOfSize:kMapDashBoardSupportingFontSize];
     self.endButton.textLabel.text = NSLocalizedString(@"Add Destination", nil);
     self.endButton.textLabel.textAlignment = NSTextAlignmentLeft;
 
@@ -188,13 +191,50 @@
     self.submitButton.textLabel.text = text;
 }
 
-- (void)_updateStartButton:(MapEditMode)mode
+- (void)_updateAddressButtons:(MapEditMode)mode
 {
-    
+    if (_dashBoardStyle == JYMapDashBoardStyleStartOnly)
+    {
+        return;
+    }
+
+    if (mode == MapEditModeStartPoint)
+    {
+        [UIView animateWithDuration:0.2f animations:^{
+            self.startButton.foregroundColor = [UIColor whiteColor];
+            self.startButton.textLabel.font = [UIFont systemFontOfSize:kMapDashBoardLeadingFontSize];
+            self.startButton.frame = CGRectMake(CGRectGetMinX(self.startButton.frame),
+                                                CGRectGetMinY(self.startButton.frame),
+                                                CGRectGetWidth(self.frame) * 0.7,
+                                                CGRectGetHeight(self.startButton.frame));
+
+            self.endButton.foregroundColor = FlatWhite;
+            self.endButton.textLabel.font = [UIFont systemFontOfSize:kMapDashBoardSupportingFontSize];
+            self.endButton.frame = CGRectMake(CGRectGetWidth(self.frame) * 0.7,
+                                              CGRectGetMinY(self.endButton.frame),
+                                              CGRectGetWidth(self.frame) * 0.3,
+                                              CGRectGetHeight(self.endButton.frame));
+        }];
+    }
+    else if (mode == MapEditModeEndPoint)
+    {
+        NSAssert(self.endButton, @"self.endButton must not be nil in MapEditModeEndPoint mode");
+        [UIView animateWithDuration:0.2f animations:^{
+            self.endButton.foregroundColor = [UIColor whiteColor];
+            self.endButton.textLabel.font = [UIFont systemFontOfSize:kMapDashBoardLeadingFontSize];
+            self.endButton.frame = CGRectMake(CGRectGetWidth(self.frame) * 0.3,
+                                              CGRectGetMinY(self.endButton.frame),
+                                              CGRectGetWidth(self.frame) * 0.7,
+                                              CGRectGetHeight(self.endButton.frame));
+
+            self.startButton.foregroundColor = FlatWhite;
+            self.startButton.textLabel.font = [UIFont systemFontOfSize:kMapDashBoardSupportingFontSize];
+            self.startButton.frame = CGRectMake(CGRectGetMinX(self.startButton.frame),
+                                                CGRectGetMinY(self.startButton.frame),
+                                                CGRectGetWidth(self.frame) * 0.3,
+                                                CGRectGetHeight(self.startButton.frame));
+        }];
+    }
 }
 
-- (void)_updateEndButton:(MapEditMode)mode
-{
-
-}
 @end

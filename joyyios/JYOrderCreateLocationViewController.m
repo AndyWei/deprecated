@@ -66,53 +66,6 @@ static NSString *reuseId = @"pin";
     // Dispose of any resources that can be recreated.
 }
 
-- (void)setMapEditMode:(MapEditMode)mode
-{
-    if (_mapEditMode == mode)
-    {
-        return;
-    }
-
-    // Finish current mode
-    switch (_mapEditMode)
-    {
-        case MapEditModeStartPoint:
-            [self _showStartPointView:NO];
-            [self _showStartPointAnnotation:YES];
-            break;
-        case MapEditModeEndPoint:
-            [self _showEndPointView:NO];
-            [self _showEndPointAnnotation:YES];
-            break;
-        default:
-            break;
-    }
-
-    // Enter new mode
-    switch (mode)
-    {
-        case MapEditModeStartPoint:
-            [self _showStartPointView:YES];
-            [self _showStartPointAnnotation:NO];
-            break;
-        case MapEditModeEndPoint:
-            [self _showEndPointView:YES];
-            [self _showEndPointAnnotation:NO];
-            break;
-        case MapEditModeNone:
-            [self _showStartPointView:NO];
-            [self _showEndPointView:NO];
-            [self _showStartPointAnnotation:NO];
-            [self _showEndPointAnnotation:NO];
-            break;
-        default:
-            break;
-    }
-
-    _mapEditMode = mode;
-    _dashBoard.mapEditMode = mode;
-}
-
 - (void)_createMapView
 {
     CGRect statusBarFrame = [[UIApplication sharedApplication] statusBarFrame];
@@ -154,55 +107,38 @@ static NSString *reuseId = @"pin";
     [self.view addSubview:_dashBoard];
 }
 
-- (void)_zoomAndMoveMap
+- (void)_moveMapToPoint:(MKPointAnnotation *)point andEnterMode:(MapEditMode)mode
 {
-    CLLocationCoordinate2D newCenter = CLLocationCoordinate2DMake(_mapView.centerCoordinate.latitude + kMapEndPointCenterOffset,
-                                                                  _mapView.centerCoordinate.longitude + kMapEndPointCenterOffset);
+    // Hide startPointView, show startPointAnnotation
+    self.mapEditMode = MapEditModeNone;
+
+    CLLocationCoordinate2D newCenter;
+
+    if (point)
+    {
+        newCenter = point.coordinate;
+    }
+    else
+    {
+        newCenter= CLLocationCoordinate2DMake(_mapView.centerCoordinate.latitude + kMapEndPointCenterOffset,
+                                              _mapView.centerCoordinate.longitude + kMapEndPointCenterOffset);
+    }
 
     MKCoordinateRegion newRegion = MKCoordinateRegionMakeWithDistance(newCenter, kMapDefaultSpanDistance, kMapDefaultSpanDistance);
-    [_mapView setRegion:newRegion animated:YES];
+    [UIView animateWithDuration:0.5f animations:^{
+        [_mapView setRegion:newRegion animated:YES];
+    } completion:^(BOOL finished){
+        if (finished)
+        {
+            self.mapEditMode = mode;
+        }
+    }];
 }
 
 - (void)_navigateToNextView
 {
     UIViewController *viewController = [JYOrderCreateFormViewController new];
     [self.navigationController pushViewController:viewController animated:YES];
-}
-
-- (BOOL)_shouldEditEndPoint
-{
-    if (self.mapEditMode != MapEditModeStartPoint)
-    {
-        return NO;
-    }
-
-    return [self _shouldHaveEndPoint];
-}
-
-- (BOOL)_shouldHaveEndPoint
-{
-    BOOL result = NO;
-    switch (self.serviceCategoryIndex)
-    {
-        case JYServiceCategoryIndexCleaning:
-        case JYServiceCategoryIndexGardener:
-        case JYServiceCategoryIndexHandyman:
-        case JYServiceCategoryIndexPersonalAssistant:
-        case JYServiceCategoryIndexPlumbing:
-        case JYServiceCategoryIndexRoadsideAssistance:
-        case JYServiceCategoryIndexOther:
-            // do nothing
-            break;
-        case JYServiceCategoryIndexDelivery:
-        case JYServiceCategoryIndexMoving:
-        case JYServiceCategoryIndexRide:
-            result = YES;
-            break;
-        default:
-            // do nothing
-            break;
-    }
-    return result;
 }
 
 - (void)_showStartPointAnnotation:(BOOL)show
@@ -294,16 +230,117 @@ static NSString *reuseId = @"pin";
     }
 }
 
+- (BOOL)_shouldEditEndPoint
+{
+    if (self.mapEditMode != MapEditModeStartPoint)
+    {
+        return NO;
+    }
+
+    // Already edited end point previously
+    if (_endPoint)
+    {
+        return NO;
+    }
+
+    return [self _shouldHaveEndPoint];
+}
+
+- (BOOL)_shouldHaveEndPoint
+{
+    BOOL result = NO;
+    switch (self.serviceCategoryIndex)
+    {
+        case JYServiceCategoryIndexCleaning:
+        case JYServiceCategoryIndexGardener:
+        case JYServiceCategoryIndexHandyman:
+        case JYServiceCategoryIndexPersonalAssistant:
+        case JYServiceCategoryIndexPlumbing:
+        case JYServiceCategoryIndexRoadsideAssistance:
+        case JYServiceCategoryIndexOther:
+            // do nothing
+            break;
+        case JYServiceCategoryIndexDelivery:
+        case JYServiceCategoryIndexMoving:
+        case JYServiceCategoryIndexRide:
+            result = YES;
+            break;
+        default:
+            break;
+    }
+    return result;
+}
+
+- (BOOL)_shouldJumpToDone
+{
+    return (self.mapEditMode == MapEditModeStartPoint && _endPoint);
+}
+
+- (void)setMapEditMode:(MapEditMode)mode
+{
+    if (_mapEditMode == mode)
+    {
+        return;
+    }
+
+    // Finish current mode
+    switch (_mapEditMode)
+    {
+        case MapEditModeStartPoint:
+            [self _showStartPointView:NO];
+            [self _showStartPointAnnotation:YES];
+            break;
+        case MapEditModeEndPoint:
+            [self _showEndPointView:NO];
+            break;
+        default:
+            break;
+    }
+
+    // Enter new mode
+    switch (mode)
+    {
+        case MapEditModeStartPoint:
+            [self _showStartPointView:YES];
+            [self _showStartPointAnnotation:NO];
+            break;
+        case MapEditModeEndPoint:
+            [self _showEndPointView:YES];
+            [self _showEndPointAnnotation:NO];
+            break;
+        case MapEditModeDone:
+            [self _showEndPointAnnotation:YES];
+            NSAssert(_startPoint && _endPoint, @"Both startPoint and endPoint annotations should exist");
+            [_mapView showAnnotations:@[_startPoint, _endPoint] animated:YES];
+            break;
+        default:
+            break;
+    }
+
+    _mapEditMode = mode;
+    _dashBoard.mapEditMode = mode;
+}
+
 #pragma mark - JYMapDashBoardViewDelegate
 
 - (void)dashBoard:(JYMapDashBoardView *)dashBoard startButtonPressed:(UIButton *)button
 {
+    if (self.mapEditMode != MapEditModeEndPoint && self.mapEditMode != MapEditModeDone)
+    {
+        return;
+    }
 
+    [self _moveMapToPoint:_startPoint andEnterMode:MapEditModeStartPoint];
 }
 
 - (void)dashBoard:(JYMapDashBoardView *)dashBoard endButtonPressed:(UIButton *)button
 {
+    if (self.mapEditMode != MapEditModeDone)
+    {
+        return;
+    }
 
+    [self _moveMapToPoint:_endPoint andEnterMode:MapEditModeEndPoint];
 }
 
 - (void)dashBoard:(JYMapDashBoardView *)dashBoard submitButtonPressed:(UIButton *)button
@@ -312,8 +349,13 @@ static NSString *reuseId = @"pin";
         case MapEditModeStartPoint:
             if ([self _shouldEditEndPoint])
             {
-                self.mapEditMode = MapEditModeEndPoint;
-                [self _zoomAndMoveMap];
+                [self _moveMapToPoint:_endPoint andEnterMode:MapEditModeEndPoint];
+            }
+            else if ([self _shouldJumpToDone])
+            {
+                // Make sure startPointAnnotation is set
+                self.mapEditMode = MapEditModeNone;
+                self.mapEditMode = MapEditModeDone;
             }
             else
             {
@@ -322,8 +364,6 @@ static NSString *reuseId = @"pin";
             break;
         case MapEditModeEndPoint:
             self.mapEditMode = MapEditModeDone;
-            NSAssert(_startPoint && _endPoint, @"Both _startPoint and _endPoint annotations should exist");
-            [_mapView showAnnotations:@[_startPoint, _endPoint] animated:YES];
             break;
         case MapEditModeDone:
             [self _navigateToNextView];

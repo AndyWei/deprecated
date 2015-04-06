@@ -62,7 +62,7 @@ static CGRect CGRectEdgeInset(CGRect rect, UIEdgeInsets insets)
         self.textLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         self.textLabel.backgroundColor = [UIColor clearColor];
         self.textLabel.textAlignment = NSTextAlignmentCenter;
-        self.textLabel.adjustsFontSizeToFitWidth = YES;
+        self.textLabel.adjustsFontSizeToFitWidth = NO;
         self.textLabel.minimumScaleFactor = 0.1;
         self.textLabel.numberOfLines = 1;
         if (JY_VERSION_IOS_8)
