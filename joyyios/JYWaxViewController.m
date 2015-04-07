@@ -9,11 +9,11 @@
 #import "JYWaxViewController.h"
 
 @interface JYWaxViewController ()
-{
-    BOOL _isDragging;
-    CGFloat _tabBarOriginalY;
-    CGFloat _lastOffsetY;
-}
+
+@property(nonatomic) BOOL isDragging;
+@property(nonatomic) CGFloat tabBarOriginalY;
+@property(nonatomic) CGFloat lastOffsetY;
+
 @end
 
 @implementation JYWaxViewController
@@ -21,7 +21,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    _tabBarOriginalY = CGRectGetMinY(self.tabBarController.tabBar.frame);
+    self.tabBarOriginalY = CGRectGetMinY(self.tabBarController.tabBar.frame);
 }
 
 - (void)didReceiveMemoryWarning
@@ -34,7 +34,7 @@
 
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
 {
-    _isDragging = YES;
+    self.isDragging = YES;
 }
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
@@ -52,26 +52,26 @@
     CGFloat offsetY = scrollView.contentOffset.y;
     CGRect frame = self.tabBarController.tabBar.frame;
 
-    if (!_isDragging)
+    if (!self.isDragging)
     {
-        _lastOffsetY = offsetY;
+        self.lastOffsetY = offsetY;
         return;
     }
 
     // reached the bottom
     if ([self _reachedBottomOfView:scrollView])
     {
-        _lastOffsetY = offsetY;
+        self.lastOffsetY = offsetY;
         [self _show:YES];
     }
     else
     {
-        CGFloat delta = offsetY - _lastOffsetY;
-        _lastOffsetY = offsetY;
+        CGFloat delta = offsetY - self.lastOffsetY;
+        self.lastOffsetY = offsetY;
 
         frame.origin.y += delta;
         frame.origin.y = fmin(CGRectGetMaxY(self.view.frame), frame.origin.y);
-        frame.origin.y = fmax(_tabBarOriginalY, frame.origin.y);
+        frame.origin.y = fmax(self.tabBarOriginalY, frame.origin.y);
         self.tabBarController.tabBar.frame = frame;
     }
 }
@@ -85,7 +85,7 @@
 
 - (void)_stoppedScrollingView:(UIScrollView *)scrollView
 {
-    _isDragging = NO;
+    self.isDragging = NO;
 
     if ([self _reachedBottomOfView:scrollView])
     {
@@ -94,7 +94,7 @@
     else
     {
         CGFloat currentY = self.tabBarController.tabBar.frame.origin.y;
-        CGFloat midY = (CGRectGetMaxY(self.view.frame) + _tabBarOriginalY) / 2;
+        CGFloat midY = (CGRectGetMaxY(self.view.frame) + self.tabBarOriginalY) / 2;
         [self _show:(currentY < midY)];
     }
 }
@@ -102,7 +102,7 @@
 - (void)_show:(BOOL)show
 {
     CGRect tabBarFrame = self.tabBarController.tabBar.frame;
-    tabBarFrame.origin.y = show ? _tabBarOriginalY: CGRectGetMaxY(self.view.frame);
+    tabBarFrame.origin.y = show ? self.tabBarOriginalY: CGRectGetMaxY(self.view.frame);
     [self _showTabBarWithFrame:tabBarFrame];
 }
 

@@ -12,11 +12,11 @@
 #import "JYServiceCategory.h"
 
 @interface JYOrderCategoryCollectionViewController ()
-{
-    CGFloat _cellWidth;
-    CGFloat _cellHeight;
-    UICollectionView *_collectionView;
-}
+
+@property(nonatomic) CGFloat cellWidth;
+@property(nonatomic) CGFloat cellHeight;
+@property(nonatomic) UICollectionView *collectionView;
+
 @end
 
 
@@ -29,24 +29,24 @@
     self.view.backgroundColor = [UIColor whiteColor];
     self.navigationItem.title = NSLocalizedString(@"Choose a category ...", nil);
 
-    _cellWidth = self.view.center.x - 1;
-    _cellHeight = _cellWidth;
+    self.cellWidth = self.view.center.x - 1;
+    self.cellHeight = self.cellWidth;
 
     UICollectionViewFlowLayout *layout = [UICollectionViewFlowLayout new];
     layout.minimumInteritemSpacing = 1.0f;
     layout.minimumLineSpacing = 2.0f;
 
-    _collectionView = [[UICollectionView alloc] initWithFrame:self.view.frame collectionViewLayout:layout];
-    [_collectionView setDataSource:self];
-    [_collectionView setDelegate:self];
+    self.collectionView = [[UICollectionView alloc] initWithFrame:self.view.frame collectionViewLayout:layout];
+    [self.collectionView setDataSource:self];
+    [self.collectionView setDelegate:self];
 
-    [_collectionView registerClass:[JYCollectionViewCell class] forCellWithReuseIdentifier:@"categoryCellIdentifier"];
+    [self.collectionView registerClass:[JYCollectionViewCell class] forCellWithReuseIdentifier:@"categoryCellIdentifier"];
 
-    _collectionView.backgroundColor = [UIColor whiteColor];
-    _collectionView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
-    [self bindNavigationBarToScrollView:_collectionView];
+    self.collectionView.backgroundColor = [UIColor whiteColor];
+    self.collectionView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+    [self bindNavigationBarToScrollView:self.collectionView];
 
-    [self.view addSubview:_collectionView];
+    [self.view addSubview:self.collectionView];
 }
 
 - (void)didReceiveMemoryWarning
@@ -69,7 +69,7 @@
         (JYCollectionViewCell *)[collectionView dequeueReusableCellWithReuseIdentifier:@"categoryCellIdentifier" forIndexPath:indexPath];
 
     CGFloat cellFrameHeight = 40.0f;
-    cell.label.frame = CGRectMake(0, (_cellHeight - cellFrameHeight) / 2, _cellWidth, cellFrameHeight);
+    cell.label.frame = CGRectMake(0, (self.cellHeight - cellFrameHeight) / 2, self.cellWidth, cellFrameHeight);
     cell.label.text = [JYServiceCategory names][indexPath.item];
     return cell;
 }
@@ -88,7 +88,7 @@
                     layout:(UICollectionViewLayout *)collectionViewLayout
     sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    return CGSizeMake(_cellWidth, _cellWidth);
+    return CGSizeMake(self.cellWidth, self.cellWidth);
 }
 
 @end

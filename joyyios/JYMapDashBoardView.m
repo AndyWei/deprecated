@@ -23,7 +23,7 @@
     self = [super initWithFrame:frame];
     if (self)
     {
-        _dashBoardStyle = style;
+        self.dashBoardStyle = style;
         [self _commonInit];
     }
     return self;
@@ -34,7 +34,7 @@
     self = [super initWithFrame:frame];
     if (self)
     {
-        _dashBoardStyle = JYMapDashBoardStyleStartOnly;
+        self.dashBoardStyle = JYMapDashBoardStyleStartOnly;
         [self _commonInit];
     }
     return self;
@@ -45,7 +45,7 @@
     self = [super initWithCoder:aDecoder];
     if (self)
     {
-        _dashBoardStyle = JYMapDashBoardStyleStartOnly;
+        self.dashBoardStyle = JYMapDashBoardStyleStartOnly;
         [self _commonInit];
     }
     return self;

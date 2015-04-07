@@ -14,13 +14,14 @@
 #import "JYSignViewController.h"
 
 @interface JYSignViewController ()
-{
-    JYButton *_signInButton;
-    JYButton *_signUpButton;
-    UIView *_partingLineH;
-    UIView *_partingLineV;
-}
+
+@property(nonatomic) JYButton *signInButton;
+@property(nonatomic) JYButton *signUpButton;
+@property(nonatomic) UIView *partingLineH;
+@property(nonatomic) UIView *partingLineV;
+
 @end
+
 
 @implementation JYSignViewController
 
@@ -53,17 +54,17 @@
                               CGRectGetMidX(self.view.frame),
                               kSignButtonHeight);
 
-    _signInButton = [[JYButton alloc] initWithFrame:frame buttonStyle:JYButtonStyleDefault];
-    _signInButton.backgroundColor = ClearColor;
-    _signInButton.contentAnimateToColor = FlatBlack;
-    _signInButton.contentColor = FlatWhite;
-    _signInButton.foregroundColor = ClearColor;
-    _signInButton.foregroundAnimateToColor = FlatWhite;
-    _signInButton.textLabel.font = [UIFont systemFontOfSize:kSignFieldFontSize];
-    _signInButton.textLabel.text = NSLocalizedString(@"Sign In", nil);
+    self.signInButton = [[JYButton alloc] initWithFrame:frame buttonStyle:JYButtonStyleDefault];
+    self.signInButton.backgroundColor = ClearColor;
+    self.signInButton.contentAnimateToColor = FlatBlack;
+    self.signInButton.contentColor = FlatWhite;
+    self.signInButton.foregroundColor = ClearColor;
+    self.signInButton.foregroundAnimateToColor = FlatWhite;
+    self.signInButton.textLabel.font = [UIFont systemFontOfSize:kSignFieldFontSize];
+    self.signInButton.textLabel.text = NSLocalizedString(@"Sign In", nil);
 
-    [_signInButton addTarget:self action:@selector(_signIn) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:_signInButton];
+    [self.signInButton addTarget:self action:@selector(_signIn) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:self.signInButton];
 }
 
 - (void)_createSignUpButton
@@ -73,31 +74,31 @@
                               CGRectGetMidX(self.view.frame),
                               kSignButtonHeight);
 
-    _signUpButton = [[JYButton alloc] initWithFrame:frame buttonStyle:JYButtonStyleDefault];
-    _signUpButton.backgroundColor = ClearColor;
-    _signUpButton.contentAnimateToColor = FlatBlack;
-    _signUpButton.contentColor = FlatWhite;
-    _signUpButton.foregroundColor = ClearColor;
-    _signUpButton.foregroundAnimateToColor = FlatWhite;
-    _signUpButton.textLabel.font = [UIFont systemFontOfSize:kSignFieldFontSize];
-    _signUpButton.textLabel.text = NSLocalizedString(@"Sign Up", nil);
+    self.signUpButton = [[JYButton alloc] initWithFrame:frame buttonStyle:JYButtonStyleDefault];
+    self.signUpButton.backgroundColor = ClearColor;
+    self.signUpButton.contentAnimateToColor = FlatBlack;
+    self.signUpButton.contentColor = FlatWhite;
+    self.signUpButton.foregroundColor = ClearColor;
+    self.signUpButton.foregroundAnimateToColor = FlatWhite;
+    self.signUpButton.textLabel.font = [UIFont systemFontOfSize:kSignFieldFontSize];
+    self.signUpButton.textLabel.text = NSLocalizedString(@"Sign Up", nil);
 
-    [_signUpButton addTarget:self action:@selector(_signUp) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:_signUpButton];
+    [self.signUpButton addTarget:self action:@selector(_signUp) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:self.signUpButton];
 }
 
 - (void)_createPartingLines
 {
     CGFloat y = CGRectGetHeight(self.view.frame) - kSignButtonHeight;
-    _partingLineH = [UIView new];
-    _partingLineH.frame = CGRectMake(0, y, CGRectGetWidth(self.view.frame), 0.5f);
-    _partingLineH.backgroundColor = FlatWhite;
-    [self.view addSubview:_partingLineH];
+    self.partingLineH = [UIView new];
+    self.partingLineH.frame = CGRectMake(0, y, CGRectGetWidth(self.view.frame), 0.5f);
+    self.partingLineH.backgroundColor = FlatWhite;
+    [self.view addSubview:self.partingLineH];
 
-    _partingLineV = [UIView new];
-    _partingLineV.frame = CGRectMake(CGRectGetMidX(self.view.frame), y, 1.0f, kSignButtonHeight);
-    _partingLineV.backgroundColor = FlatWhite;
-    [self.view addSubview:_partingLineV];
+    self.partingLineV = [UIView new];
+    self.partingLineV.frame = CGRectMake(CGRectGetMidX(self.view.frame), y, 1.0f, kSignButtonHeight);
+    self.partingLineV.backgroundColor = FlatWhite;
+    [self.view addSubview:self.partingLineV];
 }
 
 - (void)_signIn

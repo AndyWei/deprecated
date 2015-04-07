@@ -31,7 +31,7 @@
     [self _createPasswordField];
     [self _createSignButton];
 
-    [_emailField becomeFirstResponder];
+    [self.emailField becomeFirstResponder];
 }
 
 - (void)didReceiveMemoryWarning
@@ -42,9 +42,9 @@
 
 - (void)touchSignButton
 {
-    _signButton.selected = YES;
+    self.signButton.selected = YES;
     [self signButtonTouched];
-    _signButton.selected = NO;
+    self.signButton.selected = NO;
 }
 
 - (void)signButtonTouched
@@ -58,13 +58,13 @@
 {
     if (textField == _emailField)
     {
-        [_emailField resignFirstResponder];
-        [_passwordField becomeFirstResponder];
+        [self.emailField resignFirstResponder];
+        [self.passwordField becomeFirstResponder];
         return NO;
     }
-    else if (textField == _passwordField)
+    else if (textField == self.passwordField)
     {
-        [_passwordField resignFirstResponder];
+        [self.passwordField resignFirstResponder];
         [self touchSignButton];
         return NO;
     }
