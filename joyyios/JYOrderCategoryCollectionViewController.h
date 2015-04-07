@@ -8,7 +8,6 @@
 
 #import <BMYScrollableNavigationBar/BMYScrollableNavigationBarViewController.h>
 
-@interface JYOrderCategoryCollectionViewController
-    : BMYScrollableNavigationBarViewController <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
+@interface JYOrderCategoryCollectionViewController: BMYScrollableNavigationBarViewController <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIScrollViewDelegate>
 
 @end

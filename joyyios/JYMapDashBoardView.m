@@ -301,6 +301,25 @@
                                                 CGRectGetHeight(weakSelf.startButton.frame));
         }];
     }
+    else if (mode == MapEditModeDone)
+    {
+        NSAssert(weakSelf.endButton, @"endButton must not be nil in MapEditModeDone mode");
+        [UIView animateWithDuration:0.2f animations:^{
+            weakSelf.startButton.foregroundColor = [UIColor whiteColor];
+            weakSelf.startButton.textLabel.font = [UIFont systemFontOfSize:kMapDashBoardLeadingFontSize];
+            weakSelf.startButton.frame = CGRectMake(CGRectGetMinX(weakSelf.startButton.frame),
+                                                    CGRectGetMinY(weakSelf.startButton.frame),
+                                                    CGRectGetWidth(weakSelf.frame) * 0.5,
+                                                    CGRectGetHeight(weakSelf.startButton.frame));
+
+            weakSelf.endButton.foregroundColor = [UIColor whiteColor];
+            weakSelf.endButton.textLabel.font = [UIFont systemFontOfSize:kMapDashBoardLeadingFontSize];
+            weakSelf.endButton.frame = CGRectMake(CGRectGetWidth(weakSelf.frame) * 0.5,
+                                                  CGRectGetMinY(weakSelf.endButton.frame),
+                                                  CGRectGetWidth(weakSelf.frame) * 0.5,
+                                                  CGRectGetHeight(weakSelf.endButton.frame));
+        }];
+    }
 }
 
 @end

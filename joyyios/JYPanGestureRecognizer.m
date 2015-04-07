@@ -11,6 +11,8 @@
 
 @interface JYPanGestureRecognizer ()
 
+@property(nonatomic) CGVector move;
+
 @end
 
 @implementation JYPanGestureRecognizer
@@ -40,6 +42,7 @@
 {
     if (sender.state == UIGestureRecognizerStateBegan)
     {
+        sender.move = CGVectorMake(0, 0);
         if (sender.delegate && [sender.delegate respondsToSelector:@selector(panGestureBegin)])
         {
             [sender.delegate panGestureBegin];

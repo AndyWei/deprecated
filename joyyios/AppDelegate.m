@@ -139,8 +139,7 @@
 - (void)_launchViewController
 {
     User *user = [User currentUser];
-    //BOOL userExist = [user load];
-    BOOL userExist = YES;
+    BOOL userExist = [user load];
     BOOL needIntro = NO;
 
     if (needIntro)

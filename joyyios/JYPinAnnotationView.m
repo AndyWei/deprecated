@@ -59,14 +59,12 @@
 
     if (!_annotationImageView)
     {
-        _annotationImageView = [[UIImageView alloc] initWithImage:[self annotationImage]];
+        _annotationImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, kPinAnnotationWidth, kPinAnnotationHeight)];
 
         [self addSubview:_annotationImageView];
     }
-    else
-    {
-        _annotationImageView.image = [self annotationImage];
-    }
+
+    _annotationImageView.image = [self annotationImage];
 }
 
 - (UIImage *)annotationImage
