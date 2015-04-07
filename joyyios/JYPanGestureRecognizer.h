@@ -19,8 +19,6 @@
 
 @interface JYPanGestureRecognizer : UIPanGestureRecognizer
 
-- (id)initWithMapView:(MKMapView *)mapView;
-
 @property(nonatomic, weak) id<JYPanGestureRecognizerDelegate> delegate;
 
 @end

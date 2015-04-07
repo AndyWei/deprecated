@@ -84,7 +84,7 @@ static NSString *reuseId = @"pin";
     _mapView.zoomEnabled = NO;
 
     // _panRecognizer only be used to detect begin and of of pans for hidding and showing self.dashBoard
-    _panRecognizer = [[JYPanGestureRecognizer alloc] initWithMapView:_mapView];
+    _panRecognizer = [[JYPanGestureRecognizer alloc] init];
     _panRecognizer.delegate = self;
     [_mapView addGestureRecognizer:_panRecognizer];
 
@@ -395,7 +395,7 @@ static NSString *reuseId = @"pin";
 
 - (void)dashBoard:(JYMapDashBoardView *)dashBoard endButtonPressed:(UIButton *)button
 {
-    if (self.mapEditMode != MapEditModeDone)
+    if (self.mapEditMode == MapEditModeEndPoint)
     {
         return;
     }

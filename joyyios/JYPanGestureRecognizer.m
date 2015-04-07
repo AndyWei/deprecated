@@ -10,22 +10,14 @@
 #import "JYPinchGestureRecognizer.h"
 
 @interface JYPanGestureRecognizer ()
-@property(nonatomic, weak) MKMapView *mapView;
+
 @end
 
 @implementation JYPanGestureRecognizer
 
-- (id)initWithMapView:(MKMapView *)mapView
+- (instancetype)init
 {
-    if (mapView == nil)
-    {
-        [NSException raise:NSInvalidArgumentException format:@"mapView cannot be nil."];
-    }
-
-    if ((self = [super initWithTarget:self action:@selector(_handlePanGesture:)]))
-    {
-        self.mapView = mapView;
-    }
+    self = [super initWithTarget:self action:@selector(_handlePanGesture:)];
 
     return self;
 }
@@ -46,11 +38,6 @@
 
 - (void)_handlePanGesture:(JYPanGestureRecognizer *)sender
 {
-    if (!sender.mapView)
-    {
-        return;
-    }
-
     if (sender.state == UIGestureRecognizerStateBegan)
     {
         if (sender.delegate && [sender.delegate respondsToSelector:@selector(panGestureBegin)])
