@@ -372,6 +372,7 @@ static NSString *reuseId = @"pin";
             [self _showEndPointAnnotation:YES];
             NSAssert(_startPoint && _endPoint, @"Both startPoint and endPoint annotations should exist");
             [_mapView showAnnotations:@[ _startPoint, _endPoint ] animated:YES];
+            self.mapView.camera.altitude *= 1.2;
             break;
         default:
             break;

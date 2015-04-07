@@ -13,11 +13,8 @@
 
 @interface JYOrderCategoryCollectionViewController ()
 {
-    BOOL _isDragging;
     CGFloat _cellWidth;
     CGFloat _cellHeight;
-    CGFloat _tabBarOriginalY;
-    CGFloat _lastOffsetY;
     UICollectionView *_collectionView;
 }
 @end
@@ -34,7 +31,6 @@
 
     _cellWidth = self.view.center.x - 1;
     _cellHeight = _cellWidth;
-    _tabBarOriginalY = CGRectGetMinY(self.tabBarController.tabBar.frame);
 
     UICollectionViewFlowLayout *layout = [UICollectionViewFlowLayout new];
     layout.minimumInteritemSpacing = 1.0f;
@@ -93,89 +89,6 @@
     sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     return CGSizeMake(_cellWidth, _cellWidth);
-}
-
-
-#pragma mark - UIScrollViewDelegate
-
-- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
-{
-    _isDragging = YES;
-}
-
-- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
-{
-    [self _stoppedScrollingView:scrollView];
-}
-
-- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
-{
-    [self _stoppedScrollingView:scrollView];
-}
-
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView
-{
-    CGFloat offsetY = scrollView.contentOffset.y;
-    CGRect frame = self.tabBarController.tabBar.frame;
-
-    if (!_isDragging)
-    {
-        _lastOffsetY = offsetY;
-        return;
-    }
-
-    // reached the bottom
-    if ([self reachedBottomOfView:scrollView])
-    {
-        _lastOffsetY = offsetY;
-        frame.origin.y = _tabBarOriginalY;
-
-        [self _showTabBarWithFrame:frame];
-    }
-    else
-    {
-        CGFloat delta = offsetY - _lastOffsetY;
-        _lastOffsetY = offsetY;
-
-        frame.origin.y += delta;
-        frame.origin.y = fmin(CGRectGetMaxY(self.view.frame), frame.origin.y);
-        frame.origin.y = fmax(_tabBarOriginalY, frame.origin.y);
-        self.tabBarController.tabBar.frame = frame;
-    }
-}
-
-# pragma mark - Helpers
-
-- (void) _stoppedScrollingView:(UIScrollView *)scrollView
-{
-    _isDragging = NO;
-
-    CGRect frame = self.tabBarController.tabBar.frame;
-    if ([self reachedBottomOfView:scrollView])
-    {
-        frame.origin.y = _tabBarOriginalY;
-    }
-    else
-    {
-        CGFloat y = frame.origin.y;
-        CGFloat midY = (CGRectGetMaxY(self.view.frame) + _tabBarOriginalY) / 2;
-        frame.origin.y = (y < midY)? _tabBarOriginalY: CGRectGetMaxY(self.view.frame);
-    }
-    [self _showTabBarWithFrame:frame];
-}
-
-
-- (void)_showTabBarWithFrame:(CGRect)frame
-{
-    __weak typeof(self) weakSelf = self;
-    [UIView animateWithDuration:0.2 animations:^{
-        weakSelf.tabBarController.tabBar.frame = frame;
-    }];
-}
-
-- (BOOL)reachedBottomOfView:(UIScrollView *)scrollView
-{
-    return (scrollView.contentOffset.y >= scrollView.contentSize.height - scrollView.frame.size.height);
 }
 
 @end

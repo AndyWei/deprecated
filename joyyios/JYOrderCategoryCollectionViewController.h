@@ -6,8 +6,8 @@
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
-#import <BMYScrollableNavigationBar/BMYScrollableNavigationBarViewController.h>
+#import "JYWaxViewController.h"
 
-@interface JYOrderCategoryCollectionViewController: BMYScrollableNavigationBarViewController <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIScrollViewDelegate>
+@interface JYOrderCategoryCollectionViewController: JYWaxViewController <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
 
 @end
