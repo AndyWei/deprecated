@@ -26,6 +26,8 @@ PODS:
   - EARestrictedScrollView (0.1.0)
   - JVFloatLabeledTextField (1.0.2)
   - KVNProgress (2.2.1)
+  - LPGoogleFunctions (1.2.3):
+    - AFNetworking (~> 2.0)
   - RKDropdownAlert (0.1.1)
 
 DEPENDENCIES:
@@ -34,6 +36,7 @@ DEPENDENCIES:
   - EAIntroView (~> 2.7.0)
   - JVFloatLabeledTextField
   - KVNProgress
+  - LPGoogleFunctions
   - RKDropdownAlert
 
 SPEC CHECKSUMS:
@@ -43,6 +46,7 @@ SPEC CHECKSUMS:
   EARestrictedScrollView: 5ab3eadd9ea55282cc72df0daecb09803059e3a0
   JVFloatLabeledTextField: 58a3a32cfb800e5b224f676987e7c13abf50a14d
   KVNProgress: 7001d2d16a2755cee5599e8e485befe056f2197b
+  LPGoogleFunctions: c78171de55b164e8e5dbf6b4bba477980771211a
   RKDropdownAlert: 3f663f1e852751ad37ce95ed1e8e2c6b9bfdc95b
 
 COCOAPODS: 0.36.0

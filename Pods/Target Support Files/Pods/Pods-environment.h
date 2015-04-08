@@ -78,6 +78,12 @@
 #define COCOAPODS_VERSION_MINOR_KVNProgress 2
 #define COCOAPODS_VERSION_PATCH_KVNProgress 1
 
+// LPGoogleFunctions
+#define COCOAPODS_POD_AVAILABLE_LPGoogleFunctions
+#define COCOAPODS_VERSION_MAJOR_LPGoogleFunctions 1
+#define COCOAPODS_VERSION_MINOR_LPGoogleFunctions 2
+#define COCOAPODS_VERSION_PATCH_LPGoogleFunctions 3
+
 // RKDropdownAlert
 #define COCOAPODS_POD_AVAILABLE_RKDropdownAlert
 #define COCOAPODS_VERSION_MAJOR_RKDropdownAlert 0
