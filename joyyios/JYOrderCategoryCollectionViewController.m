@@ -27,7 +27,9 @@
     [super viewDidLoad];
 
     self.view.backgroundColor = [UIColor whiteColor];
-    self.navigationItem.title = NSLocalizedString(@"Choose a category ...", nil);
+
+    self.navigationBarLabel.text = NSLocalizedString(@"Choose A Category", nil);
+    [self.navigationBarLabel sizeToFit];
 
     self.cellWidth = self.view.center.x - 1;
     self.cellHeight = self.cellWidth;
@@ -43,8 +45,6 @@
     [self.collectionView registerClass:[JYCollectionViewCell class] forCellWithReuseIdentifier:@"categoryCellIdentifier"];
 
     self.collectionView.backgroundColor = [UIColor whiteColor];
-    self.collectionView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
-    [self bindNavigationBarToScrollView:self.collectionView];
 
     [self.view addSubview:self.collectionView];
 }

@@ -20,7 +20,6 @@ PODS:
   - AFNetworking/UIKit (2.5.2):
     - AFNetworking/NSURLConnection
     - AFNetworking/NSURLSession
-  - BMYScrollableNavigationBar (1.0.0)
   - ChameleonFramework (1.1.2)
   - EAIntroView (2.7.0):
     - EARestrictedScrollView (~> 0.1.0)
@@ -31,7 +30,6 @@ PODS:
 
 DEPENDENCIES:
   - AFNetworking (~> 2.5)
-  - BMYScrollableNavigationBar
   - ChameleonFramework
   - EAIntroView (~> 2.7.0)
   - JVFloatLabeledTextField
@@ -40,7 +38,6 @@ DEPENDENCIES:
 
 SPEC CHECKSUMS:
   AFNetworking: fefbce9660acb17f48ae0011292d4da0f457bf36
-  BMYScrollableNavigationBar: 7d3747c9172ccac51836438e594cdae971c6c7f5
   ChameleonFramework: 1b4588efcae564886e1a176fa02fb0f4c81a69b3
   EAIntroView: 9becdb1441712405346a3e6bc31b0d9a57b63b10
   EARestrictedScrollView: 5ab3eadd9ea55282cc72df0daecb09803059e3a0

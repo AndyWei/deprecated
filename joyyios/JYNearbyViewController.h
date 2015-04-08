@@ -6,8 +6,8 @@
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
-#import <BMYScrollableNavigationBar/BMYScrollableNavigationBarViewController.h>
+#import "JYExpandViewController.h"
 
-@interface JYNearbyViewController : BMYScrollableNavigationBarViewController
+@interface JYNearbyViewController : JYExpandViewController
 
 @end

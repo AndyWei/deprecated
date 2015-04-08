@@ -8,7 +8,6 @@
 
 #import <AFNetworking/AFNetworking.h>
 #import <KVNProgress/KVNProgress.h>
-#import <BMYScrollableNavigationBar/BMYScrollableNavigationBar.h>
 
 #import "AppDelegate.h"
 #import "JYOrderCategoryCollectionViewController.h"
@@ -77,8 +76,9 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_introduceDidFinish) name:kNotificationIntroduceDidFinish object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_signDidFinish) name:kNotificationSignDidFinish object:nil];
 
-    [[UINavigationBar appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIFont lightSystemFontOfSize:kNavBarTitleFontSize], NSFontAttributeName, nil]];
 
+    [[UINavigationBar appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIFont lightSystemFontOfSize:kNavBarTitleFontSize], NSFontAttributeName, nil]];
+    [[UINavigationBar appearance] setTitleVerticalPositionAdjustment:5.0f forBarMetrics:UIBarMetricsDefault];
     [[UINavigationBar appearance] setTintColor:JoyyBlue];
 
     [[UITabBar appearance] setTintColor:JoyyBlue];
@@ -147,7 +147,7 @@
         NSTimeInterval now = [NSDate timeIntervalSinceReferenceDate];
         if (userExist && user.tokenExpireTimeInSecs < now)
         {
-            [self _automaticSignIn];
+            [self _autoSignIn];
         }
 
         [self _launchIntroViewController];
@@ -199,23 +199,21 @@
 - (void)_launchTabViewController
 {
     UIViewController *vc1 = [JYOrderCategoryCollectionViewController new];
-    UINavigationController *nc1 = [[UINavigationController alloc] initWithNavigationBarClass:[BMYScrollableNavigationBar class] toolbarClass:nil];
-    [nc1 setViewControllers:@[ vc1 ] animated:NO];
+    UINavigationController *nc1 = [[UINavigationController alloc] initWithRootViewController:vc1];
     nc1.title = NSLocalizedString(@"I need", nil);
 
-    UIViewController *vc2 = [JYOrderCategoryCollectionViewController new];
-    UINavigationController *nc2 = [[UINavigationController alloc] initWithNavigationBarClass:[BMYScrollableNavigationBar class] toolbarClass:nil];
-    [nc2 setViewControllers:@[ vc2 ] animated:NO];
+    UIViewController *vc2 = [JYNearbyViewController new];
+    UINavigationController *nc2 = [[UINavigationController alloc] initWithRootViewController:vc2];
     nc2.title = NSLocalizedString(@"I can", nil);
 
     UITabBarController *tabBarController = [UITabBarController new];
-    tabBarController.viewControllers = [NSArray arrayWithObjects:nc1, nc2, nil];
+    tabBarController.viewControllers = @[nc1, nc2];
 
     self.window.rootViewController = tabBarController;
 }
 
 // signin in the background
-- (void)_automaticSignIn
+- (void)_autoSignIn
 {
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
 
@@ -231,7 +229,7 @@
 
         }
         failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-          NSLog(@"_automaticSignIn Error: %@", error);
+          NSLog(@"_autoSignIn Error: %@", error);
         }];
 }
 

@@ -6,8 +6,8 @@
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
-#import "JYWaxViewController.h"
+#import "JYExpandViewController.h"
 
-@interface JYOrderCategoryCollectionViewController: JYWaxViewController <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
+@interface JYOrderCategoryCollectionViewController: JYExpandViewController <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
 
 @end
