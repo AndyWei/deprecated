@@ -23,6 +23,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [[UINavigationBar appearance] setTitleVerticalPositionAdjustment:5.0f forBarMetrics:UIBarMetricsDefault];
+
     self.tabBarOriginalY = CGRectGetMinY(self.tabBarController.tabBar.frame);
     self.navBarOriginalHeight = CGRectGetHeight(self.navigationController.navigationBar.frame);
     self.navBarMinHeight = self.navBarOriginalHeight * 0.37;

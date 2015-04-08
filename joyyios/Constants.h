@@ -11,6 +11,7 @@
 
 extern const CGFloat kButtonCornerRadius;
 extern const CGFloat kButtonDefaultHeight;
+
 extern const CGFloat kMapDashBoardHeight;
 extern const CGFloat kMapDashBoardLeadingFontSize;
 extern const CGFloat kMapDashBoardSupportingFontSize;
@@ -18,10 +19,14 @@ extern const CGFloat kMapDashBoardSubmitButtonHeight;
 extern const CGFloat kMapEndPointCenterOffset;
 extern const CGFloat kMapDefaultAltitude;
 extern const CGFloat kMapDefaultSpanDistance;
+
 extern const CGFloat kNavBarTitleFontSize;
+
 extern const CGFloat kPinAnnotationHeight;
 extern const CGFloat kPinAnnotationWidth;
+
 extern const CGFloat kTabBarTitleFontSize;
+
 extern const CGFloat kSignButtonHeight;
 extern const CGFloat kSignButtonWidth;
 extern const CGFloat kSignButtonMarginTop;
@@ -30,23 +35,32 @@ extern const CGFloat kSignFieldFontSize;
 extern const CGFloat kSignFieldHeight;
 extern const CGFloat kSignFieldMarginLeft;
 extern const CGFloat kSignViewTopOffset;
+
 extern const CGFloat kServiceCategoryCellFontSize;
 
 extern NSString *const kAnnotationTitleEnd;
 extern NSString *const kAnnotationTitleStart;
+
 extern NSString *const kErrorAuthenticationFailed;
+
+extern NSString *const kGoogleAPIBrowserKey;
+
 extern NSString *const kImageNameLocationArrow;
 extern NSString *const kImageNamePinBlue;
 extern NSString *const kImageNamePinGreen;
 extern NSString *const kImageNamePinPink;
+
 extern NSString *const kKeyTokenExpireTime;
 extern NSString *const kKeyUserCredential;
+
 extern NSString *const kNotificationIntroduceDidFinish;
 extern NSString *const kNotificationSignDidFinish;
+
 extern NSString *const kSystemFontBold;
 extern NSString *const kSystemFontItalic;
 extern NSString *const kSystemFontLight;
 extern NSString *const kSystemFontRegular;
-extern NSString *const kUrlApiBase;
+
+extern NSString *const kUrlAPIBase;
 
 #endif

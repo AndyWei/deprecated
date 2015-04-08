@@ -52,7 +52,7 @@
     manager.requestSerializer = [AFHTTPRequestSerializer serializer];
     [manager.requestSerializer setAuthorizationHeaderFieldWithUsername:email password:password];
 
-    NSString *url = [NSString stringWithFormat:@"%@%@", kUrlApiBase, @"signin"];
+    NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"signin"];
 
     [KVNProgress show];
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;

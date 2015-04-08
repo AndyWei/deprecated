@@ -11,6 +11,7 @@
 #import "JYOrderCreateFormViewController.h"
 #import "JYOrderCreateLocationViewController.h"
 #import "JYPinAnnotationView.h"
+#import "JYPlacesViewController.h"
 #import "JYServiceCategory.h"
 
 @interface JYOrderCreateLocationViewController ()
@@ -19,6 +20,7 @@
 @property(nonatomic) JYMapDashBoardView *dashBoard;
 @property(nonatomic) JYPanGestureRecognizer *panRecognizer;
 @property(nonatomic) JYPinchGestureRecognizer *pinchRecognizer;
+@property(nonatomic) JYPlacesViewController *placesViewController;
 @property(nonatomic) MapEditMode mapEditMode;
 @property(nonatomic) MKMapView *mapView;
 @property(nonatomic) MKPointAnnotation *startPoint;
@@ -388,26 +390,40 @@ static NSString *reuseId = @"pin";
     [self.mapView showAnnotations:@[ self.startPoint, self.endPoint ] animated:YES];
 }
 
+- (void)_presentPlacesViewController
+{
+    self.placesViewController = [JYPlacesViewController new];
+    NSString *imageName = (self.mapEditMode == MapEditModeStartPoint)? kImageNamePinBlue: kImageNamePinPink;
+    self.placesViewController.searchBarImage = [UIImage imageNamed:imageName];
+
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:self.placesViewController];
+    [self presentViewController:nav animated:YES completion:nil];
+}
+
 #pragma mark - JYMapDashBoardViewDelegate
 
 - (void)dashBoard:(JYMapDashBoardView *)dashBoard startButtonPressed:(UIButton *)button
 {
-    if (self.mapEditMode != MapEditModeEndPoint && self.mapEditMode != MapEditModeDone)
+    if (self.mapEditMode == MapEditModeStartPoint)
     {
-        return;
+        [self _presentPlacesViewController];
     }
-
-    [self _moveMapToPoint:self.startPoint andEnterMode:MapEditModeStartPoint];
+    else
+    {
+        [self _moveMapToPoint:self.startPoint andEnterMode:MapEditModeStartPoint];
+    }
 }
 
 - (void)dashBoard:(JYMapDashBoardView *)dashBoard endButtonPressed:(UIButton *)button
 {
     if (self.mapEditMode == MapEditModeEndPoint)
     {
-        return;
+        [self _presentPlacesViewController];
     }
-
-    [self _moveMapToPoint:self.endPoint andEnterMode:MapEditModeEndPoint];
+    else
+    {
+        [self _moveMapToPoint:self.endPoint andEnterMode:MapEditModeEndPoint];
+    }
 }
 
 - (void)dashBoard:(JYMapDashBoardView *)dashBoard submitButtonPressed:(UIButton *)button

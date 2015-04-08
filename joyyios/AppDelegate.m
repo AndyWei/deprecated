@@ -78,7 +78,7 @@
 
 
     [[UINavigationBar appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIFont lightSystemFontOfSize:kNavBarTitleFontSize], NSFontAttributeName, nil]];
-    [[UINavigationBar appearance] setTitleVerticalPositionAdjustment:5.0f forBarMetrics:UIBarMetricsDefault];
+
     [[UINavigationBar appearance] setTintColor:JoyyBlue];
 
     [[UITabBar appearance] setTintColor:JoyyBlue];
@@ -220,7 +220,7 @@
     manager.requestSerializer = [AFHTTPRequestSerializer serializer];
     [manager.requestSerializer setAuthorizationHeaderFieldWithUsername:[User currentUser].email password:[User currentUser].password];
 
-    NSString *url = [NSString stringWithFormat:@"%@%@", kUrlApiBase, @"signin"];
+    NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"signin"];
 
     [manager GET:url
         parameters:nil

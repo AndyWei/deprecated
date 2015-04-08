@@ -64,6 +64,10 @@
 		D6B2F07A1AD380BC009601B0 /* JYOrderCreateAddressViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B2F0781AD380BC009601B0 /* JYOrderCreateAddressViewController.m */; };
 		D6B2F07D1AD44370009601B0 /* JYExpandViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B2F07C1AD44370009601B0 /* JYExpandViewController.m */; };
 		D6B2F07E1AD44370009601B0 /* JYExpandViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B2F07C1AD44370009601B0 /* JYExpandViewController.m */; };
+		D6B2F0811AD5A679009601B0 /* JYPlacesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B2F0801AD5A679009601B0 /* JYPlacesViewController.m */; };
+		D6B2F0821AD5A679009601B0 /* JYPlacesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B2F0801AD5A679009601B0 /* JYPlacesViewController.m */; };
+		D6B2F0851AD5E165009601B0 /* JYPlacesViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B2F0841AD5E165009601B0 /* JYPlacesViewCell.m */; };
+		D6B2F0861AD5E165009601B0 /* JYPlacesViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B2F0841AD5E165009601B0 /* JYPlacesViewCell.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -144,6 +148,10 @@
 		D6B2F0781AD380BC009601B0 /* JYOrderCreateAddressViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYOrderCreateAddressViewController.m; sourceTree = "<group>"; };
 		D6B2F07B1AD44370009601B0 /* JYExpandViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYExpandViewController.h; sourceTree = "<group>"; };
 		D6B2F07C1AD44370009601B0 /* JYExpandViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYExpandViewController.m; sourceTree = "<group>"; };
+		D6B2F07F1AD5A679009601B0 /* JYPlacesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYPlacesViewController.h; sourceTree = "<group>"; };
+		D6B2F0801AD5A679009601B0 /* JYPlacesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYPlacesViewController.m; sourceTree = "<group>"; };
+		D6B2F0831AD5E165009601B0 /* JYPlacesViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYPlacesViewCell.h; sourceTree = "<group>"; };
+		D6B2F0841AD5E165009601B0 /* JYPlacesViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYPlacesViewCell.m; sourceTree = "<group>"; };
 		F67CA15F6F0CAF970CBFB660 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -201,6 +209,10 @@
 				D6B2F0661AD1B5EC009601B0 /* JYMapDashBoardView.m */,
 				D6B2F07B1AD44370009601B0 /* JYExpandViewController.h */,
 				D6B2F07C1AD44370009601B0 /* JYExpandViewController.m */,
+				D6B2F0831AD5E165009601B0 /* JYPlacesViewCell.h */,
+				D6B2F0841AD5E165009601B0 /* JYPlacesViewCell.m */,
+				D6B2F07F1AD5A679009601B0 /* JYPlacesViewController.h */,
+				D6B2F0801AD5A679009601B0 /* JYPlacesViewController.m */,
 			);
 			name = Components;
 			sourceTree = "<group>";
@@ -539,6 +551,7 @@
 				D6B2F07D1AD44370009601B0 /* JYExpandViewController.m in Sources */,
 				D63B69B61AC53BB4005600A9 /* JYFloatLabeledTextField.m in Sources */,
 				D6B2F0671AD1B5EC009601B0 /* JYMapDashBoardView.m in Sources */,
+				D6B2F0851AD5E165009601B0 /* JYPlacesViewCell.m in Sources */,
 				D69202B21AC4C7C0001C1C3D /* main.m in Sources */,
 				D63F0DA81ACDFD1D0067C5EE /* JYPinAnnotationView.m in Sources */,
 				D63F0D9D1ACCEB420067C5EE /* JYServiceCategory.m in Sources */,
@@ -546,6 +559,7 @@
 				D63B69A91AC51302005600A9 /* UIFont+SytemFontOverride.m in Sources */,
 				D63F0D971ACC95B00067C5EE /* JYOrderCreateLocationViewController.m in Sources */,
 				D68DAF971AC4CACD00838E7E /* JYSignInViewController.m in Sources */,
+				D6B2F0811AD5A679009601B0 /* JYPlacesViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -566,6 +580,7 @@
 				D6B2F07A1AD380BC009601B0 /* JYOrderCreateAddressViewController.m in Sources */,
 				D63F0DA91ACDFD1D0067C5EE /* JYPinAnnotationView.m in Sources */,
 				D63F0D761AC9F6F80067C5EE /* DataStore.m in Sources */,
+				D6B2F0821AD5A679009601B0 /* JYPlacesViewController.m in Sources */,
 				D6B2F05C1ACE630F009601B0 /* JYAutoCompleteTextField.m in Sources */,
 				D69202CF1AC4C7C1001C1C3D /* joyyiosTests.m in Sources */,
 				D63F0D5A1AC7CFF20067C5EE /* JYButton.m in Sources */,
@@ -573,6 +588,7 @@
 				D63F0D981ACC95B00067C5EE /* JYOrderCreateLocationViewController.m in Sources */,
 				D63F0DA31ACD08260067C5EE /* UIColor+Joyy.m in Sources */,
 				D63F0D7A1ACA0C0A0067C5EE /* JYIntroduceViewController.m in Sources */,
+				D6B2F0861AD5E165009601B0 /* JYPlacesViewCell.m in Sources */,
 				D63B69B31AC51D61005600A9 /* JYSignBaseViewController.m in Sources */,
 				D63B69B71AC53BB4005600A9 /* JYFloatLabeledTextField.m in Sources */,
 				D63F0DAD1ACE56E30067C5EE /* JYPinchGestureRecognizer.m in Sources */,

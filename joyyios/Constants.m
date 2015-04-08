@@ -8,6 +8,7 @@
 
 const CGFloat kButtonCornerRadius = 4.0f;
 const CGFloat kButtonDefaultHeight = 44.0f;
+
 const CGFloat kMapDashBoardHeight = 155.0f;
 const CGFloat kMapDashBoardSubmitButtonHeight = 50.0f;
 const CGFloat kMapDashBoardLeadingFontSize = 16.0f;
@@ -15,10 +16,14 @@ const CGFloat kMapDashBoardSupportingFontSize = 15.0f;
 const CGFloat kMapEndPointCenterOffset = 0.003f;
 const CGFloat kMapDefaultAltitude = 2000.0f;
 const CGFloat kMapDefaultSpanDistance = 3000.0f;
+
 const CGFloat kNavBarTitleFontSize = 22.0f;
+
 const CGFloat kPinAnnotationHeight = 55.0f;
 const CGFloat kPinAnnotationWidth = 55.0f;
+
 const CGFloat kTabBarTitleFontSize = 20.0f;
+
 const CGFloat kSignButtonHeight = 60.0f;
 const CGFloat kSignButtonWidth = 120;
 const CGFloat kSignButtonMarginTop = 20.0f;
@@ -31,17 +36,25 @@ const CGFloat kServiceCategoryCellFontSize = 18.0f;
 
 NSString *const kAnnotationTitleEnd = @"endPoint";
 NSString *const kAnnotationTitleStart = @"startPoint";
+
 NSString *const kErrorAuthenticationFailed = @"Incorrect Email or password";
+
+NSString *const kGoogleAPIBrowserKey = @"AIzaSyC_iSgM7DRZEZxEah_foIl4k6ICSduyYww";
+
 NSString *const kImageNameLocationArrow = @"locationArrow";
 NSString *const kImageNamePinBlue = @"pinBlue";
 NSString *const kImageNamePinGreen = @"pinGreen";
 NSString *const kImageNamePinPink = @"pinPink";
+
 NSString *const kKeyTokenExpireTime = @"TokenExpireTime";
 NSString *const kKeyUserCredential = @"UserCredential";
+
 NSString *const kNotificationIntroduceDidFinish = @"IntroDidFinish";
 NSString *const kNotificationSignDidFinish = @"SignDidFinish";
+
 NSString *const kSystemFontBold = @"HelveticaNeue-Bold";
 NSString *const kSystemFontItalic = @"HelveticaNeue-Italic";
 NSString *const kSystemFontLight = @"HelveticaNeue-Thin";
 NSString *const kSystemFontRegular = @"HelveticaNeue-Light";
-NSString *const kUrlApiBase = @"http://api.joyyapp.com:8000/v1/";
+
+NSString *const kUrlAPIBase = @"http://api.joyyapp.com:8000/v1/";
