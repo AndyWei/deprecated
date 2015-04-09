@@ -395,6 +395,7 @@ static NSString *reuseId = @"pin";
     self.placesViewController = [JYPlacesViewController new];
     NSString *imageName = (self.mapEditMode == MapEditModeStartPoint)? kImageNamePinBlue: kImageNamePinPink;
     self.placesViewController.searchBarImage = [UIImage imageNamed:imageName];
+    self.placesViewController.searchCenter = self.mapView.centerCoordinate;
 
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:self.placesViewController];
     [self presentViewController:nav animated:YES completion:nil];

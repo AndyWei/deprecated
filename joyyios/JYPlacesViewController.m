@@ -8,12 +8,11 @@
 
 #import "JYPlacesViewCell.h"
 #import "JYPlacesViewController.h"
-#import "UIImageView+AFNetworking.h"
 
 @interface JYPlacesViewController ()
 
-@property (nonatomic) LPGoogleFunctions *googleFunctions;
-@property (nonatomic) NSMutableArray *placesList;
+@property (nonatomic) MKLocalSearch *search;
+@property (nonatomic) NSArray *placesList;
 @property (nonatomic) UITableView *tableView;
 @property (nonatomic) UITextField *searchBar;
 
@@ -27,7 +26,7 @@
     [super viewDidLoad];
 
     self.view.backgroundColor = FlatWhite;
-    self.placesList = [NSMutableArray new];
+    self.placesList = [NSArray new];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel", nil)
                                                                               style:UIBarButtonItemStyleBordered
                                                                              target:self
@@ -68,6 +67,36 @@
     [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
 }
 
+- (void)_searchForInput:(NSString *)string
+{
+    if (self.search)
+    {
+        [self.search cancel];
+    }
+
+    MKLocalSearchRequest *request = [[MKLocalSearchRequest alloc] init];
+    request.naturalLanguageQuery = string;
+
+    request.region = MKCoordinateRegionMakeWithDistance(self.searchCenter, 30000, 30000);
+
+    self.search = [[MKLocalSearch alloc] initWithRequest:request];
+
+    __weak typeof(self) weakSelf = self;
+    [self.search startWithCompletionHandler:^(MKLocalSearchResponse *response, NSError *error)
+    {
+        weakSelf.search = nil;
+
+        if (error)
+        {
+            NSLog(@"error = %@", error);
+            return;
+        }
+
+        weakSelf.placesList = response.mapItems;
+        [weakSelf.tableView reloadData];
+    }];
+}
+
 #pragma mark - UITableViewDataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -85,12 +114,12 @@
     JYPlacesViewCell *cell =
     (JYPlacesViewCell *)[tableView dequeueReusableCellWithIdentifier:@"placesCellIdentifier" forIndexPath:indexPath];
 
-    LPPlaceDetails *placeDetails = (LPPlaceDetails *)[self.placesList objectAtIndex:indexPath.row];
+    MKMapItem *item = (MKMapItem *)[self.placesList objectAtIndex:indexPath.row];
 
-    cell.topLabel.text = placeDetails.name;
-    cell.bottomLabel.text = placeDetails.formattedAddress;
+    cell.topLabel.text = item.name;
+    cell.bottomLabel.text = item.placemark.title;
 
-    [self setImageForCell:cell fromURL:placeDetails.icon];
+//    [self setImageForCell:cell fromURL:placeDetails.icon];
 
     return cell;
 }
@@ -107,56 +136,6 @@
 
 }
 
-#pragma mark - LPGoogleFunctions
-
-- (LPGoogleFunctions *)googleFunctions
-{
-    if (!_googleFunctions) {
-        _googleFunctions = [LPGoogleFunctions new];
-        _googleFunctions.googleAPIBrowserKey = kGoogleAPIBrowserKey;
-        _googleFunctions.delegate = self;
-        _googleFunctions.sensor = YES;
-        _googleFunctions.languageCode = @"en";
-    }
-    return _googleFunctions;
-}
-
-- (void)loadPlacesAutocompleteForInput:(NSString *)input
-{
-    self.searchDisplayController.searchBar.text = input;
-
-    __weak typeof(self) weakSelf = self;
-    [self.googleFunctions loadPlacesAutocompleteWithDetailsForInput:input offset:(int)[input length] radius:0 location:nil placeType:LPGooglePlaceTypeGeocode countryRestriction:nil
-    successfulBlock:^(NSArray *placesWithDetails)
-    {
-        NSLog(@"successful");
-        weakSelf.placesList = [NSMutableArray arrayWithArray:placesWithDetails];
-        [weakSelf.tableView reloadData];
-    }
-    failureBlock:^(LPGoogleStatus status) {
-        NSLog(@"Error - Block: %@", [LPGoogleFunctions getGoogleStatus:status]);
-        weakSelf.placesList = [NSMutableArray new];
-        [weakSelf.tableView reloadData];
-    }];
-}
-
-#pragma mark - LPGoogleFunctions Delegate
-
-- (void)googleFunctionsWillLoadPlacesAutocomplate:(LPGoogleFunctions *)googleFunctions forInput:(NSString *)input
-{
-    NSLog(@"willLoadPlacesAutcompleteForInput: %@", input);
-}
-
-- (void)googleFunctions:(LPGoogleFunctions *)googleFunctions didLoadPlacesAutocomplate:(LPPlacesAutocomplete *)placesAutocomplate
-{
-    NSLog(@"didLoadPlacesAutocomplete - Delegate");
-}
-
-- (void)googleFunctions:(LPGoogleFunctions *)googleFunctions errorLoadingPlacesAutocomplateWithStatus:(LPGoogleStatus)status
-{
-    NSLog(@"errorLoadingPlacesAutocomplateWithStatus - Delegate: %@", [LPGoogleFunctions getGoogleStatus:status]);
-}
-
 #pragma mark - UITextFieldDelegate
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
@@ -164,23 +143,17 @@
     NSString * inputString = [[textField text] stringByReplacingCharactersInRange:range withString:string];
     if (inputString.length >= 3)
     {
-        [self loadPlacesAutocompleteForInput:inputString];
+        [self _searchForInput:inputString];
     }
 
     return YES;
 }
 
-#pragma mark - LPImage
+#pragma mark - UIScrollViewDelegate
 
-- (void)setImageForCell:(JYPlacesViewCell *)cell fromURL:(NSString *)url
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
 {
-    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:[url stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
-
-    __weak JYPlacesViewCell *weakCell = cell;
-    [cell.iconView setImageWithURLRequest:request placeholderImage:nil success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image)
-    {
-        weakCell.iconView.image = image;
-    } failure:nil];
+    [self.searchBar resignFirstResponder];
 }
 
 @end

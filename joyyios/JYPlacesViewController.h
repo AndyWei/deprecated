@@ -6,10 +6,11 @@
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
-#import "LPGoogleFunctions.h"
+@import MapKit;
 
-@interface JYPlacesViewController : UIViewController <LPGoogleFunctionsDelegate, UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate>
+@interface JYPlacesViewController : UIViewController <UIScrollViewDelegate, UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate>
 
+@property (nonatomic) CLLocationCoordinate2D searchCenter;
 @property (nonatomic) UIImage *searchBarImage;
 
 @end
