@@ -9,15 +9,11 @@
 #import "JYMapDashBoardView.h"
 #import "JYPanGestureRecognizer.h"
 #import "JYPinchGestureRecognizer.h"
+#import "JYPlacesViewController.h"
 #import "JYServiceCategory.h"
 
 @import MapKit;
 
-@interface JYOrderCreateLocationViewController : UIViewController <JYMapDashBoardViewDelegate,
-                                                                   JYPanGestureRecognizerDelegate,
-                                                                   JYPinchGestureRecognizerDelegate,
-                                                                   MKMapViewDelegate>
-
-@property(nonatomic) JYServiceCategoryIndex serviceCategoryIndex;
+@interface JYOrderCreateLocationViewController : UIViewController <JYMapDashBoardViewDelegate, JYPanGestureRecognizerDelegate, JYPinchGestureRecognizerDelegate, JYPlacesViewControllerDelegate, MKMapViewDelegate>
 
 @end

@@ -21,8 +21,8 @@
 		D63F0D561AC7ACB70067C5EE /* JYSignUpViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D63F0D541AC7ACB70067C5EE /* JYSignUpViewController.m */; };
 		D63F0D591AC7CFF20067C5EE /* JYButton.m in Sources */ = {isa = PBXBuildFile; fileRef = D63F0D581AC7CFF20067C5EE /* JYButton.m */; };
 		D63F0D5A1AC7CFF20067C5EE /* JYButton.m in Sources */ = {isa = PBXBuildFile; fileRef = D63F0D581AC7CFF20067C5EE /* JYButton.m */; };
-		D63F0D711AC9EC060067C5EE /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = D63F0D701AC9EC060067C5EE /* User.m */; };
-		D63F0D721AC9EC060067C5EE /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = D63F0D701AC9EC060067C5EE /* User.m */; };
+		D63F0D711AC9EC060067C5EE /* JYUser.m in Sources */ = {isa = PBXBuildFile; fileRef = D63F0D701AC9EC060067C5EE /* JYUser.m */; };
+		D63F0D721AC9EC060067C5EE /* JYUser.m in Sources */ = {isa = PBXBuildFile; fileRef = D63F0D701AC9EC060067C5EE /* JYUser.m */; };
 		D63F0D751AC9F6F80067C5EE /* DataStore.m in Sources */ = {isa = PBXBuildFile; fileRef = D63F0D741AC9F6F80067C5EE /* DataStore.m */; };
 		D63F0D761AC9F6F80067C5EE /* DataStore.m in Sources */ = {isa = PBXBuildFile; fileRef = D63F0D741AC9F6F80067C5EE /* DataStore.m */; };
 		D63F0D791ACA0C0A0067C5EE /* JYIntroduceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D63F0D781ACA0C0A0067C5EE /* JYIntroduceViewController.m */; };
@@ -60,14 +60,14 @@
 		D6B2F0681AD1B5EC009601B0 /* JYMapDashBoardView.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B2F0661AD1B5EC009601B0 /* JYMapDashBoardView.m */; };
 		D6B2F0751AD318B6009601B0 /* JYPanGestureRecognizer.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B2F0741AD318B6009601B0 /* JYPanGestureRecognizer.m */; };
 		D6B2F0761AD318B6009601B0 /* JYPanGestureRecognizer.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B2F0741AD318B6009601B0 /* JYPanGestureRecognizer.m */; };
-		D6B2F0791AD380BC009601B0 /* JYOrderCreateAddressViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B2F0781AD380BC009601B0 /* JYOrderCreateAddressViewController.m */; };
-		D6B2F07A1AD380BC009601B0 /* JYOrderCreateAddressViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B2F0781AD380BC009601B0 /* JYOrderCreateAddressViewController.m */; };
 		D6B2F07D1AD44370009601B0 /* JYExpandViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B2F07C1AD44370009601B0 /* JYExpandViewController.m */; };
 		D6B2F07E1AD44370009601B0 /* JYExpandViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B2F07C1AD44370009601B0 /* JYExpandViewController.m */; };
 		D6B2F0811AD5A679009601B0 /* JYPlacesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B2F0801AD5A679009601B0 /* JYPlacesViewController.m */; };
 		D6B2F0821AD5A679009601B0 /* JYPlacesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B2F0801AD5A679009601B0 /* JYPlacesViewController.m */; };
 		D6B2F0851AD5E165009601B0 /* JYPlacesViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B2F0841AD5E165009601B0 /* JYPlacesViewCell.m */; };
 		D6B2F0861AD5E165009601B0 /* JYPlacesViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B2F0841AD5E165009601B0 /* JYPlacesViewCell.m */; };
+		D6B2F08D1AD714DA009601B0 /* JYOrder.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B2F08C1AD714DA009601B0 /* JYOrder.m */; };
+		D6B2F08E1AD714DA009601B0 /* JYOrder.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B2F08C1AD714DA009601B0 /* JYOrder.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -95,8 +95,8 @@
 		D63F0D541AC7ACB70067C5EE /* JYSignUpViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYSignUpViewController.m; sourceTree = "<group>"; };
 		D63F0D571AC7CFF20067C5EE /* JYButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYButton.h; sourceTree = "<group>"; };
 		D63F0D581AC7CFF20067C5EE /* JYButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYButton.m; sourceTree = "<group>"; };
-		D63F0D6F1AC9EC060067C5EE /* User.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = User.h; sourceTree = "<group>"; };
-		D63F0D701AC9EC060067C5EE /* User.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = User.m; sourceTree = "<group>"; };
+		D63F0D6F1AC9EC060067C5EE /* JYUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYUser.h; sourceTree = "<group>"; };
+		D63F0D701AC9EC060067C5EE /* JYUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYUser.m; sourceTree = "<group>"; };
 		D63F0D731AC9F6F80067C5EE /* DataStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataStore.h; sourceTree = "<group>"; };
 		D63F0D741AC9F6F80067C5EE /* DataStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataStore.m; sourceTree = "<group>"; };
 		D63F0D771ACA0C0A0067C5EE /* JYIntroduceViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYIntroduceViewController.h; sourceTree = "<group>"; };
@@ -144,14 +144,14 @@
 		D6B2F0661AD1B5EC009601B0 /* JYMapDashBoardView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYMapDashBoardView.m; sourceTree = "<group>"; };
 		D6B2F0731AD318B6009601B0 /* JYPanGestureRecognizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYPanGestureRecognizer.h; sourceTree = "<group>"; };
 		D6B2F0741AD318B6009601B0 /* JYPanGestureRecognizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYPanGestureRecognizer.m; sourceTree = "<group>"; };
-		D6B2F0771AD380BC009601B0 /* JYOrderCreateAddressViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYOrderCreateAddressViewController.h; sourceTree = "<group>"; };
-		D6B2F0781AD380BC009601B0 /* JYOrderCreateAddressViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYOrderCreateAddressViewController.m; sourceTree = "<group>"; };
 		D6B2F07B1AD44370009601B0 /* JYExpandViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYExpandViewController.h; sourceTree = "<group>"; };
 		D6B2F07C1AD44370009601B0 /* JYExpandViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYExpandViewController.m; sourceTree = "<group>"; };
 		D6B2F07F1AD5A679009601B0 /* JYPlacesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYPlacesViewController.h; sourceTree = "<group>"; };
 		D6B2F0801AD5A679009601B0 /* JYPlacesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYPlacesViewController.m; sourceTree = "<group>"; };
 		D6B2F0831AD5E165009601B0 /* JYPlacesViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYPlacesViewCell.h; sourceTree = "<group>"; };
 		D6B2F0841AD5E165009601B0 /* JYPlacesViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYPlacesViewCell.m; sourceTree = "<group>"; };
+		D6B2F08B1AD714DA009601B0 /* JYOrder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYOrder.h; sourceTree = "<group>"; };
+		D6B2F08C1AD714DA009601B0 /* JYOrder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYOrder.m; sourceTree = "<group>"; };
 		F67CA15F6F0CAF970CBFB660 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -222,6 +222,8 @@
 			children = (
 				D63F0D891ACBBE600067C5EE /* Browse */,
 				D63F0D881ACBBE280067C5EE /* Create */,
+				D6B2F08B1AD714DA009601B0 /* JYOrder.h */,
+				D6B2F08C1AD714DA009601B0 /* JYOrder.m */,
 			);
 			name = Order;
 			sourceTree = "<group>";
@@ -231,8 +233,6 @@
 			children = (
 				D69202B61AC4C7C0001C1C3D /* JYOrderCategoryCollectionViewController.h */,
 				D69202B71AC4C7C0001C1C3D /* JYOrderCategoryCollectionViewController.m */,
-				D6B2F0771AD380BC009601B0 /* JYOrderCreateAddressViewController.h */,
-				D6B2F0781AD380BC009601B0 /* JYOrderCreateAddressViewController.m */,
 				D6B2F0611ACF4755009601B0 /* JYOrderCreateFormViewController.h */,
 				D6B2F0621ACF4755009601B0 /* JYOrderCreateFormViewController.m */,
 				D63F0D951ACC95B00067C5EE /* JYOrderCreateLocationViewController.h */,
@@ -278,8 +278,8 @@
 				D68DAF951AC4CACD00838E7E /* JYSignInViewController.m */,
 				D63F0D531AC7ACB70067C5EE /* JYSignUpViewController.h */,
 				D63F0D541AC7ACB70067C5EE /* JYSignUpViewController.m */,
-				D63F0D6F1AC9EC060067C5EE /* User.h */,
-				D63F0D701AC9EC060067C5EE /* User.m */,
+				D63F0D6F1AC9EC060067C5EE /* JYUser.h */,
+				D63F0D701AC9EC060067C5EE /* JYUser.m */,
 			);
 			name = User;
 			sourceTree = "<group>";
@@ -543,9 +543,8 @@
 				D63F0DA21ACD08260067C5EE /* UIColor+Joyy.m in Sources */,
 				D69202B81AC4C7C0001C1C3D /* JYOrderCategoryCollectionViewController.m in Sources */,
 				D6B2F05B1ACE630F009601B0 /* JYAutoCompleteTextField.m in Sources */,
-				D63F0D711AC9EC060067C5EE /* User.m in Sources */,
+				D63F0D711AC9EC060067C5EE /* JYUser.m in Sources */,
 				D63F0DAC1ACE56E30067C5EE /* JYPinchGestureRecognizer.m in Sources */,
-				D6B2F0791AD380BC009601B0 /* JYOrderCreateAddressViewController.m in Sources */,
 				D6B2F0631ACF4755009601B0 /* JYOrderCreateFormViewController.m in Sources */,
 				D63F0D7D1ACA5E260067C5EE /* JYSignViewController.m in Sources */,
 				D6B2F07D1AD44370009601B0 /* JYExpandViewController.m in Sources */,
@@ -559,6 +558,7 @@
 				D63B69A91AC51302005600A9 /* UIFont+SytemFontOverride.m in Sources */,
 				D63F0D971ACC95B00067C5EE /* JYOrderCreateLocationViewController.m in Sources */,
 				D68DAF971AC4CACD00838E7E /* JYSignInViewController.m in Sources */,
+				D6B2F08D1AD714DA009601B0 /* JYOrder.m in Sources */,
 				D6B2F0811AD5A679009601B0 /* JYPlacesViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -568,7 +568,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D63B69AA1AC51302005600A9 /* UIFont+SytemFontOverride.m in Sources */,
-				D63F0D721AC9EC060067C5EE /* User.m in Sources */,
+				D63F0D721AC9EC060067C5EE /* JYUser.m in Sources */,
 				D63F0D8D1ACBBF1F0067C5EE /* JYCollectionViewCell.m in Sources */,
 				D6B2F0641ACF4755009601B0 /* JYOrderCreateFormViewController.m in Sources */,
 				D63F0D561AC7ACB70067C5EE /* JYSignUpViewController.m in Sources */,
@@ -577,13 +577,13 @@
 				D63B69BB1AC624F8005600A9 /* JYAutoCompleteDataSource.m in Sources */,
 				D6B2F0681AD1B5EC009601B0 /* JYMapDashBoardView.m in Sources */,
 				D6B2F07E1AD44370009601B0 /* JYExpandViewController.m in Sources */,
-				D6B2F07A1AD380BC009601B0 /* JYOrderCreateAddressViewController.m in Sources */,
 				D63F0DA91ACDFD1D0067C5EE /* JYPinAnnotationView.m in Sources */,
 				D63F0D761AC9F6F80067C5EE /* DataStore.m in Sources */,
 				D6B2F0821AD5A679009601B0 /* JYPlacesViewController.m in Sources */,
 				D6B2F05C1ACE630F009601B0 /* JYAutoCompleteTextField.m in Sources */,
 				D69202CF1AC4C7C1001C1C3D /* joyyiosTests.m in Sources */,
 				D63F0D5A1AC7CFF20067C5EE /* JYButton.m in Sources */,
+				D6B2F08E1AD714DA009601B0 /* JYOrder.m in Sources */,
 				D63F0D9E1ACCEB420067C5EE /* JYServiceCategory.m in Sources */,
 				D63F0D981ACC95B00067C5EE /* JYOrderCreateLocationViewController.m in Sources */,
 				D63F0DA31ACD08260067C5EE /* UIColor+Joyy.m in Sources */,

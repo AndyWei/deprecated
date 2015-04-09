@@ -30,7 +30,7 @@
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel", nil)
                                                                               style:UIBarButtonItemStyleBordered
                                                                              target:self
-                                                                             action:@selector(_cancel)];
+                                                                             action:@selector(_close)];
 
     [self _createSearchBar];
     [self _createTableView];
@@ -62,7 +62,7 @@
     [self.view addSubview:self.tableView];
 }
 
-- (void)_cancel
+- (void)_close
 {
     [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
 }
@@ -185,7 +185,9 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-
+    MKMapItem *item = (MKMapItem *)[self.placesList objectAtIndex:indexPath.row];
+    [self.delegate placesViewController:self placemarkSelected:item.placemark];
+    [self _close];
 }
 
 #pragma mark - UITextFieldDelegate

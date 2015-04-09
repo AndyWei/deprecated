@@ -32,6 +32,7 @@
 
         self.iconView = [[UIImageView alloc] initWithFrame:CGRectMake(14, 20, 22, 22)];
         self.iconView.backgroundColor = FlatWhite;
+        self.iconView.alpha = 0.5;
         [self addSubview:self.iconView];
     }
     return self;

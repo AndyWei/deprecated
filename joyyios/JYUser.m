@@ -7,16 +7,16 @@
 //
 
 #import "DataStore.h"
-#import "User.h"
+#import "JYUser.h"
 
-@implementation User
+@implementation JYUser
 
-+ (User *)currentUser
++ (JYUser *)currentUser
 {
-    static User *_currentUser;
+    static JYUser *_currentUser;
     static dispatch_once_t done;
     dispatch_once(&done, ^{
-        _currentUser = [User new];
+        _currentUser = [JYUser new];
     });
     return _currentUser;
 }

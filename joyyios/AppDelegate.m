@@ -14,7 +14,7 @@
 #import "JYIntroduceViewController.h"
 #import "JYNearbyViewController.h"
 #import "JYSignViewController.h"
-#import "User.h"
+#import "JYUser.h"
 
 @interface AppDelegate ()
 
@@ -138,7 +138,7 @@
 
 - (void)_launchViewController
 {
-    User *user = [User currentUser];
+    JYUser *user = [JYUser currentUser];
     BOOL userExist = [user load];
     BOOL needIntro = NO;
 
@@ -164,7 +164,7 @@
 
 - (void)_introduceDidFinish
 {
-    User *user = [User currentUser];
+    JYUser *user = [JYUser currentUser];
     BOOL userExist = [user load];
 
     if (!userExist)
@@ -218,14 +218,14 @@
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
 
     manager.requestSerializer = [AFHTTPRequestSerializer serializer];
-    [manager.requestSerializer setAuthorizationHeaderFieldWithUsername:[User currentUser].email password:[User currentUser].password];
+    [manager.requestSerializer setAuthorizationHeaderFieldWithUsername:[JYUser currentUser].email password:[JYUser currentUser].password];
 
     NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"signin"];
 
     [manager GET:url
         parameters:nil
         success:^(AFHTTPRequestOperation *operation, id responseObject) {
-          [User currentUser].credential = responseObject;
+          [JYUser currentUser].credential = responseObject;
 
         }
         failure:^(AFHTTPRequestOperation *operation, NSError *error) {

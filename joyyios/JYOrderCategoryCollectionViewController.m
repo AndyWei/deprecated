@@ -7,6 +7,7 @@
 //
 
 #import "JYCollectionViewCell.h"
+#import "JYOrder.h"
 #import "JYOrderCategoryCollectionViewController.h"
 #import "JYOrderCreateLocationViewController.h"
 #import "JYServiceCategory.h"
@@ -76,8 +77,12 @@
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
+    // Delete the previous unfinished order if any
+    [JYOrder deleteCurrentOrder];
+
+    // A new order will be created automatically
+    [JYOrder currentOrder].categoryIndex = indexPath.item;
     JYOrderCreateLocationViewController *viewController = [JYOrderCreateLocationViewController new];
-    viewController.serviceCategoryIndex = indexPath.item;
     [self.navigationController pushViewController:viewController animated:YES];
 }
 
