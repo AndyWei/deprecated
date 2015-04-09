@@ -136,6 +136,7 @@ static NSString *reuseId = @"pin";
                            CLPlacemark *placemark = [placemarks objectAtIndex:0];
                            NSString *locatedAt = [[placemark.addressDictionary valueForKey:@"FormattedAddressLines"] componentsJoinedByString:@", "];
                            NSString *address = [[NSString alloc] initWithString:locatedAt];
+
                            if (weakSelf.mapEditMode == MapEditModeStartPoint)
                            {
                                weakSelf.dashBoard.startButton.textLabel.text = address;

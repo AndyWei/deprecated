@@ -18,19 +18,19 @@
     {
         self.backgroundColor = FlatWhite;
 
-        self.topLabel = [[UILabel alloc] initWithFrame:CGRectMake(60, 10, 315, 25)];
+        self.topLabel = [[UILabel alloc] initWithFrame:CGRectMake(50, 8, 315, 25)];
         self.topLabel.textColor = FlatBlack;
-        self.topLabel.font = [UIFont systemFontOfSize:18.0f];
+        self.topLabel.font = [UIFont fontWithName:@"AvenirNext-Medium" size:17.0f];
         self.topLabel.backgroundColor = FlatWhite;
         [self addSubview:self.topLabel];
 
-        self.bottomLabel = [[UILabel alloc] initWithFrame:CGRectMake(60, 35, 315, 20)];
+        self.bottomLabel = [[UILabel alloc] initWithFrame:CGRectMake(50, 33, 315, 20)];
         self.bottomLabel.textColor = FlatGrayDark;
-        self.bottomLabel.font = [UIFont systemFontOfSize:15.0f];
+        self.bottomLabel.font = [UIFont fontWithName:@"AvenirNext-Regular" size:14.0f];
         self.bottomLabel.backgroundColor = FlatWhite;
         [self addSubview:self.bottomLabel];
 
-        self.iconView = [[UIImageView alloc] initWithFrame:CGRectMake(20, 15, 25, 25)];
+        self.iconView = [[UIImageView alloc] initWithFrame:CGRectMake(14, 20, 22, 22)];
         self.iconView.backgroundColor = FlatWhite;
         [self addSubview:self.iconView];
     }

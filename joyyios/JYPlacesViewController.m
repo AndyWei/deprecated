@@ -97,6 +97,59 @@
     }];
 }
 
+- (NSString *)_imageNameForMapItem:(MKMapItem *)item
+{
+    NSString *defaultName = @"search";
+
+    NSValue *place = [item valueForKey:@"place"];
+    NSArray *businessArray = (NSArray *)[place valueForKey:@"business"];
+
+    if (!businessArray || businessArray.count == 0)
+    {
+        return defaultName;
+    }
+
+    id business = businessArray[0];
+    NSArray *localizedCategoriesArray = [business valueForKey:@"localizedCategories"];
+
+    if (!localizedCategoriesArray || localizedCategoriesArray.count == 0)
+    {
+        return defaultName;
+    }
+
+    id localizedCategory = localizedCategoriesArray[0];
+    NSArray *localizedNamesArray = [localizedCategory valueForKey:@"localizedNames"];
+
+    if (!localizedNamesArray || localizedNamesArray.count == 0)
+    {
+        return defaultName;
+    }
+
+    id localizedName = localizedNamesArray[0];
+
+    NSString *name = [localizedName valueForKey:@"name"];
+
+    if (!name)
+    {
+        return defaultName;
+    }
+    else if ([name isEqualToString:@"Shopping"] || [name isEqualToString:@"Food"] || [name isEqualToString:@"Grocery"])
+    {
+        return @"shopping";
+    }
+    else if ([name isEqualToString:@"Restaurants"])
+    {
+        return @"restaurant";
+    }
+    else if ([name isEqualToString:@"Health and Medical"] || [name isEqualToString:@"Hospitals"])
+    {
+        return @"hospital";
+    }
+
+    return defaultName;
+}
+
+
 #pragma mark - UITableViewDataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -117,9 +170,8 @@
     MKMapItem *item = (MKMapItem *)[self.placesList objectAtIndex:indexPath.row];
 
     cell.topLabel.text = item.name;
-    cell.bottomLabel.text = item.placemark.title;
-
-//    [self setImageForCell:cell fromURL:placeDetails.icon];
+    cell.bottomLabel.text = (item.placemark)? item.placemark.title: NSLocalizedString(@"Current Place", nil);
+    cell.iconView.image = [UIImage imageNamed:[self _imageNameForMapItem:item]];
 
     return cell;
 }
@@ -128,7 +180,7 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 65.0f;
+    return 60.0f;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
