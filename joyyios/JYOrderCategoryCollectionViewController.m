@@ -78,7 +78,8 @@
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
     // Delete the previous unfinished order if any
-    [JYOrder deleteCurrentOrder];
+    // Is it better to save the previous order? The user may be happier to see his inputs are still there
+    // [JYOrder deleteCurrentOrder];
 
     // A new order will be created automatically
     [JYOrder currentOrder].categoryIndex = indexPath.item;

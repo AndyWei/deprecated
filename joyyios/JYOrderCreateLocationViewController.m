@@ -9,7 +9,6 @@
 #import "AppDelegate.h"
 #import "JYButton.h"
 #import "JYOrder.h"
-#import "JYOrderCreateFormViewController.h"
 #import "JYOrderCreateLocationViewController.h"
 #import "JYPinAnnotationView.h"
 #import "JYServiceCategory.h"
@@ -228,7 +227,8 @@ static NSString *reuseId = @"pin";
         currentOrder.endAddress = self.dashBoard.endButton.textLabel.text;
     }
 
-    UIViewController *viewController = [JYOrderCreateFormViewController new];
+    NSUInteger index = [JYOrder currentOrder].categoryIndex;
+    UIViewController *viewController = [[JYServiceCategory classAtIndex:index] new];
     [self.navigationController pushViewController:viewController animated:YES];
 }
 

@@ -20,12 +20,8 @@
 @property(nonatomic) NSUInteger status;
 @property(nonatomic) NSUInteger category;
 @property(nonatomic) NSUInteger categoryIndex;
-@property(nonatomic) CGFloat amount;
-@property(nonatomic) CGFloat finalAmount;
-@property(nonatomic) CGFloat unitPrice;
-@property(nonatomic) CGFloat finalUnitPrice;
-@property(nonatomic) CGFloat totalPrice;
-@property(nonatomic) CGFloat finalTotalPrice;
+@property(nonatomic) CGFloat price;
+@property(nonatomic) CGFloat finalPrice;
 @property(nonatomic) CLLocationCoordinate2D startPoint;
 @property(nonatomic) CLLocationCoordinate2D endPoint;
 @property(nonatomic) NSString *userId;

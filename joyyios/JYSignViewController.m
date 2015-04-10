@@ -6,8 +6,6 @@
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
-#import <EAIntroView/EAIntroView.h>
-
 #import "JYButton.h"
 #import "JYSignInViewController.h"
 #import "JYSignUpViewController.h"
