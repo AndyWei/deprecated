@@ -15,9 +15,12 @@
 @property(nonatomic, readonly) JYFloatLabeledTextField *passwordField;
 @property(nonatomic, readonly) JYButton *signButton;
 
+
+- (BOOL)inputCheckPassed;
+
 /*
  * Subclassing:
  */
-- (void)signButtonTouched; // Override to handle signButton touched event. Don't call super.
+- (void)signButtonPressed; // Override to handle signButton touched event. Don't call super.
 
 @end

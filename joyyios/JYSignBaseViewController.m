@@ -6,10 +6,13 @@
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
+#import <RKDropdownAlert/RKDropdownAlert.h>
+
 #import "JYAutoCompleteDataSource.h"
 #import "JYButton.h"
 #import "JYFloatLabeledTextField.h"
 #import "JYSignBaseViewController.h"
+#import "JYUtils.h"
 
 @interface JYSignBaseViewController ()
 
@@ -40,16 +43,16 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (void)touchSignButton
+- (void)pressSignButton
 {
     self.signButton.selected = YES;
-    [self signButtonTouched];
+    [self signButtonPressed];
     self.signButton.selected = NO;
 }
 
-- (void)signButtonTouched
+- (void)signButtonPressed
 {
-    NSAssert(NO, @"The signButtonTouched method in the base clasee should never been called");
+    NSAssert(NO, @"The signButtonPressed method in the base clasee should never been called");
 }
 
 #pragma mark - UITextFieldDelegate
@@ -65,7 +68,7 @@
     else if (textField == self.passwordField)
     {
         [self.passwordField resignFirstResponder];
-        [self touchSignButton];
+        [self pressSignButton];
         return NO;
     }
 
@@ -137,4 +140,34 @@
 
     [self.view addSubview:_signButton];
 }
+
+- (BOOL)inputCheckPassed
+{
+    if (![JYUtils isValidEmail: self.emailField.text])
+    {
+        [RKDropdownAlert title:NSLocalizedString(@"Please input an valid email", nil)
+                       message:nil
+               backgroundColor:FlatYellow
+                     textColor:FlatBlack
+                          time:3];
+
+        [self.emailField becomeFirstResponder];
+        return NO;
+    }
+
+    if ((self.passwordField.text == nil || self.passwordField.text.length < 4))
+    {
+        [RKDropdownAlert title:NSLocalizedString(@"Password is too short", nil)
+                       message:nil
+               backgroundColor:FlatYellow
+                     textColor:FlatBlack
+                          time:3];
+
+        [self.passwordField becomeFirstResponder];
+        return NO;
+    }
+
+    return YES;
+}
+
 @end

@@ -41,6 +41,8 @@
 		D63F0DA91ACDFD1D0067C5EE /* JYPinAnnotationView.m in Sources */ = {isa = PBXBuildFile; fileRef = D63F0DA71ACDFD1D0067C5EE /* JYPinAnnotationView.m */; };
 		D63F0DAC1ACE56E30067C5EE /* JYPinchGestureRecognizer.m in Sources */ = {isa = PBXBuildFile; fileRef = D63F0DAB1ACE56E30067C5EE /* JYPinchGestureRecognizer.m */; };
 		D63F0DAD1ACE56E30067C5EE /* JYPinchGestureRecognizer.m in Sources */ = {isa = PBXBuildFile; fileRef = D63F0DAB1ACE56E30067C5EE /* JYPinchGestureRecognizer.m */; };
+		D65797421AD898AC00770BFE /* JYUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = D65797411AD898AC00770BFE /* JYUtils.m */; };
+		D65797431AD898AC00770BFE /* JYUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = D65797411AD898AC00770BFE /* JYUtils.m */; };
 		D68DAF961AC4CACD00838E7E /* Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = D68DAF931AC4CACD00838E7E /* Constants.m */; };
 		D68DAF971AC4CACD00838E7E /* JYSignInViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D68DAF951AC4CACD00838E7E /* JYSignInViewController.m */; };
 		D69202B21AC4C7C0001C1C3D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = D69202B11AC4C7C0001C1C3D /* main.m */; };
@@ -113,6 +115,8 @@
 		D63F0DA71ACDFD1D0067C5EE /* JYPinAnnotationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYPinAnnotationView.m; sourceTree = "<group>"; };
 		D63F0DAA1ACE56E30067C5EE /* JYPinchGestureRecognizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYPinchGestureRecognizer.h; sourceTree = "<group>"; };
 		D63F0DAB1ACE56E30067C5EE /* JYPinchGestureRecognizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYPinchGestureRecognizer.m; sourceTree = "<group>"; };
+		D65797401AD898AC00770BFE /* JYUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYUtils.h; sourceTree = "<group>"; };
+		D65797411AD898AC00770BFE /* JYUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYUtils.m; sourceTree = "<group>"; };
 		D68DAF921AC4CACD00838E7E /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
 		D68DAF931AC4CACD00838E7E /* Constants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Constants.m; sourceTree = "<group>"; };
 		D68DAF941AC4CACD00838E7E /* JYSignInViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYSignInViewController.h; sourceTree = "<group>"; };
@@ -209,6 +213,8 @@
 				D6B2F0841AD5E165009601B0 /* JYPlacesViewCell.m */,
 				D6B2F07F1AD5A679009601B0 /* JYPlacesViewController.h */,
 				D6B2F0801AD5A679009601B0 /* JYPlacesViewController.m */,
+				D65797401AD898AC00770BFE /* JYUtils.h */,
+				D65797411AD898AC00770BFE /* JYUtils.m */,
 			);
 			name = Components;
 			sourceTree = "<group>";
@@ -538,6 +544,7 @@
 				D6B2F05B1ACE630F009601B0 /* JYAutoCompleteTextField.m in Sources */,
 				D63F0D711AC9EC060067C5EE /* JYUser.m in Sources */,
 				D63F0DAC1ACE56E30067C5EE /* JYPinchGestureRecognizer.m in Sources */,
+				D65797421AD898AC00770BFE /* JYUtils.m in Sources */,
 				D6B2F0631ACF4755009601B0 /* JYOrderCreateRoadSideViewController.m in Sources */,
 				D63F0D7D1ACA5E260067C5EE /* JYSignViewController.m in Sources */,
 				D6B2F07D1AD44370009601B0 /* JYExpandViewController.m in Sources */,
@@ -584,6 +591,7 @@
 				D63B69B31AC51D61005600A9 /* JYSignBaseViewController.m in Sources */,
 				D63B69B71AC53BB4005600A9 /* JYFloatLabeledTextField.m in Sources */,
 				D63F0DAD1ACE56E30067C5EE /* JYPinchGestureRecognizer.m in Sources */,
+				D65797431AD898AC00770BFE /* JYUtils.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -27,7 +27,7 @@
 {
     [super viewDidLoad];
 
-    self.view.backgroundColor = JoyyBlue;
+    self.view.backgroundColor = FlatSand;
 
     // Set the navigationBar to be transparent
     [self.navigationController.navigationBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
@@ -56,7 +56,7 @@
     self.signInButton.backgroundColor = ClearColor;
     self.signInButton.contentAnimateToColor = FlatBlack;
     self.signInButton.contentColor = FlatWhite;
-    self.signInButton.foregroundColor = ClearColor;
+    self.signInButton.foregroundColor = FlatGreen;
     self.signInButton.foregroundAnimateToColor = FlatWhite;
     self.signInButton.textLabel.font = [UIFont systemFontOfSize:kSignFieldFontSize];
     self.signInButton.textLabel.text = NSLocalizedString(@"Sign In", nil);
@@ -76,10 +76,10 @@
     self.signUpButton.backgroundColor = ClearColor;
     self.signUpButton.contentAnimateToColor = FlatBlack;
     self.signUpButton.contentColor = FlatWhite;
-    self.signUpButton.foregroundColor = ClearColor;
+    self.signUpButton.foregroundColor = FlatSkyBlue;
     self.signUpButton.foregroundAnimateToColor = FlatWhite;
     self.signUpButton.textLabel.font = [UIFont systemFontOfSize:kSignFieldFontSize];
-    self.signUpButton.textLabel.text = NSLocalizedString(@"Sign Up", nil);
+    self.signUpButton.textLabel.text = NSLocalizedString(@"I'm New", nil);
 
     [self.signUpButton addTarget:self action:@selector(_signUp) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:self.signUpButton];

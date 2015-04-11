@@ -31,6 +31,7 @@
 //  ---------------------------The end of the original license--------------------
 
 #import "JYFloatLabeledTextField.h"
+#import "JYUtils.h"
 #import "NSString+TextDirectionality.h"
 
 #define kFloatingLabelShowAnimationDuration 0.3f
@@ -307,20 +308,13 @@
     switch (self.autocompleteType)
     {
         case JYAutoCompleteTypeEmail:
-            result = [self _isValidEmail:self.text];
+            result = [JYUtils isValidEmail:self.text];
             break;
         default:
             break;
     }
 
     return result;
-}
-
-- (BOOL)_isValidEmail:(NSString *)text
-{
-    NSString *emailRegex = @"[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}";
-    NSPredicate *emailTest = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", emailRegex];
-    return [emailTest evaluateWithObject:text];
 }
 
 @end

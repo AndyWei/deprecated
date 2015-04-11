@@ -76,16 +76,21 @@
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_signDidFinish) name:kNotificationSignDidFinish object:nil];
 
-
-    [[UINavigationBar appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIFont lightSystemFontOfSize:kNavBarTitleFontSize], NSFontAttributeName, nil]];
+    [[UINavigationBar appearance]
+        setTitleTextAttributes:[NSDictionary
+                                   dictionaryWithObjectsAndKeys:[UIFont lightSystemFontOfSize:kNavBarTitleFontSize], NSFontAttributeName, nil]];
 
     [[UINavigationBar appearance] setTintColor:JoyyBlue];
 
     [[UITabBar appearance] setTintColor:JoyyBlue];
 
-    [[UITabBarItem appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIFont systemFontOfSize:kTabBarTitleFontSize], NSFontAttributeName, nil] forState:UIControlStateNormal];
+    [[UITabBarItem appearance]
+        setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIFont systemFontOfSize:kTabBarTitleFontSize], NSFontAttributeName, nil]
+                      forState:UIControlStateNormal];
 
-    [[UITabBarItem appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIFont systemFontOfSize:kTabBarTitleFontSize], NSFontAttributeName, nil] forState:UIControlStateSelected];
+    [[UITabBarItem appearance]
+        setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIFont systemFontOfSize:kTabBarTitleFontSize], NSFontAttributeName, nil]
+                      forState:UIControlStateSelected];
 
     [[UITabBarItem appearance] setTitlePositionAdjustment:UIOffsetMake(0.0, -16.0f)];
 }
@@ -97,7 +102,7 @@
     self.locationManager.distanceFilter = kCLDistanceFilterNone;
     self.locationManager.desiredAccuracy = kCLLocationAccuracyBest;
 
-    if([CLLocationManager locationServicesEnabled])
+    if ([CLLocationManager locationServicesEnabled])
     {
         if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusDenied ||
             [CLLocationManager authorizationStatus] == kCLAuthorizationStatusNotDetermined)
@@ -205,7 +210,7 @@
     nc2.title = NSLocalizedString(@"I can", nil);
 
     UITabBarController *tabBarController = [UITabBarController new];
-    tabBarController.viewControllers = @[nc1, nc2];
+    tabBarController.viewControllers = @[ nc1, nc2 ];
 
     self.window.rootViewController = tabBarController;
 }
@@ -223,11 +228,11 @@
     [manager GET:url
         parameters:nil
         success:^(AFHTTPRequestOperation *operation, id responseObject) {
-          [JYUser currentUser].credential = responseObject;
+            [JYUser currentUser].credential = responseObject;
 
         }
         failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-          NSLog(@"_autoSignIn Error: %@", error);
+            NSLog(@"_autoSignIn Error: %@", error);
         }];
 }
 
@@ -242,13 +247,12 @@
 
 - (OnboardingViewController *)_onboardingViewController
 {
-    NSArray *pages = @[[self _page1], [self _page2], [self _page3]];
+    NSArray *pages = @[ [self _page1], [self _page2], [self _page3] ];
     OnboardingViewController *onboardingVC = [OnboardingViewController onboardWithBackgroundImage:[UIImage imageNamed:@"street"] contents:pages];
     onboardingVC.shouldFadeTransitions = YES;
     onboardingVC.fadePageControlOnLastPage = YES;
 
-    // If you want to allow skipping the onboarding process, enable skipping and set a block to be executed
-    // when the user hits the skip button.
+    // Allow skipping the onboarding process
     onboardingVC.allowSkipping = YES;
     __weak typeof(self) weakSelf = self;
     onboardingVC.skipHandler = ^{
@@ -259,30 +263,44 @@
 
 - (OnboardingContentViewController *)_page1
 {
-    OnboardingContentViewController *page = [OnboardingContentViewController contentWithTitle:@"What A Beautiful Photo" body:@"This city background image is so beautiful." image:[UIImage imageNamed:@"blue"] buttonText:@"Enable Location Services" action:^{
-        [[[UIAlertView alloc] initWithTitle:nil message:@"Here you can prompt users for various application permissions, providing them useful information about why you'd like those permissions to enhance their experience, increasing your chances they will grant those permissions." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
-    }];
+    __weak typeof(self) weakSelf = self;
+    OnboardingContentViewController *page = [OnboardingContentViewController
+        contentWithTitle:@"What A Beautiful Photo"
+                    body:@"This city background image is so beautiful."
+                   image:[UIImage imageNamed:@"blue"]
+              buttonText:@"Get Started"
+                  action:^{
+                      [weakSelf _introductionDidFinish];
+                  }];
     return page;
 }
 
 - (OnboardingContentViewController *)_page2
 {
-    OnboardingContentViewController *page = [OnboardingContentViewController contentWithTitle:@"I'm so sorry" body:@"I can't get over the nice blurry background photo." image:[UIImage imageNamed:@"red"] buttonText:@"Connect With Facebook" action:^{
-        [[[UIAlertView alloc] initWithTitle:nil message:@"Prompt users to do other cool things on startup. As you can see, hitting the action button on the prior page brought you automatically to the next page. Cool, huh?" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
-    }];
+    __weak typeof(self) weakSelf = self;
+    OnboardingContentViewController *page = [OnboardingContentViewController
+        contentWithTitle:@"I'm so sorry"
+                    body:@"I can't get over the nice blurry background photo."
+                   image:[UIImage imageNamed:@"red"]
+              buttonText:@"Get Started"
+                  action:^{
+                      [weakSelf _introductionDidFinish];
+                  }];
     page.movesToNextViewController = YES;
-    page.viewDidAppearBlock = ^{
-        [[[UIAlertView alloc] initWithTitle:@"Welcome!" message:@"You've arrived on the second page, and this alert was displayed from within the page's viewDidAppearBlock." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
-    };
+
     return page;
 }
 
 - (OnboardingContentViewController *)_page3
 {
     __weak typeof(self) weakSelf = self;
-    OnboardingContentViewController *page = [OnboardingContentViewController contentWithTitle:@"Seriously Though" body:@"Kudos to the photographer." image:[UIImage imageNamed:@"yellow"] buttonText:@"Get Started" action:^{
-        [weakSelf _introductionDidFinish];
-    }];
+    OnboardingContentViewController *page = [OnboardingContentViewController contentWithTitle:@"Seriously Though"
+                                                                                         body:@"Kudos to the photographer."
+                                                                                        image:[UIImage imageNamed:@"yellow"]
+                                                                                   buttonText:@"Get Started"
+                                                                                       action:^{
+                                                                                           [weakSelf _introductionDidFinish];
+                                                                                       }];
     return page;
 }
 

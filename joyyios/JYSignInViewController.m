@@ -38,13 +38,18 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (void)signButtonTouched
+- (void)signButtonPressed
 {
     [self _signIn];
 }
 
 - (void)_signIn
 {
+    if (![self inputCheckPassed])
+    {
+        return;
+    }
+
     NSString *email = [self.emailField.text lowercaseString];
     NSString *password = [self.passwordField.text lowercaseString];
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
