@@ -25,6 +25,7 @@ PODS:
   - KVNProgress (2.2.1)
   - Onboard (2.1.1)
   - RKDropdownAlert (0.1.1)
+  - UIView+Positioning (1.1)
 
 DEPENDENCIES:
   - AFNetworking (~> 2.5)
@@ -33,6 +34,7 @@ DEPENDENCIES:
   - KVNProgress
   - Onboard
   - RKDropdownAlert
+  - UIView+Positioning
 
 SPEC CHECKSUMS:
   AFNetworking: fefbce9660acb17f48ae0011292d4da0f457bf36
@@ -41,5 +43,6 @@ SPEC CHECKSUMS:
   KVNProgress: 7001d2d16a2755cee5599e8e485befe056f2197b
   Onboard: a305484bfcfa358bcfbd651ef32036fe0c58e9b7
   RKDropdownAlert: 3f663f1e852751ad37ce95ed1e8e2c6b9bfdc95b
+  UIView+Positioning: e93fe9e3186d1ed7d60e344aa12787911e902056
 
 COCOAPODS: 0.36.0

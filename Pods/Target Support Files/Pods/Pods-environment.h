@@ -78,3 +78,9 @@
 #define COCOAPODS_VERSION_MINOR_RKDropdownAlert 1
 #define COCOAPODS_VERSION_PATCH_RKDropdownAlert 1
 
+// UIView+Positioning
+#define COCOAPODS_POD_AVAILABLE_UIView_Positioning
+#define COCOAPODS_VERSION_MAJOR_UIView_Positioning 1
+#define COCOAPODS_VERSION_MINOR_UIView_Positioning 1
+#define COCOAPODS_VERSION_PATCH_UIView_Positioning 0
+
