@@ -26,6 +26,7 @@ PODS:
   - Onboard (2.1.1)
   - RKDropdownAlert (0.1.1)
   - UIView+Positioning (1.1)
+  - XLForm (2.2.0)
 
 DEPENDENCIES:
   - AFNetworking (~> 2.5)
@@ -35,6 +36,7 @@ DEPENDENCIES:
   - Onboard
   - RKDropdownAlert
   - UIView+Positioning
+  - XLForm
 
 SPEC CHECKSUMS:
   AFNetworking: fefbce9660acb17f48ae0011292d4da0f457bf36
@@ -44,5 +46,6 @@ SPEC CHECKSUMS:
   Onboard: a305484bfcfa358bcfbd651ef32036fe0c58e9b7
   RKDropdownAlert: 3f663f1e852751ad37ce95ed1e8e2c6b9bfdc95b
   UIView+Positioning: e93fe9e3186d1ed7d60e344aa12787911e902056
+  XLForm: 799e61ef230f519914e722bf032b19a597223c19
 
 COCOAPODS: 0.36.0
