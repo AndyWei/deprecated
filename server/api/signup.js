@@ -169,11 +169,11 @@ internals.createUser = function (request, reply) {
         }
 
         var message = {
-            user: {
                 id: results.userid,
                 username: results.username,
+                email: email,
+                password: request.payload.password,
                 token: results.token
-            }
         };
 
         console.log('user created. username=%s, email=%s, token=%s \n', results.username, email, results.token);
