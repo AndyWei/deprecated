@@ -9,6 +9,8 @@
 #import "JYButton.h"
 #import "JYOrder.h"
 #import "JYOrderCreateDetailsViewController.h"
+#import "JYPriceTextFieldCell.h"
+#import "JYRestrictedTextViewCell.h"
 #import "JYServiceCategory.h"
 #import "XLForm.h"
 
@@ -18,31 +20,25 @@
 
 @implementation JYOrderCreateDetailsViewController
 
-- (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+- (void)viewDidLoad
 {
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self)
-    {
-        [self commonInit];
-    }
-    return self;
+    [super viewDidLoad];
+    UIBarButtonItem *barButton =
+    [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Submit", nil) style:UIBarButtonItemStylePlain target:self action:@selector(_submitButtonPressed)];
+    self.navigationItem.rightBarButtonItem = barButton;
+
+    [self _createForm];
+    [self _createSubmitButton];
 }
 
-- (id)initWithCoder:(NSCoder *)aDecoder
+- (void)didReceiveMemoryWarning
 {
-    self = [super initWithCoder:aDecoder];
-    if (self)
-    {
-        [self commonInit];
-    }
-    return self;
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
 }
 
-#pragma mark - Helper
-
-- (void)commonInit
+- (void)_createForm
 {
-
     XLFormDescriptor *form;
     XLFormSectionDescriptor *section;
     XLFormRowDescriptor *row;
@@ -63,10 +59,11 @@
     // Price
     section = [XLFormSectionDescriptor formSectionWithTitle:NSLocalizedString(@"How many US Dollars you like to pay?", nil)];
     [form addFormSection:section];
-    row = [XLFormRowDescriptor formRowDescriptorWithTag:@"price" rowType:XLFormRowDescriptorTypeInteger title:NSLocalizedString(@"", nil)];
-    [row.cellConfig setObject:[UIFont boldSystemFontOfSize:20] forKey:@"textField.font"];
+    row = [XLFormRowDescriptor formRowDescriptorWithTag:@"price" rowType:XLFormRowDescriptorTypePrice title:NSLocalizedString(@"", nil)];
+    [row.cellConfig setObject:[UIFont systemFontOfSize:20] forKey:@"textField.font"];
     [row.cellConfig setObject:FlatGreen forKey:@"textField.textColor"];
     [row.cellConfig setObject:@(NSTextAlignmentCenter) forKey:@"textField.textAlignment"];
+    row.value = @"$";
     [section addFormRow:row];
 
     // Number of rooms
@@ -93,7 +90,7 @@
     // Description
     section = [XLFormSectionDescriptor formSection];
     [form addFormSection:section];
-    row = [XLFormRowDescriptor formRowDescriptorWithTag:@"description" rowType:XLFormRowDescriptorTypeTextView];
+    row = [XLFormRowDescriptor formRowDescriptorWithTag:@"description" rowType:XLFormRowDescriptorTypeTextViewRestricted];
     [row.cellConfigAtConfigure setObject:NSLocalizedString(@"More details", nil) forKey:@"textView.placeholder"];
     [section addFormRow:row];
 
@@ -103,28 +100,18 @@
     NSString *title = ([JYOrder currentOrder].endAddress)? NSLocalizedString(@"From:", nil): NSLocalizedString(@"Addr:", nil);
     row = [XLFormRowDescriptor formRowDescriptorWithTag:@"startAddress" rowType:XLFormRowDescriptorTypeInfo title:title];
     row.value = [JYOrder currentOrder].startAddress;
-    [row.cellConfig setObject:FlatWhite forKey:@"backgroundColor"];
+    [row.cellConfig setObject:ClearColor forKey:@"backgroundColor"];
     [section addFormRow:row];
 
     if ([JYOrder currentOrder].endAddress)
     {
         row = [XLFormRowDescriptor formRowDescriptorWithTag:@"endAddress" rowType:XLFormRowDescriptorTypeInfo title:NSLocalizedString(@"To:", nil)];
         row.value = [JYOrder currentOrder].endAddress;
-        [row.cellConfig setObject:FlatWhite forKey:@"backgroundColor"];
+        [row.cellConfig setObject:ClearColor forKey:@"backgroundColor"];
         [section addFormRow:row];
     }
 
     self.form = form;
-}
-
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-    UIBarButtonItem *barButton =
-        [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Submit", nil) style:UIBarButtonItemStylePlain target:self action:@selector(_submitButtonPressed)];
-    self.navigationItem.rightBarButtonItem = barButton;
-
-    [self _createSubmitButton];
 }
 
 - (void)_createSubmitButton
@@ -148,12 +135,6 @@
 - (void)_submitButtonPressed
 {
 
-}
-
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 @end
