@@ -16,8 +16,6 @@ NSString *const XLFormRowDescriptorTypeTextViewRestricted = @"XLFormRowDescripto
 
 @interface JYRestrictedTextViewCell () <UITextViewDelegate>
 
-@property NSMutableArray *dynamicCustomConstraints;
-
 @end
 
 
@@ -27,15 +25,6 @@ NSString *const XLFormRowDescriptorTypeTextViewRestricted = @"XLFormRowDescripto
 @synthesize textLabel = _textLabel;
 @synthesize textView = _textView;
 
-- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
-{
-    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
-    if (self)
-    {
-        _dynamicCustomConstraints = [NSMutableArray array];
-    }
-    return self;
-}
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
@@ -66,11 +55,6 @@ NSString *const XLFormRowDescriptorTypeTextViewRestricted = @"XLFormRowDescripto
     return _textLabel;
 }
 
-- (UILabel *)label
-{
-    return self.textLabel;
-}
-
 - (XLFormTextView *)textView
 {
     if (_textView)
@@ -93,11 +77,10 @@ NSString *const XLFormRowDescriptorTypeTextViewRestricted = @"XLFormRowDescripto
 {
     [super configure];
     [self setSelectionStyle:UITableViewCellSelectionStyleNone];
-    [self.contentView addSubview:self.textLabel];
     [self.contentView addSubview:self.textView];
+    [self.textView addSubview:self.textLabel];
     [self.textLabel addObserver:self forKeyPath:@"text" options:NSKeyValueObservingOptionOld | NSKeyValueObservingOptionNew context:0];
     NSDictionary *views = @{ @"label" : self.textLabel, @"textView" : self.textView };
-    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-8-[label]" options:0 metrics:0 views:views]];
     [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.textView
                                                                  attribute:NSLayoutAttributeTop
                                                                  relatedBy:NSLayoutRelationEqual
@@ -113,6 +96,7 @@ NSString *const XLFormRowDescriptorTypeTextViewRestricted = @"XLFormRowDescripto
                                                                 multiplier:1
                                                                   constant:0]];
     [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[textView]-0-|" options:0 metrics:0 views:views]];
+    [self.textView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-130-[label]-8-|" options:0 metrics:0 views:views]];
 }
 
 - (void)update
@@ -125,15 +109,13 @@ NSString *const XLFormRowDescriptorTypeTextViewRestricted = @"XLFormRowDescripto
     self.textView.text = self.rowDescriptor.value;
     [self.textView setEditable:!self.rowDescriptor.isDisabled];
     self.textView.textColor = self.rowDescriptor.isDisabled ? [UIColor grayColor] : [UIColor blackColor];
-    self.textLabel.text = ((self.rowDescriptor.required && self.rowDescriptor.title &&
-                            self.rowDescriptor.sectionDescriptor.formDescriptor.addAsteriskToRequiredRowsTitle)
-                               ? [NSString stringWithFormat:@"%@*", self.rowDescriptor.title]
-                               : self.rowDescriptor.title);
+    self.textLabel.textColor = [UIColor whiteColor];
+    self.textLabel.text = self.rowDescriptor.title;
 }
 
 + (CGFloat)formDescriptorCellHeightForRowDescriptor:(XLFormRowDescriptor *)rowDescriptor
 {
-    return 110.f;
+    return 155.f;
 }
 
 - (BOOL)formDescriptorCellCanBecomeFirstResponder
@@ -149,36 +131,27 @@ NSString *const XLFormRowDescriptorTypeTextViewRestricted = @"XLFormRowDescripto
 - (void)highlight
 {
     [super highlight];
-    self.textLabel.textColor = self.tintColor;
+    self.textLabel.textColor = [UIColor lightGrayColor];
 }
 
 - (void)unhighlight
 {
     [super unhighlight];
     [self.formViewController updateFormRow:self.rowDescriptor];
+    self.textLabel.textColor = [UIColor whiteColor];
 }
 
 #pragma mark - Constraints
 
 - (void)updateConstraints
 {
-    if (_dynamicCustomConstraints)
-    {
-        [self.contentView removeConstraints:_dynamicCustomConstraints];
-        [_dynamicCustomConstraints removeAllObjects];
-    }
     NSDictionary *views = @{ @"label" : self.textLabel, @"textView" : self.textView };
-    if (!self.textLabel.text || [self.textLabel.text isEqualToString:@""])
+
+    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-16-[textView]-8-|" options:0 metrics:0 views:views]];
+    if (self.textLabel.text && ![self.textLabel.text isEqualToString:@""])
     {
-        [_dynamicCustomConstraints
-            addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-16-[textView]-16-|" options:0 metrics:0 views:views]];
+        [self.textView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-320-[label]-|" options:0 metrics:0 views:views]];
     }
-    else
-    {
-        [_dynamicCustomConstraints
-            addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-16-[label]-[textView]-4-|" options:0 metrics:0 views:views]];
-    }
-    [self.contentView addConstraints:_dynamicCustomConstraints];
     [super updateConstraints];
 }
 
@@ -214,11 +187,22 @@ NSString *const XLFormRowDescriptorTypeTextViewRestricted = @"XLFormRowDescripto
     if ([self.textView.text length] > 0)
     {
         self.rowDescriptor.value = self.textView.text;
+
+        NSUInteger lengLimit = [self.rowDescriptor.title integerValue];
+        NSInteger left = lengLimit - [self.textView.text length];
+        self.textLabel.text = [@(left) stringValue];;
     }
     else
     {
         self.rowDescriptor.value = nil;
     }
+}
+
+- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString*)text
+{
+    NSUInteger lengLimit = [self.rowDescriptor.title integerValue];
+    NSString * newText = [[textView text] stringByReplacingCharactersInRange:range withString:text];
+    return (newText.length <= lengLimit);
 }
 
 @end

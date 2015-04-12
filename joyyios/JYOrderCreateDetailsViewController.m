@@ -68,7 +68,9 @@
 
     // Number of rooms
     NSUInteger categoryIndex = [JYOrder currentOrder].categoryIndex;
-    if (categoryIndex == JYServiceCategoryIndexCleaning || categoryIndex == JYServiceCategoryIndexMoving)
+    BOOL showRoomNumberField = (categoryIndex == JYServiceCategoryIndexCleaning || categoryIndex == JYServiceCategoryIndexMoving);
+
+    if (showRoomNumberField)
     {
         section = [XLFormSectionDescriptor formSection];
         [form addFormSection:section];
@@ -90,13 +92,18 @@
     // Description
     section = [XLFormSectionDescriptor formSection];
     [form addFormSection:section];
-    row = [XLFormRowDescriptor formRowDescriptorWithTag:@"description" rowType:XLFormRowDescriptorTypeTextViewRestricted];
+    row = [XLFormRowDescriptor formRowDescriptorWithTag:@"description" rowType:XLFormRowDescriptorTypeTextViewRestricted title:@"300"];
     [row.cellConfigAtConfigure setObject:NSLocalizedString(@"More details", nil) forKey:@"textView.placeholder"];
     [section addFormRow:row];
 
     // Address
-    section = [XLFormSectionDescriptor formSection];
-    [form addFormSection:section];
+    // When the room number field is not shown, we have enough space to add a section head
+    if (!showRoomNumberField)
+    {
+        section = [XLFormSectionDescriptor formSection];
+        [form addFormSection:section];
+    }
+
     NSString *title = ([JYOrder currentOrder].endAddress)? NSLocalizedString(@"From:", nil): NSLocalizedString(@"Addr:", nil);
     row = [XLFormRowDescriptor formRowDescriptorWithTag:@"startAddress" rowType:XLFormRowDescriptorTypeInfo title:title];
     row.value = [JYOrder currentOrder].startAddress;
