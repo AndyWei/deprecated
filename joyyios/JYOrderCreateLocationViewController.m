@@ -9,6 +9,7 @@
 #import "AppDelegate.h"
 #import "JYButton.h"
 #import "JYOrder.h"
+#import "JYOrderCreateDetailsViewController.h"
 #import "JYOrderCreateLocationViewController.h"
 #import "JYPinAnnotationView.h"
 #import "JYServiceCategory.h"
@@ -227,8 +228,7 @@ static NSString *reuseId = @"pin";
         currentOrder.endAddress = self.dashBoard.endButton.textLabel.text;
     }
 
-    NSUInteger index = [JYOrder currentOrder].categoryIndex;
-    UIViewController *viewController = [[JYServiceCategory classAtIndex:index] new];
+    UIViewController *viewController = [JYOrderCreateDetailsViewController new];
     [self.navigationController pushViewController:viewController animated:YES];
 }
 
@@ -346,18 +346,8 @@ static NSString *reuseId = @"pin";
     NSUInteger categoryIndex = [JYOrder currentOrder].categoryIndex;
     switch (categoryIndex)
     {
-        case JYServiceCategoryIndexCleaning:
-        case JYServiceCategoryIndexGardener:
-        case JYServiceCategoryIndexHandyman:
-        case JYServiceCategoryIndexPersonalAssistant:
-        case JYServiceCategoryIndexPlumbing:
-        case JYServiceCategoryIndexRoadsideAssistance:
-        case JYServiceCategoryIndexOther:
-            // do nothing
-            break;
         case JYServiceCategoryIndexDelivery:
         case JYServiceCategoryIndexMoving:
-        case JYServiceCategoryIndexRide:
             result = YES;
             break;
         default:

@@ -54,8 +54,8 @@
 		D69202CF1AC4C7C1001C1C3D /* joyyiosTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D69202CE1AC4C7C1001C1C3D /* joyyiosTests.m */; };
 		D6B2F05B1ACE630F009601B0 /* JYAutoCompleteTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B2F05A1ACE630F009601B0 /* JYAutoCompleteTextField.m */; };
 		D6B2F05C1ACE630F009601B0 /* JYAutoCompleteTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B2F05A1ACE630F009601B0 /* JYAutoCompleteTextField.m */; };
-		D6B2F0631ACF4755009601B0 /* JYOrderCreateRoadSideViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B2F0621ACF4755009601B0 /* JYOrderCreateRoadSideViewController.m */; };
-		D6B2F0641ACF4755009601B0 /* JYOrderCreateRoadSideViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B2F0621ACF4755009601B0 /* JYOrderCreateRoadSideViewController.m */; };
+		D6B2F0631ACF4755009601B0 /* JYOrderCreateDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B2F0621ACF4755009601B0 /* JYOrderCreateDetailsViewController.m */; };
+		D6B2F0641ACF4755009601B0 /* JYOrderCreateDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B2F0621ACF4755009601B0 /* JYOrderCreateDetailsViewController.m */; };
 		D6B2F0671AD1B5EC009601B0 /* JYMapDashBoardView.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B2F0661AD1B5EC009601B0 /* JYMapDashBoardView.m */; };
 		D6B2F0681AD1B5EC009601B0 /* JYMapDashBoardView.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B2F0661AD1B5EC009601B0 /* JYMapDashBoardView.m */; };
 		D6B2F0751AD318B6009601B0 /* JYPanGestureRecognizer.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B2F0741AD318B6009601B0 /* JYPanGestureRecognizer.m */; };
@@ -138,8 +138,8 @@
 		D69202CE1AC4C7C1001C1C3D /* joyyiosTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = joyyiosTests.m; sourceTree = "<group>"; };
 		D6B2F0591ACE630F009601B0 /* JYAutoCompleteTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYAutoCompleteTextField.h; sourceTree = "<group>"; };
 		D6B2F05A1ACE630F009601B0 /* JYAutoCompleteTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYAutoCompleteTextField.m; sourceTree = "<group>"; };
-		D6B2F0611ACF4755009601B0 /* JYOrderCreateRoadSideViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYOrderCreateRoadSideViewController.h; sourceTree = "<group>"; };
-		D6B2F0621ACF4755009601B0 /* JYOrderCreateRoadSideViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYOrderCreateRoadSideViewController.m; sourceTree = "<group>"; };
+		D6B2F0611ACF4755009601B0 /* JYOrderCreateDetailsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYOrderCreateDetailsViewController.h; sourceTree = "<group>"; };
+		D6B2F0621ACF4755009601B0 /* JYOrderCreateDetailsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYOrderCreateDetailsViewController.m; sourceTree = "<group>"; };
 		D6B2F0651AD1B5EC009601B0 /* JYMapDashBoardView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYMapDashBoardView.h; sourceTree = "<group>"; };
 		D6B2F0661AD1B5EC009601B0 /* JYMapDashBoardView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYMapDashBoardView.m; sourceTree = "<group>"; };
 		D6B2F0731AD318B6009601B0 /* JYPanGestureRecognizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYPanGestureRecognizer.h; sourceTree = "<group>"; };
@@ -237,8 +237,8 @@
 				D69202B71AC4C7C0001C1C3D /* JYOrderCategoryCollectionViewController.m */,
 				D63F0D951ACC95B00067C5EE /* JYOrderCreateLocationViewController.h */,
 				D63F0D961ACC95B00067C5EE /* JYOrderCreateLocationViewController.m */,
-				D6B2F0611ACF4755009601B0 /* JYOrderCreateRoadSideViewController.h */,
-				D6B2F0621ACF4755009601B0 /* JYOrderCreateRoadSideViewController.m */,
+				D6B2F0611ACF4755009601B0 /* JYOrderCreateDetailsViewController.h */,
+				D6B2F0621ACF4755009601B0 /* JYOrderCreateDetailsViewController.m */,
 			);
 			name = Create;
 			sourceTree = "<group>";
@@ -545,7 +545,7 @@
 				D63F0D711AC9EC060067C5EE /* JYUser.m in Sources */,
 				D63F0DAC1ACE56E30067C5EE /* JYPinchGestureRecognizer.m in Sources */,
 				D65797421AD898AC00770BFE /* JYUtils.m in Sources */,
-				D6B2F0631ACF4755009601B0 /* JYOrderCreateRoadSideViewController.m in Sources */,
+				D6B2F0631ACF4755009601B0 /* JYOrderCreateDetailsViewController.m in Sources */,
 				D63F0D7D1ACA5E260067C5EE /* JYSignViewController.m in Sources */,
 				D6B2F07D1AD44370009601B0 /* JYExpandViewController.m in Sources */,
 				D63B69B61AC53BB4005600A9 /* JYFloatLabeledTextField.m in Sources */,
@@ -570,7 +570,7 @@
 				D63B69AA1AC51302005600A9 /* UIFont+SytemFontOverride.m in Sources */,
 				D63F0D721AC9EC060067C5EE /* JYUser.m in Sources */,
 				D63F0D8D1ACBBF1F0067C5EE /* JYCollectionViewCell.m in Sources */,
-				D6B2F0641ACF4755009601B0 /* JYOrderCreateRoadSideViewController.m in Sources */,
+				D6B2F0641ACF4755009601B0 /* JYOrderCreateDetailsViewController.m in Sources */,
 				D63F0D561AC7ACB70067C5EE /* JYSignUpViewController.m in Sources */,
 				D6B2F0761AD318B6009601B0 /* JYPanGestureRecognizer.m in Sources */,
 				D63F0D7E1ACA5E260067C5EE /* JYSignViewController.m in Sources */,

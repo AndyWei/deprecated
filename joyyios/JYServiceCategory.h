@@ -8,15 +8,13 @@
 
 typedef NS_ENUM(NSUInteger, JYServiceCategoryIndex)
 {
-    JYServiceCategoryIndexRoadsideAssistance = 0,
-    JYServiceCategoryIndexRide,
-    JYServiceCategoryIndexMoving,
+    JYServiceCategoryIndexCleaning = 0,
     JYServiceCategoryIndexDelivery,
-    JYServiceCategoryIndexPlumbing,
-    JYServiceCategoryIndexCleaning,
+    JYServiceCategoryIndexElectrical,
     JYServiceCategoryIndexHandyman,
-    JYServiceCategoryIndexGardener,
+    JYServiceCategoryIndexMoving,
     JYServiceCategoryIndexPersonalAssistant,
+    JYServiceCategoryIndexPlumbing,
     JYServiceCategoryIndexOther
 };
 
@@ -24,6 +22,5 @@ typedef NS_ENUM(NSUInteger, JYServiceCategoryIndex)
 
 + (NSArray *)names;
 + (NSUInteger)categoryAtIndex:(NSUInteger)index;
-+ (Class)classAtIndex:(NSUInteger)index;
 
 @end

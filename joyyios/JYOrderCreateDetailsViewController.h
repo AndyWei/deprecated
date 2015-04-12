@@ -6,6 +6,8 @@
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
-@interface JYOrderCreateRoadSideViewController : UIViewController
+#import "XLFormViewController.h"
+
+@interface JYOrderCreateDetailsViewController : XLFormViewController
 
 @end
