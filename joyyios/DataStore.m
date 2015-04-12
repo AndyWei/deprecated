@@ -49,7 +49,7 @@
     NSTimeInterval expireTime = 0.0f;
     if ([[NSUserDefaults standardUserDefaults] doubleForKey:kKeyTokenExpireTime])
     {
-        expireTime = [[NSUserDefaults standardUserDefaults] doubleForKey:kKeyUserCredential];
+        expireTime = [[NSUserDefaults standardUserDefaults] doubleForKey:kKeyTokenExpireTime];
     }
     return expireTime;
 }

@@ -35,7 +35,7 @@
     [[DataStore sharedInstance] saveUserCredential:_credential];
 }
 
-- (BOOL)load
+- (BOOL)exists
 {
     if (_credential != nil)
     {

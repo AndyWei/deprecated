@@ -44,6 +44,16 @@ static NSString *reuseId = @"pin";
     return self;
 }
 
+- (instancetype)initWithCoder:(NSCoder *)aDecoder
+{
+    self = [super initWithCoder:aDecoder];
+    if (self)
+    {
+        _mapEditMode = MapEditModeNone;
+    }
+    return self;
+}
+
 - (BOOL)hidesBottomBarWhenPushed
 {
     return YES;
@@ -151,10 +161,12 @@ static NSString *reuseId = @"pin";
                            if (weakSelf.mapEditMode == MapEditModeStartPoint)
                            {
                                weakSelf.dashBoard.startButton.textLabel.text = address;
+                               [JYOrder currentOrder].startAddress = address;
                            }
                            else if (weakSelf.mapEditMode == MapEditModeEndPoint)
                            {
                                weakSelf.dashBoard.endButton.textLabel.text = address;
+                               [JYOrder currentOrder].endAddress = address;
                            }
                        }
                    }];
@@ -193,6 +205,7 @@ static NSString *reuseId = @"pin";
                          if (finished)
                          {
                              weakSelf.mapEditMode = mode;
+                             [weakSelf _updateAddress];
                          }
                      }];
 }
@@ -220,12 +233,22 @@ static NSString *reuseId = @"pin";
 - (void)_navigateToNextView
 {
     JYOrder *currentOrder = [JYOrder currentOrder];
+
+    if (!currentOrder.startAddress)
+    {
+        NSLog(@"startAddress not set");
+        return;
+    }
     currentOrder.startPoint = self.startPoint.coordinate;
-    currentOrder.startAddress = self.dashBoard.startButton.textLabel.text;
+
     if (self.endPoint)
     {
-        currentOrder.endPoint = self.startPoint.coordinate;
-        currentOrder.endAddress = self.dashBoard.endButton.textLabel.text;
+        if (!currentOrder.endAddress)
+        {
+            NSLog(@"endAddress not set");
+            return;
+        }
+        currentOrder.endPoint = self.endPoint.coordinate;
     }
 
     UIViewController *viewController = [JYOrderCreateDetailsViewController new];

@@ -144,12 +144,13 @@
 - (void)_launchViewController
 {
     JYUser *user = [JYUser currentUser];
-    BOOL userExist = [user load];
+    BOOL userExist = [user exists];
     BOOL needIntro = YES;
 
     if (needIntro)
     {
         NSTimeInterval now = [NSDate timeIntervalSinceReferenceDate];
+
         if (userExist && user.tokenExpireTimeInSecs < now)
         {
             [self _autoSignIn];
@@ -170,9 +171,8 @@
 - (void)_introductionDidFinish
 {
     JYUser *user = [JYUser currentUser];
-    BOOL userExist = [user load];
 
-    if (!userExist)
+    if (![user exists])
     {
         [self _launchSignViewController];
     }
@@ -225,13 +225,18 @@
 
     NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"signin"];
 
+    NSLog(@"_autoSignIn start");
+    NSLog(@"email = %@", [JYUser currentUser].email);
+    NSLog(@"password = %@", [JYUser currentUser].password);
+
     [manager GET:url
         parameters:nil
-        success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        success:^(AFHTTPRequestOperation *operation, id responseObject)
+        {
             [JYUser currentUser].credential = responseObject;
-
         }
-        failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        failure:^(AFHTTPRequestOperation *operation, NSError *error)
+        {
             NSLog(@"_autoSignIn Error: %@", error);
         }];
 }

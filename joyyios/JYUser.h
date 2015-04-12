@@ -18,6 +18,6 @@
 @property(nonatomic, readonly) NSString *token;
 @property(nonatomic, readonly) NSTimeInterval tokenExpireTimeInSecs;
 
-- (BOOL)load;
+- (BOOL)exists;
 
 @end
