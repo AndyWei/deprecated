@@ -180,7 +180,7 @@ lab.experiment('Bids POST: ', function () {
         server.inject(request, function (response) {
 
             Code.expect(response.statusCode).to.equal(422);
-            Code.expect(response.result.message).to.equal(c.BID_UPDATE_FAILED);
+            Code.expect(response.result.message).to.equal(c.ORDER_UPDATE_FAILED);
 
             done();
         });

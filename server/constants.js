@@ -12,11 +12,13 @@ exports.TOKEN_LENGTH = 20;
 //Error strings
 exports.BID_REVOKE_FAILED = 'The bid is not in active status, cannot be revoked.';
 
-exports.BID_UPDATE_FAILED = 'The order is either not found or not in active status, cannot be updated.';
+exports.BID_UPDATE_FAILED = 'The order is either not found or not in active status, cannot be bidded.';
 
 exports.COORDINATE_INVALID = 'Lon and lat should occur together.';
 
 exports.EMAIL_IN_USE = 'Email already in use.';
+
+exports.ORDER_CREATE_FAILED = 'The order has not been created.';
 
 exports.ORDER_REVOKE_FAILED = 'The order is either not found or not in active status, cannot be revoked.';
 
@@ -34,13 +36,6 @@ exports.USER_NOT_FOUND = 'User not found.';
 
 
 // enums
-exports.OrderStatus = new Enum({
-    active: 1,
-    closed: 2,
-    ending: 3,
-    canceled: 4
-});
-
 exports.Role = new Enum({
     user: 1,
     admin: 2,
@@ -48,8 +43,8 @@ exports.Role = new Enum({
     robot: 4
 });
 
-exports.UserStatus = new Enum({
-    active: 1,
-    closed: 2,
-    suspended: 3
-});
+// exports.UserStatus = new Enum({
+//     active: 1,
+//     closed: 2,
+//     suspended: 3
+// });
