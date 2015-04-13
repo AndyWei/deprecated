@@ -106,7 +106,10 @@ NSString *const XLFormRowDescriptorTypeTextViewRestricted = @"XLFormRowDescripto
     self.textView.placeHolderLabel.font = self.textView.font;
     self.textView.delegate = self;
     self.textView.keyboardType = UIKeyboardTypeDefault;
-    self.textView.text = self.rowDescriptor.value;
+    if (self.rowDescriptor.value != [NSNull null])
+    {
+        self.textView.text = self.rowDescriptor.value;
+    }
     [self.textView setEditable:!self.rowDescriptor.isDisabled];
     self.textView.textColor = self.rowDescriptor.isDisabled ? [UIColor grayColor] : [UIColor blackColor];
     self.textLabel.textColor = [UIColor whiteColor];

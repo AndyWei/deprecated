@@ -1,10 +1,14 @@
 //
-//  JYOrderCreateFormViewController.m
+//  JYOrderCreateDetailsViewController.m
 //  joyyios
 //
 //  Created by Ping Yang on 4/3/15.
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
+
+#import <AFNetworking/AFNetworking.h>
+#import <KVNProgress/KVNProgress.h>
+#import <RKDropdownAlert/RKDropdownAlert.h>
 
 #import "JYButton.h"
 #import "JYOrder.h"
@@ -31,6 +35,11 @@
     [self _createSubmitButton];
 }
 
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [self _saveOrder];
+}
+
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
@@ -49,11 +58,10 @@
     // Date and Time
     section = [XLFormSectionDescriptor formSection];
     [form addFormSection:section];
-    row = [XLFormRowDescriptor formRowDescriptorWithTag:@"time" rowType:XLFormRowDescriptorTypeDateTime title:NSLocalizedString(@"When should it start?", nil)];
+    row = [XLFormRowDescriptor formRowDescriptorWithTag:@"startTime" rowType:XLFormRowDescriptorTypeDateTime title:NSLocalizedString(@"When should it start?", nil)];
     [row.cellConfigAtConfigure setObject:[NSDate date] forKey:@"minimumDate"];
     [row.cellConfigAtConfigure setObject:@(15) forKey:@"minuteInterval"];
     row.value = [NSDate new];
-
     [section addFormRow:row];
 
     // Price
@@ -92,8 +100,10 @@
     // Description
     section = [XLFormSectionDescriptor formSection];
     [form addFormSection:section];
-    row = [XLFormRowDescriptor formRowDescriptorWithTag:@"description" rowType:XLFormRowDescriptorTypeTextViewRestricted title:@"300"];
+    // Use the title to pass the leng limit value 300. 
+    row = [XLFormRowDescriptor formRowDescriptorWithTag:@"note" rowType:XLFormRowDescriptorTypeTextViewRestricted title:@"300"];
     [row.cellConfigAtConfigure setObject:NSLocalizedString(@"More details", nil) forKey:@"textView.placeholder"];
+    row.value = [JYOrder currentOrder].note;
     [section addFormRow:row];
 
     // Address
@@ -106,15 +116,15 @@
 
     NSString *title = ([JYOrder currentOrder].endAddress)? NSLocalizedString(@"From:", nil): NSLocalizedString(@"Addr:", nil);
     row = [XLFormRowDescriptor formRowDescriptorWithTag:@"startAddress" rowType:XLFormRowDescriptorTypeInfo title:title];
-    row.value = [JYOrder currentOrder].startAddress;
     [row.cellConfig setObject:ClearColor forKey:@"backgroundColor"];
+    row.value = [JYOrder currentOrder].startAddress;
     [section addFormRow:row];
 
     if ([JYOrder currentOrder].endAddress)
     {
         row = [XLFormRowDescriptor formRowDescriptorWithTag:@"endAddress" rowType:XLFormRowDescriptorTypeInfo title:NSLocalizedString(@"To:", nil)];
-        row.value = [JYOrder currentOrder].endAddress;
         [row.cellConfig setObject:ClearColor forKey:@"backgroundColor"];
+        row.value = [JYOrder currentOrder].endAddress;
         [section addFormRow:row];
     }
 
@@ -139,8 +149,89 @@
     [self.view addSubview:submitButton];
 }
 
+- (void)_saveOrder
+{
+    [JYOrder currentOrder].startAddress = [self.formValues valueForKey:@"startAddress"];
+    [JYOrder currentOrder].endAddress = [self.formValues valueForKey:@"endAddress"];
+
+    // note
+    NSString *note = [self.formValues valueForKey:@"note"];
+    [JYOrder currentOrder].note = note? @"": note;
+
+    // startTime
+    NSDate *startTime = (NSDate *)[self.formValues objectForKey:@"startTime"];
+    [JYOrder currentOrder].startTime = (NSUInteger)startTime.timeIntervalSinceReferenceDate;
+
+    // price
+    NSString *priceString = [[self.formValues valueForKey:@"price"] substringFromIndex:1];
+    [JYOrder currentOrder].price = priceString? [priceString  unsignedIntegerValue]: 0;
+
+    // category
+    NSUInteger index = [JYOrder currentOrder].categoryIndex;
+    [JYOrder currentOrder].category = [JYServiceCategory categoryAtIndex:index];
+
+    // title
+    NSString *serviceName = [JYServiceCategory names][index];
+    XLFormOptionsObject *roomsObj = [self.formValues valueForKey:@"rooms"];
+
+    if (roomsObj)
+    {
+        NSString *roomsString = roomsObj.displayText;
+        NSLog(@"roomsString = %@", roomsString);
+        NSUInteger rooms = [roomsString unsignedIntegerValue];
+        NSString *localizedString = NSLocalizedString(([NSString stringWithFormat:@" for %tu rooms", rooms]), nil);
+        [JYOrder currentOrder].title = [NSString stringWithFormat:@"%@%@", serviceName, localizedString];
+    }
+    else
+    {
+        [JYOrder currentOrder].title = serviceName;
+    }
+}
+
 - (void)_submitButtonPressed
 {
+    [self _saveOrder];
+    NSDictionary *parameters = [[JYOrder currentOrder] httpParameters];
+//    NSLog(@"%@", parameters);
+
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"orders"];
+
+    [KVNProgress show];
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+
+    [manager POST:url
+       parameters:parameters
+          success:^(AFHTTPRequestOperation *operation, id responseObject) {
+              NSLog(@"OrderCreate Success responseObject: %@", responseObject);
+
+              [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+              [KVNProgress dismiss];
+
+              // do something
+          }
+          failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+              NSLog(@"OrderCreate Error: %@", error);
+
+              [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+              [KVNProgress dismiss];
+
+              NSString *errorMessage = nil;
+              if (error.code == NSURLErrorBadServerResponse)
+              {
+                  errorMessage = NSLocalizedString(kErrorAuthenticationFailed, nil);
+              }
+              else
+              {
+                  errorMessage = [error.userInfo valueForKey:NSLocalizedDescriptionKey];
+              }
+
+              [RKDropdownAlert title:NSLocalizedString(@"Something wrong ...", nil)
+                             message:errorMessage
+                     backgroundColor:FlatYellow
+                           textColor:FlatBlack
+                                time:5];
+          }];
 
 }
 

@@ -1,5 +1,5 @@
 //
-//  User.m
+//  JYUser.m
 //  joyyios
 //
 //  Created by Ping Yang on 3/30/15.
@@ -28,11 +28,11 @@
     _username = [_credential valueForKey:@"username"];
     _password = [_credential valueForKey:@"password"];
     _token = [_credential valueForKey:@"token"];
-    _userId = [_credential valueForKey:@"id"];
+    _userId = [[_credential valueForKey:@"id"] unsignedIntegerValue];
     _tokenExpireTimeInSecs = [NSDate timeIntervalSinceReferenceDate] + 30 * 60;
 
-    [[DataStore sharedInstance] saveTokenExpireTime:_tokenExpireTimeInSecs];
-    [[DataStore sharedInstance] saveUserCredential:_credential];
+    [DataStore sharedInstance].tokenExpireTime = _tokenExpireTimeInSecs;
+    [DataStore sharedInstance].userCredential = _credential;
 }
 
 - (BOOL)exists
@@ -42,7 +42,7 @@
         return YES;
     }
 
-    _credential = [[DataStore sharedInstance] loadUserCredential];
+    _credential = [DataStore sharedInstance].userCredential;
 
     if (_credential != nil)
     {
@@ -50,8 +50,8 @@
         _username = [_credential valueForKey:@"username"];
         _password = [_credential valueForKey:@"password"];
         _token = [_credential valueForKey:@"token"];
-        _userId = [_credential valueForKey:@"id"];
-        _tokenExpireTimeInSecs = [[DataStore sharedInstance] loadTokenExpireTime];
+        _userId = [[_credential valueForKey:@"id"] unsignedIntegerValue];
+        _tokenExpireTimeInSecs = [DataStore sharedInstance].tokenExpireTime;
         return YES;
     }
 

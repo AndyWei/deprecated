@@ -239,7 +239,8 @@ static NSString *reuseId = @"pin";
         NSLog(@"startAddress not set");
         return;
     }
-    currentOrder.startPoint = self.startPoint.coordinate;
+    currentOrder.startPointLat = self.startPoint.coordinate.latitude;
+    currentOrder.startPointLon = self.startPoint.coordinate.longitude;
 
     if (self.endPoint)
     {
@@ -248,7 +249,8 @@ static NSString *reuseId = @"pin";
             NSLog(@"endAddress not set");
             return;
         }
-        currentOrder.endPoint = self.endPoint.coordinate;
+        currentOrder.endPointLat = self.endPoint.coordinate.latitude;
+        currentOrder.endPointLon = self.endPoint.coordinate.longitude;
     }
 
     UIViewController *viewController = [JYOrderCreateDetailsViewController new];
@@ -495,6 +497,8 @@ static NSString *reuseId = @"pin";
             }
             else
             {
+                self.mapEditMode = MapEditModeNone;
+                self.mapEditMode = MapEditModeStartPoint;
                 [self _navigateToNextView];
             }
             break;

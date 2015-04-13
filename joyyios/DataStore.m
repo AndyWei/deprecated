@@ -23,12 +23,12 @@
 }
 
 // UserCredential
-- (void)saveUserCredential:(NSDictionary *)credential
+- (void)setUserCredential:(NSDictionary *)credential
 {
     [[NSUserDefaults standardUserDefaults] setObject:credential forKey:kKeyUserCredential];
 }
 
-- (NSDictionary *)loadUserCredential
+- (NSDictionary *)userCredential
 {
     NSDictionary *credential = nil;
     if ([[NSUserDefaults standardUserDefaults] objectForKey:kKeyUserCredential])
@@ -39,12 +39,12 @@
 }
 
 // TokenExpireTime
-- (void)saveTokenExpireTime:(NSTimeInterval)seconds
+- (void)setTokenExpireTime:(NSTimeInterval)seconds
 {
     [[NSUserDefaults standardUserDefaults] setDouble:seconds forKey:kKeyTokenExpireTime];
 }
 
-- (NSTimeInterval)loadTokenExpireTime
+- (NSTimeInterval)tokenExpireTime
 {
     NSTimeInterval expireTime = 0.0f;
     if ([[NSUserDefaults standardUserDefaults] doubleForKey:kKeyTokenExpireTime])
@@ -52,6 +52,22 @@
         expireTime = [[NSUserDefaults standardUserDefaults] doubleForKey:kKeyTokenExpireTime];
     }
     return expireTime;
+}
+
+// CurrentOrder
+- (void)setCurrentOrder:(JYOrder *)order
+{
+    [[NSUserDefaults standardUserDefaults] setObject:order forKey:kKeyCurrentOrder];
+}
+
+- (JYOrder *)currentOrder
+{
+    JYOrder *order = nil;
+    if ([[NSUserDefaults standardUserDefaults] objectForKey:kKeyCurrentOrder])
+    {
+        order = [[NSUserDefaults standardUserDefaults] objectForKey:kKeyCurrentOrder];
+    }
+    return order;
 }
 
 @end

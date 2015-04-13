@@ -1,12 +1,15 @@
 //
-//  Order.m
+//  JYOrder.m
 //  joyyios
 //
 //  Created by Ping Yang on 4/9/15.
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
+#import "DataStore.h"
+#import "NSMutableDictionary+Joyy.h"
 #import "JYOrder.h"
+#import "JYServiceCategory.h"
 #import "JYUser.h"
 
 static JYOrder *_currentOrder;
@@ -17,38 +20,63 @@ static JYOrder *_currentOrder;
 {
     if (!_currentOrder)
     {
-        _currentOrder = [[JYOrder alloc] init];
+        _currentOrder = [DataStore sharedInstance].currentOrder;
+
+        if (!_currentOrder)
+        {
+            _currentOrder = [[JYOrder alloc] init];
+        }
     }
 
     return _currentOrder;
 }
 
-+ (void)deleteCurrentOrder
+- (void)clear
 {
-    _currentOrder = nil;
+    _category      = 0;
+    _categoryIndex = 0;
+    _country       = @"us";
+    _currency      = @"usd";
+    _price         = 0.0f;
+    _startTime     = 0;
+    _status        = 0;
+    _title         = nil;
+
+    _startPointLat = 0.0f;
+    _startPointLon = 0.0f;
+    _startAddress  = nil;
+
+    _endPointLat = 0.0f;
+    _endPointLon = 0.0f;
+    _endAddress  = nil;
+
+    // DO NOT CLEAR _note, we want to keep it to reduce user inputs
 }
 
--(instancetype)init
+- (instancetype)init
 {
     self = [super init];
     if (self)
     {
-        _orderId   = 0;
-        _winnnerId = 0;
-        _status    = 0;
-        _category  = 0;
-        _categoryIndex = 0;
-        _price      = 0.0f;
-        _finalPrice = 0.0f;
-        _userId   = [JYUser currentUser].userId;
-        _currency = @"usd";
-        _country  = @"us";
+        [self clear];
     }
     return self;
 }
 
-- (void)submit
+- (NSDictionary *)httpParameters
 {
+    NSMutableDictionary *parameters = [NSMutableDictionary dictionaryWithPropertiesOfObject:self];
+
+    [parameters removeObjectForKey:@"categoryIndex"];
+
+    if (self.categoryIndex != JYServiceCategoryIndexDelivery && self.categoryIndex != JYServiceCategoryIndexMoving)
+    {
+        [parameters removeObjectForKey:@"endPointLat"];
+        [parameters removeObjectForKey:@"endPointLon"];
+        [parameters removeObjectForKey:@"endPointAddress"];
+    }
+
+    return parameters;
 }
 
 @end

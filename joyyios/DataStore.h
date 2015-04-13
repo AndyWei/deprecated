@@ -6,14 +6,15 @@
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
+#import "JYOrder.h"
+
 @interface DataStore : NSObject
 
 + (DataStore *)sharedInstance;
 
-- (void)saveUserCredential:(NSDictionary *)credential;
-- (NSDictionary *)loadUserCredential;
+@property(nonatomic) JYOrder *currentOrder;
+@property(nonatomic) NSDictionary *userCredential;
+@property(nonatomic) NSTimeInterval tokenExpireTime;
 
-- (void)saveTokenExpireTime:(NSTimeInterval)seconds;
-- (NSTimeInterval)loadTokenExpireTime;
 
 @end

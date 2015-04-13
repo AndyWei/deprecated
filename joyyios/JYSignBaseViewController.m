@@ -12,7 +12,7 @@
 #import "JYButton.h"
 #import "JYFloatLabeledTextField.h"
 #import "JYSignBaseViewController.h"
-#import "JYUtils.h"
+
 
 @interface JYSignBaseViewController ()
 
@@ -143,7 +143,7 @@
 
 - (BOOL)inputCheckPassed
 {
-    if (![JYUtils isValidEmail: self.emailField.text])
+    if (!self.emailField.text || ![self.emailField.text isValidEmail])
     {
         [RKDropdownAlert title:NSLocalizedString(@"Please input an valid email", nil)
                        message:nil
@@ -155,7 +155,7 @@
         return NO;
     }
 
-    if ((self.passwordField.text == nil || self.passwordField.text.length < 4))
+    if (!self.passwordField.text || self.passwordField.text.length < 4)
     {
         [RKDropdownAlert title:NSLocalizedString(@"Password is too short", nil)
                        message:nil

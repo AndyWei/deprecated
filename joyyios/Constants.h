@@ -50,6 +50,7 @@ extern NSString *const kImageNamePinBlue;
 extern NSString *const kImageNamePinGreen;
 extern NSString *const kImageNamePinPink;
 
+extern NSString *const kKeyCurrentOrder;
 extern NSString *const kKeyTokenExpireTime;
 extern NSString *const kKeyUserCredential;
 

@@ -1,5 +1,5 @@
 //
-//  User.h
+//  JYUser.h
 //  joyyios
 //
 //  Created by Ping Yang on 3/30/15.
@@ -14,9 +14,9 @@
 @property(nonatomic, readonly) NSString *email;
 @property(nonatomic, readonly) NSString *username;
 @property(nonatomic, readonly) NSString *password;
-@property(nonatomic, readonly) NSString *userId;
 @property(nonatomic, readonly) NSString *token;
 @property(nonatomic, readonly) NSTimeInterval tokenExpireTimeInSecs;
+@property(nonatomic, readonly) NSUInteger userId;
 
 - (BOOL)exists;
 

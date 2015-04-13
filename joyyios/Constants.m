@@ -46,6 +46,7 @@ NSString *const kImageNamePinBlue = @"pinBlue";
 NSString *const kImageNamePinGreen = @"pinGreen";
 NSString *const kImageNamePinPink = @"pinPink";
 
+NSString *const kKeyCurrentOrder = @"CurrentOrder";
 NSString *const kKeyTokenExpireTime = @"TokenExpireTime";
 NSString *const kKeyUserCredential = @"UserCredential";
 

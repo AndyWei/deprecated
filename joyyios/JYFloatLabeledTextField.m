@@ -31,7 +31,6 @@
 //  ---------------------------The end of the original license--------------------
 
 #import "JYFloatLabeledTextField.h"
-#import "JYUtils.h"
 #import "NSString+TextDirectionality.h"
 
 #define kFloatingLabelShowAnimationDuration 0.3f
@@ -308,7 +307,7 @@
     switch (self.autocompleteType)
     {
         case JYAutoCompleteTypeEmail:
-            result = [JYUtils isValidEmail:self.text];
+            result = self.text && [self.text isValidEmail];
             break;
         default:
             break;
