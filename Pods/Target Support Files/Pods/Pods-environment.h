@@ -66,6 +66,12 @@
 #define COCOAPODS_VERSION_MINOR_KVNProgress 2
 #define COCOAPODS_VERSION_PATCH_KVNProgress 1
 
+// MCSwipeTableViewCell
+#define COCOAPODS_POD_AVAILABLE_MCSwipeTableViewCell
+#define COCOAPODS_VERSION_MAJOR_MCSwipeTableViewCell 2
+#define COCOAPODS_VERSION_MINOR_MCSwipeTableViewCell 1
+#define COCOAPODS_VERSION_PATCH_MCSwipeTableViewCell 2
+
 // Onboard
 #define COCOAPODS_POD_AVAILABLE_Onboard
 #define COCOAPODS_VERSION_MAJOR_Onboard 2

@@ -15,6 +15,7 @@
 - (void)clear;
 - (NSDictionary *)httpParameters;
 
+// Properties in the create order reqeust
 @property(nonatomic) CGFloat price;
 
 @property(nonatomic) CLLocationDegrees startPointLat;
@@ -30,8 +31,18 @@
 @property(nonatomic) NSString *endAddress;
 
 @property(nonatomic) NSUInteger category;
-@property(nonatomic) NSUInteger categoryIndex;
 @property(nonatomic) NSUInteger startTime;
+
+// Properties not in the create order reqeust
+@property(nonatomic) CGFloat finalPrice;
+
+@property(nonatomic) NSUInteger categoryIndex;
+@property(nonatomic) NSUInteger orderId;
+@property(nonatomic) NSUInteger userId;
+@property(nonatomic) NSUInteger winnnerId;
 @property(nonatomic) NSUInteger status;
+
+@property(nonatomic) NSDate *createdAt;
+@property(nonatomic) NSDate *updatedAt;
 
 @end

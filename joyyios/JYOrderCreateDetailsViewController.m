@@ -206,7 +206,7 @@
               NSLog(@"OrderCreate Success responseObject: %@", responseObject);
 
               [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-              [KVNProgress dismiss];
+              [KVNProgress showSuccessWithStatus:NSLocalizedString(@"Success", nil)];
 
               // do something
           }

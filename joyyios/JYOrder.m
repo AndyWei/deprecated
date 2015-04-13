@@ -39,7 +39,6 @@ static JYOrder *_currentOrder;
     _currency      = @"usd";
     _price         = 0.0f;
     _startTime     = 0;
-    _status        = 0;
     _title         = nil;
 
     _startPointLat = 0.0f;
@@ -68,6 +67,13 @@ static JYOrder *_currentOrder;
     NSMutableDictionary *parameters = [NSMutableDictionary dictionaryWithPropertiesOfObject:self];
 
     [parameters removeObjectForKey:@"categoryIndex"];
+    [parameters removeObjectForKey:@"orderId"];
+    [parameters removeObjectForKey:@"userId"];
+    [parameters removeObjectForKey:@"winnnerId"];
+    [parameters removeObjectForKey:@"status"];
+    [parameters removeObjectForKey:@"finalPrice"];
+    [parameters removeObjectForKey:@"createdAt"];
+    [parameters removeObjectForKey:@"updatedAt"];
 
     if (self.categoryIndex != JYServiceCategoryIndexDelivery && self.categoryIndex != JYServiceCategoryIndexMoving)
     {

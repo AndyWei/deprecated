@@ -23,6 +23,7 @@ PODS:
   - ChameleonFramework (1.1.2)
   - JVFloatLabeledTextField (1.0.2)
   - KVNProgress (2.2.1)
+  - MCSwipeTableViewCell (2.1.2)
   - Onboard (2.1.1)
   - RKDropdownAlert (0.1.1)
   - UIView+Positioning (1.1)
@@ -33,6 +34,7 @@ DEPENDENCIES:
   - ChameleonFramework
   - JVFloatLabeledTextField
   - KVNProgress
+  - MCSwipeTableViewCell
   - Onboard
   - RKDropdownAlert
   - UIView+Positioning
@@ -43,6 +45,7 @@ SPEC CHECKSUMS:
   ChameleonFramework: 1b4588efcae564886e1a176fa02fb0f4c81a69b3
   JVFloatLabeledTextField: 58a3a32cfb800e5b224f676987e7c13abf50a14d
   KVNProgress: 7001d2d16a2755cee5599e8e485befe056f2197b
+  MCSwipeTableViewCell: 0fc22bd3635b9b5f4ce08675218b0a7278b6440f
   Onboard: a305484bfcfa358bcfbd651ef32036fe0c58e9b7
   RKDropdownAlert: 3f663f1e852751ad37ce95ed1e8e2c6b9bfdc95b
   UIView+Positioning: e93fe9e3186d1ed7d60e344aa12787911e902056

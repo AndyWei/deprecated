@@ -17,7 +17,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.navigationItem.title = NSLocalizedString(@"Choose an order you can help ...", nil);
+    self.navigationItem.title = NSLocalizedString(@"Orders Nearby", nil);
     self.navigationController.navigationBar.translucent = YES;
 }
 
