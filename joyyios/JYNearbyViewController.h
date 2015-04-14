@@ -8,6 +8,6 @@
 
 #import "JYExpandViewController.h"
 
-@interface JYNearbyViewController : JYExpandViewController
+@interface JYNearbyViewController : JYExpandViewController <UITableViewDataSource, UITableViewDelegate>
 
 @end

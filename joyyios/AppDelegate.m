@@ -19,7 +19,10 @@
 
 @interface AppDelegate ()
 
+@property (nonatomic) NSTimer *signInTimer;
+
 @end
+
 
 @implementation AppDelegate
 
@@ -144,27 +147,19 @@
 - (void)_launchViewController
 {
     JYUser *user = [JYUser currentUser];
-    BOOL userExist = [user exists];
     BOOL needIntro = YES;
 
     if (needIntro)
     {
-        NSTimeInterval now = [NSDate timeIntervalSinceReferenceDate];
-
-        if (userExist && user.tokenExpireTimeInSecs < now)
-        {
-            [self _autoSignIn];
-        }
-
         [self _launchIntroViewController];
     }
-    else if (!userExist)
+    else if ([user exists])
     {
-        [self _launchSignViewController];
+        [self _launchTabViewController];
     }
     else
     {
-        [self _launchTabViewController];
+        [self _launchSignViewController];
     }
 }
 
@@ -172,19 +167,30 @@
 {
     JYUser *user = [JYUser currentUser];
 
-    if (![user exists])
+    if ([user exists])
     {
-        [self _launchSignViewController];
+        [self _launchTabViewController];
     }
     else
     {
-        [self _launchTabViewController];
+        [self _launchSignViewController];
     }
 }
 
 - (void)_signDidFinish
 {
+    [self _signInPeriodically:kSignIntervalMax];
     [self _launchTabViewController];
+}
+
+- (void)_signInPeriodically:(CGFloat)interval
+{
+    if (self.signInTimer)
+    {
+        [self.signInTimer invalidate];
+    }
+
+    self.signInTimer = [NSTimer timerWithTimeInterval:interval target:self selector:@selector(_autoSignIn:) userInfo:nil repeats:NO];
 }
 
 - (void)_launchSignViewController
@@ -201,6 +207,25 @@
 
 - (void)_launchTabViewController
 {
+    JYUser *user = [JYUser currentUser];
+    NSTimeInterval now = [NSDate timeIntervalSinceReferenceDate];
+
+    NSAssert([user exists], @"The user credential should be there when _launchTabViewController is called");
+
+    if (user.tokenExpireTimeInSecs < now)
+    {
+        if (self.signInTimer)
+        {
+            [self.signInTimer invalidate];
+            self.signInTimer = nil;
+        }
+        [self _autoSignIn:nil];
+    }
+    else if (!self.signInTimer)
+    {
+        [self _signInPeriodically:(user.tokenExpireTimeInSecs - now)];
+    }
+
     UIViewController *vc1 = [JYOrderCategoryCollectionViewController new];
     UINavigationController *nc1 = [[UINavigationController alloc] initWithRootViewController:vc1];
     nc1.title = NSLocalizedString(@"I need", nil);
@@ -216,7 +241,7 @@
 }
 
 // signin in the background
-- (void)_autoSignIn
+- (void)_autoSignIn:(NSTimer*)timer
 {
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
 
@@ -229,15 +254,19 @@
     NSLog(@"email = %@", [JYUser currentUser].email);
     NSLog(@"password = %@", [JYUser currentUser].password);
 
+    __weak typeof(self) weakSelf = self;
     [manager GET:url
         parameters:nil
         success:^(AFHTTPRequestOperation *operation, id responseObject)
         {
+            NSLog(@"_autoSignIn Success");
             [JYUser currentUser].credential = responseObject;
+            [weakSelf _signInPeriodically:kSignIntervalMax];
         }
         failure:^(AFHTTPRequestOperation *operation, NSError *error)
         {
             NSLog(@"_autoSignIn Error: %@", error);
+            [weakSelf _signInPeriodically:kSignIntervalMin];
         }];
 }
 

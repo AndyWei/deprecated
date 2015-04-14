@@ -31,6 +31,8 @@ const CGFloat kSignFieldFloatingLabelFontSize = 11.0f;
 const CGFloat kSignFieldFontSize = 18.0f;
 const CGFloat kSignFieldHeight = 70.0f;
 const CGFloat kSignFieldMarginLeft = 50.0f;
+const CGFloat kSignIntervalMax = 1800.0f;
+const CGFloat kSignIntervalMin = 60.0f;
 const CGFloat kSignViewTopOffset = 152;
 const CGFloat kServiceCategoryCellFontSize = 18.0f;
 

@@ -16,6 +16,7 @@
 #import "JYPriceTextFieldCell.h"
 #import "JYRestrictedTextViewCell.h"
 #import "JYServiceCategory.h"
+#import "JYUser.h"
 #import "XLForm.h"
 
 @interface JYOrderCreateDetailsViewController ()
@@ -156,7 +157,10 @@
 
     // note
     NSString *note = [self.formValues valueForKey:@"note"];
-    [JYOrder currentOrder].note = note? @"": note;
+    if ((note == (id)[NSNull null] || note.length == 0 )) {
+        note = @":)";
+    }
+    [JYOrder currentOrder].note = note;
 
     // startTime
     NSDate *startTime = (NSDate *)[self.formValues objectForKey:@"startTime"];
@@ -177,7 +181,6 @@
     if (roomsObj)
     {
         NSString *roomsString = roomsObj.displayText;
-        NSLog(@"roomsString = %@", roomsString);
         NSUInteger rooms = [roomsString unsignedIntegerValue];
         NSString *localizedString = NSLocalizedString(([NSString stringWithFormat:@" for %tu rooms", rooms]), nil);
         [JYOrder currentOrder].title = [NSString stringWithFormat:@"%@%@", serviceName, localizedString];
@@ -191,10 +194,19 @@
 - (void)_submitButtonPressed
 {
     [self _saveOrder];
+    [self _submitOrder];
+}
+
+- (void)_submitOrder
+{
+
     NSDictionary *parameters = [[JYOrder currentOrder] httpParameters];
-//    NSLog(@"%@", parameters);
+    NSLog(@"parameters = %@", parameters);
 
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYUser currentUser].token];
+    [manager.requestSerializer setValue:token forHTTPHeaderField:@"Authorization"];
+
     NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"orders"];
 
     [KVNProgress show];
@@ -206,33 +218,24 @@
               NSLog(@"OrderCreate Success responseObject: %@", responseObject);
 
               [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-              [KVNProgress showSuccessWithStatus:NSLocalizedString(@"Success", nil)];
+              [KVNProgress showSuccessWithStatus:NSLocalizedString(@"The Order Created!", nil)];
 
               // do something
           }
           failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-              NSLog(@"OrderCreate Error: %@", error);
 
               [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
               [KVNProgress dismiss];
 
-              NSString *errorMessage = nil;
-              if (error.code == NSURLErrorBadServerResponse)
-              {
-                  errorMessage = NSLocalizedString(kErrorAuthenticationFailed, nil);
-              }
-              else
-              {
-                  errorMessage = [error.userInfo valueForKey:NSLocalizedDescriptionKey];
-              }
-
+              NSString *errorMessage = [error.userInfo valueForKey:NSLocalizedDescriptionKey];
               [RKDropdownAlert title:NSLocalizedString(@"Something wrong ...", nil)
                              message:errorMessage
                      backgroundColor:FlatYellow
                            textColor:FlatBlack
                                 time:5];
-          }];
 
+          }
+     ];
 }
 
 @end

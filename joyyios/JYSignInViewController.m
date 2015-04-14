@@ -53,14 +53,12 @@
     NSString *email = [self.emailField.text lowercaseString];
     NSString *password = [self.passwordField.text lowercaseString];
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-
-    manager.requestSerializer = [AFHTTPRequestSerializer serializer];
     [manager.requestSerializer setAuthorizationHeaderFieldWithUsername:email password:password];
-
     NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"signin"];
 
     [KVNProgress show];
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+
     [manager GET:url
         parameters:nil
         success:^(AFHTTPRequestOperation *operation, id responseObject) {

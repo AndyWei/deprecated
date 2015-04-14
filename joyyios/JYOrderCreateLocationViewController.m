@@ -239,8 +239,15 @@ static NSString *reuseId = @"pin";
         NSLog(@"startAddress not set");
         return;
     }
+
     currentOrder.startPointLat = self.startPoint.coordinate.latitude;
     currentOrder.startPointLon = self.startPoint.coordinate.longitude;
+
+    if (currentOrder.startPointLat == 0.0f && currentOrder.startPointLon == 0.0f)
+    {
+        NSLog(@"startPoint not set");
+        return;
+    }
 
     if (self.endPoint)
     {
@@ -497,8 +504,8 @@ static NSString *reuseId = @"pin";
             }
             else
             {
-                self.mapEditMode = MapEditModeNone;
-                self.mapEditMode = MapEditModeStartPoint;
+                [self _showStartPointView:NO];
+                [self _showStartPointAnnotation:YES];
                 [self _navigateToNextView];
             }
             break;

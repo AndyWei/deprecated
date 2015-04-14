@@ -34,8 +34,9 @@ extern const CGFloat kSignFieldFloatingLabelFontSize;
 extern const CGFloat kSignFieldFontSize;
 extern const CGFloat kSignFieldHeight;
 extern const CGFloat kSignFieldMarginLeft;
+extern const CGFloat kSignIntervalMax;
+extern const CGFloat kSignIntervalMin;
 extern const CGFloat kSignViewTopOffset;
-
 extern const CGFloat kServiceCategoryCellFontSize;
 
 extern NSString *const kAnnotationTitleEnd;
