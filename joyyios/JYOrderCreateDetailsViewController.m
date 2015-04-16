@@ -227,7 +227,7 @@
               [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
               [KVNProgress dismiss];
 
-              NSString *errorMessage = [error.userInfo valueForKey:NSLocalizedDescriptionKey];
+              NSString *errorMessage = NSLocalizedString(@"The order cannot be created due to network failure, please retry later", nil);
               [RKDropdownAlert title:NSLocalizedString(@"Something wrong ...", nil)
                              message:errorMessage
                      backgroundColor:FlatYellow

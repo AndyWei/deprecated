@@ -22,6 +22,7 @@
 #import "NSString+Joyy.h"
 #import "UIColor+Joyy.h"
 #import "UIFont+SytemFontOverride.h"
+#import "UIView+Positioning.h"
 
 #endif
 

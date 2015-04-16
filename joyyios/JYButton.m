@@ -137,6 +137,7 @@ static CGRect CGRectEdgeInset(CGRect rect, UIEdgeInsets insets)
 @property(nonatomic) UIView *foregroundView;
 @property(nonatomic) JYButtonTextLayer *textLayer;
 @property(nonatomic) JYButtonTextLayer *detailTextLayer;
+@property(nonatomic) JYButtonTextLayer *topTextLayer;
 @property(nonatomic) JYButtonImageLayer *imageLayer;
 
 @end
@@ -172,6 +173,10 @@ static CGRect CGRectEdgeInset(CGRect rect, UIEdgeInsets insets)
         self.detailTextLayer = [[JYButtonTextLayer alloc] initWithFrame:CGRectNull];
         self.detailTextLayer.backgroundColor = self.contentColor;
         [self insertSubview:self.detailTextLayer aboveSubview:self.foregroundView];
+
+        self.topTextLayer = [[JYButtonTextLayer alloc] initWithFrame:CGRectNull];
+        self.topTextLayer.backgroundColor = self.contentColor;
+        [self insertSubview:self.topTextLayer aboveSubview:self.foregroundView];
 
         self.imageLayer = [[JYButtonImageLayer alloc] initWithFrame:CGRectNull shouldMaskImage:mask];
         self.imageLayer.backgroundColor = self.shouldMaskImage ? self.contentColor : self.foregroundColor;
@@ -239,25 +244,42 @@ static CGRect CGRectEdgeInset(CGRect rect, UIEdgeInsets insets)
     switch (self.buttonStyle)
     {
         case JYButtonStyleDefault:
+            self.topTextLayer.frame = CGRectNull;
             self.imageLayer.frame = CGRectNull;
             self.detailTextLayer.frame = CGRectNull;
             self.textLayer.frame = [self boxingRect];
             break;
 
         case JYButtonStyleSubtitle:
+            self.topTextLayer.frame = CGRectNull;
             self.imageLayer.frame = CGRectNull;
             self.textLayer.frame = CGRectMake(boxRect.origin.x, boxRect.origin.y, CGRectGetWidth(boxRect), CGRectGetHeight(boxRect) * 0.8);
             self.detailTextLayer.frame =
                 CGRectMake(boxRect.origin.x, CGRectGetMaxY(self.textLayer.frame), CGRectGetWidth(boxRect), CGRectGetHeight(boxRect) * 0.2);
             break;
 
+        case JYButtonStyleDate:
+            self.imageLayer.frame = CGRectNull;
+
+            CGFloat width = CGRectGetWidth(boxRect) * 0.5;
+            CGFloat x = boxRect.origin.x + width * 0.5;
+
+            self.topTextLayer.frame =
+            CGRectMake(x, boxRect.origin.y, width, CGRectGetHeight(boxRect) * 0.15);
+            self.textLayer.frame = CGRectMake(x, CGRectGetMaxY(self.topTextLayer.frame) - 3, width, CGRectGetHeight(boxRect) * 0.8);
+            self.detailTextLayer.frame =
+            CGRectMake(x, CGRectGetMaxY(self.textLayer.frame) - 3, width, CGRectGetHeight(boxRect) * 0.18);
+            break;
+
         case JYButtonStyleCentralImage:
+            self.topTextLayer.frame = CGRectNull;
             self.textLayer.frame = CGRectNull;
             self.detailTextLayer.frame = CGRectNull;
             self.imageLayer.frame = [self boxingRect];
             break;
 
         case JYButtonStyleImageWithTitle:
+            self.topTextLayer.frame = CGRectNull;
             self.imageLayer.frame = CGRectMake(boxRect.origin.x, boxRect.origin.y, CGRectGetWidth(boxRect) * 0.1, CGRectGetHeight(boxRect));
             self.textLayer.frame =
                 CGRectMake(CGRectGetMaxX(self.imageLayer.frame), boxRect.origin.y, CGRectGetWidth(boxRect) * 0.9, CGRectGetHeight(boxRect));
@@ -266,6 +288,7 @@ static CGRect CGRectEdgeInset(CGRect rect, UIEdgeInsets insets)
 
         case JYButtonStyleImageWithSubtitle:
         default:
+            self.topTextLayer.frame = CGRectNull;
             self.textLayer.frame = CGRectNull;
             self.imageLayer.frame = CGRectMake(boxRect.origin.x, boxRect.origin.y, CGRectGetWidth(boxRect), CGRectGetHeight(boxRect) * 0.8);
             self.detailTextLayer.frame =
@@ -327,6 +350,7 @@ static CGRect CGRectEdgeInset(CGRect rect, UIEdgeInsets insets)
     _contentColor = contentColor;
     self.textLayer.backgroundColor = contentColor;
     self.detailTextLayer.backgroundColor = contentColor;
+    self.topTextLayer.backgroundColor = contentColor;
 
     if (self.shouldMaskImage)
     {
@@ -353,6 +377,11 @@ static CGRect CGRectEdgeInset(CGRect rect, UIEdgeInsets insets)
 - (UILabel *)detailTextLabel
 {
     return self.detailTextLayer.textLabel;
+}
+
+- (UILabel *)topTextLabel
+{
+    return self.topTextLayer.textLabel;
 }
 
 - (UIImageView *)imageView
@@ -393,6 +422,7 @@ static CGRect CGRectEdgeInset(CGRect rect, UIEdgeInsets insets)
                          {
                              weakSelf.textLayer.backgroundColor = weakSelf.contentAnimateToColor;
                              weakSelf.detailTextLayer.backgroundColor = weakSelf.contentAnimateToColor;
+                             weakSelf.topTextLayer.backgroundColor = weakSelf.contentAnimateToColor;
                              if (weakSelf.shouldMaskImage)
                              {
                                  weakSelf.imageLayer.backgroundColor = weakSelf.contentAnimateToColor;
@@ -430,7 +460,7 @@ static CGRect CGRectEdgeInset(CGRect rect, UIEdgeInsets insets)
                      animations:^{
                          weakSelf.textLayer.backgroundColor = weakSelf.contentColor;
                          weakSelf.detailTextLayer.backgroundColor = weakSelf.contentColor;
-
+                         weakSelf.topTextLayer.backgroundColor = weakSelf.contentColor;
                          weakSelf.imageLayer.backgroundColor = weakSelf.shouldMaskImage ? weakSelf.contentColor : weakSelf.foregroundColor;
 
                          if (weakSelf.borderAnimateToColor && weakSelf.foregroundAnimateToColor && weakSelf.borderAnimateToColor == weakSelf.foregroundAnimateToColor)

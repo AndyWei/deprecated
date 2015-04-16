@@ -6,15 +6,24 @@
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
+#import <AFNetworking/AFNetworking.h>
+#import <KVNProgress/KVNProgress.h>
+#import <RKDropdownAlert/RKDropdownAlert.h>
+
+#import "AppDelegate.h"
 #import "JYNearbyViewController.h"
 #import "JYOrderViewCell.h"
+#import "JYUser.h"
 
 @interface JYNearbyViewController ()
 
-@property (nonatomic) NSArray *ordersList;
-@property (nonatomic) UITableView *tableView;
+@property(nonatomic) NSArray *ordersList;
+@property(nonatomic) UITableView *tableView;
+@property(nonatomic) UIRefreshControl *refreshControl;
 
 @end
+
+NSString *const kOrderCellIdentifier = @"orderCell";
 
 @implementation JYNearbyViewController
 
@@ -24,6 +33,7 @@
     self.navigationItem.title = NSLocalizedString(@"Orders Nearby", nil);
     self.navigationController.navigationBar.translucent = YES;
 
+    [self _fectchData];
     [self _createTableView];
 }
 
@@ -39,8 +49,15 @@
     self.tableView.backgroundColor = FlatWhite;
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
-    [self.tableView registerClass:[JYOrderViewCell class] forCellReuseIdentifier:@"orderCellIdentifier"];
+    [self.tableView registerClass:[JYOrderViewCell class] forCellReuseIdentifier:kOrderCellIdentifier];
     [self.view addSubview:self.tableView];
+
+//    UITableViewController *tableViewController = [[UITableViewController alloc] init];
+//    tableViewController.tableView = self.tableView;
+//
+//    self.refreshControl = [[UIRefreshControl alloc] init];
+//    [self.refreshControl addTarget:self action:@selector(_fectchData) forControlEvents:UIControlEventValueChanged];
+//    tableViewController.refreshControl = self.refreshControl;
 }
 
 #pragma mark - UITableViewDataSource
@@ -58,13 +75,24 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     JYOrderViewCell *cell =
-    (JYOrderViewCell *)[tableView dequeueReusableCellWithIdentifier:@"orderCellIdentifier" forIndexPath:indexPath];
+    (JYOrderViewCell *)[tableView dequeueReusableCellWithIdentifier:kOrderCellIdentifier forIndexPath:indexPath];
 
-//    MKMapItem *item = (MKMapItem *)[self.placesList objectAtIndex:indexPath.row];
+    NSDictionary *order = (NSDictionary *)[self.ordersList objectAtIndex:indexPath.row];
 
-//    cell.topLabel.text = item.name;
-//    cell.bottomLabel.text = (item.placemark)? item.placemark.title: NSLocalizedString(@"Current Place", nil);
-//    cell.iconView.image = [UIImage imageNamed:[self _imageNameForMapItem:item]];
+    // start date and time
+    NSTimeInterval startTime = [[order valueForKey:@"starttime"] integerValue];
+    [cell setStartDateTime:[NSDate dateWithTimeIntervalSinceReferenceDate:startTime]];
+
+    // price
+    NSUInteger price = [[order valueForKey:@"price"] integerValue];
+    cell.priceLabel.text = [NSString stringWithFormat:@"$%tu", price];
+
+    cell.titleLabel.text = [order valueForKey:@"title"];
+    cell.bodyLabel.text = [order valueForKey:@"note"];
+    cell.timeLabel.text = [order valueForKey:@"created_at"];
+
+    cell.distanceLabel.text = [order valueForKey:@"created_at"];
+    cell.placeLabel.text = [order valueForKey:@"startaddress"];
 
     return cell;
 }
@@ -73,14 +101,63 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 60.0f;
+    return [JYOrderViewCell cellHeight];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-//    MKMapItem *item = (MKMapItem *)[self.placesList objectAtIndex:indexPath.row];
-//    [self.delegate placesViewController:self placemarkSelected:item.placemark];
-//    [self _close];
+
 }
 
+#pragma mark -UIRefreshControl
+- (void)refresh:(UIRefreshControl *)refreshControl
+{
+    [refreshControl endRefreshing];
+}
+
+
+#pragma mark - Network
+
+- (void)_fectchData
+{
+    NSDictionary *parameters = [self _httpParameters];
+    NSLog(@"parameters = %@", parameters);
+
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYUser currentUser].token];
+    [manager.requestSerializer setValue:token forHTTPHeaderField:@"Authorization"];
+
+    NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"orders/nearby"];
+
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+
+    __weak typeof(self) weakSelf = self;
+    [manager GET:url
+       parameters:parameters
+          success:^(AFHTTPRequestOperation *operation, id responseObject) {
+              NSLog(@"orders/nearby fetch success responseObject: %@", responseObject);
+
+              [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+
+              weakSelf.ordersList = responseObject;
+              [weakSelf.tableView reloadData];
+          }
+          failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+
+              [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+          }
+     ];
+}
+
+-(NSDictionary *)_httpParameters
+{
+    NSMutableDictionary *parameters = [NSMutableDictionary new];
+
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    CLLocationCoordinate2D currentPoint = appDelegate.currentLocation.coordinate;
+    [parameters setValue:@(currentPoint.longitude) forKey:@"lon"];
+    [parameters setValue:@(currentPoint.latitude) forKey:@"lat"];
+
+    return parameters;
+}
 @end

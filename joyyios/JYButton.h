@@ -31,6 +31,7 @@ typedef NS_ENUM(NSInteger, JYButtonStyle)
 {
     JYButtonStyleDefault,
     JYButtonStyleSubtitle,
+    JYButtonStyleDate,
     JYButtonStyleCentralImage,
     JYButtonStyleImageWithSubtitle,
     JYButtonStyleImageWithTitle
@@ -54,6 +55,7 @@ extern CGFloat const JYButtonMaxValue;
 
 @property(nonatomic, weak) UILabel *textLabel;
 @property(nonatomic, weak) UILabel *detailTextLabel;
+@property(nonatomic, weak) UILabel *topTextLabel;
 @property(nonatomic, weak) UIImageView *imageView;
 @property(nonatomic) UIEdgeInsets contentEdgeInsets;
 

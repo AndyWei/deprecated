@@ -231,10 +231,10 @@
 				D6B2F0801AD5A679009601B0 /* JYPlacesViewController.m */,
 				D6348D251ADA3BC90002BC35 /* JYPriceTextFieldCell.h */,
 				D6348D261ADA3BC90002BC35 /* JYPriceTextFieldCell.m */,
-				D6348D291ADA4A180002BC35 /* JYRestrictedTextViewCell.h */,
-				D6348D2A1ADA4A650002BC35 /* JYRestrictedTextViewCell.m */,
 				D6348D391ADC8FB70002BC35 /* JYOrderViewCell.h */,
 				D6348D3A1ADC8FB70002BC35 /* JYOrderViewCell.m */,
+				D6348D291ADA4A180002BC35 /* JYRestrictedTextViewCell.h */,
+				D6348D2A1ADA4A650002BC35 /* JYRestrictedTextViewCell.m */,
 			);
 			name = Components;
 			sourceTree = "<group>";
