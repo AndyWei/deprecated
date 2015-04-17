@@ -5,7 +5,7 @@ var Joi = require('joi');
 var c = require('../constants');
 
 var internals = {};
-var selectClause = 'SELECT id, user_id, price, currency, country, status, category, note, startAddress, endAddress, winner_id, final_price, created_at, updated_at, \
+var selectClause = 'SELECT id, user_id, price, currency, country, status, category, title, note, startTime, startCity, startAddress, endAddress, winner_id, final_price, created_at, updated_at, \
                     ST_X(startPoint) AS startPointLon, ST_Y(startPoint) AS startPointLat, ST_X(endPoint) AS endPointLon, ST_Y(endPoint) AS endPointLat \
                     FROM orders ';
 
@@ -126,8 +126,8 @@ exports.register = function (server, options, next) {
         config: {
             validate: {
                 query: {
-                    startPointLon: Joi.number().min(-180).max(180),
-                    startPointLat: Joi.number().min(-90).max(90),
+                    lon: Joi.number().min(-180).max(180),
+                    lat: Joi.number().min(-90).max(90),
                     distance: Joi.number().min(1).max(1000).default(80),
                     after: Joi.string().regex(/^[0-9]+$/).max(19).default('0'),
                     before: Joi.string().regex(/^[0-9]+$/).max(19).default('9223372036854775807'),
@@ -171,7 +171,8 @@ exports.register = function (server, options, next) {
                     startTime: Joi.number().min(450600000),
                     startPointLon: Joi.number().min(-180).max(180),
                     startPointLat: Joi.number().min(-90).max(90),
-                    startAddress: Joi.string(),
+                    startCity: Joi.string().max(30),
+                    startAddress: Joi.string().max(200),
                     endPointLon: Joi.number().min(-180).max(180).optional(),
                     endPointLat: Joi.number().min(-90).max(90).optional(),
                     endAddress: Joi.string().optional()
@@ -338,13 +339,13 @@ internals.createInsertQueryConfig = function (request, callback) {
     var userId = request.auth.credentials.id;
     var p = request.payload;
 
-    var queryText1 = 'INSERT INTO orders (user_id, price, currency, country, category, title, note, startTime, startAddress, startPoint, created_at, updated_at';
-    var queryText2 = '($1, $2, $3, $4, $5, $6, $7, $8, $9, ST_SetSRID(ST_MakePoint($10, $11), 4326), now(), now()';
-    var queryValues = [userId, p.price, p.currency, p.country, p.category, p.title, p.note, p.startTime, p.startAddress, p.startPointLon, p.startPointLat];
+    var queryText1 = 'INSERT INTO orders (user_id, price, currency, country, category, title, note, startTime, startCity, startAddress, startPoint, created_at, updated_at';
+    var queryText2 = '($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, ST_SetSRID(ST_MakePoint($11, $12), 4326), now(), now()';
+    var queryValues = [userId, p.price, p.currency, p.country, p.category, p.title, p.note, p.startTime, p.startCity, p.startAddress, p.startPointLon, p.startPointLat];
 
     if (p.endPointLon && p.endPointLat && p.endAddress) {
         queryText1 += ', endAddress, endPoint) VALUES ';
-        queryText2 += ', $12, ST_SetSRID(ST_MakePoint($13, $14), 4326)) RETURNING id';
+        queryText2 += ', $13, ST_SetSRID(ST_MakePoint($14, $15), 4326)) RETURNING id';
 
         queryValues.push(p.endAddress);
         queryValues.push(p.endPointLon);
@@ -444,7 +445,7 @@ internals.createNearbyQueryConfig = function (query) {
     var order = 'ORDER BY id DESC ';
     var limit = 'LIMIT 50';
 
-    var queryValues = [query.after, query.before, query.startPointLon, query.startPointLat, degree];
+    var queryValues = [query.after, query.before, query.lon, query.lat, degree];
     var where2 = '';
     if (query.categories) {
 

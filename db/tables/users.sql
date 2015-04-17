@@ -8,8 +8,8 @@ CREATE TABLE users (
     rating_total  NUMERIC(8,1)  NOT NULL DEFAULT 0,
     rating_count  NUMERIC(6)    NOT NULL DEFAULT 0,
     bio           TEXT                  ,
-    created_at    TIMESTAMP     NOT NULL,
-    updated_at    TIMESTAMP     NOT NULL,
+    created_at    TIMESTAMPTZ   NOT NULL,
+    updated_at    TIMESTAMPTZ   NOT NULL,
     deleted       BOOLEAN       NOT NULL DEFAULT false,
 
     UNIQUE (username),

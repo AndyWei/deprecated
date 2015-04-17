@@ -195,7 +195,7 @@ lab.experiment('Orders GET: ', function () {
 
         request = {
             method: 'GET',
-            url: '/orders/nearby?startPointLon=-122.4376&startPointLat=37.7577'  // San Francisco, CA
+            url: '/orders/nearby?lon=-122.4376&lat=37.7577'  // San Francisco, CA
         };
 
         server.inject(request, function (response) {
@@ -211,7 +211,7 @@ lab.experiment('Orders GET: ', function () {
 
         request = {
             method: 'GET',
-            url: '/orders/nearby?startPointLon=-122.4376&startPointLat=37.7577&before=3&after=1' // San Francisco, CA
+            url: '/orders/nearby?lon=-122.4376&lat=37.7577&before=3&after=1' // San Francisco, CA
         };
 
         server.inject(request, function (response) {
@@ -227,7 +227,7 @@ lab.experiment('Orders GET: ', function () {
 
         request = {
             method: 'GET',
-            url: '/orders/nearby?startPointLon=-121.3018775&startPointLat=37.9730234' // Stockton, CA
+            url: '/orders/nearby?lon=-121.3018775&lat=37.9730234' // Stockton, CA
         };
 
         server.inject(request, function (response) {
@@ -243,7 +243,7 @@ lab.experiment('Orders GET: ', function () {
 
         request = {
             method: 'GET',
-            url: '/orders/nearby?startPointLon=-122.4176&startPointLat=37.7577&categories=1&categories=5'  // San Francisco, CA
+            url: '/orders/nearby?lon=-122.4176&lat=37.7577&categories=1&categories=5'  // San Francisco, CA
         };
 
         server.inject(request, function (response) {
@@ -259,7 +259,7 @@ lab.experiment('Orders GET: ', function () {
 
         request = {
             method: 'GET',
-            url: '/orders/nearby?startPointLon=-122.4176&startPointLat=37.7577&categories=5'  // San Francisco, CA
+            url: '/orders/nearby?lon=-122.4176&lat=37.7577&categories=5'  // San Francisco, CA
         };
 
         server.inject(request, function (response) {
@@ -288,7 +288,8 @@ lab.experiment('Orders POST: ', function () {
                 note: 'Just Bedrooms',
                 title: 'Cleaning for 4 rooms',
                 startTime: 450690000,
-                startAddress: '37010 Dusterberry Way Fremont, CA 94536',
+                startCity: 'Fremont',
+                startAddress: '37010 Dusterberry Way, Fremont, CA 94536',
                 startPointLon: -122.0135916,
                 startPointLat: 37.555883
             },
@@ -315,6 +316,7 @@ lab.experiment('Orders POST: ', function () {
                 country: 'us',
                 note: 'jump start',
                 startTime: 450690000,
+                startCity: 'Fremont',
                 startAddress: '2290 good ave, Fremont, CA 94555',
                 startPointLon: 180.3,
                 startPointLat: 75.84

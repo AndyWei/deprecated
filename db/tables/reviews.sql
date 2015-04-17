@@ -5,8 +5,8 @@ CREATE TABLE reviews (
     order_id       BIGINT        NOT NULL,  -- the id of the order
     rating         NUMERIC(2,1)  NOT NULL,  -- the rating score
     comment        TEXT                  ,
-    created_at     TIMESTAMP     NOT NULL,
-    updated_at     TIMESTAMP     NOT NULL,
+    created_at     TIMESTAMPTZ   NOT NULL,
+    updated_at     TIMESTAMPTZ   NOT NULL,
     deleted        BOOLEAN       NOT NULL DEFAULT false,
 
     CHECK (rating > 0),

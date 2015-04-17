@@ -6,8 +6,8 @@ CREATE TABLE bids (
     status         SMALLINT      NOT NULL DEFAULT 0,  -- 0-active, 1-revoked, 2-failed, 3-unfinished, 4-accepted
     note           TEXT          NOT NULL,  -- the description provided by the user_id
     expire_at      NUMERIC(10)   NOT NULL DEFAULT 0,  -- the time when this bid will be expired. It's value in form of the seconds since 1970. 0 means never expire.
-    created_at     TIMESTAMP     NOT NULL,
-    updated_at     TIMESTAMP     NOT NULL,
+    created_at     TIMESTAMPTZ   NOT NULL,
+    updated_at     TIMESTAMPTZ   NOT NULL,
     deleted        BOOLEAN       NOT NULL DEFAULT false,
 
     CHECK (price >= 0),
