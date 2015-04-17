@@ -27,6 +27,7 @@
 @property(nonatomic) NSString *country;
 @property(nonatomic) NSString *title;
 @property(nonatomic) NSString *note;
+@property(nonatomic) NSString *startCity;
 @property(nonatomic) NSString *startAddress;
 @property(nonatomic) NSString *endAddress;
 

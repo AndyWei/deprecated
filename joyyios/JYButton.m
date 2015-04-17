@@ -266,9 +266,13 @@ static CGRect CGRectEdgeInset(CGRect rect, UIEdgeInsets insets)
 
             self.topTextLayer.frame =
             CGRectMake(x, boxRect.origin.y, width, CGRectGetHeight(boxRect) * 0.15);
-            self.textLayer.frame = CGRectMake(x, CGRectGetMaxY(self.topTextLayer.frame) - 3, width, CGRectGetHeight(boxRect) * 0.8);
+
+            CGFloat width2 = CGRectGetWidth(boxRect) * 0.7;
+            CGFloat x2 = boxRect.origin.x + width * 0.15;
+            self.textLayer.frame = CGRectMake(x2, CGRectGetMaxY(self.topTextLayer.frame), width2, CGRectGetHeight(boxRect) * 0.7);
+
             self.detailTextLayer.frame =
-            CGRectMake(x, CGRectGetMaxY(self.textLayer.frame) - 3, width, CGRectGetHeight(boxRect) * 0.18);
+            CGRectMake(x, CGRectGetMaxY(self.textLayer.frame), width, CGRectGetHeight(boxRect) * 0.18);
             break;
 
         case JYButtonStyleCentralImage:

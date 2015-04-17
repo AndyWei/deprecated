@@ -30,8 +30,8 @@ NSString *const kOrderCellIdentifier = @"orderCell";
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.navigationItem.title = NSLocalizedString(@"Orders Nearby", nil);
-    self.navigationController.navigationBar.translucent = YES;
+    self.navigationBarLabel.text = NSLocalizedString(@"Orders Nearby", nil);
+    [self.navigationBarLabel sizeToFit];
 
     [self _fectchData];
     [self _createTableView];
@@ -81,18 +81,25 @@ NSString *const kOrderCellIdentifier = @"orderCell";
 
     // start date and time
     NSTimeInterval startTime = [[order valueForKey:@"starttime"] integerValue];
+
     [cell setStartDateTime:[NSDate dateWithTimeIntervalSinceReferenceDate:startTime]];
 
     // price
     NSUInteger price = [[order valueForKey:@"price"] integerValue];
     cell.priceLabel.text = [NSString stringWithFormat:@"$%tu", price];
 
+    // create time
+    [cell setCreateTime:[order valueForKey:@"created_at"]];
+
+    // distance
+    CLLocationDegrees lat = [[order valueForKey:@"startpointlat"] doubleValue];
+    CLLocationDegrees lon = [[order valueForKey:@"startpointlon"] doubleValue];
+    CLLocationCoordinate2D point = CLLocationCoordinate2DMake(lat, lon);
+    [cell setDistanceFromPoint:point];
+
     cell.titleLabel.text = [order valueForKey:@"title"];
     cell.bodyLabel.text = [order valueForKey:@"note"];
-    cell.timeLabel.text = [order valueForKey:@"created_at"];
-
-    cell.distanceLabel.text = [order valueForKey:@"created_at"];
-    cell.placeLabel.text = [order valueForKey:@"startaddress"];
+    cell.cityLabel.text = [order valueForKey:@"startcity"];
 
     return cell;
 }
@@ -101,7 +108,14 @@ NSString *const kOrderCellIdentifier = @"orderCell";
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return [JYOrderViewCell cellHeight];
+    if (!self.ordersList || self.ordersList.count == 0)
+    {
+        return 100;
+    }
+
+    NSDictionary *order = (NSDictionary *)[self.ordersList objectAtIndex:indexPath.row];
+    NSString *note = [order valueForKey:@"note"];
+    return [JYOrderViewCell cellHeightForText:note];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath

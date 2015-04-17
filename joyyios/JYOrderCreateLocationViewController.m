@@ -162,6 +162,7 @@ static NSString *reuseId = @"pin";
                            {
                                weakSelf.dashBoard.startButton.textLabel.text = address;
                                [JYOrder currentOrder].startAddress = address;
+                               [JYOrder currentOrder].startCity = placemark.locality;
                            }
                            else if (weakSelf.mapEditMode == MapEditModeEndPoint)
                            {
@@ -243,7 +244,7 @@ static NSString *reuseId = @"pin";
     currentOrder.startPointLat = self.startPoint.coordinate.latitude;
     currentOrder.startPointLon = self.startPoint.coordinate.longitude;
 
-    if (currentOrder.startPointLat == 0.0f && currentOrder.startPointLon == 0.0f)
+    if (currentOrder.startPointLat == 0.0 && currentOrder.startPointLon == 0.0)
     {
         NSLog(@"startPoint not set");
         return;

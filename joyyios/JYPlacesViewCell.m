@@ -20,13 +20,13 @@
 
         self.topLabel = [[UILabel alloc] initWithFrame:CGRectMake(50, 8, 315, 25)];
         self.topLabel.textColor = FlatBlack;
-        self.topLabel.font = [UIFont fontWithName:@"AvenirNext-Medium" size:17.0f];
+        self.topLabel.font = [UIFont boldSystemFontOfSize:17];
         self.topLabel.backgroundColor = FlatWhite;
         [self addSubview:self.topLabel];
 
         self.bottomLabel = [[UILabel alloc] initWithFrame:CGRectMake(50, 33, 315, 20)];
         self.bottomLabel.textColor = FlatGrayDark;
-        self.bottomLabel.font = [UIFont fontWithName:@"AvenirNext-Regular" size:14.0f];
+        self.bottomLabel.font = [UIFont systemFontOfSize:14];
         self.bottomLabel.backgroundColor = FlatWhite;
         [self addSubview:self.bottomLabel];
 

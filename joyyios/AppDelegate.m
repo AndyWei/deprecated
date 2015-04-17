@@ -147,7 +147,7 @@
 - (void)_launchViewController
 {
     JYUser *user = [JYUser currentUser];
-    BOOL needIntro = YES;
+    BOOL needIntro = NO;
 
     if (needIntro)
     {

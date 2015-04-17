@@ -6,28 +6,49 @@
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
+#import "AppDelegate.h"
 #import "JYOrderViewCell.h"
 
 const CGFloat kTopMargin = 8.0f;
 const CGFloat kLeftMargin = 8.0f;
+const CGFloat kTextLeftMargin = 12.0f;
 const CGFloat kRightMargin = 8.0f;
-const CGFloat kStartDateButtonWidth = 85.0f;
-const CGFloat kStartDateButtonHeight = 85.0f;
-const CGFloat kStartTimeButtonWidth = 85.0f;
-const CGFloat kStartTimeButtonHeight = 20.0f;
-const CGFloat kTitleLabelWidth = 120.0f;
-const CGFloat kTitleLabelHeight = 20.0f;
-const CGFloat kBodyLabelHeight = 120.0f;
+const CGFloat kStartDateViewWidth = 70.0f;
+const CGFloat kStartDateViewHeight = 70.0f;
+const CGFloat kStartTimeLabelWidth = 85.0f;
+const CGFloat kStartTimeLabelHeight = 20.0f;
+const CGFloat kTitleLabelWidth = 180.0f;
+const CGFloat kTitleLabelHeight = 25.0f;
+const CGFloat kBodyLabelMinHeight = 53.0f;
 const CGFloat kTimeLabelWidth = 80.0f;
-const CGFloat kPlaceLabelWidth = 100.0f;
-const CGFloat kDistanceLabelWidth = 80.0f;
+const CGFloat kCityLabelWidth = 80.0f;
+const CGFloat kDistanceLabelWidth = 50.0f;
 const CGFloat kTinyLabelHeight = 20.0f;
+
+const CGFloat kFontSizeBody = 18.0f;
+const CGFloat kFontSizeDetail = 13.0f;
 
 @implementation JYOrderViewCell
 
-+ (CGFloat)cellHeight
++ (CGFloat)cellHeightForText:(NSString *)text
 {
-    return kTitleLabelHeight + kBodyLabelHeight + kTinyLabelHeight + kTopMargin;
+    CGFloat bodyLabelX = kTextLeftMargin + kLeftMargin + kStartDateViewWidth;
+    CGFloat bodyLabelWidth = CGRectGetWidth([[UIScreen mainScreen] applicationFrame]) - bodyLabelX - kRightMargin;
+    CGSize maximumSize = CGSizeMake(bodyLabelWidth, 10000);
+
+    static UILabel *dummyLabel = nil;
+    if (!dummyLabel)
+    {
+        dummyLabel = [UILabel new];
+        dummyLabel.font = [UIFont systemFontOfSize:kFontSizeBody];
+        dummyLabel.numberOfLines = 0;
+        dummyLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    }
+    dummyLabel.text = text;
+    CGSize expectSize = [dummyLabel sizeThatFits:maximumSize];
+    CGFloat bodyLabelHeight = fmax(expectSize.height, kBodyLabelMinHeight);
+
+    return  kTopMargin + kTitleLabelHeight + bodyLabelHeight + kTinyLabelHeight;
 }
 
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
@@ -36,85 +57,152 @@ const CGFloat kTinyLabelHeight = 20.0f;
     if (self)
     {
         self.opaque = YES;
-        self.backgroundColor = FlatWhite;
+        self.backgroundColor = [UIColor whiteColor];
 
-        [self _createStartDateButton];
-        [self _createStartTimeButton];
+        [self _createStartDateView];
+        [self _createStartTimeLabel];
         [self _createTitleLabel];
         [self _createBodyLabel];
         [self _createPriceLabel];
-        [self _createPlaceLabel];
+        [self _createCityLabel];
         [self _createDistanceLabel];
         [self _createTimeLabel];
     }
     return self;
 }
 
+-(void) layoutSubviews
+{
+    [super layoutSubviews];
+
+    self.bodyLabel.height = self.height - (kTopMargin + kTitleLabelHeight + kTinyLabelHeight);
+    self.cityLabel.y = CGRectGetMaxY(self.bodyLabel.frame);
+    self.distanceLabel.y = self.cityLabel.y;
+    self.timeLabel.y = self.cityLabel.y;
+}
+
 - (void)setStartDateTime:(NSDate *)date
 {
-    NSDateFormatter* formatter = [NSDateFormatter new];
-    [formatter setTimeZone:[NSTimeZone systemTimeZone]];
-    [formatter setDateStyle:NSDateFormatterMediumStyle];
+    NSDateFormatter* dateFormatter = [NSDateFormatter new];
+    [dateFormatter setTimeZone:[NSTimeZone systemTimeZone]];
+    [dateFormatter setDateStyle:NSDateFormatterMediumStyle];
 
     // weekday
-    [formatter setDateFormat:@"EEE"];
-    self.startDateButton.topTextLabel.text = [formatter stringFromDate:date];
+    [dateFormatter setDateFormat:@"EEE"];
+    self.startDateView.topLabel.text = [dateFormatter stringFromDate:date];
 
     // day
-    [formatter setDateFormat:@"dd"];
-    self.startDateButton.textLabel.text = [formatter stringFromDate:date];
+    [dateFormatter setDateFormat:@"dd"];
+    self.startDateView.centerLabel.text = [dateFormatter stringFromDate:date];
 
     // month name
-    [formatter setDateFormat:@"MMM"];
-    self.startDateButton.detailTextLabel.text = [formatter stringFromDate:date];
+    [dateFormatter setDateFormat:@"MMM"];
+    self.startDateView.bottomLabel.text = [dateFormatter stringFromDate:date];
 
     // time
-    [formatter setDateFormat:@"hh:mm a"];
-    self.startTimeButton.textLabel.text = [formatter stringFromDate:date];
+    [dateFormatter setDateFormat:@"hh:mm a"];
+    self.startTimeLabel.text = [dateFormatter stringFromDate:date];
 }
 
-- (void)_createStartDateButton
+- (void)setCreateTime:(NSString *)dateString
 {
-    CGRect frame = CGRectMake(kLeftMargin, kTopMargin, kStartDateButtonWidth, kStartDateButtonHeight);
-    self.startDateButton = [JYButton buttonWithFrame:frame buttonStyle:JYButtonStyleDate appearanceIdentifier:nil];
-    self.startDateButton.borderColor = FlatGray;
-    self.startDateButton.borderWidth = 1;
-    self.startDateButton.contentColor = FlatGrayDark;
-    self.startDateButton.cornerRadius = kStartDateButtonWidth / 2;
-    self.startDateButton.foregroundColor = ClearColor;
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSSZ"];
+    NSDate *createDate = [dateFormatter dateFromString:dateString];
+    NSLog(@"createDate = %@", createDate);
 
-    self.startDateButton.topTextLabel.font = [UIFont systemFontOfSize:10];
-    self.startDateButton.textLabel.font = [UIFont systemFontOfSize:25];
-    self.startDateButton.detailTextLabel.font = [UIFont systemFontOfSize:10];
+    NSDate *now = [NSDate date];
+    NSTimeInterval secondsBetween = [now timeIntervalSinceDate:createDate];
 
-    [self addSubview:self.startDateButton];
+    NSLog(@"secondsBetween = %f", secondsBetween);
+
+    NSString *ago = NSLocalizedString(@"ago", nil);
+    int numberOfDays = secondsBetween / 86400;
+    if (numberOfDays > 0)
+    {
+        NSString *days = (numberOfDays == 1) ? NSLocalizedString(@"day", nil) : NSLocalizedString(@"days", nil);
+
+        self.timeLabel.text = [NSString stringWithFormat:@"%d %@ %@", numberOfDays, days, ago];
+        return;
+    }
+
+    int numberOfHours = secondsBetween / 3600;
+    if (numberOfHours > 0)
+    {
+        NSString *hours = (numberOfHours == 1) ? NSLocalizedString(@"hour", nil) : NSLocalizedString(@"hours", nil);
+
+        self.timeLabel.text = [NSString stringWithFormat:@"%d %@ %@", numberOfHours, hours, ago];
+        return;
+    }
+
+    int numberOfMinutes = secondsBetween / 60;
+    if (numberOfMinutes > 0)
+    {
+        NSString *minutes = (numberOfMinutes == 1) ? NSLocalizedString(@"min", nil) : NSLocalizedString(@"mins", nil);
+
+        self.timeLabel.text = [NSString stringWithFormat:@"%d %@ %@", numberOfMinutes, minutes, ago];
+        return;
+    }
+
+    int numberOfSeconds = (int)secondsBetween;
+    NSString *seconds = (numberOfSeconds == 1) ? NSLocalizedString(@"sec", nil) : NSLocalizedString(@"secs", nil);
+    self.timeLabel.text = [NSString stringWithFormat:@"%d %@ %@", numberOfSeconds, seconds, ago];
 }
 
-- (void)_createStartTimeButton
+- (void)setDistanceFromPoint:(CLLocationCoordinate2D )point
 {
-    CGRect frame = CGRectMake(kLeftMargin, 5 + CGRectGetMaxY(self.startDateButton.frame), kStartTimeButtonWidth, kStartTimeButtonHeight);
-    self.startTimeButton = [JYButton buttonWithFrame:frame buttonStyle:JYButtonStyleDefault appearanceIdentifier:nil];
-    self.startTimeButton.contentColor = FlatGrayDark;
-    self.startTimeButton.cornerRadius = 4;
-    self.startTimeButton.foregroundColor = FlatWhite;
-    [self addSubview:self.startTimeButton];
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+
+    if (!appDelegate.currentLocation)
+    {
+        return;
+    }
+
+    CLLocation *pointLocation = [[CLLocation alloc] initWithCoordinate: point altitude:1 horizontalAccuracy:1 verticalAccuracy:-1 timestamp:nil];
+
+    CLLocationDistance kilometers = [appDelegate.currentLocation distanceFromLocation:pointLocation] / 1000;
+    NSUInteger numberOfMiles = (NSUInteger)kilometers * 0.621371;
+    if (numberOfMiles == 0)
+    {
+        numberOfMiles = 1;
+    }
+
+    NSString *miles = (numberOfMiles == 1) ? NSLocalizedString(@"mile", nil) : NSLocalizedString(@"miles", nil);
+    self.distanceLabel.text = [NSString stringWithFormat:@"%tu %@", numberOfMiles, miles];
+}
+
+- (void)_createStartDateView
+{
+    CGRect frame = CGRectMake(kLeftMargin, kTopMargin, kStartDateViewWidth, kStartDateViewHeight);
+    self.startDateView = [[JYDateView alloc] initWithFrame:frame];
+
+    [self addSubview:self.startDateView];
+}
+
+- (void)_createStartTimeLabel
+{
+    CGRect frame = CGRectMake(0, kTopMargin + CGRectGetMaxY(self.startDateView.frame), kStartTimeLabelWidth, kStartTimeLabelHeight);
+    self.startTimeLabel = [[UILabel alloc] initWithFrame:frame];
+    self.startTimeLabel.centerX = self.startDateView.centerX;
+    self.startTimeLabel.font = [UIFont systemFontOfSize:15.0f];
+    self.startTimeLabel.textColor = FlatGrayDark;
+    self.startTimeLabel.textAlignment = NSTextAlignmentCenter;
+    [self addSubview:self.startTimeLabel];
 }
 
 - (void)_createTitleLabel
 {
     self.titleLabel = [self _createLabel];
-    self.titleLabel.font = [UIFont boldSystemFontOfSize:18.0f];
-    CGFloat x = kLeftMargin + CGRectGetMaxX(self.startDateButton.frame);
+    CGFloat x = kTextLeftMargin + CGRectGetMaxX(self.startDateView.frame);
     self.titleLabel.frame = CGRectMake(x, kTopMargin, kTitleLabelWidth, kTitleLabelHeight);
 }
 
 - (void)_createPriceLabel
 {
     self.priceLabel = [self _createLabel];
-    self.priceLabel.font = [UIFont boldSystemFontOfSize:20.0f];
     self.priceLabel.textAlignment = NSTextAlignmentRight;
 
-    CGFloat x = kLeftMargin + CGRectGetMaxX(self.titleLabel.frame);
+    CGFloat x = kTextLeftMargin + CGRectGetMaxX(self.titleLabel.frame);
     CGFloat width = CGRectGetWidth([[UIScreen mainScreen] applicationFrame]) - x - kRightMargin;
     self.priceLabel.frame = CGRectMake(x, kTopMargin, width, kTitleLabelHeight);
 }
@@ -122,45 +210,52 @@ const CGFloat kTinyLabelHeight = 20.0f;
 - (void)_createBodyLabel
 {
     self.bodyLabel = [self _createLabel];
-    self.bodyLabel.font = [UIFont systemFontOfSize:18.0f];
-    CGFloat x = kLeftMargin + CGRectGetMaxX(self.startDateButton.frame);
+    CGFloat x = kTextLeftMargin + CGRectGetMaxX(self.startDateView.frame);
     CGFloat width = CGRectGetWidth([[UIScreen mainScreen] applicationFrame]) - x - kRightMargin;
-    self.bodyLabel.frame = CGRectMake(x, CGRectGetMaxY(self.titleLabel.frame), width, kBodyLabelHeight);
+    CGFloat height = kBodyLabelMinHeight;
+
+    self.bodyLabel.frame = CGRectMake(x, CGRectGetMaxY(self.titleLabel.frame), width, height);
+    self.bodyLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    self.bodyLabel.numberOfLines = 0;
 }
 
-- (void)_createPlaceLabel
+- (void)_createCityLabel
 {
-    self.placeLabel = [self _createLabel];
-    self.placeLabel.font = [UIFont systemFontOfSize:14.0f];
-    CGFloat x = kLeftMargin;
+    self.cityLabel = [self _createLabel];
+    self.cityLabel.font = [UIFont systemFontOfSize:kFontSizeDetail];
+    CGFloat x = kTextLeftMargin + CGRectGetMaxX(self.startDateView.frame);
     CGFloat y = CGRectGetMaxY(self.bodyLabel.frame);
-    self.placeLabel.frame = CGRectMake(x, y, kPlaceLabelWidth, kTinyLabelHeight);
+    self.cityLabel.frame = CGRectMake(x, y, kCityLabelWidth, kTinyLabelHeight);
+    self.cityLabel.textColor = FlatGrayDark;
 }
 
 - (void)_createDistanceLabel
 {
     self.distanceLabel = [self _createLabel];
-    self.distanceLabel.font = [UIFont systemFontOfSize:14.0f];
-    CGFloat x = kLeftMargin + CGRectGetMaxX(self.placeLabel.frame);
+    self.distanceLabel.font = [UIFont systemFontOfSize:kFontSizeDetail];
+    CGFloat x = kLeftMargin + CGRectGetMaxX(self.cityLabel.frame);
     CGFloat y = CGRectGetMaxY(self.bodyLabel.frame);
     self.distanceLabel.frame = CGRectMake(x, y, kDistanceLabelWidth, kTinyLabelHeight);
+    self.distanceLabel.textColor = FlatGrayDark;
 }
 
 - (void)_createTimeLabel
 {
     self.timeLabel = [self _createLabel];
-    self.timeLabel.font = [UIFont systemFontOfSize:14.0f];
+    self.timeLabel.font = [UIFont systemFontOfSize:kFontSizeDetail];
     CGFloat x = kLeftMargin + CGRectGetMaxX(self.distanceLabel.frame);
     CGFloat y = CGRectGetMaxY(self.bodyLabel.frame);
     self.timeLabel.frame = CGRectMake(x, y, kTimeLabelWidth, kTinyLabelHeight);
+    self.timeLabel.textColor = FlatGrayDark;
 }
 
 - (UILabel *)_createLabel
 {
     UILabel *label = [UILabel new];
-    label.backgroundColor = FlatWhite;
+    label.backgroundColor = [UIColor whiteColor];
     label.opaque = YES;
-    label.textColor = FlatGray;
+    label.font = [UIFont systemFontOfSize:kFontSizeBody];
+    label.textColor = FlatBlack;
     label.textAlignment = NSTextAlignmentLeft;
     [self addSubview:label];
 

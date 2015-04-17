@@ -55,9 +55,10 @@ NSString *const kKeyUserCredential = @"UserCredential";
 NSString *const kNotificationIntroduceDidFinish = @"IntroDidFinish";
 NSString *const kNotificationSignDidFinish = @"SignDidFinish";
 
-NSString *const kSystemFontBold = @"HelveticaNeue-Bold";
-NSString *const kSystemFontItalic = @"HelveticaNeue-Italic";
-NSString *const kSystemFontLight = @"HelveticaNeue-Thin";
-NSString *const kSystemFontRegular = @"HelveticaNeue-Light";
+NSString *const kSystemFontBold = @"AvenirNextCondensed-DemiBold";
+NSString *const kSystemFontItalic = @"AvenirNextCondensed-Italic ";
+NSString *const kSystemFontLight = @"AvenirNextCondensed-UltraLight ";
+NSString *const kSystemFontRegular = @"AvenirNextCondensed-Regular";
 
-NSString *const kUrlAPIBase = @"http://api.joyyapp.com:8000/v1/";
+//NSString *const kUrlAPIBase = @"http://api.joyyapp.com:8000/v1/";
+NSString *const kUrlAPIBase = @"http://192.168.1.145:8000/v1/";
