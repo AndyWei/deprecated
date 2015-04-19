@@ -55,7 +55,7 @@ extern NSString *const kKeyCurrentOrder;
 extern NSString *const kKeyTokenExpireTime;
 extern NSString *const kKeyUserCredential;
 
-extern NSString *const kNotificationIntroduceDidFinish;
+extern NSString *const kNotificationOrderCreateDidFinish;
 extern NSString *const kNotificationSignDidFinish;
 
 extern NSString *const kSystemFontBold;

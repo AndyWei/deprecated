@@ -221,9 +221,10 @@
               [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
               [KVNProgress showSuccessWithStatus:NSLocalizedString(@"The Order Created!", nil)];
 
-              // switch to orders nearby view and quite order creating process
-              // The sequence of below 2 sentences must not be changed
+              // switch to orders nearby view and quit order creating process
+              // The sequence of below 3 steps must not be changed
               [weakSelf.tabBarController setSelectedIndex:1];
+              [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationOrderCreateDidFinish object:nil];
               [weakSelf.navigationController popToRootViewControllerAnimated:NO];
           }
           failure:^(AFHTTPRequestOperation *operation, NSError *error) {

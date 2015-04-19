@@ -15,6 +15,7 @@
 @property(nonatomic) CGFloat navBarOriginalHeight;
 @property(nonatomic) CGFloat navBarMinHeight;
 @property(nonatomic) CGFloat tabBarOriginalY;
+@property(nonatomic) UILabel *titleLabel;
 
 @end
 
@@ -27,21 +28,54 @@
 
     self.tabBarOriginalY = CGRectGetMinY(self.tabBarController.tabBar.frame);
     self.navBarOriginalHeight = CGRectGetHeight(self.navigationController.navigationBar.frame);
-    self.navBarMinHeight = self.navBarOriginalHeight * 0.37;
+    self.navBarMinHeight = self.navBarOriginalHeight * 0.5;
 
-    self.navigationBarLabel = [[UILabel alloc] initWithFrame:self.navigationController.navigationBar.frame];
-    self.navigationBarLabel.backgroundColor = ClearColor;
-    self.navigationBarLabel.font = [UIFont lightSystemFontOfSize:kNavBarTitleFontSize];
-    self.navigationBarLabel.textColor = FlatBlack;
-    self.navigationBarLabel.textAlignment = NSTextAlignmentCenter;
+    self.titleLabel = [[UILabel alloc] initWithFrame:self.navigationController.navigationBar.frame];
+    self.titleLabel.backgroundColor = ClearColor;
+    self.titleLabel.font = [UIFont systemFontOfSize:kNavBarTitleFontSize];
+    self.titleLabel.textColor = FlatBlack;
+    self.titleLabel.textAlignment = NSTextAlignmentCenter;
+    self.navigationItem.titleView = self.titleLabel;
 
-    self.navigationItem.titleView = self.navigationBarLabel;
+    UITapGestureRecognizer * tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(_scrollToTop)];
+    self.navigationItem.titleView.userInteractionEnabled = YES;
+    [self.navigationItem.titleView addGestureRecognizer:tapGesture];
 }
 
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void)setTitleText:(NSString *)text
+{
+    self.titleLabel.text = text;
+    [self.titleLabel sizeToFit];
+}
+
+- (void)resetNavigationBar:(BOOL)animated
+{
+    if (!animated)
+    {
+        self.navigationController.navigationBar.height = self.navBarOriginalHeight;
+    }
+    else
+    {
+        __weak typeof(self) weakSelf = self;
+        [UIView animateWithDuration:0.15 animations:^{
+            [weakSelf resetNavigationBar:NO];
+        }];
+    }
+}
+
+- (void)_scrollToTop
+{
+    if (self.scrollView)
+    {
+        [self resetNavigationBar:YES];
+        [self.scrollView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:YES];
+    }
 }
 
 #pragma mark - UIScrollViewDelegate
@@ -99,11 +133,6 @@
         navBarFrame.size.height -= delta;
         navBarFrame.size.height = fmax(self.navBarMinHeight, fmin(self.navBarOriginalHeight, navBarFrame.size.height));
         self.navigationController.navigationBar.frame = navBarFrame;
-
-        // Continiously change nav bar label view's font size
-        CGFloat shrinkFactor = navBarFrame.size.height / self.navBarOriginalHeight;
-        CGFloat fontSize = fmax(13.0f, kNavBarTitleFontSize * shrinkFactor);
-        self.navigationBarLabel.font = [UIFont lightSystemFontOfSize:fontSize];
     }
 }
 

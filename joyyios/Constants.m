@@ -17,7 +17,7 @@ const CGFloat kMapEndPointCenterOffset = 0.003f;
 const CGFloat kMapDefaultAltitude = 2000.0f;
 const CGFloat kMapDefaultSpanDistance = 3000.0f;
 
-const CGFloat kNavBarTitleFontSize = 22.0f;
+const CGFloat kNavBarTitleFontSize = 20.0f;
 
 const CGFloat kPinAnnotationHeight = 55.0f;
 const CGFloat kPinAnnotationWidth = 55.0f;
@@ -52,7 +52,7 @@ NSString *const kKeyCurrentOrder = @"CurrentOrder";
 NSString *const kKeyTokenExpireTime = @"TokenExpireTime";
 NSString *const kKeyUserCredential = @"UserCredential";
 
-NSString *const kNotificationIntroduceDidFinish = @"IntroDidFinish";
+NSString *const kNotificationOrderCreateDidFinish = @"OrderCreateDidFinish";
 NSString *const kNotificationSignDidFinish = @"SignDidFinish";
 
 NSString *const kSystemFontBold = @"AvenirNextCondensed-DemiBold";

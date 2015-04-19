@@ -6,8 +6,6 @@
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
-#import "JYExpandViewController.h"
-
-@interface JYOrderCategoryCollectionViewController: JYExpandViewController <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
+@interface JYOrderCategoryCollectionViewController: UIViewController <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
 
 @end

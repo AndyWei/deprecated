@@ -31,19 +31,25 @@ NSString *const kOrderCellIdentifier = @"orderCell";
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.navigationBarLabel.text = NSLocalizedString(@"Orders Nearby", nil);
-    [self.navigationBarLabel sizeToFit];
+    [self setTitleText:NSLocalizedString(@"Orders Nearby", nil)];
 
     self.maxOrderId = 0;
     self.ordersList = [NSMutableArray new];
     [self _fetchData];
     [self _createTableView];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_fetchData) name:kNotificationSignDidFinish object:nil];
 }
 
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)_createTableView
@@ -63,6 +69,9 @@ NSString *const kOrderCellIdentifier = @"orderCell";
     [self.refreshControl addTarget:self action:@selector(_fetchData) forControlEvents:UIControlEventValueChanged];
 
     tableViewController.refreshControl = self.refreshControl;
+
+    // Enable scroll to top
+    self.scrollView = self.tableView;
 }
 
 #pragma mark - UITableViewDataSource

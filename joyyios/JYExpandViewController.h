@@ -8,6 +8,9 @@
 
 @interface JYExpandViewController : UIViewController <UIScrollViewDelegate>
 
-@property(nonatomic) UILabel *navigationBarLabel;
+@property(nonatomic, weak) UIScrollView *scrollView;
+
+- (void)setTitleText:(NSString *)text;
+- (void)resetNavigationBar:(BOOL)animated;
 
 @end

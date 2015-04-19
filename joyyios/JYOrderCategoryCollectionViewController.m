@@ -17,6 +17,7 @@
 @property(nonatomic) CGFloat cellWidth;
 @property(nonatomic) CGFloat cellHeight;
 @property(nonatomic) UICollectionView *collectionView;
+@property(nonatomic) UILabel *titleLabel;
 
 @end
 
@@ -29,8 +30,13 @@
 
     self.view.backgroundColor = [UIColor whiteColor];
 
-    self.navigationBarLabel.text = NSLocalizedString(@"Choose A Category", nil);
-    [self.navigationBarLabel sizeToFit];
+    self.titleLabel = [[UILabel alloc] initWithFrame:self.navigationController.navigationBar.frame];
+    self.titleLabel.backgroundColor = ClearColor;
+    self.titleLabel.font = [UIFont systemFontOfSize:kNavBarTitleFontSize];
+    self.titleLabel.textColor = FlatBlack;
+    self.titleLabel.textAlignment = NSTextAlignmentCenter;
+    self.titleLabel.text = NSLocalizedString(@"What can we help?", nil);
+    self.navigationItem.titleView = self.titleLabel;
 
     self.cellWidth = self.view.center.x - 1;
     self.cellHeight = self.cellWidth;
