@@ -17,9 +17,10 @@
 
 @interface JYNearbyViewController ()
 
-@property(nonatomic) NSArray *ordersList;
+@property(nonatomic) NSMutableArray *ordersList;
 @property(nonatomic) UITableView *tableView;
 @property(nonatomic) UIRefreshControl *refreshControl;
+@property(nonatomic) NSUInteger maxOrderId;
 
 @end
 
@@ -33,7 +34,9 @@ NSString *const kOrderCellIdentifier = @"orderCell";
     self.navigationBarLabel.text = NSLocalizedString(@"Orders Nearby", nil);
     [self.navigationBarLabel sizeToFit];
 
-    [self _fectchData];
+    self.maxOrderId = 0;
+    self.ordersList = [NSMutableArray new];
+    [self _fetchData];
     [self _createTableView];
 }
 
@@ -52,12 +55,14 @@ NSString *const kOrderCellIdentifier = @"orderCell";
     [self.tableView registerClass:[JYOrderViewCell class] forCellReuseIdentifier:kOrderCellIdentifier];
     [self.view addSubview:self.tableView];
 
-//    UITableViewController *tableViewController = [[UITableViewController alloc] init];
-//    tableViewController.tableView = self.tableView;
-//
-//    self.refreshControl = [[UIRefreshControl alloc] init];
-//    [self.refreshControl addTarget:self action:@selector(_fectchData) forControlEvents:UIControlEventValueChanged];
-//    tableViewController.refreshControl = self.refreshControl;
+    // Add UIRefreshControl
+    UITableViewController *tableViewController = [[UITableViewController alloc] init];
+    tableViewController.tableView = self.tableView;
+
+    self.refreshControl = [UIRefreshControl new];
+    [self.refreshControl addTarget:self action:@selector(_fetchData) forControlEvents:UIControlEventValueChanged];
+
+    tableViewController.refreshControl = self.refreshControl;
 }
 
 #pragma mark - UITableViewDataSource
@@ -104,11 +109,17 @@ NSString *const kOrderCellIdentifier = @"orderCell";
     return cell;
 }
 
+#pragma mark -UIRefreshControl
+- (void)refresh:(UIRefreshControl *)refreshControl
+{
+    [refreshControl endRefreshing];
+}
+
 #pragma mark - UITableView Delegate
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (!self.ordersList || self.ordersList.count == 0)
+    if (self.ordersList.count == 0)
     {
         return 100;
     }
@@ -123,19 +134,12 @@ NSString *const kOrderCellIdentifier = @"orderCell";
 
 }
 
-#pragma mark -UIRefreshControl
-- (void)refresh:(UIRefreshControl *)refreshControl
-{
-    [refreshControl endRefreshing];
-}
-
-
 #pragma mark - Network
 
-- (void)_fectchData
+- (void)_fetchData
 {
     NSDictionary *parameters = [self _httpParameters];
-    NSLog(@"parameters = %@", parameters);
+//    NSLog(@"parameters = %@", parameters);
 
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYUser currentUser].token];
@@ -153,12 +157,22 @@ NSString *const kOrderCellIdentifier = @"orderCell";
 
               [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
 
-              weakSelf.ordersList = responseObject;
+              NSMutableArray *newOrdersList = [NSMutableArray arrayWithArray:(NSArray *)responseObject];
+              [newOrdersList addObjectsFromArray:weakSelf.ordersList];
+              weakSelf.ordersList = newOrdersList;
+
+              if (weakSelf.ordersList.count > 0)
+              {
+                  id order = [responseObject firstObject];
+                  weakSelf.maxOrderId = [[order valueForKey:@"id"] unsignedIntegerValue];
+              }
+
               [weakSelf.tableView reloadData];
+              [weakSelf.refreshControl endRefreshing];
           }
           failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-
               [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+              [weakSelf.refreshControl endRefreshing];
           }
      ];
 }
@@ -171,6 +185,7 @@ NSString *const kOrderCellIdentifier = @"orderCell";
     CLLocationCoordinate2D currentPoint = appDelegate.currentLocation.coordinate;
     [parameters setValue:@(currentPoint.longitude) forKey:@"lon"];
     [parameters setValue:@(currentPoint.latitude) forKey:@"lat"];
+    [parameters setValue:@(self.maxOrderId) forKey:@"after"];
 
     return parameters;
 }
