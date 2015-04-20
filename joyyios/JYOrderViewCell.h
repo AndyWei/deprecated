@@ -7,8 +7,8 @@
 //
 
 #import <MapKit/MapKit.h>
+#import <MCSwipeTableViewCell/MCSwipeTableViewCell.h>
 
-#import "MCSwipeTableViewCell.h"
 #import "JYDateView.h"
 
 @interface JYOrderViewCell : MCSwipeTableViewCell

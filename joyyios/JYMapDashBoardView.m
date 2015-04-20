@@ -96,7 +96,7 @@
     [self _createStartButton];
     [self _createEndButton];
     [self _createSubmitButton];
-    [self _createUserTrackingButton];
+    [self _createLocateButton];
 }
 
 - (void)_createSubmitButton
@@ -106,16 +106,8 @@
         return;
     }
 
-    CGFloat y = CGRectGetHeight(self.frame) - kMapDashBoardSubmitButtonHeight;
-    CGRect frame = CGRectMake(0, y, CGRectGetWidth(self.frame), kMapDashBoardSubmitButtonHeight);
-
-    self.submitButton = [[JYButton alloc] initWithFrame:frame buttonStyle:JYButtonStyleDefault];
-    self.submitButton.backgroundColor = [UIColor whiteColor];
-    self.submitButton.contentAnimateToColor = FlatGray;
-    self.submitButton.contentColor = FlatWhite;
-    self.submitButton.foregroundColor = JoyyBlue;
-    self.submitButton.foregroundAnimateToColor = FlatWhite;
-    self.submitButton.textLabel.font = [UIFont boldSystemFontOfSize:kSignFieldFontSize];
+    self.submitButton = [JYButton button];
+    self.submitButton.y = CGRectGetHeight(self.frame) - kButtonDefaultHeight;
 
     [self.submitButton addTarget:self action:@selector(_submitButtonPressed) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:self.submitButton];
@@ -131,7 +123,7 @@
     CGFloat totalWidth = CGRectGetWidth(self.frame);
     CGFloat width = (_dashBoardStyle == JYMapDashBoardStyleStartOnly)? totalWidth: totalWidth * 0.7;
     CGRect frame = CGRectMake(0,
-                              CGRectGetHeight(self.frame) - kMapDashBoardSubmitButtonHeight - kButtonDefaultHeight,
+                              CGRectGetHeight(self.frame) - 2 * kButtonDefaultHeight,
                               width,
                               kButtonDefaultHeight);
     self.startButton = [JYButton buttonWithFrame:frame buttonStyle:JYButtonStyleImageWithTitle shouldMaskImage:NO];
@@ -176,18 +168,18 @@
     [self addSubview:self.endButton];
 }
 
-- (void)_createUserTrackingButton
+- (void)_createLocateButton
 {
     if (self.locateButton)
     {
         return;
     }
 
-    CGFloat margin = kMapDashBoardHeight - kMapDashBoardSubmitButtonHeight - 2 * kButtonDefaultHeight;
-    CGRect frame = CGRectMake(CGRectGetMaxX(self.frame) - kButtonDefaultHeight - margin,
+    CGFloat margin = kMapDashBoardHeight - kButtonLocateDiameter - 2 * kButtonDefaultHeight;
+    CGRect frame = CGRectMake(CGRectGetMaxX(self.frame) - kButtonLocateDiameter - margin,
                               0,
-                              kButtonDefaultHeight,
-                              kButtonDefaultHeight);
+                              kButtonLocateDiameter,
+                              kButtonLocateDiameter);
     self.locateButton = [JYButton buttonWithFrame:frame buttonStyle:JYButtonStyleCentralImage shouldMaskImage:YES];
     self.locateButton.backgroundColor = [UIColor whiteColor];
     self.locateButton.borderColor = FlatGray;

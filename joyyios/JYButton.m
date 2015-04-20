@@ -203,6 +203,21 @@ static CGRect CGRectEdgeInset(CGRect rect, UIEdgeInsets insets)
     return [[JYButton alloc] initWithFrame:frame buttonStyle:JYButtonStyleDefault shouldMaskImage:YES appearanceIdentifier:nil];
 }
 
++ (instancetype)button
+{
+    CGRect frame = CGRectMake(0, 0,  CGRectGetWidth([[UIScreen mainScreen] applicationFrame]), kButtonDefaultHeight);
+
+    JYButton *button = [[JYButton alloc] initWithFrame:frame buttonStyle:JYButtonStyleDefault];
+    button.backgroundColor = FlatWhite;
+    button.contentAnimateToColor = FlatGray;
+    button.contentColor = FlatWhite;
+    button.foregroundColor = FlatSkyBlue;
+    button.foregroundAnimateToColor = FlatWhite;
+    button.textLabel.font = [UIFont boldSystemFontOfSize:kButtonDefaultFontSize];
+
+    return button;
+}
+
 + (instancetype)buttonWithFrame:(CGRect)frame buttonStyle:(JYButtonStyle)style appearanceIdentifier:(NSString *)identifier
 {
     return [[JYButton alloc] initWithFrame:frame buttonStyle:style appearanceIdentifier:identifier];

@@ -59,6 +59,7 @@ extern CGFloat const JYButtonMaxValue;
 @property(nonatomic, weak) UIImageView *imageView;
 @property(nonatomic) UIEdgeInsets contentEdgeInsets;
 
++ (instancetype)button;
 + (instancetype)buttonWithFrame:(CGRect)frame buttonStyle:(JYButtonStyle)style appearanceIdentifier:(NSString *)identifier;
 + (instancetype)buttonWithFrame:(CGRect)frame buttonStyle:(JYButtonStyle)style shouldMaskImage:(BOOL)mask;
 + (instancetype)buttonWithFrame:(CGRect)frame buttonStyle:(JYButtonStyle)style shouldMaskImage:(BOOL)mask appearanceIdentifier:(NSString *)identifier;

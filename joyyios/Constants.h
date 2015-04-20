@@ -11,11 +11,12 @@
 
 extern const CGFloat kButtonCornerRadius;
 extern const CGFloat kButtonDefaultHeight;
+extern const CGFloat kButtonDefaultFontSize;
+extern const CGFloat kButtonLocateDiameter;
 
 extern const CGFloat kMapDashBoardHeight;
 extern const CGFloat kMapDashBoardLeadingFontSize;
 extern const CGFloat kMapDashBoardSupportingFontSize;
-extern const CGFloat kMapDashBoardSubmitButtonHeight;
 extern const CGFloat kMapEndPointCenterOffset;
 extern const CGFloat kMapDefaultAltitude;
 extern const CGFloat kMapDefaultSpanDistance;

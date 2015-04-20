@@ -7,10 +7,11 @@
 //
 
 const CGFloat kButtonCornerRadius = 4.0f;
-const CGFloat kButtonDefaultHeight = 44.0f;
+const CGFloat kButtonDefaultHeight = 55.0f;
+const CGFloat kButtonDefaultFontSize = 18.0f;
+const CGFloat kButtonLocateDiameter = 40;
 
-const CGFloat kMapDashBoardHeight = 155.0f;
-const CGFloat kMapDashBoardSubmitButtonHeight = 50.0f;
+const CGFloat kMapDashBoardHeight = 165.0f;
 const CGFloat kMapDashBoardLeadingFontSize = 16.0f;
 const CGFloat kMapDashBoardSupportingFontSize = 15.0f;
 const CGFloat kMapEndPointCenterOffset = 0.003f;

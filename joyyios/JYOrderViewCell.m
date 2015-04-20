@@ -71,7 +71,7 @@ const CGFloat kFontSizeDetail = 13.0f;
     return self;
 }
 
--(void) layoutSubviews
+- (void)layoutSubviews
 {
     [super layoutSubviews];
 
@@ -109,12 +109,9 @@ const CGFloat kFontSizeDetail = 13.0f;
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSSZ"];
     NSDate *createDate = [dateFormatter dateFromString:dateString];
-    NSLog(@"createDate = %@", createDate);
 
     NSDate *now = [NSDate date];
     NSTimeInterval secondsBetween = [now timeIntervalSinceDate:createDate];
-
-    NSLog(@"secondsBetween = %f", secondsBetween);
 
     NSString *ago = NSLocalizedString(@"ago", nil);
     int numberOfDays = secondsBetween / 86400;
@@ -261,4 +258,5 @@ const CGFloat kFontSizeDetail = 13.0f;
 
     return label;
 }
+
 @end

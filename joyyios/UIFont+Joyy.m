@@ -6,9 +6,9 @@
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
-#import "UIFont+SytemFontOverride.h"
+#import "UIFont+Joyy.h"
 
-@implementation UIFont (SytemFontOverride)
+@implementation UIFont (Joyy)
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wobjc-protocol-method-implementation"

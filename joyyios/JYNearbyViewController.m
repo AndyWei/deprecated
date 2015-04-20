@@ -12,6 +12,7 @@
 
 #import "AppDelegate.h"
 #import "JYNearbyViewController.h"
+#import "JYOrderBidViewController.h"
 #import "JYOrderViewCell.h"
 #import "JYUser.h"
 
@@ -22,11 +23,29 @@
 @property(nonatomic) UIRefreshControl *refreshControl;
 @property(nonatomic) NSUInteger maxOrderId;
 
++ (UILabel *)sharedBidLabel;
+
 @end
 
 NSString *const kOrderCellIdentifier = @"orderCell";
 
 @implementation JYNearbyViewController
+
++ (UILabel *)sharedBidLabel
+{
+    static UILabel *_sharedBidLabel = nil;
+    static dispatch_once_t done;
+
+    dispatch_once(&done, ^{
+        _sharedBidLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 60, 30)];
+        _sharedBidLabel.font = [UIFont systemFontOfSize:25];
+        _sharedBidLabel.text = NSLocalizedString(@"Bid", nil);
+        _sharedBidLabel.textColor = [UIColor whiteColor];
+        _sharedBidLabel.textAlignment= NSTextAlignmentCenter;
+    });
+
+    return _sharedBidLabel;
+}
 
 - (void)viewDidLoad
 {
@@ -115,13 +134,32 @@ NSString *const kOrderCellIdentifier = @"orderCell";
     cell.bodyLabel.text = [order valueForKey:@"note"];
     cell.cityLabel.text = [order valueForKey:@"startcity"];
 
+    [self _createSwipeViewForCell:cell andOrder:order];
     return cell;
 }
 
-#pragma mark -UIRefreshControl
-- (void)refresh:(UIRefreshControl *)refreshControl
+- (void)_createSwipeViewForCell:(JYOrderViewCell *)cell andOrder:(NSDictionary *)order
 {
-    [refreshControl endRefreshing];
+    __weak typeof(self) weakSelf = self;
+    [cell setSwipeGestureWithView:[[self class] sharedBidLabel]
+                            color:FlatGreen
+                             mode:MCSwipeTableViewCellModeSwitch
+                            state:MCSwipeTableViewCellState3
+                  completionBlock:^(MCSwipeTableViewCell *cell, MCSwipeTableViewCellState state, MCSwipeTableViewCellMode mode) {
+                      [weakSelf _presentBidViewForOrder:order];
+                  }];
+
+    [cell setDefaultColor:FlatGreen];
+    cell.firstTrigger = 0.20;
+}
+
+- (void)_presentBidViewForOrder:(NSDictionary *)order
+{
+    JYOrderBidViewController *bidViewController = [JYOrderBidViewController new];
+    bidViewController.order = order;
+
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:bidViewController];
+    [self presentViewController:nav animated:YES completion:nil];
 }
 
 #pragma mark - UITableView Delegate
@@ -140,7 +178,8 @@ NSString *const kOrderCellIdentifier = @"orderCell";
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-
+    [self _presentBidViewForOrder:(NSDictionary *)self.ordersList[indexPath.row]];
+    [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 #pragma mark - Network
@@ -148,7 +187,6 @@ NSString *const kOrderCellIdentifier = @"orderCell";
 - (void)_fetchData
 {
     NSDictionary *parameters = [self _httpParameters];
-//    NSLog(@"parameters = %@", parameters);
 
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYUser currentUser].token];

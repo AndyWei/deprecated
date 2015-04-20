@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
-@interface UIFont (SytemFontOverride)
+@interface UIFont (Joyy)
 
 + (UIFont *)lightSystemFontOfSize:(CGFloat)size;
 

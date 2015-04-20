@@ -29,7 +29,7 @@
 {
     [super viewDidLoad];
     UIBarButtonItem *barButton =
-    [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Submit", nil) style:UIBarButtonItemStylePlain target:self action:@selector(_submitButtonPressed)];
+    [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Submit", nil) style:UIBarButtonItemStylePlain target:self action:@selector(_submit)];
     self.navigationItem.rightBarButtonItem = barButton;
 
     [self _createForm];
@@ -134,19 +134,11 @@
 
 - (void)_createSubmitButton
 {
-    CGFloat y = CGRectGetHeight(self.view.frame) - kMapDashBoardSubmitButtonHeight;
-    CGRect frame = CGRectMake(0, y, CGRectGetWidth(self.view.frame), kMapDashBoardSubmitButtonHeight);
-
-    JYButton *submitButton = [[JYButton alloc] initWithFrame:frame buttonStyle:JYButtonStyleDefault];
-    submitButton.backgroundColor = FlatWhite;
-    submitButton.contentAnimateToColor = FlatGray;
-    submitButton.contentColor = FlatWhite;
-    submitButton.foregroundColor = FlatSkyBlue;
-    submitButton.foregroundAnimateToColor = FlatWhite;
-    submitButton.textLabel.font = [UIFont boldSystemFontOfSize:kSignFieldFontSize];
+    JYButton *submitButton = [JYButton button];
+    submitButton.y = CGRectGetHeight(self.view.frame) - kButtonDefaultHeight;
     submitButton.textLabel.text = NSLocalizedString(@"Submit", nil);
 
-    [submitButton addTarget:self action:@selector(_submitButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+    [submitButton addTarget:self action:@selector(_submit) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:submitButton];
 }
 
@@ -191,7 +183,7 @@
     }
 }
 
-- (void)_submitButtonPressed
+- (void)_submit
 {
     [self _saveOrder];
     [self _submitOrder];
