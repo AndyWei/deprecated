@@ -9,10 +9,14 @@
 #import <AFNetworking/AFNetworking.h>
 #import <KVNProgress/KVNProgress.h>
 #import <RKDropdownAlert/RKDropdownAlert.h>
+#import <XLForm/XLFormViewController.h>
+#import <XLForm/XLForm.h>
 
 #import "JYButton.h"
 #import "JYOrderBidViewController.h"
 #import "JYOrderViewCell.h"
+#import "JYPriceTextFieldCell.h"
+#import "JYUser.h"
 
 @interface JYOrderBidViewController ()
 
@@ -20,10 +24,11 @@
 @property(nonatomic) UILabel *priceLabel;
 @property(nonatomic) UITextField *priceTextField;
 @property(nonatomic) CGFloat tableViewHeight;
+@property(nonatomic) UIScrollView *formView;
+@property(nonatomic) XLFormViewController *formViewController;
 
 @end
 
-const CGFloat kBidControlsMarginTop = 20.0f;
 NSString *const kOrderBidCellIdentifier = @"orderBidCell";
 
 @implementation JYOrderBidViewController
@@ -35,12 +40,6 @@ NSString *const kOrderBidCellIdentifier = @"orderBidCell";
     self.title = NSLocalizedString(@"Bid", nil);
     self.view.backgroundColor = [UIColor whiteColor];
 
-    self.tableViewHeight = [JYOrderViewCell cellHeightForText:[self.order valueForKey:@"note"]];
-    [self _createTableView];
-    [self _createPriceLabel];
-    [self _createPriceTextField];
-    [self _createSubmitButton];
-
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel", nil)
                                                                               style:UIBarButtonItemStyleBordered
                                                                              target:self
@@ -50,6 +49,10 @@ NSString *const kOrderBidCellIdentifier = @"orderBidCell";
                                                                               style:UIBarButtonItemStyleBordered
                                                                              target:self
                                                                              action:@selector(_submit)];
+
+    self.tableViewHeight = [JYOrderViewCell cellHeightForText:[self.order valueForKey:@"note"]];
+    [self _createTableView];
+    [self _createForm];
 }
 
 - (void)didReceiveMemoryWarning
@@ -76,41 +79,42 @@ NSString *const kOrderBidCellIdentifier = @"orderBidCell";
     [self.view addSubview:self.tableView];
 }
 
-- (void)_createPriceLabel
+- (void)_createForm
 {
-    CGFloat y = CGRectGetMaxY(self.tableView.frame) + kBidControlsMarginTop;
-    self.priceLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, y, 150, 40)];
-    self.priceLabel.font = [UIFont systemFontOfSize:25];
-    self.priceLabel.textAlignment = NSTextAlignmentRight;
-    self.priceLabel.textColor = FlatBlack;
-    self.priceLabel.text = NSLocalizedString(@"Your Price: ", nil);
+    self.formView = [[UIScrollView alloc] initWithFrame:self.view.frame];
+    self.formView.y = CGRectGetMaxY(self.tableView.frame);
+    self.formView.height -= kButtonDefaultHeight;
+    [self.view addSubview:self.formView];
 
-    [self.view addSubview:self.priceLabel];
-}
+    self.formViewController = [XLFormViewController new];
+    self.formViewController.view = self.formView;
 
-- (void)_createPriceTextField
-{
-    CGFloat x = CGRectGetMaxX(self.priceLabel.frame) + 10;
-    CGFloat y = CGRectGetMaxY(self.tableView.frame) + kBidControlsMarginTop;
+    XLFormDescriptor *form;
+    XLFormSectionDescriptor *section;
+    XLFormRowDescriptor *row;
 
-    self.priceTextField = [[UITextField alloc] initWithFrame:CGRectMake(x, y, 150, 40)];
-    self.priceTextField.backgroundColor = FlatWhite;
-    self.priceTextField.font = [UIFont boldSystemFontOfSize:25];
-    self.priceTextField.keyboardType = UIKeyboardTypeNumberPad;
-    self.priceTextField.text = @"$";
-    self.priceTextField.textColor = FlatGreen;
+    form = [XLFormDescriptor formDescriptorWithTitle:NSLocalizedString(@"Bid", nil)];
+    form.assignFirstResponderOnShow = YES;
 
-    [self.view addSubview:self.priceTextField];
-    [self.priceTextField becomeFirstResponder];
-}
+    // Price
+    section = [XLFormSectionDescriptor formSectionWithTitle:NSLocalizedString(@"How much you like to charge?", nil)];
+    [form addFormSection:section];
+    row = [XLFormRowDescriptor formRowDescriptorWithTag:@"price" rowType:XLFormRowDescriptorTypePrice title:NSLocalizedString(@"", nil)];
+    [row.cellConfig setObject:[UIFont boldSystemFontOfSize:23] forKey:@"textField.font"];
+    [row.cellConfig setObject:FlatGreen forKey:@"textField.textColor"];
+    [row.cellConfig setObject:@(NSTextAlignmentCenter) forKey:@"textField.textAlignment"];
+    row.value = @"$";
+    [section addFormRow:row];
 
-- (void)_createSubmitButton
-{
-    JYButton *submitButton = [JYButton button];
-    submitButton.textLabel.text = NSLocalizedString(@"Submit", nil);
+    // Expire Time
+    row = [XLFormRowDescriptor formRowDescriptorWithTag:@"expire_at" rowType:XLFormRowDescriptorTypeDateTime title:NSLocalizedString(@"When your offer will expire?", nil)];
+    [row.cellConfigAtConfigure setObject:[NSDate date] forKey:@"minimumDate"];
+    [row.cellConfigAtConfigure setObject:@(5) forKey:@"minuteInterval"];
+    row.value = [NSDate dateWithTimeIntervalSinceNow:k15Minutes];
+    [section addFormRow:row];
 
-    [submitButton addTarget:self action:@selector(_submit) forControlEvents:UIControlEventTouchUpInside];
-    self.priceTextField.inputAccessoryView = submitButton;
+    self.formViewController.form = form;
+    [self.formViewController viewDidLoad];
 }
 
 #pragma mark - UITableViewDataSource
@@ -167,9 +171,70 @@ NSString *const kOrderBidCellIdentifier = @"orderBidCell";
 
 #pragma mark - Network
 
+- (NSDictionary *)_httpParameters
+{
+    NSMutableDictionary *parameters = [NSMutableDictionary new];
+
+    // price
+    NSString *priceString = [[self.formViewController.formValues valueForKey:@"price"] substringFromIndex:1];
+    NSUInteger price = priceString? [priceString  unsignedIntegerValue]: 0;
+    [parameters setObject:@(price) forKey:@"price"];
+
+    // expire time
+    NSDate *expire = (NSDate *)[self.formViewController.formValues objectForKey:@"expire_at"];
+    NSUInteger expireTime = (NSUInteger)expire.timeIntervalSinceReferenceDate;
+    [parameters setObject:@(expireTime) forKey:@"expire_at"];
+
+    // order_id
+    NSUInteger orderId = [[self.order valueForKey:@"id"] unsignedIntegerValue];
+    [parameters setObject:@(orderId) forKey:@"order_id"];
+
+    // note
+    [parameters setObject:@":)" forKey:@"note"];
+
+    return parameters;
+}
+
+
 - (void)_submit
 {
-    [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
+    NSDictionary *parameters = [self _httpParameters];
+    NSLog(@"parameters = %@", parameters);
+
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYUser currentUser].token];
+    [manager.requestSerializer setValue:token forHTTPHeaderField:@"Authorization"];
+
+    NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"bids"];
+
+    [KVNProgress show];
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+
+    __weak typeof(self) weakSelf = self;
+    [manager POST:url
+       parameters:parameters
+          success:^(AFHTTPRequestOperation *operation, id responseObject) {
+              NSLog(@"Bid Success responseObject: %@", responseObject);
+
+              [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+              [KVNProgress showSuccessWithStatus:NSLocalizedString(@"The Bid Created!", nil)];
+
+              [weakSelf _cancel];
+          }
+          failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+
+              [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+              [KVNProgress dismiss];
+
+              NSString *errorMessage = NSLocalizedString(@"The bid cannot be created due to network failure, please retry later", nil);
+              [RKDropdownAlert title:NSLocalizedString(@"Something wrong ...", nil)
+                             message:errorMessage
+                     backgroundColor:FlatYellow
+                           textColor:FlatBlack
+                                time:5];
+              
+          }
+     ];
 }
 
 @end

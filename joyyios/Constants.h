@@ -39,6 +39,7 @@ extern const CGFloat kSignIntervalMax;
 extern const CGFloat kSignIntervalMin;
 extern const CGFloat kSignViewTopOffset;
 extern const CGFloat kServiceCategoryCellFontSize;
+extern const NSTimeInterval k15Minutes;
 
 extern NSString *const kAnnotationTitleEnd;
 extern NSString *const kAnnotationTitleStart;

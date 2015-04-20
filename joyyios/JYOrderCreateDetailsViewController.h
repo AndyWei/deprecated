@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
-#import "XLFormViewController.h"
+#import <XLForm/XLFormViewController.h>
 
 @interface JYOrderCreateDetailsViewController : XLFormViewController
 

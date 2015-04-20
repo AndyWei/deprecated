@@ -37,6 +37,8 @@ const CGFloat kSignIntervalMin = 60.0f;
 const CGFloat kSignViewTopOffset = 152;
 const CGFloat kServiceCategoryCellFontSize = 18.0f;
 
+const NSTimeInterval k15Minutes = 900;
+
 NSString *const kAnnotationTitleEnd = @"endPoint";
 NSString *const kAnnotationTitleStart = @"startPoint";
 

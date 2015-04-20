@@ -9,6 +9,7 @@
 #import <AFNetworking/AFNetworking.h>
 #import <KVNProgress/KVNProgress.h>
 #import <RKDropdownAlert/RKDropdownAlert.h>
+#import <XLForm/XLForm.h>
 
 #import "JYButton.h"
 #import "JYOrder.h"
@@ -17,7 +18,6 @@
 #import "JYRestrictedTextViewCell.h"
 #import "JYServiceCategory.h"
 #import "JYUser.h"
-#import "XLForm.h"
 
 @interface JYOrderCreateDetailsViewController ()
 
@@ -62,14 +62,14 @@
     row = [XLFormRowDescriptor formRowDescriptorWithTag:@"startTime" rowType:XLFormRowDescriptorTypeDateTime title:NSLocalizedString(@"When should it start?", nil)];
     [row.cellConfigAtConfigure setObject:[NSDate date] forKey:@"minimumDate"];
     [row.cellConfigAtConfigure setObject:@(15) forKey:@"minuteInterval"];
-    row.value = [NSDate new];
+    row.value = [NSDate dateWithTimeIntervalSinceNow:k15Minutes];;
     [section addFormRow:row];
 
     // Price
     section = [XLFormSectionDescriptor formSectionWithTitle:NSLocalizedString(@"How many US Dollars you like to pay?", nil)];
     [form addFormSection:section];
     row = [XLFormRowDescriptor formRowDescriptorWithTag:@"price" rowType:XLFormRowDescriptorTypePrice title:NSLocalizedString(@"", nil)];
-    [row.cellConfig setObject:[UIFont systemFontOfSize:20] forKey:@"textField.font"];
+    [row.cellConfig setObject:[UIFont boldSystemFontOfSize:23] forKey:@"textField.font"];
     [row.cellConfig setObject:FlatGreen forKey:@"textField.textColor"];
     [row.cellConfig setObject:@(NSTextAlignmentCenter) forKey:@"textField.textAlignment"];
     row.value = @"$";
@@ -98,7 +98,7 @@
         [section addFormRow:row];
     }
 
-    // Description
+    // Note
     section = [XLFormSectionDescriptor formSection];
     [form addFormSection:section];
     // Use the title to pass the leng limit value 300. 
@@ -208,7 +208,7 @@
     [manager POST:url
        parameters:parameters
           success:^(AFHTTPRequestOperation *operation, id responseObject) {
-              NSLog(@"OrderCreate Success responseObject: %@", responseObject);
+//              NSLog(@"OrderCreate Success responseObject: %@", responseObject);
 
               [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
               [KVNProgress showSuccessWithStatus:NSLocalizedString(@"The Order Created!", nil)];
