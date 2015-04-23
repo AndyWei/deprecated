@@ -219,7 +219,7 @@ internals.acceptBidHandler = function (request, reply) {
             request.pg.client.query('BEGIN', function(err) {
                 if (err) {
                     request.pg.kill = true;
-                    callback(err);
+                    return callback(err);
                 }
 
                 callback(null);

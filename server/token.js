@@ -3,34 +3,79 @@ var Hoek = require('hoek');
 var c = require('./constants');
 var rand = require('rand-token');
 
-var cache = null;
+var bearerTokenCache = null;
+var deviceTokenCache = null;
 
 exports.attach = function (server) {
 
-    Hoek.assert(!cache, 'Token cache should only be set once.');
-    cache = server.cache({
-        segment: 'token',
+    Hoek.assert(!bearerTokenCache, 'Bearer token cache should only be set once.');
+    bearerTokenCache = server.cache({
+        segment: 'bearer',
         expiresIn: 60 * 60 * 1000
+    });
+
+    Hoek.assert(!deviceTokenCache, 'Device token cache should only be set once.');
+    deviceTokenCache = server.cache({
+        segment: 'device',
+        expiresIn: 2 * 365 * 24 * 60 * 60 * 1000
     });
 };
 
 
 exports.detach = function () {
 
-    cache = null;
+    bearerTokenCache = null;
+    deviceTokenCache = null;
 };
 
 
-// Generate a 20 character alpha-numeric token and store it in cache
+// tokenObj = {token:$token, badge: $n, service:$s} $s = 1 - apn, 2 - gcm, 3 - mpn
+exports.getDeviceTokenObject = function (userId, callback) {
+
+    Hoek.assert(deviceTokenCache, 'Device token cache should be set beforehand.');
+
+    userId = userId.toString();
+    deviceTokenCache.get(userId, function (err, tokenObj) {
+
+        if (err) {
+            return callback(err);
+        }
+
+        if (!tokenObj) {
+            return callback(new Error(c.DEVICE_TOKEN_NOT_FOUND));
+        }
+
+        callback(null, tokenObj);
+    });
+};
+
+
+exports.setDeviceTokenObject = function (userId, tokenObj, callback) {
+
+    Hoek.assert(deviceTokenCache, 'Device token cache should be set beforehand.');
+
+    userId = userId.toString();
+    deviceTokenCache.set(userId, tokenObj, 0, function (err) {
+
+        if (err) {
+            return callback(err);
+        }
+
+        callback(null, userId);
+    });
+};
+
+
+// Generate a 20 character alpha-numeric token and store it in bearerTokenCache
 exports.generate = function (userId, callback) {
 
-    Hoek.assert(cache, 'Token cache should be set beforehand.');
+    Hoek.assert(bearerTokenCache, 'Bearer token cache should be set beforehand.');
 
     userId = userId.toString();
     Async.auto({
         existedToken: function (next) {
 
-            cache.get(userId, function (err, value) {
+            bearerTokenCache.get(userId, function (err, value) {
 
                 if (err) {
                     return next(err);
@@ -50,7 +95,7 @@ exports.generate = function (userId, callback) {
         },
         cacheToken: ['existedToken', 'generateToken', function (next, results) {
 
-            cache.set(results.generateToken, userId, 0, function (err) {
+            bearerTokenCache.set(results.generateToken, userId, 0, function (err) {
 
                 if (err) {
                     return next(err);
@@ -61,7 +106,7 @@ exports.generate = function (userId, callback) {
         }],
         cacheUserId: ['existedToken', 'generateToken', function (next, results) {
 
-            cache.set(userId, results.generateToken, 0, function (err) {
+            bearerTokenCache.set(userId, results.generateToken, 0, function (err) {
 
                 if (err) {
                     return next(err);
@@ -88,8 +133,8 @@ exports.generate = function (userId, callback) {
 
 exports.destroy = function (token, callback) {
 
-    Hoek.assert(cache, 'Token cache should be set beforehand.');
-    cache.drop(token, function (err) {
+    Hoek.assert(bearerTokenCache, 'Bearer token cache should be set beforehand.');
+    bearerTokenCache.drop(token, function (err) {
 
         if (err) {
             return callback(err);
@@ -102,8 +147,8 @@ exports.destroy = function (token, callback) {
 
 exports.validate = function (token, callback) {
 
-    Hoek.assert(cache, 'Token cache should be set beforehand.');
-    cache.get(token, function (err, value) {
+    Hoek.assert(bearerTokenCache, 'Bearer token cache should be set beforehand.');
+    bearerTokenCache.get(token, function (err, value) {
 
         if (err) {
             return callback(err);

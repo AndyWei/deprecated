@@ -16,6 +16,10 @@ exports.BID_UPDATE_FAILED = 'The order is either not found or not in active stat
 
 exports.COORDINATE_INVALID = 'Lon and lat should occur together.';
 
+exports.DEVICE_TOKEN_NOT_FOUND = 'The device token of the user not found';
+
+exports.DEVICE_TOKEN_INVALID = 'The device token of the user is invalid';
+
 exports.EMAIL_IN_USE = 'Email already in use.';
 
 exports.ORDER_CREATE_FAILED = 'The order has not been created.';
@@ -36,6 +40,12 @@ exports.USER_NOT_FOUND = 'User not found.';
 
 
 // enums
+exports.PushService = new Enum({
+    apn: 1,
+    gcm: 2,
+    mpn: 3
+});
+
 exports.Role = new Enum({
     user: 1,
     admin: 2,
@@ -43,8 +53,3 @@ exports.Role = new Enum({
     robot: 4
 });
 
-// exports.UserStatus = new Enum({
-//     active: 1,
-//     closed: 2,
-//     suspended: 3
-// });
