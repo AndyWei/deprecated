@@ -2,6 +2,7 @@ var Async = require('async');
 var Boom = require('boom');
 var Hoek = require('hoek');
 var Joi = require('joi');
+var Push = require('../push');
 var c = require('../constants');
 
 var internals = {};
@@ -170,8 +171,8 @@ exports.register.attributes = {
 
 internals.createBidHandler = function (request, reply) {
 
-    Async.waterfall([
-        function (callback) {
+    Async.auto({
+        bidId: function (next) {
 
             var userId = request.auth.credentials.id;
             var p = request.payload;
@@ -188,25 +189,82 @@ internals.createBidHandler = function (request, reply) {
 
                 if (err) {
                     request.pg.kill = true;
-                    return callback(err);
+                    return next(err);
                 }
 
                 if (result.rows.length === 0) {
 
-                    return callback(Boom.badData(c.QUERY_FAILED));
+                    return next(Boom.badData(c.QUERY_FAILED));
                 }
 
-                callback(null, result.rows[0]);
+                next(null, result.rows[0]);
             });
-        }
-    ], function (err, bid) {
+        },
+        recipientId: function (next) {
+
+            var queryConfig = {
+                name: 'order_creator_by_id',
+                text: 'SELECT user_id FROM orders WHERE id = $1 AND deleted = false',
+                values: [request.payload.order_id]
+            };
+
+            request.pg.client.query(queryConfig, function (err, result) {
+
+                if (err) {
+                    request.pg.kill = true;
+                    return next(err);
+                }
+
+                if (result.rows.length === 0) {
+                    return next(Boom.notFound(c.RECORD_NOT_FOUND));
+                }
+
+                next(null, result.rows[0]);
+            });
+        },
+        bidderName: function (next) {
+
+            var queryConfig = {
+                name: 'username_by_id',
+                text: 'SELECT username FROM users WHERE id = $1 AND deleted = false',
+                values: [request.auth.credentials.id]
+            };
+
+            request.pg.client.query(queryConfig, function (err, result) {
+
+                if (err) {
+                    request.pg.kill = true;
+                    return next(err);
+                }
+
+                if (result.rows.length === 0) {
+                    return next(Boom.notFound(c.RECORD_NOT_FOUND));
+                }
+
+                next(null, result.rows[0]);
+            });
+        },
+        push: ['bidId', 'bidderName', 'recipientId', function (next, results) {
+
+            var title = 'Received a bid!';
+            var body = results.bidderName + ' ask for ' + request.payload.price;
+            Push.send(results.recipientId, title, body, function (err, recipient) {
+
+                if (err) {
+                    return next(err);
+                }
+
+                next(null, recipient);
+            });
+        }]
+    }, function (err, results) {
 
         if (err) {
             console.error(err);
             return reply(err);
         }
 
-        reply(null, bid);
+        reply(null, results.bidId);
     });
 };
 

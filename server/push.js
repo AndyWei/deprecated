@@ -3,9 +3,17 @@ var Async = require('async');
 var Token = require('./token');
 var c = require('./constants');
 
-var apnConnection = null;
-var apnOptions = {};
 var internals = {};
+
+var apnConnection = null;
+
+var rootFolder = process.cwd();
+
+var apnOptions = {
+    'pfx': rootFolder + '/cert/dev.p12',
+    'passphrase': ''
+};
+
 
 exports.connect = function () {
     apnConnection = new Apn.Connection(apnOptions);
@@ -13,20 +21,20 @@ exports.connect = function () {
 
 
 // Generate a 20 character alpha-numeric token and store it in bearerTokenCache
-exports.send = function (receiverId, title, body, reply) {
+exports.send = function (recipientId, title, body, callback) {
 
     Async.waterfall([
-        function (callback) {
+        function (next) {
 
-            Token.getDeviceTokenObject(receiverId, function (err, tokenObj) {
+            Token.getDeviceTokenObject(recipientId, function (err, tokenObj) {
                 if (err) {
-                    return callback(c.DEVICE_TOKEN_NOT_FOUND);
+                    return next(c.DEVICE_TOKEN_NOT_FOUND);
                 }
 
-                callback(null, tokenObj);
+                next(null, tokenObj);
             });
         },
-        function (tokenObj, callback) {
+        function (tokenObj, next) {
 
             switch(tokenObj.service) {
                 case c.PushService.apn.value:
@@ -39,31 +47,31 @@ exports.send = function (receiverId, title, body, reply) {
                     internals.mpnSend();
                     break;
                 default:
-                    return callback(c.DEVICE_TOKEN_INVALID);
+                    return next(c.DEVICE_TOKEN_INVALID);
             }
-            callback(null, tokenObj);
+            next(null, tokenObj);
         },
-        function (tokenObj, callback) {
+        function (tokenObj, next) {
 
             tokenObj.badge += 1;
 
-            Token.setDeviceTokenObject(receiverId, tokenObj, function (err, userIdString) {
+            Token.setDeviceTokenObject(recipientId, tokenObj, function (err, userIdString) {
 
                 if (err) {
-                    return callback(err);
+                    return next(err);
                 }
 
-                callback(null, userIdString);
+                next(null, userIdString);
             });
         }
     ], function (err, userIdString) {
 
         if (err) {
             console.error(err);
-            return reply(err);
+            return callback(err);
         }
 
-        reply(null, userIdString);
+        callback(null, userIdString);
     });
 };
 
