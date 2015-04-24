@@ -24,6 +24,7 @@ const CGFloat kPinAnnotationHeight = 55.0f;
 const CGFloat kPinAnnotationWidth = 55.0f;
 
 const CGFloat kTabBarTitleFontSize = 20.0f;
+const CGFloat kTokenValidInSecs = 3600.0;
 
 const CGFloat kSignButtonHeight = 60.0f;
 const CGFloat kSignButtonWidth = 120;
@@ -63,5 +64,5 @@ NSString *const kSystemFontItalic = @"AvenirNextCondensed-Italic ";
 NSString *const kSystemFontLight = @"AvenirNextCondensed-UltraLight ";
 NSString *const kSystemFontRegular = @"AvenirNextCondensed-Regular";
 
-//NSString *const kUrlAPIBase = @"http://api.joyyapp.com:8000/v1/";
-NSString *const kUrlAPIBase = @"http://192.168.1.145:8000/v1/";
+NSString *const kUrlAPIBase = @"http://api.joyyapp.com:8000/v1/";
+//NSString *const kUrlAPIBase = @"http://192.168.1.145:8000/v1/";

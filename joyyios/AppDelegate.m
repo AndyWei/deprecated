@@ -19,21 +19,24 @@
 
 @interface AppDelegate ()
 
-@property (nonatomic) NSTimer *signInTimer;
+@property(nonatomic) NSTimer *signInTimer;
 
 @end
-
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 
     [self _setupGlobalAppearance];
     [self _setupLocationManager];
     [self _launchViewController];
+
+    UIUserNotificationType userNotificationTypes = (UIUserNotificationTypeAlert | UIUserNotificationTypeBadge | UIUserNotificationTypeSound);
+    UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:userNotificationTypes categories:nil];
+    [application registerUserNotificationSettings:settings];
+    [application registerForRemoteNotifications];
 
     [self.window makeKeyAndVisible];
     return YES;
@@ -69,6 +72,26 @@
 - (void)applicationWillTerminate:(UIApplication *)application
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+#pragma mark - Notifications
+
+- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
+{
+    // parse
+    // Store the deviceToken in the current installation and save it to Parse.
+//    PFInstallation *currentInstallation = [PFInstallation currentInstallation];
+//    [currentInstallation setDeviceTokenFromData:deviceToken];
+//    currentInstallation.channels = @[ @"global" ];
+//    [currentInstallation saveInBackground];
+    // parse end
+}
+
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo
+{
+    // parse
+//    [PFPush handlePush:userInfo];
+    // parse end
 }
 
 #pragma mark - Private methods
@@ -241,7 +264,7 @@
 }
 
 // signin in the background
-- (void)_autoSignIn:(NSTimer*)timer
+- (void)_autoSignIn:(NSTimer *)timer
 {
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
 
@@ -257,14 +280,12 @@
     __weak typeof(self) weakSelf = self;
     [manager GET:url
         parameters:nil
-        success:^(AFHTTPRequestOperation *operation, id responseObject)
-        {
+        success:^(AFHTTPRequestOperation *operation, id responseObject) {
             NSLog(@"_autoSignIn Success");
             [JYUser currentUser].credential = responseObject;
             [weakSelf _signInPeriodically:kSignIntervalMax];
         }
-        failure:^(AFHTTPRequestOperation *operation, NSError *error)
-        {
+        failure:^(AFHTTPRequestOperation *operation, NSError *error) {
             NSLog(@"_autoSignIn Error: %@", error);
             [weakSelf _signInPeriodically:kSignIntervalMin];
         }];
@@ -298,28 +319,26 @@
 - (OnboardingContentViewController *)_page1
 {
     __weak typeof(self) weakSelf = self;
-    OnboardingContentViewController *page = [OnboardingContentViewController
-        contentWithTitle:@"What A Beautiful Photo"
-                    body:@"This city background image is so beautiful."
-                   image:[UIImage imageNamed:@"blue"]
-              buttonText:@"Get Started"
-                  action:^{
-                      [weakSelf _introductionDidFinish];
-                  }];
+    OnboardingContentViewController *page = [OnboardingContentViewController contentWithTitle:@"What A Beautiful Photo"
+                                                                                         body:@"This city background image is so beautiful."
+                                                                                        image:[UIImage imageNamed:@"blue"]
+                                                                                   buttonText:@"Get Started"
+                                                                                       action:^{
+                                                                                           [weakSelf _introductionDidFinish];
+                                                                                       }];
     return page;
 }
 
 - (OnboardingContentViewController *)_page2
 {
     __weak typeof(self) weakSelf = self;
-    OnboardingContentViewController *page = [OnboardingContentViewController
-        contentWithTitle:@"I'm so sorry"
-                    body:@"I can't get over the nice blurry background photo."
-                   image:[UIImage imageNamed:@"red"]
-              buttonText:@"Get Started"
-                  action:^{
-                      [weakSelf _introductionDidFinish];
-                  }];
+    OnboardingContentViewController *page = [OnboardingContentViewController contentWithTitle:@"I'm so sorry"
+                                                                                         body:@"I can't get over the nice blurry background photo."
+                                                                                        image:[UIImage imageNamed:@"red"]
+                                                                                   buttonText:@"Get Started"
+                                                                                       action:^{
+                                                                                           [weakSelf _introductionDidFinish];
+                                                                                       }];
     page.movesToNextViewController = YES;
 
     return page;

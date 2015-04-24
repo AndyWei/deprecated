@@ -27,6 +27,7 @@ extern const CGFloat kPinAnnotationHeight;
 extern const CGFloat kPinAnnotationWidth;
 
 extern const CGFloat kTabBarTitleFontSize;
+extern const CGFloat kTokenValidInSecs;
 
 extern const CGFloat kSignButtonHeight;
 extern const CGFloat kSignButtonWidth;

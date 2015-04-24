@@ -29,7 +29,7 @@
     _password = [_credential valueForKey:@"password"];
     _token = [_credential valueForKey:@"token"];
     _userId = [[_credential valueForKey:@"id"] unsignedIntegerValue];
-    _tokenExpireTimeInSecs = [NSDate timeIntervalSinceReferenceDate] + 30 * 60;
+    _tokenExpireTimeInSecs = [NSDate timeIntervalSinceReferenceDate] + kTokenValidInSecs;
 
     [DataStore sharedInstance].tokenExpireTime = _tokenExpireTimeInSecs;
     [DataStore sharedInstance].userCredential = _credential;
