@@ -18,6 +18,7 @@
 
 @interface JYNearbyViewController ()
 
+@property(nonatomic) BOOL isFetchingData;
 @property(nonatomic) NSMutableArray *ordersList;
 @property(nonatomic) UITableView *tableView;
 @property(nonatomic) UIRefreshControl *refreshControl;
@@ -54,6 +55,7 @@ NSString *const kOrderCellIdentifier = @"orderCell";
 
     self.maxOrderId = 0;
     self.ordersList = [NSMutableArray new];
+    self.isFetchingData = NO;
     [self _fetchData];
     [self _createTableView];
 
@@ -186,6 +188,12 @@ NSString *const kOrderCellIdentifier = @"orderCell";
 
 - (void)_fetchData
 {
+    if (self.isFetchingData)
+    {
+        return;
+    }
+    self.isFetchingData = YES;
+
     NSDictionary *parameters = [self _httpParameters];
 
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
@@ -216,10 +224,12 @@ NSString *const kOrderCellIdentifier = @"orderCell";
 
               [weakSelf.tableView reloadData];
               [weakSelf.refreshControl endRefreshing];
+              weakSelf.isFetchingData = NO;
           }
           failure:^(AFHTTPRequestOperation *operation, NSError *error) {
               [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
               [weakSelf.refreshControl endRefreshing];
+              weakSelf.isFetchingData = NO;
           }
      ];
 }
