@@ -15,6 +15,7 @@
 @property(nonatomic) JYOrder *currentOrder;
 @property(nonatomic) NSDictionary *userCredential;
 @property(nonatomic) NSTimeInterval tokenExpireTime;
-
+@property(nonatomic) NSString *deviceToken;
+@property(nonatomic) NSInteger badgeCount;
 
 @end

@@ -54,8 +54,10 @@ extern NSString *const kImageNamePinBlue;
 extern NSString *const kImageNamePinGreen;
 extern NSString *const kImageNamePinPink;
 
+extern NSString *const kKeyAPITokenExpireTime;
+extern NSString *const kKeyBadgeCount;
 extern NSString *const kKeyCurrentOrder;
-extern NSString *const kKeyTokenExpireTime;
+extern NSString *const kKeyDeviceToken;
 extern NSString *const kKeyUserCredential;
 
 extern NSString *const kNotificationOrderCreateDidFinish;

@@ -41,15 +41,15 @@
 // TokenExpireTime
 - (void)setTokenExpireTime:(NSTimeInterval)seconds
 {
-    [[NSUserDefaults standardUserDefaults] setDouble:seconds forKey:kKeyTokenExpireTime];
+    [[NSUserDefaults standardUserDefaults] setDouble:seconds forKey:kKeyAPITokenExpireTime];
 }
 
 - (NSTimeInterval)tokenExpireTime
 {
     NSTimeInterval expireTime = 0.0f;
-    if ([[NSUserDefaults standardUserDefaults] doubleForKey:kKeyTokenExpireTime])
+    if ([[NSUserDefaults standardUserDefaults] doubleForKey:kKeyAPITokenExpireTime])
     {
-        expireTime = [[NSUserDefaults standardUserDefaults] doubleForKey:kKeyTokenExpireTime];
+        expireTime = [[NSUserDefaults standardUserDefaults] doubleForKey:kKeyAPITokenExpireTime];
     }
     return expireTime;
 }
@@ -68,6 +68,33 @@
         order = [[NSUserDefaults standardUserDefaults] objectForKey:kKeyCurrentOrder];
     }
     return order;
+}
+
+// DeviceToken
+- (void)setDeviceToken:(NSString *)token
+{
+    [[NSUserDefaults standardUserDefaults] setObject:token forKey:kKeyDeviceToken];
+}
+
+- (NSString *)deviceToken
+{
+    NSString *token = nil;
+    if ([[NSUserDefaults standardUserDefaults] objectForKey:kKeyDeviceToken])
+    {
+        token = [[NSUserDefaults standardUserDefaults] objectForKey:kKeyDeviceToken];
+    }
+    return token;
+}
+
+// Badge Count
+- (void)setBadgeCount:(NSInteger)count
+{
+    [[NSUserDefaults standardUserDefaults] setInteger:count forKey:kKeyBadgeCount];
+}
+
+- (NSInteger)badgeCount
+{
+    return[[NSUserDefaults standardUserDefaults] integerForKey:kKeyBadgeCount];
 }
 
 @end

@@ -10,6 +10,7 @@
 #import <KVNProgress/KVNProgress.h>
 
 #import "AppDelegate.h"
+#import "DataStore.h"
 #import "JYOrderCategoryCollectionViewController.h"
 #import "JYNearbyViewController.h"
 #import "JYSignViewController.h"
@@ -29,14 +30,11 @@
 {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_signDidFinish) name:kNotificationSignDidFinish object:nil];
+
     [self _setupGlobalAppearance];
     [self _setupLocationManager];
     [self _launchViewController];
-
-    UIUserNotificationType userNotificationTypes = (UIUserNotificationTypeAlert | UIUserNotificationTypeBadge | UIUserNotificationTypeSound);
-    UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:userNotificationTypes categories:nil];
-    [application registerUserNotificationSettings:settings];
-    [application registerForRemoteNotifications];
 
     [self.window makeKeyAndVisible];
     return YES;
@@ -76,15 +74,18 @@
 
 #pragma mark - Notifications
 
+- (void)application:(UIApplication *)application didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings
+{
+    [application registerForRemoteNotifications];
+}
+
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 {
-    // parse
-    // Store the deviceToken in the current installation and save it to Parse.
-//    PFInstallation *currentInstallation = [PFInstallation currentInstallation];
-//    [currentInstallation setDeviceTokenFromData:deviceToken];
-//    currentInstallation.channels = @[ @"global" ];
-//    [currentInstallation saveInBackground];
-    // parse end
+    NSString *token = [[deviceToken description] stringByTrimmingCharactersInSet: [NSCharacterSet characterSetWithCharactersInString:@"<>"]];
+    token = [token stringByReplacingOccurrencesOfString:@" " withString:@""];
+
+    [DataStore sharedInstance].deviceToken = token;
+    [self _uploadDeviceToken];
 }
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo
@@ -99,8 +100,6 @@
 - (void)_setupGlobalAppearance
 {
     self.window.backgroundColor = [UIColor whiteColor];
-
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_signDidFinish) name:kNotificationSignDidFinish object:nil];
 
     [[UINavigationBar appearance]
         setTitleTextAttributes:[NSDictionary
@@ -186,6 +185,19 @@
     }
 }
 
+- (void)_registerPushNotifications
+{
+    if ([[UIApplication sharedApplication] respondsToSelector:@selector(registerUserNotificationSettings:)])
+    {
+        UIUserNotificationSettings* settings = [UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeAlert | UIUserNotificationTypeBadge | UIUserNotificationTypeSound categories:nil];
+        [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
+    }
+    else
+    {
+        [[UIApplication sharedApplication] registerForRemoteNotificationTypes:(UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
+    }
+}
+
 - (void)_introductionDidFinish
 {
     JYUser *user = [JYUser currentUser];
@@ -202,6 +214,7 @@
 
 - (void)_signDidFinish
 {
+    [self _registerPushNotifications];
     [self _signInPeriodically:kSignIntervalMax];
     [self _launchTabViewController];
 }
@@ -263,7 +276,40 @@
     self.window.rootViewController = tabBarController;
 }
 
-// signin in the background
+#pragma mark - Network
+- (void)_uploadDeviceToken
+{
+    NSString *deviceToken = [DataStore sharedInstance].deviceToken;
+    if (!deviceToken)
+    {
+        return;
+    }
+
+    NSInteger badgeCount = [DataStore sharedInstance].badgeCount;
+
+    NSDictionary *parameters = @{@"service": @(1), @"token": deviceToken, @"badge": @(badgeCount)};
+    NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"notifications/devices"];
+
+    NSLog(@"DeviceToken upload start");
+    NSLog(@"deviceToken = %@", deviceToken);
+    NSLog(@"badgeCount = %ld", (long)badgeCount);
+
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYUser currentUser].token];
+    [manager.requestSerializer setValue:token forHTTPHeaderField:@"Authorization"];
+
+    [manager POST:url
+       parameters:parameters
+          success:^(AFHTTPRequestOperation *operation, id responseObject) {
+              NSLog(@"DeviceToken upload Success responseObject: %@", responseObject);
+          }
+          failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+              NSLog(@"DeviceToken Upload Error: %@", error);
+          }];
+
+}
+
+
 - (void)_autoSignIn:(NSTimer *)timer
 {
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
@@ -284,6 +330,9 @@
             NSLog(@"_autoSignIn Success");
             [JYUser currentUser].credential = responseObject;
             [weakSelf _signInPeriodically:kSignIntervalMax];
+
+            // Register push notification now to trigger device token uploading, which is to avoid server side device token lost unexpectedly
+            [weakSelf _registerPushNotifications];
         }
         failure:^(AFHTTPRequestOperation *operation, NSError *error) {
             NSLog(@"_autoSignIn Error: %@", error);

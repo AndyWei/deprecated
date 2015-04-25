@@ -52,8 +52,10 @@ NSString *const kImageNamePinBlue = @"pinBlue";
 NSString *const kImageNamePinGreen = @"pinGreen";
 NSString *const kImageNamePinPink = @"pinPink";
 
+NSString *const kKeyAPITokenExpireTime = @"APITokenExpireTime";
+NSString *const kKeyBadgeCount = @"BadgeCount";
 NSString *const kKeyCurrentOrder = @"CurrentOrder";
-NSString *const kKeyTokenExpireTime = @"TokenExpireTime";
+NSString *const kKeyDeviceToken = @"DeviceToken";
 NSString *const kKeyUserCredential = @"UserCredential";
 
 NSString *const kNotificationOrderCreateDidFinish = @"OrderCreateDidFinish";
