@@ -14,6 +14,8 @@ extern const CGFloat kButtonDefaultHeight;
 extern const CGFloat kButtonDefaultFontSize;
 extern const CGFloat kButtonLocateDiameter;
 
+extern const CGFloat kIntroductionVersion;
+
 extern const CGFloat kMapDashBoardHeight;
 extern const CGFloat kMapDashBoardLeadingFontSize;
 extern const CGFloat kMapDashBoardSupportingFontSize;
@@ -53,12 +55,6 @@ extern NSString *const kImageNameLocationArrow;
 extern NSString *const kImageNamePinBlue;
 extern NSString *const kImageNamePinGreen;
 extern NSString *const kImageNamePinPink;
-
-extern NSString *const kKeyAPITokenExpireTime;
-extern NSString *const kKeyBadgeCount;
-extern NSString *const kKeyCurrentOrder;
-extern NSString *const kKeyDeviceToken;
-extern NSString *const kKeyUserCredential;
 
 extern NSString *const kNotificationOrderCreateDidFinish;
 extern NSString *const kNotificationSignDidFinish;

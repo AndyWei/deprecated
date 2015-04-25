@@ -11,6 +11,8 @@ const CGFloat kButtonDefaultHeight = 55.0f;
 const CGFloat kButtonDefaultFontSize = 18.0f;
 const CGFloat kButtonLocateDiameter = 40;
 
+const CGFloat kIntroductionVersion = 1.0;
+
 const CGFloat kMapDashBoardHeight = 165.0f;
 const CGFloat kMapDashBoardLeadingFontSize = 16.0f;
 const CGFloat kMapDashBoardSupportingFontSize = 15.0f;
@@ -51,12 +53,6 @@ NSString *const kImageNameLocationArrow = @"locationArrow";
 NSString *const kImageNamePinBlue = @"pinBlue";
 NSString *const kImageNamePinGreen = @"pinGreen";
 NSString *const kImageNamePinPink = @"pinPink";
-
-NSString *const kKeyAPITokenExpireTime = @"APITokenExpireTime";
-NSString *const kKeyBadgeCount = @"BadgeCount";
-NSString *const kKeyCurrentOrder = @"CurrentOrder";
-NSString *const kKeyDeviceToken = @"DeviceToken";
-NSString *const kKeyUserCredential = @"UserCredential";
 
 NSString *const kNotificationOrderCreateDidFinish = @"OrderCreateDidFinish";
 NSString *const kNotificationSignDidFinish = @"SignDidFinish";

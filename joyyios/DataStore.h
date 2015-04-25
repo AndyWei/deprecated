@@ -12,6 +12,7 @@
 
 + (DataStore *)sharedInstance;
 
+@property(nonatomic) CGFloat presentedIntroductionVersion;
 @property(nonatomic) JYOrder *currentOrder;
 @property(nonatomic) NSDictionary *userCredential;
 @property(nonatomic) NSTimeInterval tokenExpireTime;

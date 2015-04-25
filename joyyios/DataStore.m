@@ -8,6 +8,15 @@
 
 #import "DataStore.h"
 
+
+NSString *const kKeyAPITokenExpireTime = @"APITokenExpireTime";
+NSString *const kKeyBadgeCount = @"BadgeCount";
+NSString *const kKeyCurrentOrder = @"CurrentOrder";
+NSString *const kKeyDeviceToken = @"DeviceToken";
+NSString *const kKeyPresentedIntroductionVersion = @"PresentedIntroductionVersion";
+NSString *const kKeyUserCredential = @"UserCredential";
+
+
 @implementation DataStore
 
 + (instancetype)sharedInstance
@@ -86,7 +95,7 @@
     return token;
 }
 
-// Badge Count
+// BadgeCount
 - (void)setBadgeCount:(NSInteger)count
 {
     [[NSUserDefaults standardUserDefaults] setInteger:count forKey:kKeyBadgeCount];
@@ -95,6 +104,17 @@
 - (NSInteger)badgeCount
 {
     return[[NSUserDefaults standardUserDefaults] integerForKey:kKeyBadgeCount];
+}
+
+// IntroductionVersion
+- (void)setPresentedIntroductionVersion:(CGFloat)version
+{
+    [[NSUserDefaults standardUserDefaults] setFloat:version forKey:kKeyPresentedIntroductionVersion];
+}
+
+- (CGFloat)presentedIntroductionVersion
+{
+    return[[NSUserDefaults standardUserDefaults] floatForKey:kKeyPresentedIntroductionVersion];
 }
 
 @end

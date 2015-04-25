@@ -169,11 +169,12 @@
 - (void)_launchViewController
 {
     JYUser *user = [JYUser currentUser];
-    BOOL needIntro = NO;
+
+    BOOL needIntro = ([DataStore sharedInstance].presentedIntroductionVersion < kIntroductionVersion);
 
     if (needIntro)
     {
-        [self _launchIntroViewController];
+        [self _launchIntroductionViewController];
     }
     else if ([user exists])
     {
@@ -200,6 +201,9 @@
 
 - (void)_introductionDidFinish
 {
+    // Store introduction history
+    [DataStore sharedInstance].presentedIntroductionVersion = kIntroductionVersion;
+
     JYUser *user = [JYUser currentUser];
 
     if ([user exists])
@@ -236,7 +240,7 @@
     self.window.rootViewController = navigationController;
 }
 
-- (void)_launchIntroViewController
+- (void)_launchIntroductionViewController
 {
     self.window.rootViewController = [self _onboardingViewController];
 }
@@ -289,10 +293,6 @@
 
     NSDictionary *parameters = @{@"service": @(1), @"token": deviceToken, @"badge": @(badgeCount)};
     NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"notifications/devices"];
-
-    NSLog(@"DeviceToken upload start");
-    NSLog(@"deviceToken = %@", deviceToken);
-    NSLog(@"badgeCount = %ld", (long)badgeCount);
 
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYUser currentUser].token];
@@ -347,6 +347,16 @@
     self.currentLocation = [locations lastObject];
 }
 
+- (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status
+{
+    if (status == kCLAuthorizationStatusDenied || status == kCLAuthorizationStatusDenied)
+    {
+        return;
+    }
+
+    [self.locationManager startUpdatingLocation];
+}
+
 #pragma mark - Introduction Pages
 
 - (OnboardingViewController *)_onboardingViewController
@@ -368,8 +378,8 @@
 - (OnboardingContentViewController *)_page1
 {
     __weak typeof(self) weakSelf = self;
-    OnboardingContentViewController *page = [OnboardingContentViewController contentWithTitle:@"What A Beautiful Photo"
-                                                                                         body:@"This city background image is so beautiful."
+    OnboardingContentViewController *page = [OnboardingContentViewController contentWithTitle:@"Get Service Anytime Anywhere"
+                                                                                         body:@"People arround you are glad to serve you..."
                                                                                         image:[UIImage imageNamed:@"blue"]
                                                                                    buttonText:@"Get Started"
                                                                                        action:^{
@@ -381,8 +391,8 @@
 - (OnboardingContentViewController *)_page2
 {
     __weak typeof(self) weakSelf = self;
-    OnboardingContentViewController *page = [OnboardingContentViewController contentWithTitle:@"I'm so sorry"
-                                                                                         body:@"I can't get over the nice blurry background photo."
+    OnboardingContentViewController *page = [OnboardingContentViewController contentWithTitle:@"In Joyy People Help Each Other"
+                                                                                         body:@"You can provide service too, and get paid"
                                                                                         image:[UIImage imageNamed:@"red"]
                                                                                    buttonText:@"Get Started"
                                                                                        action:^{
@@ -396,8 +406,8 @@
 - (OnboardingContentViewController *)_page3
 {
     __weak typeof(self) weakSelf = self;
-    OnboardingContentViewController *page = [OnboardingContentViewController contentWithTitle:@"Seriously Though"
-                                                                                         body:@"Kudos to the photographer."
+    OnboardingContentViewController *page = [OnboardingContentViewController contentWithTitle:@"Welcome To Joyy"
+                                                                                         body:@"All men are created equal, that they are endowed by their Creator with certain unalienable Rights, that among these are Life, Liberty, iPhone and \n Joyy Account."
                                                                                         image:[UIImage imageNamed:@"yellow"]
                                                                                    buttonText:@"Get Started"
                                                                                        action:^{

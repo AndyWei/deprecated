@@ -27,7 +27,7 @@
 {
     [super viewDidLoad];
 
-    self.view.backgroundColor = FlatSand;
+    self.view.backgroundColor = FlatGrayDark;
 
     // Set the navigationBar to be transparent
     [self.navigationController.navigationBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
