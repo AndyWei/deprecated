@@ -197,7 +197,7 @@ internals.createBidHandler = function (request, reply) {
                     return next(Boom.badData(c.QUERY_FAILED));
                 }
 
-                next(null, result.rows[0]);
+                next(null, result.rows[0].id);
             });
         },
         recipientId: function (next) {
@@ -219,7 +219,7 @@ internals.createBidHandler = function (request, reply) {
                     return next(Boom.notFound(c.RECORD_NOT_FOUND));
                 }
 
-                next(null, result.rows[0]);
+                next(null, result.rows[0].user_id);
             });
         },
         bidderName: function (next) {
@@ -241,22 +241,9 @@ internals.createBidHandler = function (request, reply) {
                     return next(Boom.notFound(c.RECORD_NOT_FOUND));
                 }
 
-                next(null, result.rows[0]);
+                next(null, result.rows[0].username);
             });
-        },
-        push: ['bidId', 'bidderName', 'recipientId', function (next, results) {
-
-            var title = 'Received a bid!';
-            var body = results.bidderName + ' ask for ' + request.payload.price;
-            Push.send(results.recipientId, title, body, function (err, recipient) {
-
-                if (err) {
-                    return next(err);
-                }
-
-                next(null, recipient);
-            });
-        }]
+        }
     }, function (err, results) {
 
         if (err) {
@@ -264,7 +251,17 @@ internals.createBidHandler = function (request, reply) {
             return reply(err);
         }
 
-        reply(null, results.bidId);
+        // send push notification
+        var title = 'Received a bid!';
+        var body = results.bidderName + ' ask for ' + request.payload.price;
+        Push.send(results.recipientId, title, body, function (err) {
+
+            if (err) {
+                console.error(err);
+            }
+        });
+
+        reply(null, { bid_id: results.bidId });
     });
 };
 

@@ -1,4 +1,5 @@
 var Async = require('async');
+var Boom = require('boom');
 var Hoek = require('hoek');
 var c = require('./constants');
 var rand = require('rand-token');
@@ -38,11 +39,11 @@ exports.getDeviceTokenObject = function (userId, callback) {
     deviceTokenCache.get(userId, function (err, tokenObj) {
 
         if (err) {
-            return callback(err);
+            return callback(Boom.serverTimeout(err));
         }
 
         if (!tokenObj) {
-            return callback(new Error(c.DEVICE_TOKEN_NOT_FOUND));
+            return callback(Boom.notFound(c.DEVICE_TOKEN_NOT_FOUND));
         }
 
         callback(null, tokenObj);

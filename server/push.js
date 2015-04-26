@@ -20,7 +20,6 @@ exports.connect = function () {
 };
 
 
-// Generate a 20 character alpha-numeric token and store it in bearerTokenCache
 exports.send = function (recipientId, title, body, callback) {
 
     Async.waterfall([
@@ -28,7 +27,7 @@ exports.send = function (recipientId, title, body, callback) {
 
             Token.getDeviceTokenObject(recipientId, function (err, tokenObj) {
                 if (err) {
-                    return next(c.DEVICE_TOKEN_NOT_FOUND);
+                    return next(err);
                 }
 
                 next(null, tokenObj);
@@ -47,7 +46,7 @@ exports.send = function (recipientId, title, body, callback) {
                     internals.mpnSend();
                     break;
                 default:
-                    return next(c.DEVICE_TOKEN_INVALID);
+                    return next({ error: c.DEVICE_TOKEN_INVALID });
             }
             next(null, tokenObj);
         },

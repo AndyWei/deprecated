@@ -18,7 +18,7 @@ exports.register = function (server, options, next) {
             validate: {
                 payload: {
                     service: Joi.number().min(1).max(3),
-                    token: Joi.string().max(50),
+                    token: Joi.string().max(100),
                     badge: Joi.number().min(0).max(1000).default(0)
                 }
             }
@@ -39,7 +39,7 @@ exports.register = function (server, options, next) {
                     return reply(err);
                 }
 
-                reply(null, userIdString);
+                reply(null, {userId: userIdString});
             });
         }
     });
