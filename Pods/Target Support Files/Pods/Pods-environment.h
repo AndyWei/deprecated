@@ -60,6 +60,12 @@
 #define COCOAPODS_VERSION_MINOR_ChameleonFramework 1
 #define COCOAPODS_VERSION_PATCH_ChameleonFramework 2
 
+// DoActionSheet
+#define COCOAPODS_POD_AVAILABLE_DoActionSheet
+#define COCOAPODS_VERSION_MAJOR_DoActionSheet 1
+#define COCOAPODS_VERSION_MINOR_DoActionSheet 0
+#define COCOAPODS_VERSION_PATCH_DoActionSheet 0
+
 // JVFloatLabeledTextField
 #define COCOAPODS_POD_AVAILABLE_JVFloatLabeledTextField
 #define COCOAPODS_VERSION_MAJOR_JVFloatLabeledTextField 1
