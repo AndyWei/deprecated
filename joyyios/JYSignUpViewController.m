@@ -69,7 +69,7 @@
              [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
              [KVNProgress dismiss];
              [JYUser currentUser].credential = responseObject;
-             [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationSignDidFinish object:nil];
+             [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationDidSignIn object:nil];
          }
          failure:^(AFHTTPRequestOperation *operation, NSError *error) {
              NSLog(@"SignUp Error: %@", error);

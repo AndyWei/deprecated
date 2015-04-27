@@ -1,5 +1,5 @@
 //
-//  JYNearbyViewController.m
+//  JYOrdersNearbyViewController.m
 //  joyyios
 //
 //  Created by Ping Yang on 3/26/15.
@@ -11,12 +11,12 @@
 #import <RKDropdownAlert/RKDropdownAlert.h>
 
 #import "AppDelegate.h"
-#import "JYNearbyViewController.h"
-#import "JYOrderBidViewController.h"
+#import "JYOrdersNearbyViewController.h"
+#import "JYBidCreateViewController.h"
 #import "JYOrderViewCell.h"
 #import "JYUser.h"
 
-@interface JYNearbyViewController ()
+@interface JYOrdersNearbyViewController ()
 
 @property(nonatomic) BOOL isFetchingData;
 @property(nonatomic) NSMutableArray *ordersList;
@@ -30,7 +30,7 @@
 
 NSString *const kOrderCellIdentifier = @"orderCell";
 
-@implementation JYNearbyViewController
+@implementation JYOrdersNearbyViewController
 
 + (UILabel *)sharedBidLabel
 {
@@ -59,7 +59,7 @@ NSString *const kOrderCellIdentifier = @"orderCell";
     [self _fetchData];
     [self _createTableView];
 
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_fetchData) name:kNotificationSignDidFinish object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_fetchData) name:kNotificationDidCreateOrder object:nil];
 }
 
 - (void)didReceiveMemoryWarning
@@ -115,26 +115,26 @@ NSString *const kOrderCellIdentifier = @"orderCell";
     NSDictionary *order = (NSDictionary *)[self.ordersList objectAtIndex:indexPath.row];
 
     // start date and time
-    NSTimeInterval startTime = [[order valueForKey:@"starttime"] integerValue];
+    NSTimeInterval startTime = [[order objectForKey:@"starttime"] integerValue];
 
     [cell setStartDateTime:[NSDate dateWithTimeIntervalSinceReferenceDate:startTime]];
 
     // price
-    NSUInteger price = [[order valueForKey:@"price"] integerValue];
+    NSUInteger price = [[order objectForKey:@"price"] integerValue];
     cell.priceLabel.text = [NSString stringWithFormat:@"$%tu", price];
 
     // create time
-    [cell setCreateTime:[order valueForKey:@"created_at"]];
+    [cell setCreateTime:[order objectForKey:@"created_at"]];
 
     // distance
-    CLLocationDegrees lat = [[order valueForKey:@"startpointlat"] doubleValue];
-    CLLocationDegrees lon = [[order valueForKey:@"startpointlon"] doubleValue];
+    CLLocationDegrees lat = [[order objectForKey:@"startpointlat"] doubleValue];
+    CLLocationDegrees lon = [[order objectForKey:@"startpointlon"] doubleValue];
     CLLocationCoordinate2D point = CLLocationCoordinate2DMake(lat, lon);
     [cell setDistanceFromPoint:point];
 
-    cell.titleLabel.text = [order valueForKey:@"title"];
-    cell.bodyLabel.text = [order valueForKey:@"note"];
-    cell.cityLabel.text = [order valueForKey:@"startcity"];
+    cell.titleLabel.text = [order objectForKey:@"title"];
+    cell.bodyLabel.text = [order objectForKey:@"note"];
+    cell.cityLabel.text = [order objectForKey:@"startcity"];
 
     [self _createSwipeViewForCell:cell andOrder:order];
     return cell;
@@ -157,7 +157,7 @@ NSString *const kOrderCellIdentifier = @"orderCell";
 
 - (void)_presentBidViewForOrder:(NSDictionary *)order
 {
-    JYOrderBidViewController *bidViewController = [JYOrderBidViewController new];
+    JYBidCreateViewController *bidViewController = [JYBidCreateViewController new];
     bidViewController.order = order;
 
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:bidViewController];
@@ -174,7 +174,7 @@ NSString *const kOrderCellIdentifier = @"orderCell";
     }
 
     NSDictionary *order = (NSDictionary *)[self.ordersList objectAtIndex:indexPath.row];
-    NSString *note = [order valueForKey:@"note"];
+    NSString *note = [order objectForKey:@"note"];
     return [JYOrderViewCell cellHeightForText:note];
 }
 
@@ -213,16 +213,16 @@ NSString *const kOrderCellIdentifier = @"orderCell";
               [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
 
               NSMutableArray *newOrdersList = [NSMutableArray arrayWithArray:(NSArray *)responseObject];
-              [newOrdersList addObjectsFromArray:weakSelf.ordersList];
-              weakSelf.ordersList = newOrdersList;
 
-              if (weakSelf.ordersList.count > 0)
+              if (newOrdersList.count > 0)
               {
-                  id order = [responseObject firstObject];
-                  weakSelf.maxOrderId = [[order valueForKey:@"id"] unsignedIntegerValue];
+                  id order = [newOrdersList firstObject];
+                  weakSelf.maxOrderId = [[order objectForKey:@"id"] unsignedIntegerValue];
+                  [newOrdersList addObjectsFromArray:weakSelf.ordersList];
+                  weakSelf.ordersList = newOrdersList;
+                  [weakSelf.tableView reloadData];
               }
 
-              [weakSelf.tableView reloadData];
               [weakSelf.refreshControl endRefreshing];
               weakSelf.isFetchingData = NO;
           }

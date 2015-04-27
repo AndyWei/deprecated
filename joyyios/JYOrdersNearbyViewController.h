@@ -1,5 +1,5 @@
 //
-//  JYNearbyViewController.h
+//  JYOrdersNearbyViewController.h
 //  joyyios
 //
 //  Created by Ping Yang on 3/26/15.
@@ -8,6 +8,6 @@
 
 #import "JYExpandViewController.h"
 
-@interface JYNearbyViewController : JYExpandViewController <UITableViewDataSource, UITableViewDelegate>
+@interface JYOrdersNearbyViewController : JYExpandViewController <UITableViewDataSource, UITableViewDelegate>
 
 @end

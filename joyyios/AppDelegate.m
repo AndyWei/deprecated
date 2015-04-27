@@ -11,8 +11,9 @@
 
 #import "AppDelegate.h"
 #import "DataStore.h"
+#import "JYBidListViewController.h"
 #import "JYOrderCategoryCollectionViewController.h"
-#import "JYNearbyViewController.h"
+#import "JYOrdersNearbyViewController.h"
 #import "JYSignViewController.h"
 #import "JYUser.h"
 #import "OnboardingViewController.h"
@@ -30,7 +31,7 @@
 {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_signDidFinish) name:kNotificationSignDidFinish object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_signDidFinish) name:kNotificationDidSignIn object:nil];
 
     [self _setupGlobalAppearance];
     [self _setupLocationManager];
@@ -88,11 +89,20 @@
     [self _uploadDeviceToken];
 }
 
-- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)notification
 {
-    // parse
-//    [PFPush handlePush:userInfo];
-    // parse end
+    NSLog(@"Notification = %@", notification);
+
+    NSDictionary *aps = [notification objectForKey:@"aps"];
+    NSString *title = aps ? [aps objectForKey:@"alert"] : @"Notification";
+    NSString *message = [notification objectForKey:@"message"];
+
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:title
+                                                        message:message
+                                                       delegate:self
+                                              cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
+                                              otherButtonTitles:NSLocalizedString(@"Settings", nil), nil];
+    [alertView show];
 }
 
 #pragma mark - Private methods
@@ -268,14 +278,18 @@
 
     UIViewController *vc1 = [JYOrderCategoryCollectionViewController new];
     UINavigationController *nc1 = [[UINavigationController alloc] initWithRootViewController:vc1];
-    nc1.title = NSLocalizedString(@"I need", nil);
+    nc1.title = NSLocalizedString(@"Home", nil);
 
-    UIViewController *vc2 = [JYNearbyViewController new];
+    UIViewController *vc2 = [JYBidListViewController new];
     UINavigationController *nc2 = [[UINavigationController alloc] initWithRootViewController:vc2];
-    nc2.title = NSLocalizedString(@"I can", nil);
+    nc2.title = NSLocalizedString(@"My", nil);
+
+    UIViewController *vc3 = [JYOrdersNearbyViewController new];
+    UINavigationController *nc3 = [[UINavigationController alloc] initWithRootViewController:vc3];
+    nc3.title = NSLocalizedString(@"Nearby", nil);
 
     UITabBarController *tabBarController = [UITabBarController new];
-    tabBarController.viewControllers = @[ nc1, nc2 ];
+    tabBarController.viewControllers = @[ nc1, nc2, nc3 ];
 
     self.window.rootViewController = tabBarController;
 }

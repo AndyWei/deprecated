@@ -56,8 +56,9 @@ extern NSString *const kImageNamePinBlue;
 extern NSString *const kImageNamePinGreen;
 extern NSString *const kImageNamePinPink;
 
-extern NSString *const kNotificationOrderCreateDidFinish;
-extern NSString *const kNotificationSignDidFinish;
+extern NSString *const kNotificationDidCreateOrder;
+extern NSString *const kNotificationDidReceiveBid;
+extern NSString *const kNotificationDidSignIn;
 
 extern NSString *const kSystemFontBold;
 extern NSString *const kSystemFontItalic;

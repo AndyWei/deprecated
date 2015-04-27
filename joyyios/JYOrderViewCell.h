@@ -18,13 +18,9 @@
 - (void)setCreateTime:(NSString *)dateString;
 - (void)setDistanceFromPoint:(CLLocationCoordinate2D )point;
 
-@property(nonatomic) JYDateView *startDateView;
-@property(nonatomic) UILabel *startTimeLabel;
 @property(nonatomic) UILabel *titleLabel;
 @property(nonatomic) UILabel *bodyLabel;
 @property(nonatomic) UILabel *priceLabel;
 @property(nonatomic) UILabel *cityLabel;
-@property(nonatomic) UILabel *timeLabel;
-@property(nonatomic) UILabel *distanceLabel;
 
 @end

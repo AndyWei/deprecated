@@ -54,8 +54,9 @@ NSString *const kImageNamePinBlue = @"pinBlue";
 NSString *const kImageNamePinGreen = @"pinGreen";
 NSString *const kImageNamePinPink = @"pinPink";
 
-NSString *const kNotificationOrderCreateDidFinish = @"OrderCreateDidFinish";
-NSString *const kNotificationSignDidFinish = @"SignDidFinish";
+NSString *const kNotificationDidCreateOrder = @"didCreateOrder";
+NSString *const kNotificationDidReceiveBid = @"didReceiveBid";
+NSString *const kNotificationDidSignIn = @"didSignin";
 
 NSString *const kSystemFontBold = @"AvenirNextCondensed-DemiBold";
 NSString *const kSystemFontItalic = @"AvenirNextCondensed-Italic ";

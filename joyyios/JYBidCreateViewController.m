@@ -1,5 +1,5 @@
 //
-//  JYOrderBidViewController.m
+//  JYBidCreateViewController.m
 //  joyyios
 //
 //  Created by Ping Yang on 4/19/15.
@@ -13,12 +13,12 @@
 #import <XLForm/XLForm.h>
 
 #import "JYButton.h"
-#import "JYOrderBidViewController.h"
+#import "JYBidCreateViewController.h"
 #import "JYOrderViewCell.h"
 #import "JYPriceTextFieldCell.h"
 #import "JYUser.h"
 
-@interface JYOrderBidViewController ()
+@interface JYBidCreateViewController ()
 
 @property(nonatomic) UITableView *tableView;
 @property(nonatomic) UILabel *priceLabel;
@@ -31,7 +31,7 @@
 
 NSString *const kOrderBidCellIdentifier = @"orderBidCell";
 
-@implementation JYOrderBidViewController
+@implementation JYBidCreateViewController
 
 - (void)viewDidLoad
 {
@@ -222,6 +222,8 @@ NSString *const kOrderBidCellIdentifier = @"orderBidCell";
               [weakSelf _cancel];
           }
           failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+
+              NSLog(@"Bid fail error: %@", error);
 
               [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
               [KVNProgress dismiss];

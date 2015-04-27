@@ -9,6 +9,8 @@
 
 @interface JYDateView : UIView
 
+@property(nonatomic) UIColor *viewColor;
+@property(nonatomic) UIColor *textColor;
 @property(nonatomic) UILabel *topLabel;
 @property(nonatomic) UILabel *centerLabel;
 @property(nonatomic) UILabel *bottomLabel;

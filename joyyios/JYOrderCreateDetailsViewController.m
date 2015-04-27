@@ -216,7 +216,7 @@
               // switch to orders nearby view and quit order creating process
               // The sequence of below 3 steps must not be changed
               [weakSelf.tabBarController setSelectedIndex:1];
-              [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationOrderCreateDidFinish object:nil];
+              [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationDidCreateOrder object:nil];
               [weakSelf.navigationController popToRootViewControllerAnimated:NO];
           }
           failure:^(AFHTTPRequestOperation *operation, NSError *error) {
@@ -224,7 +224,7 @@
               [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
               [KVNProgress dismiss];
 
-              NSString *errorMessage = NSLocalizedString(@"The order cannot be created due to network failure, please retry later", nil);
+              NSString *errorMessage = NSLocalizedString(@"Can't create order due to network failure, please retry later", nil);
               [RKDropdownAlert title:NSLocalizedString(@"Something wrong ...", nil)
                              message:errorMessage
                      backgroundColor:FlatYellow

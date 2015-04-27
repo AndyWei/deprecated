@@ -9,24 +9,34 @@
 #import "AppDelegate.h"
 #import "JYOrderViewCell.h"
 
-const CGFloat kTopMargin = 8.0f;
-const CGFloat kLeftMargin = 8.0f;
-const CGFloat kTextLeftMargin = 12.0f;
-const CGFloat kRightMargin = 8.0f;
-const CGFloat kStartDateViewWidth = 70.0f;
-const CGFloat kStartDateViewHeight = 70.0f;
-const CGFloat kStartTimeLabelWidth = 85.0f;
-const CGFloat kStartTimeLabelHeight = 20.0f;
-const CGFloat kTitleLabelWidth = 180.0f;
-const CGFloat kTitleLabelHeight = 25.0f;
-const CGFloat kBodyLabelMinHeight = 53.0f;
-const CGFloat kTimeLabelWidth = 80.0f;
-const CGFloat kCityLabelWidth = 80.0f;
-const CGFloat kDistanceLabelWidth = 50.0f;
-const CGFloat kTinyLabelHeight = 20.0f;
+static const CGFloat kTopMargin = 8.0f;
+static const CGFloat kLeftMargin = 8.0f;
+static const CGFloat kTextLeftMargin = 12.0f;
+static const CGFloat kRightMargin = 8.0f;
+static const CGFloat kStartDateViewWidth = 70.0f;
+static const CGFloat kStartDateViewHeight = 70.0f;
+static const CGFloat kStartTimeLabelWidth = 85.0f;
+static const CGFloat kStartTimeLabelHeight = 20.0f;
+static const CGFloat kTitleLabelWidth = 180.0f;
+static const CGFloat kTitleLabelHeight = 25.0f;
+static const CGFloat kBodyLabelMinHeight = 53.0f;
+static const CGFloat kTimeLabelWidth = 80.0f;
+static const CGFloat kCityLabelWidth = 80.0f;
+static const CGFloat kDistanceLabelWidth = 50.0f;
+static const CGFloat kTinyLabelHeight = 20.0f;
 
-const CGFloat kFontSizeBody = 18.0f;
-const CGFloat kFontSizeDetail = 13.0f;
+static const CGFloat kFontSizeBody = 18.0f;
+static const CGFloat kFontSizeDetail = 13.0f;
+
+@interface JYOrderViewCell ()
+
+@property(nonatomic) JYDateView *startDateView;
+@property(nonatomic) UILabel *startTimeLabel;
+@property(nonatomic) UILabel *timeLabel;
+@property(nonatomic) UILabel *distanceLabel;
+
+@end
+
 
 @implementation JYOrderViewCell
 
