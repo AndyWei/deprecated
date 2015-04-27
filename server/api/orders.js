@@ -51,10 +51,49 @@ exports.register = function (server, options, next) {
     });
 
 
-    // get all orders placed by the current user. auth.
+    // get all unpaid orders placed by the current user. auth.
     server.route({
         method: 'GET',
-        path: options.basePath + '/orders/from_me',
+        path: options.basePath + '/orders/unpaid',
+        config: {
+            auth: {
+                strategy: 'token'
+            },
+            validate: {
+                query: {
+                    after: Joi.string().regex(/^[0-9]+$/).max(19).default('0')
+                }
+            }
+        },
+        handler: function (request, reply) {
+
+            var userId = request.auth.credentials.id;
+            var queryConfig = {
+                name: 'orders_unpaid',
+                text: selectClause +
+                      'WHERE id > $1 AND user_id = $2 AND status < 10 AND deleted = false \
+                       ORDER BY id DESC',
+                values: [request.query.after, userId]
+            };
+
+            request.pg.client.query(queryConfig, function (err, result) {
+
+                if (err) {
+                    console.error(err);
+                    request.pg.kill = true;
+                    return reply(err);
+                }
+
+                reply(null, result.rows);
+            });
+        }
+    });
+
+
+    // get all paid orders placed by the current user. auth.
+    server.route({
+        method: 'GET',
+        path: options.basePath + '/orders/paid',
         config: {
             auth: {
                 strategy: 'token'
@@ -64,9 +103,9 @@ exports.register = function (server, options, next) {
 
             var userId = request.auth.credentials.id;
             var queryConfig = {
-                name: 'orders_from_me',
+                name: 'orders_paid',
                 text: selectClause +
-                      'WHERE user_id = $1 AND deleted = false \
+                      'WHERE user_id = $1 AND status = 10 AND deleted = false \
                        ORDER BY id DESC',
                 values: [userId]
             };
@@ -88,7 +127,7 @@ exports.register = function (server, options, next) {
     // get all orders won by the current user. auth.
     server.route({
         method: 'GET',
-        path: options.basePath + '/orders/won_by_me',
+        path: options.basePath + '/orders/won',
         config: {
             auth: {
                 strategy: 'token'
@@ -98,7 +137,7 @@ exports.register = function (server, options, next) {
 
             var userId = request.auth.credentials.id;
             var queryConfig = {
-                name: 'orders_won_by_me',
+                name: 'orders_won',
                 text: selectClause +
                       'WHERE winner_id IS NOT NULL AND winner_id = $1 AND deleted = false \
                        ORDER BY id DESC',
@@ -131,7 +170,7 @@ exports.register = function (server, options, next) {
                     distance: Joi.number().min(1).max(1000).default(80),
                     after: Joi.string().regex(/^[0-9]+$/).max(19).default('0'),
                     before: Joi.string().regex(/^[0-9]+$/).max(19).default('9223372036854775807'),
-                    categories: Joi.array().sparse(true).single(true).unique().items(Joi.number().min(0).max(100))
+                    category: Joi.array().sparse(true).single(true).unique().items(Joi.number().min(0).max(100))
                 }
             }
         },
@@ -238,7 +277,7 @@ exports.register = function (server, options, next) {
 
             var queryConfig = {
                 name: 'orders_revoke',
-                text: 'UPDATE orders SET status = 1, updated_at = now() ' +
+                text: 'UPDATE orders SET status = 20, updated_at = now() ' +
                       'WHERE id = $1 AND user_id = $2 AND status = 0 AND deleted = false ' +
                       'RETURNING id, status',
                 values: [request.params.order_id, request.auth.credentials.id]
@@ -447,15 +486,15 @@ internals.createNearbyQueryConfig = function (query) {
 
     var queryValues = [query.after, query.before, query.lon, query.lat, degree];
     var where2 = '';
-    if (query.categories) {
+    if (query.category) {
 
         where2 += 'AND category IN ($6';
-        for (var i = 0, il = query.categories.length - 1; i < il; ++i) {
+        for (var i = 0, il = query.category.length - 1; i < il; ++i) {
             where2 += ', $' + (i + 7).toString();
         }
         where2 += ') ';
 
-        queryValues = queryValues.concat(query.categories);
+        queryValues = queryValues.concat(query.category);
     }
 
     var queryConfig = {

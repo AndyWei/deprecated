@@ -48,6 +48,57 @@ exports.register = function (server, options, next) {
     });
 
 
+    // get the bids against the orders. auth.
+    server.route({
+        method: 'GET',
+        path: options.basePath + '/bids/orders',
+        config: {
+            auth: {
+                strategy: 'token'
+            },
+            validate: {
+                query: {
+                    after: Joi.string().regex(/^[0-9]+$/).max(19).default('0'),
+                    order_id: Joi.array().single(true).unique().items(Joi.string().regex(/^[0-9]+$/).max(19))
+                }
+            }
+        },
+        handler: function (request, reply) {
+
+            var queryValues = [request.query.after];
+            var select = 'SELECT b.id, b.order_id, b.bidder_id, b.price, b.status, b.expire_at, u.username, u.rating_total, u.rating_count, u.bio FROM bids AS b ';
+            var join = 'INNER JOIN users AS u ON u.id = b.bidder_id ';
+            var where1 = 'WHERE b.id > $1 AND b.status < 10 AND b.deleted = false AND u.deleted = false ';
+            var sort = 'ORDER BY b.id DESC';
+
+            var where2 = 'AND b.order_id IN ($2';
+            for (var i = 0, il = request.query.order_id.length - 1; i < il; ++i) {
+                where2 += ', $' + (i + 3).toString();
+            }
+            where2 += ') ';
+
+            queryValues = queryValues.concat(request.query.order_id);
+
+            var queryConfig = {
+                name: 'bids_for_me',
+                text: select + join + where1 + where2 + sort,
+                values: queryValues
+            };
+
+            request.pg.client.query(queryConfig, function (err, result) {
+
+                if (err) {
+                    console.error(err);
+                    request.pg.kill = true;
+                    return reply(err);
+                }
+
+                reply(null, result.rows);
+            });
+        }
+    });
+
+
     // get all bids placed by the current user. auth.
     server.route({
         method: 'GET',
@@ -59,12 +110,12 @@ exports.register = function (server, options, next) {
         },
         handler: function (request, reply) {
 
-            var userId = request.auth.credentials.id;
+            var bidderId = request.auth.credentials.id;
             var queryConfig = {
                 name: 'bids_from_me',
-                text: 'SELECT * FROM bids WHERE user_id = $1 AND deleted = false \
+                text: 'SELECT * FROM bids WHERE bidder_id = $1 AND deleted = false \
                        ORDER BY id DESC',
-                values: [userId]
+                values: [bidderId]
             };
 
             request.pg.client.query(queryConfig, function (err, result) {
@@ -120,8 +171,8 @@ exports.register = function (server, options, next) {
 
             var queryConfig = {
                 name: 'bids_revoke',
-                text: 'UPDATE bids SET status = 1, updated_at = now() ' +
-                      'WHERE id = $1 AND user_id = $2 AND status = 0 AND deleted = false ' +
+                text: 'UPDATE bids SET status = 20, updated_at = now() ' +
+                      'WHERE id = $1 AND bidder_id = $2 AND status = 0 AND deleted = false ' +
                       'RETURNING id, status',
                 values: [request.params.bid_id, request.auth.credentials.id]
             };
@@ -172,35 +223,7 @@ exports.register.attributes = {
 internals.createBidHandler = function (request, reply) {
 
     Async.auto({
-        bidId: function (next) {
-
-            var userId = request.auth.credentials.id;
-            var p = request.payload;
-            var queryConfig = {
-                name: 'bids_create',
-                text: 'INSERT INTO bids \
-                           (user_id, order_id, price, note, expire_at, created_at, updated_at) VALUES \
-                           ($1, $2, $3, $4, $5, now(), now()) \
-                           RETURNING id',
-                values: [userId, p.order_id, p.price, p.note, p.expire_at]
-            };
-
-            request.pg.client.query(queryConfig, function (err, result) {
-
-                if (err) {
-                    request.pg.kill = true;
-                    return next(err);
-                }
-
-                if (result.rows.length === 0) {
-
-                    return next(Boom.badData(c.QUERY_FAILED));
-                }
-
-                next(null, result.rows[0].id);
-            });
-        },
-        recipientId: function (next) {
+        askerId: function (next) {
 
             var queryConfig = {
                 name: 'order_creator_by_id',
@@ -220,6 +243,34 @@ internals.createBidHandler = function (request, reply) {
                 }
 
                 next(null, result.rows[0].user_id);
+            });
+        },
+        bidId: function (next) {
+
+            var bidderId = request.auth.credentials.id;
+            var p = request.payload;
+            var queryConfig = {
+                name: 'bids_create',
+                text: 'INSERT INTO bids \
+                           (bidder_id, order_id, price, note, expire_at, created_at, updated_at) VALUES \
+                           ($1, $2, $3, $4, $5, now(), now()) \
+                           RETURNING id',
+                values: [bidderId, p.order_id, p.price, p.note, p.expire_at]
+            };
+
+            request.pg.client.query(queryConfig, function (err, result) {
+
+                if (err) {
+                    request.pg.kill = true;
+                    return next(err);
+                }
+
+                if (result.rows.length === 0) {
+
+                    return next(Boom.badData(c.QUERY_FAILED));
+                }
+
+                next(null, result.rows[0].id);
             });
         },
         bidderName: function (next) {
@@ -254,10 +305,10 @@ internals.createBidHandler = function (request, reply) {
         // send push notification
         var title = 'Received a bid!';
         var body = results.bidderName + ' ask for ' + request.payload.price;
-        Push.send(results.recipientId, title, body, function (err) {
+        Push.send(results.askerId, title, body, function (error) {
 
-            if (err) {
-                console.error(err);
+            if (error) {
+                console.error(error);
             }
         });
 
@@ -282,14 +333,16 @@ internals.acceptBidHandler = function (request, reply) {
         },
         function (callback) {
 
+            var bidId = request.params.bid_id;
+            var askerId = request.auth.credentials.id;
             var queryConfig = {
                 name: 'orders_update_pending',
                 text: 'UPDATE orders AS o ' +
-                      'SET winner_id = b.user_id, status = 2, updated_at = now() ' +
+                      'SET winner_id = b.bidder_id, status = 2, updated_at = now() ' +
                       'FROM bids AS b ' +
                       'WHERE b.id = $1 AND o.user_id = $2 AND o.id = b.order_id AND o.status = 0 ' +
                       'RETURNING o.id',
-                values: [request.params.bid_id, request.auth.credentials.id]
+                values: [bidId, askerId]
             };
 
             request.pg.client.query(queryConfig, function (err, result) {
@@ -312,7 +365,7 @@ internals.acceptBidHandler = function (request, reply) {
             var queryConfig = {
                 name: 'bids_reject_others',
                 text: 'UPDATE bids ' +
-                      'SET status = 2, updated_at = now() ' +
+                      'SET status = 10, updated_at = now() ' +
                       'WHERE order_id = $1 AND id <> $2 AND status = 0 ' +
                       'RETURNING id',
                 values: [orderId, request.params.bid_id]
@@ -333,9 +386,9 @@ internals.acceptBidHandler = function (request, reply) {
             var queryConfig = {
                 name: 'bids_accept',
                 text: 'UPDATE bids ' +
-                      'SET status = 4, updated_at = now() ' +
+                      'SET status = 1, updated_at = now() ' +
                       'WHERE id = $1 AND status = 0 ' +
-                      'RETURNING id, user_id',
+                      'RETURNING id, bidder_id',
                 values: [request.params.bid_id]
             };
 
@@ -367,7 +420,7 @@ internals.acceptBidHandler = function (request, reply) {
         },
         function (orderId, row, callback) {
 
-            // TODO: send push notification to row.user_id
+            // TODO: send push notification to row.bidder_id
 
             callback(null, orderId, row.id);
         }

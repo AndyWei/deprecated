@@ -8,14 +8,14 @@ curl -i -u jack@gmail.com:password "http://localhost:8000/v1/signin"
 
 ## orders
 
-# GET all of the user's orders:
-curl -i -H "Authorization: Bearer TOKEN" "http://localhost:8000/v1/orders/from_me"
+# GET all of the user placed orders:
+curl -i -H "Authorization: Bearer TOKEN" "http://localhost:8000/v1/orders/placed"
 
 # GET orders nearby
 curl -i "http://localhost:8000/v1/orders/nearby?lon=-122.4376&lat=37.7577"
 
-curl -i "http://localhost:8000/v1/orders/nearby?lon=-122.4176&lat=37.7577&categories=1"
-curl -i "http://localhost:8000/v1/orders/nearby?lon=-122.4176&lat=37.7577&categories=1&categories=2&categories=5"
+curl -i "http://localhost:8000/v1/orders/nearby?lon=-122.4176&lat=37.7577&category=1"
+curl -i "http://localhost:8000/v1/orders/nearby?lon=-122.4176&lat=37.7577&category=1&category=2&category=5"
 
 # create an order
 curl -i -H "Authorization: Bearer MI4G7T4QXpSuxDuuonpO" --data "price=1.1&currency=usd&country=us&category=1&note='cleaning all'&title='cleaning for 4 rooms'&startTime=450700000&&startCity='Fremont'&startAddress='2290 good ave'&startPointLon=-3.456&startPointLat=75.84" "http://localhost:8000/v1/orders"

@@ -108,6 +108,40 @@ lab.experiment('Bids: ', function () {
             done();
         });
     });
+
+    lab.test('/bids/orders: found', function (done) {
+
+        request = {
+            method: 'GET',
+            url: '/bids/orders?&order_id=1&order_id=3&after=0',
+            credentials: jack
+        };
+
+        server.inject(request, function (response) {
+
+            Code.expect(response.statusCode).to.equal(200);
+            Code.expect(response.result).to.be.an.array().and.to.have.length(3);
+
+            done();
+        });
+    });
+
+    lab.test('/bids/orders: not found', function (done) {
+
+        request = {
+            method: 'GET',
+            url: '/bids/orders?&order_id=2&order_id=4&after=0',
+            credentials: andy
+        };
+
+        server.inject(request, function (response) {
+
+            Code.expect(response.statusCode).to.equal(200);
+            Code.expect(response.result).to.be.an.array().and.to.be.empty();
+
+            done();
+        });
+    });
 });
 
 
@@ -152,7 +186,7 @@ lab.experiment('Bids POST: ', function () {
         });
     });
 
-    lab.test('/bids: accept a bid fail due to wrong user_id ', function (done) {
+    lab.test('/bids: accept a bid fail due to wrong bidder_id ', function (done) {
 
         request = {
             method: 'POST',
@@ -203,7 +237,7 @@ lab.experiment('Bids POST: ', function () {
         });
     });
 
-    lab.test('/bids: revoke fail due to wrong user_id', function (done) {
+    lab.test('/bids: revoke fail due to wrong bidder_id', function (done) {
 
         request = {
             method: 'POST',

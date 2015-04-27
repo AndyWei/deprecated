@@ -123,28 +123,28 @@ lab.experiment('Orders GET: ', function () {
         });
     });
 
-    lab.test('/orders/from_me: found', function (done) {
+    lab.test('/orders/unpaid: found', function (done) {
 
         request = {
             method: 'GET',
-            url: '/orders/from_me',
+            url: '/orders/unpaid',
             credentials: jack
         };
 
         server.inject(request, function (response) {
 
             Code.expect(response.statusCode).to.equal(200);
-            Code.expect(response.result).to.be.an.array().and.to.have.length(4);
+            Code.expect(response.result).to.be.an.array().and.to.have.length(3);
 
             done();
         });
     });
 
-    lab.test('/orders/from_me: not found', function (done) {
+    lab.test('/orders/unpaid: not found', function (done) {
 
         request = {
             method: 'GET',
-            url: '/orders/from_me',
+            url: '/orders/unpaid',
             credentials: andy
         };
 
@@ -157,11 +157,45 @@ lab.experiment('Orders GET: ', function () {
         });
     });
 
-    lab.test('/orders/won_by_me: found', function (done) {
+    lab.test('/orders/paid: found', function (done) {
 
         request = {
             method: 'GET',
-            url: '/orders/won_by_me',
+            url: '/orders/paid',
+            credentials: jack
+        };
+
+        server.inject(request, function (response) {
+
+            Code.expect(response.statusCode).to.equal(200);
+            Code.expect(response.result).to.be.an.array().and.to.have.length(1);
+
+            done();
+        });
+    });
+
+    lab.test('/orders/paid: not found', function (done) {
+
+        request = {
+            method: 'GET',
+            url: '/orders/paid',
+            credentials: andy
+        };
+
+        server.inject(request, function (response) {
+
+            Code.expect(response.statusCode).to.equal(200);
+            Code.expect(response.result).to.be.an.array().and.to.be.empty();
+
+            done();
+        });
+    });
+
+    lab.test('/orders/won: found', function (done) {
+
+        request = {
+            method: 'GET',
+            url: '/orders/won',
             credentials: ping
         };
 
@@ -174,11 +208,11 @@ lab.experiment('Orders GET: ', function () {
         });
     });
 
-    lab.test('/orders/won_by_me: not found', function (done) {
+    lab.test('/orders/won: not found', function (done) {
 
         request = {
             method: 'GET',
-            url: '/orders/won_by_me',
+            url: '/orders/won',
             credentials: andy
         };
 
@@ -201,7 +235,7 @@ lab.experiment('Orders GET: ', function () {
         server.inject(request, function (response) {
 
             Code.expect(response.statusCode).to.equal(200);
-            Code.expect(response.result).to.be.an.array().and.to.have.length(1);
+            Code.expect(response.result).to.be.an.array().and.to.have.length(2);
 
             done();
         });
@@ -239,17 +273,17 @@ lab.experiment('Orders GET: ', function () {
         });
     });
 
-    lab.test('/orders/nearby: found one in categories 1 and 5', function (done) {
+    lab.test('/orders/nearby: found in category 1 and 5', function (done) {
 
         request = {
             method: 'GET',
-            url: '/orders/nearby?lon=-122.4176&lat=37.7577&categories=1&categories=5'  // San Francisco, CA
+            url: '/orders/nearby?lon=-122.4176&lat=37.7577&category=1&category=5'  // San Francisco, CA
         };
 
         server.inject(request, function (response) {
 
             Code.expect(response.statusCode).to.equal(200);
-            Code.expect(response.result).to.be.an.array().and.to.have.length(1);
+            Code.expect(response.result).to.be.an.array().and.to.have.length(2);
 
             done();
         });
@@ -259,7 +293,7 @@ lab.experiment('Orders GET: ', function () {
 
         request = {
             method: 'GET',
-            url: '/orders/nearby?lon=-122.4176&lat=37.7577&categories=5'  // San Francisco, CA
+            url: '/orders/nearby?lon=-122.4176&lat=37.7577&category=5'  // San Francisco, CA
         };
 
         server.inject(request, function (response) {
@@ -527,7 +561,7 @@ lab.experiment('Orders POST: ', function () {
 
         request = {
             method: 'POST',
-            url: '/orders/revoke/1',
+            url: '/orders/revoke/4',
             credentials: jack
         };
 
