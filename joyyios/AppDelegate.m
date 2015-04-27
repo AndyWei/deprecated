@@ -127,7 +127,7 @@
         setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIFont systemFontOfSize:kTabBarTitleFontSize], NSFontAttributeName, nil]
                       forState:UIControlStateSelected];
 
-    [[UITabBarItem appearance] setTitlePositionAdjustment:UIOffsetMake(0.0, -16.0f)];
+    [[UITabBarItem appearance] setTitlePositionAdjustment:UIOffsetMake(0.0, -10.0f)];
 }
 
 - (void)_setupLocationManager

@@ -48,6 +48,12 @@
 #define COCOAPODS_VERSION_MINOR_AFNetworking_UIKit 5
 #define COCOAPODS_VERSION_PATCH_AFNetworking_UIKit 2
 
+// AXRatingView
+#define COCOAPODS_POD_AVAILABLE_AXRatingView
+#define COCOAPODS_VERSION_MAJOR_AXRatingView 1
+#define COCOAPODS_VERSION_MINOR_AXRatingView 0
+#define COCOAPODS_VERSION_PATCH_AXRatingView 3
+
 // ChameleonFramework
 #define COCOAPODS_POD_AVAILABLE_ChameleonFramework
 #define COCOAPODS_VERSION_MAJOR_ChameleonFramework 1

@@ -96,8 +96,7 @@ NSString *const kBidCellIdentifier = @"bidCell";
 
     tableViewController.refreshControl = self.refreshControl;
 
-    // Enable scroll to top
-    self.scrollView = self.tableView;
+    // self.scrollView = self.tableView;
 }
 
 #pragma mark - UITableViewDataSource

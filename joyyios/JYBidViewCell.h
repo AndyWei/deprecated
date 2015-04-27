@@ -11,7 +11,7 @@
 
 + (CGFloat)cellHeight;
 - (void)setExpireTime:(NSTimeInterval)expireAt;
-- (void)setRatingTotalScore:(NSUInteger)score count:(NSUInteger)count;
+- (void)setRatingTotalScore:(CGFloat)score count:(NSUInteger)count;
 
 @property(nonatomic) UILabel *bidderNameLabel;
 @property(nonatomic) UILabel *priceLabel;

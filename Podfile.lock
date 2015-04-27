@@ -20,6 +20,7 @@ PODS:
   - AFNetworking/UIKit (2.5.2):
     - AFNetworking/NSURLConnection
     - AFNetworking/NSURLSession
+  - AXRatingView (1.0.3)
   - ChameleonFramework (1.1.2)
   - JVFloatLabeledTextField (1.0.2)
   - KVNProgress (2.2.1)
@@ -31,6 +32,7 @@ PODS:
 
 DEPENDENCIES:
   - AFNetworking (~> 2.5)
+  - AXRatingView
   - ChameleonFramework
   - JVFloatLabeledTextField
   - KVNProgress
@@ -42,6 +44,7 @@ DEPENDENCIES:
 
 SPEC CHECKSUMS:
   AFNetworking: fefbce9660acb17f48ae0011292d4da0f457bf36
+  AXRatingView: ccaadc1bbda99a4b7e1d556059482d2b933a9f4e
   ChameleonFramework: 1b4588efcae564886e1a176fa02fb0f4c81a69b3
   JVFloatLabeledTextField: 58a3a32cfb800e5b224f676987e7c13abf50a14d
   KVNProgress: 7001d2d16a2755cee5599e8e485befe056f2197b
