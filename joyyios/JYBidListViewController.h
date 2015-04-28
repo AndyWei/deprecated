@@ -7,7 +7,8 @@
 //
 
 #import "JYExpandViewController.h"
+#import "UICustomActionSheet.h"
 
-@interface JYBidListViewController : JYExpandViewController <UITableViewDataSource, UITableViewDelegate>
+@interface JYBidListViewController : JYExpandViewController <UICustomActionSheetDelegate, UITableViewDataSource, UITableViewDelegate>
 
 @end

@@ -47,6 +47,8 @@
     // an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
     // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the
     // game.
+    [self.signInTimer invalidate];
+    self.signInTimer = nil;
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application

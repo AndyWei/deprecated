@@ -16,10 +16,10 @@
 #import "JYOrderItemView.h"
 #import "JYUser.h"
 
-
 @interface JYBidListViewController ()
 
 @property(nonatomic) BOOL isFetchingData;
+@property(nonatomic) NSIndexPath *selectedIndexPath;
 @property(nonatomic) NSMutableArray *bidsMatrix;
 @property(nonatomic) NSMutableArray *ordersList;
 @property(nonatomic) NSUInteger maxBidId;
@@ -61,6 +61,8 @@ NSString *const kBidCellIdentifier = @"bidCell";
     self.ordersList = [NSMutableArray new];
     self.bidsMatrix = [NSMutableArray new];
     self.isFetchingData = NO;
+    self.selectedIndexPath = nil;
+
     [self _fetchOrders];
     [self _createTableView];
 
@@ -95,8 +97,6 @@ NSString *const kBidCellIdentifier = @"bidCell";
     [self.refreshControl addTarget:self action:@selector(_fetchOrders) forControlEvents:UIControlEventValueChanged];
 
     tableViewController.refreshControl = self.refreshControl;
-
-    // self.scrollView = self.tableView;
 }
 
 #pragma mark - UITableViewDataSource
@@ -150,15 +150,8 @@ NSString *const kBidCellIdentifier = @"bidCell";
 //    [cell setDefaultColor:FlatGreen];
 //    cell.firstTrigger = 0.25;
 //}
-//
-//- (void)_presentBidViewForOrder:(NSDictionary *)order
-//{
-//    JYBidCreateViewController *bidViewController = [JYBidCreateViewController new];
-//    bidViewController.order = order;
-//
-//    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:bidViewController];
-//    [self presentViewController:nav animated:YES completion:nil];
-//}
+
+
 
 #pragma mark - UITableView Delegate
 
@@ -169,8 +162,19 @@ NSString *const kBidCellIdentifier = @"bidCell";
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-//    [self _presentBidViewForOrder:(NSDictionary *)self.ordersList[indexPath.row]];
-    [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+    self.selectedIndexPath = indexPath;
+    self.tabBarController.tabBar.hidden = YES;
+
+    UICustomActionSheet *actionSheet = [[UICustomActionSheet alloc] initWithTitle:nil delegate:self buttonTitles:@[NSLocalizedString(@"Cancel", nil), NSLocalizedString(@"Accept", nil)]];
+
+    [actionSheet setButtonColors:@[JoyyBlue50, JoyyBlue]];
+    [actionSheet setButtonsTextColor:JoyyWhite];
+    actionSheet.backgroundColor = JoyyWhite;
+
+    CGRect frame = [tableView cellForRowAtIndexPath:indexPath].frame;
+    frame.origin.y -= tableView.contentOffset.y;
+    actionSheet.clearArea = frame;
+    [actionSheet showInView:self.view];
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
@@ -199,7 +203,61 @@ NSString *const kBidCellIdentifier = @"bidCell";
     return view;
 }
 
+#pragma mark - UIActionSheetDelegate
+
+-(void)customActionSheet:(UICustomActionSheet *)customActionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    self.tabBarController.tabBar.hidden = NO;
+    if (!self.selectedIndexPath)
+    {
+        return;
+    }
+
+    [self.tableView deselectRowAtIndexPath:self.selectedIndexPath animated:YES];
+
+    if (buttonIndex == 1)
+    {
+        NSArray *bids = (NSArray *)[self.bidsMatrix objectAtIndex:self.selectedIndexPath.section];
+        NSDictionary *bid = (NSDictionary *)[bids objectAtIndex:self.selectedIndexPath.row];
+        NSUInteger bidId = [[bid objectForKey:@"id"] unsignedIntegerValue];
+
+        [self _acceptBid:bidId];
+    }
+    self.selectedIndexPath = nil;
+}
+
+
 #pragma mark - Network
+
+- (void)_acceptBid:(NSUInteger)bidId
+{
+    NSDictionary *parameters = @{@"id" : @(bidId)};
+
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYUser currentUser].token];
+    [manager.requestSerializer setValue:token forHTTPHeaderField:@"Authorization"];
+
+    NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"bids/accept"];
+
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+
+    __weak typeof(self) weakSelf = self;
+    [manager POST:url
+      parameters:parameters
+         success:^(AFHTTPRequestOperation *operation, id responseObject) {
+             NSLog(@"bids/accept post success responseObject: %@", responseObject);
+
+             [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+             [weakSelf _fetchBids];
+         }
+         failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+
+             NSLog(@"bids/accept post error: %@", error);
+
+             [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+         }
+     ];
+}
 
 - (void)_fetchOrders
 {
