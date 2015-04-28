@@ -36,7 +36,7 @@ curl -i -X POST -H "Authorization: Bearer 6SjrTCgJPqFqOwdblR4Y" --data "price=1.
 curl -i -H "Authorization: Bearer TOKEN" --data "order_id=3&price=1.1&note='CHOOSE ME'" "http://localhost:8000/v1/bids"
 
 # revoke an bid
-curl -i -X POST -H "Authorization: Bearer TOKEN" "http://localhost:8000/v1/bid/revoke/1"
+curl -i -X POST -H "Authorization: Bearer Xf0THaxxDlgZHiLcCRMa" --data "id=4" "http://localhost:8000/v1/bids/revoke"
 
 # accept a bid
-curl -i -X POST -H "Authorization: Bearer TOKEN" "http://localhost:8000/v1/bids/accept/4"
+curl -i -X POST -H "Authorization: Bearer Xf0THaxxDlgZHiLcCRMa" --data "id=4" "http://localhost:8000/v1/bids/accept"

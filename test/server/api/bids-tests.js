@@ -173,7 +173,10 @@ lab.experiment('Bids POST: ', function () {
 
         request = {
             method: 'POST',
-            url: '/bids/accept/4',
+            url: '/bids/accept',
+            payload: {
+                id: '4'
+            },
             credentials: jack
         };
 
@@ -190,7 +193,10 @@ lab.experiment('Bids POST: ', function () {
 
         request = {
             method: 'POST',
-            url: '/bids/accept/1',
+            url: '/bids/accept',
+            payload: {
+                id: '1'
+            },
             credentials: andy
         };
 
@@ -207,7 +213,10 @@ lab.experiment('Bids POST: ', function () {
 
         request = {
             method: 'POST',
-            url: '/bids/accept/1',
+            url: '/bids/accept',
+            payload: {
+                id: '2'
+            },
             credentials: andy
         };
 
@@ -224,7 +233,10 @@ lab.experiment('Bids POST: ', function () {
 
         request = {
             method: 'POST',
-            url: '/bids/revoke/1',
+            url: '/bids/revoke',
+            payload: {
+                id: '1'
+            },
             credentials: andy
         };
 
@@ -241,7 +253,10 @@ lab.experiment('Bids POST: ', function () {
 
         request = {
             method: 'POST',
-            url: '/bids/revoke/2',
+            url: '/bids/revoke',
+            payload: {
+                id: '2'
+            },
             credentials: andy
         };
 
@@ -257,7 +272,10 @@ lab.experiment('Bids POST: ', function () {
 
         request = {
             method: 'POST',
-            url: '/bids/revoke/2',
+            url: '/bids/revoke',
+            payload: {
+                id: '2'
+            },
             credentials: mike
         };
 

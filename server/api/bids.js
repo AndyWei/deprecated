@@ -156,14 +156,14 @@ exports.register = function (server, options, next) {
     // revoke a bid. auth.
     server.route({
         method: 'POST',
-        path: options.basePath + '/bids/revoke/{bid_id}',
+        path: options.basePath + '/bids/revoke',
         config: {
             auth: {
                 strategy: 'token'
             },
             validate: {
-                params: {
-                    bid_id: Joi.string().regex(/^[0-9]+$/).max(19)
+                payload: {
+                    id: Joi.string().regex(/^[0-9]+$/).max(19)
                 }
             }
         },
@@ -174,7 +174,7 @@ exports.register = function (server, options, next) {
                 text: 'UPDATE bids SET status = 20, updated_at = now() ' +
                       'WHERE id = $1 AND bidder_id = $2 AND status = 0 AND deleted = false ' +
                       'RETURNING id, status',
-                values: [request.params.bid_id, request.auth.credentials.id]
+                values: [request.payload.id, request.auth.credentials.id]
             };
 
             request.pg.client.query(queryConfig, function (err, result) {
@@ -197,14 +197,14 @@ exports.register = function (server, options, next) {
     // accept a bid. auth.
     server.route({
         method: 'POST',
-        path: options.basePath + '/bids/accept/{bid_id}',
+        path: options.basePath + '/bids/accept',
         config: {
             auth: {
                 strategy: 'token'
             },
             validate: {
-                params: {
-                    bid_id: Joi.string().regex(/^[0-9]+$/).max(19)
+                payload: {
+                    id: Joi.string().regex(/^[0-9]+$/).max(19)
                 }
             }
         },
@@ -333,8 +333,6 @@ internals.acceptBidHandler = function (request, reply) {
         },
         function (callback) {
 
-            var bidId = request.params.bid_id;
-            var askerId = request.auth.credentials.id;
             var queryConfig = {
                 name: 'orders_update_pending',
                 text: 'UPDATE orders AS o ' +
@@ -342,7 +340,7 @@ internals.acceptBidHandler = function (request, reply) {
                       'FROM bids AS b ' +
                       'WHERE b.id = $1 AND o.user_id = $2 AND o.id = b.order_id AND o.status = 0 ' +
                       'RETURNING o.id',
-                values: [bidId, askerId]
+                values: [request.payload.id, request.auth.credentials.id]
             };
 
             request.pg.client.query(queryConfig, function (err, result) {
