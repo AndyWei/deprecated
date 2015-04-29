@@ -72,7 +72,7 @@ var validateToken = function (token, callback) {
         if (err) {
             return callback(Boom.unauthorized(c.TOKEN_INVALID, 'token'), false, null);
         }
-console.info("userInfo = %j", userInfo);
+
         callback(null, true, userInfo);
     });
 };

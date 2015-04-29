@@ -21,15 +21,18 @@ var PgPlugin = {
 };
 
 var jack = {
-    id: 1
+    id: 1,
+    username: 'jack'
 };
 
 var andy = {
-    id: 2
+    id: 2,
+    username: 'andy'
 };
 
 var mike = {
-    id: 4
+    id: 4,
+    username: 'mike'
 };
 
 var request, server;

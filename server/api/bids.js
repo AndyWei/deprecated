@@ -280,7 +280,9 @@ internals.createBidHandler = function (request, reply) {
             return reply(err);
         }
 
-        // send push notification
+        reply(null, { bid_id: results.bidId });
+
+        // send notification to the asker
         var title = 'Received a bid!';
         var body = request.auth.credentials.username + ' ask for ' + request.payload.price;
         Push.send(results.askerId, title, body, function (error) {
@@ -289,8 +291,6 @@ internals.createBidHandler = function (request, reply) {
                 console.error(error);
             }
         });
-
-        reply(null, { bid_id: results.bidId });
     });
 };
 
@@ -409,26 +409,36 @@ internals.acceptBidHandler = function (request, reply) {
 
                 callback(null, winnerId, losers);
             });
-        },
-        function (winnerId, losers, callback) {
-
-            // TODO: send push notification to row.bidder_id
-
-            callback(null, winnerId);
         }
-    ], function (err, winnerId) {
+    ], function (err, winnerId, losers) {
 
-        if (!err) {
-            return reply(null, { winner: winnerId });
+        if (err) {
+
+            console.error(err);
+            request.pg.client.query('ROLLBACK', function(rollbackErr) {
+                if (rollbackErr) {
+                    request.pg.kill = true;
+                }
+
+                reply(err);
+            });
         }
+        else {
 
-        console.error(err);
-        request.pg.client.query('ROLLBACK', function(rollbackErr) {
-            if (rollbackErr) {
-                request.pg.kill = true;
-            }
+            reply(null, { winner: winnerId });
 
-            reply(err);
-        });
+            // send notification to the winner
+            var title = 'Bid Accepted!';
+            var body = request.auth.credentials.username + ' accepted your bid!';
+            Push.send(winnerId, title, body, function (error) {
+
+                if (error) {
+                    console.error(error);
+                }
+            });
+
+            // send notification to the losers
+            console.info('losers = %j', losers);
+        }
     });
 };
