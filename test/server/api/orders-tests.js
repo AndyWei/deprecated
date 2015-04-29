@@ -213,7 +213,7 @@ lab.experiment('Orders GET: ', function () {
         request = {
             method: 'GET',
             url: '/orders/won',
-            credentials: andy
+            credentials: jack
         };
 
         server.inject(request, function (response) {
@@ -235,7 +235,7 @@ lab.experiment('Orders GET: ', function () {
         server.inject(request, function (response) {
 
             Code.expect(response.statusCode).to.equal(200);
-            Code.expect(response.result).to.be.an.array().and.to.have.length(3);
+            Code.expect(response.result).to.be.an.array().and.to.have.length(2);
 
             done();
         });
@@ -283,13 +283,13 @@ lab.experiment('Orders GET: ', function () {
         server.inject(request, function (response) {
 
             Code.expect(response.statusCode).to.equal(200);
-            Code.expect(response.result).to.be.an.array().and.to.have.length(2);
+            Code.expect(response.result).to.be.an.array().and.to.have.length(1);
 
             done();
         });
     });
 
-    lab.test('/orders/nearby: found 1 in category 5', function (done) {
+    lab.test('/orders/nearby: found in category 5', function (done) {
 
         request = {
             method: 'GET',

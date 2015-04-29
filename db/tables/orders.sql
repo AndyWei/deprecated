@@ -4,7 +4,7 @@ CREATE TABLE orders (
     price          NUMERIC(11,2) NOT NULL,  -- the price that the consumer wants
     currency       CHAR(3)       NOT NULL DEFAULT 'usd',  -- ISO 4217 Currency Codes
     country        CHAR(2)       NOT NULL DEFAULT 'us',  -- country code
-    status         SMALLINT      NOT NULL DEFAULT 0,  -- 0-active, 2-pending, 3-ongoing, 4-finished, 10-paid, 20-revoked
+    status         SMALLINT      NOT NULL DEFAULT 0,  -- 0-active, 1-pending, 2-ongoing, 3-finished, 10-paid, 20-revoked
     category       SMALLINT      NOT NULL DEFAULT 0,  -- the service category: 0-uncategorized, 1-roadside_aid, 2-ride, 3-moving, 4-delivery, 5-cleaning, 6-handyman, 7-assistance
     title          VARCHAR(100)  NOT NULL,
     note           VARCHAR(1000) NOT NULL,  -- the description from the consumer

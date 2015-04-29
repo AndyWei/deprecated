@@ -19,10 +19,14 @@ INSERT INTO orders
 
 INSERT INTO bids
     (bidder_id, order_id, price, status, expire_at, created_at, updated_at,           note) VALUES
-    (        2,        1,   399,      0, 1427159567,     now(),      now(),     'in 5 mins'),
-    (        3,        1,   299,     10, 1427159543,     now(),      now(),  'best quality'),
-    (        3,        1,    99,      1, 1427160123,     now(),      now(),    'super pro!'),
-    (        4,        3,    99,      0, 1427160123,     now(),      now(),    'accept me!');
+    (        2,        1,   399,      3, 1427159567,     now(),      now(),    'for accept'),
+    (        2,        1,   299,     10, 1427159543,     now(),      now(),    'for accept'),
+    (        2,        1,    99,      2, 1427160123,     now(),      now(),    'for accept'),
+    (        2,        1,    99,      0, 1427160123,     now(),      now(),    'for accept'),
+    (        2,        3,   399,      0, 1427159567,     now(),      now(),    'for revoke'),
+    (        2,        3,   299,      3, 1427159543,     now(),      now(),    'for revoke'),
+    (        2,        3,    99,      2, 1427160123,     now(),      now(),    'for revoke'),
+    (        2,        3,    99,     10, 1427160123,     now(),      now(),    'for revoke');
 
 
 INSERT INTO reviews
@@ -30,7 +34,5 @@ INSERT INTO reviews
     (          2,           1,        1,      4, 'fixedin 5 mins',      now(),      now()),
     (          3,           2,        2,      5, 'best quality!!',      now(),      now()),
     (          4,           2,        3,    4.5,     'super pro!',      now(),      now());
-
-
 
 

@@ -83,7 +83,7 @@ exports.generate = function (userId, callback) {
                 }
 
                 if (value) { // there is a token already, so fake a err here to stop generating new token
-                    return next(true, value);
+                    return next("found", value);
                 }
 
                 next(null, null);
@@ -118,7 +118,7 @@ exports.generate = function (userId, callback) {
         }]
     }, function (err, results) {
 
-        if (err === true) {
+        if (err === "found") {
             return callback(null, results.existedToken); // just return the existedToken
         }
 

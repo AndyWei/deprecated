@@ -86,7 +86,7 @@ lab.experiment('Bids: ', function () {
         server.inject(request, function (response) {
 
             Code.expect(response.statusCode).to.equal(200);
-            Code.expect(response.result).to.be.an.array().and.to.have.length(1);
+            Code.expect(response.result).to.be.an.array().and.to.have.length(8);
 
             done();
         });
@@ -120,7 +120,7 @@ lab.experiment('Bids: ', function () {
         server.inject(request, function (response) {
 
             Code.expect(response.statusCode).to.equal(200);
-            Code.expect(response.result).to.be.an.array().and.to.have.length(3);
+            Code.expect(response.result).to.be.an.array().and.to.have.length(6);
 
             done();
         });
@@ -169,6 +169,46 @@ lab.experiment('Bids POST: ', function () {
         });
     });
 
+    lab.test('/bids: accept a bid fail due to wrong user_id', function (done) {
+
+        request = {
+            method: 'POST',
+            url: '/bids/accept',
+            payload: {
+                id: '4'
+            },
+            credentials: andy
+        };
+
+        server.inject(request, function (response) {
+
+            Code.expect(response.statusCode).to.equal(422);
+            Code.expect(response.result.message).to.equal(c.ORDER_UPDATE_FAILED);
+
+            done();
+        });
+    });
+
+    lab.test('/bids: accept the bid failed because bid status is not active', function (done) {
+
+        request = {
+            method: 'POST',
+            url: '/bids/accept',
+            payload: {
+                id: '2'
+            },
+            credentials: jack
+        };
+
+        server.inject(request, function (response) {
+
+            Code.expect(response.statusCode).to.equal(422);
+            Code.expect(response.result.message).to.equal(c.BID_UPDATE_FAILED);
+
+            done();
+        });
+    });
+
     lab.test('/bids: accept a bid successfully', function (done) {
 
         request = {
@@ -189,80 +229,20 @@ lab.experiment('Bids POST: ', function () {
         });
     });
 
-    lab.test('/bids: accept a bid fail due to wrong bidder_id ', function (done) {
-
-        request = {
-            method: 'POST',
-            url: '/bids/accept',
-            payload: {
-                id: '1'
-            },
-            credentials: andy
-        };
-
-        server.inject(request, function (response) {
-
-            Code.expect(response.statusCode).to.equal(422);
-            Code.expect(response.result.message).to.equal(c.ORDER_UPDATE_FAILED);
-
-            done();
-        });
-    });
-
-    lab.test('/bids: accept a bid fail due to wrong status ', function (done) {
-
-        request = {
-            method: 'POST',
-            url: '/bids/accept',
-            payload: {
-                id: '2'
-            },
-            credentials: andy
-        };
-
-        server.inject(request, function (response) {
-
-            Code.expect(response.statusCode).to.equal(422);
-            Code.expect(response.result.message).to.equal(c.ORDER_UPDATE_FAILED);
-
-            done();
-        });
-    });
-
-    lab.test('/bids: revoke successfully', function (done) {
-
-        request = {
-            method: 'POST',
-            url: '/bids/revoke',
-            payload: {
-                id: '1'
-            },
-            credentials: andy
-        };
-
-        server.inject(request, function (response) {
-
-            Code.expect(response.statusCode).to.equal(200);
-            Code.expect(response.result).to.be.an.object();
-
-            done();
-        });
-    });
-
     lab.test('/bids: revoke fail due to wrong bidder_id', function (done) {
 
         request = {
             method: 'POST',
             url: '/bids/revoke',
             payload: {
-                id: '2'
+                id: '6'
             },
-            credentials: andy
+            credentials: mike
         };
 
         server.inject(request, function (response) {
 
-            Code.expect(response.statusCode).to.equal(400);
+            Code.expect(response.statusCode).to.equal(422);
             Code.expect(response.result.message).to.equal(c.BID_REVOKE_FAILED);
             done();
         });
@@ -274,15 +254,35 @@ lab.experiment('Bids POST: ', function () {
             method: 'POST',
             url: '/bids/revoke',
             payload: {
-                id: '2'
+                id: '7'
             },
-            credentials: mike
+            credentials: andy
         };
 
         server.inject(request, function (response) {
 
-            Code.expect(response.statusCode).to.equal(400);
+            Code.expect(response.statusCode).to.equal(422);
             Code.expect(response.result.message).to.equal(c.BID_REVOKE_FAILED);
+            done();
+        });
+    });
+
+    lab.test('/bids: revoke successfully', function (done) {
+
+        request = {
+            method: 'POST',
+            url: '/bids/revoke',
+            payload: {
+                id: '5'
+            },
+            credentials: andy
+        };
+
+        server.inject(request, function (response) {
+
+            Code.expect(response.statusCode).to.equal(200);
+            Code.expect(response.result).to.be.an.object();
+
             done();
         });
     });

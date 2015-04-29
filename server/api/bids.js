@@ -173,7 +173,7 @@ exports.register = function (server, options, next) {
                 name: 'bids_revoke',
                 text: 'UPDATE bids SET status = 20, updated_at = now() ' +
                       'WHERE id = $1 AND bidder_id = $2 AND status = 0 AND deleted = false ' +
-                      'RETURNING id, status',
+                      'RETURNING id',
                 values: [request.payload.id, request.auth.credentials.id]
             };
 
@@ -186,7 +186,7 @@ exports.register = function (server, options, next) {
                 }
 
                 if (result.rows.length === 0) {
-                    return reply(Boom.badRequest(c.BID_REVOKE_FAILED));
+                    return reply(Boom.badData(c.BID_REVOKE_FAILED));
                 }
 
                 reply(null, result.rows[0]);
@@ -319,8 +319,30 @@ internals.createBidHandler = function (request, reply) {
 
 internals.acceptBidHandler = function (request, reply) {
 
+    var bidId = request.payload.id;
     Async.waterfall([
         function (callback) {
+
+            var queryConfig = {
+                name: 'bids_order_id_by_bid_id',
+                text: 'SELECT order_id, bidder_id FROM bids WHERE id = $1 AND status = 0 AND deleted = false',
+                values: [bidId]
+            };
+
+            request.pg.client.query(queryConfig, function (err, result) {
+                if (err) {
+                    request.pg.kill = true;
+                    return callback(err);
+                }
+
+                if (result.rows.length === 0) {
+                    return reply(Boom.badData(c.BID_UPDATE_FAILED));
+                }
+
+                callback(null, result.rows[0].order_id, result.rows[0].bidder_id);
+            });
+        },
+        function (orderId, bidderId, callback) {
 
             request.pg.client.query('BEGIN', function(err) {
                 if (err) {
@@ -328,19 +350,19 @@ internals.acceptBidHandler = function (request, reply) {
                     return callback(err);
                 }
 
-                callback(null);
+                callback(null, orderId, bidderId);
             });
         },
-        function (callback) {
+        function (orderId, bidderId, callback) {
 
+            var queryText = 'UPDATE orders ' +
+                      'SET winner_id = $1, status = 1, updated_at = now() ' +
+                      'WHERE id = $2 AND user_id = $3 AND status = 0 ' +
+                      'RETURNING id';
             var queryConfig = {
                 name: 'orders_update_pending',
-                text: 'UPDATE orders AS o ' +
-                      'SET winner_id = b.bidder_id, status = 2, updated_at = now() ' +
-                      'FROM bids AS b ' +
-                      'WHERE b.id = $1 AND o.user_id = $2 AND o.id = b.order_id AND o.status = 0 ' +
-                      'RETURNING o.id',
-                values: [request.payload.id, request.auth.credentials.id]
+                text: queryText,
+                values: [bidderId, orderId, request.auth.credentials.id]
             };
 
             request.pg.client.query(queryConfig, function (err, result) {
@@ -351,29 +373,7 @@ internals.acceptBidHandler = function (request, reply) {
                 }
 
                 if (result.rows.length === 0) {
-
-                    return callback(Boom.badData(c.ORDER_UPDATE_FAILED));
-                }
-
-                callback(null, result.rows[0].id);
-            });
-        },
-        function (orderId, callback) {
-
-            var queryConfig = {
-                name: 'bids_reject_others',
-                text: 'UPDATE bids ' +
-                      'SET status = 10, updated_at = now() ' +
-                      'WHERE order_id = $1 AND id <> $2 AND status = 0 ' +
-                      'RETURNING id',
-                values: [orderId, request.params.bid_id]
-            };
-
-            request.pg.client.query(queryConfig, function (err) {
-
-                if (err) {
-                    request.pg.kill = true;
-                    return callback(err);
+                    return reply(Boom.badData(c.ORDER_UPDATE_FAILED));
                 }
 
                 callback(null, orderId);
@@ -386,8 +386,8 @@ internals.acceptBidHandler = function (request, reply) {
                 text: 'UPDATE bids ' +
                       'SET status = 1, updated_at = now() ' +
                       'WHERE id = $1 AND status = 0 ' +
-                      'RETURNING id, bidder_id',
-                values: [request.params.bid_id]
+                      'RETURNING bidder_id',
+                values: [bidId]
             };
 
             request.pg.client.query(queryConfig, function (err, result) {
@@ -397,15 +397,31 @@ internals.acceptBidHandler = function (request, reply) {
                     return callback(err);
                 }
 
-                if (result.rows.length === 0) {
-
-                    return callback(Boom.badData(c.BID_UPDATE_FAILED));
-                }
-
-                callback(null, orderId, result.rows[0]);
+                callback(null, orderId, result.rows[0].bidder_id);
             });
         },
-        function (orderId, row, callback) {
+        function (orderId, winnerId, callback) {
+
+            var queryConfig = {
+                name: 'bids_reject_others',
+                text: 'UPDATE bids ' +
+                      'SET status = 10, updated_at = now() ' +
+                      'WHERE order_id = $1 AND id <> $2 AND status = 0 ' +
+                      'RETURNING bidder_id',
+                values: [orderId, bidId]
+            };
+
+            request.pg.client.query(queryConfig, function (err, result) {
+
+                if (err) {
+                    request.pg.kill = true;
+                    return callback(err);
+                }
+
+                callback(null, winnerId, result.rows);
+            });
+        },
+        function (winnerId, losers, callback) {
 
             request.pg.client.query('COMMIT', function(err) {
                 if (err) {
@@ -413,24 +429,19 @@ internals.acceptBidHandler = function (request, reply) {
                     callback(err);
                 }
 
-                callback(null, orderId, row);
+                callback(null, winnerId, losers);
             });
         },
-        function (orderId, row, callback) {
+        function (winnerId, losers, callback) {
 
             // TODO: send push notification to row.bidder_id
 
-            callback(null, orderId, row.id);
+            callback(null, winnerId);
         }
-    ], function (err, orderId, bidId) {
+    ], function (err, winnerId) {
 
         if (!err) {
-            var result = {
-                order_id: orderId,
-                bid_id: bidId
-            };
-
-            return reply(null, result);
+            return reply(null, { winner: winnerId });
         }
 
         console.error(err);

@@ -24,6 +24,8 @@ exports.EMAIL_IN_USE = 'Email already in use.';
 
 exports.ORDER_CREATE_FAILED = 'The order has not been created.';
 
+exports.ORDER_NOT_FOUND = 'The order is not found.';
+
 exports.ORDER_REVOKE_FAILED = 'The order is either not found or not in active status, cannot be revoked.';
 
 exports.ORDER_UPDATE_FAILED = 'The order is either not found or not in active status, cannot be updated.';
