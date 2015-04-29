@@ -18,7 +18,8 @@ exports.register = function (server, options, next) {
         handler: function (request, reply) {
 
             var userId = request.auth.credentials.id;
-            Token.generate(userId, function (err, generatedToken) {
+            var userName = request.auth.credentials.username;
+            Token.generateBearerToken(userId, userName, function (err, token) {
 
                 if (err) {
                     console.error(err);
@@ -27,7 +28,7 @@ exports.register = function (server, options, next) {
                 }
 
                 var response = request.auth.credentials;
-                response.token = generatedToken;
+                response.token = token;
 
                 reply(null, response);
             });

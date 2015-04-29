@@ -68,12 +68,12 @@ var validateSimple = function (email, password, finish) {
 
 var validateToken = function (token, callback) {
 
-    Token.validate(token, function (err, userId) {
+    Token.validateBearerToken(token, function (err, userInfo) {
         if (err) {
             return callback(Boom.unauthorized(c.TOKEN_INVALID, 'token'), false, null);
         }
-
-        callback(null, true, {id: userId});
+console.info("userInfo = %j", userInfo);
+        callback(null, true, userInfo);
     });
 };
 

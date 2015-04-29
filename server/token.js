@@ -68,11 +68,13 @@ exports.setDeviceTokenObject = function (userId, tokenObj, callback) {
 
 
 // Generate a 20 character alpha-numeric token and store it in bearerTokenCache
-exports.generate = function (userId, callback) {
+exports.generateBearerToken = function (userId, userName, callback) {
 
     Hoek.assert(bearerTokenCache, 'Bearer token cache should be set beforehand.');
 
     userId = userId.toString();
+    userName = userName.toString();
+
     Async.auto({
         existedToken: function (next) {
 
@@ -83,7 +85,7 @@ exports.generate = function (userId, callback) {
                 }
 
                 if (value) { // there is a token already, so fake a err here to stop generating new token
-                    return next("found", value);
+                    return next('token_found', value);
                 }
 
                 next(null, null);
@@ -96,7 +98,12 @@ exports.generate = function (userId, callback) {
         },
         cacheToken: ['existedToken', 'generateToken', function (next, results) {
 
-            bearerTokenCache.set(results.generateToken, userId, 0, function (err) {
+            var userInfo = {
+                id: userId,
+                username: userName
+            };
+
+            bearerTokenCache.set(results.generateToken, userInfo, 0, function (err) {
 
                 if (err) {
                     return next(err);
@@ -118,7 +125,7 @@ exports.generate = function (userId, callback) {
         }]
     }, function (err, results) {
 
-        if (err === "found") {
+        if (err === 'token_found') {
             return callback(null, results.existedToken); // just return the existedToken
         }
 
@@ -132,7 +139,7 @@ exports.generate = function (userId, callback) {
 };
 
 
-exports.destroy = function (token, callback) {
+exports.destroyBearerToken = function (token, callback) {
 
     Hoek.assert(bearerTokenCache, 'Bearer token cache should be set beforehand.');
     bearerTokenCache.drop(token, function (err) {
@@ -146,7 +153,7 @@ exports.destroy = function (token, callback) {
 };
 
 
-exports.validate = function (token, callback) {
+exports.validateBearerToken = function (token, callback) {
 
     Hoek.assert(bearerTokenCache, 'Bearer token cache should be set beforehand.');
     bearerTokenCache.get(token, function (err, value) {

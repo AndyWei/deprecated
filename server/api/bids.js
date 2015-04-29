@@ -272,28 +272,6 @@ internals.createBidHandler = function (request, reply) {
 
                 next(null, result.rows[0].id);
             });
-        },
-        bidderName: function (next) {
-
-            var queryConfig = {
-                name: 'username_by_id',
-                text: 'SELECT username FROM users WHERE id = $1 AND deleted = false',
-                values: [request.auth.credentials.id]
-            };
-
-            request.pg.client.query(queryConfig, function (err, result) {
-
-                if (err) {
-                    request.pg.kill = true;
-                    return next(err);
-                }
-
-                if (result.rows.length === 0) {
-                    return next(Boom.notFound(c.RECORD_NOT_FOUND));
-                }
-
-                next(null, result.rows[0].username);
-            });
         }
     }, function (err, results) {
 
@@ -304,7 +282,7 @@ internals.createBidHandler = function (request, reply) {
 
         // send push notification
         var title = 'Received a bid!';
-        var body = results.bidderName + ' ask for ' + request.payload.price;
+        var body = request.auth.credentials.username + ' ask for ' + request.payload.price;
         Push.send(results.askerId, title, body, function (error) {
 
             if (error) {

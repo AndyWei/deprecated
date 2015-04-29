@@ -15,7 +15,8 @@ var lab = exports.lab = Lab.script();
 var request, server;
 
 var jack = {
-    id: 1
+    id: 1,
+    username: 'jack'
 };
 
 

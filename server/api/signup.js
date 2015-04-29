@@ -157,8 +157,9 @@ internals.createUser = function (request, reply) {
             });
         }],
         token: ['userid', function (callback, results) {
-            Token.generate(results.userid, function (err, generatedToken) {
-                callback(err, generatedToken);
+
+            Token.generateBearerToken(results.userid, results.username, function (err, token) {
+                callback(err, token);
             });
         }]
     }, function (err, results) {
