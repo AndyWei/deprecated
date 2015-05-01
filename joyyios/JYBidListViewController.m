@@ -63,11 +63,12 @@ NSString *const kBidCellIdentifier = @"bidCell";
     self.isFetchingData = NO;
     self.selectedIndexPath = nil;
 
-    [self _fetchOrders];
+    [self _fetchMyOrders];
     [self _createTableView];
 
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_fetchOrders) name:kNotificationDidCreateOrder object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_fetchOrders) name:kNotificationDidReceiveBid object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_fetchMyOrders) name:kNotificationDidCreateOrder object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_fetchMyOrders) name:kNotificationDidReceiveBid object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_fetchMyBids) name:kNotificationDidCreateBid object:nil];
 }
 
 - (void)didReceiveMemoryWarning
@@ -94,7 +95,7 @@ NSString *const kBidCellIdentifier = @"bidCell";
     tableViewController.tableView = self.tableView;
 
     self.refreshControl = [UIRefreshControl new];
-    [self.refreshControl addTarget:self action:@selector(_fetchOrders) forControlEvents:UIControlEventValueChanged];
+    [self.refreshControl addTarget:self action:@selector(_fetchMyOrders) forControlEvents:UIControlEventValueChanged];
 
     tableViewController.refreshControl = self.refreshControl;
 }
@@ -248,7 +249,7 @@ NSString *const kBidCellIdentifier = @"bidCell";
              NSLog(@"bids/accept post success responseObject: %@", responseObject);
 
              [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-             [weakSelf _fetchBids];
+             [weakSelf _fetchBidsForOrders];
          }
          failure:^(AFHTTPRequestOperation *operation, NSError *error) {
 
@@ -259,7 +260,7 @@ NSString *const kBidCellIdentifier = @"bidCell";
      ];
 }
 
-- (void)_fetchOrders
+- (void)_fetchMyOrders
 {
     if (self.isFetchingData)
     {
@@ -307,7 +308,7 @@ NSString *const kBidCellIdentifier = @"bidCell";
 
              if (weakSelf.ordersList.count > 0)
              {
-                 [weakSelf _fetchBids];
+                 [weakSelf _fetchBidsForOrders];
              }
          }
          failure:^(AFHTTPRequestOperation *operation, NSError *error) {
@@ -318,7 +319,11 @@ NSString *const kBidCellIdentifier = @"bidCell";
      ];
 }
 
-- (void)_fetchBids
+- (void)_fetchMyBids
+{
+}
+
+- (void)_fetchBidsForOrders
 {
     if (self.isFetchingData)
     {

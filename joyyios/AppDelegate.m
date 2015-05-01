@@ -8,6 +8,7 @@
 
 #import <AFNetworking/AFNetworking.h>
 #import <KVNProgress/KVNProgress.h>
+#import <RKDropdownAlert/RKDropdownAlert.h>
 
 #import "AppDelegate.h"
 #import "DataStore.h"
@@ -99,12 +100,7 @@
     NSString *title = aps ? [aps objectForKey:@"alert"] : @"Notification";
     NSString *message = [notification objectForKey:@"message"];
 
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:title
-                                                        message:message
-                                                       delegate:self
-                                              cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
-                                              otherButtonTitles:NSLocalizedString(@"Settings", nil), nil];
-    [alertView show];
+    [RKDropdownAlert title:title message:message backgroundColor:FlatGreen textColor:JoyyWhite time:3];
 }
 
 #pragma mark - Private methods

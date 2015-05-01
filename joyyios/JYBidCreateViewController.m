@@ -218,7 +218,7 @@ NSString *const kOrderBidCellIdentifier = @"orderBidCell";
 
               [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
               [KVNProgress showSuccessWithStatus:NSLocalizedString(@"The Bid Created!", nil)];
-
+              [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationDidCreateBid object:nil];
               [weakSelf _cancel];
           }
           failure:^(AFHTTPRequestOperation *operation, NSError *error) {
