@@ -10,7 +10,6 @@
 #import <KVNProgress/KVNProgress.h>
 #import <RKDropdownAlert/RKDropdownAlert.h>
 
-#import "JYBidCreateViewController.h"
 #import "JYBidListViewController.h"
 #import "JYBidViewCell.h"
 #import "JYOrderItemView.h"

@@ -10,23 +10,46 @@
 		4A97C952E583F70673F3F803 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BF9E643DBA1E8D6E7E6558EC /* libPods.a */; };
 		D6F49F891AF595F2001A3C89 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F49F881AF595F2001A3C89 /* main.m */; };
 		D6F49F8C1AF595F2001A3C89 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F49F8B1AF595F2001A3C89 /* AppDelegate.m */; };
-		D6F49F8F1AF595F2001A3C89 /* FirstViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F49F8E1AF595F2001A3C89 /* FirstViewController.m */; };
-		D6F49F921AF595F2001A3C89 /* SecondViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F49F911AF595F2001A3C89 /* SecondViewController.m */; };
-		D6F49F951AF595F2001A3C89 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D6F49F931AF595F2001A3C89 /* Main.storyboard */; };
 		D6F49F971AF595F2001A3C89 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D6F49F961AF595F2001A3C89 /* Images.xcassets */; };
 		D6F49F9A1AF595F2001A3C89 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = D6F49F981AF595F2001A3C89 /* LaunchScreen.xib */; };
-		D6F49FA61AF595F2001A3C89 /* joyyorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F49FA51AF595F2001A3C89 /* joyyorTests.m */; };
+		D6F49FF61AF5DB4D001A3C89 /* Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F49FB11AF5DB4D001A3C89 /* Constants.m */; };
+		D6F49FF81AF5DB4D001A3C89 /* DataStore.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F49FB31AF5DB4D001A3C89 /* DataStore.m */; };
+		D6F49FFA1AF5DB4D001A3C89 /* JYAutoCompleteDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F49FB51AF5DB4D001A3C89 /* JYAutoCompleteDataSource.m */; };
+		D6F49FFC1AF5DB4D001A3C89 /* JYAutocompleteTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F49FB71AF5DB4D001A3C89 /* JYAutocompleteTextField.m */; };
+		D6F49FFE1AF5DB4D001A3C89 /* JYBidViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F49FB91AF5DB4D001A3C89 /* JYBidViewCell.m */; };
+		D6F4A0001AF5DB4D001A3C89 /* JYButton.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F49FBB1AF5DB4D001A3C89 /* JYButton.m */; };
+		D6F4A0021AF5DB4D001A3C89 /* JYCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F49FBD1AF5DB4D001A3C89 /* JYCollectionViewCell.m */; };
+		D6F4A0041AF5DB4D001A3C89 /* JYDateView.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F49FBF1AF5DB4D001A3C89 /* JYDateView.m */; };
+		D6F4A0061AF5DB4D001A3C89 /* JYExpandViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F49FC11AF5DB4D001A3C89 /* JYExpandViewController.m */; };
+		D6F4A0081AF5DB4D001A3C89 /* JYFloatLabeledTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F49FC31AF5DB4D001A3C89 /* JYFloatLabeledTextField.m */; };
+		D6F4A00A1AF5DB4D001A3C89 /* JYMapDashBoardView.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F49FC51AF5DB4D001A3C89 /* JYMapDashBoardView.m */; };
+		D6F4A00C1AF5DB4D001A3C89 /* JYOrder.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F49FC71AF5DB4D001A3C89 /* JYOrder.m */; };
+		D6F4A00E1AF5DB4D001A3C89 /* JYOrderItemView.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F49FC91AF5DB4D001A3C89 /* JYOrderItemView.m */; };
+		D6F4A0121AF5DB4D001A3C89 /* JYOrderViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F49FCD1AF5DB4D001A3C89 /* JYOrderViewCell.m */; };
+		D6F4A0141AF5DB4D001A3C89 /* JYPanGestureRecognizer.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F49FCF1AF5DB4D001A3C89 /* JYPanGestureRecognizer.m */; };
+		D6F4A0161AF5DB4D001A3C89 /* JYPinAnnotationView.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F49FD11AF5DB4D001A3C89 /* JYPinAnnotationView.m */; };
+		D6F4A0181AF5DB4D001A3C89 /* JYPinchGestureRecognizer.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F49FD31AF5DB4D001A3C89 /* JYPinchGestureRecognizer.m */; };
+		D6F4A01A1AF5DB4D001A3C89 /* JYPlacesViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F49FD51AF5DB4D001A3C89 /* JYPlacesViewCell.m */; };
+		D6F4A01C1AF5DB4D001A3C89 /* JYPlacesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F49FD71AF5DB4D001A3C89 /* JYPlacesViewController.m */; };
+		D6F4A01E1AF5DB4D001A3C89 /* JYPriceTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F49FD91AF5DB4D001A3C89 /* JYPriceTextFieldCell.m */; };
+		D6F4A0201AF5DB4D001A3C89 /* JYRestrictedTextViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F49FDB1AF5DB4D001A3C89 /* JYRestrictedTextViewCell.m */; };
+		D6F4A0221AF5DB4D001A3C89 /* JYServiceCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F49FDD1AF5DB4D001A3C89 /* JYServiceCategory.m */; };
+		D6F4A0241AF5DB4D001A3C89 /* JYSignBaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F49FDF1AF5DB4D001A3C89 /* JYSignBaseViewController.m */; };
+		D6F4A0261AF5DB4D001A3C89 /* JYSignInViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F49FE11AF5DB4D001A3C89 /* JYSignInViewController.m */; };
+		D6F4A0281AF5DB4D001A3C89 /* JYSignUpViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F49FE31AF5DB4D001A3C89 /* JYSignUpViewController.m */; };
+		D6F4A02A1AF5DB4D001A3C89 /* JYSignViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F49FE51AF5DB4D001A3C89 /* JYSignViewController.m */; };
+		D6F4A02C1AF5DB4D001A3C89 /* JYUser.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F49FE71AF5DB4D001A3C89 /* JYUser.m */; };
+		D6F4A02E1AF5DB4D001A3C89 /* NSMutableDictionary+Joyy.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F49FE91AF5DB4D001A3C89 /* NSMutableDictionary+Joyy.m */; };
+		D6F4A0301AF5DB4D001A3C89 /* NSString+Joyy.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F49FEB1AF5DB4D001A3C89 /* NSString+Joyy.m */; };
+		D6F4A0321AF5DB4D001A3C89 /* UIColor+Joyy.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F49FED1AF5DB4D001A3C89 /* UIColor+Joyy.m */; };
+		D6F4A0341AF5DB4D001A3C89 /* UICustomActionSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F49FEF1AF5DB4D001A3C89 /* UICustomActionSheet.m */; };
+		D6F4A0361AF5DB4D001A3C89 /* UIFont+Joyy.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F49FF11AF5DB4D001A3C89 /* UIFont+Joyy.m */; };
+		D6F4A0381AF5DB4D001A3C89 /* UIImageEffects.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F49FF31AF5DB4D001A3C89 /* UIImageEffects.m */; };
+		D6F4A03A1AF5DB4D001A3C89 /* UIView+Joyy.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F49FF51AF5DB4D001A3C89 /* UIView+Joyy.m */; };
+		D6F4A0421AF5DCCD001A3C89 /* JYBidCreateViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F4A0411AF5DCCD001A3C89 /* JYBidCreateViewController.m */; };
+		D6F4A0461AF5DD04001A3C89 /* JYOrdersNearbyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F4A0451AF5DD04001A3C89 /* JYOrdersNearbyViewController.m */; };
+		D6F4A04A1AF5EBE0001A3C89 /* JYBidListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F4A0491AF5EBE0001A3C89 /* JYBidListViewController.m */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXContainerItemProxy section */
-		D6F49FA01AF595F2001A3C89 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = D6F49F7B1AF595F2001A3C89 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = D6F49F821AF595F2001A3C89;
-			remoteInfo = joyyor;
-		};
-/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		BF9E643DBA1E8D6E7E6558EC /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -35,16 +58,85 @@
 		D6F49F881AF595F2001A3C89 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		D6F49F8A1AF595F2001A3C89 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		D6F49F8B1AF595F2001A3C89 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		D6F49F8D1AF595F2001A3C89 /* FirstViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FirstViewController.h; sourceTree = "<group>"; };
-		D6F49F8E1AF595F2001A3C89 /* FirstViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FirstViewController.m; sourceTree = "<group>"; };
-		D6F49F901AF595F2001A3C89 /* SecondViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SecondViewController.h; sourceTree = "<group>"; };
-		D6F49F911AF595F2001A3C89 /* SecondViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SecondViewController.m; sourceTree = "<group>"; };
-		D6F49F941AF595F2001A3C89 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		D6F49F961AF595F2001A3C89 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		D6F49F991AF595F2001A3C89 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
-		D6F49F9F1AF595F2001A3C89 /* joyyorTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = joyyorTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D6F49FA41AF595F2001A3C89 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D6F49FA51AF595F2001A3C89 /* joyyorTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = joyyorTests.m; sourceTree = "<group>"; };
+		D6F49FAF1AF5DA2B001A3C89 /* Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Prefix.pch; sourceTree = SOURCE_ROOT; };
+		D6F49FB01AF5DAE7001A3C89 /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Constants.h; path = joyyios/Constants.h; sourceTree = SOURCE_ROOT; };
+		D6F49FB11AF5DB4D001A3C89 /* Constants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Constants.m; path = joyyios/Constants.m; sourceTree = SOURCE_ROOT; };
+		D6F49FB21AF5DB4D001A3C89 /* DataStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DataStore.h; path = joyyios/DataStore.h; sourceTree = SOURCE_ROOT; };
+		D6F49FB31AF5DB4D001A3C89 /* DataStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DataStore.m; path = joyyios/DataStore.m; sourceTree = SOURCE_ROOT; };
+		D6F49FB41AF5DB4D001A3C89 /* JYAutoCompleteDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JYAutoCompleteDataSource.h; path = joyyios/JYAutoCompleteDataSource.h; sourceTree = SOURCE_ROOT; };
+		D6F49FB51AF5DB4D001A3C89 /* JYAutoCompleteDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JYAutoCompleteDataSource.m; path = joyyios/JYAutoCompleteDataSource.m; sourceTree = SOURCE_ROOT; };
+		D6F49FB61AF5DB4D001A3C89 /* JYAutocompleteTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JYAutocompleteTextField.h; path = joyyios/JYAutocompleteTextField.h; sourceTree = SOURCE_ROOT; };
+		D6F49FB71AF5DB4D001A3C89 /* JYAutocompleteTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JYAutocompleteTextField.m; path = joyyios/JYAutocompleteTextField.m; sourceTree = SOURCE_ROOT; };
+		D6F49FB81AF5DB4D001A3C89 /* JYBidViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JYBidViewCell.h; path = joyyios/JYBidViewCell.h; sourceTree = SOURCE_ROOT; };
+		D6F49FB91AF5DB4D001A3C89 /* JYBidViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JYBidViewCell.m; path = joyyios/JYBidViewCell.m; sourceTree = SOURCE_ROOT; };
+		D6F49FBA1AF5DB4D001A3C89 /* JYButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JYButton.h; path = joyyios/JYButton.h; sourceTree = SOURCE_ROOT; };
+		D6F49FBB1AF5DB4D001A3C89 /* JYButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JYButton.m; path = joyyios/JYButton.m; sourceTree = SOURCE_ROOT; };
+		D6F49FBC1AF5DB4D001A3C89 /* JYCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JYCollectionViewCell.h; path = joyyios/JYCollectionViewCell.h; sourceTree = SOURCE_ROOT; };
+		D6F49FBD1AF5DB4D001A3C89 /* JYCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JYCollectionViewCell.m; path = joyyios/JYCollectionViewCell.m; sourceTree = SOURCE_ROOT; };
+		D6F49FBE1AF5DB4D001A3C89 /* JYDateView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JYDateView.h; path = joyyios/JYDateView.h; sourceTree = SOURCE_ROOT; };
+		D6F49FBF1AF5DB4D001A3C89 /* JYDateView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JYDateView.m; path = joyyios/JYDateView.m; sourceTree = SOURCE_ROOT; };
+		D6F49FC01AF5DB4D001A3C89 /* JYExpandViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JYExpandViewController.h; path = joyyios/JYExpandViewController.h; sourceTree = SOURCE_ROOT; };
+		D6F49FC11AF5DB4D001A3C89 /* JYExpandViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JYExpandViewController.m; path = joyyios/JYExpandViewController.m; sourceTree = SOURCE_ROOT; };
+		D6F49FC21AF5DB4D001A3C89 /* JYFloatLabeledTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JYFloatLabeledTextField.h; path = joyyios/JYFloatLabeledTextField.h; sourceTree = SOURCE_ROOT; };
+		D6F49FC31AF5DB4D001A3C89 /* JYFloatLabeledTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JYFloatLabeledTextField.m; path = joyyios/JYFloatLabeledTextField.m; sourceTree = SOURCE_ROOT; };
+		D6F49FC41AF5DB4D001A3C89 /* JYMapDashBoardView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JYMapDashBoardView.h; path = joyyios/JYMapDashBoardView.h; sourceTree = SOURCE_ROOT; };
+		D6F49FC51AF5DB4D001A3C89 /* JYMapDashBoardView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JYMapDashBoardView.m; path = joyyios/JYMapDashBoardView.m; sourceTree = SOURCE_ROOT; };
+		D6F49FC61AF5DB4D001A3C89 /* JYOrder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JYOrder.h; path = joyyios/JYOrder.h; sourceTree = SOURCE_ROOT; };
+		D6F49FC71AF5DB4D001A3C89 /* JYOrder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JYOrder.m; path = joyyios/JYOrder.m; sourceTree = SOURCE_ROOT; };
+		D6F49FC81AF5DB4D001A3C89 /* JYOrderItemView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JYOrderItemView.h; path = joyyios/JYOrderItemView.h; sourceTree = SOURCE_ROOT; };
+		D6F49FC91AF5DB4D001A3C89 /* JYOrderItemView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JYOrderItemView.m; path = joyyios/JYOrderItemView.m; sourceTree = SOURCE_ROOT; };
+		D6F49FCC1AF5DB4D001A3C89 /* JYOrderViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JYOrderViewCell.h; path = joyyios/JYOrderViewCell.h; sourceTree = SOURCE_ROOT; };
+		D6F49FCD1AF5DB4D001A3C89 /* JYOrderViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JYOrderViewCell.m; path = joyyios/JYOrderViewCell.m; sourceTree = SOURCE_ROOT; };
+		D6F49FCE1AF5DB4D001A3C89 /* JYPanGestureRecognizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JYPanGestureRecognizer.h; path = joyyios/JYPanGestureRecognizer.h; sourceTree = SOURCE_ROOT; };
+		D6F49FCF1AF5DB4D001A3C89 /* JYPanGestureRecognizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JYPanGestureRecognizer.m; path = joyyios/JYPanGestureRecognizer.m; sourceTree = SOURCE_ROOT; };
+		D6F49FD01AF5DB4D001A3C89 /* JYPinAnnotationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JYPinAnnotationView.h; path = joyyios/JYPinAnnotationView.h; sourceTree = SOURCE_ROOT; };
+		D6F49FD11AF5DB4D001A3C89 /* JYPinAnnotationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JYPinAnnotationView.m; path = joyyios/JYPinAnnotationView.m; sourceTree = SOURCE_ROOT; };
+		D6F49FD21AF5DB4D001A3C89 /* JYPinchGestureRecognizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JYPinchGestureRecognizer.h; path = joyyios/JYPinchGestureRecognizer.h; sourceTree = SOURCE_ROOT; };
+		D6F49FD31AF5DB4D001A3C89 /* JYPinchGestureRecognizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JYPinchGestureRecognizer.m; path = joyyios/JYPinchGestureRecognizer.m; sourceTree = SOURCE_ROOT; };
+		D6F49FD41AF5DB4D001A3C89 /* JYPlacesViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JYPlacesViewCell.h; path = joyyios/JYPlacesViewCell.h; sourceTree = SOURCE_ROOT; };
+		D6F49FD51AF5DB4D001A3C89 /* JYPlacesViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JYPlacesViewCell.m; path = joyyios/JYPlacesViewCell.m; sourceTree = SOURCE_ROOT; };
+		D6F49FD61AF5DB4D001A3C89 /* JYPlacesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JYPlacesViewController.h; path = joyyios/JYPlacesViewController.h; sourceTree = SOURCE_ROOT; };
+		D6F49FD71AF5DB4D001A3C89 /* JYPlacesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JYPlacesViewController.m; path = joyyios/JYPlacesViewController.m; sourceTree = SOURCE_ROOT; };
+		D6F49FD81AF5DB4D001A3C89 /* JYPriceTextFieldCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JYPriceTextFieldCell.h; path = joyyios/JYPriceTextFieldCell.h; sourceTree = SOURCE_ROOT; };
+		D6F49FD91AF5DB4D001A3C89 /* JYPriceTextFieldCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JYPriceTextFieldCell.m; path = joyyios/JYPriceTextFieldCell.m; sourceTree = SOURCE_ROOT; };
+		D6F49FDA1AF5DB4D001A3C89 /* JYRestrictedTextViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JYRestrictedTextViewCell.h; path = joyyios/JYRestrictedTextViewCell.h; sourceTree = SOURCE_ROOT; };
+		D6F49FDB1AF5DB4D001A3C89 /* JYRestrictedTextViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JYRestrictedTextViewCell.m; path = joyyios/JYRestrictedTextViewCell.m; sourceTree = SOURCE_ROOT; };
+		D6F49FDC1AF5DB4D001A3C89 /* JYServiceCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JYServiceCategory.h; path = joyyios/JYServiceCategory.h; sourceTree = SOURCE_ROOT; };
+		D6F49FDD1AF5DB4D001A3C89 /* JYServiceCategory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JYServiceCategory.m; path = joyyios/JYServiceCategory.m; sourceTree = SOURCE_ROOT; };
+		D6F49FDE1AF5DB4D001A3C89 /* JYSignBaseViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JYSignBaseViewController.h; path = joyyios/JYSignBaseViewController.h; sourceTree = SOURCE_ROOT; };
+		D6F49FDF1AF5DB4D001A3C89 /* JYSignBaseViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JYSignBaseViewController.m; path = joyyios/JYSignBaseViewController.m; sourceTree = SOURCE_ROOT; };
+		D6F49FE01AF5DB4D001A3C89 /* JYSignInViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JYSignInViewController.h; path = joyyios/JYSignInViewController.h; sourceTree = SOURCE_ROOT; };
+		D6F49FE11AF5DB4D001A3C89 /* JYSignInViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JYSignInViewController.m; path = joyyios/JYSignInViewController.m; sourceTree = SOURCE_ROOT; };
+		D6F49FE21AF5DB4D001A3C89 /* JYSignUpViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JYSignUpViewController.h; path = joyyios/JYSignUpViewController.h; sourceTree = SOURCE_ROOT; };
+		D6F49FE31AF5DB4D001A3C89 /* JYSignUpViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JYSignUpViewController.m; path = joyyios/JYSignUpViewController.m; sourceTree = SOURCE_ROOT; };
+		D6F49FE41AF5DB4D001A3C89 /* JYSignViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JYSignViewController.h; path = joyyios/JYSignViewController.h; sourceTree = SOURCE_ROOT; };
+		D6F49FE51AF5DB4D001A3C89 /* JYSignViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JYSignViewController.m; path = joyyios/JYSignViewController.m; sourceTree = SOURCE_ROOT; };
+		D6F49FE61AF5DB4D001A3C89 /* JYUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JYUser.h; path = joyyios/JYUser.h; sourceTree = SOURCE_ROOT; };
+		D6F49FE71AF5DB4D001A3C89 /* JYUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JYUser.m; path = joyyios/JYUser.m; sourceTree = SOURCE_ROOT; };
+		D6F49FE81AF5DB4D001A3C89 /* NSMutableDictionary+Joyy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSMutableDictionary+Joyy.h"; path = "joyyios/NSMutableDictionary+Joyy.h"; sourceTree = SOURCE_ROOT; };
+		D6F49FE91AF5DB4D001A3C89 /* NSMutableDictionary+Joyy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSMutableDictionary+Joyy.m"; path = "joyyios/NSMutableDictionary+Joyy.m"; sourceTree = SOURCE_ROOT; };
+		D6F49FEA1AF5DB4D001A3C89 /* NSString+Joyy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+Joyy.h"; path = "joyyios/NSString+Joyy.h"; sourceTree = SOURCE_ROOT; };
+		D6F49FEB1AF5DB4D001A3C89 /* NSString+Joyy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+Joyy.m"; path = "joyyios/NSString+Joyy.m"; sourceTree = SOURCE_ROOT; };
+		D6F49FEC1AF5DB4D001A3C89 /* UIColor+Joyy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIColor+Joyy.h"; path = "joyyios/UIColor+Joyy.h"; sourceTree = SOURCE_ROOT; };
+		D6F49FED1AF5DB4D001A3C89 /* UIColor+Joyy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIColor+Joyy.m"; path = "joyyios/UIColor+Joyy.m"; sourceTree = SOURCE_ROOT; };
+		D6F49FEE1AF5DB4D001A3C89 /* UICustomActionSheet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UICustomActionSheet.h; path = joyyios/UICustomActionSheet.h; sourceTree = SOURCE_ROOT; };
+		D6F49FEF1AF5DB4D001A3C89 /* UICustomActionSheet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UICustomActionSheet.m; path = joyyios/UICustomActionSheet.m; sourceTree = SOURCE_ROOT; };
+		D6F49FF01AF5DB4D001A3C89 /* UIFont+Joyy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIFont+Joyy.h"; path = "joyyios/UIFont+Joyy.h"; sourceTree = SOURCE_ROOT; };
+		D6F49FF11AF5DB4D001A3C89 /* UIFont+Joyy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIFont+Joyy.m"; path = "joyyios/UIFont+Joyy.m"; sourceTree = SOURCE_ROOT; };
+		D6F49FF21AF5DB4D001A3C89 /* UIImageEffects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIImageEffects.h; path = joyyios/UIImageEffects.h; sourceTree = SOURCE_ROOT; };
+		D6F49FF31AF5DB4D001A3C89 /* UIImageEffects.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UIImageEffects.m; path = joyyios/UIImageEffects.m; sourceTree = SOURCE_ROOT; };
+		D6F49FF41AF5DB4D001A3C89 /* UIView+Joyy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIView+Joyy.h"; path = "joyyios/UIView+Joyy.h"; sourceTree = SOURCE_ROOT; };
+		D6F49FF51AF5DB4D001A3C89 /* UIView+Joyy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIView+Joyy.m"; path = "joyyios/UIView+Joyy.m"; sourceTree = SOURCE_ROOT; };
+		D6F4A0401AF5DCCD001A3C89 /* JYBidCreateViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYBidCreateViewController.h; sourceTree = "<group>"; };
+		D6F4A0411AF5DCCD001A3C89 /* JYBidCreateViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYBidCreateViewController.m; sourceTree = "<group>"; };
+		D6F4A0441AF5DD04001A3C89 /* JYOrdersNearbyViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYOrdersNearbyViewController.h; sourceTree = "<group>"; };
+		D6F4A0451AF5DD04001A3C89 /* JYOrdersNearbyViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYOrdersNearbyViewController.m; sourceTree = "<group>"; };
+		D6F4A0481AF5EBE0001A3C89 /* JYBidListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JYBidListViewController.h; path = joyyios/JYBidListViewController.h; sourceTree = SOURCE_ROOT; };
+		D6F4A0491AF5EBE0001A3C89 /* JYBidListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JYBidListViewController.m; path = joyyios/JYBidListViewController.m; sourceTree = SOURCE_ROOT; };
 		DB8830D0B40E78FAFA748BCC /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		ED2FF26D56D65B41B76FBA94 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -55,13 +147,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				4A97C952E583F70673F3F803 /* libPods.a in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		D6F49F9C1AF595F2001A3C89 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -100,7 +185,6 @@
 			isa = PBXGroup;
 			children = (
 				D6F49F831AF595F2001A3C89 /* joyyor.app */,
-				D6F49F9F1AF595F2001A3C89 /* joyyorTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -108,13 +192,12 @@
 		D6F49F851AF595F2001A3C89 /* joyyor */ = {
 			isa = PBXGroup;
 			children = (
+				D6F4A03C1AF5DB6D001A3C89 /* Common */,
+				D6F4A03F1AF5DC1F001A3C89 /* Order */,
+				D6F4A03E1AF5DBCA001A3C89 /* Bid */,
+				D6F4A03D1AF5DB9D001A3C89 /* User */,
 				D6F49F8A1AF595F2001A3C89 /* AppDelegate.h */,
 				D6F49F8B1AF595F2001A3C89 /* AppDelegate.m */,
-				D6F49F8D1AF595F2001A3C89 /* FirstViewController.h */,
-				D6F49F8E1AF595F2001A3C89 /* FirstViewController.m */,
-				D6F49F901AF595F2001A3C89 /* SecondViewController.h */,
-				D6F49F911AF595F2001A3C89 /* SecondViewController.m */,
-				D6F49F931AF595F2001A3C89 /* Main.storyboard */,
 				D6F49F961AF595F2001A3C89 /* Images.xcassets */,
 				D6F49F981AF595F2001A3C89 /* LaunchScreen.xib */,
 				D6F49F861AF595F2001A3C89 /* Supporting Files */,
@@ -125,6 +208,7 @@
 		D6F49F861AF595F2001A3C89 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				D6F49FAF1AF5DA2B001A3C89 /* Prefix.pch */,
 				D6F49F871AF595F2001A3C89 /* Info.plist */,
 				D6F49F881AF595F2001A3C89 /* main.m */,
 			);
@@ -146,6 +230,108 @@
 				D6F49FA41AF595F2001A3C89 /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		D6F4A03C1AF5DB6D001A3C89 /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				D6F49FB01AF5DAE7001A3C89 /* Constants.h */,
+				D6F49FB11AF5DB4D001A3C89 /* Constants.m */,
+				D6F49FB21AF5DB4D001A3C89 /* DataStore.h */,
+				D6F49FB31AF5DB4D001A3C89 /* DataStore.m */,
+				D6F49FB41AF5DB4D001A3C89 /* JYAutoCompleteDataSource.h */,
+				D6F49FB51AF5DB4D001A3C89 /* JYAutoCompleteDataSource.m */,
+				D6F49FB61AF5DB4D001A3C89 /* JYAutocompleteTextField.h */,
+				D6F49FB71AF5DB4D001A3C89 /* JYAutocompleteTextField.m */,
+				D6F49FB81AF5DB4D001A3C89 /* JYBidViewCell.h */,
+				D6F49FB91AF5DB4D001A3C89 /* JYBidViewCell.m */,
+				D6F49FBA1AF5DB4D001A3C89 /* JYButton.h */,
+				D6F49FBB1AF5DB4D001A3C89 /* JYButton.m */,
+				D6F49FBC1AF5DB4D001A3C89 /* JYCollectionViewCell.h */,
+				D6F49FBD1AF5DB4D001A3C89 /* JYCollectionViewCell.m */,
+				D6F49FBE1AF5DB4D001A3C89 /* JYDateView.h */,
+				D6F49FBF1AF5DB4D001A3C89 /* JYDateView.m */,
+				D6F49FC01AF5DB4D001A3C89 /* JYExpandViewController.h */,
+				D6F49FC11AF5DB4D001A3C89 /* JYExpandViewController.m */,
+				D6F49FC21AF5DB4D001A3C89 /* JYFloatLabeledTextField.h */,
+				D6F49FC31AF5DB4D001A3C89 /* JYFloatLabeledTextField.m */,
+				D6F49FC41AF5DB4D001A3C89 /* JYMapDashBoardView.h */,
+				D6F49FC51AF5DB4D001A3C89 /* JYMapDashBoardView.m */,
+				D6F49FC61AF5DB4D001A3C89 /* JYOrder.h */,
+				D6F49FC71AF5DB4D001A3C89 /* JYOrder.m */,
+				D6F49FC81AF5DB4D001A3C89 /* JYOrderItemView.h */,
+				D6F49FC91AF5DB4D001A3C89 /* JYOrderItemView.m */,
+				D6F49FCC1AF5DB4D001A3C89 /* JYOrderViewCell.h */,
+				D6F49FCD1AF5DB4D001A3C89 /* JYOrderViewCell.m */,
+				D6F49FCE1AF5DB4D001A3C89 /* JYPanGestureRecognizer.h */,
+				D6F49FCF1AF5DB4D001A3C89 /* JYPanGestureRecognizer.m */,
+				D6F49FD01AF5DB4D001A3C89 /* JYPinAnnotationView.h */,
+				D6F49FD11AF5DB4D001A3C89 /* JYPinAnnotationView.m */,
+				D6F49FD21AF5DB4D001A3C89 /* JYPinchGestureRecognizer.h */,
+				D6F49FD31AF5DB4D001A3C89 /* JYPinchGestureRecognizer.m */,
+				D6F49FD41AF5DB4D001A3C89 /* JYPlacesViewCell.h */,
+				D6F49FD51AF5DB4D001A3C89 /* JYPlacesViewCell.m */,
+				D6F49FD61AF5DB4D001A3C89 /* JYPlacesViewController.h */,
+				D6F49FD71AF5DB4D001A3C89 /* JYPlacesViewController.m */,
+				D6F49FD81AF5DB4D001A3C89 /* JYPriceTextFieldCell.h */,
+				D6F49FD91AF5DB4D001A3C89 /* JYPriceTextFieldCell.m */,
+				D6F49FDA1AF5DB4D001A3C89 /* JYRestrictedTextViewCell.h */,
+				D6F49FDB1AF5DB4D001A3C89 /* JYRestrictedTextViewCell.m */,
+				D6F49FDC1AF5DB4D001A3C89 /* JYServiceCategory.h */,
+				D6F49FDD1AF5DB4D001A3C89 /* JYServiceCategory.m */,
+				D6F49FE81AF5DB4D001A3C89 /* NSMutableDictionary+Joyy.h */,
+				D6F49FE91AF5DB4D001A3C89 /* NSMutableDictionary+Joyy.m */,
+				D6F49FEA1AF5DB4D001A3C89 /* NSString+Joyy.h */,
+				D6F49FEB1AF5DB4D001A3C89 /* NSString+Joyy.m */,
+				D6F49FEC1AF5DB4D001A3C89 /* UIColor+Joyy.h */,
+				D6F49FED1AF5DB4D001A3C89 /* UIColor+Joyy.m */,
+				D6F49FEE1AF5DB4D001A3C89 /* UICustomActionSheet.h */,
+				D6F49FEF1AF5DB4D001A3C89 /* UICustomActionSheet.m */,
+				D6F49FF01AF5DB4D001A3C89 /* UIFont+Joyy.h */,
+				D6F49FF11AF5DB4D001A3C89 /* UIFont+Joyy.m */,
+				D6F49FF21AF5DB4D001A3C89 /* UIImageEffects.h */,
+				D6F49FF31AF5DB4D001A3C89 /* UIImageEffects.m */,
+				D6F49FF41AF5DB4D001A3C89 /* UIView+Joyy.h */,
+				D6F49FF51AF5DB4D001A3C89 /* UIView+Joyy.m */,
+			);
+			name = Common;
+			sourceTree = "<group>";
+		};
+		D6F4A03D1AF5DB9D001A3C89 /* User */ = {
+			isa = PBXGroup;
+			children = (
+				D6F49FDE1AF5DB4D001A3C89 /* JYSignBaseViewController.h */,
+				D6F49FDF1AF5DB4D001A3C89 /* JYSignBaseViewController.m */,
+				D6F49FE01AF5DB4D001A3C89 /* JYSignInViewController.h */,
+				D6F49FE11AF5DB4D001A3C89 /* JYSignInViewController.m */,
+				D6F49FE21AF5DB4D001A3C89 /* JYSignUpViewController.h */,
+				D6F49FE31AF5DB4D001A3C89 /* JYSignUpViewController.m */,
+				D6F49FE41AF5DB4D001A3C89 /* JYSignViewController.h */,
+				D6F49FE51AF5DB4D001A3C89 /* JYSignViewController.m */,
+				D6F49FE61AF5DB4D001A3C89 /* JYUser.h */,
+				D6F49FE71AF5DB4D001A3C89 /* JYUser.m */,
+			);
+			name = User;
+			sourceTree = "<group>";
+		};
+		D6F4A03E1AF5DBCA001A3C89 /* Bid */ = {
+			isa = PBXGroup;
+			children = (
+				D6F4A0481AF5EBE0001A3C89 /* JYBidListViewController.h */,
+				D6F4A0491AF5EBE0001A3C89 /* JYBidListViewController.m */,
+				D6F4A0401AF5DCCD001A3C89 /* JYBidCreateViewController.h */,
+				D6F4A0411AF5DCCD001A3C89 /* JYBidCreateViewController.m */,
+			);
+			name = Bid;
+			sourceTree = "<group>";
+		};
+		D6F4A03F1AF5DC1F001A3C89 /* Order */ = {
+			isa = PBXGroup;
+			children = (
+				D6F4A0441AF5DD04001A3C89 /* JYOrdersNearbyViewController.h */,
+				D6F4A0451AF5DD04001A3C89 /* JYOrdersNearbyViewController.m */,
+			);
+			name = Order;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -170,24 +356,6 @@
 			productReference = D6F49F831AF595F2001A3C89 /* joyyor.app */;
 			productType = "com.apple.product-type.application";
 		};
-		D6F49F9E1AF595F2001A3C89 /* joyyorTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = D6F49FAC1AF595F2001A3C89 /* Build configuration list for PBXNativeTarget "joyyorTests" */;
-			buildPhases = (
-				D6F49F9B1AF595F2001A3C89 /* Sources */,
-				D6F49F9C1AF595F2001A3C89 /* Frameworks */,
-				D6F49F9D1AF595F2001A3C89 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				D6F49FA11AF595F2001A3C89 /* PBXTargetDependency */,
-			);
-			name = joyyorTests;
-			productName = joyyorTests;
-			productReference = D6F49F9F1AF595F2001A3C89 /* joyyorTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -199,11 +367,6 @@
 				TargetAttributes = {
 					D6F49F821AF595F2001A3C89 = {
 						CreatedOnToolsVersion = 6.2;
-						DevelopmentTeam = 4F23HD53FY;
-					};
-					D6F49F9E1AF595F2001A3C89 = {
-						CreatedOnToolsVersion = 6.2;
-						TestTargetID = D6F49F821AF595F2001A3C89;
 					};
 				};
 			};
@@ -221,7 +384,6 @@
 			projectRoot = "";
 			targets = (
 				D6F49F821AF595F2001A3C89 /* joyyor */,
-				D6F49F9E1AF595F2001A3C89 /* joyyorTests */,
 			);
 		};
 /* End PBXProject section */
@@ -231,16 +393,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D6F49F951AF595F2001A3C89 /* Main.storyboard in Resources */,
 				D6F49F9A1AF595F2001A3C89 /* LaunchScreen.xib in Resources */,
 				D6F49F971AF595F2001A3C89 /* Images.xcassets in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		D6F49F9D1AF595F2001A3C89 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -284,40 +438,51 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D6F49F921AF595F2001A3C89 /* SecondViewController.m in Sources */,
+				D6F4A04A1AF5EBE0001A3C89 /* JYBidListViewController.m in Sources */,
+				D6F4A0301AF5DB4D001A3C89 /* NSString+Joyy.m in Sources */,
+				D6F4A0061AF5DB4D001A3C89 /* JYExpandViewController.m in Sources */,
+				D6F49FF61AF5DB4D001A3C89 /* Constants.m in Sources */,
+				D6F4A03A1AF5DB4D001A3C89 /* UIView+Joyy.m in Sources */,
+				D6F4A00A1AF5DB4D001A3C89 /* JYMapDashBoardView.m in Sources */,
+				D6F4A0201AF5DB4D001A3C89 /* JYRestrictedTextViewCell.m in Sources */,
+				D6F4A0361AF5DB4D001A3C89 /* UIFont+Joyy.m in Sources */,
+				D6F4A00C1AF5DB4D001A3C89 /* JYOrder.m in Sources */,
+				D6F4A02C1AF5DB4D001A3C89 /* JYUser.m in Sources */,
+				D6F4A0261AF5DB4D001A3C89 /* JYSignInViewController.m in Sources */,
+				D6F4A0421AF5DCCD001A3C89 /* JYBidCreateViewController.m in Sources */,
+				D6F4A0081AF5DB4D001A3C89 /* JYFloatLabeledTextField.m in Sources */,
+				D6F49FFC1AF5DB4D001A3C89 /* JYAutocompleteTextField.m in Sources */,
+				D6F4A0041AF5DB4D001A3C89 /* JYDateView.m in Sources */,
 				D6F49F8C1AF595F2001A3C89 /* AppDelegate.m in Sources */,
-				D6F49F8F1AF595F2001A3C89 /* FirstViewController.m in Sources */,
+				D6F4A0001AF5DB4D001A3C89 /* JYButton.m in Sources */,
+				D6F4A00E1AF5DB4D001A3C89 /* JYOrderItemView.m in Sources */,
+				D6F4A02A1AF5DB4D001A3C89 /* JYSignViewController.m in Sources */,
+				D6F4A0461AF5DD04001A3C89 /* JYOrdersNearbyViewController.m in Sources */,
+				D6F4A0181AF5DB4D001A3C89 /* JYPinchGestureRecognizer.m in Sources */,
+				D6F4A01C1AF5DB4D001A3C89 /* JYPlacesViewController.m in Sources */,
+				D6F49FFA1AF5DB4D001A3C89 /* JYAutoCompleteDataSource.m in Sources */,
+				D6F49FFE1AF5DB4D001A3C89 /* JYBidViewCell.m in Sources */,
+				D6F4A01A1AF5DB4D001A3C89 /* JYPlacesViewCell.m in Sources */,
+				D6F4A0021AF5DB4D001A3C89 /* JYCollectionViewCell.m in Sources */,
+				D6F4A0321AF5DB4D001A3C89 /* UIColor+Joyy.m in Sources */,
+				D6F4A0281AF5DB4D001A3C89 /* JYSignUpViewController.m in Sources */,
+				D6F4A01E1AF5DB4D001A3C89 /* JYPriceTextFieldCell.m in Sources */,
+				D6F4A0381AF5DB4D001A3C89 /* UIImageEffects.m in Sources */,
+				D6F4A0161AF5DB4D001A3C89 /* JYPinAnnotationView.m in Sources */,
+				D6F4A0141AF5DB4D001A3C89 /* JYPanGestureRecognizer.m in Sources */,
+				D6F4A0241AF5DB4D001A3C89 /* JYSignBaseViewController.m in Sources */,
+				D6F4A0221AF5DB4D001A3C89 /* JYServiceCategory.m in Sources */,
 				D6F49F891AF595F2001A3C89 /* main.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		D6F49F9B1AF595F2001A3C89 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				D6F49FA61AF595F2001A3C89 /* joyyorTests.m in Sources */,
+				D6F4A0341AF5DB4D001A3C89 /* UICustomActionSheet.m in Sources */,
+				D6F4A0121AF5DB4D001A3C89 /* JYOrderViewCell.m in Sources */,
+				D6F4A02E1AF5DB4D001A3C89 /* NSMutableDictionary+Joyy.m in Sources */,
+				D6F49FF81AF5DB4D001A3C89 /* DataStore.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
-/* Begin PBXTargetDependency section */
-		D6F49FA11AF595F2001A3C89 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = D6F49F821AF595F2001A3C89 /* joyyor */;
-			targetProxy = D6F49FA01AF595F2001A3C89 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
-
 /* Begin PBXVariantGroup section */
-		D6F49F931AF595F2001A3C89 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				D6F49F941AF595F2001A3C89 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		D6F49F981AF595F2001A3C89 /* LaunchScreen.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -412,6 +577,8 @@
 			baseConfigurationReference = DB8830D0B40E78FAFA748BCC /* Pods.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				GCC_PREFIX_HEADER = Prefix.pch;
 				INFOPLIST_FILE = joyyor/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -423,45 +590,11 @@
 			baseConfigurationReference = ED2FF26D56D65B41B76FBA94 /* Pods.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				GCC_PREFIX_HEADER = Prefix.pch;
 				INFOPLIST_FILE = joyyor/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-			};
-			name = Release;
-		};
-		D6F49FAD1AF595F2001A3C89 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
-				GCC_PREFIX_HEADER = "";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = joyyorTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/joyyor.app/joyyor";
-			};
-			name = Debug;
-		};
-		D6F49FAE1AF595F2001A3C89 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
-				GCC_PREFIX_HEADER = "";
-				INFOPLIST_FILE = joyyorTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/joyyor.app/joyyor";
 			};
 			name = Release;
 		};
@@ -482,15 +615,6 @@
 			buildConfigurations = (
 				D6F49FAA1AF595F2001A3C89 /* Debug */,
 				D6F49FAB1AF595F2001A3C89 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		D6F49FAC1AF595F2001A3C89 /* Build configuration list for PBXNativeTarget "joyyorTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				D6F49FAD1AF595F2001A3C89 /* Debug */,
-				D6F49FAE1AF595F2001A3C89 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

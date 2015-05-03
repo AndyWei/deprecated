@@ -16,9 +16,9 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
+#import <ChameleonFramework/Chameleon.h>
 
 #import "Constants.h"
-#import "Chameleon.h"
 #import "NSString+Joyy.h"
 #import "UIColor+Joyy.h"
 #import "UIFont+Joyy.h"

@@ -75,6 +75,7 @@ static NSString *reuseId = @"pin";
 
 - (void)viewDidAppear:(BOOL)animated
 {
+    [super viewDidAppear:animated];
     if (self.userSelectedMapCenter.latitude == self.mapView.centerCoordinate.latitude &&
         self.userSelectedMapCenter.longitude == self.mapView.centerCoordinate.longitude)
     {

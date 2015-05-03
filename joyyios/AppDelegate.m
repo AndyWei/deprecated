@@ -14,7 +14,6 @@
 #import "DataStore.h"
 #import "JYBidListViewController.h"
 #import "JYOrderCategoryCollectionViewController.h"
-#import "JYOrdersNearbyViewController.h"
 #import "JYSignViewController.h"
 #import "JYUser.h"
 #import "OnboardingViewController.h"
@@ -282,12 +281,8 @@
     UINavigationController *nc2 = [[UINavigationController alloc] initWithRootViewController:vc2];
     nc2.title = NSLocalizedString(@"My", nil);
 
-    UIViewController *vc3 = [JYOrdersNearbyViewController new];
-    UINavigationController *nc3 = [[UINavigationController alloc] initWithRootViewController:vc3];
-    nc3.title = NSLocalizedString(@"Nearby", nil);
-
     UITabBarController *tabBarController = [UITabBarController new];
-    tabBarController.viewControllers = @[ nc1, nc2, nc3 ];
+    tabBarController.viewControllers = @[ nc1, nc2 ];
 
     self.window.rootViewController = tabBarController;
 }

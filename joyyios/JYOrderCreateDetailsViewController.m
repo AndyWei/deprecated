@@ -39,6 +39,7 @@
 - (void)viewDidDisappear:(BOOL)animated
 {
     [self _saveOrder];
+    [super viewDidDisappear:animated];
 }
 
 - (void)didReceiveMemoryWarning
