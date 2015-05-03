@@ -1,0 +1,501 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		4A97C952E583F70673F3F803 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BF9E643DBA1E8D6E7E6558EC /* libPods.a */; };
+		D6F49F891AF595F2001A3C89 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F49F881AF595F2001A3C89 /* main.m */; };
+		D6F49F8C1AF595F2001A3C89 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F49F8B1AF595F2001A3C89 /* AppDelegate.m */; };
+		D6F49F8F1AF595F2001A3C89 /* FirstViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F49F8E1AF595F2001A3C89 /* FirstViewController.m */; };
+		D6F49F921AF595F2001A3C89 /* SecondViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F49F911AF595F2001A3C89 /* SecondViewController.m */; };
+		D6F49F951AF595F2001A3C89 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D6F49F931AF595F2001A3C89 /* Main.storyboard */; };
+		D6F49F971AF595F2001A3C89 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D6F49F961AF595F2001A3C89 /* Images.xcassets */; };
+		D6F49F9A1AF595F2001A3C89 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = D6F49F981AF595F2001A3C89 /* LaunchScreen.xib */; };
+		D6F49FA61AF595F2001A3C89 /* joyyorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F49FA51AF595F2001A3C89 /* joyyorTests.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		D6F49FA01AF595F2001A3C89 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D6F49F7B1AF595F2001A3C89 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D6F49F821AF595F2001A3C89;
+			remoteInfo = joyyor;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		BF9E643DBA1E8D6E7E6558EC /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		D6F49F831AF595F2001A3C89 /* joyyor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = joyyor.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		D6F49F871AF595F2001A3C89 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D6F49F881AF595F2001A3C89 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		D6F49F8A1AF595F2001A3C89 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		D6F49F8B1AF595F2001A3C89 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		D6F49F8D1AF595F2001A3C89 /* FirstViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FirstViewController.h; sourceTree = "<group>"; };
+		D6F49F8E1AF595F2001A3C89 /* FirstViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FirstViewController.m; sourceTree = "<group>"; };
+		D6F49F901AF595F2001A3C89 /* SecondViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SecondViewController.h; sourceTree = "<group>"; };
+		D6F49F911AF595F2001A3C89 /* SecondViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SecondViewController.m; sourceTree = "<group>"; };
+		D6F49F941AF595F2001A3C89 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		D6F49F961AF595F2001A3C89 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		D6F49F991AF595F2001A3C89 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
+		D6F49F9F1AF595F2001A3C89 /* joyyorTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = joyyorTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		D6F49FA41AF595F2001A3C89 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D6F49FA51AF595F2001A3C89 /* joyyorTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = joyyorTests.m; sourceTree = "<group>"; };
+		DB8830D0B40E78FAFA748BCC /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
+		ED2FF26D56D65B41B76FBA94 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		D6F49F801AF595F2001A3C89 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4A97C952E583F70673F3F803 /* libPods.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D6F49F9C1AF595F2001A3C89 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		6C2561CD1AEB6DB0FA4C29C3 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				DB8830D0B40E78FAFA748BCC /* Pods.debug.xcconfig */,
+				ED2FF26D56D65B41B76FBA94 /* Pods.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		6CD581E55FC2C82A194E026A /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				BF9E643DBA1E8D6E7E6558EC /* libPods.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		D6F49F7A1AF595F2001A3C89 = {
+			isa = PBXGroup;
+			children = (
+				D6F49F851AF595F2001A3C89 /* joyyor */,
+				D6F49FA21AF595F2001A3C89 /* joyyorTests */,
+				D6F49F841AF595F2001A3C89 /* Products */,
+				6C2561CD1AEB6DB0FA4C29C3 /* Pods */,
+				6CD581E55FC2C82A194E026A /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		D6F49F841AF595F2001A3C89 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				D6F49F831AF595F2001A3C89 /* joyyor.app */,
+				D6F49F9F1AF595F2001A3C89 /* joyyorTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		D6F49F851AF595F2001A3C89 /* joyyor */ = {
+			isa = PBXGroup;
+			children = (
+				D6F49F8A1AF595F2001A3C89 /* AppDelegate.h */,
+				D6F49F8B1AF595F2001A3C89 /* AppDelegate.m */,
+				D6F49F8D1AF595F2001A3C89 /* FirstViewController.h */,
+				D6F49F8E1AF595F2001A3C89 /* FirstViewController.m */,
+				D6F49F901AF595F2001A3C89 /* SecondViewController.h */,
+				D6F49F911AF595F2001A3C89 /* SecondViewController.m */,
+				D6F49F931AF595F2001A3C89 /* Main.storyboard */,
+				D6F49F961AF595F2001A3C89 /* Images.xcassets */,
+				D6F49F981AF595F2001A3C89 /* LaunchScreen.xib */,
+				D6F49F861AF595F2001A3C89 /* Supporting Files */,
+			);
+			path = joyyor;
+			sourceTree = "<group>";
+		};
+		D6F49F861AF595F2001A3C89 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				D6F49F871AF595F2001A3C89 /* Info.plist */,
+				D6F49F881AF595F2001A3C89 /* main.m */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		D6F49FA21AF595F2001A3C89 /* joyyorTests */ = {
+			isa = PBXGroup;
+			children = (
+				D6F49FA51AF595F2001A3C89 /* joyyorTests.m */,
+				D6F49FA31AF595F2001A3C89 /* Supporting Files */,
+			);
+			path = joyyorTests;
+			sourceTree = "<group>";
+		};
+		D6F49FA31AF595F2001A3C89 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				D6F49FA41AF595F2001A3C89 /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		D6F49F821AF595F2001A3C89 /* joyyor */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D6F49FA91AF595F2001A3C89 /* Build configuration list for PBXNativeTarget "joyyor" */;
+			buildPhases = (
+				5CDF288701B89D47148F73E6 /* Check Pods Manifest.lock */,
+				D6F49F7F1AF595F2001A3C89 /* Sources */,
+				D6F49F801AF595F2001A3C89 /* Frameworks */,
+				D6F49F811AF595F2001A3C89 /* Resources */,
+				51CC995A9B14EB0859C97E9C /* Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = joyyor;
+			productName = joyyor;
+			productReference = D6F49F831AF595F2001A3C89 /* joyyor.app */;
+			productType = "com.apple.product-type.application";
+		};
+		D6F49F9E1AF595F2001A3C89 /* joyyorTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D6F49FAC1AF595F2001A3C89 /* Build configuration list for PBXNativeTarget "joyyorTests" */;
+			buildPhases = (
+				D6F49F9B1AF595F2001A3C89 /* Sources */,
+				D6F49F9C1AF595F2001A3C89 /* Frameworks */,
+				D6F49F9D1AF595F2001A3C89 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				D6F49FA11AF595F2001A3C89 /* PBXTargetDependency */,
+			);
+			name = joyyorTests;
+			productName = joyyorTests;
+			productReference = D6F49F9F1AF595F2001A3C89 /* joyyorTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		D6F49F7B1AF595F2001A3C89 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0620;
+				ORGANIZATIONNAME = "Joyy Technologies, Inc";
+				TargetAttributes = {
+					D6F49F821AF595F2001A3C89 = {
+						CreatedOnToolsVersion = 6.2;
+						DevelopmentTeam = 4F23HD53FY;
+					};
+					D6F49F9E1AF595F2001A3C89 = {
+						CreatedOnToolsVersion = 6.2;
+						TestTargetID = D6F49F821AF595F2001A3C89;
+					};
+				};
+			};
+			buildConfigurationList = D6F49F7E1AF595F2001A3C89 /* Build configuration list for PBXProject "joyyor" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = D6F49F7A1AF595F2001A3C89;
+			productRefGroup = D6F49F841AF595F2001A3C89 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				D6F49F821AF595F2001A3C89 /* joyyor */,
+				D6F49F9E1AF595F2001A3C89 /* joyyorTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		D6F49F811AF595F2001A3C89 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D6F49F951AF595F2001A3C89 /* Main.storyboard in Resources */,
+				D6F49F9A1AF595F2001A3C89 /* LaunchScreen.xib in Resources */,
+				D6F49F971AF595F2001A3C89 /* Images.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D6F49F9D1AF595F2001A3C89 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		51CC995A9B14EB0859C97E9C /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		5CDF288701B89D47148F73E6 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		D6F49F7F1AF595F2001A3C89 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D6F49F921AF595F2001A3C89 /* SecondViewController.m in Sources */,
+				D6F49F8C1AF595F2001A3C89 /* AppDelegate.m in Sources */,
+				D6F49F8F1AF595F2001A3C89 /* FirstViewController.m in Sources */,
+				D6F49F891AF595F2001A3C89 /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D6F49F9B1AF595F2001A3C89 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D6F49FA61AF595F2001A3C89 /* joyyorTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		D6F49FA11AF595F2001A3C89 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D6F49F821AF595F2001A3C89 /* joyyor */;
+			targetProxy = D6F49FA01AF595F2001A3C89 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		D6F49F931AF595F2001A3C89 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				D6F49F941AF595F2001A3C89 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		D6F49F981AF595F2001A3C89 /* LaunchScreen.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				D6F49F991AF595F2001A3C89 /* Base */,
+			);
+			name = LaunchScreen.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		D6F49FA71AF595F2001A3C89 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer: Ping Yang (77642C5MHN)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Ping Yang (77642C5MHN)";
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		D6F49FA81AF595F2001A3C89 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer: Ping Yang (77642C5MHN)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Ping Yang (77642C5MHN)";
+				COPY_PHASE_STRIP = NO;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		D6F49FAA1AF595F2001A3C89 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = DB8830D0B40E78FAFA748BCC /* Pods.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_FILE = joyyor/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		D6F49FAB1AF595F2001A3C89 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = ED2FF26D56D65B41B76FBA94 /* Pods.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_FILE = joyyor/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		D6F49FAD1AF595F2001A3C89 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				GCC_PREFIX_HEADER = "";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = joyyorTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/joyyor.app/joyyor";
+			};
+			name = Debug;
+		};
+		D6F49FAE1AF595F2001A3C89 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				GCC_PREFIX_HEADER = "";
+				INFOPLIST_FILE = joyyorTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/joyyor.app/joyyor";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		D6F49F7E1AF595F2001A3C89 /* Build configuration list for PBXProject "joyyor" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D6F49FA71AF595F2001A3C89 /* Debug */,
+				D6F49FA81AF595F2001A3C89 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D6F49FA91AF595F2001A3C89 /* Build configuration list for PBXNativeTarget "joyyor" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D6F49FAA1AF595F2001A3C89 /* Debug */,
+				D6F49FAB1AF595F2001A3C89 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D6F49FAC1AF595F2001A3C89 /* Build configuration list for PBXNativeTarget "joyyorTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D6F49FAD1AF595F2001A3C89 /* Debug */,
+				D6F49FAE1AF595F2001A3C89 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = D6F49F7B1AF595F2001A3C89 /* Project object */;
+}
