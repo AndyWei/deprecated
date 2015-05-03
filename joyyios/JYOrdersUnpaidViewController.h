@@ -1,5 +1,5 @@
 //
-//  JYBidListViewController.h
+//  JYOrdersUnpaidViewController.h
 //  joyyios
 //
 //  Created by Ping Yang on 4/25/15.
@@ -9,6 +9,6 @@
 #import "JYExpandViewController.h"
 #import "UICustomActionSheet.h"
 
-@interface JYBidListViewController : JYExpandViewController <UICustomActionSheetDelegate, UITableViewDataSource, UITableViewDelegate>
+@interface JYOrdersUnpaidViewController : JYExpandViewController <UICustomActionSheetDelegate, UITableViewDataSource, UITableViewDelegate>
 
 @end

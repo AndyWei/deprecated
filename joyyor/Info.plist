@@ -42,5 +42,9 @@
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 	</array>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Your location will be used to search orders.</string>
+	<key>NSLocationUsageDescription</key>
+	<string>Your location will be used to search orders.</string>
 </dict>
 </plist>

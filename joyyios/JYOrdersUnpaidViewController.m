@@ -1,5 +1,5 @@
 //
-//  JYBidListViewController.m
+//  JYOrdersUnpaidViewController.m
 //  joyyios
 //
 //  Created by Ping Yang on 4/25/15.
@@ -10,12 +10,12 @@
 #import <KVNProgress/KVNProgress.h>
 #import <RKDropdownAlert/RKDropdownAlert.h>
 
-#import "JYBidListViewController.h"
+#import "JYOrdersUnpaidViewController.h"
 #import "JYBidViewCell.h"
 #import "JYOrderItemView.h"
 #import "JYUser.h"
 
-@interface JYBidListViewController ()
+@interface JYOrdersUnpaidViewController ()
 
 @property(nonatomic) BOOL isFetchingData;
 @property(nonatomic) NSIndexPath *selectedIndexPath;
@@ -32,7 +32,7 @@
 
 NSString *const kBidCellIdentifier = @"bidCell";
 
-@implementation JYBidListViewController
+@implementation JYOrdersUnpaidViewController
 
 + (UILabel *)sharedAcceptLabel
 {

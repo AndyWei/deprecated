@@ -18,6 +18,7 @@
 #import <UIKit/UIKit.h>
 #import <ChameleonFramework/Chameleon.h>
 
+#import "AppConst.h"
 #import "Constants.h"
 #import "NSString+Joyy.h"
 #import "UIColor+Joyy.h"

@@ -12,8 +12,8 @@
 
 #import "AppDelegate.h"
 #import "DataStore.h"
-#import "JYBidListViewController.h"
 #import "JYOrdersNearbyViewController.h"
+#import "JYOrdersTodoViewController.h"
 #import "JYSignViewController.h"
 #import "JYUser.h"
 #import "OnboardingViewController.h"
@@ -98,6 +98,8 @@
     NSDictionary *aps = [notification objectForKey:@"aps"];
     NSString *title = aps ? [aps objectForKey:@"alert"] : @"Notification";
     NSString *message = [notification objectForKey:@"message"];
+
+    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationBidAccepted object:nil];
 
     [RKDropdownAlert title:title message:message backgroundColor:FlatGreen textColor:JoyyWhite time:3];
 }
@@ -277,9 +279,9 @@
     UINavigationController *nc1 = [[UINavigationController alloc] initWithRootViewController:vc1];
     nc1.title = NSLocalizedString(@"Nearby", nil);
 
-    UIViewController *vc2 = [JYBidListViewController new];
+    UIViewController *vc2 = [JYOrdersTodoViewController new];
     UINavigationController *nc2 = [[UINavigationController alloc] initWithRootViewController:vc2];
-    nc2.title = NSLocalizedString(@"My", nil);
+    nc2.title = NSLocalizedString(@"Todo", nil);
 
     UITabBarController *tabBarController = [UITabBarController new];
     tabBarController.viewControllers = @[ nc1, nc2 ];

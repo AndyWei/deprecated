@@ -48,7 +48,8 @@
 		D6F4A03A1AF5DB4D001A3C89 /* UIView+Joyy.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F49FF51AF5DB4D001A3C89 /* UIView+Joyy.m */; };
 		D6F4A0421AF5DCCD001A3C89 /* JYBidCreateViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F4A0411AF5DCCD001A3C89 /* JYBidCreateViewController.m */; };
 		D6F4A0461AF5DD04001A3C89 /* JYOrdersNearbyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F4A0451AF5DD04001A3C89 /* JYOrdersNearbyViewController.m */; };
-		D6F4A04A1AF5EBE0001A3C89 /* JYBidListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F4A0491AF5EBE0001A3C89 /* JYBidListViewController.m */; };
+		D6F4A04E1AF6A0B2001A3C89 /* AppConst.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F4A04D1AF6A0B2001A3C89 /* AppConst.m */; };
+		D6F4A0551AF6D188001A3C89 /* JYOrdersTodoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F4A0541AF6D188001A3C89 /* JYOrdersTodoViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -135,8 +136,10 @@
 		D6F4A0411AF5DCCD001A3C89 /* JYBidCreateViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYBidCreateViewController.m; sourceTree = "<group>"; };
 		D6F4A0441AF5DD04001A3C89 /* JYOrdersNearbyViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYOrdersNearbyViewController.h; sourceTree = "<group>"; };
 		D6F4A0451AF5DD04001A3C89 /* JYOrdersNearbyViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYOrdersNearbyViewController.m; sourceTree = "<group>"; };
-		D6F4A0481AF5EBE0001A3C89 /* JYBidListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JYBidListViewController.h; path = joyyios/JYBidListViewController.h; sourceTree = SOURCE_ROOT; };
-		D6F4A0491AF5EBE0001A3C89 /* JYBidListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JYBidListViewController.m; path = joyyios/JYBidListViewController.m; sourceTree = SOURCE_ROOT; };
+		D6F4A04C1AF6A03C001A3C89 /* AppConst.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppConst.h; sourceTree = "<group>"; };
+		D6F4A04D1AF6A0B2001A3C89 /* AppConst.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppConst.m; sourceTree = "<group>"; };
+		D6F4A0531AF6D188001A3C89 /* JYOrdersTodoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYOrdersTodoViewController.h; sourceTree = "<group>"; };
+		D6F4A0541AF6D188001A3C89 /* JYOrdersTodoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYOrdersTodoViewController.m; sourceTree = "<group>"; };
 		DB8830D0B40E78FAFA748BCC /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		ED2FF26D56D65B41B76FBA94 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -192,12 +195,14 @@
 		D6F49F851AF595F2001A3C89 /* joyyor */ = {
 			isa = PBXGroup;
 			children = (
+				D6F4A04C1AF6A03C001A3C89 /* AppConst.h */,
+				D6F4A04D1AF6A0B2001A3C89 /* AppConst.m */,
+				D6F49F8A1AF595F2001A3C89 /* AppDelegate.h */,
+				D6F49F8B1AF595F2001A3C89 /* AppDelegate.m */,
 				D6F4A03C1AF5DB6D001A3C89 /* Common */,
 				D6F4A03F1AF5DC1F001A3C89 /* Order */,
 				D6F4A03E1AF5DBCA001A3C89 /* Bid */,
 				D6F4A03D1AF5DB9D001A3C89 /* User */,
-				D6F49F8A1AF595F2001A3C89 /* AppDelegate.h */,
-				D6F49F8B1AF595F2001A3C89 /* AppDelegate.m */,
 				D6F49F961AF595F2001A3C89 /* Images.xcassets */,
 				D6F49F981AF595F2001A3C89 /* LaunchScreen.xib */,
 				D6F49F861AF595F2001A3C89 /* Supporting Files */,
@@ -317,8 +322,6 @@
 		D6F4A03E1AF5DBCA001A3C89 /* Bid */ = {
 			isa = PBXGroup;
 			children = (
-				D6F4A0481AF5EBE0001A3C89 /* JYBidListViewController.h */,
-				D6F4A0491AF5EBE0001A3C89 /* JYBidListViewController.m */,
 				D6F4A0401AF5DCCD001A3C89 /* JYBidCreateViewController.h */,
 				D6F4A0411AF5DCCD001A3C89 /* JYBidCreateViewController.m */,
 			);
@@ -330,6 +333,8 @@
 			children = (
 				D6F4A0441AF5DD04001A3C89 /* JYOrdersNearbyViewController.h */,
 				D6F4A0451AF5DD04001A3C89 /* JYOrdersNearbyViewController.m */,
+				D6F4A0531AF6D188001A3C89 /* JYOrdersTodoViewController.h */,
+				D6F4A0541AF6D188001A3C89 /* JYOrdersTodoViewController.m */,
 			);
 			name = Order;
 			sourceTree = "<group>";
@@ -438,7 +443,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D6F4A04A1AF5EBE0001A3C89 /* JYBidListViewController.m in Sources */,
 				D6F4A0301AF5DB4D001A3C89 /* NSString+Joyy.m in Sources */,
 				D6F4A0061AF5DB4D001A3C89 /* JYExpandViewController.m in Sources */,
 				D6F49FF61AF5DB4D001A3C89 /* Constants.m in Sources */,
@@ -469,12 +473,14 @@
 				D6F4A01E1AF5DB4D001A3C89 /* JYPriceTextFieldCell.m in Sources */,
 				D6F4A0381AF5DB4D001A3C89 /* UIImageEffects.m in Sources */,
 				D6F4A0161AF5DB4D001A3C89 /* JYPinAnnotationView.m in Sources */,
+				D6F4A0551AF6D188001A3C89 /* JYOrdersTodoViewController.m in Sources */,
 				D6F4A0141AF5DB4D001A3C89 /* JYPanGestureRecognizer.m in Sources */,
 				D6F4A0241AF5DB4D001A3C89 /* JYSignBaseViewController.m in Sources */,
 				D6F4A0221AF5DB4D001A3C89 /* JYServiceCategory.m in Sources */,
 				D6F49F891AF595F2001A3C89 /* main.m in Sources */,
 				D6F4A0341AF5DB4D001A3C89 /* UICustomActionSheet.m in Sources */,
 				D6F4A0121AF5DB4D001A3C89 /* JYOrderViewCell.m in Sources */,
+				D6F4A04E1AF6A0B2001A3C89 /* AppConst.m in Sources */,
 				D6F4A02E1AF5DB4D001A3C89 /* NSMutableDictionary+Joyy.m in Sources */,
 				D6F49FF81AF5DB4D001A3C89 /* DataStore.m in Sources */,
 			);

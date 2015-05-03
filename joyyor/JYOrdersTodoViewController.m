@@ -1,8 +1,8 @@
 //
-//  JYOrdersNearbyViewController.m
+//  JYOrdersTodoViewController.m
 //  joyyor
 //
-//  Created by Ping Yang on 3/26/15.
+//  Created by Ping Yang on 5/3/15.
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
@@ -11,18 +11,16 @@
 #import <RKDropdownAlert/RKDropdownAlert.h>
 
 #import "AppDelegate.h"
-#import "JYOrdersNearbyViewController.h"
-#import "JYBidCreateViewController.h"
+#import "JYOrdersTodoViewController.h"
 #import "JYOrderViewCell.h"
 #import "JYUser.h"
 
-@interface JYOrdersNearbyViewController ()
+@interface JYOrdersTodoViewController ()
 
 @property(nonatomic) BOOL isFetchingData;
-@property(nonatomic) NSMutableArray *ordersList;
+@property(nonatomic) NSArray *ordersList;
 @property(nonatomic) UITableView *tableView;
 @property(nonatomic) UIRefreshControl *refreshControl;
-@property(nonatomic) NSUInteger maxOrderId;
 
 + (UILabel *)sharedSwipeBackgroundLabel;
 
@@ -30,7 +28,7 @@
 
 static NSString *const kOrderCellIdentifier = @"orderCell";
 
-@implementation JYOrdersNearbyViewController
+@implementation JYOrdersTodoViewController
 
 + (UILabel *)sharedSwipeBackgroundLabel
 {
@@ -40,7 +38,7 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
     dispatch_once(&done, ^{
         _sharedSwipeBackgroundLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 60, 30)];
         _sharedSwipeBackgroundLabel.font = [UIFont systemFontOfSize:25];
-        _sharedSwipeBackgroundLabel.text = NSLocalizedString(@"Bid", nil);
+        _sharedSwipeBackgroundLabel.text = NSLocalizedString(@"Start", nil);
         _sharedSwipeBackgroundLabel.textColor = [UIColor whiteColor];
         _sharedSwipeBackgroundLabel.textAlignment= NSTextAlignmentCenter;
     });
@@ -51,13 +49,14 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [self setTitleText:NSLocalizedString(@"Orders Nearby", nil)];
+    [self setTitleText:NSLocalizedString(@"Orders Toto", nil)];
 
-    self.maxOrderId = 0;
-    self.ordersList = [NSMutableArray new];
+    self.ordersList = [NSArray new];
     self.isFetchingData = NO;
     [self _fetchData];
     [self _createTableView];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_fetchData) name:kNotificationBidAccepted object:nil];
 }
 
 - (void)didReceiveMemoryWarning
@@ -68,7 +67,7 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
 
 - (void)dealloc
 {
-
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)_createTableView
@@ -146,20 +145,16 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
                              mode:MCSwipeTableViewCellModeSwitch
                             state:MCSwipeTableViewCellState3
                   completionBlock:^(MCSwipeTableViewCell *cell, MCSwipeTableViewCellState state, MCSwipeTableViewCellMode mode) {
-                      [weakSelf _presentBidViewForOrder:order];
+                      [weakSelf _startWorkOn:order];
                   }];
 
     [cell setDefaultColor:FlatGreen];
     cell.firstTrigger = 0.20;
 }
 
-- (void)_presentBidViewForOrder:(NSDictionary *)order
+- (void)_startWorkOn:(NSDictionary *)order
 {
-    JYBidCreateViewController *bidViewController = [JYBidCreateViewController new];
-    bidViewController.order = order;
 
-    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:bidViewController];
-    [self presentViewController:nav animated:YES completion:nil];
 }
 
 #pragma mark - UITableView Delegate
@@ -178,7 +173,7 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    [self _presentBidViewForOrder:(NSDictionary *)self.ordersList[indexPath.row]];
+    [self _startWorkOn:(NSDictionary *)self.ordersList[indexPath.row]];
     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
@@ -192,56 +187,33 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
     }
     self.isFetchingData = YES;
 
-    NSDictionary *parameters = [self _httpParameters];
-
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYUser currentUser].token];
     [manager.requestSerializer setValue:token forHTTPHeaderField:@"Authorization"];
 
-    NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"orders/nearby"];
+    NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"orders/won"];
 
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
 
     __weak typeof(self) weakSelf = self;
     [manager GET:url
-       parameters:parameters
-          success:^(AFHTTPRequestOperation *operation, id responseObject) {
-              NSLog(@"orders/nearby fetch success responseObject: %@", responseObject);
+      parameters:nil
+         success:^(AFHTTPRequestOperation *operation, id responseObject) {
+             NSLog(@"orders/won fetch success responseObject: %@", responseObject);
 
-              [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+             [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
 
-              NSMutableArray *newOrdersList = [NSMutableArray arrayWithArray:(NSArray *)responseObject];
-
-              if (newOrdersList.count > 0)
-              {
-                  id order = [newOrdersList firstObject];
-                  weakSelf.maxOrderId = [[order objectForKey:@"id"] unsignedIntegerValue];
-                  [newOrdersList addObjectsFromArray:weakSelf.ordersList];
-                  weakSelf.ordersList = newOrdersList;
-                  [weakSelf.tableView reloadData];
-              }
-
-              [weakSelf.refreshControl endRefreshing];
-              weakSelf.isFetchingData = NO;
-          }
-          failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-              [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-              [weakSelf.refreshControl endRefreshing];
-              weakSelf.isFetchingData = NO;
-          }
+             weakSelf.ordersList = (NSArray *)responseObject;
+             [weakSelf.tableView reloadData];
+             [weakSelf.refreshControl endRefreshing];
+             weakSelf.isFetchingData = NO;
+         }
+         failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+             [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+             [weakSelf.refreshControl endRefreshing];
+             weakSelf.isFetchingData = NO;
+         }
      ];
 }
 
--(NSDictionary *)_httpParameters
-{
-    NSMutableDictionary *parameters = [NSMutableDictionary new];
-
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    CLLocationCoordinate2D currentPoint = appDelegate.currentLocation.coordinate;
-    [parameters setValue:@(currentPoint.longitude) forKey:@"lon"];
-    [parameters setValue:@(currentPoint.latitude) forKey:@"lat"];
-    [parameters setValue:@(self.maxOrderId) forKey:@"after"];
-
-    return parameters;
-}
 @end
