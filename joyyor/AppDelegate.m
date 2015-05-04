@@ -97,11 +97,10 @@
 
     NSDictionary *aps = [notification objectForKey:@"aps"];
     NSString *title = aps ? [aps objectForKey:@"alert"] : @"Notification";
-    NSString *message = [notification objectForKey:@"message"];
 
     [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationBidAccepted object:nil];
 
-    [RKDropdownAlert title:title message:message backgroundColor:FlatGreen textColor:JoyyWhite time:3];
+    [RKDropdownAlert title:title backgroundColor:FlatGreen textColor:JoyyWhite time:3];
 }
 
 #pragma mark - Private methods
@@ -301,7 +300,7 @@
     NSInteger badgeCount = [DataStore sharedInstance].badgeCount;
 
     NSDictionary *parameters = @{@"service": @(1), @"token": deviceToken, @"badge": @(badgeCount)};
-    NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"notifications/devices"];
+    NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"notifications/devices/joyyor"];
 
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYUser currentUser].token];
