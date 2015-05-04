@@ -283,9 +283,8 @@ internals.createBidHandler = function (request, reply) {
         reply(null, { bid_id: results.bidId });
 
         // send notification to the asker
-        var title = 'Received a bid!';
-        var body = request.auth.credentials.username + ' ask for ' + request.payload.price;
-        Push.send(results.askerId, title, body, function (error) {
+        var title = 'Received a bid: ' + request.auth.credentials.username + ' ask for $' + request.payload.price;
+        Push.notify('joyy', results.askerId, title, title, function (error) {
 
             if (error) {
                 console.error(error);
@@ -428,9 +427,8 @@ internals.acceptBidHandler = function (request, reply) {
             reply(null, { winner: winnerId });
 
             // send notification to the winner
-            var title = 'Bid Accepted!';
-            var body = request.auth.credentials.username + ' accepted your bid!';
-            Push.send(winnerId, title, body, function (error) {
+            var title = request.auth.credentials.username + ' accepted your bid!';
+            Push.notify('joyyor', winnerId, title, title, function (error) {
 
                 if (error) {
                     console.error(error);

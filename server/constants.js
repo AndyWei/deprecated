@@ -49,9 +49,9 @@ exports.PushService = new Enum({
 });
 
 exports.Role = new Enum({
-    user: 1,
-    admin: 2,
-    test: 3,
-    robot: 4
+    user: 0,
+    admin: 1,
+    test: 2,
+    robot: 3
 });
 

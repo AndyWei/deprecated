@@ -10,12 +10,15 @@ exports.register = function (server, options, next) {
     // new user signup
     server.route({
         method: 'POST',
-        path: options.basePath + '/notifications/devices',
+        path: options.basePath + '/notifications/devices/{app}',
         config: {
             auth: {
                 strategy: 'token'
             },
             validate: {
+                params: {
+                    app: Joi.string().alphanum().lowercase()
+                },
                 payload: {
                     service: Joi.number().min(1).max(3),
                     token: Joi.string().max(100),
@@ -32,13 +35,14 @@ exports.register = function (server, options, next) {
                 badge: request.payload.badge
             };
 
-            Token.setDeviceTokenObject(userId, tokenObj, function (err, userIdString) {
+            Token.setDeviceTokenObject(request.params.app, userId, tokenObj, function (err, userIdString) {
 
                 if (err) {
                     console.error(err);
                     return reply(err);
                 }
 
+                console.info('App %s: received device token %s for userId %s', request.params.app, request.payload.token, userId);
                 reply(null, {userId: userIdString});
             });
         }

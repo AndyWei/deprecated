@@ -5,19 +5,26 @@ var c = require('./constants');
 var rand = require('rand-token');
 
 var bearerTokenCache = null;
-var deviceTokenCache = null;
+var joyyDeviceTokenCache = null;
+var joyyorDeviceTokenCache = null;
 
 exports.attach = function (server) {
 
     Hoek.assert(!bearerTokenCache, 'Bearer token cache should only be set once.');
     bearerTokenCache = server.cache({
-        segment: 'bearer',
+        segment: 'b',
         expiresIn: 60 * 60 * 1000
     });
 
-    Hoek.assert(!deviceTokenCache, 'Device token cache should only be set once.');
-    deviceTokenCache = server.cache({
-        segment: 'device',
+    Hoek.assert(!joyyDeviceTokenCache, 'Joyy Device token cache should only be set once.');
+    joyyDeviceTokenCache = server.cache({
+        segment: 'd',
+        expiresIn: 2 * 365 * 24 * 60 * 60 * 1000
+    });
+
+    Hoek.assert(!joyyorDeviceTokenCache, 'Joyyor Device token cache should only be set once.');
+    joyyorDeviceTokenCache = server.cache({
+        segment: 'rd',
         expiresIn: 2 * 365 * 24 * 60 * 60 * 1000
     });
 };
@@ -26,24 +33,27 @@ exports.attach = function (server) {
 exports.detach = function () {
 
     bearerTokenCache = null;
-    deviceTokenCache = null;
+    joyyDeviceTokenCache = null;
+    joyyorDeviceTokenCache = null;
 };
 
 
 // tokenObj = {token:$token, badge: $n, service:$s} $s = 1 - apn, 2 - gcm, 3 - mpn
-exports.getDeviceTokenObject = function (userId, callback) {
+exports.getDeviceTokenObject = function (app, userId, callback) {
 
-    Hoek.assert(deviceTokenCache, 'Device token cache should be set beforehand.');
+    Hoek.assert(joyyDeviceTokenCache, 'Joyy Device token cache should be set beforehand.');
+    Hoek.assert(joyyorDeviceTokenCache, 'Joyyor Device token cache should be set beforehand.');
 
+    var cache = (app === 'joyy') ? joyyDeviceTokenCache : joyyorDeviceTokenCache;
     userId = userId.toString();
-    deviceTokenCache.get(userId, function (err, tokenObj) {
+    cache.get(userId, function (err, tokenObj) {
 
         if (err) {
             return callback(Boom.serverTimeout(err));
         }
 
         if (!tokenObj) {
-            return callback(Boom.notFound(c.DEVICE_TOKEN_NOT_FOUND));
+            return callback({ error: c.DEVICE_TOKEN_NOT_FOUND });
         }
 
         callback(null, tokenObj);
@@ -51,12 +61,14 @@ exports.getDeviceTokenObject = function (userId, callback) {
 };
 
 
-exports.setDeviceTokenObject = function (userId, tokenObj, callback) {
+exports.setDeviceTokenObject = function (app, userId, tokenObj, callback) {
 
-    Hoek.assert(deviceTokenCache, 'Device token cache should be set beforehand.');
+    Hoek.assert(joyyDeviceTokenCache, 'Joyy Device token cache should be set beforehand.');
+    Hoek.assert(joyyorDeviceTokenCache, 'Joyyor Device token cache should be set beforehand.');
 
+    var cache = (app === 'joyy') ? joyyDeviceTokenCache : joyyorDeviceTokenCache;
     userId = userId.toString();
-    deviceTokenCache.set(userId, tokenObj, 0, function (err) {
+    cache.set(userId, tokenObj, 0, function (err) {
 
         if (err) {
             return callback(err);

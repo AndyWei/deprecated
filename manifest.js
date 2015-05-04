@@ -18,7 +18,7 @@ var manifest = {
             shared: true,
             host: Config.get('/redis/host'),
             // password: Config.get('/redis/password'),
-            partition: 'cache'
+            partition: 'api'
         }
     },
     connections: [{

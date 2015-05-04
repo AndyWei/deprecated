@@ -136,10 +136,10 @@ internals.createUser = function (request, reply) {
 
             var queryConfig = {
                 text: 'INSERT INTO users ' +
-                          '(username, password, email, role, created_at, updated_at) VALUES ' +
-                          '($1, $2, $3, $4, now(), now()) ' +
+                          '(username, password, email, created_at, updated_at) VALUES ' +
+                          '($1, $2, $3, now(), now()) ' +
                           'RETURNING id',
-                values: [results.username, results.password, email, c.Role.user.value],
+                values: [results.username, results.password, email],
                 name: 'users_create'
             };
 

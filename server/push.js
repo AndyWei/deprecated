@@ -5,27 +5,33 @@ var c = require('./constants');
 
 var internals = {};
 
-var apnConnection = null;
+var apnJoyyConnection = null;
+var apnJoyyorConnection = null;
 
 var rootFolder = process.cwd();
 
-var apnOptions = {
+var apnJoyyOptions = {
     'pfx': rootFolder + '/cert/dev.p12',
     'passphrase': ''
 };
 
+var apnJoyyorOptions = {
+    'pfx': rootFolder + '/cert/joyyor_dev.p12',
+    'passphrase': ''
+};
 
 exports.connect = function () {
-    apnConnection = new Apn.Connection(apnOptions);
+    apnJoyyConnection = new Apn.Connection(apnJoyyOptions);
+    apnJoyyorConnection = new Apn.Connection(apnJoyyorOptions);
 };
 
 
-exports.send = function (recipientId, title, body, callback) {
+exports.notify = function (app, recipientId, title, body, callback) {
 
     Async.waterfall([
         function (next) {
 
-            Token.getDeviceTokenObject(recipientId, function (err, tokenObj) {
+            Token.getDeviceTokenObject(app, recipientId, function (err, tokenObj) {
                 if (err) {
                     return next(err);
                 }
@@ -37,7 +43,7 @@ exports.send = function (recipientId, title, body, callback) {
 
             switch(tokenObj.service) {
                 case c.PushService.apn.value:
-                    internals.apnSend(tokenObj, title, body);
+                    internals.apnSend(app, tokenObj, title, body);
                     break;
                 case c.PushService.gcm.value:
                     internals.gcmSend();
@@ -54,7 +60,7 @@ exports.send = function (recipientId, title, body, callback) {
 
             tokenObj.badge += 1;
 
-            Token.setDeviceTokenObject(recipientId, tokenObj, function (err, userIdString) {
+            Token.setDeviceTokenObject(app, recipientId, tokenObj, function (err, userIdString) {
 
                 if (err) {
                     return next(err);
@@ -75,7 +81,7 @@ exports.send = function (recipientId, title, body, callback) {
 };
 
 
-internals.apnSend = function (tokenObj, title, body) {
+internals.apnSend = function (app, tokenObj, title, body) {
 
     var device = new Apn.Device(tokenObj.token);
     var notification = new Apn.Notification();
@@ -86,7 +92,8 @@ internals.apnSend = function (tokenObj, title, body) {
     notification.alert = title;
     notification.payload = {'message': body};
 
-    apnConnection.pushNotification(notification, device);
+    var connection = (app === 'joyy') ? apnJoyyConnection : apnJoyyorConnection;
+    connection.pushNotification(notification, device);
 };
 
 
