@@ -1,5 +1,6 @@
 var AuthPlugin = require('../../../server/authenticate');
 var BidsPlugin = require('../../../server/api/bids');
+var Token = require('../../../server/token');
 var Code = require('code');
 var Config = require('../../../config');
 var Hapi = require('hapi');
@@ -49,6 +50,7 @@ lab.beforeEach(function (done) {
             return done(err);
         }
 
+        Token.attach(server);
         done();
     });
 });
@@ -56,6 +58,7 @@ lab.beforeEach(function (done) {
 
 lab.afterEach(function (done) {
 
+    Token.detach();
     done();
 });
 
@@ -116,7 +119,7 @@ lab.experiment('Bids: ', function () {
 
         request = {
             method: 'GET',
-            url: '/bids/orders?&order_id=1&order_id=3&after=0',
+            url: '/bids/of/orders?&order_id=1&order_id=3&after=0',
             credentials: jack
         };
 
@@ -133,7 +136,7 @@ lab.experiment('Bids: ', function () {
 
         request = {
             method: 'GET',
-            url: '/bids/orders?&order_id=2&order_id=4&after=0',
+            url: '/bids/of/orders?&order_id=2&order_id=4&after=0',
             credentials: andy
         };
 

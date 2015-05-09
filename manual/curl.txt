@@ -7,7 +7,6 @@ curl -i -u jack@gmail.com:password "http://localhost:8000/v1/signin"
 
 
 ## orders
-
 # GET all of the user placed orders:
 curl -i -H "Authorization: Bearer TOKEN" "http://localhost:8000/v1/orders/placed"
 
@@ -31,8 +30,7 @@ curl -i -X POST -H "Authorization: Bearer 6SjrTCgJPqFqOwdblR4Y" --data "price=1.
 
 
 ## bids
-
-# POST an bid
+# POST a bid
 curl -i -H "Authorization: Bearer TOKEN" --data "order_id=3&price=1.1&note='CHOOSE ME'" "http://localhost:8000/v1/bids"
 
 # revoke an bid
@@ -40,3 +38,20 @@ curl -i -X POST -H "Authorization: Bearer Xf0THaxxDlgZHiLcCRMa" --data "id=4" "h
 
 # accept a bid
 curl -i -X POST -H "Authorization: Bearer Xf0THaxxDlgZHiLcCRMa" --data "id=4" "http://localhost:8000/v1/bids/accept"
+
+
+
+## comments
+# POST a comment
+curl -i -X POST -H "Authorization: Bearer wPTqdIYV6ZVDTOkC1FKe" --data "order_id=1&peer_id=3&is_from_joyyor=0&is_to_joyyor=1&to_username=andy&contents=yes!!" "http://localhost:8000/v1/comments"
+
+
+# GET comments of orders
+curl -i "http://localhost:8000/v1/comments/of/orders?&order_id=1&order_id=2&after=0"
+
+## reviews
+# POST a review
+curl -i -H "Authorization: Bearer KKkTeAz9ZxpReKuTF3cy" --data "reviewee_id=4&order_id=3&rating=5&contents='I like his attitude@!!'" "http://localhost:8000/v1/reviews"
+
+
+

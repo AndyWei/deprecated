@@ -1,11 +1,12 @@
 var AuthPlugin = require('../../../server/authenticate');
+var Token = require('../../../server/token');
 var Code = require('code');
 var Config = require('../../../config');
 var Hapi = require('hapi');
 var HapiAuthBasic = require('hapi-auth-basic');
 var HapiAuthToken = require('hapi-auth-bearer-token');
 var Lab = require('lab');
-var ReviewsPlugin = require('../../../server/api/reviews');
+var CommentsPlugin = require('../../../server/api/comments');
 
 
 var lab = exports.lab = Lab.script();
@@ -20,11 +21,8 @@ var PgPlugin = {
 };
 
 var jack = {
-    id: 1
-};
-
-var andy = {
-    id: 2
+    id: 1,
+    username: 'jack'
 };
 
 var request, server;
@@ -32,7 +30,7 @@ var request, server;
 
 lab.beforeEach(function (done) {
 
-    var plugins = [HapiAuthBasic, HapiAuthToken, AuthPlugin, PgPlugin, ReviewsPlugin];
+    var plugins = [HapiAuthBasic, HapiAuthToken, AuthPlugin, PgPlugin, CommentsPlugin];
     server = new Hapi.Server();
     server.connection({ port: Config.get('/port/api') });
     server.register(plugins, function (err) {
@@ -40,6 +38,7 @@ lab.beforeEach(function (done) {
         if (err) {
             return done(err);
         }
+        Token.attach(server);
 
         done();
     });
@@ -48,17 +47,18 @@ lab.beforeEach(function (done) {
 
 lab.afterEach(function (done) {
 
+    Token.detach();
     done();
 });
 
 
-lab.experiment('Reviews GET: ', function () {
+lab.experiment('Comments GET: ', function () {
 
-    lab.test('/reviews/1: return a record successfully', function (done) {
+    lab.test('/comments/1: return a record successfully', function (done) {
 
         request = {
             method: 'GET',
-            url: '/reviews/1'
+            url: '/comments/1'
         };
 
         server.inject(request, function (response) {
@@ -70,61 +70,27 @@ lab.experiment('Reviews GET: ', function () {
         });
     });
 
-    lab.test('/reviews/from_me: found', function (done) {
+    lab.test('/comments/of: found', function (done) {
 
         request = {
             method: 'GET',
-            url: '/reviews/from_me',
-            credentials: andy
+            url: '/comments/of/orders?&order_id=1&order_id=2&after=0'
         };
 
         server.inject(request, function (response) {
 
             Code.expect(response.statusCode).to.equal(200);
-            Code.expect(response.result).to.be.an.array().and.to.have.length(1);
+            Code.expect(response.result).to.be.an.array().and.to.have.length(8);
 
             done();
         });
     });
 
-    lab.test('/reviews/from_me: not found', function (done) {
+    lab.test('/comments/of: not found', function (done) {
 
         request = {
             method: 'GET',
-            url: '/reviews/from_me',
-            credentials: jack
-        };
-
-        server.inject(request, function (response) {
-
-            Code.expect(response.statusCode).to.equal(200);
-            Code.expect(response.result).to.be.an.array().and.to.be.empty();
-
-            done();
-        });
-    });
-
-    lab.test('/reviews/of: found', function (done) {
-
-        request = {
-            method: 'GET',
-            url: '/reviews/of/2'
-        };
-
-        server.inject(request, function (response) {
-
-            Code.expect(response.statusCode).to.equal(200);
-            Code.expect(response.result).to.be.an.array().and.to.have.length(2);
-
-            done();
-        });
-    });
-
-    lab.test('/reviews/of: not found', function (done) {
-
-        request = {
-            method: 'GET',
-            url: '/reviews/of/3'
+            url: '/comments/of/orders?&order_id=3&order_id=4&after=0'
         };
 
         server.inject(request, function (response) {
@@ -138,18 +104,20 @@ lab.experiment('Reviews GET: ', function () {
 });
 
 
-lab.experiment('Reviews POST: ', function () {
+lab.experiment('Comments POST: ', function () {
 
-    lab.test('/reviews: create successfully', function (done) {
+    lab.test('/comments: create successfully', function (done) {
 
         request = {
             method: 'POST',
-            url: '/reviews',
+            url: '/comments',
             payload: {
-                reviewee_id: '4',
-                order_id: '3',
-                rating: 5,
-                contents: 'I like his attitude@!!'
+                order_id: '1',
+                peer_id: '3',
+                is_from_joyyor: 0,
+                is_to_joyyor: 1,
+                to_username: 'andy',
+                contents: 'yes'
             },
             credentials: jack
         };

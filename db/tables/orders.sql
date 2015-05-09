@@ -8,17 +8,19 @@ CREATE TABLE orders (
     category       SMALLINT      NOT NULL DEFAULT 0,  -- the service category: 0-uncategorized, 1-roadside_aid, 2-ride, 3-moving, 4-delivery, 5-cleaning, 6-handyman, 7-assistance
     title          VARCHAR(100)  NOT NULL,
     note           VARCHAR(1000) NOT NULL,  -- the description from the consumer
-    startPoint     GEOMETRY(Point, 4326) NOT NULL,  -- the point where order should be serviced, used for searching and calculating distance
+    startPoint     GEOMETRY(Point, 4326) NOT NULL,  -- the point where order should be serviced from, used for searching and calculating distance
     startCity      TEXT          NOT NULL,  -- the city where order should be serviced, it will be shown on the order nearby view
     startAddress   TEXT          NOT NULL,  -- the full address where order should be serviced, used for indicating the service seller
     endPoint       GEOMETRY(Point, 4326) ,
-    endAddress     TEXT                  ,  -- the address where order should be serviced, used for indicating the service seller
-    winner_id      BIGINT                ,  -- the id of the user who wins this order
-    final_price    NUMERIC(19,2)         ,  -- the final offered by provider and accepted by consumer
     startTime      BIGINT        NOT NULL,
     created_at     TIMESTAMPTZ   NOT NULL,
     updated_at     TIMESTAMPTZ   NOT NULL,
     deleted        BOOLEAN       NOT NULL DEFAULT false,
+    photo_urls     TEXT                  ,  -- the urls of the order photos, separated by space
+    endAddress     TEXT                  ,  -- the address where order should be serviced to, used for indicating the service seller
+    winner_id      BIGINT                ,  -- the id of the user who wins this order
+    final_price    NUMERIC(19,2)         ,  -- the final offered by provider and accepted by consumer
+    
 
     CHECK (price >= 0),
     CHECK (final_price >= 0),

@@ -12,5 +12,6 @@ BEGIN;
 \ir  tables/users.sql
 \ir  tables/orders.sql
 \ir  tables/bids.sql
+\ir  tables/comments.sql
 \ir  tables/reviews.sql
 COMMIT;

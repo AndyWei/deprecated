@@ -41,6 +41,7 @@ var manifest = {
         },
         './server/authenticate': {},
         './server/api/bids': { basePath: '/v1' },
+        './server/api/comments': { basePath: '/v1' },
         './server/api/notification': { basePath: '/v1' },
         './server/api/orders': { basePath: '/v1' },
         './server/api/reviews': { basePath: '/v1' },

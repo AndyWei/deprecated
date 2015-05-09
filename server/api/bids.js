@@ -51,7 +51,7 @@ exports.register = function (server, options, next) {
     // get the bids against the orders. auth.
     server.route({
         method: 'GET',
-        path: options.basePath + '/bids/orders',
+        path: options.basePath + '/bids/of/orders',
         config: {
             auth: {
                 strategy: 'token'

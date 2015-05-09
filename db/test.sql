@@ -11,8 +11,8 @@ INSERT INTO users
 
 INSERT INTO orders
     (user_id, winner_id,  price,  status, category, created_at, updated_at,      title,     note,                                               startPoint,    startCity,      startAddress, startTime) VALUES
-    (      1,      NULL,     99,       0,        1,      now(),      now(),    'clean', 'order0', ST_SetSRID(ST_MakePoint(-122.4164623, 37.7766092), 4326),    'Fremont',      '1 Joyy Way', 450694731),
-    (      1,      NULL,    899,       0,        5,      now(),      now(),   'moving', 'order1', ST_SetSRID(ST_MakePoint(-122.4074981, 37.7879331), 4326),  'Meno Park',      '1 Hack Way', 451594731),
+    (      1,      NULL,    199,       0,        1,      now(),      now(),    'clean', 'order0', ST_SetSRID(ST_MakePoint(-122.4164623, 37.7766092), 4326),    'Fremont',      '1 Joyy Way', 450694731),
+    (      1,      NULL,    899,       0,        5,      now(),      now(),   'moving', 'order1', ST_SetSRID(ST_MakePoint(-122.4074981, 37.7879331), 4326), 'Menlo Park',      '1 Hack Way', 451594731),
     (      1,      NULL, 234567,       0,        4,      now(),      now(), 'handyman', 'order2', ST_SetSRID(ST_MakePoint(-121.9989519, 37.5293864), 4326),  'Cupertino', '1 Infinite Loop', 450794731),
     (      1,         3,  56799,      10,        0,      now(),      now(),    'Other', 'order3', ST_SetSRID(ST_MakePoint(-121.9989519, 37.5293864), 4326),  'Cupertino', '1 Infinite Loop', 450894731);
 
@@ -29,8 +29,19 @@ INSERT INTO bids
     (        2,        3,    99,     10, 1427160123,     now(),      now(),    'for revoke');
 
 
+INSERT INTO comments
+    (order_id, user_id, username, is_from_joyyor, to_username, created_at, updated_at, contents) VALUES
+    (       1,       2,   'andy',           true,        NULL,      now(),      now(), 'How many sqft?'),
+    (       1,       3,   'ping',           true,        NULL,      now(),      now(), 'Include kitchen as well?'),
+    (       1,       4,   'mike',           true,        NULL,      now(),      now(), 'I know your house is quite huge bro, its really difficult at this price man. I may consider 500 bucks'),
+    (       1,       1,   'jack',          false,      'mike',      now(),      now(), 'Just 3000 sqft, and 500 bucks is ridiculous！$499 is my bottomline!!'),
+    (       2,       2,   'andy',           true,        NULL,      now(),      now(), 'This is andy!'),
+    (       2,       3,   'ping',           true,        NULL,      now(),      now(), 'Ping'),
+    (       2,       4,   'mike',           true,        NULL,      now(),      now(), 'Mike always talk a lot: I know your house is quite huge bro, its really difficult at this price man. I may consider 500 bucks'),
+    (       2,       1,   'jack',          false,      'mike',      now(),      now(), 'Just 3000 sqft, and 500 bucks is ridiculous！$499 is my bottomline!!');
+
 INSERT INTO reviews
-    (reviewer_id, reviewee_id, order_id, rating,          comment, created_at,  updated_at) VALUES
+    (reviewer_id, reviewee_id, order_id, rating,         contents, created_at,  updated_at) VALUES
     (          2,           1,        1,      4, 'fixedin 5 mins',      now(),      now()),
     (          3,           2,        2,      5, 'best quality!!',      now(),      now()),
     (          4,           2,        3,    4.5,     'super pro!',      now(),      now());

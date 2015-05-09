@@ -10,19 +10,16 @@ var joyyorDeviceTokenCache = null;
 
 exports.attach = function (server) {
 
-    Hoek.assert(!bearerTokenCache, 'Bearer token cache should only be set once.');
     bearerTokenCache = server.cache({
         segment: 'b',
         expiresIn: 60 * 60 * 1000
     });
 
-    Hoek.assert(!joyyDeviceTokenCache, 'Joyy Device token cache should only be set once.');
     joyyDeviceTokenCache = server.cache({
         segment: 'd',
         expiresIn: 2 * 365 * 24 * 60 * 60 * 1000
     });
 
-    Hoek.assert(!joyyorDeviceTokenCache, 'Joyyor Device token cache should only be set once.');
     joyyorDeviceTokenCache = server.cache({
         segment: 'rd',
         expiresIn: 2 * 365 * 24 * 60 * 60 * 1000
