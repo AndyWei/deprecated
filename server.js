@@ -1,5 +1,5 @@
+var Cache = require('./server/cache');
 var Push = require('./server/push');
-var Token = require('./server/token');
 var composer = require('./index');
 
 
@@ -9,7 +9,7 @@ composer(function (err, server) {
         throw err;
     }
 
-    Token.attach(server);
+    Cache.attach(server);
     Push.connect();
 
     server.start(function () {

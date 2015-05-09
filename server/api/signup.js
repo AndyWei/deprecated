@@ -1,9 +1,9 @@
 var Async = require('async');
 var Bcrypt = require('bcrypt');
 var Boom = require('boom');
+var Cache = require('../cache');
 var Hoek = require('hoek');
 var Joi = require('joi');
-var Token = require('../token');
 var c = require('../constants');
 var _ = require('underscore');
 
@@ -158,7 +158,7 @@ internals.createUser = function (request, reply) {
         }],
         token: ['userid', function (callback, results) {
 
-            Token.generateBearerToken(results.userid, results.username, function (err, token) {
+            Cache.generateBearerToken(results.userid, results.username, function (err, token) {
                 callback(err, token);
             });
         }]

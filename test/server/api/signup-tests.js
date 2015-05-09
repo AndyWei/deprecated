@@ -1,9 +1,9 @@
+var Cache = require('../../../server/cache');
 var Code = require('code');
 var Config = require('../../../config');
 var Hapi = require('hapi');
 var Lab = require('lab');
 var SignupPlugin = require('../../../server/api/signup');
-var Token = require('../../../server/token');
 var c = require('../../../server/constants');
 
 
@@ -34,7 +34,7 @@ lab.experiment('Signup: ', function () {
                 return done(err);
             }
 
-            Token.attach(server);
+            Cache.attach(server);
         });
 
         server.start(function () {
@@ -48,7 +48,7 @@ lab.experiment('Signup: ', function () {
 
         server.stop(function () {
 
-            Token.detach();
+            Cache.detach();
             done();
         });
     });

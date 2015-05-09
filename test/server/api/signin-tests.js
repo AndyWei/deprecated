@@ -1,4 +1,5 @@
 var AuthPlugin = require('../../../server/authenticate');
+var Cache = require('../../../server/cache');
 var Code = require('code');
 var Config = require('../../../config');
 var Hapi = require('hapi');
@@ -6,7 +7,6 @@ var HapiAuthBasic = require('hapi-auth-basic');
 var HapiAuthToken = require('hapi-auth-bearer-token');
 var Lab = require('lab');
 var SignInPlugin = require('../../../server/api/signin');
-var Token = require('../../../server/token');
 var c = require('../../../server/constants');
 
 
@@ -35,7 +35,7 @@ lab.experiment('SignIn: ', function () {
 
             server.start(function () {
 
-                Token.attach(server);
+                Cache.attach(server);
                 done();
             });
         });
@@ -46,7 +46,7 @@ lab.experiment('SignIn: ', function () {
 
         server.stop(function () {
 
-            Token.detach();
+            Cache.detach();
             done();
         });
     });

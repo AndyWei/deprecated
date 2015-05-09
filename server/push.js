@@ -1,6 +1,6 @@
 var Apn = require('apn');
 var Async = require('async');
-var Token = require('./token');
+var Cache = require('./cache');
 var c = require('./constants');
 
 var internals = {};
@@ -31,7 +31,7 @@ exports.notify = function (app, recipientId, title, body, callback) {
     Async.waterfall([
         function (next) {
 
-            Token.getDeviceTokenObject(app, recipientId, function (err, tokenObj) {
+            Cache.getDeviceTokenObject(app, recipientId, function (err, tokenObj) {
                 if (err) {
                     return next(err);
                 }
@@ -60,7 +60,7 @@ exports.notify = function (app, recipientId, title, body, callback) {
 
             tokenObj.badge += 1;
 
-            Token.setDeviceTokenObject(app, recipientId, tokenObj, function (err, userIdString) {
+            Cache.setDeviceTokenObject(app, recipientId, tokenObj, function (err, userIdString) {
 
                 if (err) {
                     return next(err);

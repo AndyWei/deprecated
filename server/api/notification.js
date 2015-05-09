@@ -1,6 +1,6 @@
+var Cache = require('../cache');
 var Hoek = require('hoek');
 var Joi = require('joi');
-var Token = require('../token');
 
 
 exports.register = function (server, options, next) {
@@ -35,7 +35,7 @@ exports.register = function (server, options, next) {
                 badge: request.payload.badge
             };
 
-            Token.setDeviceTokenObject(request.params.app, userId, tokenObj, function (err, userIdString) {
+            Cache.setDeviceTokenObject(request.params.app, userId, tokenObj, function (err, userIdString) {
 
                 if (err) {
                     console.error(err);

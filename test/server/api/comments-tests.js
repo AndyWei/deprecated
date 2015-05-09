@@ -1,5 +1,5 @@
 var AuthPlugin = require('../../../server/authenticate');
-var Token = require('../../../server/token');
+var Cache = require('../../../server/cache');
 var Code = require('code');
 var Config = require('../../../config');
 var Hapi = require('hapi');
@@ -38,7 +38,7 @@ lab.beforeEach(function (done) {
         if (err) {
             return done(err);
         }
-        Token.attach(server);
+        Cache.attach(server);
 
         done();
     });
@@ -47,7 +47,7 @@ lab.beforeEach(function (done) {
 
 lab.afterEach(function (done) {
 
-    Token.detach();
+    Cache.detach();
     done();
 });
 

@@ -1,5 +1,5 @@
+var Cache = require('../cache');
 var Hoek = require('hoek');
-var Token = require('../token');
 
 
 exports.register = function (server, options, next) {
@@ -19,7 +19,7 @@ exports.register = function (server, options, next) {
 
             var userId = request.auth.credentials.id;
             var userName = request.auth.credentials.username;
-            Token.generateBearerToken(userId, userName, function (err, token) {
+            Cache.generateBearerToken(userId, userName, function (err, token) {
 
                 if (err) {
                     console.error(err);

@@ -1,9 +1,9 @@
 var Async = require('async');
 var Bcrypt = require('bcrypt');
 var Boom = require('boom');
+var Cache = require('./cache');
 var Config = require('../config');
 var Pg = require('pg').native;
-var Token = require('./token');
 var c = require('./constants');
 
 
@@ -68,7 +68,7 @@ var validateSimple = function (email, password, finish) {
 
 var validateToken = function (token, callback) {
 
-    Token.validateBearerToken(token, function (err, userInfo) {
+    Cache.validateBearerToken(token, function (err, userInfo) {
         if (err) {
             return callback(Boom.unauthorized(c.TOKEN_INVALID, 'token'), false, null);
         }
