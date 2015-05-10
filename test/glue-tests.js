@@ -1,3 +1,4 @@
+var CatBox = require('../catbox-joyy-redis')
 var Code = require('code');
 var Glue = require('../glue');
 var Lab = require('lab');
@@ -27,7 +28,7 @@ describe('compose()', function () {
 
         var manifest = {
             server: {
-                cache: './node_modules/catbox-redis'
+                cache: './catbox-joyy-redis'
             }
         };
 
@@ -43,7 +44,7 @@ describe('compose()', function () {
 
         var manifest = {
             server: {
-                cache: ['./node_modules/catbox-redis']
+                cache: ['./catbox-joyy-redis']
             }
         };
 
@@ -60,7 +61,7 @@ describe('compose()', function () {
         var manifest = {
             server: {
                 cache: {
-                    engine: './node_modules/catbox-redis'
+                    engine: './catbox-joyy-redis'
                 }
             }
         };
@@ -78,7 +79,7 @@ describe('compose()', function () {
         var manifest = {
             server: {
                 cache: [{
-                    engine: require('catbox-redis')
+                    engine: CatBox
                 }]
             }
         };

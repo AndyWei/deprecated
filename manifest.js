@@ -1,6 +1,6 @@
+var CatBox = require('./catbox-joyy-redis')
 var Confidence = require('confidence');
 var Config = require('./config');
-
 
 var criteria = {
     env: process.env.NODE_ENV
@@ -14,7 +14,7 @@ var manifest = {
             request: ['error']
         },
         cache: {
-            engine: require('catbox-redis'),
+            engine: CatBox,
             shared: true,
             host: Config.get('/redis/host'),
             // password: Config.get('/redis/password'),
