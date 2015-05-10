@@ -17,8 +17,6 @@
 		D6348D301ADB4DD60002BC35 /* NSString+Joyy.m in Sources */ = {isa = PBXBuildFile; fileRef = D6348D2E1ADB4DD60002BC35 /* NSString+Joyy.m */; };
 		D6348D371ADB7ABC0002BC35 /* NSMutableDictionary+Joyy.m in Sources */ = {isa = PBXBuildFile; fileRef = D6348D361ADB7ABC0002BC35 /* NSMutableDictionary+Joyy.m */; };
 		D6348D381ADB7ABC0002BC35 /* NSMutableDictionary+Joyy.m in Sources */ = {isa = PBXBuildFile; fileRef = D6348D361ADB7ABC0002BC35 /* NSMutableDictionary+Joyy.m */; };
-		D6348D3B1ADC8FB70002BC35 /* JYOrderViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D6348D3A1ADC8FB70002BC35 /* JYOrderViewCell.m */; };
-		D6348D3C1ADC8FB70002BC35 /* JYOrderViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D6348D3A1ADC8FB70002BC35 /* JYOrderViewCell.m */; };
 		D63B69A91AC51302005600A9 /* UIFont+Joyy.m in Sources */ = {isa = PBXBuildFile; fileRef = D63B69A81AC51302005600A9 /* UIFont+Joyy.m */; };
 		D63B69AA1AC51302005600A9 /* UIFont+Joyy.m in Sources */ = {isa = PBXBuildFile; fileRef = D63B69A81AC51302005600A9 /* UIFont+Joyy.m */; };
 		D63B69B21AC51D61005600A9 /* JYSignBaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D63B69B11AC51D61005600A9 /* JYSignBaseViewController.m */; };
@@ -114,8 +112,6 @@
 		D6348D2E1ADB4DD60002BC35 /* NSString+Joyy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Joyy.m"; sourceTree = "<group>"; };
 		D6348D351ADB7ABC0002BC35 /* NSMutableDictionary+Joyy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableDictionary+Joyy.h"; sourceTree = "<group>"; };
 		D6348D361ADB7ABC0002BC35 /* NSMutableDictionary+Joyy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSMutableDictionary+Joyy.m"; sourceTree = "<group>"; };
-		D6348D391ADC8FB70002BC35 /* JYOrderViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYOrderViewCell.h; sourceTree = "<group>"; };
-		D6348D3A1ADC8FB70002BC35 /* JYOrderViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYOrderViewCell.m; sourceTree = "<group>"; };
 		D63B69A71AC51302005600A9 /* UIFont+Joyy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIFont+Joyy.h"; sourceTree = "<group>"; };
 		D63B69A81AC51302005600A9 /* UIFont+Joyy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIFont+Joyy.m"; sourceTree = "<group>"; };
 		D63B69B01AC51D61005600A9 /* JYSignBaseViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYSignBaseViewController.h; sourceTree = "<group>"; };
@@ -266,8 +262,6 @@
 				D6348D261ADA3BC90002BC35 /* JYPriceTextFieldCell.m */,
 				D65AFA601AEC791D007867D0 /* JYBidViewCell.h */,
 				D65AFA611AEC791D007867D0 /* JYBidViewCell.m */,
-				D6348D391ADC8FB70002BC35 /* JYOrderViewCell.h */,
-				D6348D3A1ADC8FB70002BC35 /* JYOrderViewCell.m */,
 				D6348D291ADA4A180002BC35 /* JYRestrictedTextViewCell.h */,
 				D6348D2A1ADA4A650002BC35 /* JYRestrictedTextViewCell.m */,
 				D689ED601AE01F9C00CB4D2B /* JYDateView.h */,
@@ -597,7 +591,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D6348D3B1ADC8FB70002BC35 /* JYOrderViewCell.m in Sources */,
 				D6F4A0511AF6A156001A3C89 /* AppConst.m in Sources */,
 				D68DAF961AC4CACD00838E7E /* Constants.m in Sources */,
 				D689ED621AE01F9C00CB4D2B /* JYDateView.m in Sources */,
@@ -664,7 +657,6 @@
 				D6348D2C1ADA4A650002BC35 /* JYRestrictedTextViewCell.m in Sources */,
 				D6B2F0821AD5A679009601B0 /* JYPlacesViewController.m in Sources */,
 				D6B2F05C1ACE630F009601B0 /* JYAutoCompleteTextField.m in Sources */,
-				D6348D3C1ADC8FB70002BC35 /* JYOrderViewCell.m in Sources */,
 				D69202CF1AC4C7C1001C1C3D /* joyyiosTests.m in Sources */,
 				D63F0D5A1AC7CFF20067C5EE /* JYButton.m in Sources */,
 				D6B2F08E1AD714DA009601B0 /* JYOrder.m in Sources */,

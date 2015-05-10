@@ -117,7 +117,7 @@ static NSString *reuseId = @"pin";
 
     // The self.mapView.userlocation hasn't been initiated at this time point, so use the currentLocation in AppDelegate
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    self.userSelectedMapCenter = appDelegate.currentLocation.coordinate;
+    self.userSelectedMapCenter = appDelegate.currentCoordinate;
 
     self.mapView.camera.altitude = kMapDefaultAltitude;
     self.mapView.centerCoordinate = self.userSelectedMapCenter;

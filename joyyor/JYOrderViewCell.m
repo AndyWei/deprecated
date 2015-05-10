@@ -1,6 +1,6 @@
 //
 //  JYOrderViewCell.m
-//  joyyios
+//  joyyor
 //
 //  Created by Ping Yang on 4/13/15.
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
@@ -160,14 +160,11 @@ static const CGFloat kFontSizeDetail = 13.0f;
 {
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
 
-    if (!appDelegate.currentLocation)
-    {
-        return;
-    }
+    CLLocation *currentLocation = [[CLLocation alloc] initWithLatitude:appDelegate.currentCoordinate.latitude longitude:appDelegate.currentCoordinate.longitude];
 
-    CLLocation *pointLocation = [[CLLocation alloc] initWithCoordinate: point altitude:1 horizontalAccuracy:1 verticalAccuracy:-1 timestamp:nil];
+    CLLocation *pointLocation = [[CLLocation alloc] initWithLatitude:point.latitude longitude:point.longitude];
 
-    CLLocationDistance kilometers = [appDelegate.currentLocation distanceFromLocation:pointLocation] / 1000;
+    CLLocationDistance kilometers = [currentLocation distanceFromLocation:pointLocation] / 1000;
     NSUInteger numberOfMiles = (NSUInteger)kilometers * 0.621371;
     if (numberOfMiles == 0)
     {

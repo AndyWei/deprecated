@@ -8,11 +8,14 @@
 
 #import "JYOrder.h"
 
+@import CoreLocation;
+
 @interface DataStore : NSObject
 
 + (DataStore *)sharedInstance;
 
 @property(nonatomic) CGFloat presentedIntroductionVersion;
+@property(nonatomic) CLLocationCoordinate2D lastCoordinate;
 @property(nonatomic) JYOrder *currentOrder;
 @property(nonatomic) NSDictionary *userCredential;
 @property(nonatomic) NSTimeInterval tokenExpireTime;

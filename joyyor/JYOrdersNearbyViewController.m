@@ -191,6 +191,7 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
         return;
     }
     self.isFetchingData = YES;
+    NSLog(@"orders/nearby start fetch data");
 
     NSDictionary *parameters = [self _httpParameters];
 
@@ -237,7 +238,7 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
     NSMutableDictionary *parameters = [NSMutableDictionary new];
 
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    CLLocationCoordinate2D currentPoint = appDelegate.currentLocation.coordinate;
+    CLLocationCoordinate2D currentPoint = appDelegate.currentCoordinate;
     [parameters setValue:@(currentPoint.longitude) forKey:@"lon"];
     [parameters setValue:@(currentPoint.latitude) forKey:@"lat"];
     [parameters setValue:@(self.maxOrderId) forKey:@"after"];

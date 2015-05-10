@@ -13,6 +13,8 @@ NSString *const kKeyAPITokenExpireTime = @"APITokenExpireTime";
 NSString *const kKeyBadgeCount = @"BadgeCount";
 NSString *const kKeyCurrentOrder = @"CurrentOrder";
 NSString *const kKeyDeviceToken = @"DeviceToken";
+NSString *const kKeyLastCoordinateLat = @"LastCoordinateLat";
+NSString *const kKeyLastCoordinateLon = @"LastCoordinateLon";
 NSString *const kKeyPresentedIntroductionVersion = @"PresentedIntroductionVersion";
 NSString *const kKeyUserCredential = @"UserCredential";
 
@@ -115,6 +117,28 @@ NSString *const kKeyUserCredential = @"UserCredential";
 - (CGFloat)presentedIntroductionVersion
 {
     return[[NSUserDefaults standardUserDefaults] floatForKey:kKeyPresentedIntroductionVersion];
+}
+
+// lastLocation
+- (void)setLastCoordinate:(CLLocationCoordinate2D)coordinate
+{
+    [[NSUserDefaults standardUserDefaults] setDouble:coordinate.latitude forKey:kKeyLastCoordinateLat];
+    [[NSUserDefaults standardUserDefaults] setDouble:coordinate.longitude forKey:kKeyLastCoordinateLon];
+}
+
+- (CLLocationCoordinate2D)lastCoordinate
+{
+    CLLocationDegrees lat = [[NSUserDefaults standardUserDefaults] doubleForKey:kKeyLastCoordinateLat];
+    CLLocationDegrees lon = [[NSUserDefaults standardUserDefaults] doubleForKey:kKeyLastCoordinateLon];
+
+    // use san francisco city center as default
+    if (lat == 0.0 && lon == 0.0)
+    {
+        lat = 37.7577;
+        lon = -122.4376;
+    }
+
+    return CLLocationCoordinate2DMake(lat, lon);
 }
 
 @end

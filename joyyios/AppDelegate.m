@@ -128,6 +128,9 @@
 
 - (void)_setupLocationManager
 {
+    // use last location before we get current one
+    self.currentCoordinate = [DataStore sharedInstance].lastCoordinate;
+
     self.locationManager = [CLLocationManager new];
     self.locationManager.delegate = self;
     self.locationManager.distanceFilter = kCLDistanceFilterNone;
@@ -350,7 +353,9 @@
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations
 {
-    self.currentLocation = [locations lastObject];
+    CLLocation *currentLocation = [locations lastObject];
+    self.currentCoordinate = currentLocation.coordinate;
+    [DataStore sharedInstance].lastCoordinate = self.currentCoordinate;
 }
 
 - (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status

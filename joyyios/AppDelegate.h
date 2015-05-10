@@ -12,6 +12,6 @@
 
 @property(nonatomic) UIWindow *window;
 @property(nonatomic) CLLocationManager *locationManager;
-@property(nonatomic) CLLocation *currentLocation;
+@property(nonatomic) CLLocationCoordinate2D currentCoordinate;
 
 @end

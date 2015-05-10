@@ -336,7 +336,7 @@ NSString *const kBidCellIdentifier = @"bidCell";
     NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYUser currentUser].token];
     [manager.requestSerializer setValue:token forHTTPHeaderField:@"Authorization"];
 
-    NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"bids/orders"];
+    NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"bids/of/orders"];
 
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
 
