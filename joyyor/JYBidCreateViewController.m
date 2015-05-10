@@ -134,27 +134,7 @@ NSString *const kOrderBidCellIdentifier = @"orderBidCell";
     JYOrderViewCell *cell =
     (JYOrderViewCell *)[tableView dequeueReusableCellWithIdentifier:kOrderBidCellIdentifier forIndexPath:indexPath];
 
-    // start date and time
-    NSTimeInterval startTime = [[self.order valueForKey:@"starttime"] integerValue];
-
-    [cell setStartDateTime:[NSDate dateWithTimeIntervalSinceReferenceDate:startTime]];
-
-    // price
-    NSUInteger price = [[self.order valueForKey:@"price"] integerValue];
-    cell.priceLabel.text = [NSString stringWithFormat:@"$%tu", price];
-
-    // create time
-    [cell setCreateTime:[self.order valueForKey:@"created_at"]];
-
-    // distance
-    CLLocationDegrees lat = [[self.order valueForKey:@"startpointlat"] doubleValue];
-    CLLocationDegrees lon = [[self.order valueForKey:@"startpointlon"] doubleValue];
-    CLLocationCoordinate2D point = CLLocationCoordinate2DMake(lat, lon);
-    [cell setDistanceFromPoint:point];
-
-    cell.titleLabel.text = [self.order valueForKey:@"title"];
-    cell.bodyLabel.text = [self.order valueForKey:@"note"];
-    cell.cityLabel.text = [self.order valueForKey:@"startcity"];
+    [cell presentOrder:self.order];
 
     return cell;
 }

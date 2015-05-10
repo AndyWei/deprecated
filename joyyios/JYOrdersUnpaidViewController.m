@@ -191,6 +191,7 @@ NSString *const kBidCellIdentifier = @"bidCell";
     CGFloat height = [JYOrderItemView viewHeightForText:orderBodyText];
 
     JYOrderItemView *view = [[JYOrderItemView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(tableView.frame), height)];
+    view.tinylabelsHidden = YES;
     view.bodyLabel.text = orderBodyText;
     view.titleLabel.text = [order objectForKey:@"title"];
 

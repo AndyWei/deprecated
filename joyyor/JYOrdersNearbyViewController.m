@@ -111,28 +111,8 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
     (JYOrderViewCell *)[tableView dequeueReusableCellWithIdentifier:kOrderCellIdentifier forIndexPath:indexPath];
 
     NSDictionary *order = (NSDictionary *)[self.ordersList objectAtIndex:indexPath.row];
-
-    // start date and time
-    NSTimeInterval startTime = [[order objectForKey:@"starttime"] integerValue];
-
-    [cell setStartDateTime:[NSDate dateWithTimeIntervalSinceReferenceDate:startTime]];
-
-    // price
-    NSUInteger price = [[order objectForKey:@"price"] integerValue];
-    cell.priceLabel.text = [NSString stringWithFormat:@"$%tu", price];
-
-    // create time
-    [cell setCreateTime:[order objectForKey:@"created_at"]];
-
-    // distance
-    CLLocationDegrees lat = [[order objectForKey:@"startpointlat"] doubleValue];
-    CLLocationDegrees lon = [[order objectForKey:@"startpointlon"] doubleValue];
-    CLLocationCoordinate2D point = CLLocationCoordinate2DMake(lat, lon);
-    [cell setDistanceFromPoint:point];
-
-    cell.titleLabel.text = [order objectForKey:@"title"];
-    cell.bodyLabel.text = [order objectForKey:@"note"];
-    cell.cityLabel.text = [order objectForKey:@"startcity"];
+    [cell presentOrder:order];
+    [cell updateCommentsCount:5];
 
     [self _createSwipeViewForCell:cell andOrder:order];
     return cell;
