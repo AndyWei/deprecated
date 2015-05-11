@@ -38,16 +38,20 @@ lab.beforeEach(function (done) {
         if (err) {
             return done(err);
         }
-        Cache.attach(server);
 
-        done();
+        Cache.start(function (error) {
+            if (error) {
+                return done(error);
+            }
+            done();
+        });
     });
 });
 
 
 lab.afterEach(function (done) {
 
-    Cache.detach();
+    Cache.stop();
     done();
 });
 
@@ -70,7 +74,7 @@ lab.experiment('Comments GET: ', function () {
         });
     });
 
-    lab.test('/comments/of: found', function (done) {
+    lab.test('/comments/of/orders: found', function (done) {
 
         request = {
             method: 'GET',
@@ -86,7 +90,7 @@ lab.experiment('Comments GET: ', function () {
         });
     });
 
-    lab.test('/comments/of: not found', function (done) {
+    lab.test('/comments/of/orders: not found', function (done) {
 
         request = {
             method: 'GET',
@@ -97,6 +101,22 @@ lab.experiment('Comments GET: ', function () {
 
             Code.expect(response.statusCode).to.equal(200);
             Code.expect(response.result).to.be.an.array().and.to.be.empty();
+
+            done();
+        });
+    });
+
+    lab.test('/comments/count/of/orders: found', function (done) {
+
+        request = {
+            method: 'GET',
+            url: '/comments/count/of/orders?&order_id=1&order_id=2'
+        };
+
+        server.inject(request, function (response) {
+
+            Code.expect(response.statusCode).to.equal(200);
+            Code.expect(response.result).to.be.an.array().and.to.have.length(2);
 
             done();
         });

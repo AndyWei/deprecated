@@ -33,13 +33,16 @@ lab.experiment('Signup: ', function () {
             if (err) {
                 return done(err);
             }
-
-            Cache.attach(server);
         });
 
         server.start(function () {
 
-            done();
+            Cache.start(function (error) {
+                if (error) {
+                    return done(error);
+                }
+                done();
+            });
         });
     });
 
@@ -48,7 +51,7 @@ lab.experiment('Signup: ', function () {
 
         server.stop(function () {
 
-            Cache.detach();
+            Cache.stop();
             done();
         });
     });

@@ -35,8 +35,12 @@ lab.experiment('SignIn: ', function () {
 
             server.start(function () {
 
-                Cache.attach(server);
-                done();
+                Cache.start(function (error) {
+                    if (error) {
+                        return done(error);
+                    }
+                    done();
+                });
             });
         });
     });
@@ -46,7 +50,7 @@ lab.experiment('SignIn: ', function () {
 
         server.stop(function () {
 
-            Cache.detach();
+            Cache.stop();
             done();
         });
     });

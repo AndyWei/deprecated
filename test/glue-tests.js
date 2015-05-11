@@ -1,4 +1,3 @@
-var CatBox = require('../catbox-joyy-redis')
 var Code = require('code');
 var Glue = require('../glue');
 var Lab = require('lab');
@@ -20,74 +19,6 @@ describe('compose()', function () {
 
             expect(err).to.not.exist();
             expect(server.connections).length(1);
-            done();
-        });
-    });
-
-    it('composes server with server.cache as a string', function (done) {
-
-        var manifest = {
-            server: {
-                cache: './catbox-joyy-redis'
-            }
-        };
-
-        Glue.compose(manifest, function (err, server) {
-
-            expect(server).to.be.an.object();
-            expect(err).to.not.exist();
-            done();
-        });
-    });
-
-    it('composes server with server.cache as an array', function (done) {
-
-        var manifest = {
-            server: {
-                cache: ['./catbox-joyy-redis']
-            }
-        };
-
-        Glue.compose(manifest, function (err, server) {
-
-            expect(server).to.be.an.object();
-            expect(err).to.not.exist();
-            done();
-        });
-    });
-
-    it('composes server with server.cache.engine as a string', function (done) {
-
-        var manifest = {
-            server: {
-                cache: {
-                    engine: './catbox-joyy-redis'
-                }
-            }
-        };
-
-        Glue.compose(manifest, function (err, server) {
-
-            expect(server).to.be.an.object();
-            expect(err).to.not.exist();
-            done();
-        });
-    });
-
-    it('composes server with server.cache.engine as a function', function (done) {
-
-        var manifest = {
-            server: {
-                cache: [{
-                    engine: CatBox
-                }]
-            }
-        };
-
-        Glue.compose(manifest, function (err, server) {
-
-            expect(server).to.be.an.object();
-            expect(err).to.not.exist();
             done();
         });
     });

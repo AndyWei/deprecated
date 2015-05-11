@@ -28,12 +28,17 @@ exports.connect = function () {
 
 exports.notify = function (app, recipientId, title, body, callback) {
 
+    var dataset = (app === 'joyy') ? c.JOYY_DEVICE_TOKEN_CACHE : c.JOYYOR_DEVICE_TOKEN_CACHE;
     Async.waterfall([
         function (next) {
 
-            Cache.getDeviceTokenObject(app, recipientId, function (err, tokenObj) {
+            Cache.get(dataset, recipientId, function (err, tokenObj) {
                 if (err) {
                     return next(err);
+                }
+
+                if (!tokenObj) {
+                    return next(new Error('Device token missing. user_id = ' + recipientId));
                 }
 
                 next(null, tokenObj);
@@ -60,7 +65,7 @@ exports.notify = function (app, recipientId, title, body, callback) {
 
             tokenObj.badge += 1;
 
-            Cache.setDeviceTokenObject(app, recipientId, tokenObj, function (err, userIdString) {
+            Cache.set(dataset, recipientId, tokenObj, function (err, userIdString) {
 
                 if (err) {
                     return next(err);
@@ -72,7 +77,6 @@ exports.notify = function (app, recipientId, title, body, callback) {
     ], function (err, userIdString) {
 
         if (err) {
-            console.error(err);
             return callback(err);
         }
 

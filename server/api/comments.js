@@ -1,5 +1,6 @@
 var Async = require('async');
 var Boom = require('boom');
+var Cache = require('../cache');
 var Hoek = require('hoek');
 var Joi = require('joi');
 var Push = require('../push');
@@ -48,7 +49,7 @@ exports.register = function (server, options, next) {
     });
 
 
-    // get all comments of the given order. no auth.
+    // get all comments of the orders. no auth.
     server.route({
         method: 'GET',
         path: options.basePath + '/comments/of/orders',
@@ -89,6 +90,32 @@ exports.register = function (server, options, next) {
                 }
 
                 reply(null, result.rows);
+            });
+        }
+    });
+
+
+    // get all comments count of the orders. no auth.
+    server.route({
+        method: 'GET',
+        path: options.basePath + '/comments/count/of/orders',
+        config: {
+            validate: {
+                query: {
+                    order_id: Joi.array().single(true).unique().items(Joi.string().regex(/^[0-9]+$/).max(19))
+                }
+            }
+        },
+        handler: function (request, reply) {
+
+            Cache.mget(c.ORDER_COMMENTS_COUNT_CACHE, request.query.order_id, function (err, results) {
+
+                if (err) {
+                    console.error(err);
+                    return reply(err);
+                }
+
+                reply(null, results);
             });
         }
     });
@@ -166,16 +193,25 @@ internals.createCommentHandler = function (request, reply) {
             return reply(err);
         }
 
-        // send notification to the peer
-        var app = isToJoyyor ? 'joyyor' : 'joyy';
-        var title = request.auth.credentials.username + ': ' + request.payload.contents;
-        Push.notify(app, request.payload.peer_id, title, title, function (error) {
+        // early reply the submitter
+        reply(null, commentId);
+
+        // increase the comments count
+        Cache.incr(c.ORDER_COMMENTS_COUNT_CACHE, p.order_id, function (error) {
 
             if (error) {
                 console.error(error);
             }
         });
 
-        reply(null, commentId);
+        // send notification to the peer
+        var app = isToJoyyor ? 'joyyor' : 'joyy';
+        var title = request.auth.credentials.username + ': ' + request.payload.contents;
+        Push.notify(app, p.peer_id, title, title, function (error) {
+
+            if (error) {
+                console.error(error);
+            }
+        });
     });
 };

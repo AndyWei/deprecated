@@ -6,10 +6,18 @@ var composer = require('./index');
 composer(function (err, server) {
 
     if (err) {
+        console.error(err);
         throw err;
     }
 
-    Cache.attach(server);
+    Cache.start(function (error) {
+
+        if (error) {
+            console.error(error);
+            throw error;
+        }
+    });
+
     Push.connect();
 
     server.start(function () {

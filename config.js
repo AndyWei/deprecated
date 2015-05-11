@@ -22,7 +22,8 @@ var config = {
     },
     redis: {
         host: '127.0.0.1',
-        password: 'TheSimplePasswordForTestOnly'
+        password: 'TheSimplePasswordForTestOnly',
+        port: 6379
     },
     authAttempts: {
         forIp: 50,

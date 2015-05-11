@@ -1,7 +1,7 @@
 var Cache = require('../cache');
 var Hoek = require('hoek');
 var Joi = require('joi');
-
+var c = require('../constants');
 
 exports.register = function (server, options, next) {
 
@@ -35,7 +35,8 @@ exports.register = function (server, options, next) {
                 badge: request.payload.badge
             };
 
-            Cache.setDeviceTokenObject(request.params.app, userId, tokenObj, function (err, userIdString) {
+            var dataset = (request.params.app === 'joyy') ? c.JOYY_DEVICE_TOKEN_CACHE : c.JOYYOR_DEVICE_TOKEN_CACHE;
+            Cache.set(dataset, userId, tokenObj, function (err, userIdString) {
 
                 if (err) {
                     console.error(err);

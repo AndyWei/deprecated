@@ -3,6 +3,28 @@ var Enum = require('enum');
 
 var exports = module.exports = {};
 
+// cache dataset settings
+exports.API_TOKEN_CACHE = {
+    segment: 'at',
+    ttl: 60 * 60
+};
+
+exports.JOYY_DEVICE_TOKEN_CACHE = {
+    segment: 'jdt',
+    ttl: 2 * 365 * 24 * 60 * 60
+};
+
+exports.JOYYOR_DEVICE_TOKEN_CACHE = {
+    segment: 'jrdt',
+    ttl: 2 * 365 * 24 * 60 * 60
+};
+
+exports.ORDER_COMMENTS_COUNT_CACHE = {
+    segment: 'occt',
+    ttl: 30 * 24 * 60 * 60
+};
+
+
 // consts
 exports.AUTO_USERNAME_LENGTH = 5;
 exports.BCRYPT_ROUND = 10;

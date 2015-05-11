@@ -50,15 +50,19 @@ lab.beforeEach(function (done) {
             return done(err);
         }
 
-        Cache.attach(server);
-        done();
+        Cache.start(function (error) {
+            if (error) {
+                return done(error);
+            }
+            done();
+        });
     });
 });
 
 
 lab.afterEach(function (done) {
 
-    Cache.detach();
+    Cache.stop();
     done();
 });
 

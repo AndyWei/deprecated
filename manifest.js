@@ -1,4 +1,3 @@
-var CatBox = require('./catbox-joyy-redis')
 var Confidence = require('confidence');
 var Config = require('./config');
 
@@ -12,13 +11,6 @@ var manifest = {
     server: {
         debug: {
             request: ['error']
-        },
-        cache: {
-            engine: CatBox,
-            shared: true,
-            host: Config.get('/redis/host'),
-            // password: Config.get('/redis/password'),
-            partition: 'api'
         }
     },
     connections: [{
