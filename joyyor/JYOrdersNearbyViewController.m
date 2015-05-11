@@ -19,10 +19,11 @@
 @interface JYOrdersNearbyViewController ()
 
 @property(nonatomic) BOOL isFetchingData;
-@property(nonatomic) NSMutableArray *ordersList;
+@property(nonatomic) NSArray *commentsCountList;
+@property(nonatomic) NSMutableArray *orderList;
+@property(nonatomic) NSUInteger maxOrderId;
 @property(nonatomic) UITableView *tableView;
 @property(nonatomic) UIRefreshControl *refreshControl;
-@property(nonatomic) NSUInteger maxOrderId;
 
 + (UILabel *)sharedSwipeBackgroundLabel;
 
@@ -54,7 +55,8 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
     [self setTitleText:NSLocalizedString(@"Orders Nearby", nil)];
 
     self.maxOrderId = 0;
-    self.ordersList = [NSMutableArray new];
+    self.commentsCountList = [NSArray new];
+    self.orderList = [NSMutableArray new];
     self.isFetchingData = NO;
     [self _fetchData];
     [self _createTableView];
@@ -68,7 +70,7 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
 
 - (void)dealloc
 {
-
+    self.orderList = nil;
 }
 
 - (void)_createTableView
@@ -102,7 +104,7 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return [self.ordersList count];
+    return [self.orderList count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -110,9 +112,11 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
     JYOrderViewCell *cell =
     (JYOrderViewCell *)[tableView dequeueReusableCellWithIdentifier:kOrderCellIdentifier forIndexPath:indexPath];
 
-    NSDictionary *order = (NSDictionary *)[self.ordersList objectAtIndex:indexPath.row];
+    NSDictionary *order = (NSDictionary *)[self.orderList objectAtIndex:indexPath.row];
     [cell presentOrder:order];
-    [cell updateCommentsCount:5];
+
+    NSUInteger count = [[self.commentsCountList objectAtIndex:indexPath.row] unsignedIntegerValue];
+    [cell updateCommentsCount:count];
 
     [self _createSwipeViewForCell:cell andOrder:order];
     return cell;
@@ -146,19 +150,19 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (self.ordersList.count == 0)
+    if (self.orderList.count == 0)
     {
         return 100;
     }
 
-    NSDictionary *order = (NSDictionary *)[self.ordersList objectAtIndex:indexPath.row];
+    NSDictionary *order = (NSDictionary *)[self.orderList objectAtIndex:indexPath.row];
     NSString *note = [order objectForKey:@"note"];
     return [JYOrderViewCell cellHeightForText:note];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    [self _presentBidViewForOrder:(NSDictionary *)self.ordersList[indexPath.row]];
+    [self _presentBidViewForOrder:(NSDictionary *)self.orderList[indexPath.row]];
     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
@@ -173,11 +177,9 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
     self.isFetchingData = YES;
     NSLog(@"orders/nearby start fetch data");
 
-    NSDictionary *parameters = [self _httpParameters];
+    NSDictionary *parameters = [self _httpParametersForOrdersNearBy];
 
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYUser currentUser].token];
-    [manager.requestSerializer setValue:token forHTTPHeaderField:@"Authorization"];
 
     NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"orders/nearby"];
 
@@ -189,21 +191,17 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
           success:^(AFHTTPRequestOperation *operation, id responseObject) {
               NSLog(@"orders/nearby fetch success responseObject: %@", responseObject);
 
-              [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+              NSMutableArray *newOrderList = [NSMutableArray arrayWithArray:(NSArray *)responseObject];
 
-              NSMutableArray *newOrdersList = [NSMutableArray arrayWithArray:(NSArray *)responseObject];
-
-              if (newOrdersList.count > 0)
+              if (newOrderList.count > 0)
               {
-                  id order = [newOrdersList firstObject];
+                  id order = [newOrderList firstObject];
                   weakSelf.maxOrderId = [[order objectForKey:@"id"] unsignedIntegerValue];
-                  [newOrdersList addObjectsFromArray:weakSelf.ordersList];
-                  weakSelf.ordersList = newOrdersList;
-                  [weakSelf.tableView reloadData];
+                  [newOrderList addObjectsFromArray:weakSelf.orderList];
+                  weakSelf.orderList = newOrderList;
               }
 
-              [weakSelf.refreshControl endRefreshing];
-              weakSelf.isFetchingData = NO;
+              [weakSelf _fetchOrderCommentsCount];
           }
           failure:^(AFHTTPRequestOperation *operation, NSError *error) {
               [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
@@ -213,7 +211,38 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
      ];
 }
 
--(NSDictionary *)_httpParameters
+- (void)_fetchOrderCommentsCount
+{
+    NSLog(@"comments/count/of/orders start fetch data");
+
+    NSDictionary *parameters = [self _httpParametersForCommentsCount];
+
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+
+    NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"comments/count/of/orders"];
+
+    __weak typeof(self) weakSelf = self;
+    [manager GET:url
+      parameters:parameters
+         success:^(AFHTTPRequestOperation *operation, id responseObject) {
+             NSLog(@"comments/count/of/orders fetch success responseObject: %@", responseObject);
+
+             [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+
+             weakSelf.commentsCountList = (NSArray *)responseObject;
+             [weakSelf.tableView reloadData];
+             [weakSelf.refreshControl endRefreshing];
+             weakSelf.isFetchingData = NO;
+         }
+         failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+             [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+             [weakSelf.refreshControl endRefreshing];
+             weakSelf.isFetchingData = NO;
+         }
+     ];
+}
+
+-(NSDictionary *)_httpParametersForOrdersNearBy
 {
     NSMutableDictionary *parameters = [NSMutableDictionary new];
 
@@ -222,6 +251,22 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
     [parameters setValue:@(currentPoint.longitude) forKey:@"lon"];
     [parameters setValue:@(currentPoint.latitude) forKey:@"lat"];
     [parameters setValue:@(self.maxOrderId) forKey:@"after"];
+
+    return parameters;
+}
+
+- (NSDictionary *)_httpParametersForCommentsCount
+{
+    NSMutableArray *orderIds = [NSMutableArray new];
+    for (NSDictionary *order in [self.orderList objectEnumerator])
+    {
+        NSString *orderId = [order objectForKey:@"id"];
+        [orderIds addObject:orderId];
+    }
+
+    NSMutableDictionary *parameters = [NSMutableDictionary new];
+
+    [parameters setValue:orderIds forKey:@"order_id"];
 
     return parameters;
 }

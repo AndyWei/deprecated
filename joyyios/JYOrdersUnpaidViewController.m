@@ -67,7 +67,6 @@ NSString *const kBidCellIdentifier = @"bidCell";
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_fetchMyOrders) name:kNotificationDidCreateOrder object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_fetchMyOrders) name:kNotificationDidReceiveBid object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_fetchMyBids) name:kNotificationDidCreateBid object:nil];
 }
 
 - (void)didReceiveMemoryWarning
@@ -317,10 +316,6 @@ NSString *const kBidCellIdentifier = @"bidCell";
              weakSelf.isFetchingData = NO;
          }
      ];
-}
-
-- (void)_fetchMyBids
-{
 }
 
 - (void)_fetchBidsForOrders
