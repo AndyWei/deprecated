@@ -11,6 +11,8 @@
 @interface JYOrderItemView : UIView
 
 + (CGFloat)viewHeightForText:(NSString *)text;
+- (void)presentOrder:(NSDictionary *)order;
+
 - (void)setStartDateTime:(NSDate *)date;
 - (void)setCreateTime:(NSString *)dateString;
 - (void)setDistanceFromPoint:(CLLocationCoordinate2D )point;

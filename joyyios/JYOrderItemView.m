@@ -112,6 +112,31 @@ static const CGFloat kTopMargin = 8.0f;
     self.startDateView.viewColor = self.startTimeLabel.backgroundColor = self.commentsLabel.backgroundColor = color;
 }
 
+- (void)presentOrder:(NSDictionary *)order
+{
+    // start date and time
+    NSTimeInterval startTime = [[order objectForKey:@"starttime"] integerValue];
+
+    [self setStartDateTime:[NSDate dateWithTimeIntervalSinceReferenceDate:startTime]];
+
+    // price
+    NSUInteger price = [[order objectForKey:@"price"] integerValue];
+    self.priceLabel.text = [NSString stringWithFormat:@"$%tu", price];
+
+    // create time
+    [self setCreateTime:[order objectForKey:@"created_at"]];
+
+    // distance
+    CLLocationDegrees lat = [[order objectForKey:@"startpointlat"] doubleValue];
+    CLLocationDegrees lon = [[order objectForKey:@"startpointlon"] doubleValue];
+    CLLocationCoordinate2D point = CLLocationCoordinate2DMake(lat, lon);
+    [self setDistanceFromPoint:point];
+
+    self.titleLabel.text = [order objectForKey:@"title"];
+    self.bodyLabel.text = [order objectForKey:@"note"];
+    self.cityLabel.text = [order objectForKey:@"startcity"];
+}
+
 - (void)setStartDateTime:(NSDate *)date
 {
     NSDateFormatter* dateFormatter = [NSDateFormatter new];

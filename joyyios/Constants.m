@@ -55,6 +55,7 @@ NSString *const kImageNamePinGreen = @"pinGreen";
 NSString *const kImageNamePinPink = @"pinPink";
 
 NSString *const kNotificationDidCreateBid = @"didCreateBid";
+NSString *const kNotificationDidCreateComment = @"didCreateComment";
 NSString *const kNotificationDidCreateOrder = @"didCreateOrder";
 NSString *const kNotificationDidReceiveBid = @"didReceiveBid";
 NSString *const kNotificationDidSignIn = @"didSignin";

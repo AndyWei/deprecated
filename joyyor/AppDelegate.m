@@ -12,6 +12,7 @@
 
 #import "AppDelegate.h"
 #import "DataStore.h"
+#import "JYOrdersEngagedViewController.h"
 #import "JYOrdersNearbyViewController.h"
 #import "JYOrdersTodoViewController.h"
 #import "JYSignViewController.h"
@@ -281,12 +282,16 @@
     UINavigationController *nc1 = [[UINavigationController alloc] initWithRootViewController:vc1];
     nc1.title = NSLocalizedString(@"Nearby", nil);
 
-    UIViewController *vc2 = [JYOrdersTodoViewController new];
+    UIViewController *vc2 = [JYOrdersEngagedViewController new];
     UINavigationController *nc2 = [[UINavigationController alloc] initWithRootViewController:vc2];
+    nc2.title = NSLocalizedString(@"Engaged", nil);
+
+    UIViewController *vc3 = [JYOrdersTodoViewController new];
+    UINavigationController *nc3 = [[UINavigationController alloc] initWithRootViewController:vc3];
     nc2.title = NSLocalizedString(@"Todo", nil);
 
     UITabBarController *tabBarController = [UITabBarController new];
-    tabBarController.viewControllers = @[ nc1, nc2 ];
+    tabBarController.viewControllers = @[ nc1, nc2, nc3 ];
 
     self.window.rootViewController = tabBarController;
 }

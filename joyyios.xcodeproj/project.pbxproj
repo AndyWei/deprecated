@@ -59,6 +59,8 @@
 		D65AFA741AEF5F3A007867D0 /* UICustomActionSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = D65AFA701AEF5F3A007867D0 /* UICustomActionSheet.m */; };
 		D65AFA751AEF5F3A007867D0 /* UIImageEffects.m in Sources */ = {isa = PBXBuildFile; fileRef = D65AFA721AEF5F3A007867D0 /* UIImageEffects.m */; };
 		D65AFA761AEF5F3A007867D0 /* UIImageEffects.m in Sources */ = {isa = PBXBuildFile; fileRef = D65AFA721AEF5F3A007867D0 /* UIImageEffects.m */; };
+		D65F37461B04807D007B534C /* JYCommentViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D65F37451B04807D007B534C /* JYCommentViewCell.m */; };
+		D65F37471B04807D007B534C /* JYCommentViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D65F37451B04807D007B534C /* JYCommentViewCell.m */; };
 		D689ED621AE01F9C00CB4D2B /* JYDateView.m in Sources */ = {isa = PBXBuildFile; fileRef = D689ED611AE01F9C00CB4D2B /* JYDateView.m */; };
 		D689ED631AE01F9C00CB4D2B /* JYDateView.m in Sources */ = {isa = PBXBuildFile; fileRef = D689ED611AE01F9C00CB4D2B /* JYDateView.m */; };
 		D689ED6A1AE42C8300CB4D2B /* UIView+Joyy.m in Sources */ = {isa = PBXBuildFile; fileRef = D689ED691AE42C8300CB4D2B /* UIView+Joyy.m */; };
@@ -154,6 +156,8 @@
 		D65AFA701AEF5F3A007867D0 /* UICustomActionSheet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UICustomActionSheet.m; sourceTree = "<group>"; };
 		D65AFA711AEF5F3A007867D0 /* UIImageEffects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIImageEffects.h; sourceTree = "<group>"; };
 		D65AFA721AEF5F3A007867D0 /* UIImageEffects.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIImageEffects.m; sourceTree = "<group>"; };
+		D65F37441B04807D007B534C /* JYCommentViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYCommentViewCell.h; sourceTree = "<group>"; };
+		D65F37451B04807D007B534C /* JYCommentViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYCommentViewCell.m; sourceTree = "<group>"; };
 		D689ED601AE01F9C00CB4D2B /* JYDateView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYDateView.h; sourceTree = "<group>"; };
 		D689ED611AE01F9C00CB4D2B /* JYDateView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYDateView.m; sourceTree = "<group>"; };
 		D689ED681AE42C8300CB4D2B /* UIView+Joyy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Joyy.h"; sourceTree = "<group>"; };
@@ -262,6 +266,8 @@
 				D6348D261ADA3BC90002BC35 /* JYPriceTextFieldCell.m */,
 				D65AFA601AEC791D007867D0 /* JYBidViewCell.h */,
 				D65AFA611AEC791D007867D0 /* JYBidViewCell.m */,
+				D65F37441B04807D007B534C /* JYCommentViewCell.h */,
+				D65F37451B04807D007B534C /* JYCommentViewCell.m */,
 				D6348D291ADA4A180002BC35 /* JYRestrictedTextViewCell.h */,
 				D6348D2A1ADA4A650002BC35 /* JYRestrictedTextViewCell.m */,
 				D689ED601AE01F9C00CB4D2B /* JYDateView.h */,
@@ -603,6 +609,7 @@
 				D63F0D8C1ACBBF1F0067C5EE /* JYCollectionViewCell.m in Sources */,
 				D63B69BA1AC624F8005600A9 /* JYAutoCompleteDataSource.m in Sources */,
 				D63B69B21AC51D61005600A9 /* JYSignBaseViewController.m in Sources */,
+				D65F37461B04807D007B534C /* JYCommentViewCell.m in Sources */,
 				D6B2F0751AD318B6009601B0 /* JYPanGestureRecognizer.m in Sources */,
 				D63F0D751AC9F6F80067C5EE /* DataStore.m in Sources */,
 				D6348D371ADB7ABC0002BC35 /* NSMutableDictionary+Joyy.m in Sources */,
@@ -655,6 +662,7 @@
 				D689ED631AE01F9C00CB4D2B /* JYDateView.m in Sources */,
 				D63F0D761AC9F6F80067C5EE /* DataStore.m in Sources */,
 				D6348D2C1ADA4A650002BC35 /* JYRestrictedTextViewCell.m in Sources */,
+				D65F37471B04807D007B534C /* JYCommentViewCell.m in Sources */,
 				D6B2F0821AD5A679009601B0 /* JYPlacesViewController.m in Sources */,
 				D6B2F05C1ACE630F009601B0 /* JYAutoCompleteTextField.m in Sources */,
 				D69202CF1AC4C7C1001C1C3D /* joyyiosTests.m in Sources */,

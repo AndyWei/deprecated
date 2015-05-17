@@ -48,27 +48,7 @@
 
 - (void)presentOrder:(NSDictionary *)order
 {
-    // start date and time
-    NSTimeInterval startTime = [[order objectForKey:@"starttime"] integerValue];
-
-    [self.itemView setStartDateTime:[NSDate dateWithTimeIntervalSinceReferenceDate:startTime]];
-
-    // price
-    NSUInteger price = [[order objectForKey:@"price"] integerValue];
-    self.itemView.priceLabel.text = [NSString stringWithFormat:@"$%tu", price];
-
-    // create time
-    [self.itemView setCreateTime:[order objectForKey:@"created_at"]];
-
-    // distance
-    CLLocationDegrees lat = [[order objectForKey:@"startpointlat"] doubleValue];
-    CLLocationDegrees lon = [[order objectForKey:@"startpointlon"] doubleValue];
-    CLLocationCoordinate2D point = CLLocationCoordinate2DMake(lat, lon);
-    [self.itemView setDistanceFromPoint:point];
-
-    self.itemView.titleLabel.text = [order objectForKey:@"title"];
-    self.itemView.bodyLabel.text = [order objectForKey:@"note"];
-    self.itemView.cityLabel.text = [order objectForKey:@"startcity"];
+    [self.itemView presentOrder:order];
 }
 
 - (void)updateCommentsCount:(NSUInteger)count
