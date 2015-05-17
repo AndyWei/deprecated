@@ -1,4 +1,5 @@
 var AuthPlugin = require('../../../server/authenticate');
+var Cache = require('../../../server/cache');
 var Code = require('code');
 var Config = require('../../../config');
 var Hapi = require('hapi');
@@ -46,13 +47,19 @@ lab.beforeEach(function (done) {
             return done(err);
         }
 
-        done();
+        Cache.start(function (error) {
+            if (error) {
+                return done(error);
+            }
+            done();
+        });
     });
 });
 
 
 lab.afterEach(function (done) {
 
+    Cache.stop();
     done();
 });
 
@@ -301,6 +308,38 @@ lab.experiment('Orders GET: ', function () {
             Code.expect(response.statusCode).to.equal(200);
             Code.expect(response.result).to.be.an.array().and.to.have.length(1);
 
+            done();
+        });
+    });
+
+    lab.test('/orders/engaged: found', function (done) {
+
+        request = {
+            method: 'GET',
+            url: '/orders/engaged?after=1',
+            credentials: jack
+        };
+
+        server.inject(request, function (response) {
+
+            Code.expect(response.statusCode).to.equal(200);
+            Code.expect(response.result).to.be.an.array();
+            done();
+        });
+    });
+
+    lab.test('/orders/engaged: not found', function (done) {
+
+        request = {
+            method: 'GET',
+            url: '/orders/engaged?after=5',
+            credentials: jack
+        };
+
+        server.inject(request, function (response) {
+
+            Code.expect(response.statusCode).to.equal(200);
+            Code.expect(response.result).to.be.an.array().and.to.be.empty();
             done();
         });
     });

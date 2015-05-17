@@ -96,7 +96,7 @@ lab.experiment('Bids: ', function () {
         server.inject(request, function (response) {
 
             Code.expect(response.statusCode).to.equal(200);
-            Code.expect(response.result).to.be.an.array().and.to.have.length(8);
+            Code.expect(response.result).to.be.an.array().and.to.have.length(2);
 
             done();
         });

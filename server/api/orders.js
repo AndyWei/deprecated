@@ -1,7 +1,9 @@
 var Async = require('async');
 var Boom = require('boom');
+var Cache = require('../cache');
 var Hoek = require('hoek');
 var Joi = require('joi');
+var Utils = require('../utils');
 var c = require('../constants');
 
 var internals = {};
@@ -158,7 +160,7 @@ exports.register = function (server, options, next) {
     });
 
 
-    // get all the orders nearby a venue. no auth.
+    // get all the orders nearby a point. no auth.
     server.route({
         method: 'GET',
         path: options.basePath + '/orders/nearby',
@@ -186,6 +188,82 @@ exports.register = function (server, options, next) {
                 }
 
                 reply(null, result.rows);
+            });
+        }
+    });
+
+
+    // get all the active orders the user engaged (bidded or commented). auth.
+    server.route({
+        method: 'GET',
+        path: options.basePath + '/orders/engaged',
+        config: {
+            auth: {
+                strategy: 'token'
+            },
+            validate: {
+                query: {
+                    after: Joi.string().regex(/^[0-9]+$/).max(19).default('0')
+                }
+            }
+        },
+        handler: function (request, reply) {
+
+            var userId = request.auth.credentials.id;
+            var min = request.query.after;
+
+            Async.waterfall([
+                function (callback) {
+
+                    Cache.getList(c.ENGAGED_ORDER_ID_CACHE, userId, min, function (err, orderIds) {
+
+                        if (err) {
+                            return callback(err);
+                        }
+
+                        if (!orderIds || orderIds.length === 0) {
+                            return callback('empty');
+                        }
+
+                        callback(null, orderIds);
+                    });
+                },
+                function (orderIds, callback) {
+
+                    var where = 'WHERE status = 0 AND deleted = false AND id IN ' + Utils.parametersString(1, orderIds.length);
+                    var sort = 'ORDER BY id DESC';
+
+                    var queryConfig = {
+                        name: 'orders_by_ids',
+                        text: selectClause + where + sort,
+                        values: orderIds
+                    };
+
+                    request.pg.client.query(queryConfig, function (err, result) {
+
+                        if (err) {
+                            request.pg.kill = true;
+                            return callback(err);
+                        }
+                        if (result.rows.length === 0) {
+                            return reply(Boom.badRequest(c.RECORD_NOT_FOUND));
+                        }
+
+                        callback(null, result.rows);
+                    });
+                }
+            ], function (err, orders) {
+
+                if (err === 'empty') {
+                    return reply(null, []);
+                }
+
+                if (err) {
+                    console.error(err);
+                    return reply(err);
+                }
+
+                reply(null, orders);
             });
         }
     });

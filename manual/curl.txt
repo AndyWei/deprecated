@@ -7,8 +7,11 @@ curl -i -u jack@gmail.com:password "http://localhost:8000/v1/signin"
 
 
 ## orders
-# GET all of the user placed orders:
+# GET all of the user placed orders
 curl -i -H "Authorization: Bearer TOKEN" "http://localhost:8000/v1/orders/placed"
+
+# GET all of the user engaged orders
+curl -i -H "Authorization: Bearer lxjHcRVX9zcGHtVrhcTk" "http://localhost:8000/v1/orders/engaged"
 
 # GET orders nearby
 curl -i "http://localhost:8000/v1/orders/nearby?lon=-122.4376&lat=37.7577"

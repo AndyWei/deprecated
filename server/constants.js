@@ -5,18 +5,16 @@ var exports = module.exports = {};
 
 // cache dataset settings
 exports.API_TOKEN_CACHE = {
-    segment: 'at',
+    segment: 'apit',
     ttl: 60 * 60
 };
 
 exports.JOYY_DEVICE_TOKEN_CACHE = {
-    segment: 'jdt',
-    ttl: 2 * 365 * 24 * 60 * 60
+    segment: 'jydt'
 };
 
 exports.JOYYOR_DEVICE_TOKEN_CACHE = {
-    segment: 'jrdt',
-    ttl: 2 * 365 * 24 * 60 * 60
+    segment: 'jrdt'
 };
 
 exports.ORDER_COMMENTS_COUNT_CACHE = {
@@ -24,6 +22,9 @@ exports.ORDER_COMMENTS_COUNT_CACHE = {
     ttl: 30 * 24 * 60 * 60
 };
 
+exports.ENGAGED_ORDER_ID_CACHE = {
+    segment: 'eoid'
+};
 
 // consts
 exports.AUTO_USERNAME_LENGTH = 5;
@@ -62,13 +63,6 @@ exports.TOKEN_INVALID = 'Token is invalid';
 
 exports.USER_NOT_FOUND = 'User not found.';
 
-
-// enums
-exports.PushService = new Enum({
-    apn: 1,
-    gcm: 2,
-    mpn: 3
-});
 
 exports.Role = new Enum({
     user: 0,

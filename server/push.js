@@ -5,98 +5,107 @@ var c = require('./constants');
 
 var internals = {};
 
-var apnJoyyConnection = null;
-var apnJoyyorConnection = null;
+var jyApnConnection = null;
+var jrApnConnection = null;
 
 var rootFolder = process.cwd();
 
-var apnJoyyOptions = {
+var jyApnOptions = {
     'pfx': rootFolder + '/cert/dev.p12',
     'passphrase': ''
 };
 
-var apnJoyyorOptions = {
+var jrApnOptions = {
     'pfx': rootFolder + '/cert/joyyor_dev.p12',
     'passphrase': ''
 };
 
 exports.connect = function () {
-    apnJoyyConnection = new Apn.Connection(apnJoyyOptions);
-    apnJoyyorConnection = new Apn.Connection(apnJoyyorOptions);
+    jyApnConnection = new Apn.Connection(jyApnOptions);
+    jrApnConnection = new Apn.Connection(jrApnOptions);
 };
 
 
-exports.notify = function (app, recipientId, title, body, callback) {
+exports.notify = function (app, userId, title, body, callback) {
 
     var dataset = (app === 'joyy') ? c.JOYY_DEVICE_TOKEN_CACHE : c.JOYYOR_DEVICE_TOKEN_CACHE;
+    var badgeKey = 'badge' + userId;
+
     Async.waterfall([
         function (next) {
 
-            Cache.get(dataset, recipientId, function (err, tokenObj) {
+            var serviceTokenKey = userId;
+            var keys = [serviceTokenKey, badgeKey];
+
+            Cache.mget(dataset, keys, function (err, results) {
                 if (err) {
                     return next(err);
                 }
 
-                if (!tokenObj) {
-                    return next(new Error('Device token missing. user_id = ' + recipientId));
+                var serviceToken = results[0];
+                var badge = Number(results[1] || '0');
+
+                if (!serviceToken) {
+                    return next(new Error('Device token missing. user_id = ' + userId));
                 }
 
-                next(null, tokenObj);
+                var fields = serviceToken.split(':');
+                var service = fields[0];
+                var token = fields[1];
+                next(null, service, token, badge);
             });
         },
-        function (tokenObj, next) {
+        function (service, token, badge, next) {
 
-            switch(tokenObj.service) {
-                case c.PushService.apn.value:
-                    internals.apnSend(app, tokenObj, title, body);
+            switch(service) {
+                case 'apn':
+                    internals.apnSend(app, token, badge, title, body);
                     break;
-                case c.PushService.gcm.value:
+                case 'gcm':
                     internals.gcmSend();
                     break;
-                case c.PushService.mpn.value:
+                case 'mpn':
                     internals.mpnSend();
                     break;
                 default:
-                    return next({ error: c.DEVICE_TOKEN_INVALID });
+                    return next(c.DEVICE_TOKEN_INVALID);
             }
-            next(null, tokenObj);
+            next(null);
         },
-        function (tokenObj, next) {
+        function (next) {
 
-            tokenObj.badge += 1;
-
-            Cache.set(dataset, recipientId, tokenObj, function (err, userIdString) {
+            Cache.incr(dataset, badgeKey, function (err) {
 
                 if (err) {
                     return next(err);
                 }
 
-                next(null, userIdString);
+                next(null);
             });
         }
-    ], function (err, userIdString) {
+    ], function (err) {
 
         if (err) {
             return callback(err);
         }
 
-        callback(null, userIdString);
+        callback(null, userId);
     });
 };
 
 
-internals.apnSend = function (app, tokenObj, title, body) {
+internals.apnSend = function (app, token, badge, title, body) {
 
-    var device = new Apn.Device(tokenObj.token);
+    var device = new Apn.Device(token);
     var notification = new Apn.Notification();
 
-    notification.badge = tokenObj.badge + 1;
+    notification.badge = badge + 1;
     notification.expiry = Math.floor(Date.now() / 1000) + 3600; // Expires 1 hour from now.
     notification.sound = 'default';
     notification.alert = title;
     notification.payload = {'message': body};
 
-    var connection = (app === 'joyy') ? apnJoyyConnection : apnJoyyorConnection;
+    var connection = (app === 'joyy') ? jyApnConnection : jrApnConnection;
     connection.pushNotification(notification, device);
 };
 

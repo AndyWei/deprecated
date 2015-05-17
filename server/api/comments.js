@@ -4,7 +4,9 @@ var Cache = require('../cache');
 var Hoek = require('hoek');
 var Joi = require('joi');
 var Push = require('../push');
+var Utils = require('../utils');
 var c = require('../constants');
+var _ = require('underscore');
 
 var internals = {};
 
@@ -65,13 +67,8 @@ exports.register = function (server, options, next) {
 
             var queryValues = [request.query.after];
             var select = 'SELECT user_id, username, order_id, is_from_joyyor, to_username, contents FROM comments ';
-            var where = 'WHERE id > $1 AND deleted = false AND order_id IN ($2';
+            var where = 'WHERE id > $1 AND deleted = false AND order_id IN ' + Utils.parametersString(2, request.query.order_id.length);
             var sort = 'ORDER BY id ASC';
-
-            for (var i = 0, il = request.query.order_id.length - 1; i < il; ++i) {
-                where += ', $' + (i + 3).toString();
-            }
-            where += ') ';
 
             queryValues = queryValues.concat(request.query.order_id);
 
@@ -115,7 +112,11 @@ exports.register = function (server, options, next) {
                     return reply(err);
                 }
 
-                reply(null, results);
+                var zeroFilledResults = _.map(results, function (result) {
+                    return (result === null) ? '0' : result;
+                });
+
+                reply(null, zeroFilledResults);
             });
         }
     });
@@ -195,6 +196,14 @@ internals.createCommentHandler = function (request, reply) {
 
         // early reply the submitter
         reply(null, commentId);
+
+        // update engaged order list
+        Cache.lpush(c.ENGAGED_ORDER_ID_CACHE, userId, p.order_id, function (error) {
+
+            if (error) {
+                console.error(error);
+            }
+        });
 
         // increase the comments count
         Cache.incr(c.ORDER_COMMENTS_COUNT_CACHE, p.order_id, function (error) {

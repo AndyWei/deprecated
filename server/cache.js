@@ -2,6 +2,7 @@ var Async = require('async');
 var Config = require('../config');
 var Hoek = require('hoek');
 var Redis = require('redis');
+var Utils = require('./utils');
 var c = require('./constants');
 var rand = require('rand-token');
 var _ = require('underscore');
@@ -69,7 +70,8 @@ exports.get = internals.get = function (dataset, key, callback) {
         return callback(new Error('Connection not started'));
     }
 
-    internals.client.get(internals.generateKey(dataset, key), function (err, resultString) {
+    var cacheKey = internals.generateKey(dataset, key);
+    internals.client.get(cacheKey, function (err, resultString) {
 
         if (err) {
             return callback(err);
@@ -101,6 +103,62 @@ exports.set = internals.set = function (dataset, key, value, callback) {
         }
 
         callback(null, null);
+    });
+};
+
+
+exports.getList = internals.getList = function (dataset, key, min, callback) {
+
+    if (!internals.client) {
+        return callback(new Error('Connection not started'));
+    }
+
+    var cacheKey = internals.generateKey(dataset, key);
+    internals.client.lrange(cacheKey, 0, -1, function (err, result) {
+
+        if (err) {
+            return callback(err);
+        }
+
+        if (!result) {
+            return callback(null, null);
+        }
+
+        // remove the small orderIds
+        var validResult = _.filter(result, function (item) { return min < item; });
+
+        if (validResult.length === 0) {
+            return callback(null, null);
+        }
+
+        return callback(null, validResult);
+    });
+};
+
+
+exports.lpush = internals.lpush = function (dataset, key, value, callback) {
+
+    if (!internals.client) {
+        return callback(new Error('Connection not started'));
+    }
+
+    var cacheKey = internals.generateKey(dataset, key);
+    var valueString = Utils.padZero(value, 19);  // zero pad the number string to facility the filter process when getList
+
+    internals.client.lpush(cacheKey, valueString, function (err, result) {
+
+        if (err) {
+            return callback(err);
+        }
+
+        if (!result) {
+            return callback(null, null);
+        }
+
+        // limit the values list size to 100
+        internals.client.ltrim(cacheKey, 0, 100);
+
+        return callback(null, result);
     });
 };
 
@@ -145,11 +203,11 @@ exports.mget = function (dataset, keys, callback) {
         return callback(new Error('Connection not started'));
     }
 
-    var generatedKeys = _.map(keys, function (key) {
+    var cacheKeys = _.map(keys, function (key) {
         return internals.generateKey(dataset, key);
     });
 
-    internals.client.mget(generatedKeys, function (err, results) {
+    internals.client.mget(cacheKeys, function (err, results) {
 
         if (err) {
             return callback(err);
@@ -159,11 +217,31 @@ exports.mget = function (dataset, keys, callback) {
             return callback(null, null);
         }
 
-        var zeroFilledResults = _.map(results, function (result) {
-            return (result === null) ? '0' : result;
-        });
+        return callback(null, results);
+    });
+};
 
-        return callback(null, zeroFilledResults);
+
+exports.mset = function (dataset, keys, values, callback) {
+
+    if (!internals.client) {
+        return callback(new Error('Connection not started'));
+    }
+
+    var keyValues = _.map(keys, function (key, index) {
+
+        var cacheKey = internals.generateKey(dataset, key);
+        var valueString = JSON.stringify(values[index]);
+        return [cacheKey, valueString];
+    });
+
+    internals.client.mset(_.flatten(keyValues), function (err) {
+
+        if (err) {
+            return callback(err);
+        }
+
+        return callback(null);
     });
 };
 
@@ -203,10 +281,7 @@ exports.generateBearerToken = function (userId, userName, callback) {
         },
         cacheToken: ['existedToken', 'generateToken', function (next, results) {
 
-            var userInfo = {
-                id: userId,
-                username: userName
-            };
+            var userInfo = userId + ':' + userName;
 
             internals.set(c.API_TOKEN_CACHE, results.generateToken, userInfo, function (err) {
 
@@ -240,5 +315,23 @@ exports.generateBearerToken = function (userId, userName, callback) {
         }
 
         callback(null, results.generateToken);
+    });
+};
+
+
+exports.validateToken = function (token, callback) {
+
+    internals.get(c.API_TOKEN_CACHE, token, function (err, result) {
+        if (err) {
+            console.error(err);
+            return callback(err);
+        }
+
+        if (!result) {
+            return callback('Token Not Found');
+        }
+
+        var userInfo = _.object(['id', 'username'], result.split(':'));
+        callback(null, userInfo);
     });
 };

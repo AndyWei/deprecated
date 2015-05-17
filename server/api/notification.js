@@ -20,7 +20,7 @@ exports.register = function (server, options, next) {
                     app: Joi.string().alphanum().lowercase()
                 },
                 payload: {
-                    service: Joi.number().min(1).max(3),
+                    service: Joi.string().allow('apn', 'gcm', 'mpn'),
                     token: Joi.string().max(100),
                     badge: Joi.number().min(0).max(1000).default(0)
                 }
@@ -29,14 +29,16 @@ exports.register = function (server, options, next) {
         handler: function (request, reply) {
 
             var userId = request.auth.credentials.id;
-            var tokenObj = {
-                service: request.payload.service,
-                token: request.payload.token,
-                badge: request.payload.badge
-            };
+            var serviceTokenKey = userId;
+            var badgeKey = 'badge' + userId;
+            var keys = [serviceTokenKey, badgeKey];
+
+            var serviceToken = request.payload.service + ':' + request.payload.token;
+            var values = [serviceToken, request.payload.badge];
 
             var dataset = (request.params.app === 'joyy') ? c.JOYY_DEVICE_TOKEN_CACHE : c.JOYYOR_DEVICE_TOKEN_CACHE;
-            Cache.set(dataset, userId, tokenObj, function (err, userIdString) {
+
+            Cache.mset(dataset, keys, values, function (err) {
 
                 if (err) {
                     console.error(err);
@@ -44,7 +46,7 @@ exports.register = function (server, options, next) {
                 }
 
                 console.info('App %s: received device token %s for userId %s', request.params.app, request.payload.token, userId);
-                reply(null, {userId: userIdString});
+                reply(null, {token: request.payload.token});
             });
         }
     });

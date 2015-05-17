@@ -68,7 +68,7 @@ var validateSimple = function (email, password, finish) {
 
 var validateToken = function (token, callback) {
 
-    Cache.get(c.API_TOKEN_CACHE, token, function (err, userInfo) {
+    Cache.validateToken(token, function (err, userInfo) {
         if (err) {
             return callback(Boom.unauthorized(c.TOKEN_INVALID, 'token'), false, null);
         }

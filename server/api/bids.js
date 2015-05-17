@@ -1,8 +1,10 @@
 var Async = require('async');
 var Boom = require('boom');
+var Cache = require('../cache');
 var Hoek = require('hoek');
 var Joi = require('joi');
 var Push = require('../push');
+var Utils = require('../utils');
 var c = require('../constants');
 
 var internals = {};
@@ -68,14 +70,9 @@ exports.register = function (server, options, next) {
             var queryValues = [request.query.after];
             var select = 'SELECT b.id, b.order_id, b.bidder_id, b.price, b.status, b.expire_at, u.username, u.rating_total, u.rating_count, u.bio FROM bids AS b ';
             var join = 'INNER JOIN users AS u ON u.id = b.bidder_id ';
-            var where1 = 'WHERE b.id > $1 AND b.status < 10 AND b.deleted = false AND u.deleted = false ';
+            var where1 = 'WHERE b.id > $1 AND b.status < 10 AND b.deleted = false AND u.deleted = false AND b.order_id IN ';
+            var where2 = Utils.parametersString(2, request.query.order_id.length);
             var sort = 'ORDER BY b.id DESC';
-
-            var where2 = 'AND b.order_id IN ($2';
-            for (var i = 0, il = request.query.order_id.length - 1; i < il; ++i) {
-                where2 += ', $' + (i + 3).toString();
-            }
-            where2 += ') ';
 
             queryValues = queryValues.concat(request.query.order_id);
 
@@ -106,6 +103,11 @@ exports.register = function (server, options, next) {
         config: {
             auth: {
                 strategy: 'token'
+            },
+            validate: {
+                query: {
+                    status: Joi.number().min(0).max(100).default(0)
+                }
             }
         },
         handler: function (request, reply) {
@@ -113,9 +115,9 @@ exports.register = function (server, options, next) {
             var bidderId = request.auth.credentials.id;
             var queryConfig = {
                 name: 'bids_from_me',
-                text: 'SELECT * FROM bids WHERE bidder_id = $1 AND deleted = false \
+                text: 'SELECT * FROM bids WHERE bidder_id = $1 AND status = $2 AND deleted = false \
                        ORDER BY id DESC',
-                values: [bidderId]
+                values: [bidderId, request.query.status]
             };
 
             request.pg.client.query(queryConfig, function (err, result) {
@@ -222,13 +224,16 @@ exports.register.attributes = {
 
 internals.createBidHandler = function (request, reply) {
 
+    var bidderId = request.auth.credentials.id;
+    var p = request.payload;
+
     Async.auto({
         askerId: function (next) {
 
             var queryConfig = {
                 name: 'order_creator_by_id',
                 text: 'SELECT user_id FROM orders WHERE id = $1 AND deleted = false',
-                values: [request.payload.order_id]
+                values: [p.order_id]
             };
 
             request.pg.client.query(queryConfig, function (err, result) {
@@ -247,8 +252,6 @@ internals.createBidHandler = function (request, reply) {
         },
         bidId: function (next) {
 
-            var bidderId = request.auth.credentials.id;
-            var p = request.payload;
             var queryConfig = {
                 name: 'bids_create',
                 text: 'INSERT INTO bids \
@@ -281,6 +284,14 @@ internals.createBidHandler = function (request, reply) {
         }
 
         reply(null, { bid_id: results.bidId });
+
+        // update engaged order list
+        Cache.lpush(c.ENGAGED_ORDER_ID_CACHE, bidderId, p.order_id, function (error) {
+
+            if (error) {
+                console.error(error);
+            }
+        });
 
         // send notification to the asker
         var title = 'Received a bid: ' + request.auth.credentials.username + ' ask for $' + request.payload.price;
