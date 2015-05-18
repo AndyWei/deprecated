@@ -15,5 +15,8 @@ CREATE TABLE comments (
 );
 
 
+CREATE INDEX comments_user_id_index ON comments (user_id);
+
 CREATE INDEX comments_order_id_index ON comments (order_id);
+
 

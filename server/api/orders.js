@@ -5,6 +5,8 @@ var Hoek = require('hoek');
 var Joi = require('joi');
 var Utils = require('../utils');
 var c = require('../constants');
+var _ = require('underscore');
+
 
 var internals = {};
 var selectClause = 'SELECT id, user_id, price, currency, country, status, category, title, note, startTime, startCity, startAddress, endAddress, winner_id, final_price, created_at, updated_at, \
@@ -209,13 +211,10 @@ exports.register = function (server, options, next) {
         },
         handler: function (request, reply) {
 
-            var userId = request.auth.credentials.id;
-            var min = request.query.after;
-
             Async.waterfall([
                 function (callback) {
 
-                    Cache.getList(c.ENGAGED_ORDER_ID_CACHE, userId, min, function (err, orderIds) {
+                    internals.getEngagedOrderIds(request, function (err, orderIds) {
 
                         if (err) {
                             return callback(err);
@@ -448,6 +447,88 @@ exports.register = function (server, options, next) {
 
 exports.register.attributes = {
     name: 'orders'
+};
+
+
+internals.getEngagedOrderIds = function (request, callback) {
+
+    var userId = request.auth.credentials.id;
+    var minOrderId = request.query.after;
+
+    // read from redis cache first, if cache miss, then read from DB
+    Async.auto({
+        cached: function (next) {
+
+            Cache.getList(c.ENGAGED_ORDER_ID_CACHE, userId, minOrderId, function (err, orderIds) {
+
+                // cache miss, then let the flow continue to read DB
+                if (err) {
+                    return next(null);
+                }
+
+                if (!orderIds || orderIds.length === 0) {
+                    return next(null);
+                }
+
+                // cache hit, then fake an error to avoid reading DB
+                next('cache_hit', orderIds);
+            });
+        },
+        bidded: ['cached', function (next) {
+
+            var queryConfig = {
+                name: 'order_id_bidded',
+                text: 'SELECT order_id FROM bids WHERE bidder_id = $1 AND order_id > $2 AND deleted = false',
+                values: [userId, minOrderId]
+            };
+
+            request.pg.client.query(queryConfig, function (err, result) {
+
+                if (err) {
+                    request.pg.kill = true;
+                    return next(err);
+                }
+
+                next(null, _.pluck(result.rows, 'order_id'));
+            });
+        }],
+        commented: ['cached', function (next) {
+
+            var queryConfig = {
+                name: 'order_id_commented',
+                text: 'SELECT order_id FROM comments WHERE user_id = $1 AND order_id > $2 AND deleted = false',
+                values: [userId, minOrderId]
+            };
+
+            request.pg.client.query(queryConfig, function (err, result) {
+
+                if (err) {
+                    request.pg.kill = true;
+                    return next(err);
+                }
+
+                next(null,  _.pluck(result.rows, 'order_id'));
+            });
+        }]
+    }, function (err, results) {
+
+        if (err === 'cache_hit') {
+            console.info(err);
+            return callback(null, results.cached);
+        }
+
+        if (err) {
+            console.error(err);
+            return callback(err);
+        }
+
+        console.info('cache_miss');
+        console.info('results.bidded = %j', results.bidded);
+        console.info('results.commented = %j', results.commented);
+        
+        var orderIds = _.union(results.bidded, results.commented);
+        callback(null, orderIds);
+    });
 };
 
 
