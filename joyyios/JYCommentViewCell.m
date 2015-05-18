@@ -9,16 +9,26 @@
 #import "JYCommentViewCell.h"
 
 static const CGFloat kMinHeight = 20;
+static const CGFloat kLeftMargin = 8;
+static const CGFloat kRightMargin = 8;
 static const CGFloat kTopMargin = 8;
 static const CGFloat kFontSizeComment = 18.0f;
 
+@interface JYCommentViewCell ()
+
+@property(nonatomic) UILabel *commentLabel;
+
+@end
+
+
 @implementation JYCommentViewCell
 
-+ (CGFloat)cellHeightForText:(NSString *)text
++ (CGFloat)cellHeightForComment:(NSDictionary *)comment
 {
     CGFloat screenWidth = CGRectGetWidth([[UIScreen mainScreen] applicationFrame]);
-    CGSize maximumSize = CGSizeMake(screenWidth, 10000);
+    CGSize maximumSize = CGSizeMake(screenWidth - kLeftMargin - kRightMargin, 10000);
 
+    NSString *text = [[self class ] _textOf:comment];
     static UILabel *dummyLabel = nil;
     if (!dummyLabel)
     {
@@ -34,13 +44,33 @@ static const CGFloat kFontSizeComment = 18.0f;
     return height;
 }
 
++ (NSString *)_textOf:(NSDictionary *)comment
+{
+    NSString *fromUser = [comment objectForKey:@"username"];
+    NSString *toUser = [comment objectForKey:@"to_username"];
+    NSString *contents = [comment objectForKey:@"contents"];
+
+    if (toUser)
+    {
+        return [NSString stringWithFormat:@"%@ @%@ %@", fromUser, toUser, contents];
+    }
+    else
+    {
+        return [NSString stringWithFormat:@"%@ %@", fromUser, contents];
+    }
+}
+
+- (void)presentComment:(NSDictionary *)comment
+{
+}
+
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self)
     {
         self.opaque = YES;
-        self.backgroundColor = FlatWhite;
+        self.backgroundColor = JoyyWhite;
 
         [self _createCommentLabel];
     }
@@ -58,12 +88,14 @@ static const CGFloat kFontSizeComment = 18.0f;
 - (void)_createCommentLabel
 {
     CGFloat screenWidth = CGRectGetWidth([[UIScreen mainScreen] applicationFrame]);
-    CGRect frame = CGRectMake(0, kTopMargin, screenWidth, kMinHeight);
+    CGRect frame = CGRectMake(kLeftMargin, kTopMargin, screenWidth- kLeftMargin - kRightMargin, kMinHeight);
     self.commentLabel = [[UILabel alloc] initWithFrame:frame];
+    self.commentLabel.backgroundColor = JoyyWhite;
     self.commentLabel.font = [UIFont systemFontOfSize:15.0f];
+    self.commentLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    self.commentLabel.numberOfLines = 0;
     self.commentLabel.textColor = FlatGrayDark;
-    self.commentLabel.textAlignment = NSTextAlignmentCenter;
-    self.commentLabel.backgroundColor = FlatWhite;
+    self.commentLabel.textAlignment = NSTextAlignmentLeft;
 
     [self addSubview:self.commentLabel];
 }

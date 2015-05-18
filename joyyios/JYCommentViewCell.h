@@ -8,8 +8,7 @@
 
 @interface JYCommentViewCell : UITableViewCell
 
-+ (CGFloat)cellHeightForText:(NSString *)text;
-
-@property(nonatomic) UILabel *commentLabel;
++ (CGFloat)cellHeightForComment:(NSDictionary *)comment;
+- (void)presentComment:(NSDictionary *)comment;
 
 @end

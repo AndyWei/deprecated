@@ -116,7 +116,7 @@
 
     [[UINavigationBar appearance] setTintColor:JoyyBlue];
 
-    [[UITabBar appearance] setTintColor:JoyyBlue];
+//    [[UITabBar appearance] setTintColor:JoyyBlue];
 
     [[UITabBarItem appearance]
      setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIFont systemFontOfSize:kTabBarTitleFontSize], NSFontAttributeName, nil]
@@ -288,7 +288,7 @@
 
     UIViewController *vc3 = [JYOrdersTodoViewController new];
     UINavigationController *nc3 = [[UINavigationController alloc] initWithRootViewController:vc3];
-    nc2.title = NSLocalizedString(@"Todo", nil);
+    nc3.title = NSLocalizedString(@"Todo", nil);
 
     UITabBarController *tabBarController = [UITabBarController new];
     tabBarController.viewControllers = @[ nc1, nc2, nc3 ];

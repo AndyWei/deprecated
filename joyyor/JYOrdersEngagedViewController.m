@@ -21,8 +21,10 @@
 @property(nonatomic) NSInteger fetchThreadCount;
 @property(nonatomic) NSMutableArray *commentMatrix;
 @property(nonatomic) NSMutableArray *orderList;
+@property(nonatomic) NSMutableDictionary *bidDict;
 @property(nonatomic) NSUInteger maxOrderId;
-@property(nonatomic) NSUInteger maxCommentsId;
+@property(nonatomic) NSUInteger maxBidId;
+@property(nonatomic) NSUInteger maxCommentId;
 @property(nonatomic) UITableView *tableView;
 @property(nonatomic) UIRefreshControl *refreshControl;
 
@@ -38,10 +40,13 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
     [self setTitleText:NSLocalizedString(@"Engaged Orders", nil)];
 
     self.maxOrderId = 0;
-    self.maxCommentsId = 0;
+    self.maxBidId = 0;
+    self.maxCommentId = 0;
+    self.fetchThreadCount = 0;
+
     self.orderList = [NSMutableArray new];
     self.commentMatrix = [NSMutableArray new];
-    self.fetchThreadCount = 0;
+    self.bidDict = [NSMutableDictionary new];
 
     [self _fetchOrders];
     [self _createTableView];
@@ -63,6 +68,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 - (void)_createTableView
 {
     self.tableView = [[UITableView alloc] initWithFrame:self.view.frame style:UITableViewStyleGrouped];
+    self.tableView.separatorColor = ClearColor;
     self.tableView.backgroundColor = FlatGray;
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
@@ -77,14 +83,6 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
     [self.refreshControl addTarget:self action:@selector(_fetchOrders) forControlEvents:UIControlEventValueChanged];
 
     tableViewController.refreshControl = self.refreshControl;
-}
-
-- (NSString *)textOf:(NSDictionary *)comment
-{
-    NSString *fromUser = [comment objectForKey:@"username"];
-    NSString *toUser = [comment objectForKey:@"to_username"];
-    NSString *contents = [comment objectForKey:@"contents"];
-    return [NSString stringWithFormat:@"%@ @%@ %@", fromUser, toUser, contents];
 }
 
 - (NSDictionary *)_orderOfId:(NSUInteger)targetOrderId
@@ -146,7 +144,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 
     NSArray *comments = (NSArray *)[self.commentMatrix objectAtIndex:indexPath.section];
     NSDictionary *comment = (NSDictionary *)[comments objectAtIndex:indexPath.row];
-    cell.commentLabel.text = [self textOf:comment];
+    [cell presentComment:comment];
 
     return cell;
 }
@@ -157,8 +155,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 {
     NSArray *comments = (NSArray *)[self.commentMatrix objectAtIndex:indexPath.section];
     NSDictionary *comment = (NSDictionary *)[comments objectAtIndex:indexPath.row];
-    NSString *text = [self textOf:comment];
-    return [JYCommentViewCell cellHeightForText:text];
+    return [JYCommentViewCell cellHeightForComment:comment];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
@@ -234,8 +231,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
     [manager GET:url
       parameters:parameters
          success:^(AFHTTPRequestOperation *operation, id responseObject) {
-             NSLog(@"orders/engaged fetch success responseObject: %@", responseObject);
-             NSLog(@"orders/engaged fetch responseObject class: %@", [responseObject class]);
+//             NSLog(@"orders/engaged fetch success responseObject: %@", responseObject);
 
              NSMutableArray *newOrderList = [NSMutableArray arrayWithArray:(NSArray *)responseObject];
 
@@ -280,30 +276,26 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
     [manager.requestSerializer setValue:token forHTTPHeaderField:@"Authorization"];
 
     NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"bids/from_me"];
+    NSDictionary *parameters = @{@"after" : @(self.maxBidId)};
 
     __weak typeof(self) weakSelf = self;
     [manager GET:url
-      parameters:nil
+      parameters:parameters
          success:^(AFHTTPRequestOperation *operation, id responseObject) {
 
-             NSLog(@"bids/from_me fetch success responseObject: %@", responseObject);
+//             NSLog(@"bids/from_me fetch success responseObject: %@", responseObject);
              NSArray *bids = (NSArray *)responseObject;
 
              if (bids.count > 0)
              {
-                 // bids are in DESC order, so iterate the newBids backward and insert each bid to the beginning of its array
+                 // bids are in DESC order
+                 NSDictionary *lastBid = [bids firstObject];
+                 weakSelf.maxBidId = [[lastBid objectForKey:@"id"] unsignedIntegerValue];
+
                  for (NSDictionary *bid in bids)
                  {
-                     NSUInteger orderId = [[bid objectForKey:@"order_id"] unsignedIntegerValue];
-                     NSDictionary *order = [weakSelf _orderOfId:orderId];
-                     if (order)
-                     {
-                         [order setValue:bid forKey:@"bid"];
-                     }
-                     else
-                     {
-                         // TODO: GET and merge the related orders that we don't have
-                     }
+                     NSString *orderIdString = [bid objectForKey:@"order_id"];
+                     [weakSelf.bidDict setObject:bid forKey:orderIdString];
                  }
              }
 
@@ -334,6 +326,9 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 
              if (comments.count > 0)
              {
+                 NSDictionary *lastComment = [comments lastObject];
+                 weakSelf.maxCommentId = [[lastComment objectForKey:@"id"] unsignedIntegerValue];
+NSLog(@"maxCommentId: %tu", weakSelf.maxCommentId);
                  // comments are in ASC order, so iterate it forward and append each comment to its array
                  for (NSDictionary *comment in comments)
                  {
@@ -360,7 +355,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 - (NSDictionary *)_httpCommentsParameters
 {
     NSMutableArray *orderIds = [NSMutableArray new];
-    for (NSDictionary *order in [self.orderList objectEnumerator])
+    for (NSDictionary *order in self.orderList)
     {
         NSString *orderId = [order objectForKey:@"id"];
         [orderIds addObject:orderId];
@@ -368,7 +363,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
     
     NSMutableDictionary *parameters = [NSMutableDictionary new];
     
-    [parameters setValue:@(self.maxCommentsId) forKey:@"after"];
+    [parameters setValue:@(self.maxCommentId) forKey:@"after"];
     [parameters setValue:orderIds forKey:@"order_id"];
     
     return parameters;
