@@ -90,6 +90,12 @@
 #define COCOAPODS_VERSION_MINOR_RKDropdownAlert 1
 #define COCOAPODS_VERSION_PATCH_RKDropdownAlert 1
 
+// TTTAttributedLabel
+#define COCOAPODS_POD_AVAILABLE_TTTAttributedLabel
+#define COCOAPODS_VERSION_MAJOR_TTTAttributedLabel 1
+#define COCOAPODS_VERSION_MINOR_TTTAttributedLabel 13
+#define COCOAPODS_VERSION_PATCH_TTTAttributedLabel 3
+
 // UIView+Positioning
 #define COCOAPODS_POD_AVAILABLE_UIView_Positioning
 #define COCOAPODS_VERSION_MAJOR_UIView_Positioning 1

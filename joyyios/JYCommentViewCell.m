@@ -8,15 +8,15 @@
 
 #import "JYCommentViewCell.h"
 
-static const CGFloat kMinHeight = 20;
+static const CGFloat kMinHeight = 10;
 static const CGFloat kLeftMargin = 8;
 static const CGFloat kRightMargin = 8;
-static const CGFloat kTopMargin = 8;
-static const CGFloat kFontSizeComment = 18.0f;
+static const CGFloat kTopMargin = 3;
+static const CGFloat kFontSizeComment = 17.0f;
 
 @interface JYCommentViewCell ()
 
-@property(nonatomic) UILabel *commentLabel;
+@property(nonatomic) TTTAttributedLabel *commentLabel;
 
 @end
 
@@ -28,7 +28,6 @@ static const CGFloat kFontSizeComment = 18.0f;
     CGFloat screenWidth = CGRectGetWidth([[UIScreen mainScreen] applicationFrame]);
     CGSize maximumSize = CGSizeMake(screenWidth - kLeftMargin - kRightMargin, 10000);
 
-    NSString *text = [[self class ] _textOf:comment];
     static UILabel *dummyLabel = nil;
     if (!dummyLabel)
     {
@@ -37,31 +36,47 @@ static const CGFloat kFontSizeComment = 18.0f;
         dummyLabel.numberOfLines = 0;
         dummyLabel.lineBreakMode = NSLineBreakByWordWrapping;
     }
-    dummyLabel.text = text;
+    dummyLabel.text = [[self class ] _textOf:comment];
     CGSize expectSize = [dummyLabel sizeThatFits:maximumSize];
-    CGFloat height = fmax(expectSize.height, kMinHeight);
+    CGFloat height = expectSize.height + kTopMargin;
 
     return height;
 }
 
 + (NSString *)_textOf:(NSDictionary *)comment
 {
-    NSString *fromUser = [comment objectForKey:@"username"];
-    NSString *toUser = [comment objectForKey:@"to_username"];
+    NSString *fromUsername = [comment objectForKey:@"username"];
+    NSString *toUsername = [comment objectForKey:@"to_username"];
     NSString *contents = [comment objectForKey:@"contents"];
+    NSString *reply = NSLocalizedString(@"reply", nil);
 
-    if (toUser)
+    if ([toUsername isKindOfClass:[NSNull class]])
     {
-        return [NSString stringWithFormat:@"%@ @%@ %@", fromUser, toUser, contents];
+        return [NSString stringWithFormat:@"%@: %@", fromUsername, contents];
     }
     else
     {
-        return [NSString stringWithFormat:@"%@ %@", fromUser, contents];
+        return [NSString stringWithFormat:@"%@ %@ @%@: %@", fromUsername, reply, toUsername, contents];
     }
 }
 
 - (void)presentComment:(NSDictionary *)comment
 {
+    NSString *labelText = [[self class ] _textOf:comment];
+    self.commentLabel.text = labelText;
+
+    NSString *fromUsername = [comment objectForKey:@"username"];
+    NSRange range = [labelText rangeOfString:fromUsername];
+    NSString *url = [NSString stringWithFormat:@"user://%@", fromUsername];
+    [self.commentLabel addLinkToURL:[NSURL URLWithString:url] withRange:range];
+
+    NSString *toUsername = [comment objectForKey:@"to_username"];
+    if (![toUsername isKindOfClass:[NSNull class]])
+    {
+        range = [labelText rangeOfString:[NSString stringWithFormat:@"@%@", toUsername]];
+        url = [NSString stringWithFormat:@"user://%@", toUsername];
+        [self.commentLabel addLinkToURL:[NSURL URLWithString:url] withRange:range];
+    }
 }
 
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
@@ -89,15 +104,31 @@ static const CGFloat kFontSizeComment = 18.0f;
 {
     CGFloat screenWidth = CGRectGetWidth([[UIScreen mainScreen] applicationFrame]);
     CGRect frame = CGRectMake(kLeftMargin, kTopMargin, screenWidth- kLeftMargin - kRightMargin, kMinHeight);
-    self.commentLabel = [[UILabel alloc] initWithFrame:frame];
+    self.commentLabel = [[TTTAttributedLabel alloc] initWithFrame:frame];
+    self.commentLabel.delegate = self;
+
     self.commentLabel.backgroundColor = JoyyWhite;
-    self.commentLabel.font = [UIFont systemFontOfSize:15.0f];
+    self.commentLabel.font = [UIFont systemFontOfSize:kFontSizeComment];
     self.commentLabel.lineBreakMode = NSLineBreakByWordWrapping;
     self.commentLabel.numberOfLines = 0;
-    self.commentLabel.textColor = FlatGrayDark;
+    self.commentLabel.textColor = FlatBlack;
     self.commentLabel.textAlignment = NSTextAlignmentLeft;
 
+    self.commentLabel.linkAttributes =  @{ (id)kCTForegroundColorAttributeName: FlatSkyBlueDark,
+                                           (id)kCTUnderlineStyleAttributeName : [NSNumber numberWithInt:NSUnderlineStyleNone] };
+
     [self addSubview:self.commentLabel];
+}
+
+# pragma -mark TTTAttributedLabelDelegate
+
+- (void)attributedLabel:(TTTAttributedLabel *)label didSelectLinkWithURL:(NSURL *)url
+{
+    if ([[url scheme] hasPrefix:@"user"])
+    {
+        NSLog(@"tap on username = %@", [url host]);
+        // TODO: make the viewController a delegate and call it delegate method to present user profile view
+    }
 }
 
 @end

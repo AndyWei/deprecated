@@ -6,7 +6,9 @@
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
-@interface JYCommentViewCell : UITableViewCell
+#import <TTTAttributedLabel/TTTAttributedLabel.h>
+
+@interface JYCommentViewCell : UITableViewCell <TTTAttributedLabelDelegate>
 
 + (CGFloat)cellHeightForComment:(NSDictionary *)comment;
 - (void)presentComment:(NSDictionary *)comment;
