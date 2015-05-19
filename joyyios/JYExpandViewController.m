@@ -37,9 +37,11 @@
     self.titleLabel.textAlignment = NSTextAlignmentCenter;
     self.navigationItem.titleView = self.titleLabel;
 
-    UITapGestureRecognizer * tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(_scrollToTop)];
-    self.navigationItem.titleView.userInteractionEnabled = YES;
-    [self.navigationItem.titleView addGestureRecognizer:tapGesture];
+    // Temporarily disable auto expand
+    // TODO : Enable and make auto expand stable
+//    UITapGestureRecognizer * tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(_scrollToTop)];
+//    self.navigationItem.titleView.userInteractionEnabled = YES;
+//    [self.navigationItem.titleView addGestureRecognizer:tapGesture];
 }
 
 - (void)didReceiveMemoryWarning
@@ -80,6 +82,9 @@
 
 #pragma mark - UIScrollViewDelegate
 
+// Temporarily disable auto expand
+// TODO : Enable and make auto expand stable
+/*
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
 {
     self.isDragging = YES;
@@ -135,7 +140,7 @@
         self.navigationController.navigationBar.frame = navBarFrame;
     }
 }
-
+*/
 #pragma mark - Helpers
 
 - (BOOL)_reachedBottomOfView:(UIScrollView *)scrollView

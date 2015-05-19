@@ -12,7 +12,7 @@ static const CGFloat kMinHeight = 10;
 static const CGFloat kLeftMargin = 8;
 static const CGFloat kRightMargin = 8;
 static const CGFloat kTopMargin = 3;
-static const CGFloat kFontSizeComment = 17.0f;
+static const CGFloat kFontSizeComment = 16.0f;
 
 @interface JYCommentViewCell ()
 
@@ -63,13 +63,27 @@ static const CGFloat kFontSizeComment = 17.0f;
 - (void)presentComment:(NSDictionary *)comment
 {
     NSString *labelText = [[self class ] _textOf:comment];
-    self.commentLabel.text = labelText;
-
     NSString *fromUsername = [comment objectForKey:@"username"];
     NSRange range = [labelText rangeOfString:fromUsername];
+
+    // Bold the username
+    [self.commentLabel setText:labelText afterInheritingLabelAttributesAndConfiguringWithBlock:^NSMutableAttributedString *(NSMutableAttributedString *mutableAttributedString) {
+
+        UIFont *boldSystemFont = [UIFont boldSystemFontOfSize:kFontSizeComment];
+        CTFontRef boldFont = CTFontCreateWithName((__bridge CFStringRef)boldSystemFont.fontName, boldSystemFont.pointSize, NULL);
+        if (boldFont)
+        {
+            [mutableAttributedString addAttribute:(NSString *)kCTFontAttributeName value:(__bridge id)boldFont range:range];
+            CFRelease(boldFont);
+        }
+        return mutableAttributedString;
+    }];
+
+    // Add link to username
     NSString *url = [NSString stringWithFormat:@"user://%@", fromUsername];
     [self.commentLabel addLinkToURL:[NSURL URLWithString:url] withRange:range];
 
+    // Add link to the to_username
     NSString *toUsername = [comment objectForKey:@"to_username"];
     if (![toUsername isKindOfClass:[NSNull class]])
     {

@@ -11,18 +11,15 @@
 @interface JYOrderItemView : UIView
 
 + (CGFloat)viewHeightForText:(NSString *)text;
++ (CGFloat)viewHeightForText:(NSString *)text withBid:(BOOL)bidded;
+
 - (void)presentOrder:(NSDictionary *)order;
+- (void)presentOrder:(NSDictionary *)order andBid:(NSDictionary *)bid;
 
-- (void)setStartDateTime:(NSDate *)date;
-- (void)setCreateTime:(NSString *)dateString;
-- (void)setDistanceFromPoint:(CLLocationCoordinate2D )point;
+@property(nonatomic) BOOL tinyLabelsHidden;
+@property(nonatomic) BOOL bidLabelHidden;
 
-@property(nonatomic) BOOL tinylabelsHidden;
 @property(nonatomic) UIColor *viewColor;
-@property(nonatomic) UILabel *bodyLabel;
-@property(nonatomic) UILabel *cityLabel;
 @property(nonatomic) UILabel *commentsLabel;
-@property(nonatomic) UILabel *priceLabel;
-@property(nonatomic) UILabel *titleLabel;
 
 @end

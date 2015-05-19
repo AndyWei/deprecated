@@ -83,6 +83,9 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
     [self.refreshControl addTarget:self action:@selector(_fetchOrders) forControlEvents:UIControlEventValueChanged];
 
     tableViewController.refreshControl = self.refreshControl;
+
+    // Enable scroll to top
+    self.scrollView = self.tableView;
 }
 
 - (NSDictionary *)_orderOfId:(NSUInteger)targetOrderId
@@ -167,18 +170,26 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 {
     NSDictionary *order = (NSDictionary *)self.orderList[section];
     NSString *orderBodyText = [order objectForKey:@"note"];
-    return [JYOrderItemView viewHeightForText:orderBodyText];
+
+    NSString *orderId = [order objectForKey:@"id"];
+    NSDictionary *bid = [self.bidDict objectForKey:orderId];
+    return [JYOrderItemView viewHeightForText:orderBodyText withBid:(bid != NULL)];
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     NSDictionary *order = (NSDictionary *)self.orderList[section];
+    NSString *orderId = [order objectForKey:@"id"];
+    NSDictionary *bid = [self.bidDict objectForKey:orderId];
+
     NSString *orderBodyText = [order objectForKey:@"note"];
-    CGFloat height = [JYOrderItemView viewHeightForText:orderBodyText];
+    CGFloat height = [JYOrderItemView viewHeightForText:orderBodyText withBid:(bid != NULL)];
 
     JYOrderItemView *itemView = [[JYOrderItemView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(tableView.frame), height)];
-    itemView.tinylabelsHidden = NO;
-    [itemView presentOrder:order];
+    itemView.tinyLabelsHidden = NO;
+    itemView.bidLabelHidden = (bid == NULL);
+    itemView.viewColor = FlatWhite;
+    [itemView presentOrder:order andBid:bid];
 
     return itemView;
 }
@@ -321,7 +332,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
       parameters:[self _httpCommentsParameters]
          success:^(AFHTTPRequestOperation *operation, id responseObject) {
 
-             NSLog(@"comments/of/orders fetch success responseObject: %@", responseObject);
+//             NSLog(@"comments/of/orders fetch success responseObject: %@", responseObject);
              NSArray *comments = (NSArray *)responseObject;
 
              if (comments.count > 0)

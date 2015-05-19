@@ -10,6 +10,7 @@
 #import "JYDateView.h"
 #import "JYOrderItemView.h"
 
+static const CGFloat kBidLabelHeight = 40.0f;
 static const CGFloat kBodyLabelMinHeight = 53.0f;
 static const CGFloat kCityLabelWidth = 80.0f;
 static const CGFloat kDistanceLabelWidth = 35.0f;
@@ -31,16 +32,22 @@ static const CGFloat kTopMargin = 8.0f;
 @interface JYOrderItemView ()
 
 @property(nonatomic) JYDateView *startDateView;
+@property(nonatomic) UILabel *bidLabel;
+@property(nonatomic) UILabel *bodyLabel;
+@property(nonatomic) UILabel *cityLabel;
+@property(nonatomic) UILabel *distanceLabel;
+@property(nonatomic) UILabel *priceLabel;
 @property(nonatomic) UILabel *startTimeLabel;
 @property(nonatomic) UILabel *timeLabel;
-@property(nonatomic) UILabel *distanceLabel;
+@property(nonatomic) UILabel *titleLabel;
+@property(nonatomic) UIView *bidBackground;
 
 @end
 
 
 @implementation JYOrderItemView
 
-+ (CGFloat)viewHeightForText:(NSString *)text
++ (CGFloat)bodyLabelHeightForText:(NSString *)text
 {
     CGFloat bodyLabelX = kTextLeftMargin + kLeftMargin + kStartDateViewWidth;
     CGFloat bodyLabelWidth = CGRectGetWidth([[UIScreen mainScreen] applicationFrame]) - bodyLabelX - kRightMargin;
@@ -58,7 +65,21 @@ static const CGFloat kTopMargin = 8.0f;
     CGSize expectSize = [dummyLabel sizeThatFits:maximumSize];
     CGFloat bodyLabelHeight = fmax(expectSize.height, kBodyLabelMinHeight);
 
+    return bodyLabelHeight;
+}
+
++ (CGFloat)viewHeightForText:(NSString *)text
+{
+    CGFloat bodyLabelHeight = [JYOrderItemView bodyLabelHeightForText:text];
+
     return kTopMargin + kTitleLabelHeight + bodyLabelHeight + kTinyLabelHeight;
+}
+
++ (CGFloat)viewHeightForText:(NSString *)text withBid:(BOOL)bidded
+{
+    CGFloat height = [JYOrderItemView viewHeightForText:text];
+    height += bidded ? kBidLabelHeight : 0;
+    return height;
 }
 
 - (instancetype)initWithFrame:(CGRect)frame
@@ -66,21 +87,28 @@ static const CGFloat kTopMargin = 8.0f;
     self = [super initWithFrame:frame];
     if (self)
     {
-        self.opaque = YES;
-        self.backgroundColor = FlatWhite;
-        self.tinylabelsHidden = NO;
-
-        [self _createStartDateView];
-        [self _createStartTimeLabel];
-        [self _createTitleLabel];
-        [self _createBodyLabel];
-        [self _createPriceLabel];
-        [self _createCityLabel];
-        [self _createDistanceLabel];
-        [self _createTimeLabel];
-        [self _createCommentsLabel];
+        [self _commonInit];
     }
     return self;
+}
+
+- (void)_commonInit
+{
+    self.opaque = YES;
+    self.backgroundColor = FlatWhite;
+    self.tinyLabelsHidden = NO;
+    self.bidLabelHidden = YES;
+
+    [self _createStartDateView];
+    [self _createStartTimeLabel];
+    [self _createTitleLabel];
+    [self _createBodyLabel];
+    [self _createPriceLabel];
+    [self _createCityLabel];
+    [self _createDistanceLabel];
+    [self _createTimeLabel];
+    [self _createCommentsLabel];
+    [self _createbidLabel];
 }
 
 - (void)layoutSubviews
@@ -89,13 +117,20 @@ static const CGFloat kTopMargin = 8.0f;
 
     self.bodyLabel.height = self.height - (kTopMargin + kTitleLabelHeight + kTinyLabelHeight);
 
-    if (self.tinylabelsHidden)
+    CGFloat bidLabelHeight = self.bidLabelHidden ? 0 : kBidLabelHeight;
+    self.bodyLabel.height -= bidLabelHeight;
+    self.bidBackground.height = self.bidLabel.height = bidLabelHeight;
+
+    if (self.tinyLabelsHidden)
     {
-        self.cityLabel.height = self.distanceLabel.height = self.timeLabel.height = 0;
+        self.cityLabel.height = self.distanceLabel.height = self.timeLabel.height = self.commentsLabel.height = 0;
+        self.bidBackground.y = CGRectGetMaxY(self.bodyLabel.frame);
     }
     else
     {
         self.cityLabel.y = self.distanceLabel.y = self.timeLabel.y = self.commentsLabel.y = CGRectGetMaxY(self.bodyLabel.frame);
+        self.cityLabel.height = self.distanceLabel.height = self.timeLabel.height = self.commentsLabel.height = kTinyLabelHeight;
+        self.bidBackground.y = CGRectGetMaxY(self.cityLabel.frame);
     }
 }
 
@@ -117,27 +152,37 @@ static const CGFloat kTopMargin = 8.0f;
     // start date and time
     NSTimeInterval startTime = [[order objectForKey:@"starttime"] integerValue];
 
-    [self setStartDateTime:[NSDate dateWithTimeIntervalSinceReferenceDate:startTime]];
+    [self _setStartDateTime:[NSDate dateWithTimeIntervalSinceReferenceDate:startTime]];
 
     // price
-    NSUInteger price = [[order objectForKey:@"price"] integerValue];
+    NSUInteger price = [[order objectForKey:@"price"] unsignedIntegerValue];
     self.priceLabel.text = [NSString stringWithFormat:@"$%tu", price];
 
     // create time
-    [self setCreateTime:[order objectForKey:@"created_at"]];
+    [self _setCreateTime:[order objectForKey:@"created_at"]];
 
     // distance
     CLLocationDegrees lat = [[order objectForKey:@"startpointlat"] doubleValue];
     CLLocationDegrees lon = [[order objectForKey:@"startpointlon"] doubleValue];
     CLLocationCoordinate2D point = CLLocationCoordinate2DMake(lat, lon);
-    [self setDistanceFromPoint:point];
+    [self _setDistanceFromPoint:point];
 
     self.titleLabel.text = [order objectForKey:@"title"];
     self.bodyLabel.text = [order objectForKey:@"note"];
     self.cityLabel.text = [order objectForKey:@"startcity"];
+    self.bidLabel.height = self.bidLabelHidden ? 0 : kBidLabelHeight;
 }
 
-- (void)setStartDateTime:(NSDate *)date
+- (void)presentOrder:(NSDictionary *)order andBid:(NSDictionary *)bid
+{
+    [self presentOrder:order];
+    NSUInteger bidPrice = [[bid objectForKey:@"price"] unsignedIntegerValue];
+    NSString *bidPrefix = NSLocalizedString(@"You asked for", nil);
+    self.bidLabel.text = [NSString stringWithFormat:@"%@ $%tu  ", bidPrefix, bidPrice];
+    self.bidLabel.backgroundColor = FlatLime;
+}
+
+- (void)_setStartDateTime:(NSDate *)date
 {
     NSDateFormatter* dateFormatter = [NSDateFormatter new];
     [dateFormatter setTimeZone:[NSTimeZone systemTimeZone]];
@@ -160,7 +205,7 @@ static const CGFloat kTopMargin = 8.0f;
     self.startTimeLabel.text = [dateFormatter stringFromDate:date];
 }
 
-- (void)setCreateTime:(NSString *)dateString
+- (void)_setCreateTime:(NSString *)dateString
 {
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSSZ"];
@@ -202,7 +247,7 @@ static const CGFloat kTopMargin = 8.0f;
     self.timeLabel.text = [NSString stringWithFormat:@"%d %@ %@", numberOfSeconds, seconds, ago];
 }
 
-- (void)setDistanceFromPoint:(CLLocationCoordinate2D )point
+- (void)_setDistanceFromPoint:(CLLocationCoordinate2D )point
 {
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
 
@@ -308,6 +353,23 @@ static const CGFloat kTopMargin = 8.0f;
     CGFloat width = CGRectGetWidth([[UIScreen mainScreen] applicationFrame]) - x - kRightMargin;
     self.commentsLabel.frame = CGRectMake(x, 0, width, kTinyLabelHeight);
     self.commentsLabel.textColor = FlatGrayDark;
+}
+
+- (void)_createbidLabel
+{
+    CGFloat width = CGRectGetWidth([[UIScreen mainScreen] applicationFrame]);
+    self.bidBackground = [[UIView alloc] initWithFrame:CGRectMake(0, 0, width, kBidLabelHeight)];
+    self.bidBackground.backgroundColor = FlatLime;
+    self.bidBackground.opaque = YES;
+
+    self.bidLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, width - kRightMargin, kBidLabelHeight)];
+    self.bidLabel.font = [UIFont systemFontOfSize:kFontSizeBody];
+    self.bidLabel.textAlignment = NSTextAlignmentRight;
+    self.bidLabel.textColor = FlatBlack;
+    self.bidLabel.opaque = YES;
+
+    [self.bidBackground addSubview:self.bidLabel];
+    [self addSubview:self.bidBackground];
 }
 
 - (UILabel *)_createLabel
