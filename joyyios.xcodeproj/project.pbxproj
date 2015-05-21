@@ -89,6 +89,8 @@
 		D6B2F0861AD5E165009601B0 /* JYPlacesViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B2F0841AD5E165009601B0 /* JYPlacesViewCell.m */; };
 		D6B2F08D1AD714DA009601B0 /* JYOrder.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B2F08C1AD714DA009601B0 /* JYOrder.m */; };
 		D6B2F08E1AD714DA009601B0 /* JYOrder.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B2F08C1AD714DA009601B0 /* JYOrder.m */; };
+		D6C82B551B0D9FAE00876F57 /* JYCommentsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6C82B541B0D9FAE00876F57 /* JYCommentsViewController.m */; };
+		D6C82B561B0D9FAE00876F57 /* JYCommentsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6C82B541B0D9FAE00876F57 /* JYCommentsViewController.m */; };
 		D6F4A0511AF6A156001A3C89 /* AppConst.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F4A0501AF6A156001A3C89 /* AppConst.m */; };
 		D6F4A0521AF6A156001A3C89 /* AppConst.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F4A0501AF6A156001A3C89 /* AppConst.m */; };
 /* End PBXBuildFile section */
@@ -195,6 +197,8 @@
 		D6B2F0841AD5E165009601B0 /* JYPlacesViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYPlacesViewCell.m; sourceTree = "<group>"; };
 		D6B2F08B1AD714DA009601B0 /* JYOrder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYOrder.h; sourceTree = "<group>"; };
 		D6B2F08C1AD714DA009601B0 /* JYOrder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYOrder.m; sourceTree = "<group>"; };
+		D6C82B531B0D9FAE00876F57 /* JYCommentsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYCommentsViewController.h; sourceTree = "<group>"; };
+		D6C82B541B0D9FAE00876F57 /* JYCommentsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYCommentsViewController.m; sourceTree = "<group>"; };
 		D6F4A04F1AF6A12D001A3C89 /* AppConst.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppConst.h; sourceTree = "<group>"; };
 		D6F4A0501AF6A156001A3C89 /* AppConst.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppConst.m; sourceTree = "<group>"; };
 		F67CA15F6F0CAF970CBFB660 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
@@ -250,6 +254,8 @@
 				D63F0D8B1ACBBF1F0067C5EE /* JYCollectionViewCell.m */,
 				D65F37441B04807D007B534C /* JYCommentViewCell.h */,
 				D65F37451B04807D007B534C /* JYCommentViewCell.m */,
+				D6C82B531B0D9FAE00876F57 /* JYCommentsViewController.h */,
+				D6C82B541B0D9FAE00876F57 /* JYCommentsViewController.m */,
 				D689ED601AE01F9C00CB4D2B /* JYDateView.h */,
 				D689ED611AE01F9C00CB4D2B /* JYDateView.m */,
 				D6B2F07B1AD44370009601B0 /* JYExpandViewController.h */,
@@ -616,6 +622,7 @@
 				D69202B51AC4C7C0001C1C3D /* AppDelegate.m in Sources */,
 				D63F0DA21ACD08260067C5EE /* UIColor+Joyy.m in Sources */,
 				D69202B81AC4C7C0001C1C3D /* JYOrderCategoryCollectionViewController.m in Sources */,
+				D6C82B551B0D9FAE00876F57 /* JYCommentsViewController.m in Sources */,
 				D6B2F05B1ACE630F009601B0 /* JYAutoCompleteTextField.m in Sources */,
 				D63F0D711AC9EC060067C5EE /* JYUser.m in Sources */,
 				D63F0DAC1ACE56E30067C5EE /* JYPinchGestureRecognizer.m in Sources */,
@@ -680,6 +687,7 @@
 				D63B69B31AC51D61005600A9 /* JYSignBaseViewController.m in Sources */,
 				D6348D301ADB4DD60002BC35 /* NSString+Joyy.m in Sources */,
 				D63B69B71AC53BB4005600A9 /* JYFloatLabeledTextField.m in Sources */,
+				D6C82B561B0D9FAE00876F57 /* JYCommentsViewController.m in Sources */,
 				D6348D381ADB7ABC0002BC35 /* NSMutableDictionary+Joyy.m in Sources */,
 				D63F0DAD1ACE56E30067C5EE /* JYPinchGestureRecognizer.m in Sources */,
 			);

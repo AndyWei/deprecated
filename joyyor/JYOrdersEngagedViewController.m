@@ -10,9 +10,10 @@
 #import <KVNProgress/KVNProgress.h>
 #import <RKDropdownAlert/RKDropdownAlert.h>
 
-#import "JYOrdersEngagedViewController.h"
 #import "JYCommentViewCell.h"
+#import "JYCommentsViewController.h"
 #import "JYOrderItemView.h"
+#import "JYOrdersEngagedViewController.h"
 #import "JYUser.h"
 
 
@@ -86,6 +87,16 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 
     // Enable scroll to top
     self.scrollView = self.tableView;
+}
+
+- (void)_presentCreateCommentViewWithOrder:(NSDictionary *)order comments:(NSArray *)comments orginalComment:(NSDictionary *)origin
+{
+    NSString *orderId = [order objectForKey:@"id"];
+    NSDictionary *bid = [self.bidDict objectForKey:orderId];
+
+    JYCommentsViewController *viewController = [[JYCommentsViewController alloc] initWithOrder:order bid:bid comments:comments];
+    viewController.originalComment = origin;
+    [self.navigationController pushViewController:viewController animated:YES];
 }
 
 - (NSDictionary *)_orderOfId:(NSUInteger)targetOrderId
@@ -163,7 +174,10 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-
+    NSDictionary *order = self.orderList[indexPath.section];
+    NSArray *comments = self.commentMatrix[indexPath.section];
+    NSDictionary *orginalComment = comments[indexPath.row];
+    [self _presentCreateCommentViewWithOrder:order comments:comments orginalComment:orginalComment];
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section

@@ -11,6 +11,7 @@
 		D65F37401AFEF868007B534C /* JYOrderViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D65F373F1AFEF868007B534C /* JYOrderViewCell.m */; };
 		D65F37431B04786A007B534C /* JYOrdersEngagedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D65F37421B04786A007B534C /* JYOrdersEngagedViewController.m */; };
 		D65F374A1B0485A7007B534C /* JYCommentViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D65F37491B0485A7007B534C /* JYCommentViewCell.m */; };
+		D6C82B591B0DA5CE00876F57 /* JYCommentsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6C82B581B0DA5CE00876F57 /* JYCommentsViewController.m */; };
 		D6F49F891AF595F2001A3C89 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F49F881AF595F2001A3C89 /* main.m */; };
 		D6F49F8C1AF595F2001A3C89 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F49F8B1AF595F2001A3C89 /* AppDelegate.m */; };
 		D6F49F971AF595F2001A3C89 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D6F49F961AF595F2001A3C89 /* Images.xcassets */; };
@@ -62,6 +63,8 @@
 		D65F37421B04786A007B534C /* JYOrdersEngagedViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYOrdersEngagedViewController.m; sourceTree = "<group>"; };
 		D65F37481B0485A7007B534C /* JYCommentViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JYCommentViewCell.h; path = joyyios/JYCommentViewCell.h; sourceTree = SOURCE_ROOT; };
 		D65F37491B0485A7007B534C /* JYCommentViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JYCommentViewCell.m; path = joyyios/JYCommentViewCell.m; sourceTree = SOURCE_ROOT; };
+		D6C82B571B0DA5CE00876F57 /* JYCommentsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JYCommentsViewController.h; path = joyyios/JYCommentsViewController.h; sourceTree = SOURCE_ROOT; };
+		D6C82B581B0DA5CE00876F57 /* JYCommentsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JYCommentsViewController.m; path = joyyios/JYCommentsViewController.m; sourceTree = SOURCE_ROOT; };
 		D6F49F831AF595F2001A3C89 /* joyyor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = joyyor.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D6F49F871AF595F2001A3C89 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D6F49F881AF595F2001A3C89 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -272,6 +275,8 @@
 				D6F49FBB1AF5DB4D001A3C89 /* JYButton.m */,
 				D6F49FBC1AF5DB4D001A3C89 /* JYCollectionViewCell.h */,
 				D6F49FBD1AF5DB4D001A3C89 /* JYCollectionViewCell.m */,
+				D6C82B571B0DA5CE00876F57 /* JYCommentsViewController.h */,
+				D6C82B581B0DA5CE00876F57 /* JYCommentsViewController.m */,
 				D6F49FBE1AF5DB4D001A3C89 /* JYDateView.h */,
 				D6F49FBF1AF5DB4D001A3C89 /* JYDateView.m */,
 				D6F49FC01AF5DB4D001A3C89 /* JYExpandViewController.h */,
@@ -494,6 +499,7 @@
 				D6F4A0381AF5DB4D001A3C89 /* UIImageEffects.m in Sources */,
 				D6F4A0161AF5DB4D001A3C89 /* JYPinAnnotationView.m in Sources */,
 				D6F4A0551AF6D188001A3C89 /* JYOrdersTodoViewController.m in Sources */,
+				D6C82B591B0DA5CE00876F57 /* JYCommentsViewController.m in Sources */,
 				D6F4A0141AF5DB4D001A3C89 /* JYPanGestureRecognizer.m in Sources */,
 				D6F4A0241AF5DB4D001A3C89 /* JYSignBaseViewController.m in Sources */,
 				D6F4A0221AF5DB4D001A3C89 /* JYServiceCategory.m in Sources */,
