@@ -6,7 +6,9 @@
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
-@interface JYCommentsViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
+#import "SLKTextViewController.h"
+
+@interface JYCommentsViewController : SLKTextViewController
 
 @property(nonatomic, copy) NSDictionary *originalComment;
 

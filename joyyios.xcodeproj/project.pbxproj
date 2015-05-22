@@ -91,6 +91,8 @@
 		D6B2F08E1AD714DA009601B0 /* JYOrder.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B2F08C1AD714DA009601B0 /* JYOrder.m */; };
 		D6C82B551B0D9FAE00876F57 /* JYCommentsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6C82B541B0D9FAE00876F57 /* JYCommentsViewController.m */; };
 		D6C82B561B0D9FAE00876F57 /* JYCommentsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6C82B541B0D9FAE00876F57 /* JYCommentsViewController.m */; };
+		D6C82B5C1B0EFDEA00876F57 /* JYCommentTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = D6C82B5B1B0EFDEA00876F57 /* JYCommentTextView.m */; };
+		D6C82B5D1B0EFDEA00876F57 /* JYCommentTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = D6C82B5B1B0EFDEA00876F57 /* JYCommentTextView.m */; };
 		D6F4A0511AF6A156001A3C89 /* AppConst.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F4A0501AF6A156001A3C89 /* AppConst.m */; };
 		D6F4A0521AF6A156001A3C89 /* AppConst.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F4A0501AF6A156001A3C89 /* AppConst.m */; };
 /* End PBXBuildFile section */
@@ -199,6 +201,8 @@
 		D6B2F08C1AD714DA009601B0 /* JYOrder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYOrder.m; sourceTree = "<group>"; };
 		D6C82B531B0D9FAE00876F57 /* JYCommentsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYCommentsViewController.h; sourceTree = "<group>"; };
 		D6C82B541B0D9FAE00876F57 /* JYCommentsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYCommentsViewController.m; sourceTree = "<group>"; };
+		D6C82B5A1B0EFDEA00876F57 /* JYCommentTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYCommentTextView.h; sourceTree = "<group>"; };
+		D6C82B5B1B0EFDEA00876F57 /* JYCommentTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYCommentTextView.m; sourceTree = "<group>"; };
 		D6F4A04F1AF6A12D001A3C89 /* AppConst.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppConst.h; sourceTree = "<group>"; };
 		D6F4A0501AF6A156001A3C89 /* AppConst.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppConst.m; sourceTree = "<group>"; };
 		F67CA15F6F0CAF970CBFB660 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
@@ -252,6 +256,8 @@
 				D63F0D581AC7CFF20067C5EE /* JYButton.m */,
 				D63F0D8A1ACBBF1F0067C5EE /* JYCollectionViewCell.h */,
 				D63F0D8B1ACBBF1F0067C5EE /* JYCollectionViewCell.m */,
+				D6C82B5A1B0EFDEA00876F57 /* JYCommentTextView.h */,
+				D6C82B5B1B0EFDEA00876F57 /* JYCommentTextView.m */,
 				D65F37441B04807D007B534C /* JYCommentViewCell.h */,
 				D65F37451B04807D007B534C /* JYCommentViewCell.m */,
 				D6C82B531B0D9FAE00876F57 /* JYCommentsViewController.h */,
@@ -637,6 +643,7 @@
 				D65AFA751AEF5F3A007867D0 /* UIImageEffects.m in Sources */,
 				D69202B21AC4C7C0001C1C3D /* main.m in Sources */,
 				D63F0DA81ACDFD1D0067C5EE /* JYPinAnnotationView.m in Sources */,
+				D6C82B5C1B0EFDEA00876F57 /* JYCommentTextView.m in Sources */,
 				D6348D2F1ADB4DD60002BC35 /* NSString+Joyy.m in Sources */,
 				D63F0D9D1ACCEB420067C5EE /* JYServiceCategory.m in Sources */,
 				D63F0D551AC7ACB70067C5EE /* JYSignUpViewController.m in Sources */,
@@ -686,6 +693,7 @@
 				D65AFA741AEF5F3A007867D0 /* UICustomActionSheet.m in Sources */,
 				D63B69B31AC51D61005600A9 /* JYSignBaseViewController.m in Sources */,
 				D6348D301ADB4DD60002BC35 /* NSString+Joyy.m in Sources */,
+				D6C82B5D1B0EFDEA00876F57 /* JYCommentTextView.m in Sources */,
 				D63B69B71AC53BB4005600A9 /* JYFloatLabeledTextField.m in Sources */,
 				D6C82B561B0D9FAE00876F57 /* JYCommentsViewController.m in Sources */,
 				D6348D381ADB7ABC0002BC35 /* NSMutableDictionary+Joyy.m in Sources */,

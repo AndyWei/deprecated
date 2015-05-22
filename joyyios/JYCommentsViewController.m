@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
+#import "JYCommentTextView.h"
 #import "JYCommentViewCell.h"
 #import "JYCommentsViewController.h"
 #import "JYOrderItemView.h"
@@ -16,7 +17,6 @@
 @property(nonatomic, copy) NSDictionary *order;
 @property(nonatomic, copy) NSDictionary *bid;
 @property(nonatomic) NSMutableArray *commentList;
-@property(nonatomic) UITableView *tableView;
 
 @end
 
@@ -26,9 +26,10 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 
 - (instancetype)initWithOrder:(NSDictionary *)order bid:(NSDictionary *)bid comments:(NSArray *)commentList
 {
-    self = [super init];
+    self = [super initWithTableViewStyle:UITableViewStylePlain];
     if (self)
     {
+        [self registerClassForTextView:[JYCommentTextView class]];
         self.order = order;
         self.bid = bid;
         self.commentList = [NSMutableArray arrayWithArray:commentList];
@@ -36,12 +37,34 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
     return self;
 }
 
+- (BOOL)hidesBottomBarWhenPushed
+{
+    return YES;
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     self.title = NSLocalizedString(@"Comments", nil);
 
-    [self _createTableView];
+    self.bounces = YES;
+    self.shakeToClearEnabled = NO;
+    self.keyboardPanningEnabled = YES;
+    self.shouldScrollToBottomAfterKeyboardShows = NO;
+    self.inverted = NO;
+
+    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    [self.tableView registerClass:[JYCommentViewCell class] forCellReuseIdentifier:kCommentCellIdentifier];
+
+    [self.rightButton setTitle:NSLocalizedString(@"Send", nil) forState:UIControlStateNormal];
+
+    [self.textInputbar.editorTitle setTextColor:[UIColor darkGrayColor]];
+    [self.textInputbar.editortRightButton setTintColor:[UIColor colorWithRed:0.0/255.0 green:122.0/255.0 blue:255.0/255.0 alpha:1.0]];
+
+    self.textInputbar.autoHideRightButton = NO;
+    self.textInputbar.maxCharCount = 1000;
+
+    self.typingIndicatorView.canResignByTouch = YES;
 }
 
 - (void)didReceiveMemoryWarning
@@ -52,17 +75,6 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 - (void)dealloc
 {
 
-}
-
-- (void)_createTableView
-{
-    self.tableView = [[UITableView alloc] initWithFrame:self.view.frame style:UITableViewStylePlain];
-    self.tableView.separatorColor = ClearColor;
-    self.tableView.backgroundColor = JoyyWhite;
-    self.tableView.dataSource = self;
-    self.tableView.delegate = self;
-    [self.tableView registerClass:[JYCommentViewCell class] forCellReuseIdentifier:kCommentCellIdentifier];
-    [self.view addSubview:self.tableView];
 }
 
 #pragma mark - UITableViewDataSource
