@@ -4,7 +4,7 @@ CREATE TABLE reviews (
     reviewee_id    BIGINT        NOT NULL,  -- the id of the user who is reviewed
     order_id       BIGINT        NOT NULL,  -- the id of the order
     rating         NUMERIC(2,1)  NOT NULL,  -- the rating score
-    contents       TEXT                  ,
+    body           TEXT                  ,
     created_at     TIMESTAMPTZ   NOT NULL,
     updated_at     TIMESTAMPTZ   NOT NULL,
     deleted        BOOLEAN       NOT NULL DEFAULT false,

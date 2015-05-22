@@ -137,7 +137,7 @@ exports.register = function (server, options, next) {
                     is_from_joyyor: Joi.number().min(0).max(1),
                     is_to_joyyor: Joi.number().min(0).max(1),
                     to_username: Joi.string().token().max(50),
-                    contents: Joi.string().max(1000)
+                    body: Joi.string().max(1000)
                 }
             }
         },
@@ -167,10 +167,10 @@ internals.createCommentHandler = function (request, reply) {
             var queryConfig = {
                 name: 'comments_create',
                 text: 'INSERT INTO comments \
-                           (user_id, username, order_id, is_from_joyyor, to_username, contents, created_at, updated_at) VALUES \
+                           (user_id, username, order_id, is_from_joyyor, to_username, body, created_at, updated_at) VALUES \
                            ($1, $2, $3, $4, $5, $6, now(), now()) \
                            RETURNING id',
-                values: [userId, username, p.order_id, isFromJoyyor, p.to_username, p.contents]
+                values: [userId, username, p.order_id, isFromJoyyor, p.to_username, p.body]
             };
 
             request.pg.client.query(queryConfig, function (err, result) {
@@ -215,7 +215,7 @@ internals.createCommentHandler = function (request, reply) {
 
         // send notification to the to_user_id
         var app = isToJoyyor ? 'joyyor' : 'joyy';
-        var title = request.auth.credentials.username + ': ' + request.payload.contents;
+        var title = request.auth.credentials.username + ': ' + request.payload.body;
         Push.notify(app, p.to_user_id, title, title, function (error) {
 
             if (error) {

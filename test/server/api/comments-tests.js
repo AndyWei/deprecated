@@ -137,7 +137,7 @@ lab.experiment('Comments POST: ', function () {
                 is_from_joyyor: 0,
                 is_to_joyyor: 1,
                 to_username: 'andy',
-                contents: 'yes'
+                body: 'yes'
             },
             credentials: jack
         };

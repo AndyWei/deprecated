@@ -149,7 +149,7 @@ lab.experiment('Reviews POST: ', function () {
                 reviewee_id: '4',
                 order_id: '3',
                 rating: 5,
-                contents: 'I like his attitude@!!'
+                body: 'I like his attitude@!!'
             },
             credentials: jack
         };

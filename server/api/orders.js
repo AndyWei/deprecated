@@ -507,7 +507,7 @@ internals.getEngagedOrderIds = function (request, callback) {
                     return next(err);
                 }
 
-                next(null,  _.pluck(result.rows, 'order_id'));
+                next(null, _.pluck(result.rows, 'order_id'));
             });
         }]
     }, function (err, results) {
@@ -523,9 +523,7 @@ internals.getEngagedOrderIds = function (request, callback) {
         }
 
         console.info('cache_miss');
-        console.info('results.bidded = %j', results.bidded);
-        console.info('results.commented = %j', results.commented);
-        
+
         var orderIds = _.union(results.bidded, results.commented);
         callback(null, orderIds);
     });
