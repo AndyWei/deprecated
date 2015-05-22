@@ -59,12 +59,14 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
     [self.rightButton setTitle:NSLocalizedString(@"Send", nil) forState:UIControlStateNormal];
 
     [self.textInputbar.editorTitle setTextColor:[UIColor darkGrayColor]];
-    [self.textInputbar.editortRightButton setTintColor:[UIColor colorWithRed:0.0/255.0 green:122.0/255.0 blue:255.0/255.0 alpha:1.0]];
+    [self.textInputbar.editortRightButton setTintColor:FlatGreen];
 
     self.textInputbar.autoHideRightButton = NO;
     self.textInputbar.maxCharCount = 1000;
 
     self.typingIndicatorView.canResignByTouch = YES;
+
+    [self.textView becomeFirstResponder];
 }
 
 - (void)didReceiveMemoryWarning
@@ -110,7 +112,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section

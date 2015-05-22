@@ -178,6 +178,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
     NSArray *comments = self.commentMatrix[indexPath.section];
     NSDictionary *orginalComment = comments[indexPath.row];
     [self _presentCreateCommentViewWithOrder:order comments:comments orginalComment:orginalComment];
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section

@@ -30,7 +30,6 @@
 		19F97362A65B6955B49C6F64 /* XLFormRightDetailCell.h in Headers */ = {isa = PBXBuildFile; fileRef = B95742F3625A173856422CED /* XLFormRightDetailCell.h */; };
 		1AB95ABDDC96A4F9273F5FFE /* XLFormValidationStatus.h in Headers */ = {isa = PBXBuildFile; fileRef = 8781D9752CCA938CE886C0E7 /* XLFormValidationStatus.h */; };
 		1AE1EDCFB1E0AA0FCA631410 /* UIColor+CIELAB.h in Headers */ = {isa = PBXBuildFile; fileRef = BD6E6C816DF355AA306ADB19 /* UIColor+CIELAB.h */; };
-		1D3AA0668E86F841856AF469 /* SLKTextView.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E2EB5142E29D3A4F7EA2A12 /* SLKTextView.h */; };
 		1DEEA9EC6F353A35B849A157 /* MCSwipeTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 226F92BFFE3116315FDAD689 /* MCSwipeTableViewCell.m */; settings = {COMPILER_FLAGS = "-DOS_OBJECT_USE_OBJC=0"; }; };
 		1E16F0CE9DF820B91DDC469B /* UIActivityIndicatorView+AFNetworking.h in Headers */ = {isa = PBXBuildFile; fileRef = E24EBB5E9726161DAD8ACED4 /* UIActivityIndicatorView+AFNetworking.h */; };
 		1FAA574666E91FFDFCC04469 /* UIKit+AFNetworking.h in Headers */ = {isa = PBXBuildFile; fileRef = C3477DF76B90B3D236DD1F31 /* UIKit+AFNetworking.h */; };
@@ -1330,7 +1329,6 @@
 				490CA1BB949DC761763FED19 /* SLKTextInputbar.h in Headers */,
 				6E0CFEADF68463A8A4B357D5 /* SLKTextView+SLKAdditions.h in Headers */,
 				A0D2257DB84DECD7F2BD6B0B /* SLKTextView.h in Headers */,
-				1D3AA0668E86F841856AF469 /* SLKTextView.h in Headers */,
 				C848495BCA9EBEFA41B08B4B /* SLKTextViewController.h in Headers */,
 				78DF86A0127C3AB00B31FD24 /* SLKTypingIndicatorView.h in Headers */,
 				83C421C97940BAFEFCDEFCD0 /* SLKUIConstants.h in Headers */,
@@ -1665,7 +1663,7 @@
 		726DBCC9079C14A72563ED9D /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0510;
+				LastUpgradeCheck = 0620;
 			};
 			buildConfigurationList = B8EB3F549788DE2B734017FA /* Build configuration list for PBXProject "Pods" */;
 			compatibilityVersion = "Xcode 3.2";

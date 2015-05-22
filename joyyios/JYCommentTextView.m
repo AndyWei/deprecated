@@ -25,7 +25,7 @@
 
     self.backgroundColor = [UIColor whiteColor];
 
-    self.placeholder = NSLocalizedString(@"Comment:", nil);
+    self.placeholder = NSLocalizedString(@"Add comment:", nil);
     self.placeholderColor = [UIColor lightGrayColor];
     self.pastableMediaTypes = SLKPastableMediaTypeAll;
 
