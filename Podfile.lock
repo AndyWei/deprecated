@@ -27,6 +27,9 @@ PODS:
   - MCSwipeTableViewCell (2.1.2)
   - Onboard (2.1.1)
   - RKDropdownAlert (0.1.1)
+  - SlackTextViewController (1.5):
+    - SlackTextViewController/Additions (= 1.5)
+  - SlackTextViewController/Additions (1.5)
   - TTTAttributedLabel (1.13.3)
   - UIView+Positioning (1.1)
   - XLForm (2.2.0)
@@ -40,6 +43,7 @@ DEPENDENCIES:
   - MCSwipeTableViewCell
   - Onboard
   - RKDropdownAlert
+  - SlackTextViewController
   - TTTAttributedLabel
   - UIView+Positioning
   - XLForm
@@ -53,6 +57,7 @@ SPEC CHECKSUMS:
   MCSwipeTableViewCell: 0fc22bd3635b9b5f4ce08675218b0a7278b6440f
   Onboard: a305484bfcfa358bcfbd651ef32036fe0c58e9b7
   RKDropdownAlert: 3f663f1e852751ad37ce95ed1e8e2c6b9bfdc95b
+  SlackTextViewController: 4a1797ac2f3616dbd37435fc62da655e61399cdd
   TTTAttributedLabel: 6f3174aef8e738f44dff97c2eb7d8184f6ab6277
   UIView+Positioning: e93fe9e3186d1ed7d60e344aa12787911e902056
   XLForm: 799e61ef230f519914e722bf032b19a597223c19
