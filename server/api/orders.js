@@ -76,7 +76,7 @@ exports.register = function (server, options, next) {
                 name: 'orders_unpaid',
                 text: selectClause +
                       'WHERE id > $1 AND user_id = $2 AND status < 10 AND deleted = false \
-                       ORDER BY id DESC',
+                       ORDER BY id DESC LIMIT 200',
                 values: [request.query.after, userId]
             };
 
@@ -110,7 +110,7 @@ exports.register = function (server, options, next) {
                 name: 'orders_paid',
                 text: selectClause +
                       'WHERE user_id = $1 AND status = 10 AND deleted = false \
-                       ORDER BY id DESC',
+                       ORDER BY id DESC LIMIT 200',
                 values: [userId]
             };
 
@@ -144,7 +144,7 @@ exports.register = function (server, options, next) {
                 name: 'orders_won',
                 text: selectClause +
                       'WHERE winner_id IS NOT NULL AND winner_id = $1 AND deleted = false \
-                       ORDER BY id DESC',
+                       ORDER BY id DESC LIMIT 200',
                 values: [userId]
             };
 
@@ -478,7 +478,7 @@ internals.getEngagedOrderIds = function (request, callback) {
 
             var queryConfig = {
                 name: 'order_id_bidded',
-                text: 'SELECT order_id FROM bids WHERE bidder_id = $1 AND order_id > $2 AND deleted = false',
+                text: 'SELECT order_id FROM bids WHERE bidder_id = $1 AND order_id > $2 AND status = 0 AND deleted = false',
                 values: [userId, minOrderId]
             };
 

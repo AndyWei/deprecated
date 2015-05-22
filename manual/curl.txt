@@ -46,7 +46,7 @@ curl -i -X POST -H "Authorization: Bearer Xf0THaxxDlgZHiLcCRMa" --data "id=4" "h
 
 ## comments
 # POST a comment
-curl -i -X POST -H "Authorization: Bearer mQ7NsAEBGacx5PQVVmP7" --data "order_id=1&peer_id=3&is_from_joyyor=0&is_to_joyyor=1&to_username=andy&contents=yes!!" "http://localhost:8000/v1/comments"
+curl -i -X POST -H "Authorization: Bearer mQ7NsAEBGacx5PQVVmP7" --data "order_id=1&to_user_id=3&is_from_joyyor=0&is_to_joyyor=1&to_username=andy&contents=yes!!" "http://localhost:8000/v1/comments"
 
 
 # GET comments of orders

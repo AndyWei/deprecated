@@ -66,9 +66,9 @@ exports.register = function (server, options, next) {
         handler: function (request, reply) {
 
             var queryValues = [request.query.after];
-            var select = 'SELECT user_id, username, order_id, is_from_joyyor, to_username, contents FROM comments ';
+            var select = 'SELECT * FROM comments ';
             var where = 'WHERE id > $1 AND deleted = false AND order_id IN ' + Utils.parametersString(2, request.query.order_id.length);
-            var sort = 'ORDER BY id ASC';
+            var sort = 'ORDER BY id ASC LIMIT 200';
 
             queryValues = queryValues.concat(request.query.order_id);
 
@@ -133,7 +133,7 @@ exports.register = function (server, options, next) {
             validate: {
                 payload: {
                     order_id: Joi.string().regex(/^[0-9]+$/).max(19),
-                    peer_id: Joi.string().regex(/^[0-9]+$/).max(19),  // It should be the user_id of the parent_id, this field will be used for push notification.
+                    to_user_id: Joi.string().regex(/^[0-9]+$/).max(19),  // It should be the user_id of the parent_id, this field will be used for push notification.
                     is_from_joyyor: Joi.number().min(0).max(1),
                     is_to_joyyor: Joi.number().min(0).max(1),
                     to_username: Joi.string().token().max(50),
@@ -213,10 +213,10 @@ internals.createCommentHandler = function (request, reply) {
             }
         });
 
-        // send notification to the peer
+        // send notification to the to_user_id
         var app = isToJoyyor ? 'joyyor' : 'joyy';
         var title = request.auth.credentials.username + ': ' + request.payload.contents;
-        Push.notify(app, p.peer_id, title, title, function (error) {
+        Push.notify(app, p.to_user_id, title, title, function (error) {
 
             if (error) {
                 console.error(error);

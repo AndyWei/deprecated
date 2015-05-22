@@ -72,7 +72,7 @@ exports.register = function (server, options, next) {
             var join = 'INNER JOIN users AS u ON u.id = b.bidder_id ';
             var where1 = 'WHERE b.id > $1 AND b.status < 10 AND b.deleted = false AND u.deleted = false AND b.order_id IN ';
             var where2 = Utils.parametersString(2, request.query.order_id.length);
-            var sort = 'ORDER BY b.id DESC';
+            var sort = 'ORDER BY b.id DESC LIMIT 200';
 
             queryValues = queryValues.concat(request.query.order_id);
 
@@ -106,7 +106,8 @@ exports.register = function (server, options, next) {
             },
             validate: {
                 query: {
-                    status: Joi.number().min(0).max(100).default(0)
+                    status: Joi.number().min(0).max(100).default(0),
+                    after: Joi.string().regex(/^[0-9]+$/).max(19).default('0')
                 }
             }
         },
@@ -115,9 +116,9 @@ exports.register = function (server, options, next) {
             var bidderId = request.auth.credentials.id;
             var queryConfig = {
                 name: 'bids_from_me',
-                text: 'SELECT * FROM bids WHERE bidder_id = $1 AND status = $2 AND deleted = false \
-                       ORDER BY id DESC',
-                values: [bidderId, request.query.status]
+                text: 'SELECT * FROM bids WHERE bidder_id = $1 AND status = $2 AND id > $3 AND deleted = false \
+                       ORDER BY id DESC LIMIT 200',
+                values: [bidderId, request.query.status, request.query.after]
             };
 
             request.pg.client.query(queryConfig, function (err, result) {
