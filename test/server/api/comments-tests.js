@@ -133,10 +133,6 @@ lab.experiment('Comments POST: ', function () {
             url: '/comments',
             payload: {
                 order_id: '1',
-                to_user_id: '3',
-                is_from_joyyor: 0,
-                is_to_joyyor: 1,
-                to_username: 'andy',
                 body: 'yes'
             },
             credentials: jack

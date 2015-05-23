@@ -2,6 +2,8 @@ var Apn = require('apn');
 var Async = require('async');
 var Cache = require('./cache');
 var c = require('./constants');
+var _ = require('underscore');
+
 
 var internals = {};
 
@@ -26,7 +28,7 @@ exports.connect = function () {
 };
 
 
-exports.notify = function (app, userId, title, body, callback) {
+exports.notify = internals.notify = function (app, userId, title, body, callback) {
 
     var dataset = (app === 'joyy') ? c.JOYY_DEVICE_TOKEN_CACHE : c.JOYYOR_DEVICE_TOKEN_CACHE;
     var badgeKey = 'badge' + userId;
@@ -90,6 +92,28 @@ exports.notify = function (app, userId, title, body, callback) {
         }
 
         callback(null, userId);
+    });
+};
+
+
+exports.mnotify = function (app, userIds, title, body) {
+
+    if (!userIds || userIds.length === 0) {
+        return;
+    }
+
+    _.each(userIds, function (id) {
+
+        if (!id) {
+            return;
+        }
+
+        internals.notify(app, id, title, body, function (err) {
+
+            if (err) {
+                console.error(err);
+            }
+        });
     });
 };
 

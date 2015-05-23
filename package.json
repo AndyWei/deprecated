@@ -31,7 +31,8 @@
     "pg-native": "^1.8.0",
     "rand-token": "^0.2.1",
     "redis": "^0.12.1",
-    "underscore": "^1.8.2"
+    "underscore": "^1.8.2",
+    "underscore.string": "^3.0.3"
   },
   "devDependencies": {
     "code": "^1.2.0",

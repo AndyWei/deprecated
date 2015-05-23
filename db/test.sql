@@ -30,15 +30,15 @@ INSERT INTO bids
 
 
 INSERT INTO comments
-    (order_id, user_id, username, is_from_joyyor, to_username, created_at, updated_at, body) VALUES
-    (       1,       2,   'andy',           true,        NULL,      now(),      now(), 'How many sqft?'),
-    (       1,       3,   'ping',           true,        NULL,      now(),      now(), 'Include kitchen as well?'),
-    (       1,       4,   'mike',           true,        NULL,      now(),      now(), 'I know your house is quite huge bro, its really difficult at this price man. I may consider 500 bucks'),
-    (       1,       1,   'jack',          false,      'mike',      now(),      now(), 'Just 3000 sqft, and 500 bucks is ridiculous！$499 is my bottomline!!'),
-    (       2,       2,   'andy',           true,        NULL,      now(),      now(), 'This is andy!'),
-    (       2,       3,   'ping',           true,        NULL,      now(),      now(), 'Ping'),
-    (       2,       4,   'mike',           true,        NULL,      now(),      now(), 'Mike always talk a lot: I know your house is quite huge bro, its really difficult at this price man. I may consider 500 bucks'),
-    (       2,       1,   'jack',          false,      'mike',      now(),      now(), 'Just 3000 sqft, and 500 bucks is ridiculous！$499 is my bottomline!!');
+    (order_id, user_id, username, created_at, updated_at, body) VALUES
+    (       1,       2,   'andy',      now(),      now(), 'How many sqft?'),
+    (       1,       3,   'ping',      now(),      now(), 'Include kitchen as well?'),
+    (       1,       4,   'mike',      now(),      now(), 'I know your house is quite huge bro, its really difficult at this price man. I may consider 500 bucks'),
+    (       1,       1,   'jack',      now(),      now(), '@mike Just 3000 sqft, and 500 bucks is ridiculous！$499 is my bottomline!!'),
+    (       2,       2,   'andy',      now(),      now(), 'This is andy!'),
+    (       2,       3,   'ping',      now(),      now(), 'Ping'),
+    (       2,       4,   'mike',      now(),      now(), 'Mike always talk a lot: I know your house is quite huge bro, its really difficult at this price man. I may consider 500 bucks'),
+    (       2,       1,   'jack',      now(),      now(), '@mike Just 3000 sqft, and 500 bucks is ridiculous！$499 is my bottomline!!');
 
 INSERT INTO reviews
     (reviewer_id, reviewee_id, order_id, rating,             body, created_at,  updated_at) VALUES

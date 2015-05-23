@@ -3,8 +3,6 @@ CREATE TABLE comments (
     user_id        BIGINT        NOT NULL,  -- the id of the user who submitted this comment
     username       TEXT          NOT NULL,  -- denormalized design, has username here to avoid join
     order_id       BIGINT        NOT NULL,  -- the id of the order
-    is_from_joyyor BOOLEAN       NOT NULL,  -- is this comment from the joyyor app, this field will be used to select push notification app
-    to_username    TEXT                  ,  -- NULL if parent_id is 0, otherwise the username of the parent comments
     body           TEXT          NOT NULL,
     created_at     TIMESTAMPTZ   NOT NULL,
     updated_at     TIMESTAMPTZ   NOT NULL,

@@ -7,6 +7,8 @@ var Push = require('../push');
 var Utils = require('../utils');
 var c = require('../constants');
 var _ = require('underscore');
+_.str = require('underscore.string');
+
 
 var internals = {};
 
@@ -133,10 +135,6 @@ exports.register = function (server, options, next) {
             validate: {
                 payload: {
                     order_id: Joi.string().regex(/^[0-9]+$/).max(19),
-                    to_user_id: Joi.string().regex(/^[0-9]+$/).max(19),  // It should be the user_id of the parent_id, this field will be used for push notification.
-                    is_from_joyyor: Joi.number().min(0).max(1),
-                    is_to_joyyor: Joi.number().min(0).max(1),
-                    to_username: Joi.string().token().max(50),
                     body: Joi.string().max(1000)
                 }
             }
@@ -158,36 +156,72 @@ internals.createCommentHandler = function (request, reply) {
     var p = request.payload;
     var userId = request.auth.credentials.id;
     var username = request.auth.credentials.username;
-    var isFromJoyyor = (p.is_from_joyyor === 1);
-    var isToJoyyor = (p.is_to_joyyor === 1);
 
-    Async.waterfall([
-        function (callback) {
+    Async.auto({
+        commentId: function (next) {
 
             var queryConfig = {
                 name: 'comments_create',
                 text: 'INSERT INTO comments \
-                           (user_id, username, order_id, is_from_joyyor, to_username, body, created_at, updated_at) VALUES \
-                           ($1, $2, $3, $4, $5, $6, now(), now()) \
+                           (user_id, username, order_id, body, created_at, updated_at) VALUES \
+                           ($1, $2, $3, $4, now(), now()) \
                            RETURNING id',
-                values: [userId, username, p.order_id, isFromJoyyor, p.to_username, p.body]
+                values: [userId, username, p.order_id, p.body]
             };
 
             request.pg.client.query(queryConfig, function (err, result) {
 
                 if (err) {
                     request.pg.kill = true;
-                    return callback(err);
+                    return next(err);
                 }
 
                 if (result.rows.length === 0) {
-                    return callback(Boom.badData(c.QUERY_FAILED));
+                    return next(Boom.badData(c.QUERY_FAILED));
                 }
 
-                callback(null, result.rows[0]);
+                next(null, result.rows[0].id);
+            });
+        },
+        customerId: function (next) {
+
+            var queryConfig = {
+                name: 'order_user_id_by_id',
+                text: 'SELECT user_id FROM orders WHERE id = $1 AND deleted = false',
+                values: [p.order_id]
+            };
+
+            request.pg.client.query(queryConfig, function (err, result) {
+
+                if (err) {
+                    request.pg.kill = true;
+                    return next(err);
+                }
+
+                if (result.rows.length === 0) {
+                    return next(Boom.notFound(c.ORDER_NOT_FOUND));
+                }
+
+                next(null, result.rows[0].user_id);
+            });
+        },
+        recipientIds: function (next) {
+
+            // p.body = '@andy @ping @jack whats up?'
+            var words = _.str.words(p.body);                                               // words   = ['@andy', '@ping', '@jack', 'whats', 'up?']
+            var handles = _.filter(words, function (word) { return word[0] === '@'; });    // handles = ['@andy', '@ping', '@jack']
+            var usernames = _.map(handles, function (handle) { return handle.slice(1); }); // usernames=['andy', 'ping', 'jack']
+
+            Cache.mget(c.USER_NAME_ID_CACHE, usernames, function (err, userIds) {
+                if (err) {
+                    return next(err);
+                }
+
+                var validUserIds = _.filter(userIds, function (id) { return id !== null; });
+                next(null, validUserIds);
             });
         }
-    ], function (err, commentId) {
+    }, function (err, results) {
 
         if (err) {
             console.error(err);
@@ -195,7 +229,7 @@ internals.createCommentHandler = function (request, reply) {
         }
 
         // early reply the submitter
-        reply(null, commentId);
+        reply(null, { id: results.commentId });
 
         // update engaged order list
         Cache.lpush(c.ENGAGED_ORDER_ID_CACHE, userId, p.order_id, function (error) {
@@ -213,14 +247,13 @@ internals.createCommentHandler = function (request, reply) {
             }
         });
 
-        // send notification to the to_user_id
-        var app = isToJoyyor ? 'joyyor' : 'joyy';
+        // send notification to recipientIds in joyyor
         var title = request.auth.credentials.username + ': ' + request.payload.body;
-        Push.notify(app, p.to_user_id, title, title, function (error) {
+        Push.mnotify('joyyor', results.recipientIds, title, title);
 
-            if (error) {
-                console.error(error);
-            }
-        });
+        // send notification to the customer
+        if (results.customerId !== userId.toString()) {
+            Push.notify('joyy', results.customerId, title, title);
+        }
     });
 };

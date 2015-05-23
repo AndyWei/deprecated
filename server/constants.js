@@ -9,6 +9,10 @@ exports.API_TOKEN_CACHE = {
     ttl: 60 * 60
 };
 
+exports.ENGAGED_ORDER_ID_CACHE = {
+    segment: 'eoid'
+};
+
 exports.JOYY_DEVICE_TOKEN_CACHE = {
     segment: 'jydt'
 };
@@ -22,8 +26,9 @@ exports.ORDER_COMMENTS_COUNT_CACHE = {
     ttl: 30 * 24 * 60 * 60
 };
 
-exports.ENGAGED_ORDER_ID_CACHE = {
-    segment: 'eoid'
+exports.USER_NAME_ID_CACHE = {
+    segment: 'unid',
+    ttl: 30 * 24 * 60 * 60
 };
 
 // consts

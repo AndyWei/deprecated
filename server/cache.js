@@ -203,6 +203,10 @@ exports.mget = function (dataset, keys, callback) {
         return callback(new Error('Connection not started'));
     }
 
+    if (!keys || keys.length === 0) {
+        return callback(null, null);
+    }
+
     var cacheKeys = _.map(keys, function (key) {
         return internals.generateKey(dataset, key);
     });
@@ -259,6 +263,17 @@ exports.generateBearerToken = function (userId, userName, callback) {
     userName = userName.toString();
 
     Async.auto({
+        cacheUserName: function (next) {
+
+            internals.set(c.USER_NAME_ID_CACHE, userName, userId, function (err) {
+
+                if (err) {
+                    return next(err);
+                }
+
+                next(null);
+            });
+        },
         existedToken: function (next) {
 
             internals.get(c.API_TOKEN_CACHE, userId, function (err, value) {
