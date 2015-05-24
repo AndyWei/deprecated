@@ -75,7 +75,7 @@ exports.register = function (server, options, next) {
             queryValues = queryValues.concat(request.query.order_id);
 
             var queryConfig = {
-                name: 'comments_of_orders',
+                // WARNING!!!: the queryConfig MUST NOT have a name field since it has vaiable number of parameters 
                 text: select + where + sort,
                 values: queryValues
             };
@@ -233,7 +233,6 @@ internals.createCommentHandler = function (request, reply) {
 
         // update engaged order list
         Cache.lpush(c.ENGAGED_ORDER_ID_CACHE, userId, p.order_id, function (error) {
-
             if (error) {
                 console.error(error);
             }
@@ -241,7 +240,6 @@ internals.createCommentHandler = function (request, reply) {
 
         // increase the comments count
         Cache.incr(c.ORDER_COMMENTS_COUNT_CACHE, p.order_id, function (error) {
-
             if (error) {
                 console.error(error);
             }
@@ -252,8 +250,14 @@ internals.createCommentHandler = function (request, reply) {
         Push.mnotify('joyyor', results.recipientIds, title, title);
 
         // send notification to the customer
-        if (results.customerId !== userId.toString()) {
-            Push.notify('joyy', results.customerId, title, title);
+        if (results.customerId === userId.toString()) {
+            return;
         }
+        
+        Push.notify('joyy', results.customerId, title, title, function (error) {
+            if (error) {
+                console.error(error);
+            }
+        });
     });
 };
