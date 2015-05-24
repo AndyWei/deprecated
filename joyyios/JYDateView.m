@@ -32,6 +32,7 @@
     self.centerLabel.y = (width - height) * 0.5;
     self.topLabel.font = [UIFont systemFontOfSize:10];
     self.topLabel.textAlignment = NSTextAlignmentCenter;
+    self.topLabel.userInteractionEnabled = NO;
     [self addSubview:self.topLabel];
 
     self.centerLabel = [[UILabel alloc] initWithFrame:frame];
@@ -39,14 +40,15 @@
     self.centerLabel.y = CGRectGetMaxY(self.topLabel.frame);
     self.centerLabel.font = [UIFont systemFontOfSize:30];
     self.centerLabel.textAlignment = NSTextAlignmentCenter;
+    self.centerLabel.userInteractionEnabled = NO;
     [self addSubview:self.centerLabel];
 
     self.bottomLabel = [[UILabel alloc] initWithFrame:frame];
     self.bottomLabel.height = height * 0.2;
     self.bottomLabel.y = CGRectGetMaxY(self.centerLabel.frame);
     self.bottomLabel.font = [UIFont systemFontOfSize:10];
-
     self.bottomLabel.textAlignment = NSTextAlignmentCenter;
+    self.bottomLabel.userInteractionEnabled = NO;
     [self addSubview:self.bottomLabel];
 
     self.layer.borderWidth = 1.0f;
@@ -55,6 +57,7 @@
 
     self.viewColor = [UIColor whiteColor];
     self.textColor = FlatGrayDark;
+    self.userInteractionEnabled = NO;
 }
 
 - (void)setViewColor:(UIColor *)viewColor

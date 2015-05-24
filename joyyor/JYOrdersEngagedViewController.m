@@ -10,6 +10,7 @@
 #import <KVNProgress/KVNProgress.h>
 #import <RKDropdownAlert/RKDropdownAlert.h>
 
+#import "JYBidCreateViewController.h"
 #import "JYCommentViewCell.h"
 #import "JYCommentsViewController.h"
 #import "JYOrderItemView.h"
@@ -20,6 +21,7 @@
 @interface JYOrdersEngagedViewController ()
 
 @property(nonatomic) NSInteger fetchThreadCount;
+@property(nonatomic) NSInteger selectedSection;
 @property(nonatomic) NSMutableArray *commentMatrix;
 @property(nonatomic) NSMutableArray *orderList;
 @property(nonatomic) NSMutableDictionary *bidDict;
@@ -44,6 +46,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
     self.maxBidId = 0;
     self.maxCommentId = 0;
     self.fetchThreadCount = 0;
+    self.selectedSection = -1;
 
     self.orderList = [NSMutableArray new];
     self.commentMatrix = [NSMutableArray new];
@@ -89,14 +92,23 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
     self.scrollView = self.tableView;
 }
 
-- (void)_presentCreateCommentViewWithOrder:(NSDictionary *)order comments:(NSArray *)comments orginalComment:(NSDictionary *)origin
+- (void)_presentCreateCommentViewWithOrder:(NSDictionary *)order comments:(NSArray *)comments orginalComment:(NSInteger)origin
 {
     NSString *orderId = [order objectForKey:@"id"];
     NSDictionary *bid = [self.bidDict objectForKey:orderId];
 
     JYCommentsViewController *viewController = [[JYCommentsViewController alloc] initWithOrder:order bid:bid comments:comments];
-    viewController.originalComment = origin;
+    viewController.originalCommentIndex = origin;
     [self.navigationController pushViewController:viewController animated:YES];
+}
+
+- (void)_presentBidViewForOrder:(NSDictionary *)order
+{
+    JYBidCreateViewController *bidViewController = [JYBidCreateViewController new];
+    bidViewController.order = order;
+
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:bidViewController];
+    [self presentViewController:nav animated:YES completion:nil];
 }
 
 - (NSDictionary *)_orderOfId:(NSUInteger)targetOrderId
@@ -138,6 +150,33 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
     }
 }
 
+- (void)_tapOnTableSectionHeader:(id)sender
+{
+    self.tabBarController.tabBar.hidden = YES;
+
+    JYOrderItemView *itemView = (JYOrderItemView *)sender;
+    self.selectedSection = itemView.tag;
+
+    NSDictionary *order = (NSDictionary *)self.orderList[self.selectedSection];
+    NSString *orderId = [order objectForKey:@"id"];
+    NSDictionary *bid = [self.bidDict objectForKey:orderId];
+
+    NSString *bidString = bid ? NSLocalizedString(@"Update Bid", nil) : NSLocalizedString(@"Bid", nil);
+
+    UICustomActionSheet *actionSheet = [[UICustomActionSheet alloc] initWithTitle:nil delegate:self buttonTitles:@[NSLocalizedString(@"Cancel", nil), NSLocalizedString(@"Comment", nil), bidString]];
+
+    [actionSheet setButtonColors:@[JoyyBlue50, JoyyBlue, FlatLime]];
+    [actionSheet setButtonsTextColor:JoyyWhite];
+    actionSheet.backgroundColor = JoyyWhite;
+
+    // Highlight the selected itemView
+    CGRect frame = itemView.frame;
+    frame.origin.y -= self.tableView.contentOffset.y;
+    actionSheet.clearArea = frame;
+
+    [actionSheet showInView:self.view];
+}
+
 #pragma mark - UITableViewDataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -176,8 +215,8 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 {
     NSDictionary *order = self.orderList[indexPath.section];
     NSArray *comments = self.commentMatrix[indexPath.section];
-    NSDictionary *orginalComment = comments[indexPath.row];
-    [self _presentCreateCommentViewWithOrder:order comments:comments orginalComment:orginalComment];
+
+    [self _presentCreateCommentViewWithOrder:order comments:comments orginalComment:indexPath.row];
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
@@ -201,6 +240,12 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
     CGFloat height = [JYOrderItemView viewHeightForText:orderBodyText withBid:(bid != NULL)];
 
     JYOrderItemView *itemView = [[JYOrderItemView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(tableView.frame), height)];
+
+    // make the order item view tappable
+    itemView.tag = section;
+    [itemView addTarget:self action: @selector(_tapOnTableSectionHeader:) forControlEvents:UIControlEventTouchUpInside];
+
+    // show order
     itemView.tinyLabelsHidden = NO;
     itemView.bidLabelHidden = (bid == NULL);
     itemView.viewColor = FlatWhite;
@@ -211,26 +256,32 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 
 #pragma mark - UIActionSheetDelegate
 
-//-(void)customActionSheet:(UICustomActionSheet *)customActionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
-//{
-//    self.tabBarController.tabBar.hidden = NO;
-//    if (!self.selectedIndexPath)
-//    {
-//        return;
-//    }
-//
-//    [self.tableView deselectRowAtIndexPath:self.selectedIndexPath animated:YES];
-//
-//    if (buttonIndex == 1)
-//    {
-//        NSArray *bids = (NSArray *)[self.commentMatrix objectAtIndex:self.selectedIndexPath.section];
-//        NSDictionary *bid = (NSDictionary *)[bids objectAtIndex:self.selectedIndexPath.row];
-//        NSUInteger bidId = [[bid objectForKey:@"id"] unsignedIntegerValue];
-//
-//        [self _acceptBid:bidId];
-//    }
-//    self.selectedIndexPath = nil;
-//}
+-(void)customActionSheet:(UICustomActionSheet *)customActionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    self.tabBarController.tabBar.hidden = NO;
+    if (self.selectedSection < 0)
+    {
+        return;
+    }
+
+    NSDictionary *order = (NSDictionary *)self.orderList[self.selectedSection];
+
+
+    if (buttonIndex == 1) // create comment
+    {
+        NSArray *comments = self.commentMatrix[self.selectedSection];
+        [self _presentCreateCommentViewWithOrder:order comments:comments orginalComment:-1];
+    }
+    else if (buttonIndex == 2) // create or update bid
+    {
+        // TODO: add logic for update bid
+//        NSString *orderId = [order objectForKey:@"id"];
+//        NSDictionary *bid = [self.bidDict objectForKey:orderId];
+        [self _presentBidViewForOrder:order];
+
+    }
+    self.selectedSection = -1;
+}
 
 
 #pragma mark - Network

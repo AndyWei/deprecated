@@ -170,9 +170,11 @@ static NSString *const kBidCellIdentifier = @"bidCell";
     [actionSheet setButtonsTextColor:JoyyWhite];
     actionSheet.backgroundColor = JoyyWhite;
 
+    // Highlight the selected cell
     CGRect frame = [tableView cellForRowAtIndexPath:indexPath].frame;
     frame.origin.y -= tableView.contentOffset.y;
     actionSheet.clearArea = frame;
+
     [actionSheet showInView:self.view];
 }
 

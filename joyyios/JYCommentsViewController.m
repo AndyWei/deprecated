@@ -38,6 +38,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
         self.order = order;
         self.bid = bid;
         self.commentList = [NSMutableArray arrayWithArray:commentList];
+        self.originalCommentIndex = -1;
 
         NSDictionary *lastComment = [self.commentList lastObject];
         self.maxCommentId = [[lastComment objectForKey:@"id"] unsignedIntegerValue];
@@ -58,7 +59,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
     self.bounces = YES;
     self.shakeToClearEnabled = NO;
     self.keyboardPanningEnabled = YES;
-    self.shouldScrollToBottomAfterKeyboardShows = YES;
+    self.shouldScrollToBottomAfterKeyboardShows = NO;
     self.inverted = NO;
 
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
@@ -73,8 +74,9 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
     self.textInputbar.maxCharCount = 1000;
     self.typingIndicatorView.canResignByTouch = YES;
 
-    [self _autoInputMentions];
+    [self _autoFillMentions];
 
+    [self _scrollTableViewToBottom];
     [self.textView becomeFirstResponder];
 }
 
@@ -88,16 +90,17 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 
 }
 
-- (void)_autoInputMentions
+- (void)_autoFillMentions
 {
-    if (!self.originalComment)
+    if (self.originalCommentIndex < 0)
     {
         return;
     }
 
     NSMutableString *mentions = [NSMutableString new];
 
-    NSString *originalAuthor = [self.originalComment objectForKey:@"username"];
+    NSDictionary *orginalComment = self.commentList[self.originalCommentIndex];
+    NSString *originalAuthor = [orginalComment objectForKey:@"username"];
     NSString *originalHandle = [NSString stringWithFormat:@"@%@", originalAuthor];
     NSString *userHandle = [NSString stringWithFormat:@"@%@", [JYUser currentUser].username];
 
@@ -108,7 +111,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 
     NSRegularExpression *mentionExpression = [NSRegularExpression regularExpressionWithPattern:@"(?:^|\\s)(@\\w+)" options:NO error:nil];
 
-    NSString *text = [self.originalComment objectForKey:@"body"];
+    NSString *text = [orginalComment objectForKey:@"body"];
     NSArray *matches = [mentionExpression matchesInString:text options:0 range:NSMakeRange(0, [text length])];
 
     for (NSTextCheckingResult *match in matches)
@@ -127,8 +130,11 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 
 - (void)_scrollTableViewToBottom
 {
-    NSIndexPath *lastIndex = [NSIndexPath indexPathForRow:self.commentList.count-1 inSection:0];
-    [self.tableView scrollToRowAtIndexPath:lastIndex atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+    if (self.commentList.count > 0)
+    {
+        NSIndexPath *lastIndex = [NSIndexPath indexPathForRow:self.commentList.count-1 inSection:0];
+        [self.tableView scrollToRowAtIndexPath:lastIndex atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+    }
 }
 
 #pragma mark - UITableViewDataSource

@@ -8,7 +8,7 @@
 
 @import CoreLocation;
 
-@interface JYOrderItemView : UIView
+@interface JYOrderItemView : UIControl
 
 + (CGFloat)viewHeightForText:(NSString *)text;
 + (CGFloat)viewHeightForText:(NSString *)text withBid:(BOOL)bidded;

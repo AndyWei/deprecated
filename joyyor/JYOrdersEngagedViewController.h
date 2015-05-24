@@ -7,7 +7,8 @@
 //
 
 #import "JYExpandViewController.h"
+#import "UICustomActionSheet.h"
 
-@interface JYOrdersEngagedViewController : JYExpandViewController <UITableViewDataSource, UITableViewDelegate>
+@interface JYOrdersEngagedViewController : JYExpandViewController <UICustomActionSheetDelegate, UITableViewDataSource, UITableViewDelegate>
 
 @end

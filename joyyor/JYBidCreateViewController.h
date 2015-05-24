@@ -8,6 +8,6 @@
 
 @interface JYBidCreateViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
 
-@property(nonatomic) NSDictionary *order;
+@property(nonatomic, copy) NSDictionary *order;
 
 @end

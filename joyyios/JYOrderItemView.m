@@ -271,7 +271,7 @@ static const CGFloat kTopMargin = 8.0f;
     CGRect frame = CGRectMake(kLeftMargin, kTopMargin, kStartDateViewWidth, kStartDateViewHeight);
     self.startDateView = [[JYDateView alloc] initWithFrame:frame];
     self.startDateView.viewColor = FlatWhite;
-
+    self.startDateView.userInteractionEnabled = NO;
     [self addSubview:self.startDateView];
 }
 
@@ -361,12 +361,14 @@ static const CGFloat kTopMargin = 8.0f;
     self.bidBackground = [[UIView alloc] initWithFrame:CGRectMake(0, 0, width, kBidLabelHeight)];
     self.bidBackground.backgroundColor = FlatLime;
     self.bidBackground.opaque = YES;
+    self.bidBackground.userInteractionEnabled = NO;
 
     self.bidLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, width - kRightMargin, kBidLabelHeight)];
     self.bidLabel.font = [UIFont systemFontOfSize:kFontSizeBody];
     self.bidLabel.textAlignment = NSTextAlignmentRight;
     self.bidLabel.textColor = FlatBlack;
     self.bidLabel.opaque = YES;
+    self.bidLabel.userInteractionEnabled = NO;
 
     [self.bidBackground addSubview:self.bidLabel];
     [self addSubview:self.bidBackground];
@@ -380,6 +382,8 @@ static const CGFloat kTopMargin = 8.0f;
     label.font = [UIFont systemFontOfSize:kFontSizeBody];
     label.textColor = FlatBlack;
     label.textAlignment = NSTextAlignmentLeft;
+    label.userInteractionEnabled = NO;
+
     [self addSubview:label];
     
     return label;

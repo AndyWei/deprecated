@@ -10,7 +10,7 @@
 
 @interface JYCommentsViewController : SLKTextViewController
 
-@property(nonatomic, copy) NSDictionary *originalComment;
+@property(nonatomic) NSInteger originalCommentIndex;
 
 - (instancetype)initWithOrder:(NSDictionary *)order bid:(NSDictionary *)bid comments:(NSArray *)commentList;
 
