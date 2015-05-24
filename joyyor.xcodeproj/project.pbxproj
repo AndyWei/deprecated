@@ -194,6 +194,17 @@
 			name = Common;
 			sourceTree = "<group>";
 		};
+		D6C82B621B12534200876F57 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				D6F49FC61AF5DB4D001A3C89 /* JYOrder.h */,
+				D6F49FC71AF5DB4D001A3C89 /* JYOrder.m */,
+				D6F49FE61AF5DB4D001A3C89 /* JYUser.h */,
+				D6F49FE71AF5DB4D001A3C89 /* JYUser.m */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
 		D6F49F7A1AF595F2001A3C89 = {
 			isa = PBXGroup;
 			children = (
@@ -262,6 +273,7 @@
 		D6F4A03C1AF5DB6D001A3C89 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				D6C82B621B12534200876F57 /* Model */,
 				D6F49FB01AF5DAE7001A3C89 /* Constants.h */,
 				D6F49FB11AF5DB4D001A3C89 /* Constants.m */,
 				D6F49FB21AF5DB4D001A3C89 /* DataStore.h */,
@@ -290,8 +302,6 @@
 				D6F49FC31AF5DB4D001A3C89 /* JYFloatLabeledTextField.m */,
 				D6F49FC41AF5DB4D001A3C89 /* JYMapDashBoardView.h */,
 				D6F49FC51AF5DB4D001A3C89 /* JYMapDashBoardView.m */,
-				D6F49FC61AF5DB4D001A3C89 /* JYOrder.h */,
-				D6F49FC71AF5DB4D001A3C89 /* JYOrder.m */,
 				D6F49FC81AF5DB4D001A3C89 /* JYOrderItemView.h */,
 				D6F49FC91AF5DB4D001A3C89 /* JYOrderItemView.m */,
 				D6F49FCE1AF5DB4D001A3C89 /* JYPanGestureRecognizer.h */,
@@ -339,8 +349,6 @@
 				D6F49FE31AF5DB4D001A3C89 /* JYSignUpViewController.m */,
 				D6F49FE41AF5DB4D001A3C89 /* JYSignViewController.h */,
 				D6F49FE51AF5DB4D001A3C89 /* JYSignViewController.m */,
-				D6F49FE61AF5DB4D001A3C89 /* JYUser.h */,
-				D6F49FE71AF5DB4D001A3C89 /* JYUser.m */,
 			);
 			name = User;
 			sourceTree = "<group>";

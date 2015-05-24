@@ -117,6 +117,11 @@ static NSString *const kBidCellIdentifier = @"bidCell";
     (JYBidViewCell *)[tableView dequeueReusableCellWithIdentifier:kBidCellIdentifier forIndexPath:indexPath];
 
     NSArray *bids = (NSArray *)[self.bidMatrix objectAtIndex:indexPath.section];
+    if (!bids || bids.count == 0)
+    {
+        return cell;
+    }
+
     NSDictionary *bid = (NSDictionary *)[bids objectAtIndex:indexPath.row];
 
     NSUInteger price = [[bid objectForKey:@"price"] unsignedIntegerValue];

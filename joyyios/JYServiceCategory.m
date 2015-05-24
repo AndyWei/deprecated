@@ -30,7 +30,7 @@
     return _names;
 }
 
-+ (NSUInteger)categoryAtIndex:(NSUInteger)index
++ (NSUInteger)categoryAtIndex:(JYServiceCategoryIndex)index
 {
     // "Other" should be mapped to 0, means uncategorized
     if (index == [[self class] names].count - 1)
@@ -38,6 +38,15 @@
         return 0;
     }
     return index + 1;
+}
+
++ (JYServiceCategoryIndex)indexOfCategory:(NSUInteger)category
+{
+    if (category == 0)
+    {
+        return [[self class] names].count - 1;
+    }
+    return category - 1;
 }
 
 @end

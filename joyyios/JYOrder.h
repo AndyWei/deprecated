@@ -8,16 +8,17 @@
 
 @import MapKit;
 
+#import "JYServiceCategory.h"
+
 @interface JYOrder : NSObject
 
 + (JYOrder *)currentOrder;
 
+- (instancetype)initWithDictionary:(NSDictionary *)dict;
 - (void)clear;
 - (NSDictionary *)httpParameters;
 
 // Properties in the create order reqeust
-@property(nonatomic) CGFloat price;
-
 @property(nonatomic) CLLocationDegrees startPointLat;
 @property(nonatomic) CLLocationDegrees startPointLon;
 @property(nonatomic) CLLocationDegrees endPointLat;
@@ -32,18 +33,21 @@
 @property(nonatomic) NSString *endAddress;
 
 @property(nonatomic) NSUInteger category;
+@property(nonatomic) NSUInteger price;
 @property(nonatomic) NSUInteger startTime;
 
 // Properties not in the create order reqeust
-@property(nonatomic) CGFloat finalPrice;
-
-@property(nonatomic) NSUInteger categoryIndex;
+@property(nonatomic) JYServiceCategoryIndex categoryIndex;
+@property(nonatomic) NSUInteger finalPrice;
 @property(nonatomic) NSUInteger orderId;
 @property(nonatomic) NSUInteger userId;
 @property(nonatomic) NSUInteger winnnerId;
-@property(nonatomic) NSUInteger status;
+@property(nonatomic) NSInteger status;
 
 @property(nonatomic) NSDate *createdAt;
 @property(nonatomic) NSDate *updatedAt;
+
+@property(nonatomic) NSMutableArray *bids;
+@property(nonatomic) NSMutableArray *comments;
 
 @end

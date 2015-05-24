@@ -31,6 +31,30 @@ static JYOrder *_currentOrder;
     return _currentOrder;
 }
 
+- (instancetype)init
+{
+    self = [super init];
+    if (self)
+    {
+        [self clear];
+        _bids = [NSMutableArray new];
+        _comments = [NSMutableArray new];
+    }
+    return self;
+}
+
+- (instancetype)initWithDictionary:(NSDictionary *)dict
+{
+    self = [super init];
+    if (self)
+    {
+        [self loadFromDictionary:dict];
+        _bids = [NSMutableArray new];
+        _comments = [NSMutableArray new];
+    }
+    return self;
+}
+
 - (void)clear
 {
     _category      = 0;
@@ -52,34 +76,81 @@ static JYOrder *_currentOrder;
     // DO NOT CLEAR _note, we want to keep it to reduce user inputs
 }
 
-- (instancetype)init
+
+
+- (void)loadFromDictionary:(NSDictionary *)dict
 {
-    self = [super init];
-    if (self)
+    if (!dict)
     {
         [self clear];
+        return;
     }
-    return self;
+
+    _orderId  = [[dict objectForKey:@"id"] unsignedIntegerValue];
+    _userId   = [[dict objectForKey:@"user_id"] unsignedIntegerValue];
+    _price    = [[dict objectForKey:@"price"] unsignedIntegerValue];
+    _country  = [dict objectForKey:@"country"];
+    _currency = [dict objectForKey:@"currency"];
+    _status   = [[dict objectForKey:@"status"] integerValue];
+    _title    = [dict objectForKey:@"title"];
+    _note     = [dict objectForKey:@"note"];
+    _category = [[dict objectForKey:@"category"] unsignedIntegerValue];
+    _categoryIndex = [JYServiceCategory indexOfCategory:_category];
+
+    // start time and point
+    _startTime = [[dict objectForKey:@"start_time"] unsignedIntegerValue];
+    _startAddress  = [dict objectForKey:@"start_address"];
+    _startPointLat = [[dict objectForKey:@"start_point_lat"] doubleValue];
+    _startPointLon = [[dict objectForKey:@"start_point_lon"] doubleValue];
+
+    // created date and updated date
+    NSString *createdAtString = [dict objectForKey:@"created_at"];
+    NSString *updatedAtString = [dict objectForKey:@"created_at"];
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSSZ"];
+    _createdAt = [dateFormatter dateFromString:createdAtString];
+    _updatedAt = [dateFormatter dateFromString:updatedAtString];
+
+    // optional values
+    _endAddress  = [dict objectForKey:@"end_address"];
+
+    NSString *str = nil;
+    str = [dict objectForKey:@"end_point_lat"];
+    _endPointLat = str ? [str doubleValue] : 0.0;
+
+    str = [dict objectForKey:@"end_point_lon"];
+    _endPointLon = str ? [str doubleValue] : 0.0;
+
+    str = [dict objectForKey:@"winner_id"];
+    _winnnerId = str ? [str unsignedIntegerValue] : 0;
+
+    str = [dict objectForKey:@"final_price"];
+    _finalPrice = str ? [str unsignedIntegerValue] : 0;
 }
 
 - (NSDictionary *)httpParameters
 {
-    NSMutableDictionary *parameters = [NSMutableDictionary dictionaryWithPropertiesOfObject:self];
+    NSMutableDictionary *parameters = [NSMutableDictionary new];
 
-    [parameters removeObjectForKey:@"categoryIndex"];
-    [parameters removeObjectForKey:@"orderId"];
-    [parameters removeObjectForKey:@"userId"];
-    [parameters removeObjectForKey:@"winnnerId"];
-    [parameters removeObjectForKey:@"status"];
-    [parameters removeObjectForKey:@"finalPrice"];
-    [parameters removeObjectForKey:@"createdAt"];
-    [parameters removeObjectForKey:@"updatedAt"];
+    [parameters setObject:@(self.category) forKey:@"category"];
+    [parameters setObject:@(self.price) forKey:@"price"];
+    [parameters setObject:@(self.startTime) forKey:@"start_time"];
+    [parameters setObject:self.currency forKey:@"currency"];
+    [parameters setObject:self.country forKey:@"country"];
+    [parameters setObject:self.title forKey:@"title"];
+    [parameters setObject:self.note forKey:@"note"];
 
-    if (self.categoryIndex != JYServiceCategoryIndexDelivery && self.categoryIndex != JYServiceCategoryIndexMoving)
+    [parameters setObject:self.startAddress forKey:@"start_address"];
+    [parameters setObject:self.startCity forKey:@"start_city"];
+    [parameters setObject:@(self.startPointLat) forKey:@"start_point_lat"];
+    [parameters setObject:@(self.startPointLon) forKey:@"start_point_lon"];
+
+
+    if (self.categoryIndex == JYServiceCategoryIndexDelivery || self.categoryIndex == JYServiceCategoryIndexMoving)
     {
-        [parameters removeObjectForKey:@"endPointLat"];
-        [parameters removeObjectForKey:@"endPointLon"];
-        [parameters removeObjectForKey:@"endPointAddress"];
+        [parameters setObject:self.endAddress forKey:@"end_address"];
+        [parameters setObject:@(self.endPointLat) forKey:@"end_point_lat"];
+        [parameters setObject:@(self.endPointLon) forKey:@"end_point_lon"];
     }
 
     return parameters;

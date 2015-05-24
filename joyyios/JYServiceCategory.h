@@ -21,6 +21,7 @@ typedef NS_ENUM(NSUInteger, JYServiceCategoryIndex)
 @interface JYServiceCategory : NSObject
 
 + (NSArray *)names;
-+ (NSUInteger)categoryAtIndex:(NSUInteger)index;
++ (NSUInteger)categoryAtIndex:(JYServiceCategoryIndex)index;
++ (JYServiceCategoryIndex)indexOfCategory:(NSUInteger)category;
 
 @end
