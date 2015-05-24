@@ -68,8 +68,8 @@ exports.register = function (server, options, next) {
         handler: function (request, reply) {
 
             var queryValues = [request.query.after];
-            var select = 'SELECT b.id, b.order_id, b.bidder_id, b.price, b.status, b.expire_at, u.username, u.rating_total, u.rating_count, u.bio FROM bids AS b ';
-            var join = 'INNER JOIN users AS u ON u.id = b.bidder_id ';
+            var select = 'SELECT b.id, b.order_id, b.user_id, b.price, b.status, b.expire_at, u.username, u.rating_total, u.rating_count, u.bio FROM bids AS b ';
+            var join = 'INNER JOIN users AS u ON u.id = b.user_id ';
             var where1 = 'WHERE b.id > $1 AND b.status < 10 AND b.deleted = false AND u.deleted = false AND b.order_id IN ';
             var where2 = Utils.parametersString(2, request.query.order_id.length);
             var sort = 'ORDER BY b.id DESC LIMIT 200';
@@ -113,12 +113,12 @@ exports.register = function (server, options, next) {
         },
         handler: function (request, reply) {
 
-            var bidderId = request.auth.credentials.id;
+            var userId = request.auth.credentials.id;
             var queryConfig = {
                 name: 'bids_from_me',
-                text: 'SELECT * FROM bids WHERE bidder_id = $1 AND status = $2 AND id > $3 AND deleted = false \
+                text: 'SELECT * FROM bids WHERE user_id = $1 AND status = $2 AND id > $3 AND deleted = false \
                        ORDER BY id DESC LIMIT 200',
-                values: [bidderId, request.query.status, request.query.after]
+                values: [userId, request.query.status, request.query.after]
             };
 
             request.pg.client.query(queryConfig, function (err, result) {
@@ -175,7 +175,7 @@ exports.register = function (server, options, next) {
             var queryConfig = {
                 name: 'bids_revoke',
                 text: 'UPDATE bids SET status = 20, updated_at = now() ' +
-                      'WHERE id = $1 AND bidder_id = $2 AND status = 0 AND deleted = false ' +
+                      'WHERE id = $1 AND user_id = $2 AND status = 0 AND deleted = false ' +
                       'RETURNING id',
                 values: [request.payload.id, request.auth.credentials.id]
             };
@@ -225,7 +225,7 @@ exports.register.attributes = {
 
 internals.createBidHandler = function (request, reply) {
 
-    var bidderId = request.auth.credentials.id;
+    var userId = request.auth.credentials.id;
     var p = request.payload;
 
     Async.auto({
@@ -256,10 +256,10 @@ internals.createBidHandler = function (request, reply) {
             var queryConfig = {
                 name: 'bids_create',
                 text: 'INSERT INTO bids \
-                           (bidder_id, order_id, price, note, expire_at, created_at, updated_at) VALUES \
+                           (user_id, order_id, price, note, expire_at, created_at, updated_at) VALUES \
                            ($1, $2, $3, $4, $5, now(), now()) \
                            RETURNING id',
-                values: [bidderId, p.order_id, p.price, p.note, p.expire_at]
+                values: [userId, p.order_id, p.price, p.note, p.expire_at]
             };
 
             request.pg.client.query(queryConfig, function (err, result) {
@@ -287,7 +287,7 @@ internals.createBidHandler = function (request, reply) {
         reply(null, { bid_id: results.bidId });
 
         // update engaged order list
-        Cache.lpush(c.ENGAGED_ORDER_ID_CACHE, bidderId, p.order_id, function (error) {
+        Cache.lpush(c.ENGAGED_ORDER_ID_CACHE, userId, p.order_id, function (error) {
 
             if (error) {
                 console.error(error);
@@ -314,7 +314,7 @@ internals.acceptBidHandler = function (request, reply) {
 
             var queryConfig = {
                 name: 'bids_order_id_by_bid_id',
-                text: 'SELECT order_id, bidder_id FROM bids WHERE id = $1 AND status = 0 AND deleted = false',
+                text: 'SELECT order_id, user_id FROM bids WHERE id = $1 AND status = 0 AND deleted = false',
                 values: [bidId]
             };
 
@@ -328,10 +328,10 @@ internals.acceptBidHandler = function (request, reply) {
                     return reply(Boom.badData(c.BID_UPDATE_FAILED));
                 }
 
-                callback(null, result.rows[0].order_id, result.rows[0].bidder_id);
+                callback(null, result.rows[0].order_id, result.rows[0].user_id);
             });
         },
-        function (orderId, bidderId, callback) {
+        function (orderId, userId, callback) {
 
             request.pg.client.query('BEGIN', function(err) {
                 if (err) {
@@ -339,10 +339,10 @@ internals.acceptBidHandler = function (request, reply) {
                     return callback(err);
                 }
 
-                callback(null, orderId, bidderId);
+                callback(null, orderId, userId);
             });
         },
-        function (orderId, bidderId, callback) {
+        function (orderId, userId, callback) {
 
             var queryText = 'UPDATE orders ' +
                       'SET winner_id = $1, status = 1, updated_at = now() ' +
@@ -351,7 +351,7 @@ internals.acceptBidHandler = function (request, reply) {
             var queryConfig = {
                 name: 'orders_update_pending',
                 text: queryText,
-                values: [bidderId, orderId, request.auth.credentials.id]
+                values: [userId, orderId, request.auth.credentials.id]
             };
 
             request.pg.client.query(queryConfig, function (err, result) {
@@ -375,7 +375,7 @@ internals.acceptBidHandler = function (request, reply) {
                 text: 'UPDATE bids ' +
                       'SET status = 1, updated_at = now() ' +
                       'WHERE id = $1 AND status = 0 ' +
-                      'RETURNING bidder_id',
+                      'RETURNING user_id',
                 values: [bidId]
             };
 
@@ -386,7 +386,7 @@ internals.acceptBidHandler = function (request, reply) {
                     return callback(err);
                 }
 
-                callback(null, orderId, result.rows[0].bidder_id);
+                callback(null, orderId, result.rows[0].user_id);
             });
         },
         function (orderId, winnerId, callback) {
@@ -396,7 +396,7 @@ internals.acceptBidHandler = function (request, reply) {
                 text: 'UPDATE bids ' +
                       'SET status = 10, updated_at = now() ' +
                       'WHERE order_id = $1 AND id <> $2 AND status = 0 ' +
-                      'RETURNING bidder_id',
+                      'RETURNING user_id',
                 values: [orderId, bidId]
             };
 

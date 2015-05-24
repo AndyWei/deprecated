@@ -239,7 +239,7 @@ lab.experiment('Bids POST: ', function () {
         });
     });
 
-    lab.test('/bids: revoke fail due to wrong bidder_id', function (done) {
+    lab.test('/bids: revoke fail due to wrong user_id', function (done) {
 
         request = {
             method: 'POST',

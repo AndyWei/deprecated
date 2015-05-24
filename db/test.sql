@@ -10,7 +10,7 @@ INSERT INTO users
 
 
 INSERT INTO orders
-    (user_id, winner_id,  price,  status, category, created_at, updated_at,      title,     note,                                               startPoint,    startCity,      startAddress, startTime) VALUES
+    (user_id, winner_id,  price,  status, category, created_at, updated_at,      title,     note,                                              start_point,   start_city,     start_address, start_time) VALUES
     (      1,      NULL,    199,       0,        1,      now(),      now(),    'clean', 'order0', ST_SetSRID(ST_MakePoint(-122.4164623, 37.7766092), 4326),    'Fremont',      '1 Joyy Way', 450694731),
     (      1,      NULL,    899,       0,        5,      now(),      now(),   'moving', 'order1', ST_SetSRID(ST_MakePoint(-122.4074981, 37.7879331), 4326), 'Menlo Park',      '1 Hack Way', 451594731),
     (      1,      NULL, 234567,       0,        4,      now(),      now(), 'handyman', 'order2', ST_SetSRID(ST_MakePoint(-121.9989519, 37.5293864), 4326),  'Cupertino', '1 Infinite Loop', 450794731),
@@ -18,15 +18,15 @@ INSERT INTO orders
 
 
 INSERT INTO bids
-    (bidder_id, order_id, price, status, expire_at, created_at, updated_at,           note) VALUES
-    (        2,        1,   399,      3, 1427159567,     now(),      now(),    'for accept'),
-    (        2,        1,   299,     10, 1427159543,     now(),      now(),    'for accept'),
-    (        2,        1,    99,      2, 1427160123,     now(),      now(),    'for accept'),
-    (        2,        1,    99,      0, 1427160123,     now(),      now(),    'for accept'),
-    (        2,        3,   399,      0, 1427159567,     now(),      now(),    'for revoke'),
-    (        2,        3,   299,      3, 1427159543,     now(),      now(),    'for revoke'),
-    (        2,        3,    99,      2, 1427160123,     now(),      now(),    'for revoke'),
-    (        2,        3,    99,     10, 1427160123,     now(),      now(),    'for revoke');
+    (user_id, order_id, price, status, expire_at, created_at, updated_at,         note) VALUES
+    (      2,        1,   399,      3, 1427159567,     now(),      now(), 'for accept'),
+    (      2,        1,   299,     10, 1427159543,     now(),      now(), 'for accept'),
+    (      2,        1,    99,      2, 1427160123,     now(),      now(), 'for accept'),
+    (      2,        1,    99,      0, 1427160123,     now(),      now(), 'for accept'),
+    (      2,        3,   399,      0, 1427159567,     now(),      now(), 'for revoke'),
+    (      2,        3,   299,      3, 1427159543,     now(),      now(), 'for revoke'),
+    (      2,        3,    99,      2, 1427160123,     now(),      now(), 'for revoke'),
+    (      2,        3,    99,     10, 1427160123,     now(),      now(), 'for revoke');
 
 
 INSERT INTO comments

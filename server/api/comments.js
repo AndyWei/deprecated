@@ -75,7 +75,7 @@ exports.register = function (server, options, next) {
             queryValues = queryValues.concat(request.query.order_id);
 
             var queryConfig = {
-                // WARNING!!!: the queryConfig MUST NOT have a name field since it has vaiable number of parameters 
+                // WARNING!!!: the queryConfig MUST NOT have a name field since it has vaiable number of parameters
                 text: select + where + sort,
                 values: queryValues
             };
@@ -250,14 +250,12 @@ internals.createCommentHandler = function (request, reply) {
         Push.mnotify('joyyor', results.recipientIds, title, title);
 
         // send notification to the customer
-        if (results.customerId === userId.toString()) {
-            return;
+        if (results.customerId !== userId.toString()) {
+            Push.notify('joyy', results.customerId, title, title, function (error) {
+                if (error) {
+                    console.error(error);
+                }
+            });
         }
-        
-        Push.notify('joyy', results.customerId, title, title, function (error) {
-            if (error) {
-                console.error(error);
-            }
-        });
     });
 };
