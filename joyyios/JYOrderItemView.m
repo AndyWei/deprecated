@@ -40,7 +40,6 @@ static const CGFloat kTopMargin = 8.0f;
 @property(nonatomic) UILabel *startTimeLabel;
 @property(nonatomic) UILabel *timeLabel;
 @property(nonatomic) UILabel *titleLabel;
-@property(nonatomic) UIView *bidBackground;
 
 @end
 
@@ -117,20 +116,19 @@ static const CGFloat kTopMargin = 8.0f;
 
     self.bodyLabel.height = self.height - (kTopMargin + kTitleLabelHeight + kTinyLabelHeight);
 
-    CGFloat bidLabelHeight = self.bidLabelHidden ? 0 : kBidLabelHeight;
-    self.bodyLabel.height -= bidLabelHeight;
-    self.bidBackground.height = self.bidLabel.height = bidLabelHeight;
+    self.bidLabel.height = self.bidLabelHidden ? 0 : kBidLabelHeight;
+    self.bodyLabel.height -= self.bidLabel.height;
 
     if (self.tinyLabelsHidden)
     {
         self.cityLabel.height = self.distanceLabel.height = self.timeLabel.height = self.commentsLabel.height = 0;
-        self.bidBackground.y = CGRectGetMaxY(self.bodyLabel.frame);
+        self.bidLabel.y = CGRectGetMaxY(self.bodyLabel.frame);
     }
     else
     {
         self.cityLabel.y = self.distanceLabel.y = self.timeLabel.y = self.commentsLabel.y = CGRectGetMaxY(self.bodyLabel.frame);
         self.cityLabel.height = self.distanceLabel.height = self.timeLabel.height = self.commentsLabel.height = kTinyLabelHeight;
-        self.bidBackground.y = CGRectGetMaxY(self.cityLabel.frame);
+        self.bidLabel.y = CGRectGetMaxY(self.cityLabel.frame);
     }
 }
 
@@ -176,9 +174,18 @@ static const CGFloat kTopMargin = 8.0f;
 - (void)presentOrder:(NSDictionary *)order andBid:(NSDictionary *)bid
 {
     [self presentOrder:order];
+
+    if (!bid)
+    {
+        return;
+    }
+
     NSUInteger bidPrice = [[bid objectForKey:@"price"] unsignedIntegerValue];
     NSString *bidPrefix = NSLocalizedString(@"You asked for", nil);
-    self.bidLabel.text = [NSString stringWithFormat:@"%@ $%tu  ", bidPrefix, bidPrice];
+    NSString *expire = NSLocalizedString(@"expire in ", nil);
+    NSTimeInterval expireTime = [[bid objectForKey:@"expire_at"] floatValue];
+
+    self.bidLabel.text = [NSString stringWithFormat:@"%@ $%tu, %@ %f", bidPrefix, bidPrice, expire, expireTime];
     self.bidLabel.backgroundColor = FlatLime;
 }
 
@@ -358,20 +365,12 @@ static const CGFloat kTopMargin = 8.0f;
 - (void)_createbidLabel
 {
     CGFloat width = CGRectGetWidth([[UIScreen mainScreen] applicationFrame]);
-    self.bidBackground = [[UIView alloc] initWithFrame:CGRectMake(0, 0, width, kBidLabelHeight)];
-    self.bidBackground.backgroundColor = FlatLime;
-    self.bidBackground.opaque = YES;
-    self.bidBackground.userInteractionEnabled = NO;
 
-    self.bidLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, width - kRightMargin, kBidLabelHeight)];
-    self.bidLabel.font = [UIFont systemFontOfSize:kFontSizeBody];
-    self.bidLabel.textAlignment = NSTextAlignmentRight;
-    self.bidLabel.textColor = FlatBlack;
-    self.bidLabel.opaque = YES;
-    self.bidLabel.userInteractionEnabled = NO;
+    self.bidLabel = [self _createLabel];
+    self.bidLabel.frame = CGRectMake(0, 0, width, kBidLabelHeight);
+    self.bidLabel.textAlignment = NSTextAlignmentCenter;
 
-    [self.bidBackground addSubview:self.bidLabel];
-    [self addSubview:self.bidBackground];
+    [self addSubview:self.bidLabel];
 }
 
 - (UILabel *)_createLabel
