@@ -46,18 +46,9 @@ static const CGFloat kFontSizeComment = 16.0f;
 + (NSString *)_textOf:(NSDictionary *)comment
 {
     NSString *fromUsername = [comment objectForKey:@"username"];
-    NSString *toUsername = [comment objectForKey:@"to_username"];
-    NSString *contents = [comment objectForKey:@"contents"];
-    NSString *reply = NSLocalizedString(@"reply", nil);
+    NSString *body = [comment objectForKey:@"body"];
 
-    if ([toUsername isKindOfClass:[NSNull class]])
-    {
-        return [NSString stringWithFormat:@"%@: %@", fromUsername, contents];
-    }
-    else
-    {
-        return [NSString stringWithFormat:@"%@ %@ @%@: %@", fromUsername, reply, toUsername, contents];
-    }
+    return [NSString stringWithFormat:@"%@: %@", fromUsername, body];
 }
 
 - (void)presentComment:(NSDictionary *)comment
@@ -83,14 +74,8 @@ static const CGFloat kFontSizeComment = 16.0f;
     NSString *url = [NSString stringWithFormat:@"user://%@", fromUsername];
     [self.commentLabel addLinkToURL:[NSURL URLWithString:url] withRange:range];
 
-    // Add link to the to_username
-    NSString *toUsername = [comment objectForKey:@"to_username"];
-    if (![toUsername isKindOfClass:[NSNull class]])
-    {
-        range = [labelText rangeOfString:[NSString stringWithFormat:@"@%@", toUsername]];
-        url = [NSString stringWithFormat:@"user://%@", toUsername];
-        [self.commentLabel addLinkToURL:[NSURL URLWithString:url] withRange:range];
-    }
+    // Add link to the handles in body text. E.g., @mike @jack
+    [self _highlightMentions];
 }
 
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
@@ -113,6 +98,23 @@ static const CGFloat kFontSizeComment = 16.0f;
     self.commentLabel.height = self.height - kTopMargin;
 }
 
+- (void)_highlightMentions
+{
+    NSRegularExpression *mentionExpression = [NSRegularExpression regularExpressionWithPattern:@"(?:^|\\s)(@\\w+)" options:NO error:nil];
+
+    NSString *text = self.commentLabel.text;
+    NSArray *matches = [mentionExpression matchesInString:text options:0 range:NSMakeRange(0, [text length])];
+
+    for (NSTextCheckingResult *match in matches)
+    {
+        NSRange matchRange = [match rangeAtIndex:1];
+        NSString *mentionString = [text substringWithRange:matchRange];
+        NSRange linkRange = [text rangeOfString:mentionString];
+        NSString* username = [mentionString substringFromIndex:1];
+        NSString* linkURLString = [NSString stringWithFormat:@"user://%@", username];
+        [self.commentLabel addLinkToURL:[NSURL URLWithString:linkURLString] withRange:linkRange];
+    }
+}
 
 - (void)_createCommentLabel
 {
@@ -120,7 +122,7 @@ static const CGFloat kFontSizeComment = 16.0f;
     CGRect frame = CGRectMake(kLeftMargin, kTopMargin, screenWidth- kLeftMargin - kRightMargin, kMinHeight);
     self.commentLabel = [[TTTAttributedLabel alloc] initWithFrame:frame];
     self.commentLabel.delegate = self;
-
+    self.commentLabel.enabledTextCheckingTypes = NSTextCheckingTypeLink;
     self.commentLabel.backgroundColor = JoyyWhite;
     self.commentLabel.font = [UIFont systemFontOfSize:kFontSizeComment];
     self.commentLabel.lineBreakMode = NSLineBreakByWordWrapping;

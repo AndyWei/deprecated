@@ -354,7 +354,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
              {
                  NSDictionary *lastComment = [comments lastObject];
                  weakSelf.maxCommentId = [[lastComment objectForKey:@"id"] unsignedIntegerValue];
-NSLog(@"maxCommentId: %tu", weakSelf.maxCommentId);
+
                  // comments are in ASC order, so iterate it forward and append each comment to its array
                  for (NSDictionary *comment in comments)
                  {

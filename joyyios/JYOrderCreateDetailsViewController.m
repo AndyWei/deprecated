@@ -192,7 +192,6 @@
 
 - (void)_submitOrder
 {
-
     NSDictionary *parameters = [[JYOrder currentOrder] httpParameters];
     NSLog(@"parameters = %@", parameters);
 
