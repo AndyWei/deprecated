@@ -155,8 +155,8 @@ exports.lpush = internals.lpush = function (dataset, key, value, callback) {
             return callback(null, null);
         }
 
-        // limit the values list size to 100
-        internals.client.ltrim(cacheKey, 0, 100);
+        // Limit the values list size to 500
+        internals.client.ltrim(cacheKey, 0, 500);
 
         return callback(null, result);
     });

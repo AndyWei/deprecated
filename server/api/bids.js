@@ -1,6 +1,5 @@
 var Async = require('async');
 var Boom = require('boom');
-var Cache = require('../cache');
 var Hoek = require('hoek');
 var Joi = require('joi');
 var Push = require('../push');
@@ -72,12 +71,13 @@ exports.register = function (server, options, next) {
             var join = 'INNER JOIN users AS u ON u.id = b.user_id ';
             var where1 = 'WHERE b.id > $1 AND b.status < 10 AND b.deleted = false AND u.deleted = false AND b.order_id IN ';
             var where2 = Utils.parametersString(2, request.query.order_id.length);
-            var sort = 'ORDER BY b.id DESC LIMIT 200';
+            var sort = 'ORDER BY b.id ASC LIMIT 200';
 
             queryValues = queryValues.concat(request.query.order_id);
 
             var queryConfig = {
-                name: 'bids_for_me',
+                // Warning: Do not give this query a name!! Because it has variable number of parameters and cannot be a prepared statement.
+                // See https://github.com/brianc/node-postgres/wiki/Client#method-query-prepared
                 text: select + join + where1 + where2 + sort,
                 values: queryValues
             };
@@ -117,7 +117,7 @@ exports.register = function (server, options, next) {
             var queryConfig = {
                 name: 'bids_from_me',
                 text: 'SELECT * FROM bids WHERE user_id = $1 AND status = $2 AND id > $3 AND deleted = false \
-                       ORDER BY id DESC LIMIT 200',
+                       ORDER BY id ASC LIMIT 200',
                 values: [userId, request.query.status, request.query.after]
             };
 
@@ -285,14 +285,6 @@ internals.createBidHandler = function (request, reply) {
         }
 
         reply(null, { bid_id: results.bidId });
-
-        // update engaged order list
-        Cache.lpush(c.ENGAGED_ORDER_ID_CACHE, userId, p.order_id, function (error) {
-
-            if (error) {
-                console.error(error);
-            }
-        });
 
         // send notification to the asker
         var title = 'Received a bid: ' + request.auth.credentials.username + ' ask for $' + request.payload.price;

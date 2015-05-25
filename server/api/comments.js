@@ -231,13 +231,6 @@ internals.createCommentHandler = function (request, reply) {
         // early reply the submitter
         reply(null, { id: results.commentId });
 
-        // update engaged order list
-        Cache.lpush(c.ENGAGED_ORDER_ID_CACHE, userId, p.order_id, function (error) {
-            if (error) {
-                console.error(error);
-            }
-        });
-
         // increase the comments count
         Cache.incr(c.ORDER_COMMENTS_COUNT_CACHE, p.order_id, function (error) {
             if (error) {

@@ -9,10 +9,6 @@ exports.API_TOKEN_CACHE = {
     ttl: 60 * 60
 };
 
-exports.ENGAGED_ORDER_ID_CACHE = {
-    segment: 'eoid'
-};
-
 exports.JOYY_DEVICE_TOKEN_CACHE = {
     segment: 'jydt'
 };

@@ -1,6 +1,5 @@
 var Async = require('async');
 var Boom = require('boom');
-var Cache = require('../cache');
 var Hoek = require('hoek');
 var Joi = require('joi');
 var Utils = require('../utils');
@@ -233,7 +232,8 @@ exports.register = function (server, options, next) {
                     var sort = 'ORDER BY id DESC';
 
                     var queryConfig = {
-                        name: 'orders_by_ids',
+                        // Warning: Do not give this query a name!! Because it has variable number of parameters and cannot be a prepared statement.
+                        // See https://github.com/brianc/node-postgres/wiki/Client#method-query-prepared
                         text: selectClause + where + sort,
                         values: orderIds
                     };
@@ -457,24 +457,7 @@ internals.getEngagedOrderIds = function (request, callback) {
 
     // read from redis cache first, if cache miss, then read from DB
     Async.auto({
-        cached: function (next) {
-
-            Cache.getList(c.ENGAGED_ORDER_ID_CACHE, userId, minOrderId, function (err, orderIds) {
-
-                // cache miss, then let the flow continue to read DB
-                if (err) {
-                    return next(null);
-                }
-
-                if (!orderIds || orderIds.length === 0) {
-                    return next(null);
-                }
-
-                // cache hit, then fake an error to avoid reading DB
-                next('cache_hit', orderIds);
-            });
-        },
-        bidded: ['cached', function (next) {
+        bidded: function (next) {
 
             var queryConfig = {
                 name: 'order_id_bidded',
@@ -491,8 +474,8 @@ internals.getEngagedOrderIds = function (request, callback) {
 
                 next(null, _.pluck(result.rows, 'order_id'));
             });
-        }],
-        commented: ['cached', function (next) {
+        },
+        commented: function (next) {
 
             var queryConfig = {
                 name: 'order_id_commented',
@@ -509,20 +492,13 @@ internals.getEngagedOrderIds = function (request, callback) {
 
                 next(null, _.pluck(result.rows, 'order_id'));
             });
-        }]
-    }, function (err, results) {
-
-        if (err === 'cache_hit') {
-            console.info(err);
-            return callback(null, results.cached);
         }
+    }, function (err, results) {
 
         if (err) {
             console.error(err);
             return callback(err);
         }
-
-        console.info('cache_miss');
 
         var orderIds = _.union(results.bidded, results.commented);
         callback(null, orderIds);
