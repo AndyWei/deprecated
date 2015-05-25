@@ -67,17 +67,17 @@ static const CGFloat kTopMargin = 8.0f;
     return bodyLabelHeight;
 }
 
-+ (CGFloat)viewHeightForText:(NSString *)text
++ (CGFloat)viewHeightForOrder:(JYOrder *)order
 {
-    CGFloat bodyLabelHeight = [JYOrderItemView bodyLabelHeightForText:text];
+    CGFloat bodyLabelHeight = [JYOrderItemView bodyLabelHeightForText:order.note];
 
     return kTopMargin + kTitleLabelHeight + bodyLabelHeight + kTinyLabelHeight;
 }
 
-+ (CGFloat)viewHeightForText:(NSString *)text withBid:(BOOL)bidded
++ (CGFloat)viewHeightForBiddedOrder:(JYOrder *)order
 {
-    CGFloat height = [JYOrderItemView viewHeightForText:text];
-    height += bidded ? kBidLabelHeight : 0;
+    CGFloat height = [JYOrderItemView viewHeightForOrder:order];
+    height += (order.bids.count > 0) ? kBidLabelHeight : 0;
     return height;
 }
 
@@ -145,47 +145,36 @@ static const CGFloat kTopMargin = 8.0f;
     self.startDateView.viewColor = self.startTimeLabel.backgroundColor = self.commentsLabel.backgroundColor = color;
 }
 
-- (void)presentOrder:(NSDictionary *)order
+- (void)presentOrder:(JYOrder *)order
 {
-    // start date and time
-    NSTimeInterval startTime = [[order objectForKey:@"starttime"] integerValue];
+    [self _setStartDateTime:[NSDate dateWithTimeIntervalSinceReferenceDate:order.startTime]];
 
-    [self _setStartDateTime:[NSDate dateWithTimeIntervalSinceReferenceDate:startTime]];
-
-    // price
-    NSUInteger price = [[order objectForKey:@"price"] unsignedIntegerValue];
-    self.priceLabel.text = [NSString stringWithFormat:@"$%tu", price];
-
-    // create time
-    [self _setCreateTime:[order objectForKey:@"created_at"]];
+    self.priceLabel.text = order.priceString;
+    self.timeLabel.text = order.createTimeString;
 
     // distance
-    CLLocationDegrees lat = [[order objectForKey:@"startpointlat"] doubleValue];
-    CLLocationDegrees lon = [[order objectForKey:@"startpointlon"] doubleValue];
-    CLLocationCoordinate2D point = CLLocationCoordinate2DMake(lat, lon);
+    CLLocationCoordinate2D point = CLLocationCoordinate2DMake(order.startPointLat, order.startPointLon);
     [self _setDistanceFromPoint:point];
 
-    self.titleLabel.text = [order objectForKey:@"title"];
-    self.bodyLabel.text = [order objectForKey:@"note"];
-    self.cityLabel.text = [order objectForKey:@"startcity"];
+    self.titleLabel.text = order.title;
+    self.bodyLabel.text = order.note;
+    self.cityLabel.text = order.startCity;
+
     self.bidLabel.height = self.bidLabelHidden ? 0 : kBidLabelHeight;
 }
 
-- (void)presentOrder:(NSDictionary *)order andBid:(NSDictionary *)bid
+- (void)presentBiddedOrder:(JYOrder *)order
 {
     [self presentOrder:order];
 
-    if (!bid)
+    if (order.bids.count == 0)
     {
         return;
     }
 
-    NSUInteger bidPrice = [[bid objectForKey:@"price"] unsignedIntegerValue];
+    JYBid *bid = [order.bids lastObject];
     NSString *bidPrefix = NSLocalizedString(@"You asked for", nil);
-    NSString *expire = NSLocalizedString(@"expire in ", nil);
-    NSTimeInterval expireTime = [[bid objectForKey:@"expire_at"] floatValue];
-
-    self.bidLabel.text = [NSString stringWithFormat:@"%@ $%tu, %@ %f", bidPrefix, bidPrice, expire, expireTime];
+    self.bidLabel.text = [NSString stringWithFormat:@"%@ %@, %@", bidPrefix, bid.priceString, bid.expireTimeString];
     self.bidLabel.backgroundColor = FlatLime;
 }
 
@@ -212,47 +201,6 @@ static const CGFloat kTopMargin = 8.0f;
     self.startTimeLabel.text = [dateFormatter stringFromDate:date];
 }
 
-- (void)_setCreateTime:(NSString *)dateString
-{
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSSZ"];
-    NSDate *createDate = [dateFormatter dateFromString:dateString];
-
-    NSDate *now = [NSDate date];
-    NSTimeInterval secondsBetween = [now timeIntervalSinceDate:createDate];
-
-    NSString *ago = NSLocalizedString(@"ago", nil);
-    int numberOfDays = secondsBetween / 86400;
-    if (numberOfDays > 0)
-    {
-        NSString *days = NSLocalizedString(@"d", nil);
-
-        self.timeLabel.text = [NSString stringWithFormat:@"%d %@ %@", numberOfDays, days, ago];
-        return;
-    }
-
-    int numberOfHours = secondsBetween / 3600;
-    if (numberOfHours > 0)
-    {
-        NSString *hours = NSLocalizedString(@"h", nil);
-
-        self.timeLabel.text = [NSString stringWithFormat:@"%d %@ %@", numberOfHours, hours, ago];
-        return;
-    }
-
-    int numberOfMinutes = secondsBetween / 60;
-    if (numberOfMinutes > 0)
-    {
-        NSString *minutes = NSLocalizedString(@"m", nil);
-
-        self.timeLabel.text = [NSString stringWithFormat:@"%d %@ %@", numberOfMinutes, minutes, ago];
-        return;
-    }
-
-    int numberOfSeconds = (int)secondsBetween;
-    NSString *seconds = NSLocalizedString(@"s", nil);
-    self.timeLabel.text = [NSString stringWithFormat:@"%d %@ %@", numberOfSeconds, seconds, ago];
-}
 
 - (void)_setDistanceFromPoint:(CLLocationCoordinate2D )point
 {

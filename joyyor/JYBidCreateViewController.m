@@ -14,16 +14,15 @@
 
 #import "JYButton.h"
 #import "JYBidCreateViewController.h"
-#import "JYOrderViewCell.h"
+#import "JYOrderItemView.h"
 #import "JYPriceTextFieldCell.h"
 #import "JYUser.h"
 
 @interface JYBidCreateViewController ()
 
-@property(nonatomic) UITableView *tableView;
+@property(nonatomic) JYOrderItemView *orderView;
 @property(nonatomic) UILabel *priceLabel;
 @property(nonatomic) UITextField *priceTextField;
-@property(nonatomic) CGFloat tableViewHeight;
 @property(nonatomic) UIScrollView *formView;
 @property(nonatomic) XLFormViewController *formViewController;
 
@@ -50,9 +49,9 @@ NSString *const kOrderBidCellIdentifier = @"orderBidCell";
                                                                              target:self
                                                                              action:@selector(_submit)];
 
-    self.tableViewHeight = [JYOrderViewCell cellHeightForText:[self.order valueForKey:@"note"]];
-    [self _createTableView];
+    [self _createOrderView];
     [self _createForm];
+    [self.orderView presentOrder:self.order];
 }
 
 - (void)didReceiveMemoryWarning
@@ -66,23 +65,22 @@ NSString *const kOrderBidCellIdentifier = @"orderBidCell";
     [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
 }
 
-- (void)_createTableView
+- (void)_createOrderView
 {
-    self.tableView = [[UITableView alloc] initWithFrame:self.view.frame style:UITableViewStylePlain];
     CGFloat statusBarHeight = [UIApplication sharedApplication].statusBarFrame.size.height;
     CGFloat navBarHeight = self.navigationController.navigationBar.frame.size.height;
-    self.tableView.height = self.tableViewHeight + statusBarHeight + navBarHeight;
-    self.tableView.backgroundColor = FlatWhite;
-    self.tableView.dataSource = self;
-    self.tableView.delegate = self;
-    [self.tableView registerClass:[JYOrderViewCell class] forCellReuseIdentifier:kOrderBidCellIdentifier];
-    [self.view addSubview:self.tableView];
+
+    CGFloat height = [JYOrderItemView viewHeightForOrder:self.order];
+    CGFloat width = CGRectGetWidth([[UIScreen mainScreen] applicationFrame]);
+    self.orderView = [[JYOrderItemView alloc] initWithFrame:CGRectMake(0, statusBarHeight + navBarHeight, width, height)];
+    self.orderView.viewColor = JoyyWhite;
+    [self.view addSubview:self.orderView];
 }
 
 - (void)_createForm
 {
     self.formView = [[UIScrollView alloc] initWithFrame:self.view.frame];
-    self.formView.y = CGRectGetMaxY(self.tableView.frame);
+    self.formView.y = CGRectGetMaxY(self.orderView.frame);
     self.formView.height -= kButtonDefaultHeight;
     [self.view addSubview:self.formView];
 
@@ -117,38 +115,6 @@ NSString *const kOrderBidCellIdentifier = @"orderBidCell";
     [self.formViewController viewDidLoad];
 }
 
-#pragma mark - UITableViewDataSource
-
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-{
-    return 1;
-}
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
-    return 1;
-}
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    JYOrderViewCell *cell =
-    (JYOrderViewCell *)[tableView dequeueReusableCellWithIdentifier:kOrderBidCellIdentifier forIndexPath:indexPath];
-
-    [cell presentOrder:self.order];
-
-    return cell;
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    return self.tableViewHeight;
-}
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
-}
-
 #pragma mark - Network
 
 - (NSDictionary *)_httpParameters
@@ -166,8 +132,7 @@ NSString *const kOrderBidCellIdentifier = @"orderBidCell";
     [parameters setObject:@(expireTime) forKey:@"expire_at"];
 
     // order_id
-    NSUInteger orderId = [[self.order valueForKey:@"id"] unsignedIntegerValue];
-    [parameters setObject:@(orderId) forKey:@"order_id"];
+    [parameters setObject:@(self.order.orderId) forKey:@"order_id"];
 
     // note
     [parameters setObject:@":)" forKey:@"note"];
@@ -178,9 +143,6 @@ NSString *const kOrderBidCellIdentifier = @"orderBidCell";
 
 - (void)_submit
 {
-    NSDictionary *parameters = [self _httpParameters];
-    NSLog(@"parameters = %@", parameters);
-
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYUser currentUser].token];
     [manager.requestSerializer setValue:token forHTTPHeaderField:@"Authorization"];
@@ -192,7 +154,7 @@ NSString *const kOrderBidCellIdentifier = @"orderBidCell";
 
     __weak typeof(self) weakSelf = self;
     [manager POST:url
-       parameters:parameters
+       parameters:[self _httpParameters]
           success:^(AFHTTPRequestOperation *operation, id responseObject) {
               NSLog(@"Bid Success responseObject: %@", responseObject);
 

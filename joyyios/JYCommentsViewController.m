@@ -10,6 +10,8 @@
 #import <KVNProgress/KVNProgress.h>
 #import <RKDropdownAlert/RKDropdownAlert.h>
 
+#import "JYBid.h"
+#import "JYComment.h"
 #import "JYCommentTextView.h"
 #import "JYCommentViewCell.h"
 #import "JYCommentsViewController.h"
@@ -18,8 +20,7 @@
 
 @interface JYCommentsViewController ()
 
-@property(nonatomic, copy) NSDictionary *order;
-@property(nonatomic, copy) NSDictionary *bid;
+@property(nonatomic) JYOrder *order;
 @property(nonatomic) NSMutableArray *commentList;
 @property(nonatomic) NSUInteger maxCommentId;
 
@@ -29,19 +30,18 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 
 @implementation JYCommentsViewController
 
-- (instancetype)initWithOrder:(NSDictionary *)order bid:(NSDictionary *)bid comments:(NSArray *)commentList
+- (instancetype)initWithOrder:(JYOrder *)order
 {
     self = [super initWithTableViewStyle:UITableViewStylePlain];
     if (self)
     {
         [self registerClassForTextView:[JYCommentTextView class]];
         self.order = order;
-        self.bid = bid;
-        self.commentList = [NSMutableArray arrayWithArray:commentList];
+        self.commentList = [NSMutableArray arrayWithArray:order.comments];
         self.originalCommentIndex = -1;
 
-        NSDictionary *lastComment = [self.commentList lastObject];
-        self.maxCommentId = [[lastComment objectForKey:@"id"] unsignedIntegerValue];
+        JYComment *lastComment = [self.commentList lastObject];
+        self.maxCommentId = lastComment.commentId;
     }
     return self;
 }
@@ -99,8 +99,8 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 
     NSMutableString *mentions = [NSMutableString new];
 
-    NSDictionary *orginalComment = self.commentList[self.originalCommentIndex];
-    NSString *originalAuthor = [orginalComment objectForKey:@"username"];
+    JYComment *orginalComment = self.commentList[self.originalCommentIndex];
+    NSString *originalAuthor = orginalComment.username;
     NSString *originalHandle = [NSString stringWithFormat:@"@%@", originalAuthor];
     NSString *userHandle = [NSString stringWithFormat:@"@%@", [JYUser currentUser].username];
 
@@ -111,7 +111,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 
     NSRegularExpression *mentionExpression = [NSRegularExpression regularExpressionWithPattern:@"(?:^|\\s)(@\\w+)" options:NO error:nil];
 
-    NSString *text = [orginalComment objectForKey:@"body"];
+    NSString *text = orginalComment.body;
     NSArray *matches = [mentionExpression matchesInString:text options:0 range:NSMakeRange(0, [text length])];
 
     for (NSTextCheckingResult *match in matches)
@@ -154,8 +154,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
     JYCommentViewCell *cell =
     (JYCommentViewCell *)[tableView dequeueReusableCellWithIdentifier:kCommentCellIdentifier forIndexPath:indexPath];
 
-    NSDictionary *comment = (NSDictionary *)[self.commentList objectAtIndex:indexPath.row];
-    [cell presentComment:comment];
+    [cell presentComment:self.commentList[indexPath.row]];
 
     return cell;
 }
@@ -164,8 +163,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSDictionary *comment = (NSDictionary *)[self.commentList objectAtIndex:indexPath.row];
-    return [JYCommentViewCell cellHeightForComment:comment];
+    return [JYCommentViewCell cellHeightForComment:self.commentList[indexPath.row]];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
@@ -175,20 +173,18 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    NSString *orderBodyText = [self.order objectForKey:@"note"];
-    return [JYOrderItemView viewHeightForText:orderBodyText withBid:(self.bid != NULL)];
+    return [JYOrderItemView viewHeightForBiddedOrder:self.order];
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-    NSString *orderBodyText = [self.order objectForKey:@"note"];
-    CGFloat height = [JYOrderItemView viewHeightForText:orderBodyText withBid:(self.bid != NULL)];
+    CGFloat height = [JYOrderItemView viewHeightForBiddedOrder:self.order];
 
     JYOrderItemView *itemView = [[JYOrderItemView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(tableView.frame), height)];
     itemView.tinyLabelsHidden = NO;
-    itemView.bidLabelHidden = (self.bid == NULL);
+    itemView.bidLabelHidden = (self.order.bids.count == 0);
     itemView.viewColor = FlatWhite;
-    [itemView presentOrder:self.order andBid:self.bid];
+    [itemView presentBiddedOrder:self.order];
 
     return itemView;
 }
@@ -252,15 +248,11 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
          success:^(AFHTTPRequestOperation *operation, id responseObject) {
 
              NSLog(@"comments/of/orders GET success responseObject: %@", responseObject);
-             NSArray *newComments = (NSArray *)responseObject;
-
-             if (newComments.count > 0)
+             for (NSDictionary *dict in responseObject)
              {
-                 NSDictionary *lastComment = [newComments lastObject];
-                 weakSelf.maxCommentId = [[lastComment objectForKey:@"id"] unsignedIntegerValue];
-
-                 // comments are in ASC order, just append them to the end
-                 [weakSelf.commentList addObjectsFromArray:newComments];
+                 JYComment *newComment = [[JYComment alloc] initWithDictionary:dict];
+                 [weakSelf.commentList addObject:newComment];
+                 weakSelf.maxCommentId = newComment.commentId;
              }
 
              [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
@@ -287,8 +279,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 {
     NSMutableDictionary *parameters = [NSMutableDictionary new];
 
-    NSString *orderId = [self.order objectForKey:@"id"];
-    [parameters setValue:orderId forKey:@"order_id"];
+    [parameters setObject:@(self.order.orderId) forKey:@"order_id"];
     [parameters setValue:self.textView.text forKey:@"body"];
 
     return parameters;
@@ -298,8 +289,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 {
     NSMutableDictionary *parameters = [NSMutableDictionary new];
 
-    NSString *orderId = [self.order objectForKey:@"id"];
-    [parameters setValue:orderId forKey:@"order_id"];
+    [parameters setObject:@(self.order.orderId) forKey:@"order_id"];
     [parameters setValue:@(self.maxCommentId) forKey:@"after"];
 
     return parameters;

@@ -19,7 +19,6 @@
 
 @property(nonatomic) BOOL isFetchingData;
 @property(nonatomic) NSIndexPath *selectedIndexPath;
-@property(nonatomic) NSMutableArray *bidMatrix;
 @property(nonatomic) NSMutableArray *orderList;
 @property(nonatomic) NSUInteger maxBidId;
 @property(nonatomic) NSUInteger maxOrderId;
@@ -58,7 +57,6 @@ static NSString *const kBidCellIdentifier = @"bidCell";
     self.maxBidId = 0;
     self.maxOrderId = 0;
     self.orderList = [NSMutableArray new];
-    self.bidMatrix = [NSMutableArray new];
     self.isFetchingData = NO;
     self.selectedIndexPath = nil;
 
@@ -98,6 +96,18 @@ static NSString *const kBidCellIdentifier = @"bidCell";
     tableViewController.refreshControl = self.refreshControl;
 }
 
+- (JYOrder *)_orderOfId:(NSUInteger)targetOrderId
+{
+    for (JYOrder *order in self.orderList)
+    {
+        if (order.orderId == targetOrderId)
+        {
+            return order;
+        }
+    }
+    return nil;
+}
+
 #pragma mark - UITableViewDataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -107,8 +117,8 @@ static NSString *const kBidCellIdentifier = @"bidCell";
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    NSArray *bids = (NSArray *)self.bidMatrix[section];
-    return bids.count;
+    JYOrder *order = self.orderList[section];
+    return order.bids.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -116,26 +126,8 @@ static NSString *const kBidCellIdentifier = @"bidCell";
     JYBidViewCell *cell =
     (JYBidViewCell *)[tableView dequeueReusableCellWithIdentifier:kBidCellIdentifier forIndexPath:indexPath];
 
-    NSArray *bids = (NSArray *)[self.bidMatrix objectAtIndex:indexPath.section];
-    if (!bids || bids.count == 0)
-    {
-        return cell;
-    }
-
-    NSDictionary *bid = (NSDictionary *)[bids objectAtIndex:indexPath.row];
-
-    NSUInteger price = [[bid objectForKey:@"price"] unsignedIntegerValue];
-    cell.priceLabel.text = [NSString stringWithFormat:@"$%tu", price];
-
-    cell.bidderNameLabel.text = [bid objectForKey:@"username"];
-
-    NSTimeInterval expireTime = [[bid objectForKey:@"expire_at"] floatValue];
-    [cell setExpireTime:expireTime];
-
-    NSUInteger ratingTotal = [[bid objectForKey:@"rating_total"] unsignedIntegerValue];
-    NSUInteger ratingCount = [[bid objectForKey:@"rating_count"] unsignedIntegerValue];
-    [cell setRatingTotalScore:ratingTotal count:ratingCount];
-
+    JYOrder *order = self.orderList[indexPath.section];
+    [cell presentBid:order.bids[indexPath.row]];
 //    [self _createSwipeViewForCell:cell andOrder:order];
     return cell;
 }
@@ -185,16 +177,13 @@ static NSString *const kBidCellIdentifier = @"bidCell";
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    NSDictionary *order = (NSDictionary *)self.orderList[section];
-    NSString *orderBodyText = [order objectForKey:@"note"];
-    return [JYOrderItemView viewHeightForText:orderBodyText];
+    return [JYOrderItemView viewHeightForOrder:self.orderList[section]];
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-    NSDictionary *order = (NSDictionary *)self.orderList[section];
-    NSString *orderBodyText = [order objectForKey:@"note"];
-    CGFloat height = [JYOrderItemView viewHeightForText:orderBodyText];
+    JYOrder *order = self.orderList[section];
+    CGFloat height = [JYOrderItemView viewHeightForOrder:order];
 
     JYOrderItemView *itemView = [[JYOrderItemView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(tableView.frame), height)];
     itemView.tinyLabelsHidden = YES;
@@ -218,11 +207,10 @@ static NSString *const kBidCellIdentifier = @"bidCell";
 
     if (buttonIndex == 1)
     {
-        NSArray *bids = (NSArray *)[self.bidMatrix objectAtIndex:self.selectedIndexPath.section];
-        NSDictionary *bid = (NSDictionary *)[bids objectAtIndex:self.selectedIndexPath.row];
-        NSUInteger bidId = [[bid objectForKey:@"id"] unsignedIntegerValue];
+        JYOrder *order = self.orderList[self.selectedIndexPath.section];
+        JYBid *bid = order.bids[self.selectedIndexPath.row];
 
-        [self _acceptBid:bidId];
+        [self _acceptBid:bid.bidId];
     }
     self.selectedIndexPath = nil;
 }
@@ -287,18 +275,17 @@ static NSString *const kBidCellIdentifier = @"bidCell";
              [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
              [weakSelf.refreshControl endRefreshing];
 
-             NSMutableArray *newOrderList = [NSMutableArray arrayWithArray:(NSArray *)responseObject];
+             NSMutableArray *newOrderList = [NSMutableArray new];
+             for (NSDictionary *dict in responseObject)
+             {
+                 JYOrder *newOrder = [[JYOrder alloc] initWithDictionary:dict];
+                 [newOrderList addObject:newOrder];
+             }
 
              if (newOrderList.count > 0)
              {
-                 NSDictionary *order = [newOrderList firstObject];
-                 weakSelf.maxOrderId = [[order objectForKey:@"id"] unsignedIntegerValue];
-
-                 // create bids array for new orders
-                 for (NSUInteger i = 0; i < newOrderList.count; ++i)
-                 {
-                     [weakSelf.bidMatrix insertObject:[NSMutableArray new] atIndex:0];
-                 }
+                 JYOrder *lastOrder = [newOrderList firstObject];
+                 weakSelf.maxOrderId = lastOrder.orderId;
 
                  [newOrderList addObjectsFromArray:weakSelf.orderList];
                  weakSelf.orderList = newOrderList;
@@ -345,28 +332,21 @@ static NSString *const kBidCellIdentifier = @"bidCell";
              [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
 
 //             NSLog(@"bids/orders fetch success responseObject: %@", responseObject);
-             NSArray *newBids = (NSArray *)responseObject;
-
-             if (newBids.count > 0)
+             for (NSDictionary *dict in responseObject)
              {
-                 NSDictionary *newestBid = [newBids firstObject];
-                 weakSelf.maxBidId = [[newestBid objectForKey:@"id"] unsignedIntegerValue];
-
-                 // bids are in DESC order, so iterate the newBids backward and insert each bid to the beginning of its array
-                 for (NSDictionary *bid in [newBids reverseObjectEnumerator])
+                 JYBid *newBid = [[JYBid alloc] initWithDictionary:dict];
+                 JYOrder *order = [weakSelf _orderOfId:newBid.orderId];
+                 if (order != nil)
                  {
-                     NSUInteger orderId = [[bid objectForKey:@"order_id"] unsignedIntegerValue];
-                     NSUInteger orderIndex = [weakSelf _indexOfOrder:orderId];
-                     if (orderIndex != NSUIntegerMax)
-                     {
-                         NSMutableArray *bidsArray = weakSelf.bidMatrix[orderIndex];
-                         [bidsArray insertObject:bid atIndex:0];
-                     }
+                     [order.bids addObject:newBid];
+                     weakSelf.maxBidId = newBid.bidId; // new bids are in ASC order
                  }
              }
 
              [weakSelf.refreshControl endRefreshing];
              [weakSelf.tableView reloadData];
+             NSIndexPath *indexPath = [NSIndexPath indexPathForRow:NSNotFound inSection:0];
+             [weakSelf.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:YES];
              weakSelf.isFetchingData = NO;
          }
          failure:^(AFHTTPRequestOperation *operation, NSError *error) {
@@ -377,34 +357,19 @@ static NSString *const kBidCellIdentifier = @"bidCell";
      ];
 }
 
-- (NSUInteger)_indexOfOrder:(NSUInteger)targetOrderId
-{
-    NSUInteger index = 0;
-    for (; index < self.orderList.count; ++index)
-    {
-        NSUInteger orderId = [[self.orderList[index] objectForKey:@"id"] unsignedIntegerValue];
-        if (orderId == targetOrderId)
-        {
-            return index;
-        }
-    }
-    return NSUIntegerMax;
-}
-
 - (NSDictionary *)_httpBidsParameters
 {
     NSMutableArray *orderIds = [NSMutableArray new];
-    for (NSDictionary *order in [self.orderList objectEnumerator])
+    for (JYOrder *order in self.orderList)
     {
-        NSString *orderId = [order objectForKey:@"id"];
-        [orderIds addObject:orderId];
+        [orderIds addObject:@(order.orderId)];
     }
 
     NSMutableDictionary *parameters = [NSMutableDictionary new];
 
     [parameters setValue:@(self.maxBidId) forKey:@"after"];
     [parameters setValue:orderIds forKey:@"order_id"];
-    
+
     return parameters;
 }
 

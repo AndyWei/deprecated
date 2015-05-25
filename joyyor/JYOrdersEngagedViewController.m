@@ -11,8 +11,10 @@
 #import <RKDropdownAlert/RKDropdownAlert.h>
 
 #import "JYBidCreateViewController.h"
+#import "JYComment.h"
 #import "JYCommentViewCell.h"
 #import "JYCommentsViewController.h"
+#import "JYOrder.h"
 #import "JYOrderItemView.h"
 #import "JYOrdersEngagedViewController.h"
 #import "JYUser.h"
@@ -22,9 +24,7 @@
 
 @property(nonatomic) NSInteger fetchThreadCount;
 @property(nonatomic) NSInteger selectedSection;
-@property(nonatomic) NSMutableArray *commentMatrix;
 @property(nonatomic) NSMutableArray *orderList;
-@property(nonatomic) NSMutableDictionary *bidDict;
 @property(nonatomic) NSUInteger maxOrderId;
 @property(nonatomic) NSUInteger maxBidId;
 @property(nonatomic) NSUInteger maxCommentId;
@@ -49,8 +49,6 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
     self.selectedSection = -1;
 
     self.orderList = [NSMutableArray new];
-    self.commentMatrix = [NSMutableArray new];
-    self.bidDict = [NSMutableDictionary new];
 
     [self _fetchOrders];
     [self _createTableView];
@@ -92,17 +90,14 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
     self.scrollView = self.tableView;
 }
 
-- (void)_presentCreateCommentViewWithOrder:(NSDictionary *)order comments:(NSArray *)comments orginalComment:(NSInteger)origin
+- (void)_presentCreateCommentViewWithOrder:(JYOrder *)order replyTo:(NSInteger)originCommentIndex
 {
-    NSString *orderId = [order objectForKey:@"id"];
-    NSDictionary *bid = [self.bidDict objectForKey:orderId];
-
-    JYCommentsViewController *viewController = [[JYCommentsViewController alloc] initWithOrder:order bid:bid comments:comments];
-    viewController.originalCommentIndex = origin;
+    JYCommentsViewController *viewController = [[JYCommentsViewController alloc] initWithOrder:order];
+    viewController.originalCommentIndex = originCommentIndex;
     [self.navigationController pushViewController:viewController animated:YES];
 }
 
-- (void)_presentBidViewForOrder:(NSDictionary *)order
+- (void)_presentBidViewForOrder:(JYOrder *)order
 {
     JYBidCreateViewController *bidViewController = [JYBidCreateViewController new];
     bidViewController.order = order;
@@ -111,33 +106,16 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
     [self presentViewController:nav animated:YES completion:nil];
 }
 
-- (NSDictionary *)_orderOfId:(NSUInteger)targetOrderId
+- (JYOrder *)_orderOfId:(NSUInteger)targetOrderId
 {
-    NSDictionary *order = nil;
-    for (NSUInteger index = 0; index < self.orderList.count; ++index)
+    for (JYOrder *order in self.orderList)
     {
-        order = self.orderList[index];
-        NSUInteger orderId = [[order objectForKey:@"id"] unsignedIntegerValue];
-        if (orderId == targetOrderId)
+        if (order.orderId == targetOrderId)
         {
-            break;
+            return order;
         }
     }
-    return order;
-}
-
-- (NSUInteger)_indexOfOrder:(NSUInteger)targetOrderId
-{
-    NSUInteger index = 0;
-    for (; index < self.orderList.count; ++index)
-    {
-        NSUInteger orderId = [[self.orderList[index] objectForKey:@"id"] unsignedIntegerValue];
-        if (orderId == targetOrderId)
-        {
-            return index;
-        }
-    }
-    return NSUIntegerMax;
+    return nil;
 }
 
 - (void)_fetchEndCheck
@@ -157,11 +135,8 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
     JYOrderItemView *itemView = (JYOrderItemView *)sender;
     self.selectedSection = itemView.tag;
 
-    NSDictionary *order = (NSDictionary *)self.orderList[self.selectedSection];
-    NSString *orderId = [order objectForKey:@"id"];
-    NSDictionary *bid = [self.bidDict objectForKey:orderId];
-
-    NSString *bidString = bid ? NSLocalizedString(@"Update Bid", nil) : NSLocalizedString(@"Bid", nil);
+    JYOrder *order = self.orderList[self.selectedSection];
+    NSString *bidString = (order.bids.count > 0) ? NSLocalizedString(@"Update Bid", nil) : NSLocalizedString(@"Bid", nil);
 
     UICustomActionSheet *actionSheet = [[UICustomActionSheet alloc] initWithTitle:nil delegate:self buttonTitles:@[NSLocalizedString(@"Cancel", nil), NSLocalizedString(@"Comment", nil), bidString]];
 
@@ -186,8 +161,8 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    NSArray *comments = (NSArray *)self.commentMatrix[section];
-    return comments.count;
+    JYOrder *order = self.orderList[section];
+    return order.comments.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -195,9 +170,8 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
     JYCommentViewCell *cell =
     (JYCommentViewCell *)[tableView dequeueReusableCellWithIdentifier:kCommentCellIdentifier forIndexPath:indexPath];
 
-    NSArray *comments = (NSArray *)[self.commentMatrix objectAtIndex:indexPath.section];
-    NSDictionary *comment = (NSDictionary *)[comments objectAtIndex:indexPath.row];
-    [cell presentComment:comment];
+    JYOrder *order = self.orderList[indexPath.section];
+    [cell presentComment:order.comments[indexPath.row]];
 
     return cell;
 }
@@ -206,38 +180,28 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSArray *comments = (NSArray *)[self.commentMatrix objectAtIndex:indexPath.section];
-    NSDictionary *comment = (NSDictionary *)[comments objectAtIndex:indexPath.row];
-    return [JYCommentViewCell cellHeightForComment:comment];
+    JYOrder *order = self.orderList[indexPath.section];
+    return [JYCommentViewCell cellHeightForComment:order.comments[indexPath.row]];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSDictionary *order = self.orderList[indexPath.section];
-    NSArray *comments = self.commentMatrix[indexPath.section];
+    JYOrder *order = self.orderList[indexPath.section];
 
-    [self _presentCreateCommentViewWithOrder:order comments:comments orginalComment:indexPath.row];
+    [self _presentCreateCommentViewWithOrder:order replyTo:indexPath.row];
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    NSDictionary *order = (NSDictionary *)self.orderList[section];
-    NSString *orderBodyText = [order objectForKey:@"note"];
-
-    NSString *orderId = [order objectForKey:@"id"];
-    NSDictionary *bid = [self.bidDict objectForKey:orderId];
-    return [JYOrderItemView viewHeightForText:orderBodyText withBid:(bid != NULL)];
+    JYOrder *order = self.orderList[section];
+    return [JYOrderItemView viewHeightForBiddedOrder:order];
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-    NSDictionary *order = (NSDictionary *)self.orderList[section];
-    NSString *orderId = [order objectForKey:@"id"];
-    NSDictionary *bid = [self.bidDict objectForKey:orderId];
-
-    NSString *orderBodyText = [order objectForKey:@"note"];
-    CGFloat height = [JYOrderItemView viewHeightForText:orderBodyText withBid:(bid != NULL)];
+    JYOrder *order = self.orderList[section];
+    CGFloat height = [JYOrderItemView viewHeightForBiddedOrder:order];
 
     JYOrderItemView *itemView = [[JYOrderItemView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(tableView.frame), height)];
 
@@ -247,9 +211,9 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 
     // show order
     itemView.tinyLabelsHidden = NO;
-    itemView.bidLabelHidden = (bid == NULL);
+    itemView.bidLabelHidden = (order.bids.count == 0);
     itemView.viewColor = FlatWhite;
-    [itemView presentOrder:order andBid:bid];
+    [itemView presentBiddedOrder:order];
 
     return itemView;
 }
@@ -264,13 +228,11 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
         return;
     }
 
-    NSDictionary *order = (NSDictionary *)self.orderList[self.selectedSection];
-
+    JYOrder *order = self.orderList[self.selectedSection];
 
     if (buttonIndex == 1) // create comment
     {
-        NSArray *comments = self.commentMatrix[self.selectedSection];
-        [self _presentCreateCommentViewWithOrder:order comments:comments orginalComment:-1];
+        [self _presentCreateCommentViewWithOrder:order replyTo:-1];
     }
     else if (buttonIndex == 2) // create or update bid
     {
@@ -310,18 +272,17 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
          success:^(AFHTTPRequestOperation *operation, id responseObject) {
 //             NSLog(@"orders/engaged fetch success responseObject: %@", responseObject);
 
-             NSMutableArray *newOrderList = [NSMutableArray arrayWithArray:(NSArray *)responseObject];
+             NSMutableArray *newOrderList = [NSMutableArray new];
+             for (NSDictionary *dict in responseObject)
+             {
+                 JYOrder *newOrder = [[JYOrder alloc] initWithDictionary:dict];
+                 [newOrderList addObject:newOrder];
+             }
 
              if (newOrderList.count > 0)
              {
-                 NSDictionary *lastOrder = [newOrderList firstObject];
-                 weakSelf.maxOrderId = [[lastOrder objectForKey:@"id"] unsignedIntegerValue];
-
-                 // create comments array for new orders
-                 for (NSUInteger i = 0; i < newOrderList.count; ++i)
-                 {
-                     [weakSelf.commentMatrix insertObject:[NSMutableArray new] atIndex:0];
-                 }
+                 JYOrder *lastOrder = [newOrderList firstObject];
+                 weakSelf.maxOrderId = lastOrder.orderId;
 
                  [newOrderList addObjectsFromArray:weakSelf.orderList];
                  weakSelf.orderList = newOrderList;
@@ -361,18 +322,14 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
          success:^(AFHTTPRequestOperation *operation, id responseObject) {
 
 //             NSLog(@"bids/from_me fetch success responseObject: %@", responseObject);
-             NSArray *bids = (NSArray *)responseObject;
-
-             if (bids.count > 0)
+             for (NSDictionary *dict in responseObject)
              {
-                 // bids are in DESC order
-                 NSDictionary *lastBid = [bids firstObject];
-                 weakSelf.maxBidId = [[lastBid objectForKey:@"id"] unsignedIntegerValue];
-
-                 for (NSDictionary *bid in bids)
+                 JYBid *newBid = [[JYBid alloc] initWithDictionary:dict];
+                 JYOrder *order = [weakSelf _orderOfId:newBid.orderId];
+                 if (order != nil)
                  {
-                     NSString *orderIdString = [bid objectForKey:@"order_id"];
-                     [weakSelf.bidDict setObject:bid forKey:orderIdString];
+                     [order.bids addObject:newBid];
+                     weakSelf.maxBidId = newBid.bidId; // new bids are in ASC order
                  }
              }
 
@@ -401,21 +358,15 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 //             NSLog(@"comments/of/orders fetch success responseObject: %@", responseObject);
              NSArray *comments = (NSArray *)responseObject;
 
-             if (comments.count > 0)
+             for (NSDictionary *dict in comments)
              {
-                 NSDictionary *lastComment = [comments lastObject];
-                 weakSelf.maxCommentId = [[lastComment objectForKey:@"id"] unsignedIntegerValue];
+                 JYComment *newComment = [[JYComment alloc] initWithDictionary:dict];
 
-                 // comments are in ASC order, so iterate it forward and append each comment to its array
-                 for (NSDictionary *comment in comments)
+                 JYOrder *order = [weakSelf _orderOfId:newComment.orderId];
+                 if (order != nil)
                  {
-                     NSUInteger orderId = [[comment objectForKey:@"order_id"] unsignedIntegerValue];
-                     NSUInteger orderIndex = [weakSelf _indexOfOrder:orderId];
-                     if (orderIndex != NSUIntegerMax)
-                     {
-                         NSMutableArray *commentArray = weakSelf.commentMatrix[orderIndex];
-                         [commentArray addObject:comment];
-                     }
+                     [order.comments addObject:newComment];
+                     weakSelf.maxCommentId = newComment.commentId; // new comments are in ASC order
                  }
              }
 
@@ -432,10 +383,9 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 - (NSDictionary *)_httpCommentsParameters
 {
     NSMutableArray *orderIds = [NSMutableArray new];
-    for (NSDictionary *order in self.orderList)
+    for (JYOrder *order in self.orderList)
     {
-        NSString *orderId = [order objectForKey:@"id"];
-        [orderIds addObject:orderId];
+        [orderIds addObject:@(order.orderId)];
     }
     
     NSMutableDictionary *parameters = [NSMutableDictionary new];

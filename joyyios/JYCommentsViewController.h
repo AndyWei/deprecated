@@ -6,12 +6,13 @@
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
+#import "JYOrder.h"
 #import "SLKTextViewController.h"
 
 @interface JYCommentsViewController : SLKTextViewController
 
 @property(nonatomic) NSInteger originalCommentIndex;
 
-- (instancetype)initWithOrder:(NSDictionary *)order bid:(NSDictionary *)bid comments:(NSArray *)commentList;
+- (instancetype)initWithOrder:(JYOrder *)order;
 
 @end

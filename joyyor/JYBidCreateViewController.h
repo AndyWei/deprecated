@@ -6,8 +6,10 @@
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
-@interface JYBidCreateViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
+#import "JYOrder.h"
 
-@property(nonatomic, copy) NSDictionary *order;
+@interface JYBidCreateViewController : UIViewController
+
+@property(nonatomic) JYOrder *order;
 
 @end

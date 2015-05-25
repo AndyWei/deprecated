@@ -8,11 +8,12 @@
 
 #import <MCSwipeTableViewCell/MCSwipeTableViewCell.h>
 
+#import "JYOrder.h"
 
 @interface JYOrderViewCell : MCSwipeTableViewCell
 
-+ (CGFloat)cellHeightForText:(NSString *)text;
-- (void)presentOrder:(NSDictionary *)order;
++ (CGFloat)cellHeightForOrder:(JYOrder *)order;
+- (void)presentOrder:(JYOrder *)order;
 - (void)updateCommentsCount:(NSUInteger)count;
 
 @end

@@ -18,9 +18,9 @@
 
 @implementation JYOrderViewCell
 
-+ (CGFloat)cellHeightForText:(NSString *)text
++ (CGFloat)cellHeightForOrder:(JYOrder *)order
 {
-    return [JYOrderItemView viewHeightForText:text];
+    return [JYOrderItemView viewHeightForOrder:order];
 }
 
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
@@ -46,7 +46,7 @@
     [self.itemView layoutSubviews];
 }
 
-- (void)presentOrder:(NSDictionary *)order
+- (void)presentOrder:(JYOrder *)order
 {
     [self.itemView presentOrder:order];
 }

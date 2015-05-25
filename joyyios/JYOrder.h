@@ -50,4 +50,7 @@
 @property(nonatomic) NSMutableArray *bids;
 @property(nonatomic) NSMutableArray *comments;
 
+@property(nonatomic, readonly) NSString *createTimeString;
+@property(nonatomic, readonly) NSString *priceString;
+
 @end

@@ -9,7 +9,6 @@
 @interface JYBid : NSObject
 
 - (instancetype)initWithDictionary:(NSDictionary *)dict;
-- (NSString *)expireTimeString;
 
 @property(nonatomic) NSInteger  status;
 @property(nonatomic) NSUInteger bidId;
@@ -17,7 +16,14 @@
 @property(nonatomic) NSUInteger userId;
 @property(nonatomic) NSUInteger price;
 @property(nonatomic) NSUInteger expireTime;
+@property(nonatomic) NSString *note;
 
-@property(nonatomic, copy) NSString*  note;
+@property(nonatomic, readonly) NSString *expireTimeString;
+@property(nonatomic, readonly) NSString *priceString;
+
+// Optional properties
+@property(nonatomic) NSString *username;
+@property(nonatomic) NSUInteger userRatingTotal;
+@property(nonatomic) NSUInteger userRatingCount;
 
 @end

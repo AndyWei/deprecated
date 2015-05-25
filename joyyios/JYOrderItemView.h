@@ -8,13 +8,16 @@
 
 @import CoreLocation;
 
+#import "JYBid.h"
+#import "JYOrder.h"
+
 @interface JYOrderItemView : UIControl
 
-+ (CGFloat)viewHeightForText:(NSString *)text;
-+ (CGFloat)viewHeightForText:(NSString *)text withBid:(BOOL)bidded;
++ (CGFloat)viewHeightForOrder:(JYOrder *)order;
++ (CGFloat)viewHeightForBiddedOrder:(JYOrder *)order;
 
-- (void)presentOrder:(NSDictionary *)order;
-- (void)presentOrder:(NSDictionary *)order andBid:(NSDictionary *)bid;
+- (void)presentOrder:(JYOrder *)order;
+- (void)presentBiddedOrder:(JYOrder *)order;
 
 @property(nonatomic) BOOL tinyLabelsHidden;
 @property(nonatomic) BOOL bidLabelHidden;

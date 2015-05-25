@@ -23,6 +23,8 @@ static const CGFloat kTinyFontSize = 13.0f;
 @interface JYBidViewCell ()
 
 @property(nonatomic) AXRatingView *ratingView;
+@property(nonatomic) UILabel *bidderNameLabel;
+@property(nonatomic) UILabel *priceLabel;
 @property(nonatomic) UILabel *expireTimeLabel;
 @property(nonatomic) UILabel *ratingCountLabel;
 
@@ -54,48 +56,13 @@ static const CGFloat kTinyFontSize = 13.0f;
     return self;
 }
 
-- (void)setExpireTime:(NSTimeInterval)expireAt
+- (void)presentBid:(JYBid *)bid;
 {
-    NSDate *expireTime = [NSDate dateWithTimeIntervalSinceReferenceDate:expireAt];
-    NSTimeInterval secondsBetween = [expireTime timeIntervalSinceNow];
+    self.bidderNameLabel.text = bid.username;
+    self.expireTimeLabel.text = bid.expireTimeString;
+    self.priceLabel.text = bid.priceString;
 
-    if (secondsBetween < 0)
-    {
-        self.expireTimeLabel.text = NSLocalizedString(@"expired", nil);
-        return;
-    }
-
-    NSString *expireString = NSLocalizedString(@"expire in", nil);
-    int numberOfDays = secondsBetween / 86400;
-    if (numberOfDays > 0)
-    {
-        NSString *days = (numberOfDays == 1) ? NSLocalizedString(@"day", nil) : NSLocalizedString(@"days", nil);
-
-        self.expireTimeLabel.text = [NSString stringWithFormat:@"%@ %d %@", expireString, numberOfDays, days];
-        return;
-    }
-
-    int numberOfHours = secondsBetween / 3600;
-    if (numberOfHours > 0)
-    {
-        NSString *hours = (numberOfHours == 1) ? NSLocalizedString(@"hour", nil) : NSLocalizedString(@"hours", nil);
-
-        self.expireTimeLabel.text = [NSString stringWithFormat:@"%@ %d %@", expireString, numberOfHours, hours];
-        return;
-    }
-
-    int numberOfMinutes = secondsBetween / 60;
-    if (numberOfMinutes > 0)
-    {
-        NSString *minutes = (numberOfMinutes == 1) ? NSLocalizedString(@"min", nil) : NSLocalizedString(@"mins", nil);
-
-        self.expireTimeLabel.text = [NSString stringWithFormat:@"%@ %d %@", expireString, numberOfMinutes, minutes];
-        return;
-    }
-
-    int numberOfSeconds = (int)secondsBetween;
-    NSString *seconds = (numberOfSeconds == 1) ? NSLocalizedString(@"sec", nil) : NSLocalizedString(@"secs", nil);
-    self.expireTimeLabel.text = [NSString stringWithFormat:@"%@ %d %@", expireString, numberOfSeconds, seconds];
+    [self setRatingTotalScore:bid.userRatingTotal count:bid.userRatingCount];
 }
 
 - (void)setRatingTotalScore:(CGFloat)score count:(NSUInteger)count

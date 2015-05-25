@@ -23,7 +23,7 @@ static const CGFloat kFontSizeComment = 16.0f;
 
 @implementation JYCommentViewCell
 
-+ (CGFloat)cellHeightForComment:(NSDictionary *)comment
++ (CGFloat)cellHeightForComment:(JYComment *)comment
 {
     CGFloat screenWidth = CGRectGetWidth([[UIScreen mainScreen] applicationFrame]);
     CGSize maximumSize = CGSizeMake(screenWidth - kLeftMargin - kRightMargin, 10000);
@@ -36,26 +36,17 @@ static const CGFloat kFontSizeComment = 16.0f;
         dummyLabel.numberOfLines = 0;
         dummyLabel.lineBreakMode = NSLineBreakByWordWrapping;
     }
-    dummyLabel.text = [[self class ] _textOf:comment];
+    dummyLabel.text = comment.contentString;
     CGSize expectSize = [dummyLabel sizeThatFits:maximumSize];
     CGFloat height = expectSize.height + kTopMargin;
 
     return height;
 }
 
-+ (NSString *)_textOf:(NSDictionary *)comment
+- (void)presentComment:(JYComment *)comment
 {
-    NSString *fromUsername = [comment objectForKey:@"username"];
-    NSString *body = [comment objectForKey:@"body"];
-
-    return [NSString stringWithFormat:@"%@: %@", fromUsername, body];
-}
-
-- (void)presentComment:(NSDictionary *)comment
-{
-    NSString *labelText = [[self class ] _textOf:comment];
-    NSString *fromUsername = [comment objectForKey:@"username"];
-    NSRange range = [labelText rangeOfString:fromUsername];
+    NSString *labelText = comment.contentString;
+    NSRange range = [labelText rangeOfString:comment.username];
 
     // Bold the username
     [self.commentLabel setText:labelText afterInheritingLabelAttributesAndConfiguringWithBlock:^NSMutableAttributedString *(NSMutableAttributedString *mutableAttributedString) {
@@ -71,7 +62,7 @@ static const CGFloat kFontSizeComment = 16.0f;
     }];
 
     // Add link to username
-    NSString *url = [NSString stringWithFormat:@"user://%@", fromUsername];
+    NSString *url = [NSString stringWithFormat:@"user://%@", comment.username];
     [self.commentLabel addLinkToURL:[NSURL URLWithString:url] withRange:range];
 
     // Add link to the handles in body text. E.g., @mike @jack

@@ -18,7 +18,7 @@
 @interface JYOrdersTodoViewController ()
 
 @property(nonatomic) BOOL isFetchingData;
-@property(nonatomic) NSArray *ordersList;
+@property(nonatomic) NSMutableArray *orderList;
 @property(nonatomic) UITableView *tableView;
 @property(nonatomic) UIRefreshControl *refreshControl;
 
@@ -51,7 +51,7 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
     [super viewDidLoad];
     [self setTitleText:NSLocalizedString(@"Orders Toto", nil)];
 
-    self.ordersList = [NSArray new];
+    self.orderList = [NSMutableArray new];
     self.isFetchingData = NO;
     [self _fetchData];
     [self _createTableView];
@@ -101,7 +101,7 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return [self.ordersList count];
+    return [self.orderList count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -109,14 +109,14 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
     JYOrderViewCell *cell =
     (JYOrderViewCell *)[tableView dequeueReusableCellWithIdentifier:kOrderCellIdentifier forIndexPath:indexPath];
 
-    NSDictionary *order = (NSDictionary *)[self.ordersList objectAtIndex:indexPath.row];
+    JYOrder *order = self.orderList[indexPath.row];
     [cell presentOrder:order];
 
     [self _createSwipeViewForCell:cell andOrder:order];
     return cell;
 }
 
-- (void)_createSwipeViewForCell:(JYOrderViewCell *)cell andOrder:(NSDictionary *)order
+- (void)_createSwipeViewForCell:(JYOrderViewCell *)cell andOrder:(JYOrder *)order
 {
     __weak typeof(self) weakSelf = self;
     [cell setSwipeGestureWithView:[[self class] sharedSwipeBackgroundLabel]
@@ -131,7 +131,7 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
     cell.firstTrigger = 0.20;
 }
 
-- (void)_startWorkOn:(NSDictionary *)order
+- (void)_startWorkOn:(JYOrder *)order
 {
 
 }
@@ -140,19 +140,17 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (self.ordersList.count == 0)
+    if (self.orderList.count == 0)
     {
         return 100;
     }
 
-    NSDictionary *order = (NSDictionary *)[self.ordersList objectAtIndex:indexPath.row];
-    NSString *note = [order objectForKey:@"note"];
-    return [JYOrderViewCell cellHeightForText:note];
+    return [JYOrderViewCell cellHeightForOrder:self.orderList[indexPath.row]];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    [self _startWorkOn:(NSDictionary *)self.ordersList[indexPath.row]];
+    [self _startWorkOn:self.orderList[indexPath.row]];
     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
@@ -182,7 +180,13 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
 
              [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
 
-             weakSelf.ordersList = (NSArray *)responseObject;
+             weakSelf.orderList = [NSMutableArray new];
+             for (NSDictionary *dict in responseObject)
+             {
+                 JYOrder *newOrder = [[JYOrder alloc] initWithDictionary:dict];
+                 [weakSelf.orderList addObject:newOrder];  // won orders are in DESC, so just add
+             }
+
              [weakSelf.tableView reloadData];
              [weakSelf.refreshControl endRefreshing];
              weakSelf.isFetchingData = NO;

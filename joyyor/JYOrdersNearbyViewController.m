@@ -112,7 +112,7 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
     JYOrderViewCell *cell =
     (JYOrderViewCell *)[tableView dequeueReusableCellWithIdentifier:kOrderCellIdentifier forIndexPath:indexPath];
 
-    NSDictionary *order = (NSDictionary *)[self.orderList objectAtIndex:indexPath.row];
+    JYOrder *order = self.orderList[indexPath.row];
     [cell presentOrder:order];
 
     NSUInteger count = [[self.commentsCountList objectAtIndex:indexPath.row] unsignedIntegerValue];
@@ -122,7 +122,7 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
     return cell;
 }
 
-- (void)_createSwipeViewForCell:(JYOrderViewCell *)cell andOrder:(NSDictionary *)order
+- (void)_createSwipeViewForCell:(JYOrderViewCell *)cell andOrder:(JYOrder *)order
 {
     __weak typeof(self) weakSelf = self;
     [cell setSwipeGestureWithView:[[self class] sharedSwipeBackgroundLabel]
@@ -137,7 +137,7 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
     cell.firstTrigger = 0.20;
 }
 
-- (void)_presentBidViewForOrder:(NSDictionary *)order
+- (void)_presentBidViewForOrder:(JYOrder *)order
 {
     JYBidCreateViewController *bidViewController = [JYBidCreateViewController new];
     bidViewController.order = order;
@@ -155,14 +155,13 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
         return 100;
     }
 
-    NSDictionary *order = (NSDictionary *)[self.orderList objectAtIndex:indexPath.row];
-    NSString *note = [order objectForKey:@"note"];
-    return [JYOrderViewCell cellHeightForText:note];
+    JYOrder *order = self.orderList[indexPath.row];
+    return [JYOrderViewCell cellHeightForOrder:order];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    [self _presentBidViewForOrder:(NSDictionary *)self.orderList[indexPath.row]];
+    [self _presentBidViewForOrder:self.orderList[indexPath.row]];
     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
@@ -189,14 +188,20 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
     [manager GET:url
        parameters:parameters
           success:^(AFHTTPRequestOperation *operation, id responseObject) {
-              NSLog(@"orders/nearby fetch success responseObject: %@", responseObject);
+//              NSLog(@"orders/nearby fetch success responseObject: %@", responseObject);
 
-              NSMutableArray *newOrderList = [NSMutableArray arrayWithArray:(NSArray *)responseObject];
+              NSMutableArray *newOrderList = [NSMutableArray new];
+              for (NSDictionary *dict in responseObject)
+              {
+                  JYOrder *newOrder = [[JYOrder alloc] initWithDictionary:dict];
+                  [newOrderList addObject:newOrder];
+              }
 
               if (newOrderList.count > 0)
               {
-                  id order = [newOrderList firstObject];
-                  weakSelf.maxOrderId = [[order objectForKey:@"id"] unsignedIntegerValue];
+                  JYOrder *lastOrder = [newOrderList firstObject];
+                  weakSelf.maxOrderId = lastOrder.orderId;
+
                   [newOrderList addObjectsFromArray:weakSelf.orderList];
                   weakSelf.orderList = newOrderList;
               }
@@ -258,10 +263,9 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
 - (NSDictionary *)_httpParametersForCommentsCount
 {
     NSMutableArray *orderIds = [NSMutableArray new];
-    for (NSDictionary *order in [self.orderList objectEnumerator])
+    for (JYOrder *order in self.orderList)
     {
-        NSString *orderId = [order objectForKey:@"id"];
-        [orderIds addObject:orderId];
+        [orderIds addObject:@(order.orderId)];
     }
 
     NSMutableDictionary *parameters = [NSMutableDictionary new];

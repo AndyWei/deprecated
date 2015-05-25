@@ -24,6 +24,16 @@
             self.expireTime = [[dict objectForKey:@"expire_at"] unsignedIntegerValue];
             self.status = [[dict objectForKey:@"status"] integerValue];
             self.note = [dict objectForKey:@"note"];
+
+            // Optional properties
+            self.username = [dict objectForKey:@"username"];
+
+            NSString *str = nil;
+            str = [dict objectForKey:@"rating_total"];
+            self.userRatingTotal = [str isKindOfClass:[NSString class]] ? [str unsignedIntegerValue] : 0.0;
+
+            str = [dict objectForKey:@"rating_count"];
+            self.userRatingCount = [str isKindOfClass:[NSString class]] ? [str unsignedIntegerValue] : 0.0;
         }
     }
     return self;
@@ -67,6 +77,11 @@
     int numberOfSeconds = (int)secondsBetween;
     NSString *seconds = (numberOfSeconds == 1) ? NSLocalizedString(@"sec", nil) : NSLocalizedString(@"secs", nil);
     return [NSString stringWithFormat:@"%@ %d %@", expireString, numberOfSeconds, seconds];
+}
+
+- (NSString *)priceString
+{
+    return [NSString stringWithFormat:@"$%tu", self.price];
 }
 
 @end

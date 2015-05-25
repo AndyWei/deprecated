@@ -8,9 +8,11 @@
 
 #import <TTTAttributedLabel/TTTAttributedLabel.h>
 
+#import "JYComment.h"
+
 @interface JYCommentViewCell : UITableViewCell <TTTAttributedLabelDelegate>
 
-+ (CGFloat)cellHeightForComment:(NSDictionary *)comment;
-- (void)presentComment:(NSDictionary *)comment;
++ (CGFloat)cellHeightForComment:(JYComment *)comment;
+- (void)presentComment:(JYComment *)comment;
 
 @end

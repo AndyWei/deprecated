@@ -116,16 +116,16 @@ static JYOrder *_currentOrder;
 
     NSString *str = nil;
     str = [dict objectForKey:@"end_point_lat"];
-    _endPointLat = str ? [str doubleValue] : 0.0;
+    _endPointLat = [str isKindOfClass:[NSString class]] ? [str doubleValue] : 0.0;
 
     str = [dict objectForKey:@"end_point_lon"];
-    _endPointLon = str ? [str doubleValue] : 0.0;
+    _endPointLon = [str isKindOfClass:[NSString class]] ? [str doubleValue] : 0.0;
 
     str = [dict objectForKey:@"winner_id"];
-    _winnnerId = str ? [str unsignedIntegerValue] : 0;
+    _winnnerId = [str isKindOfClass:[NSString class]] ? [str unsignedIntegerValue] : 0.0;
 
     str = [dict objectForKey:@"final_price"];
-    _finalPrice = str ? [str unsignedIntegerValue] : 0;
+    _finalPrice = [str isKindOfClass:[NSString class]] ? [str unsignedIntegerValue] : 0.0;
 }
 
 - (NSDictionary *)httpParameters
@@ -154,6 +154,46 @@ static JYOrder *_currentOrder;
     }
 
     return parameters;
+}
+
+- (NSString *)priceString
+{
+    return [NSString stringWithFormat:@"$%tu", self.price];
+}
+
+- (NSString *)createTimeString
+{
+    NSDate *now = [NSDate date];
+    NSTimeInterval secondsBetween = [now timeIntervalSinceDate:self.createdAt];
+
+    NSString *ago = NSLocalizedString(@"ago", nil);
+    int numberOfDays = secondsBetween / 86400;
+    if (numberOfDays > 0)
+    {
+        NSString *days = NSLocalizedString(@"d", nil);
+
+        return [NSString stringWithFormat:@"%d %@ %@", numberOfDays, days, ago];
+    }
+
+    int numberOfHours = secondsBetween / 3600;
+    if (numberOfHours > 0)
+    {
+        NSString *hours = NSLocalizedString(@"h", nil);
+
+        return [NSString stringWithFormat:@"%d %@ %@", numberOfHours, hours, ago];
+    }
+
+    int numberOfMinutes = secondsBetween / 60;
+    if (numberOfMinutes > 0)
+    {
+        NSString *minutes = NSLocalizedString(@"m", nil);
+
+        return [NSString stringWithFormat:@"%d %@ %@", numberOfMinutes, minutes, ago];
+    }
+
+    int numberOfSeconds = (int)secondsBetween;
+    NSString *seconds = NSLocalizedString(@"s", nil);
+    return [NSString stringWithFormat:@"%d %@ %@", numberOfSeconds, seconds, ago];
 }
 
 @end

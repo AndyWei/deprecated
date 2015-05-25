@@ -6,15 +6,12 @@
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
+#import "JYBid.h"
 
 @interface JYBidViewCell : UITableViewCell
 
 + (CGFloat)cellHeight;
-- (void)setExpireTime:(NSTimeInterval)expireAt;
-- (void)setRatingTotalScore:(CGFloat)score count:(NSUInteger)count;
 
-@property(nonatomic) UILabel *bidderNameLabel;
-@property(nonatomic) UILabel *priceLabel;
-
+- (void)presentBid:(JYBid *)bid;
 
 @end
