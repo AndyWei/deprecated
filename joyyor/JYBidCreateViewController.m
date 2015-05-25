@@ -73,7 +73,6 @@ NSString *const kOrderBidCellIdentifier = @"orderBidCell";
     CGFloat height = [JYOrderItemView viewHeightForOrder:self.order];
     CGFloat width = CGRectGetWidth([[UIScreen mainScreen] applicationFrame]);
     self.orderView = [[JYOrderItemView alloc] initWithFrame:CGRectMake(0, statusBarHeight + navBarHeight, width, height)];
-    self.orderView.viewColor = JoyyWhite;
     [self.view addSubview:self.orderView];
 }
 

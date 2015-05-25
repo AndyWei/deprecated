@@ -21,9 +21,11 @@
             self.orderId = [[dict objectForKey:@"order_id"] unsignedIntegerValue];
             self.userId = [[dict objectForKey:@"user_id"] unsignedIntegerValue];
             self.price = [[dict objectForKey:@"price"] unsignedIntegerValue];
-            self.expireTime = [[dict objectForKey:@"expire_at"] unsignedIntegerValue];
             self.status = [[dict objectForKey:@"status"] integerValue];
             self.note = [dict objectForKey:@"note"];
+
+            NSUInteger expireTimestamp = [[dict objectForKey:@"expire_at"] unsignedIntegerValue];
+            self.expireTime = [NSDate dateWithTimeIntervalSinceReferenceDate:expireTimestamp];
 
             // Optional properties
             self.username = [dict objectForKey:@"username"];
@@ -39,10 +41,15 @@
     return self;
 }
 
+- (BOOL)expired
+{
+    NSTimeInterval secondsBetween = [self.expireTime timeIntervalSinceNow];
+    return (secondsBetween < 0);
+}
+
 - (NSString *)expireTimeString
 {
-    NSDate *expireTime = [NSDate dateWithTimeIntervalSinceReferenceDate:self.expireTime];
-    NSTimeInterval secondsBetween = [expireTime timeIntervalSinceNow];
+    NSTimeInterval secondsBetween = [self.expireTime timeIntervalSinceNow];
 
     if (secondsBetween < 0)
     {

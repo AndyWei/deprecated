@@ -183,7 +183,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
     JYOrderItemView *itemView = [[JYOrderItemView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(tableView.frame), height)];
     itemView.tinyLabelsHidden = NO;
     itemView.bidLabelHidden = (self.order.bids.count == 0);
-    itemView.viewColor = FlatWhite;
+    itemView.viewColor = JoyyWhite;
     [itemView presentBiddedOrder:self.order];
 
     return itemView;
@@ -220,6 +220,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
           success:^(AFHTTPRequestOperation *operation, id responseObject) {
 //              NSLog(@"Comment POST Success responseObject: %@", responseObject);
 
+              [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationDidCreateComment object:nil];
               [weakSelf _fetchComments];
           }
           failure:^(AFHTTPRequestOperation *operation, NSError *error) {

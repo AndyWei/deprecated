@@ -71,7 +71,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 {
     self.tableView = [[UITableView alloc] initWithFrame:self.view.frame style:UITableViewStyleGrouped];
     self.tableView.separatorColor = ClearColor;
-    self.tableView.backgroundColor = FlatGray;
+    self.tableView.backgroundColor = FlatWhite;
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
     [self.tableView registerClass:[JYCommentViewCell class] forCellReuseIdentifier:kCommentCellIdentifier];
@@ -212,7 +212,6 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
     // show order
     itemView.tinyLabelsHidden = NO;
     itemView.bidLabelHidden = (order.bids.count == 0);
-    itemView.viewColor = FlatWhite;
     [itemView presentBiddedOrder:order];
 
     return itemView;

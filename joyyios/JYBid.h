@@ -15,9 +15,10 @@
 @property(nonatomic) NSUInteger orderId;
 @property(nonatomic) NSUInteger userId;
 @property(nonatomic) NSUInteger price;
-@property(nonatomic) NSUInteger expireTime;
+@property(nonatomic) NSDate *expireTime;
 @property(nonatomic) NSString *note;
 
+@property(nonatomic, readonly) BOOL expired;
 @property(nonatomic, readonly) NSString *expireTimeString;
 @property(nonatomic, readonly) NSString *priceString;
 

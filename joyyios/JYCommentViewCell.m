@@ -75,7 +75,7 @@ static const CGFloat kFontSizeComment = 16.0f;
     if (self)
     {
         self.opaque = YES;
-        self.backgroundColor = JoyyWhite;
+        self.backgroundColor = FlatWhite;
 
         [self _createCommentLabel];
     }
@@ -114,7 +114,7 @@ static const CGFloat kFontSizeComment = 16.0f;
     self.commentLabel = [[TTTAttributedLabel alloc] initWithFrame:frame];
     self.commentLabel.delegate = self;
     self.commentLabel.enabledTextCheckingTypes = NSTextCheckingTypeLink;
-    self.commentLabel.backgroundColor = JoyyWhite;
+    self.commentLabel.backgroundColor = FlatWhite;
     self.commentLabel.font = [UIFont systemFontOfSize:kFontSizeComment];
     self.commentLabel.lineBreakMode = NSLineBreakByWordWrapping;
     self.commentLabel.numberOfLines = 0;
