@@ -148,7 +148,8 @@ exports.register = function (server, options, next) {
                     order_id: Joi.string().regex(/^[0-9]+$/).max(19),
                     price: Joi.number().precision(2).min(0).max(100000000),
                     note: Joi.string().max(1000),
-                    expire_at: Joi.number().min(0).default(0)
+                    expire_at: Joi.number().min(0),
+                    old_bid_id: Joi.string().regex(/^[0-9]+$/).max(19).default('0')
                 }
             }
         },
@@ -276,7 +277,30 @@ internals.createBidHandler = function (request, reply) {
 
                 next(null, result.rows[0].id);
             });
-        }
+        },
+        oldBidId: ['bidId', function (next) {
+
+            if (p.old_bid_id === '0') {
+                return next(null, p.old_bid_id);
+            }
+
+            var queryConfig = {
+                name: 'bids_revoke',
+                text: 'UPDATE bids SET status = 20, updated_at = now() ' +
+                      'WHERE id = $1 AND user_id = $2 AND status = 0 AND deleted = false',
+                values: [p.old_bid_id, userId]
+            };
+
+            request.pg.client.query(queryConfig, function (err) {
+
+                if (err) {
+                    request.pg.kill = true;
+                    return next(err);
+                }
+
+                next(null, p.old_bid_id);
+            });
+        }]
     }, function (err, results) {
 
         if (err) {

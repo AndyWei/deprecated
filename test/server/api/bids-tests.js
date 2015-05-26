@@ -165,7 +165,8 @@ lab.experiment('Bids POST: ', function () {
             payload: {
                 order_id: '3',
                 price: 9.55,
-                note: 'I love this job!'
+                note: 'I love this job!',
+                expire_at: 100000000
             },
             credentials: jack
         };
