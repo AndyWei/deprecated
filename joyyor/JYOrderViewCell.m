@@ -29,12 +29,12 @@
     if (self)
     {
         self.opaque = YES;
-        self.backgroundColor = [UIColor whiteColor];
+        self.backgroundColor = FlatRed;
 
         CGFloat width = CGRectGetWidth([[UIScreen mainScreen] applicationFrame]);
 
         self.itemView = [[JYOrderItemView alloc] initWithFrame:CGRectMake(0, 0, width, 100)];
-        self.itemView.viewColor = [UIColor whiteColor];
+        self.itemView.bidLabelHidden = YES;
         [self addSubview:self.itemView];
     }
     return self;
@@ -43,12 +43,18 @@
 - (void)layoutSubviews
 {
     [super layoutSubviews];
+    self.itemView.height = self.height;
     [self.itemView layoutSubviews];
 }
 
 - (void)presentOrder:(JYOrder *)order
 {
     [self.itemView presentOrder:order];
+}
+
+- (void)presentBiddedOrder:(JYOrder *)order
+{
+    [self.itemView presentBiddedOrder:order];
 }
 
 - (void)updateCommentsCount:(NSUInteger)count

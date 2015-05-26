@@ -7,27 +7,19 @@
 //
 
 #import <AFNetworking/AFNetworking.h>
-#import <KVNProgress/KVNProgress.h>
-#import <RKDropdownAlert/RKDropdownAlert.h>
 
 #import "JYOrdersUnpaidViewController.h"
 #import "JYBidViewCell.h"
 #import "JYOrderItemView.h"
 #import "JYUser.h"
+#import "UICustomActionSheet.h"
 
 @interface JYOrdersUnpaidViewController ()
 
-@property(nonatomic) BOOL isFetchingData;
 @property(nonatomic) NSIndexPath *selectedIndexPath;
-@property(nonatomic) NSMutableArray *orderList;
-@property(nonatomic) NSUInteger maxBidId;
-@property(nonatomic) NSUInteger maxOrderId;
-@property(nonatomic) UITableView *tableView;
-@property(nonatomic) UIRefreshControl *refreshControl;
-
-+ (UILabel *)sharedAcceptLabel;
 
 @end
+
 
 static NSString *const kBidCellIdentifier = @"bidCell";
 
@@ -54,14 +46,10 @@ static NSString *const kBidCellIdentifier = @"bidCell";
     [super viewDidLoad];
     [self setTitleText:NSLocalizedString(@"My Orders", nil)];
 
-    self.maxBidId = 0;
-    self.maxOrderId = 0;
-    self.orderList = [NSMutableArray new];
-    self.isFetchingData = NO;
     self.selectedIndexPath = nil;
 
-    [self _fetchOrders];
     [self _createTableView];
+    [self _fetchOrders];
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_fetchOrders) name:kNotificationDidCreateOrder object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_fetchOrders) name:kNotificationDidReceiveBid object:nil];
@@ -94,18 +82,6 @@ static NSString *const kBidCellIdentifier = @"bidCell";
     [self.refreshControl addTarget:self action:@selector(_fetchOrders) forControlEvents:UIControlEventValueChanged];
 
     tableViewController.refreshControl = self.refreshControl;
-}
-
-- (JYOrder *)_orderOfId:(NSUInteger)targetOrderId
-{
-    for (JYOrder *order in self.orderList)
-    {
-        if (order.orderId == targetOrderId)
-        {
-            return order;
-        }
-    }
-    return nil;
 }
 
 #pragma mark - UITableViewDataSource
@@ -220,6 +196,7 @@ static NSString *const kBidCellIdentifier = @"bidCell";
 
 - (void)_acceptBid:(NSUInteger)bidId
 {
+    [self networkThreadBegin];
     NSDictionary *parameters = @{@"id" : @(bidId)};
 
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
@@ -228,33 +205,30 @@ static NSString *const kBidCellIdentifier = @"bidCell";
 
     NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"bids/accept"];
 
-    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
-
     __weak typeof(self) weakSelf = self;
     [manager POST:url
       parameters:parameters
          success:^(AFHTTPRequestOperation *operation, id responseObject) {
              NSLog(@"bids/accept post success responseObject: %@", responseObject);
 
-             [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
              [weakSelf _fetchBidsForOrders];
+             [weakSelf networkThreadEnd];
          }
          failure:^(AFHTTPRequestOperation *operation, NSError *error) {
 
              NSLog(@"bids/accept post error: %@", error);
-
-             [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+             [weakSelf networkThreadEnd];
          }
      ];
 }
 
 - (void)_fetchOrders
 {
-    if (self.isFetchingData)
+    if (self.networkThreadCount > 0)
     {
         return;
     }
-    self.isFetchingData = YES;
+    [self networkThreadBegin];
 
     NSDictionary *parameters = @{@"after" : @(self.maxOrderId)};
 
@@ -264,16 +238,11 @@ static NSString *const kBidCellIdentifier = @"bidCell";
 
     NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"orders/unpaid"];
 
-    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
-
     __weak typeof(self) weakSelf = self;
     [manager GET:url
       parameters:parameters
          success:^(AFHTTPRequestOperation *operation, id responseObject) {
 //             NSLog(@"orders/unpaid fetch success responseObject: %@", responseObject);
-
-             [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-             [weakSelf.refreshControl endRefreshing];
 
              NSMutableArray *newOrderList = [NSMutableArray new];
              for (NSDictionary *dict in responseObject)
@@ -291,30 +260,21 @@ static NSString *const kBidCellIdentifier = @"bidCell";
                  weakSelf.orderList = newOrderList;
              }
 
-             weakSelf.isFetchingData = NO;
-
              if (weakSelf.orderList.count > 0)
              {
                  [weakSelf _fetchBidsForOrders];
              }
+             [weakSelf networkThreadEnd];
          }
          failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-             [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-             [weakSelf.refreshControl endRefreshing];
-             weakSelf.isFetchingData = NO;
+             [weakSelf networkThreadEnd];
          }
      ];
 }
 
 - (void)_fetchBidsForOrders
 {
-    if (self.isFetchingData)
-    {
-        return;
-    }
-    self.isFetchingData = YES;
-
-    NSDictionary *parameters = [self _httpBidsParameters];
+    [self networkThreadBegin];
 
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYUser currentUser].token];
@@ -326,16 +286,14 @@ static NSString *const kBidCellIdentifier = @"bidCell";
 
     __weak typeof(self) weakSelf = self;
     [manager GET:url
-      parameters:parameters
+      parameters:[self _httpBidsParameters]
          success:^(AFHTTPRequestOperation *operation, id responseObject) {
 
-             [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-
-//             NSLog(@"bids/orders fetch success responseObject: %@", responseObject);
+             //  NSLog(@"bids/orders fetch success responseObject: %@", responseObject);
              for (NSDictionary *dict in responseObject)
              {
                  JYBid *newBid = [[JYBid alloc] initWithDictionary:dict];
-                 JYOrder *order = [weakSelf _orderOfId:newBid.orderId];
+                 JYOrder *order = [weakSelf orderOfId:newBid.orderId];
                  if (order != nil)
                  {
                      [order.bids addObject:newBid];
@@ -343,16 +301,12 @@ static NSString *const kBidCellIdentifier = @"bidCell";
                  }
              }
 
-             [weakSelf.refreshControl endRefreshing];
-             [weakSelf.tableView reloadData];
+             [weakSelf networkThreadEnd];
              NSIndexPath *indexPath = [NSIndexPath indexPathForRow:NSNotFound inSection:0];
              [weakSelf.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:YES];
-             weakSelf.isFetchingData = NO;
          }
          failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-             [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-             [weakSelf.refreshControl endRefreshing];
-             weakSelf.isFetchingData = NO;
+             [weakSelf networkThreadEnd];
          }
      ];
 }

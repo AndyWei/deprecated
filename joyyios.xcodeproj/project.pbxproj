@@ -97,6 +97,8 @@
 		D6C82B661B12551500876F57 /* JYBid.m in Sources */ = {isa = PBXBuildFile; fileRef = D6C82B641B12551500876F57 /* JYBid.m */; };
 		D6C82B691B12553D00876F57 /* JYComment.m in Sources */ = {isa = PBXBuildFile; fileRef = D6C82B681B12553D00876F57 /* JYComment.m */; };
 		D6C82B6A1B12553D00876F57 /* JYComment.m in Sources */ = {isa = PBXBuildFile; fileRef = D6C82B681B12553D00876F57 /* JYComment.m */; };
+		D6C82B731B13EB1100876F57 /* JYOrdersBaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6C82B721B13EB1100876F57 /* JYOrdersBaseViewController.m */; };
+		D6C82B741B13EB1100876F57 /* JYOrdersBaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6C82B721B13EB1100876F57 /* JYOrdersBaseViewController.m */; };
 		D6F4A0511AF6A156001A3C89 /* AppConst.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F4A0501AF6A156001A3C89 /* AppConst.m */; };
 		D6F4A0521AF6A156001A3C89 /* AppConst.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F4A0501AF6A156001A3C89 /* AppConst.m */; };
 /* End PBXBuildFile section */
@@ -211,6 +213,8 @@
 		D6C82B641B12551500876F57 /* JYBid.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYBid.m; sourceTree = "<group>"; };
 		D6C82B671B12553D00876F57 /* JYComment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYComment.h; sourceTree = "<group>"; };
 		D6C82B681B12553D00876F57 /* JYComment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYComment.m; sourceTree = "<group>"; };
+		D6C82B711B13EB1100876F57 /* JYOrdersBaseViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYOrdersBaseViewController.h; sourceTree = "<group>"; };
+		D6C82B721B13EB1100876F57 /* JYOrdersBaseViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYOrdersBaseViewController.m; sourceTree = "<group>"; };
 		D6F4A04F1AF6A12D001A3C89 /* AppConst.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppConst.h; sourceTree = "<group>"; };
 		D6F4A0501AF6A156001A3C89 /* AppConst.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppConst.m; sourceTree = "<group>"; };
 		F67CA15F6F0CAF970CBFB660 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
@@ -280,6 +284,8 @@
 				D6B2F0661AD1B5EC009601B0 /* JYMapDashBoardView.m */,
 				D65AFA641AEDEF3D007867D0 /* JYOrderItemView.h */,
 				D65AFA651AEDEF3D007867D0 /* JYOrderItemView.m */,
+				D6C82B711B13EB1100876F57 /* JYOrdersBaseViewController.h */,
+				D6C82B721B13EB1100876F57 /* JYOrdersBaseViewController.m */,
 				D6B2F0731AD318B6009601B0 /* JYPanGestureRecognizer.h */,
 				D6B2F0741AD318B6009601B0 /* JYPanGestureRecognizer.m */,
 				D63F0DA61ACDFD1D0067C5EE /* JYPinAnnotationView.h */,
@@ -636,6 +642,7 @@
 				D689ED6A1AE42C8300CB4D2B /* UIView+Joyy.m in Sources */,
 				D65AFA661AEDEF3D007867D0 /* JYOrderItemView.m in Sources */,
 				D65AFA731AEF5F3A007867D0 /* UICustomActionSheet.m in Sources */,
+				D6C82B731B13EB1100876F57 /* JYOrdersBaseViewController.m in Sources */,
 				D6348D271ADA3BC90002BC35 /* JYPriceTextFieldCell.m in Sources */,
 				D63F0D591AC7CFF20067C5EE /* JYButton.m in Sources */,
 				D63F0D8C1ACBBF1F0067C5EE /* JYCollectionViewCell.m in Sources */,
@@ -682,6 +689,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D63B69AA1AC51302005600A9 /* UIFont+Joyy.m in Sources */,
+				D6C82B741B13EB1100876F57 /* JYOrdersBaseViewController.m in Sources */,
 				D63F0D721AC9EC060067C5EE /* JYUser.m in Sources */,
 				D689ED6B1AE42C8300CB4D2B /* UIView+Joyy.m in Sources */,
 				D6C82B6A1B12553D00876F57 /* JYComment.m in Sources */,

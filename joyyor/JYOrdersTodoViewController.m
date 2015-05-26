@@ -17,14 +17,8 @@
 
 @interface JYOrdersTodoViewController ()
 
-@property(nonatomic) BOOL isFetchingData;
-@property(nonatomic) NSMutableArray *orderList;
-@property(nonatomic) UITableView *tableView;
-@property(nonatomic) UIRefreshControl *refreshControl;
-
-+ (UILabel *)sharedSwipeBackgroundLabel;
-
 @end
+
 
 static NSString *const kOrderCellIdentifier = @"orderCell";
 
@@ -51,10 +45,8 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
     [super viewDidLoad];
     [self setTitleText:NSLocalizedString(@"Orders Toto", nil)];
 
-    self.orderList = [NSMutableArray new];
-    self.isFetchingData = NO;
-    [self _fetchData];
     [self _createTableView];
+    [self _fetchData];
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_fetchData) name:kNotificationBidAccepted object:nil];
 }
@@ -62,7 +54,6 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 - (void)dealloc
@@ -140,11 +131,6 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (self.orderList.count == 0)
-    {
-        return 100;
-    }
-
     return [JYOrderViewCell cellHeightForOrder:self.orderList[indexPath.row]];
 }
 
@@ -158,11 +144,11 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
 
 - (void)_fetchData
 {
-    if (self.isFetchingData)
+    if (self.networkThreadCount > 0)
     {
         return;
     }
-    self.isFetchingData = YES;
+    [self networkThreadBegin];
 
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYUser currentUser].token];
@@ -170,15 +156,11 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
 
     NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"orders/won"];
 
-    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
-
-    __weak typeof(self) weakSelf = self;
+     __weak typeof(self) weakSelf = self;
     [manager GET:url
       parameters:nil
          success:^(AFHTTPRequestOperation *operation, id responseObject) {
              NSLog(@"orders/won fetch success responseObject: %@", responseObject);
-
-             [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
 
              weakSelf.orderList = [NSMutableArray new];
              for (NSDictionary *dict in responseObject)
@@ -187,14 +169,10 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
                  [weakSelf.orderList addObject:newOrder];  // won orders are in DESC, so just add
              }
 
-             [weakSelf.tableView reloadData];
-             [weakSelf.refreshControl endRefreshing];
-             weakSelf.isFetchingData = NO;
+             [weakSelf networkThreadEnd];
          }
          failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-             [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-             [weakSelf.refreshControl endRefreshing];
-             weakSelf.isFetchingData = NO;
+             [weakSelf networkThreadEnd];
          }
      ];
 }

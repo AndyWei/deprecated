@@ -7,23 +7,17 @@
 //
 
 #import <AFNetworking/AFNetworking.h>
-#import <KVNProgress/KVNProgress.h>
-#import <RKDropdownAlert/RKDropdownAlert.h>
 
 #import "AppDelegate.h"
-#import "JYOrdersNearbyViewController.h"
+#import "JYBid.h"
 #import "JYBidCreateViewController.h"
 #import "JYOrderViewCell.h"
+#import "JYOrdersNearbyViewController.h"
 #import "JYUser.h"
 
 @interface JYOrdersNearbyViewController ()
 
-@property(nonatomic) BOOL isFetchingData;
 @property(nonatomic) NSArray *commentsCountList;
-@property(nonatomic) NSMutableArray *orderList;
-@property(nonatomic) NSUInteger maxOrderId;
-@property(nonatomic) UITableView *tableView;
-@property(nonatomic) UIRefreshControl *refreshControl;
 
 + (UILabel *)sharedSwipeBackgroundLabel;
 
@@ -54,29 +48,28 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
     [super viewDidLoad];
     [self setTitleText:NSLocalizedString(@"Orders Nearby", nil)];
 
-    self.maxOrderId = 0;
     self.commentsCountList = [NSArray new];
-    self.orderList = [NSMutableArray new];
-    self.isFetchingData = NO;
-    [self _fetchData];
+
     [self _createTableView];
+    [self _fetchOrders];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(fetchMyBids) name:kNotificationDidCreateBid object:nil];
 }
 
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 - (void)dealloc
 {
-    self.orderList = nil;
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)_createTableView
 {
     self.tableView = [[UITableView alloc] initWithFrame:self.view.frame style:UITableViewStylePlain];
-    self.tableView.backgroundColor = FlatWhite;
+    self.tableView.backgroundColor = FlatGray;
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
     [self.tableView registerClass:[JYOrderViewCell class] forCellReuseIdentifier:kOrderCellIdentifier];
@@ -87,12 +80,21 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
     tableViewController.tableView = self.tableView;
 
     self.refreshControl = [UIRefreshControl new];
-    [self.refreshControl addTarget:self action:@selector(_fetchData) forControlEvents:UIControlEventValueChanged];
+    [self.refreshControl addTarget:self action:@selector(_fetchOrders) forControlEvents:UIControlEventValueChanged];
 
     tableViewController.refreshControl = self.refreshControl;
 
     // Enable scroll to top
     self.scrollView = self.tableView;
+}
+
+- (void)_presentBidViewForOrder:(JYOrder *)order
+{
+    JYBidCreateViewController *bidViewController = [JYBidCreateViewController new];
+    bidViewController.order = order;
+
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:bidViewController];
+    [self presentViewController:nav animated:YES completion:nil];
 }
 
 #pragma mark - UITableViewDataSource
@@ -113,7 +115,7 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
     (JYOrderViewCell *)[tableView dequeueReusableCellWithIdentifier:kOrderCellIdentifier forIndexPath:indexPath];
 
     JYOrder *order = self.orderList[indexPath.row];
-    [cell presentOrder:order];
+    [cell presentBiddedOrder:order];
 
     NSUInteger count = [[self.commentsCountList objectAtIndex:indexPath.row] unsignedIntegerValue];
     [cell updateCommentsCount:count];
@@ -137,15 +139,6 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
     cell.firstTrigger = 0.20;
 }
 
-- (void)_presentBidViewForOrder:(JYOrder *)order
-{
-    JYBidCreateViewController *bidViewController = [JYBidCreateViewController new];
-    bidViewController.order = order;
-
-    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:bidViewController];
-    [self presentViewController:nav animated:YES completion:nil];
-}
-
 #pragma mark - UITableView Delegate
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -167,26 +160,20 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
 
 #pragma mark - Network
 
-- (void)_fetchData
+- (void)_fetchOrders
 {
-    if (self.isFetchingData)
+    if (self.networkThreadCount > 0)
     {
         return;
     }
-    self.isFetchingData = YES;
-    NSLog(@"orders/nearby start fetch data");
-
-    NSDictionary *parameters = [self _httpParametersForOrdersNearBy];
+    [self networkThreadBegin];
 
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-
     NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"orders/nearby"];
-
-    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
 
     __weak typeof(self) weakSelf = self;
     [manager GET:url
-       parameters:parameters
+       parameters:[self _httpParametersForOrdersNearBy]
           success:^(AFHTTPRequestOperation *operation, id responseObject) {
 //              NSLog(@"orders/nearby fetch success responseObject: %@", responseObject);
 
@@ -206,20 +193,24 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
                   weakSelf.orderList = newOrderList;
               }
 
-              [weakSelf _fetchOrderCommentsCount];
+              if (weakSelf.orderList.count > 0)
+              {
+                  [weakSelf fetchMyBids];
+                  [weakSelf _fetchOrderCommentsCount];
+              }
+
+              [weakSelf networkThreadEnd];
           }
           failure:^(AFHTTPRequestOperation *operation, NSError *error) {
               [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-              [weakSelf.refreshControl endRefreshing];
-              weakSelf.isFetchingData = NO;
+              [weakSelf networkThreadEnd];
           }
      ];
 }
 
 - (void)_fetchOrderCommentsCount
 {
-    NSLog(@"comments/count/of/orders start fetch data");
-
+    [self networkThreadBegin];
     NSDictionary *parameters = [self _httpParametersForCommentsCount];
 
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
@@ -232,17 +223,11 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
          success:^(AFHTTPRequestOperation *operation, id responseObject) {
              NSLog(@"comments/count/of/orders fetch success responseObject: %@", responseObject);
 
-             [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-
              weakSelf.commentsCountList = (NSArray *)responseObject;
-             [weakSelf.tableView reloadData];
-             [weakSelf.refreshControl endRefreshing];
-             weakSelf.isFetchingData = NO;
+             [weakSelf networkThreadEnd];
          }
          failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-             [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-             [weakSelf.refreshControl endRefreshing];
-             weakSelf.isFetchingData = NO;
+             [weakSelf networkThreadEnd];
          }
      ];
 }

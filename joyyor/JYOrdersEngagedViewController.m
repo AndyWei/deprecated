@@ -22,14 +22,8 @@
 
 @interface JYOrdersEngagedViewController ()
 
-@property(nonatomic) NSInteger fetchThreadCount;
 @property(nonatomic) NSInteger selectedSection;
-@property(nonatomic) NSMutableArray *orderList;
-@property(nonatomic) NSUInteger maxOrderId;
-@property(nonatomic) NSUInteger maxBidId;
 @property(nonatomic) NSUInteger maxCommentId;
-@property(nonatomic) UITableView *tableView;
-@property(nonatomic) UIRefreshControl *refreshControl;
 
 @end
 
@@ -42,13 +36,8 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
     [super viewDidLoad];
     [self setTitleText:NSLocalizedString(@"Engaged Orders", nil)];
 
-    self.maxOrderId = 0;
-    self.maxBidId = 0;
     self.maxCommentId = 0;
-    self.fetchThreadCount = 0;
     self.selectedSection = -1;
-
-    self.orderList = [NSMutableArray new];
 
     [self _fetchOrders];
     [self _createTableView];
@@ -90,13 +79,6 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
     self.scrollView = self.tableView;
 }
 
-- (void)_presentCreateCommentViewWithOrder:(JYOrder *)order replyTo:(NSInteger)originCommentIndex
-{
-    JYCommentsViewController *viewController = [[JYCommentsViewController alloc] initWithOrder:order];
-    viewController.originalCommentIndex = originCommentIndex;
-    [self.navigationController pushViewController:viewController animated:YES];
-}
-
 - (void)_presentBidViewForOrder:(JYOrder *)order
 {
     JYBidCreateViewController *bidViewController = [JYBidCreateViewController new];
@@ -106,50 +88,20 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
     [self presentViewController:nav animated:YES completion:nil];
 }
 
-- (JYOrder *)_orderOfId:(NSUInteger)targetOrderId
+- (void)_presentCreateCommentViewWithOrder:(JYOrder *)order replyTo:(NSInteger)originCommentIndex
 {
-    for (JYOrder *order in self.orderList)
-    {
-        if (order.orderId == targetOrderId)
-        {
-            return order;
-        }
-    }
-    return nil;
-}
-
-- (void)_fetchEndCheck
-{
-    if (self.fetchThreadCount == 0)
-    {
-        [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-        [self.refreshControl endRefreshing];
-        [self.tableView reloadData];
-    }
+    JYCommentsViewController *viewController = [[JYCommentsViewController alloc] initWithOrder:order];
+    viewController.originalCommentIndex = originCommentIndex;
+    [self.navigationController pushViewController:viewController animated:YES];
 }
 
 - (void)_tapOnTableSectionHeader:(id)sender
 {
-    self.tabBarController.tabBar.hidden = YES;
-
     JYOrderItemView *itemView = (JYOrderItemView *)sender;
     self.selectedSection = itemView.tag;
 
     JYOrder *order = self.orderList[self.selectedSection];
-    NSString *bidString = (order.bids.count > 0) ? NSLocalizedString(@"Update Bid", nil) : NSLocalizedString(@"Bid", nil);
-
-    UICustomActionSheet *actionSheet = [[UICustomActionSheet alloc] initWithTitle:nil delegate:self buttonTitles:@[NSLocalizedString(@"Cancel", nil), NSLocalizedString(@"Comment", nil), bidString]];
-
-    [actionSheet setButtonColors:@[JoyyBlue50, JoyyBlue, FlatLime]];
-    [actionSheet setButtonsTextColor:JoyyWhite];
-    actionSheet.backgroundColor = JoyyWhite;
-
-    // Highlight the selected itemView
-    CGRect frame = itemView.frame;
-    frame.origin.y -= self.tableView.contentOffset.y;
-    actionSheet.clearArea = frame;
-
-    [actionSheet showInView:self.view];
+    [self showActionSheetForOrder:order highlightView:itemView];
 }
 
 #pragma mark - UITableViewDataSource
@@ -249,11 +201,11 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 
 - (void)_fetchOrders
 {
-    if (self.fetchThreadCount > 0)
+    if (self.networkThreadCount > 0)
     {
         return;
     }
-    self.fetchThreadCount++;
+    [self networkThreadBegin];
 
     NSDictionary *parameters = @{@"after" : @(self.maxOrderId)};
 
@@ -262,8 +214,6 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
     [manager.requestSerializer setValue:token forHTTPHeaderField:@"Authorization"];
 
     NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"orders/engaged"];
-
-    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
 
     __weak typeof(self) weakSelf = self;
     [manager GET:url
@@ -287,26 +237,23 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
                  weakSelf.orderList = newOrderList;
              }
 
-             weakSelf.self.fetchThreadCount--;
-
              if (weakSelf.orderList.count > 0)
              {
                  [weakSelf _fetchBids];
                  [weakSelf _fetchComments];
              }
 
-             [weakSelf _fetchEndCheck];
+             [weakSelf networkThreadEnd];
          }
          failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-             weakSelf.fetchThreadCount--;
-             [weakSelf _fetchEndCheck];
+             [weakSelf networkThreadEnd];
          }
      ];
 }
 
 - (void)_fetchBids
 {
-    self.fetchThreadCount++;
+    [self networkThreadBegin];
 
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYUser currentUser].token];
@@ -324,7 +271,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
              for (NSDictionary *dict in responseObject)
              {
                  JYBid *newBid = [[JYBid alloc] initWithDictionary:dict];
-                 JYOrder *order = [weakSelf _orderOfId:newBid.orderId];
+                 JYOrder *order = [weakSelf orderOfId:newBid.orderId];
                  if (order != nil)
                  {
                      [order.bids addObject:newBid];
@@ -332,19 +279,17 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
                  }
              }
 
-             weakSelf.fetchThreadCount--;
-             [weakSelf _fetchEndCheck];
+             [weakSelf networkThreadEnd];
          }
          failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-             weakSelf.fetchThreadCount--;
-             [weakSelf _fetchEndCheck];;
+             [weakSelf networkThreadEnd];
          }
      ];
 }
 
 - (void)_fetchComments
 {
-    self.fetchThreadCount++;
+    [self networkThreadBegin];
 
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"comments/of/orders"];
@@ -361,7 +306,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
              {
                  JYComment *newComment = [[JYComment alloc] initWithDictionary:dict];
 
-                 JYOrder *order = [weakSelf _orderOfId:newComment.orderId];
+                 JYOrder *order = [weakSelf orderOfId:newComment.orderId];
                  if (order != nil)
                  {
                      [order.comments addObject:newComment];
@@ -369,12 +314,10 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
                  }
              }
 
-             weakSelf.fetchThreadCount--;
-             [weakSelf _fetchEndCheck];
+             [weakSelf networkThreadEnd];
          }
          failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-             weakSelf.fetchThreadCount--;
-             [weakSelf _fetchEndCheck];
+             [weakSelf networkThreadEnd];
          }
      ];
 }

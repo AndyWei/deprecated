@@ -14,6 +14,7 @@
 
 + (CGFloat)cellHeightForOrder:(JYOrder *)order;
 - (void)presentOrder:(JYOrder *)order;
+- (void)presentBiddedOrder:(JYOrder *)order;
 - (void)updateCommentsCount:(NSUInteger)count;
 
 @end

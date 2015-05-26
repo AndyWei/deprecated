@@ -15,6 +15,7 @@
 		D6C82B601B0EFE0600876F57 /* JYCommentTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = D6C82B5F1B0EFE0600876F57 /* JYCommentTextView.m */; };
 		D6C82B6F1B128E9700876F57 /* JYBid.m in Sources */ = {isa = PBXBuildFile; fileRef = D6C82B6C1B128E9700876F57 /* JYBid.m */; };
 		D6C82B701B128E9700876F57 /* JYComment.m in Sources */ = {isa = PBXBuildFile; fileRef = D6C82B6E1B128E9700876F57 /* JYComment.m */; };
+		D6C82B771B13EB3D00876F57 /* JYOrdersBaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6C82B761B13EB3D00876F57 /* JYOrdersBaseViewController.m */; };
 		D6F49F891AF595F2001A3C89 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F49F881AF595F2001A3C89 /* main.m */; };
 		D6F49F8C1AF595F2001A3C89 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F49F8B1AF595F2001A3C89 /* AppDelegate.m */; };
 		D6F49F971AF595F2001A3C89 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D6F49F961AF595F2001A3C89 /* Images.xcassets */; };
@@ -74,6 +75,8 @@
 		D6C82B6C1B128E9700876F57 /* JYBid.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JYBid.m; path = joyyios/JYBid.m; sourceTree = SOURCE_ROOT; };
 		D6C82B6D1B128E9700876F57 /* JYComment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JYComment.h; path = joyyios/JYComment.h; sourceTree = SOURCE_ROOT; };
 		D6C82B6E1B128E9700876F57 /* JYComment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JYComment.m; path = joyyios/JYComment.m; sourceTree = SOURCE_ROOT; };
+		D6C82B751B13EB3D00876F57 /* JYOrdersBaseViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JYOrdersBaseViewController.h; path = joyyios/JYOrdersBaseViewController.h; sourceTree = SOURCE_ROOT; };
+		D6C82B761B13EB3D00876F57 /* JYOrdersBaseViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JYOrdersBaseViewController.m; path = joyyios/JYOrdersBaseViewController.m; sourceTree = SOURCE_ROOT; };
 		D6F49F831AF595F2001A3C89 /* joyyor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = joyyor.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D6F49F871AF595F2001A3C89 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D6F49F881AF595F2001A3C89 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -344,6 +347,8 @@
 				D6F49FF31AF5DB4D001A3C89 /* UIImageEffects.m */,
 				D6F49FF41AF5DB4D001A3C89 /* UIView+Joyy.h */,
 				D6F49FF51AF5DB4D001A3C89 /* UIView+Joyy.m */,
+				D6C82B751B13EB3D00876F57 /* JYOrdersBaseViewController.h */,
+				D6C82B761B13EB3D00876F57 /* JYOrdersBaseViewController.m */,
 			);
 			name = Shared;
 			sourceTree = "<group>";
@@ -496,6 +501,7 @@
 				D6F4A00A1AF5DB4D001A3C89 /* JYMapDashBoardView.m in Sources */,
 				D6F4A0201AF5DB4D001A3C89 /* JYRestrictedTextViewCell.m in Sources */,
 				D6F4A0361AF5DB4D001A3C89 /* UIFont+Joyy.m in Sources */,
+				D6C82B771B13EB3D00876F57 /* JYOrdersBaseViewController.m in Sources */,
 				D6F4A00C1AF5DB4D001A3C89 /* JYOrder.m in Sources */,
 				D6F4A02C1AF5DB4D001A3C89 /* JYUser.m in Sources */,
 				D65F374A1B0485A7007B534C /* JYCommentViewCell.m in Sources */,

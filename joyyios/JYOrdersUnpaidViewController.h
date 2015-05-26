@@ -6,9 +6,8 @@
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
-#import "JYExpandViewController.h"
-#import "UICustomActionSheet.h"
+#import "JYOrdersBaseViewController.h"
 
-@interface JYOrdersUnpaidViewController : JYExpandViewController <UICustomActionSheetDelegate, UITableViewDataSource, UITableViewDelegate>
+@interface JYOrdersUnpaidViewController : JYOrdersBaseViewController <UITableViewDataSource, UITableViewDelegate>
 
 @end

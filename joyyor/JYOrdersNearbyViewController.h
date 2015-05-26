@@ -6,8 +6,8 @@
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
-#import "JYExpandViewController.h"
+#import "JYOrdersBaseViewController.h"
 
-@interface JYOrdersNearbyViewController : JYExpandViewController <UITableViewDataSource, UITableViewDelegate>
+@interface JYOrdersNearbyViewController : JYOrdersBaseViewController <UITableViewDataSource, UITableViewDelegate>
 
 @end
