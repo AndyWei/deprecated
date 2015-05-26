@@ -11,6 +11,8 @@
 #import "AppDelegate.h"
 #import "JYBid.h"
 #import "JYBidCreateViewController.h"
+#import "JYComment.h"
+#import "JYCommentsViewController.h"
 #import "JYOrderViewCell.h"
 #import "JYOrdersNearbyViewController.h"
 #import "JYUser.h"
@@ -18,29 +20,45 @@
 @interface JYOrdersNearbyViewController ()
 
 @property(nonatomic) NSArray *commentsCountList;
-
-+ (UILabel *)sharedSwipeBackgroundLabel;
+@property(nonatomic) NSInteger selectedRow;
 
 @end
+
 
 static NSString *const kOrderCellIdentifier = @"orderCell";
 
 @implementation JYOrdersNearbyViewController
 
-+ (UILabel *)sharedSwipeBackgroundLabel
++ (UILabel *)sharedBidLabel
 {
-    static UILabel *_sharedSwipeBackgroundLabel = nil;
+    static UILabel *_sharedBidLabel = nil;
     static dispatch_once_t done;
 
     dispatch_once(&done, ^{
-        _sharedSwipeBackgroundLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 60, 30)];
-        _sharedSwipeBackgroundLabel.font = [UIFont systemFontOfSize:25];
-        _sharedSwipeBackgroundLabel.text = NSLocalizedString(@"Bid", nil);
-        _sharedSwipeBackgroundLabel.textColor = [UIColor whiteColor];
-        _sharedSwipeBackgroundLabel.textAlignment= NSTextAlignmentCenter;
+        _sharedBidLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 60, 30)];
+        _sharedBidLabel.font = [UIFont systemFontOfSize:20];
+        _sharedBidLabel.text = NSLocalizedString(@"Bid", nil);
+        _sharedBidLabel.textColor = JoyyWhite;
+        _sharedBidLabel.textAlignment= NSTextAlignmentCenter;
     });
 
-    return _sharedSwipeBackgroundLabel;
+    return _sharedBidLabel;
+}
+
++ (UILabel *)sharedCommentLabel
+{
+    static UILabel *_sharedCommentLabel = nil;
+    static dispatch_once_t done;
+
+    dispatch_once(&done, ^{
+        _sharedCommentLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 150, 30)];
+        _sharedCommentLabel.font = [UIFont systemFontOfSize:20];
+        _sharedCommentLabel.text = NSLocalizedString(@"Comment", nil);
+        _sharedCommentLabel.textColor = JoyyWhite;
+        _sharedCommentLabel.textAlignment= NSTextAlignmentCenter;
+    });
+
+    return _sharedCommentLabel;
 }
 
 - (void)viewDidLoad
@@ -48,6 +66,7 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
     [super viewDidLoad];
     [self setTitleText:NSLocalizedString(@"Orders Nearby", nil)];
 
+    self.selectedRow = -1;
     self.commentsCountList = [NSArray new];
 
     [self _createTableView];
@@ -97,6 +116,12 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
     [self presentViewController:nav animated:YES completion:nil];
 }
 
+- (void)_presentCommentViewForOrder:(JYOrder *)order
+{
+    JYCommentsViewController *viewController = [[JYCommentsViewController alloc] initWithOrder:order];
+    [self.navigationController pushViewController:viewController animated:YES];
+}
+
 #pragma mark - UITableViewDataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -127,15 +152,24 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
 - (void)_createSwipeViewForCell:(JYOrderViewCell *)cell andOrder:(JYOrder *)order
 {
     __weak typeof(self) weakSelf = self;
-    [cell setSwipeGestureWithView:[[self class] sharedSwipeBackgroundLabel]
-                            color:FlatGreen
+
+    [cell setSwipeGestureWithView:[[self class] sharedCommentLabel]
+                            color:FlatGray
+                             mode:MCSwipeTableViewCellModeSwitch
+                            state:MCSwipeTableViewCellState1
+                  completionBlock:^(MCSwipeTableViewCell *cell, MCSwipeTableViewCellState state, MCSwipeTableViewCellMode mode) {
+                      [weakSelf _presentCommentViewForOrder:order];
+                  }];
+
+    [cell setSwipeGestureWithView:[[self class] sharedBidLabel]
+                            color:FlatGray
                              mode:MCSwipeTableViewCellModeSwitch
                             state:MCSwipeTableViewCellState3
                   completionBlock:^(MCSwipeTableViewCell *cell, MCSwipeTableViewCellState state, MCSwipeTableViewCellMode mode) {
                       [weakSelf _presentBidViewForOrder:order];
                   }];
 
-    [cell setDefaultColor:FlatGreen];
+    [cell setDefaultColor:FlatGray];
     cell.firstTrigger = 0.20;
 }
 
@@ -154,8 +188,40 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    [self _presentBidViewForOrder:self.orderList[indexPath.row]];
-    [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+    self.selectedRow = indexPath.row;
+    JYOrder *order = self.orderList[indexPath.row];
+    [self _fetchCommentsOfOrder:order];
+    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+    [self showActionSheetForOrder:order highlightView:cell];
+
+    [self.tableView deselectRowAtIndexPath:indexPath animated:NO];
+}
+
+#pragma mark - UIActionSheetDelegate
+
+-(void)customActionSheet:(UICustomActionSheet *)customActionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    self.tabBarController.tabBar.hidden = NO;
+    if (self.selectedRow < 0)
+    {
+        return;
+    }
+
+    JYOrder *order = self.orderList[self.selectedRow];
+
+    if (buttonIndex == 1) // create comment
+    {
+        [self _presentCommentViewForOrder:order];
+    }
+    else if (buttonIndex == 2) // create or update bid
+    {
+        // TODO: add logic for update bid
+        //        NSString *orderId = [order objectForKey:@"id"];
+        //        NSDictionary *bid = [self.bidDict objectForKey:orderId];
+        [self _presentBidViewForOrder:order];
+
+    }
+    self.selectedRow = -1;
 }
 
 #pragma mark - Network
@@ -232,6 +298,35 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
      ];
 }
 
+- (void)_fetchCommentsOfOrder:(JYOrder *)order
+{
+    [self networkThreadBegin];
+
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"comments/of/orders"];
+    NSDictionary *parameters = [self _httpParametersForCommentsOfOrder:order];
+
+    __weak typeof(self) weakSelf = self;
+    [manager GET:url
+      parameters:parameters
+         success:^(AFHTTPRequestOperation *operation, id responseObject) {
+
+//             NSLog(@"comments/of/orders fetch success responseObject: %@", responseObject);
+
+             for (NSDictionary *dict in responseObject)
+             {
+                 JYComment *newComment = [[JYComment alloc] initWithDictionary:dict];
+                 [order.comments addObject:newComment];
+             }
+
+             [weakSelf networkThreadEnd];
+         }
+         failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+             [weakSelf networkThreadEnd];
+         }
+     ];
+}
+
 -(NSDictionary *)_httpParametersForOrdersNearBy
 {
     NSMutableDictionary *parameters = [NSMutableDictionary new];
@@ -259,4 +354,19 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
 
     return parameters;
 }
+
+- (NSDictionary *)_httpParametersForCommentsOfOrder:(JYOrder *)order
+{
+    NSMutableDictionary *parameters = [NSMutableDictionary new];
+
+    [parameters setObject:@(order.orderId) forKey:@"order_id"];
+    if (order.comments.count > 0)
+    {
+        JYComment *lastComment = [order.comments lastObject];
+        [parameters setObject:@(lastComment.commentId) forKey:@"after"];
+    }
+
+    return parameters;
+}
+
 @end

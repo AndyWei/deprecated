@@ -55,18 +55,8 @@
     self.layer.cornerRadius = width * 0.5;
     self.layer.borderColor = FlatGrayDark.CGColor;
 
-    self.viewColor = [UIColor whiteColor];
     self.textColor = FlatGrayDark;
     self.userInteractionEnabled = NO;
-}
-
-- (void)setViewColor:(UIColor *)viewColor
-{
-    _viewColor = viewColor;
-    self.backgroundColor = viewColor;
-    self.topLabel.backgroundColor = viewColor;
-    self.centerLabel.backgroundColor = viewColor;
-    self.bottomLabel.backgroundColor = viewColor;
 }
 
 - (void)setTextColor:(UIColor *)textColor

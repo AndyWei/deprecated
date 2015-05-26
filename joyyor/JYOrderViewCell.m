@@ -29,12 +29,13 @@
     if (self)
     {
         self.opaque = YES;
-        self.backgroundColor = FlatRed;
+        self.backgroundColor = JoyyWhite;
 
         CGFloat width = CGRectGetWidth([[UIScreen mainScreen] applicationFrame]);
 
         self.itemView = [[JYOrderItemView alloc] initWithFrame:CGRectMake(0, 0, width, 100)];
         self.itemView.bidLabelHidden = YES;
+        self.itemView.userInteractionEnabled = NO;
         [self addSubview:self.itemView];
     }
     return self;

@@ -7,8 +7,6 @@
 //
 
 #import <AFNetworking/AFNetworking.h>
-#import <KVNProgress/KVNProgress.h>
-#import <RKDropdownAlert/RKDropdownAlert.h>
 
 #import "JYBidCreateViewController.h"
 #import "JYComment.h"
@@ -88,7 +86,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
     [self presentViewController:nav animated:YES completion:nil];
 }
 
-- (void)_presentCreateCommentViewWithOrder:(JYOrder *)order replyTo:(NSInteger)originCommentIndex
+- (void)_presentCommentViewForOrder:(JYOrder *)order replyTo:(NSInteger)originCommentIndex
 {
     JYCommentsViewController *viewController = [[JYCommentsViewController alloc] initWithOrder:order];
     viewController.originalCommentIndex = originCommentIndex;
@@ -140,7 +138,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 {
     JYOrder *order = self.orderList[indexPath.section];
 
-    [self _presentCreateCommentViewWithOrder:order replyTo:indexPath.row];
+    [self _presentCommentViewForOrder:order replyTo:indexPath.row];
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
@@ -183,7 +181,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 
     if (buttonIndex == 1) // create comment
     {
-        [self _presentCreateCommentViewWithOrder:order replyTo:-1];
+        [self _presentCommentViewForOrder:order replyTo:-1];
     }
     else if (buttonIndex == 2) // create or update bid
     {

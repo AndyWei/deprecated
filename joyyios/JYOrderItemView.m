@@ -94,8 +94,9 @@ static const CGFloat kTopMargin = 8.0f;
 - (void)_commonInit
 {
     _viewColor = JoyyWhite;
-    self.opaque = YES;
+//    self.opaque = YES;
     self.backgroundColor = _viewColor;
+
     self.tinyLabelsHidden = NO;
     self.bidLabelHidden = YES;
 
@@ -142,10 +143,6 @@ static const CGFloat kTopMargin = 8.0f;
     }
 
     self.backgroundColor = _viewColor = color;
-    self.titleLabel.backgroundColor = self.bodyLabel.backgroundColor = self.priceLabel.backgroundColor = color;
-    self.cityLabel.backgroundColor = self.timeLabel.backgroundColor = self.distanceLabel.backgroundColor = color;
-    self.startDateView.viewColor = self.startTimeLabel.backgroundColor = self.commentsLabel.backgroundColor = color;
-    self.bidLabel.backgroundColor = color;
 }
 
 - (void)presentOrder:(JYOrder *)order
@@ -229,7 +226,6 @@ static const CGFloat kTopMargin = 8.0f;
 {
     CGRect frame = CGRectMake(kLeftMargin, kTopMargin, kStartDateViewWidth, kStartDateViewHeight);
     self.startDateView = [[JYDateView alloc] initWithFrame:frame];
-    self.startDateView.viewColor = _viewColor;
     self.startDateView.userInteractionEnabled = NO;
     [self addSubview:self.startDateView];
 }
@@ -242,7 +238,6 @@ static const CGFloat kTopMargin = 8.0f;
     self.startTimeLabel.font = [UIFont systemFontOfSize:15.0f];
     self.startTimeLabel.textColor = FlatGrayDark;
     self.startTimeLabel.textAlignment = NSTextAlignmentCenter;
-    self.startTimeLabel.backgroundColor = _viewColor;
 
     [self addSubview:self.startTimeLabel];
 }
@@ -328,8 +323,6 @@ static const CGFloat kTopMargin = 8.0f;
 - (UILabel *)_createLabel
 {
     UILabel *label = [UILabel new];
-    label.backgroundColor = _viewColor;
-    label.opaque = YES;
     label.font = [UIFont systemFontOfSize:kFontSizeBody];
     label.textColor = FlatBlack;
     label.textAlignment = NSTextAlignmentLeft;
