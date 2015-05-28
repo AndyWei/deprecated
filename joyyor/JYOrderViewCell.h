@@ -13,6 +13,8 @@
 @interface JYOrderViewCell : MCSwipeTableViewCell
 
 + (CGFloat)cellHeightForOrder:(JYOrder *)order;
++ (CGFloat)cellHeightForBiddedOrder:(JYOrder *)order;
+
 - (void)presentOrder:(JYOrder *)order;
 - (void)presentBiddedOrder:(JYOrder *)order;
 - (void)updateCommentsCount:(NSUInteger)count;

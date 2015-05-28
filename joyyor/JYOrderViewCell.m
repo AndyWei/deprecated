@@ -23,6 +23,11 @@
     return [JYOrderItemView viewHeightForOrder:order];
 }
 
++ (CGFloat)cellHeightForBiddedOrder:(JYOrder *)order
+{
+    return [JYOrderItemView viewHeightForBiddedOrder:order];
+}
+
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
@@ -34,7 +39,7 @@
         CGFloat width = CGRectGetWidth([[UIScreen mainScreen] applicationFrame]);
 
         self.itemView = [[JYOrderItemView alloc] initWithFrame:CGRectMake(0, 0, width, 100)];
-        self.itemView.bidLabelHidden = YES;
+        self.itemView.bidLabelHidden = NO;
         self.itemView.userInteractionEnabled = NO;
         [self addSubview:self.itemView];
     }

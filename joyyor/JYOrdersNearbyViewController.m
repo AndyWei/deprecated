@@ -183,7 +183,7 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
     }
 
     JYOrder *order = self.orderList[indexPath.row];
-    return [JYOrderViewCell cellHeightForOrder:order];
+    return [JYOrderViewCell cellHeightForBiddedOrder:order];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath

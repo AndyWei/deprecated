@@ -36,7 +36,7 @@ NSString *const kOrderBidCellIdentifier = @"orderBidCell";
 {
     [super viewDidLoad];
 
-    self.title = NSLocalizedString(@"Bid", nil);
+    self.title = (self.order.bids.count > 0) ? NSLocalizedString(@"Update Bid", nil) : NSLocalizedString(@"Bid", nil);
     self.view.backgroundColor = [UIColor whiteColor];
 
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel", nil)
@@ -51,7 +51,7 @@ NSString *const kOrderBidCellIdentifier = @"orderBidCell";
 
     [self _createOrderView];
     [self _createForm];
-    [self.orderView presentOrder:self.order];
+    [self.orderView presentBiddedOrder:self.order];
 }
 
 - (void)didReceiveMemoryWarning
@@ -70,9 +70,10 @@ NSString *const kOrderBidCellIdentifier = @"orderBidCell";
     CGFloat statusBarHeight = [UIApplication sharedApplication].statusBarFrame.size.height;
     CGFloat navBarHeight = self.navigationController.navigationBar.frame.size.height;
 
-    CGFloat height = [JYOrderItemView viewHeightForOrder:self.order];
+    CGFloat height = [JYOrderItemView viewHeightForBiddedOrder:self.order];
     CGFloat width = CGRectGetWidth([[UIScreen mainScreen] applicationFrame]);
     self.orderView = [[JYOrderItemView alloc] initWithFrame:CGRectMake(0, statusBarHeight + navBarHeight, width, height)];
+    self.orderView.bidLabelHidden = (self.order.bids.count == 0);
     [self.view addSubview:self.orderView];
 }
 
@@ -135,6 +136,13 @@ NSString *const kOrderBidCellIdentifier = @"orderBidCell";
 
     // note
     [parameters setObject:@":)" forKey:@"note"];
+
+    // old_bid
+    if (self.order.bids.count > 0)
+    {
+        JYBid *oldBid = self.order.bids.lastObject;
+        [parameters setObject:@(oldBid.bidId) forKey:@"old_bid_id"];
+    }
 
     return parameters;
 }
