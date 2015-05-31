@@ -31,6 +31,7 @@
     "pg-native": "^1.8.0",
     "rand-token": "^0.2.1",
     "redis": "^0.12.1",
+    "stripe": "^3.3.4",
     "underscore": "^1.8.2",
     "underscore.string": "^3.0.3"
   },
