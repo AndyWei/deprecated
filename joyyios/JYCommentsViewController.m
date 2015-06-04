@@ -267,7 +267,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
              [KVNProgress dismiss];
 
              NSString *errorMessage = NSLocalizedString(@"Can't update comment list due to network failure, please retry later", nil);
-             [RKDropdownAlert title:NSLocalizedString(@"Something wrong ...", nil)
+             [RKDropdownAlert title:NSLocalizedString(kErrorTitle, nil)
                             message:errorMessage
                     backgroundColor:FlatYellow
                           textColor:FlatBlack

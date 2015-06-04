@@ -85,7 +85,7 @@
                 errorMessage = [error.userInfo valueForKey:NSLocalizedDescriptionKey];
             }
 
-            [RKDropdownAlert title:NSLocalizedString(@"Something wrong ...", nil)
+            [RKDropdownAlert title:NSLocalizedString(kErrorTitle, nil)
                            message:errorMessage
                    backgroundColor:FlatYellow
                          textColor:FlatBlack

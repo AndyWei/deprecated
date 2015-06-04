@@ -11,6 +11,9 @@
 		D65F37401AFEF868007B534C /* JYOrderViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D65F373F1AFEF868007B534C /* JYOrderViewCell.m */; };
 		D65F37431B04786A007B534C /* JYOrdersEngagedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D65F37421B04786A007B534C /* JYOrdersEngagedViewController.m */; };
 		D65F374A1B0485A7007B534C /* JYCommentViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D65F37491B0485A7007B534C /* JYCommentViewCell.m */; };
+		D679F0231B1C1513004F1C37 /* JYAccountIndividualViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D679F0221B1C1513004F1C37 /* JYAccountIndividualViewController.m */; };
+		D679F02A1B1C3B41004F1C37 /* JYFloatLabeledTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D679F0291B1C3B41004F1C37 /* JYFloatLabeledTextFieldCell.m */; };
+		D679F02D1B1ED683004F1C37 /* JYAccountCompanyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D679F02C1B1ED683004F1C37 /* JYAccountCompanyViewController.m */; };
 		D6C82B591B0DA5CE00876F57 /* JYCommentsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6C82B581B0DA5CE00876F57 /* JYCommentsViewController.m */; };
 		D6C82B601B0EFE0600876F57 /* JYCommentTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = D6C82B5F1B0EFE0600876F57 /* JYCommentTextView.m */; };
 		D6C82B6F1B128E9700876F57 /* JYBid.m in Sources */ = {isa = PBXBuildFile; fileRef = D6C82B6C1B128E9700876F57 /* JYBid.m */; };
@@ -67,6 +70,12 @@
 		D65F37421B04786A007B534C /* JYOrdersEngagedViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYOrdersEngagedViewController.m; sourceTree = "<group>"; };
 		D65F37481B0485A7007B534C /* JYCommentViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JYCommentViewCell.h; path = joyyios/JYCommentViewCell.h; sourceTree = SOURCE_ROOT; };
 		D65F37491B0485A7007B534C /* JYCommentViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JYCommentViewCell.m; path = joyyios/JYCommentViewCell.m; sourceTree = SOURCE_ROOT; };
+		D679F0211B1C1513004F1C37 /* JYAccountIndividualViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYAccountIndividualViewController.h; sourceTree = "<group>"; };
+		D679F0221B1C1513004F1C37 /* JYAccountIndividualViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYAccountIndividualViewController.m; sourceTree = "<group>"; };
+		D679F0281B1C3B41004F1C37 /* JYFloatLabeledTextFieldCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JYFloatLabeledTextFieldCell.h; path = joyyios/JYFloatLabeledTextFieldCell.h; sourceTree = SOURCE_ROOT; };
+		D679F0291B1C3B41004F1C37 /* JYFloatLabeledTextFieldCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JYFloatLabeledTextFieldCell.m; path = joyyios/JYFloatLabeledTextFieldCell.m; sourceTree = SOURCE_ROOT; };
+		D679F02B1B1ED683004F1C37 /* JYAccountCompanyViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYAccountCompanyViewController.h; sourceTree = "<group>"; };
+		D679F02C1B1ED683004F1C37 /* JYAccountCompanyViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYAccountCompanyViewController.m; sourceTree = "<group>"; };
 		D6C82B571B0DA5CE00876F57 /* JYCommentsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JYCommentsViewController.h; path = joyyios/JYCommentsViewController.h; sourceTree = SOURCE_ROOT; };
 		D6C82B581B0DA5CE00876F57 /* JYCommentsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JYCommentsViewController.m; path = joyyios/JYCommentsViewController.m; sourceTree = SOURCE_ROOT; };
 		D6C82B5E1B0EFE0600876F57 /* JYCommentTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JYCommentTextView.h; path = joyyios/JYCommentTextView.h; sourceTree = SOURCE_ROOT; };
@@ -313,6 +322,8 @@
 				D6F49FC11AF5DB4D001A3C89 /* JYExpandViewController.m */,
 				D6F49FC21AF5DB4D001A3C89 /* JYFloatLabeledTextField.h */,
 				D6F49FC31AF5DB4D001A3C89 /* JYFloatLabeledTextField.m */,
+				D679F0281B1C3B41004F1C37 /* JYFloatLabeledTextFieldCell.h */,
+				D679F0291B1C3B41004F1C37 /* JYFloatLabeledTextFieldCell.m */,
 				D6F49FC41AF5DB4D001A3C89 /* JYMapDashBoardView.h */,
 				D6F49FC51AF5DB4D001A3C89 /* JYMapDashBoardView.m */,
 				D6F49FC81AF5DB4D001A3C89 /* JYOrderItemView.h */,
@@ -364,6 +375,10 @@
 				D6F49FE31AF5DB4D001A3C89 /* JYSignUpViewController.m */,
 				D6F49FE41AF5DB4D001A3C89 /* JYSignViewController.h */,
 				D6F49FE51AF5DB4D001A3C89 /* JYSignViewController.m */,
+				D679F0211B1C1513004F1C37 /* JYAccountIndividualViewController.h */,
+				D679F0221B1C1513004F1C37 /* JYAccountIndividualViewController.m */,
+				D679F02B1B1ED683004F1C37 /* JYAccountCompanyViewController.h */,
+				D679F02C1B1ED683004F1C37 /* JYAccountCompanyViewController.m */,
 			);
 			name = User;
 			sourceTree = "<group>";
@@ -494,6 +509,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D679F02A1B1C3B41004F1C37 /* JYFloatLabeledTextFieldCell.m in Sources */,
 				D6F4A0301AF5DB4D001A3C89 /* NSString+Joyy.m in Sources */,
 				D6F4A0061AF5DB4D001A3C89 /* JYExpandViewController.m in Sources */,
 				D6F49FF61AF5DB4D001A3C89 /* Constants.m in Sources */,
@@ -511,6 +527,7 @@
 				D6F49FFC1AF5DB4D001A3C89 /* JYAutocompleteTextField.m in Sources */,
 				D6F4A0041AF5DB4D001A3C89 /* JYDateView.m in Sources */,
 				D6F49F8C1AF595F2001A3C89 /* AppDelegate.m in Sources */,
+				D679F02D1B1ED683004F1C37 /* JYAccountCompanyViewController.m in Sources */,
 				D6F4A0001AF5DB4D001A3C89 /* JYButton.m in Sources */,
 				D6F4A00E1AF5DB4D001A3C89 /* JYOrderItemView.m in Sources */,
 				D6F4A02A1AF5DB4D001A3C89 /* JYSignViewController.m in Sources */,
@@ -529,6 +546,7 @@
 				D6F4A0381AF5DB4D001A3C89 /* UIImageEffects.m in Sources */,
 				D6F4A0161AF5DB4D001A3C89 /* JYPinAnnotationView.m in Sources */,
 				D6F4A0551AF6D188001A3C89 /* JYOrdersTodoViewController.m in Sources */,
+				D679F0231B1C1513004F1C37 /* JYAccountIndividualViewController.m in Sources */,
 				D6C82B591B0DA5CE00876F57 /* JYCommentsViewController.m in Sources */,
 				D6F4A0141AF5DB4D001A3C89 /* JYPanGestureRecognizer.m in Sources */,
 				D6F4A0241AF5DB4D001A3C89 /* JYSignBaseViewController.m in Sources */,

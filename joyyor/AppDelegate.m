@@ -12,6 +12,7 @@
 
 #import "AppDelegate.h"
 #import "DataStore.h"
+#import "JYAccountIndividualViewController.h"
 #import "JYOrdersEngagedViewController.h"
 #import "JYOrdersNearbyViewController.h"
 #import "JYOrdersTodoViewController.h"
@@ -32,7 +33,9 @@
 {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_signDidFinish) name:kNotificationDidSignIn object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_signInDidFinish) name:kNotificationDidSignIn object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_signUpDidFinish) name:kNotificationDidSignUp object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_createAccountDidFinish) name:kNotificationDidCreateAccount object:nil];
 
     [self _setupGlobalAppearance];
     [self _setupLocationManager];
@@ -114,7 +117,7 @@
      setTitleTextAttributes:[NSDictionary
                              dictionaryWithObjectsAndKeys:[UIFont lightSystemFontOfSize:kNavBarTitleFontSize], NSFontAttributeName, nil]];
 
-    [[UINavigationBar appearance] setTintColor:JoyyBlue];
+//    [[UINavigationBar appearance] setTintColor:JoyyBlue];
 
 //    [[UITabBar appearance] setTintColor:JoyyBlue];
 
@@ -228,10 +231,22 @@
     }
 }
 
-- (void)_signDidFinish
+- (void)_signInDidFinish
 {
     [self _registerPushNotifications];
     [self _signInPeriodically:kSignIntervalMax];
+    [self _launchTabViewController];
+}
+
+- (void)_signUpDidFinish
+{
+    [self _signInPeriodically:kSignIntervalMax];
+    [self _launchAccountViewController];
+}
+
+- (void)_createAccountDidFinish
+{
+    [self _registerPushNotifications];
     [self _launchTabViewController];
 }
 
@@ -248,6 +263,13 @@
 - (void)_launchSignViewController
 {
     UIViewController *viewController = [JYSignViewController new];
+    UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:viewController];
+    self.window.rootViewController = navigationController;
+}
+
+- (void)_launchAccountViewController
+{
+    UIViewController *viewController = [JYAccountIndividualViewController new];
     UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:viewController];
     self.window.rootViewController = navigationController;
 }
@@ -278,22 +300,23 @@
         [self _signInPeriodically:(user.tokenExpireTimeInSecs - now)];
     }
 
-    UIViewController *vc1 = [JYOrdersNearbyViewController new];
-    UINavigationController *nc1 = [[UINavigationController alloc] initWithRootViewController:vc1];
-    nc1.title = NSLocalizedString(@"Nearby", nil);
-
-    UIViewController *vc2 = [JYOrdersEngagedViewController new];
-    UINavigationController *nc2 = [[UINavigationController alloc] initWithRootViewController:vc2];
-    nc2.title = NSLocalizedString(@"Engaged", nil);
-
-    UIViewController *vc3 = [JYOrdersTodoViewController new];
-    UINavigationController *nc3 = [[UINavigationController alloc] initWithRootViewController:vc3];
-    nc3.title = NSLocalizedString(@"Todo", nil);
-
-    UITabBarController *tabBarController = [UITabBarController new];
-    tabBarController.viewControllers = @[ nc1, nc2, nc3 ];
-
-    self.window.rootViewController = tabBarController;
+//    UIViewController *vc1 = [JYOrdersNearbyViewController new];
+//    UINavigationController *nc1 = [[UINavigationController alloc] initWithRootViewController:vc1];
+//    nc1.title = NSLocalizedString(@"Nearby", nil);
+//
+//    UIViewController *vc2 = [JYOrdersEngagedViewController new];
+//    UINavigationController *nc2 = [[UINavigationController alloc] initWithRootViewController:vc2];
+//    nc2.title = NSLocalizedString(@"Engaged", nil);
+//
+//    UIViewController *vc3 = [JYOrdersTodoViewController new];
+//    UINavigationController *nc3 = [[UINavigationController alloc] initWithRootViewController:vc3];
+//    nc3.title = NSLocalizedString(@"Todo", nil);
+//
+//    UITabBarController *tabBarController = [UITabBarController new];
+//    tabBarController.viewControllers = @[ nc1, nc2, nc3 ];
+//
+//    self.window.rootViewController = tabBarController;
+        [self _launchAccountViewController];
 }
 
 #pragma mark - Network

@@ -46,6 +46,7 @@ NSString *const kAnnotationTitleEnd = @"endPoint";
 NSString *const kAnnotationTitleStart = @"startPoint";
 
 NSString *const kErrorAuthenticationFailed = @"Incorrect Email or password";
+NSString *const kErrorTitle = @"(ᵔᴥᵔ) something wrong";
 
 NSString *const kGoogleAPIBrowserKey = @"AIzaSyC_iSgM7DRZEZxEah_foIl4k6ICSduyYww";
 
@@ -54,11 +55,13 @@ NSString *const kImageNamePinBlue = @"pinBlue";
 NSString *const kImageNamePinGreen = @"pinGreen";
 NSString *const kImageNamePinPink = @"pinPink";
 
+NSString *const kNotificationDidCreateAccount = @"didCreateAccount";
 NSString *const kNotificationDidCreateBid = @"didCreateBid";
 NSString *const kNotificationDidCreateComment = @"didCreateComment";
 NSString *const kNotificationDidCreateOrder = @"didCreateOrder";
 NSString *const kNotificationDidReceiveBid = @"didReceiveBid";
-NSString *const kNotificationDidSignIn = @"didSignin";
+NSString *const kNotificationDidSignIn = @"didSignIn";
+NSString *const kNotificationDidSignUp = @"didSignUp";
 
 NSString *const kSystemFontBold = @"AvenirNextCondensed-DemiBold";
 NSString *const kSystemFontItalic = @"AvenirNextCondensed-Italic ";

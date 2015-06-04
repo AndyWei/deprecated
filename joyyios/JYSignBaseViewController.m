@@ -145,7 +145,7 @@
 {
     if (!self.emailField.text || ![self.emailField.text isValidEmail])
     {
-        [RKDropdownAlert title:NSLocalizedString(@"Please input an valid email", nil)
+        [RKDropdownAlert title:NSLocalizedString(@"(ᵔᴥᵔ) please input an valid email", nil)
                        message:nil
                backgroundColor:FlatYellow
                      textColor:FlatBlack
@@ -157,7 +157,7 @@
 
     if (!self.passwordField.text || self.passwordField.text.length < 4)
     {
-        [RKDropdownAlert title:NSLocalizedString(@"Password is too short", nil)
+        [RKDropdownAlert title:NSLocalizedString(@"(ᵔᴥᵔ) password is too short", nil)
                        message:nil
                backgroundColor:FlatYellow
                      textColor:FlatBlack

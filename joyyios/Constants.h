@@ -48,6 +48,7 @@ extern NSString *const kAnnotationTitleEnd;
 extern NSString *const kAnnotationTitleStart;
 
 extern NSString *const kErrorAuthenticationFailed;
+extern NSString *const kErrorTitle;
 
 extern NSString *const kGoogleAPIBrowserKey;
 
@@ -56,11 +57,13 @@ extern NSString *const kImageNamePinBlue;
 extern NSString *const kImageNamePinGreen;
 extern NSString *const kImageNamePinPink;
 
+extern NSString *const kNotificationDidCreateAccount;
 extern NSString *const kNotificationDidCreateBid;
 extern NSString *const kNotificationDidCreateComment;
 extern NSString *const kNotificationDidCreateOrder;
 extern NSString *const kNotificationDidReceiveBid;
 extern NSString *const kNotificationDidSignIn;
+extern NSString *const kNotificationDidSignUp;
 
 extern NSString *const kSystemFontBold;
 extern NSString *const kSystemFontItalic;

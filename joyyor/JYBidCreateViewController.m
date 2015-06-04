@@ -178,7 +178,7 @@ NSString *const kOrderBidCellIdentifier = @"orderBidCell";
               [KVNProgress dismiss];
 
               NSString *errorMessage = NSLocalizedString(@"The bid cannot be created due to network failure, please retry later", nil);
-              [RKDropdownAlert title:NSLocalizedString(@"Something wrong ...", nil)
+              [RKDropdownAlert title:NSLocalizedString(kErrorTitle, nil)
                              message:errorMessage
                      backgroundColor:FlatYellow
                            textColor:FlatBlack

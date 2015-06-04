@@ -149,11 +149,7 @@
     [JYOrder currentOrder].endAddress = [self.formValues valueForKey:@"endAddress"];
 
     // note
-    NSString *note = [self.formValues valueForKey:@"note"];
-    if ((note == (id)[NSNull null] || note.length == 0 )) {
-        note = @":)";
-    }
-    [JYOrder currentOrder].note = note;
+    [JYOrder currentOrder].note = [self.formValues objectForKey:@"note"] ? [self.formValues valueForKey:@"note"] : @":)";
 
     // startTime
     NSDate *startTime = (NSDate *)[self.formValues objectForKey:@"startTime"];
@@ -225,7 +221,7 @@
               [KVNProgress dismiss];
 
               NSString *errorMessage = NSLocalizedString(@"Can't create order due to network failure, please retry later", nil);
-              [RKDropdownAlert title:NSLocalizedString(@"Something wrong ...", nil)
+              [RKDropdownAlert title:NSLocalizedString(kErrorTitle, nil)
                              message:errorMessage
                      backgroundColor:FlatYellow
                            textColor:FlatBlack
