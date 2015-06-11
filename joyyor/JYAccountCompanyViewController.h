@@ -6,8 +6,8 @@
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
-#import <XLForm/XLFormViewController.h>
+#import "JYAccountBaseViewController.h"
 
-@interface JYAccountCompanyViewController : XLFormViewController
+@interface JYAccountCompanyViewController : JYAccountBaseViewController
 
 @end

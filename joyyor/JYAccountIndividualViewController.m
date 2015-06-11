@@ -1,21 +1,17 @@
 //
-//  JYAccountViewController.m
+//  JYAccountIndividualViewController.m
 //  joyyor
 //
 //  Created by Ping Yang on 5/31/15.
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
-#import <AFNetworking/AFNetworking.h>
-#import <KVNProgress/KVNProgress.h>
-#import <RKDropdownAlert/RKDropdownAlert.h>
+
 #import <XLForm/XLForm.h>
 
 #import "JYAccountIndividualViewController.h"
 #import "JYFixedLengthRowValidator.h"
 #import "JYFloatLabeledTextFieldCell.h"
-#import "JYButton.h"
-#import "JYUser.h"
 
 @interface JYAccountIndividualViewController ()
 
@@ -27,12 +23,6 @@
 {
     [super viewDidLoad];
     self.title = NSLocalizedString(@"Individual Account", nil);
-
-    UIBarButtonItem *barButton =
-    [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Submit", nil) style:UIBarButtonItemStylePlain target:self action:@selector(_submit)];
-    self.navigationItem.rightBarButtonItem = barButton;
-
-    [self _createForm];
 }
 
 - (void)didReceiveMemoryWarning
@@ -40,7 +30,7 @@
     [super didReceiveMemoryWarning];
 }
 
-- (void)_createForm
+- (void)createForm
 {
     XLFormDescriptor *form = nil;
     XLFormSectionDescriptor *section = nil;
@@ -79,24 +69,27 @@
     // Address
     section = [XLFormSectionDescriptor formSectionWithTitle:NSLocalizedString(@"Address", nil)];
     [form addFormSection:section];
-    row = [XLFormRowDescriptor formRowDescriptorWithTag:@"line1" rowType:XLFormRowDescriptorTypeFloatLabeledText title:NSLocalizedString(@"Address line 1", nil)];
+    row = [XLFormRowDescriptor formRowDescriptorWithTag:@"line1" rowType:XLFormRowDescriptorTypeFloatLabeledText title:NSLocalizedString(@"Street", nil)];
     row.required = YES;
+    row.value = self.currentAddress ? [self.currentAddress valueForKey:@"Street"] : nil;
     [section addFormRow:row];
 
-    row = [XLFormRowDescriptor formRowDescriptorWithTag:@"line2" rowType:XLFormRowDescriptorTypeFloatLabeledText title:NSLocalizedString(@"Address line 2 (optional)", nil)];
+    row = [XLFormRowDescriptor formRowDescriptorWithTag:@"line2" rowType:XLFormRowDescriptorTypeFloatLabeledText title:NSLocalizedString(@"Apt/Suite/Unit (optional)", nil)];
     [section addFormRow:row];
 
     row = [XLFormRowDescriptor formRowDescriptorWithTag:@"city" rowType:XLFormRowDescriptorTypeFloatLabeledName title:NSLocalizedString(@"City", nil)];
     row.required = YES;
-    row.value = [NSDate dateWithTimeIntervalSince1970:0];
+    row.value = self.currentAddress ? [self.currentAddress valueForKey:@"City"] : nil;
     [section addFormRow:row];
 
     row = [XLFormRowDescriptor formRowDescriptorWithTag:@"state" rowType:XLFormRowDescriptorTypeFloatLabeledName title:NSLocalizedString(@"State", nil)];
     row.required = YES;
+    row.value = self.currentAddress ? [self.currentAddress valueForKey:@"State"] : nil;
     [section addFormRow:row];
 
     row = [XLFormRowDescriptor formRowDescriptorWithTag:@"zipcode" rowType:XLFormRowDescriptorTypeFloatLabeledZipcode title:NSLocalizedString(@"Zip Code (5 digits)", nil)];
     row.required = YES;
+    row.value = self.currentAddress ? [self.currentAddress valueForKey:@"ZIP"] : nil;
     message = NSLocalizedString(@"Zip Code should contain only 5 digits", nil);
     validator = [[JYFixedLengthRowValidator alloc] initWithMsg:message andFixedLength:5];
     [row addValidator:validator];
@@ -119,7 +112,12 @@
     self.form = form;
 }
 
-- (NSDictionary *)_httpParameters
+- (NSString *)submitAccountInfoURL
+{
+    return [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"account/individual"];
+}
+
+- (NSDictionary *)submitAccountInfoParameters
 {
     NSMutableDictionary *parameters = (NSMutableDictionary *)[self.form httpParameters:self];
 
@@ -144,72 +142,6 @@
     NSLog(@"parameters: %@", parameters);
 
     return parameters;
-}
-
-- (BOOL)_formFilled
-{
-    NSArray *validationErrors = [self formValidationErrors];
-    if (validationErrors == NULL || validationErrors.count == 0)
-    {
-        return YES;
-
-    }
-
-    [self _showFormValidationError:[validationErrors firstObject]];
-    return NO;
-}
-
-- (void)_showFormValidationError:(NSError *)error
-{
-    UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(kErrorTitle, nil) message:error.localizedDescription delegate:self cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil];
-    [alertView show];
-}
-
-- (void)_submit
-{
-    if ([self _formFilled])
-    {
-        [self _submitAccountInfo];
-    }
-}
-
-- (void)_submitAccountInfo
-{
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYUser currentUser].token];
-    [manager.requestSerializer setValue:token forHTTPHeaderField:@"Authorization"];
-
-    NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"account/individual"];
-
-    [KVNProgress show];
-    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
-
-    __weak typeof(self) weakSelf = self;
-    [manager POST:url
-       parameters:[self _httpParameters]
-          success:^(AFHTTPRequestOperation *operation, id responseObject) {
-              NSLog(@"Account/individual Success responseObject: %@", responseObject);
-
-              [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-              [KVNProgress showSuccessWithStatus:NSLocalizedString(@"Your Account Created!", nil)];
-
-              [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationDidCreateAccount object:nil];
-              [weakSelf.navigationController popToRootViewControllerAnimated:NO];
-          }
-          failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-
-              [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-              [KVNProgress dismiss];
-
-              NSString *errorMessage = NSLocalizedString(@"Can't create the individual account due to network failure, please retry later", nil);
-              [RKDropdownAlert title:NSLocalizedString(kErrorTitle, nil)
-                             message:errorMessage
-                     backgroundColor:FlatYellow
-                           textColor:FlatBlack
-                                time:5];
-              
-          }
-     ];
 }
 
 @end

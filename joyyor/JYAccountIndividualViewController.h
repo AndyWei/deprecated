@@ -1,14 +1,13 @@
 //
-//  JYAccountViewController.h
+//  JYAccountIndividualViewController.h
 //  joyyor
 //
 //  Created by Ping Yang on 5/31/15.
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
+#import "JYAccountBaseViewController.h"
 
-#import <XLForm/XLFormViewController.h>
-
-@interface JYAccountIndividualViewController : XLFormViewController
+@interface JYAccountIndividualViewController : JYAccountBaseViewController
 
 @end

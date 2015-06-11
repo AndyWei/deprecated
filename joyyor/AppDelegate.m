@@ -12,7 +12,7 @@
 
 #import "AppDelegate.h"
 #import "DataStore.h"
-#import "JYAccountIndividualViewController.h"
+#import "JYAccountViewController.h"
 #import "JYOrdersEngagedViewController.h"
 #import "JYOrdersNearbyViewController.h"
 #import "JYOrdersTodoViewController.h"
@@ -269,7 +269,7 @@
 
 - (void)_launchAccountViewController
 {
-    UIViewController *viewController = [JYAccountIndividualViewController new];
+    UIViewController *viewController = [JYAccountViewController new];
     UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:viewController];
     self.window.rootViewController = navigationController;
 }
