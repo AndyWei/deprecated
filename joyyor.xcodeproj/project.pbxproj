@@ -14,6 +14,7 @@
 		D679F0231B1C1513004F1C37 /* JYAccountIndividualViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D679F0221B1C1513004F1C37 /* JYAccountIndividualViewController.m */; };
 		D679F02A1B1C3B41004F1C37 /* JYFloatLabeledTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D679F0291B1C3B41004F1C37 /* JYFloatLabeledTextFieldCell.m */; };
 		D679F02D1B1ED683004F1C37 /* JYAccountCompanyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D679F02C1B1ED683004F1C37 /* JYAccountCompanyViewController.m */; };
+		D679F0341B295525004F1C37 /* JYFixedLengthRowValidator.m in Sources */ = {isa = PBXBuildFile; fileRef = D679F0331B295525004F1C37 /* JYFixedLengthRowValidator.m */; };
 		D6C82B591B0DA5CE00876F57 /* JYCommentsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6C82B581B0DA5CE00876F57 /* JYCommentsViewController.m */; };
 		D6C82B601B0EFE0600876F57 /* JYCommentTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = D6C82B5F1B0EFE0600876F57 /* JYCommentTextView.m */; };
 		D6C82B6F1B128E9700876F57 /* JYBid.m in Sources */ = {isa = PBXBuildFile; fileRef = D6C82B6C1B128E9700876F57 /* JYBid.m */; };
@@ -76,6 +77,8 @@
 		D679F0291B1C3B41004F1C37 /* JYFloatLabeledTextFieldCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JYFloatLabeledTextFieldCell.m; path = joyyios/JYFloatLabeledTextFieldCell.m; sourceTree = SOURCE_ROOT; };
 		D679F02B1B1ED683004F1C37 /* JYAccountCompanyViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYAccountCompanyViewController.h; sourceTree = "<group>"; };
 		D679F02C1B1ED683004F1C37 /* JYAccountCompanyViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYAccountCompanyViewController.m; sourceTree = "<group>"; };
+		D679F0321B295525004F1C37 /* JYFixedLengthRowValidator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JYFixedLengthRowValidator.h; path = joyyios/JYFixedLengthRowValidator.h; sourceTree = SOURCE_ROOT; };
+		D679F0331B295525004F1C37 /* JYFixedLengthRowValidator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JYFixedLengthRowValidator.m; path = joyyios/JYFixedLengthRowValidator.m; sourceTree = SOURCE_ROOT; };
 		D6C82B571B0DA5CE00876F57 /* JYCommentsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JYCommentsViewController.h; path = joyyios/JYCommentsViewController.h; sourceTree = SOURCE_ROOT; };
 		D6C82B581B0DA5CE00876F57 /* JYCommentsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JYCommentsViewController.m; path = joyyios/JYCommentsViewController.m; sourceTree = SOURCE_ROOT; };
 		D6C82B5E1B0EFE0600876F57 /* JYCommentTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JYCommentTextView.h; path = joyyios/JYCommentTextView.h; sourceTree = SOURCE_ROOT; };
@@ -320,6 +323,8 @@
 				D6F49FBF1AF5DB4D001A3C89 /* JYDateView.m */,
 				D6F49FC01AF5DB4D001A3C89 /* JYExpandViewController.h */,
 				D6F49FC11AF5DB4D001A3C89 /* JYExpandViewController.m */,
+				D679F0321B295525004F1C37 /* JYFixedLengthRowValidator.h */,
+				D679F0331B295525004F1C37 /* JYFixedLengthRowValidator.m */,
 				D6F49FC21AF5DB4D001A3C89 /* JYFloatLabeledTextField.h */,
 				D6F49FC31AF5DB4D001A3C89 /* JYFloatLabeledTextField.m */,
 				D679F0281B1C3B41004F1C37 /* JYFloatLabeledTextFieldCell.h */,
@@ -518,6 +523,7 @@
 				D6F4A0201AF5DB4D001A3C89 /* JYRestrictedTextViewCell.m in Sources */,
 				D6F4A0361AF5DB4D001A3C89 /* UIFont+Joyy.m in Sources */,
 				D6C82B771B13EB3D00876F57 /* JYOrdersBaseViewController.m in Sources */,
+				D679F0341B295525004F1C37 /* JYFixedLengthRowValidator.m in Sources */,
 				D6F4A00C1AF5DB4D001A3C89 /* JYOrder.m in Sources */,
 				D6F4A02C1AF5DB4D001A3C89 /* JYUser.m in Sources */,
 				D65F374A1B0485A7007B534C /* JYCommentViewCell.m in Sources */,

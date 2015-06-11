@@ -63,6 +63,8 @@
 		D65F37471B04807D007B534C /* JYCommentViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D65F37451B04807D007B534C /* JYCommentViewCell.m */; };
 		D679F0261B1C39BB004F1C37 /* JYFloatLabeledTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D679F0251B1C39BB004F1C37 /* JYFloatLabeledTextFieldCell.m */; };
 		D679F0271B1C39BB004F1C37 /* JYFloatLabeledTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D679F0251B1C39BB004F1C37 /* JYFloatLabeledTextFieldCell.m */; };
+		D679F0301B2951D5004F1C37 /* JYFixedLengthRowValidator.m in Sources */ = {isa = PBXBuildFile; fileRef = D679F02F1B2951D5004F1C37 /* JYFixedLengthRowValidator.m */; };
+		D679F0311B2951D5004F1C37 /* JYFixedLengthRowValidator.m in Sources */ = {isa = PBXBuildFile; fileRef = D679F02F1B2951D5004F1C37 /* JYFixedLengthRowValidator.m */; };
 		D689ED621AE01F9C00CB4D2B /* JYDateView.m in Sources */ = {isa = PBXBuildFile; fileRef = D689ED611AE01F9C00CB4D2B /* JYDateView.m */; };
 		D689ED631AE01F9C00CB4D2B /* JYDateView.m in Sources */ = {isa = PBXBuildFile; fileRef = D689ED611AE01F9C00CB4D2B /* JYDateView.m */; };
 		D689ED6A1AE42C8300CB4D2B /* UIView+Joyy.m in Sources */ = {isa = PBXBuildFile; fileRef = D689ED691AE42C8300CB4D2B /* UIView+Joyy.m */; };
@@ -172,6 +174,8 @@
 		D65F37451B04807D007B534C /* JYCommentViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYCommentViewCell.m; sourceTree = "<group>"; };
 		D679F0241B1C39BB004F1C37 /* JYFloatLabeledTextFieldCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYFloatLabeledTextFieldCell.h; sourceTree = "<group>"; };
 		D679F0251B1C39BB004F1C37 /* JYFloatLabeledTextFieldCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYFloatLabeledTextFieldCell.m; sourceTree = "<group>"; };
+		D679F02E1B2951D5004F1C37 /* JYFixedLengthRowValidator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYFixedLengthRowValidator.h; sourceTree = "<group>"; };
+		D679F02F1B2951D5004F1C37 /* JYFixedLengthRowValidator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYFixedLengthRowValidator.m; sourceTree = "<group>"; };
 		D689ED601AE01F9C00CB4D2B /* JYDateView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYDateView.h; sourceTree = "<group>"; };
 		D689ED611AE01F9C00CB4D2B /* JYDateView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYDateView.m; sourceTree = "<group>"; };
 		D689ED681AE42C8300CB4D2B /* UIView+Joyy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Joyy.h"; sourceTree = "<group>"; };
@@ -282,6 +286,8 @@
 				D689ED611AE01F9C00CB4D2B /* JYDateView.m */,
 				D6B2F07B1AD44370009601B0 /* JYExpandViewController.h */,
 				D6B2F07C1AD44370009601B0 /* JYExpandViewController.m */,
+				D679F02E1B2951D5004F1C37 /* JYFixedLengthRowValidator.h */,
+				D679F02F1B2951D5004F1C37 /* JYFixedLengthRowValidator.m */,
 				D63B69B41AC53BB4005600A9 /* JYFloatLabeledTextField.h */,
 				D63B69B51AC53BB4005600A9 /* JYFloatLabeledTextField.m */,
 				D679F0241B1C39BB004F1C37 /* JYFloatLabeledTextFieldCell.h */,
@@ -650,6 +656,7 @@
 				D65AFA731AEF5F3A007867D0 /* UICustomActionSheet.m in Sources */,
 				D6C82B731B13EB1100876F57 /* JYOrdersBaseViewController.m in Sources */,
 				D6348D271ADA3BC90002BC35 /* JYPriceTextFieldCell.m in Sources */,
+				D679F0301B2951D5004F1C37 /* JYFixedLengthRowValidator.m in Sources */,
 				D679F0261B1C39BB004F1C37 /* JYFloatLabeledTextFieldCell.m in Sources */,
 				D63F0D591AC7CFF20067C5EE /* JYButton.m in Sources */,
 				D63F0D8C1ACBBF1F0067C5EE /* JYCollectionViewCell.m in Sources */,
@@ -708,6 +715,7 @@
 				D6B2F0761AD318B6009601B0 /* JYPanGestureRecognizer.m in Sources */,
 				D63F0D7E1ACA5E260067C5EE /* JYSignViewController.m in Sources */,
 				D63B69BB1AC624F8005600A9 /* JYAutoCompleteDataSource.m in Sources */,
+				D679F0311B2951D5004F1C37 /* JYFixedLengthRowValidator.m in Sources */,
 				D6B2F0681AD1B5EC009601B0 /* JYMapDashBoardView.m in Sources */,
 				D6B2F07E1AD44370009601B0 /* JYExpandViewController.m in Sources */,
 				D6348D281ADA3BC90002BC35 /* JYPriceTextFieldCell.m in Sources */,

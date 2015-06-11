@@ -134,6 +134,11 @@ const static CGFloat kTextFieldFontSize = 18.0f;
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
 {
+    if (self.floatLabeledTextField == textField)
+    {
+        NSString *newText = [textField.text stringByReplacingCharactersInRange:range withString:string];
+        self.rowDescriptor.value = newText.length > 0 ? newText : nil;
+    }
     return [self.formViewController textField:textField shouldChangeCharactersInRange:range replacementString:string];
 }
 
@@ -189,7 +194,7 @@ const static CGFloat kTextFieldFontSize = 18.0f;
 {
     if (self.floatLabeledTextField == textField)
     {
-        if ([self.floatLabeledTextField.text length] > 0)
+        if (self.floatLabeledTextField.text.length > 0)
         {
             self.rowDescriptor.value = self.floatLabeledTextField.text;
         }

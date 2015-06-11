@@ -12,6 +12,7 @@
 #import <XLForm/XLForm.h>
 
 #import "JYAccountIndividualViewController.h"
+#import "JYFixedLengthRowValidator.h"
 #import "JYFloatLabeledTextFieldCell.h"
 #import "JYButton.h"
 #import "JYUser.h"
@@ -41,9 +42,11 @@
 
 - (void)_createForm
 {
-    XLFormDescriptor *form;
-    XLFormSectionDescriptor *section;
-    XLFormRowDescriptor *row;
+    XLFormDescriptor *form = nil;
+    XLFormSectionDescriptor *section = nil;
+    XLFormRowDescriptor *row = nil;
+    JYFixedLengthRowValidator *validator = nil;
+    NSString *message = nil;
 
     form = [XLFormDescriptor formDescriptor];
     form.assignFirstResponderOnShow = YES;
@@ -51,11 +54,11 @@
     // Personal Info
     section = [XLFormSectionDescriptor formSectionWithTitle:NSLocalizedString(@"Personal Information", nil)];
     [form addFormSection:section];
-    row = [XLFormRowDescriptor formRowDescriptorWithTag:@"firstName" rowType:XLFormRowDescriptorTypeFloatLabeledName title:NSLocalizedString(@"First Name", nil)];
+    row = [XLFormRowDescriptor formRowDescriptorWithTag:@"first_name" rowType:XLFormRowDescriptorTypeFloatLabeledName title:NSLocalizedString(@"First Name", nil)];
     row.required = YES;
     [section addFormRow:row];
 
-    row = [XLFormRowDescriptor formRowDescriptorWithTag:@"lastName" rowType:XLFormRowDescriptorTypeFloatLabeledName title:NSLocalizedString(@"Last Name", nil)];
+    row = [XLFormRowDescriptor formRowDescriptorWithTag:@"last_name" rowType:XLFormRowDescriptorTypeFloatLabeledName title:NSLocalizedString(@"Last Name", nil)];
     row.required = YES;
     [section addFormRow:row];
 
@@ -66,8 +69,11 @@
     row.value = [formatter dateFromString:str];
     [section addFormRow:row];
 
-    row = [XLFormRowDescriptor formRowDescriptorWithTag:@"personalId" rowType:XLFormRowDescriptorTypeFloatLabeledSSN title:NSLocalizedString(@"Social Security Number", nil)];
+    row = [XLFormRowDescriptor formRowDescriptorWithTag:@"ssn_last_4" rowType:XLFormRowDescriptorTypeFloatLabeledSSN title:NSLocalizedString(@"Last 4 Digits of Social Security Number", nil)];
     row.required = YES;
+    message = NSLocalizedString(@"Please provide only the last 4 digits of SSN", nil);
+    validator = [[JYFixedLengthRowValidator alloc] initWithMsg:message andFixedLength:4];
+    [row addValidator:validator];
     [section addFormRow:row];
 
     // Address
@@ -89,19 +95,24 @@
     row.required = YES;
     [section addFormRow:row];
 
-    row = [XLFormRowDescriptor formRowDescriptorWithTag:@"zipcode" rowType:XLFormRowDescriptorTypeFloatLabeledZipcode title:NSLocalizedString(@"Zip Code", nil)];
+    row = [XLFormRowDescriptor formRowDescriptorWithTag:@"zipcode" rowType:XLFormRowDescriptorTypeFloatLabeledZipcode title:NSLocalizedString(@"Zip Code (5 digits)", nil)];
     row.required = YES;
+    message = NSLocalizedString(@"Zip Code should contain only 5 digits", nil);
+    validator = [[JYFixedLengthRowValidator alloc] initWithMsg:message andFixedLength:5];
+    [row addValidator:validator];
     [section addFormRow:row];
-
 
     // Bank Account
     section = [XLFormSectionDescriptor formSectionWithTitle:NSLocalizedString(@"Bank Information", nil)];
     [form addFormSection:section];
-    row = [XLFormRowDescriptor formRowDescriptorWithTag:@"routingNumber" rowType:XLFormRowDescriptorTypeFloatLabeledInteger title:NSLocalizedString(@"Routing Number", nil)];
+    row = [XLFormRowDescriptor formRowDescriptorWithTag:@"routing_number" rowType:XLFormRowDescriptorTypeFloatLabeledInteger title:NSLocalizedString(@"Routing Number (9 digits)", nil)];
     row.required = YES;
+    message = NSLocalizedString(@"Routing Number should contain only 9 digits", nil);
+    validator = [[JYFixedLengthRowValidator alloc] initWithMsg:message andFixedLength:9];
+    [row addValidator:validator];
     [section addFormRow:row];
 
-    row = [XLFormRowDescriptor formRowDescriptorWithTag:@"accountNumber" rowType:XLFormRowDescriptorTypeFloatLabeledInteger title:NSLocalizedString(@"Account Number", nil)];
+    row = [XLFormRowDescriptor formRowDescriptorWithTag:@"account_number" rowType:XLFormRowDescriptorTypeFloatLabeledInteger title:NSLocalizedString(@"Account Number", nil)];
     row.required = YES;
     [section addFormRow:row];
 
@@ -110,22 +121,27 @@
 
 - (NSDictionary *)_httpParameters
 {
-    NSMutableDictionary *parameters = [NSMutableDictionary new];
+    NSMutableDictionary *parameters = (NSMutableDictionary *)[self.form httpParameters:self];
 
-    [parameters setValue:[self.formValues valueForKey:@"firstName"] forKey:@"firstName"];
-    [parameters setValue:[self.formValues valueForKey:@"lastName"] forKey:@"lastName"];
-    [parameters setValue:[self.formValues valueForKey:@"personalId"] forKey:@"personalId"];
-    [parameters setValue:[self.formValues valueForKey:@"line1"] forKey:@"line1"];
-    [parameters setValue:[self.formValues valueForKey:@"city"] forKey:@"city"];
-    [parameters setValue:[self.formValues valueForKey:@"state"] forKey:@"state"];
-    [parameters setValue:[self.formValues valueForKey:@"zipcode"] forKey:@"zipcode"];
-    [parameters setValue:[self.formValues valueForKey:@"routingNumber"] forKey:@"routingNumber"];
-    [parameters setValue:[self.formValues valueForKey:@"accountNumber"] forKey:@"accountNumber"];
+    // Remove items
+    [parameters removeObjectForKey:@"dob"];
+    [parameters removeObjectForKey:@"line2"];
 
-    if ([self.formValues objectForKey:@"line2"])
+    // Add items
+    id line2 = [self.formValues objectForKey:@"line2"];
+    if (![line2 isKindOfClass:[NSNull class]])
     {
         [parameters setValue:[self.formValues valueForKey:@"line2"] forKey:@"line2"];
     }
+
+    NSDate *dob = [self.formValues valueForKey:@"dob"];
+    NSDateComponents *dobComponents = [[NSCalendar currentCalendar] components:NSCalendarUnitDay | NSCalendarUnitMonth | NSCalendarUnitYear fromDate:dob];
+
+    [parameters setValue:@(dobComponents.year) forKey:@"year"];
+    [parameters setValue:@(dobComponents.month) forKey:@"month"];
+    [parameters setValue:@(dobComponents.day) forKey:@"day"];
+
+    NSLog(@"parameters: %@", parameters);
 
     return parameters;
 }
