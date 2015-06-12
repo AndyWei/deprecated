@@ -194,13 +194,24 @@ internals.createAccountHandler = function (accountType, request, reply) {
                 next(null, result);
             });
         },
-        accountId: ['stripe', function (next, results) {
+        begin: ['stripe', function (next) {
+
+            request.pg.client.query('BEGIN', function(err) {
+                if (err) {
+                    request.pg.kill = true;
+                    return next(err);
+                }
+
+                next(null);
+            });
+        }],
+        accountId: ['begin', function (next, results) {
 
             var s = results.stripe;
             var queryConfig = {
-                name: 'accounts_create_individual',
+                name: 'accounts_create',
                 text: 'INSERT INTO accounts \
-                           (account_type, user_id, email, account_id, secret, publishable, created_at, updated_at) VALUES \
+                           (account_type, user_id, email, stripe_account_id, secret, publishable, created_at, updated_at) VALUES \
                            ($1, $2, $3, $4, $5, $6, now(), now()) \
                            RETURNING id',
                 values: [accountType, userId, parameters.email, s.id, s.keys.secret, s.keys.publishable]
@@ -214,11 +225,46 @@ internals.createAccountHandler = function (accountType, request, reply) {
                 }
 
                 if (result.rows.length === 0) {
-
                     return next(Boom.badData(c.QUERY_FAILED));
                 }
 
                 next(null, result.rows[0]);
+            });
+        }],
+        joyyorStatus: ['accountId', function (next) {
+
+            var queryConfig = {
+                name: 'users_update_joyyor_status_unverified',
+                text: 'UPDATE users ' +
+                      'SET joyyor_status = 1, updated_at = now() ' +
+                      'WHERE id = $1 AND joyyor_status = 0 ' +
+                      'RETURNING id',
+                values: [userId]
+            };
+
+            request.pg.client.query(queryConfig, function (err, result) {
+
+                if (err) {
+                    request.pg.kill = true;
+                    return next(err);
+                }
+
+                if (result.rows.length === 0) {
+                    return next(Boom.badData(c.QUERY_FAILED));
+                }
+
+                next(null);
+            });
+        }],
+        commit: ['joyyorStatus', function (next) {
+
+            request.pg.client.query('COMMIT', function(err) {
+                if (err) {
+                    request.pg.kill = true;
+                    return next(err);
+                }
+
+                next(null);
             });
         }]
     }, function (err, results) {

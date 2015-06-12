@@ -2,15 +2,15 @@
 
 
 INSERT INTO users
-    (username,                                                       password,                 email, rating_total, rating_count, created_at, updated_at, deleted) VALUES
-    (  'jack', '$2a$10$sTaFcBz.lhDXr2bVNZJZeenPJ3qiKG.NaQQ5zqiz0peku0fDvO0YG',      'jack@gmail.com',           10,            2,      now(),      now(),   FALSE),
-    (  'andy', '$2a$10$sTaFcBz.lhDXr2bVNZJZeenPJ3qiKG.NaQQ5zqiz0peku0fDvO0YG', 'andy94555@gmail.com',            9,            2,      now(),      now(),   FALSE),
-    (  'ping', '$2a$10$sTaFcBz.lhDXr2bVNZJZeenPJ3qiKG.NaQQ5zqiz0peku0fDvO0YG', 'ping@gmail.com',                 0,            0,      now(),      now(),   FALSE),
-    (  'mike', '$2a$10$sTaFcBz.lhDXr2bVNZJZeenPJ3qiKG.NaQQ5zqiz0peku0fDvO0YG', 'mike95273@gmail.com',           13,            3,      now(),      now(),   FALSE);
+    (username,                                                       password,                 email, joyyor_status, rating_total, rating_count, created_at, updated_at, deleted) VALUES
+    (  'jack', '$2a$10$sTaFcBz.lhDXr2bVNZJZeenPJ3qiKG.NaQQ5zqiz0peku0fDvO0YG',      'jack@gmail.com',             0,           10,            2,      now(),      now(),   FALSE),
+    (  'andy', '$2a$10$sTaFcBz.lhDXr2bVNZJZeenPJ3qiKG.NaQQ5zqiz0peku0fDvO0YG', 'andy94555@gmail.com',             1,            9,            2,      now(),      now(),   FALSE),
+    (  'ping', '$2a$10$sTaFcBz.lhDXr2bVNZJZeenPJ3qiKG.NaQQ5zqiz0peku0fDvO0YG', 'ping@gmail.com',                  0,            0,            0,      now(),      now(),   FALSE),
+    (  'mike', '$2a$10$sTaFcBz.lhDXr2bVNZJZeenPJ3qiKG.NaQQ5zqiz0peku0fDvO0YG', 'mike95273@gmail.com',             0,           13,            3,      now(),      now(),   FALSE);
 
 
 INSERT INTO accounts
-    (user_id,                 email,              account_id,                             secret,                        publishable,  created_at, updated_at) VALUES
+    (user_id,                 email,       stripe_account_id,                             secret,                        publishable,  created_at, updated_at) VALUES
     (      2, 'andy94555@gmail.com', 'acct_16CNevL3foSC1Ck4', 'sk_test_y6qiee71SA8RB4eA7ubfcabt', 'pk_test_A5X5cmWlRb6OvOzjdBlpKszB',       now(),      now());
 
 

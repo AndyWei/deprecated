@@ -1,6 +1,6 @@
 CREATE TABLE bids (
     id             BIGSERIAL  PRIMARY KEY,
-    user_id      BIGINT        NOT NULL,  -- the id of the user who offered this bid
+    user_id        BIGINT        NOT NULL,  -- the id of the user who offered this bid
     order_id       BIGINT        NOT NULL,  -- the id of the order
     price          NUMERIC(11,2) NOT NULL,  -- the price that user_id wants
     status         SMALLINT      NOT NULL DEFAULT 0,  -- 0-active, 1-accepted, 10-rejected, 20-revoked 

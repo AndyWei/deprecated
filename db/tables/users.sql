@@ -1,10 +1,10 @@
 CREATE TABLE users (
     id            BIGSERIAL  PRIMARY KEY,
     username      TEXT          NOT NULL,  -- when user signup, this field is generated automatically, and the user can modify it later
-    password      TEXT          NOT NULL,  -- bcrypt hashed password, it always 60 bytes, however TEXT provides flexible
+    password      TEXT          NOT NULL,  -- bcrypt hashed password, it always 60 bytes, however TEXT makes it flexible
     email         TEXT          NOT NULL,  -- user use email to signup
-    role          SMALLINT      NOT NULL DEFAULT 0,  -- 0-user, 1-admin, 2-test, 3-robot
-    joyyor_status SMALLINT      NOT NULL DEFAULT 0,  -- 0-unverified, 1-verified
+    role          SMALLINT      NOT NULL DEFAULT 0,  -- 0 - user, 1 - admin, 2 - test
+    joyyor_status SMALLINT      NOT NULL DEFAULT 0,  -- 0 - no joyyor account, 1 - unverified account, 2 - verified individual, 3 - verified company
     rating_total  NUMERIC(8,1)  NOT NULL DEFAULT 0,
     rating_count  NUMERIC(6)    NOT NULL DEFAULT 0,
     created_at    TIMESTAMPTZ   NOT NULL,

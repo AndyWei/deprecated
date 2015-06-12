@@ -174,7 +174,8 @@ internals.createUser = function (request, reply) {
                 username: results.username,
                 email: email,
                 password: request.payload.password,
-                token: results.token
+                token: results.token,
+                joyyor_status: 0
         };
 
         console.log('user created. username=%s, email=%s, token=%s \n', results.username, email, results.token);
