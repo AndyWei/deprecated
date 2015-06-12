@@ -32,6 +32,7 @@ var manifest = {
             attach: 'onPreHandler'
         },
         './server/authenticate': {},
+        './server/api/accounts': { basePath: '/v1' },
         './server/api/bids': { basePath: '/v1' },
         './server/api/comments': { basePath: '/v1' },
         './server/api/notification': { basePath: '/v1' },

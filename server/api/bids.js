@@ -145,10 +145,10 @@ exports.register = function (server, options, next) {
             },
             validate: {
                 payload: {
-                    order_id: Joi.string().regex(/^[0-9]+$/).max(19),
-                    price: Joi.number().precision(2).min(0).max(100000000),
-                    note: Joi.string().max(1000),
-                    expire_at: Joi.number().min(0),
+                    order_id: Joi.string().regex(/^[0-9]+$/).max(19).required(),
+                    price: Joi.number().precision(2).min(0).max(100000000).required(),
+                    note: Joi.string().max(1000).required(),
+                    expire_at: Joi.number().min(0).required(),
                     old_bid_id: Joi.string().regex(/^[0-9]+$/).max(19).default('0')
                 }
             }
@@ -167,7 +167,7 @@ exports.register = function (server, options, next) {
             },
             validate: {
                 payload: {
-                    id: Joi.string().regex(/^[0-9]+$/).max(19)
+                    id: Joi.string().regex(/^[0-9]+$/).max(19).required()
                 }
             }
         },
@@ -208,7 +208,7 @@ exports.register = function (server, options, next) {
             },
             validate: {
                 payload: {
-                    id: Joi.string().regex(/^[0-9]+$/).max(19)
+                    id: Joi.string().regex(/^[0-9]+$/).max(19).required()
                 }
             }
         },

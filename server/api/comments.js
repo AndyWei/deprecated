@@ -23,7 +23,7 @@ exports.register = function (server, options, next) {
         config: {
             validate: {
                 params: {
-                    id: Joi.string().regex(/^[0-9]+$/).max(19)
+                    id: Joi.string().regex(/^[0-9]+$/).max(19).required()
                 }
             }
         },
@@ -134,8 +134,8 @@ exports.register = function (server, options, next) {
             },
             validate: {
                 payload: {
-                    order_id: Joi.string().regex(/^[0-9]+$/).max(19),
-                    body: Joi.string().max(1000)
+                    order_id: Joi.string().regex(/^[0-9]+$/).max(19).required(),
+                    body: Joi.string().max(1000).required()
                 }
             }
         },

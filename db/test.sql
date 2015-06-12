@@ -9,6 +9,11 @@ INSERT INTO users
     (  'mike', '$2a$10$sTaFcBz.lhDXr2bVNZJZeenPJ3qiKG.NaQQ5zqiz0peku0fDvO0YG', 'mike95273@gmail.com',           13,            3,      now(),      now(),   FALSE);
 
 
+INSERT INTO accounts
+    (user_id,                 email,              account_id,                             secret,                        publishable,  created_at, updated_at) VALUES
+    (      2, 'andy94555@gmail.com', 'acct_16CNevL3foSC1Ck4', 'sk_test_y6qiee71SA8RB4eA7ubfcabt', 'pk_test_A5X5cmWlRb6OvOzjdBlpKszB',       now(),      now());
+
+
 INSERT INTO orders
     (user_id, winner_id,  price,  status, category, created_at, updated_at,      title,     note,                                              start_point,   start_city,     start_address, start_time) VALUES
     (      1,      NULL,    199,       0,        1,      now(),      now(),    'clean', 'order0', ST_SetSRID(ST_MakePoint(-122.4164623, 37.7766092), 4326),    'Fremont',      '1 Joyy Way', 450694731),

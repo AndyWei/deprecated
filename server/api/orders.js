@@ -168,8 +168,8 @@ exports.register = function (server, options, next) {
         config: {
             validate: {
                 query: {
-                    lon: Joi.number().min(-180).max(180),
-                    lat: Joi.number().min(-90).max(90),
+                    lon: Joi.number().min(-180).max(180).required(),
+                    lat: Joi.number().min(-90).max(90).required(),
                     distance: Joi.number().min(1).max(1000).default(80),
                     after: Joi.string().regex(/^[0-9]+$/).max(19).default('0'),
                     before: Joi.string().regex(/^[0-9]+$/).max(19).default('9223372036854775807'),
@@ -278,17 +278,17 @@ exports.register = function (server, options, next) {
             },
             validate: {
                 payload: {
-                    category: Joi.number().min(0).max(100),
-                    country: Joi.string().length(2).regex(/^[a-z]+$/),
-                    currency: Joi.string().length(3).regex(/^[a-z]+$/),
-                    title: Joi.string().max(100),
-                    note: Joi.string().max(1000),
-                    price: Joi.number().precision(2).min(0).max(100000000),
-                    start_time: Joi.number().min(450600000),
-                    start_point_lon: Joi.number().min(-180).max(180),
-                    start_point_lat: Joi.number().min(-90).max(90),
-                    start_city: Joi.string().max(30),
-                    start_address: Joi.string().max(200),
+                    category: Joi.number().min(0).max(100).required(),
+                    country: Joi.string().length(2).regex(/^[a-z]+$/).required(),
+                    currency: Joi.string().length(3).regex(/^[a-z]+$/).required(),
+                    title: Joi.string().max(100).required(),
+                    note: Joi.string().max(1000).required(),
+                    price: Joi.number().precision(2).min(0).max(100000000).required(),
+                    start_time: Joi.number().min(450600000).required(),
+                    start_point_lon: Joi.number().min(-180).max(180).required(),
+                    start_point_lat: Joi.number().min(-90).max(90).required(),
+                    start_city: Joi.string().max(30).required(),
+                    start_address: Joi.string().max(200).required(),
                     end_point_lon: Joi.number().min(-180).max(180).optional(),
                     end_point_lat: Joi.number().min(-90).max(90).optional(),
                     end_address: Joi.string().optional()

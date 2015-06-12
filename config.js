@@ -38,6 +38,9 @@ var config = {
             pass: 'weserveeachother!'
         }
     },
+    stripe: {
+        platformSecretKey: 'sk_test_LhUJDVWLoCJT1xRQ9OnkhDcy'
+    },
     system: {
         fromAddress: {
             name: 'joyyserver',
