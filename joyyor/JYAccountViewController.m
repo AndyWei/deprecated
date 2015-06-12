@@ -71,8 +71,9 @@
 
 - (void)_fetchCurrentAddress
 {
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    self.navigationItem.rightBarButtonItem.enabled = NO;
 
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     CLLocation *location = [[CLLocation alloc] initWithLatitude:appDelegate.currentCoordinate.latitude longitude:appDelegate.currentCoordinate.longitude];
     CLGeocoder *geocoder = [[CLGeocoder alloc] init];
     __weak typeof(self) weakSelf = self;
@@ -89,6 +90,7 @@
                            address = placemark.addressDictionary;
                        }
 
+                       weakSelf.navigationItem.rightBarButtonItem.enabled = YES;
                        [weakSelf _presentCreateAccountViewWithAddress:address];
                    }];
 }

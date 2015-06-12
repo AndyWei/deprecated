@@ -12,6 +12,7 @@
 #import "JYAccountIndividualViewController.h"
 #import "JYFixedLengthRowValidator.h"
 #import "JYFloatLabeledTextFieldCell.h"
+#import "JYUser.h"
 
 @interface JYAccountIndividualViewController ()
 
@@ -42,7 +43,7 @@
     form.assignFirstResponderOnShow = YES;
 
     // Personal Info
-    section = [XLFormSectionDescriptor formSectionWithTitle:NSLocalizedString(@"Personal Information", nil)];
+    section = [XLFormSectionDescriptor formSectionWithTitle:NSLocalizedString(@"Personal  Information", nil)];
     [form addFormSection:section];
     row = [XLFormRowDescriptor formRowDescriptorWithTag:@"first_name" rowType:XLFormRowDescriptorTypeFloatLabeledName title:NSLocalizedString(@"First Name", nil)];
     row.required = YES;
@@ -90,17 +91,17 @@
     row = [XLFormRowDescriptor formRowDescriptorWithTag:@"zipcode" rowType:XLFormRowDescriptorTypeFloatLabeledZipcode title:NSLocalizedString(@"Zip Code (5 digits)", nil)];
     row.required = YES;
     row.value = self.currentAddress ? [self.currentAddress valueForKey:@"ZIP"] : nil;
-    message = NSLocalizedString(@"Zip Code should contain only 5 digits", nil);
+    message = NSLocalizedString(@"Zip Code should be 5 digits", nil);
     validator = [[JYFixedLengthRowValidator alloc] initWithMsg:message andFixedLength:5];
     [row addValidator:validator];
     [section addFormRow:row];
 
     // Bank Account
-    section = [XLFormSectionDescriptor formSectionWithTitle:NSLocalizedString(@"Bank Information", nil)];
+    section = [XLFormSectionDescriptor formSectionWithTitle:NSLocalizedString(@"Bank  Account", nil)];
     [form addFormSection:section];
     row = [XLFormRowDescriptor formRowDescriptorWithTag:@"routing_number" rowType:XLFormRowDescriptorTypeFloatLabeledInteger title:NSLocalizedString(@"Routing Number (9 digits)", nil)];
     row.required = YES;
-    message = NSLocalizedString(@"Routing Number should contain only 9 digits", nil);
+    message = NSLocalizedString(@"Routing Number should be 9 digits", nil);
     validator = [[JYFixedLengthRowValidator alloc] initWithMsg:message andFixedLength:9];
     [row addValidator:validator];
     [section addFormRow:row];
@@ -138,6 +139,7 @@
     [parameters setValue:@(dobComponents.year) forKey:@"year"];
     [parameters setValue:@(dobComponents.month) forKey:@"month"];
     [parameters setValue:@(dobComponents.day) forKey:@"day"];
+    [parameters setValue:[JYUser currentUser].email forKey:@"email"];
 
     NSLog(@"parameters: %@", parameters);
 

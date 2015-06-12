@@ -17,6 +17,7 @@
 @property(nonatomic, readonly) NSString *token;
 @property(nonatomic, readonly) NSTimeInterval tokenExpireTimeInSecs;
 @property(nonatomic, readonly) NSUInteger userId;
+@property(nonatomic, readonly) NSUInteger joyyorStatus;
 
 - (BOOL)exists;
 

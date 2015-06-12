@@ -21,14 +21,20 @@
     return _currentUser;
 }
 
-- (void)setCredential:(NSDictionary *)credential
+- (void)_loadProperties
 {
-    _credential = credential;
     _email = [_credential valueForKey:@"email"];
     _username = [_credential valueForKey:@"username"];
     _password = [_credential valueForKey:@"password"];
     _token = [_credential valueForKey:@"token"];
     _userId = [[_credential valueForKey:@"id"] unsignedIntegerValue];
+    _joyyorStatus = [[_credential valueForKey:@"joyyor_status"] unsignedIntegerValue];
+}
+
+- (void)setCredential:(NSDictionary *)credential
+{
+    _credential = credential;
+    [self _loadProperties];
     _tokenExpireTimeInSecs = [NSDate timeIntervalSinceReferenceDate] + kTokenValidInSecs;
 
     [DataStore sharedInstance].tokenExpireTime = _tokenExpireTimeInSecs;
@@ -46,11 +52,7 @@
 
     if (_credential != nil)
     {
-        _email = [_credential valueForKey:@"email"];
-        _username = [_credential valueForKey:@"username"];
-        _password = [_credential valueForKey:@"password"];
-        _token = [_credential valueForKey:@"token"];
-        _userId = [[_credential valueForKey:@"id"] unsignedIntegerValue];
+        [self _loadProperties];
         _tokenExpireTimeInSecs = [DataStore sharedInstance].tokenExpireTime;
         return YES;
     }

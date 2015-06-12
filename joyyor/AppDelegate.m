@@ -193,7 +193,14 @@
     }
     else if ([user exists])
     {
-        [self _launchTabViewController];
+        if (user.joyyorStatus == 0)
+        {
+            [self _launchAccountViewController];
+        }
+        else
+        {
+            [self _launchTabViewController];
+        }
     }
     else
     {
@@ -223,7 +230,14 @@
 
     if ([user exists])
     {
-        [self _launchTabViewController];
+        if (user.joyyorStatus == 0)
+        {
+            [self _launchAccountViewController];
+        }
+        else
+        {
+            [self _launchTabViewController];
+        }
     }
     else
     {
@@ -235,7 +249,14 @@
 {
     [self _registerPushNotifications];
     [self _signInPeriodically:kSignIntervalMax];
-    [self _launchTabViewController];
+    if ([JYUser currentUser].joyyorStatus == 0)
+    {
+        [self _launchAccountViewController];
+    }
+    else
+    {
+        [self _launchTabViewController];
+    }
 }
 
 - (void)_signUpDidFinish
@@ -300,23 +321,22 @@
         [self _signInPeriodically:(user.tokenExpireTimeInSecs - now)];
     }
 
-//    UIViewController *vc1 = [JYOrdersNearbyViewController new];
-//    UINavigationController *nc1 = [[UINavigationController alloc] initWithRootViewController:vc1];
-//    nc1.title = NSLocalizedString(@"Nearby", nil);
-//
-//    UIViewController *vc2 = [JYOrdersEngagedViewController new];
-//    UINavigationController *nc2 = [[UINavigationController alloc] initWithRootViewController:vc2];
-//    nc2.title = NSLocalizedString(@"Engaged", nil);
-//
-//    UIViewController *vc3 = [JYOrdersTodoViewController new];
-//    UINavigationController *nc3 = [[UINavigationController alloc] initWithRootViewController:vc3];
-//    nc3.title = NSLocalizedString(@"Todo", nil);
-//
-//    UITabBarController *tabBarController = [UITabBarController new];
-//    tabBarController.viewControllers = @[ nc1, nc2, nc3 ];
-//
-//    self.window.rootViewController = tabBarController;
-        [self _launchAccountViewController];
+    UIViewController *vc1 = [JYOrdersNearbyViewController new];
+    UINavigationController *nc1 = [[UINavigationController alloc] initWithRootViewController:vc1];
+    nc1.title = NSLocalizedString(@"Nearby", nil);
+
+    UIViewController *vc2 = [JYOrdersEngagedViewController new];
+    UINavigationController *nc2 = [[UINavigationController alloc] initWithRootViewController:vc2];
+    nc2.title = NSLocalizedString(@"Engaged", nil);
+
+    UIViewController *vc3 = [JYOrdersTodoViewController new];
+    UINavigationController *nc3 = [[UINavigationController alloc] initWithRootViewController:vc3];
+    nc3.title = NSLocalizedString(@"Todo", nil);
+
+    UITabBarController *tabBarController = [UITabBarController new];
+    tabBarController.viewControllers = @[ nc1, nc2, nc3 ];
+
+    self.window.rootViewController = tabBarController;
 }
 
 #pragma mark - Network

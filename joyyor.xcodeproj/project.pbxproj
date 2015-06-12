@@ -221,6 +221,21 @@
 			name = Common;
 			sourceTree = "<group>";
 		};
+		D679F03B1B2B5758004F1C37 /* Account */ = {
+			isa = PBXGroup;
+			children = (
+				D679F0351B296225004F1C37 /* JYAccountBaseViewController.h */,
+				D679F0361B296225004F1C37 /* JYAccountBaseViewController.m */,
+				D679F02B1B1ED683004F1C37 /* JYAccountCompanyViewController.h */,
+				D679F02C1B1ED683004F1C37 /* JYAccountCompanyViewController.m */,
+				D679F0211B1C1513004F1C37 /* JYAccountIndividualViewController.h */,
+				D679F0221B1C1513004F1C37 /* JYAccountIndividualViewController.m */,
+				D679F0381B2A2435004F1C37 /* JYAccountViewController.h */,
+				D679F0391B2A2435004F1C37 /* JYAccountViewController.m */,
+			);
+			name = Account;
+			sourceTree = "<group>";
+		};
 		D6C82B621B12534200876F57 /* Model */ = {
 			isa = PBXGroup;
 			children = (
@@ -266,6 +281,7 @@
 				D6F4A03C1AF5DB6D001A3C89 /* Shared */,
 				D6F4A03F1AF5DC1F001A3C89 /* Order */,
 				D6F4A03E1AF5DBCA001A3C89 /* Bid */,
+				D679F03B1B2B5758004F1C37 /* Account */,
 				D6F4A03D1AF5DB9D001A3C89 /* User */,
 				D6F49F961AF595F2001A3C89 /* Images.xcassets */,
 				D6F49F981AF595F2001A3C89 /* LaunchScreen.xib */,
@@ -386,14 +402,6 @@
 				D6F49FE31AF5DB4D001A3C89 /* JYSignUpViewController.m */,
 				D6F49FE41AF5DB4D001A3C89 /* JYSignViewController.h */,
 				D6F49FE51AF5DB4D001A3C89 /* JYSignViewController.m */,
-				D679F0351B296225004F1C37 /* JYAccountBaseViewController.h */,
-				D679F0361B296225004F1C37 /* JYAccountBaseViewController.m */,
-				D679F02B1B1ED683004F1C37 /* JYAccountCompanyViewController.h */,
-				D679F02C1B1ED683004F1C37 /* JYAccountCompanyViewController.m */,
-				D679F0211B1C1513004F1C37 /* JYAccountIndividualViewController.h */,
-				D679F0221B1C1513004F1C37 /* JYAccountIndividualViewController.m */,
-				D679F0381B2A2435004F1C37 /* JYAccountViewController.h */,
-				D679F0391B2A2435004F1C37 /* JYAccountViewController.m */,
 			);
 			name = User;
 			sourceTree = "<group>";

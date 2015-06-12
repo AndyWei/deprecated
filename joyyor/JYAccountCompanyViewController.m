@@ -11,6 +11,7 @@
 #import "JYAccountCompanyViewController.h"
 #import "JYFixedLengthRowValidator.h"
 #import "JYFloatLabeledTextFieldCell.h"
+#import "JYUser.h"
 
 @interface JYAccountCompanyViewController ()
 
@@ -40,19 +41,22 @@
     form = [XLFormDescriptor formDescriptor];
     form.assignFirstResponderOnShow = YES;
 
-    // Personal Info
-    section = [XLFormSectionDescriptor formSectionWithTitle:NSLocalizedString(@"Company Information", nil)];
+    // Company Info
+    section = [XLFormSectionDescriptor formSectionWithTitle:NSLocalizedString(@"Company  Information", nil)];
     [form addFormSection:section];
     row = [XLFormRowDescriptor formRowDescriptorWithTag:@"biz_name" rowType:XLFormRowDescriptorTypeFloatLabeledName title:NSLocalizedString(@"Business Name", nil)];
     row.required = YES;
     [section addFormRow:row];
 
-    row = [XLFormRowDescriptor formRowDescriptorWithTag:@"biz_tax_id" rowType:XLFormRowDescriptorTypeFloatLabeledInteger title:NSLocalizedString(@"EIN (Employer Identification Number)", nil)];
+    row = [XLFormRowDescriptor formRowDescriptorWithTag:@"biz_tax_id" rowType:XLFormRowDescriptorTypeFloatLabeledInteger title:NSLocalizedString(@"EIN (Employer Identification Number, 9 digits)", nil)];
     row.required = YES;
+    message = NSLocalizedString(@"EIN should be 9 digits", nil);
+    validator = [[JYFixedLengthRowValidator alloc] initWithMsg:message andFixedLength:9];
+    [row addValidator:validator];
     [section addFormRow:row];
 
     // Company Address
-    section = [XLFormSectionDescriptor formSectionWithTitle:NSLocalizedString(@"Company Address", nil)];
+    section = [XLFormSectionDescriptor formSectionWithTitle:NSLocalizedString(@"Company  Address", nil)];
     [form addFormSection:section];
     row = [XLFormRowDescriptor formRowDescriptorWithTag:@"biz_line1" rowType:XLFormRowDescriptorTypeFloatLabeledText title:NSLocalizedString(@"Street", nil)];
     row.required = YES;
@@ -75,13 +79,13 @@
     row = [XLFormRowDescriptor formRowDescriptorWithTag:@"biz_zipcode" rowType:XLFormRowDescriptorTypeFloatLabeledZipcode title:NSLocalizedString(@"Zip Code (5 digits)", nil)];
     row.required = YES;
     row.value = self.currentAddress ? [self.currentAddress valueForKey:@"ZIP"] : nil;
-    message = NSLocalizedString(@"Zip Code should contain only 5 digits", nil);
+    message = NSLocalizedString(@"Zip Code should be 5 digits", nil);
     validator = [[JYFixedLengthRowValidator alloc] initWithMsg:message andFixedLength:5];
     [row addValidator:validator];
     [section addFormRow:row];
 
     // Representative Personal Information
-    section = [XLFormSectionDescriptor formSectionWithTitle:NSLocalizedString(@"Company Representative Personal Information", nil)];
+    section = [XLFormSectionDescriptor formSectionWithTitle:NSLocalizedString(@"Company  Representative  Personal  Information", nil)];
     [form addFormSection:section];
     row = [XLFormRowDescriptor formRowDescriptorWithTag:@"first_name" rowType:XLFormRowDescriptorTypeFloatLabeledName title:NSLocalizedString(@"First Name", nil)];
     row.required = YES;
@@ -98,15 +102,15 @@
     row.value = [formatter dateFromString:str];
     [section addFormRow:row];
 
-    row = [XLFormRowDescriptor formRowDescriptorWithTag:@"personal_id" rowType:XLFormRowDescriptorTypeFloatLabeledSSN title:NSLocalizedString(@"Social Security Number (9 digits)", nil)];
+    row = [XLFormRowDescriptor formRowDescriptorWithTag:@"ssn_last_4" rowType:XLFormRowDescriptorTypeFloatLabeledSSN title:NSLocalizedString(@"Last 4 Digits of Social Security Number", nil)];
     row.required = YES;
-    message = NSLocalizedString(@"Social Security Number should contains 9 digits", nil);
-    validator = [[JYFixedLengthRowValidator alloc] initWithMsg:message andFixedLength:9];
+    message = NSLocalizedString(@"Please provide only the last 4 digits of SSN", nil);
+    validator = [[JYFixedLengthRowValidator alloc] initWithMsg:message andFixedLength:4];
     [row addValidator:validator];
     [section addFormRow:row];
 
     // Address
-    section = [XLFormSectionDescriptor formSectionWithTitle:NSLocalizedString(@"Company Representative Address", nil)];
+    section = [XLFormSectionDescriptor formSectionWithTitle:NSLocalizedString(@"Company  Representative  Personal  Address", nil)];
     [form addFormSection:section];
     row = [XLFormRowDescriptor formRowDescriptorWithTag:@"line1" rowType:XLFormRowDescriptorTypeFloatLabeledText title:NSLocalizedString(@"Street", nil)];
     row.required = YES;
@@ -129,17 +133,17 @@
     row = [XLFormRowDescriptor formRowDescriptorWithTag:@"zipcode" rowType:XLFormRowDescriptorTypeFloatLabeledZipcode title:NSLocalizedString(@"Zip Code (5 digits)", nil)];
     row.required = YES;
     row.value = self.currentAddress ? [self.currentAddress valueForKey:@"ZIP"] : nil;
-    message = NSLocalizedString(@"Zip Code should contain only 5 digits", nil);
+    message = NSLocalizedString(@"Zip Code should be 5 digits", nil);
     validator = [[JYFixedLengthRowValidator alloc] initWithMsg:message andFixedLength:5];
     [row addValidator:validator];
     [section addFormRow:row];
 
     // Bank Account
-    section = [XLFormSectionDescriptor formSectionWithTitle:NSLocalizedString(@"Company Bank Information", nil)];
+    section = [XLFormSectionDescriptor formSectionWithTitle:NSLocalizedString(@"Company  Bank  Account", nil)];
     [form addFormSection:section];
     row = [XLFormRowDescriptor formRowDescriptorWithTag:@"routing_number" rowType:XLFormRowDescriptorTypeFloatLabeledInteger title:NSLocalizedString(@"Routing Number (9 digits)", nil)];
     row.required = YES;
-    message = NSLocalizedString(@"Routing Number should contain only 9 digits", nil);
+    message = NSLocalizedString(@"Routing Number should be 9 digits", nil);
     validator = [[JYFixedLengthRowValidator alloc] initWithMsg:message andFixedLength:9];
     [row addValidator:validator];
     [section addFormRow:row];
@@ -183,6 +187,8 @@
     [parameters setValue:@(dobComponents.year) forKey:@"year"];
     [parameters setValue:@(dobComponents.month) forKey:@"month"];
     [parameters setValue:@(dobComponents.day) forKey:@"day"];
+
+    [parameters setValue:[JYUser currentUser].email forKey:@"email"];
 
     return parameters;
 }
