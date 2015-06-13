@@ -112,9 +112,9 @@
         setTitleTextAttributes:[NSDictionary
                                    dictionaryWithObjectsAndKeys:[UIFont lightSystemFontOfSize:kNavBarTitleFontSize], NSFontAttributeName, nil]];
 
-    [[UINavigationBar appearance] setTintColor:JoyyBlue];
-
-    [[UITabBar appearance] setTintColor:JoyyBlue];
+//    [[UINavigationBar appearance] setTintColor:JoyyBlue];
+//
+//    [[UITabBar appearance] setTintColor:JoyyBlue];
 
     [[UITabBarItem appearance]
         setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIFont systemFontOfSize:kTabBarTitleFontSize], NSFontAttributeName, nil]
@@ -214,26 +214,17 @@
     // Store introduction history
     [DataStore sharedInstance].presentedIntroductionVersion = kIntroductionVersion;
 
-    JYUser *user = [JYUser currentUser];
-
-    if ([user exists])
-    {
-        [self _launchTabViewController];
-    }
-    else
-    {
-        [self _launchSignViewController];
-    }
+    [self _launchViewController];
 }
 
 - (void)_signDidFinish
 {
     [self _registerPushNotifications];
-    [self _signInPeriodically:kSignIntervalMax];
+    [self _signInAfter:kSignIntervalMax];
     [self _launchTabViewController];
 }
 
-- (void)_signInPeriodically:(CGFloat)interval
+- (void)_signInAfter:(NSTimeInterval)interval
 {
     if (self.signInTimer)
     {
@@ -273,7 +264,7 @@
     }
     else if (!self.signInTimer)
     {
-        [self _signInPeriodically:(user.tokenExpireTimeInSecs - now)];
+        [self _signInAfter:(user.tokenExpireTimeInSecs - now)];
     }
 
     UIViewController *vc1 = [JYOrderCategoryCollectionViewController new];
@@ -339,14 +330,14 @@
         success:^(AFHTTPRequestOperation *operation, id responseObject) {
             NSLog(@"_autoSignIn Success");
             [JYUser currentUser].credential = responseObject;
-            [weakSelf _signInPeriodically:kSignIntervalMax];
+            [weakSelf _signInAfter:kSignIntervalMax];
 
             // Register push notification now to trigger device token uploading, which is to avoid server side device token lost unexpectedly
             [weakSelf _registerPushNotifications];
         }
         failure:^(AFHTTPRequestOperation *operation, NSError *error) {
             NSLog(@"_autoSignIn Error: %@", error);
-            [weakSelf _signInPeriodically:kSignIntervalMin];
+            [weakSelf _signInAfter:kSignIntervalMin];
         }];
 }
 

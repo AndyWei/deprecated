@@ -83,6 +83,7 @@
                        if (error)
                        {
                            NSLog(@"Geocode failed with error %@", error);
+                           weakSelf.navigationItem.rightBarButtonItem.enabled = YES;
                        }
                        else
                        {
@@ -90,7 +91,6 @@
                            address = placemark.addressDictionary;
                        }
 
-                       weakSelf.navigationItem.rightBarButtonItem.enabled = YES;
                        [weakSelf _presentCreateAccountViewWithAddress:address];
                    }];
 }

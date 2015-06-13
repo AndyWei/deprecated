@@ -23,6 +23,7 @@
 
 @interface AppDelegate ()
 
+@property(nonatomic) BOOL needShowPostSignViewController;
 @property(nonatomic) NSTimer *signInTimer;
 
 @end
@@ -33,10 +34,11 @@
 {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_signInDidFinish) name:kNotificationDidSignIn object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_signUpDidFinish) name:kNotificationDidSignUp object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_manualSignDidFinish) name:kNotificationDidSignIn object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_manualSignDidFinish) name:kNotificationDidSignUp object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_createAccountDidFinish) name:kNotificationDidCreateAccount object:nil];
 
+    self.needShowPostSignViewController = NO;
     [self _setupGlobalAppearance];
     [self _setupLocationManager];
     [self _launchViewController];
@@ -181,33 +183,6 @@
     }
 }
 
-- (void)_launchViewController
-{
-    JYUser *user = [JYUser currentUser];
-
-    BOOL needIntro = ([DataStore sharedInstance].presentedIntroductionVersion < kIntroductionVersion);
-
-    if (needIntro)
-    {
-        [self _launchIntroductionViewController];
-    }
-    else if ([user exists])
-    {
-        if (user.joyyorStatus == 0)
-        {
-            [self _launchAccountViewController];
-        }
-        else
-        {
-            [self _launchTabViewController];
-        }
-    }
-    else
-    {
-        [self _launchSignViewController];
-    }
-}
-
 - (void)_registerPushNotifications
 {
     if ([[UIApplication sharedApplication] respondsToSelector:@selector(registerUserNotificationSettings:)])
@@ -221,22 +196,52 @@
     }
 }
 
-- (void)_introductionDidFinish
+- (NSTimeInterval)_tokenRefreshTime
 {
-    // Store introduction history
-    [DataStore sharedInstance].presentedIntroductionVersion = kIntroductionVersion;
+    NSTimeInterval now = [NSDate timeIntervalSinceReferenceDate];
+    return ([JYUser currentUser].tokenExpireTimeInSecs - now);
+}
 
+- (void)_signInAfter:(CGFloat)interval
+{
+    if (self.signInTimer)
+    {
+        [self.signInTimer invalidate];
+        self.signInTimer = nil;
+    }
+
+    if (interval > 0)
+    {
+        self.signInTimer = [NSTimer timerWithTimeInterval:interval target:self selector:@selector(_autoSignIn:) userInfo:nil repeats:NO];
+    }
+    else
+    {
+        [self _autoSignIn:nil];
+    }
+}
+
+- (void)_launchViewController
+{
     JYUser *user = [JYUser currentUser];
 
-    if ([user exists])
+    BOOL needIntro = ([DataStore sharedInstance].presentedIntroductionVersion < kIntroductionVersion);
+
+    if (needIntro)
     {
-        if (user.joyyorStatus == 0)
+        [self _launchIntroductionViewController];
+    }
+    else if ([user exists])
+    {
+        NSTimeInterval tokenRefreshTime = [self _tokenRefreshTime];
+        if (tokenRefreshTime < 0) // expired
         {
-            [self _launchAccountViewController];
+            self.needShowPostSignViewController = YES;
+            [self _signInAfter:0];
         }
         else
         {
-            [self _launchTabViewController];
+            [self _signInAfter:tokenRefreshTime];
+            [self _launchPostSignViewController];
         }
     }
     else
@@ -245,40 +250,24 @@
     }
 }
 
-- (void)_signInDidFinish
+- (void)_introductionDidFinish
 {
-    [self _registerPushNotifications];
-    [self _signInPeriodically:kSignIntervalMax];
-    if ([JYUser currentUser].joyyorStatus == 0)
-    {
-        [self _launchAccountViewController];
-    }
-    else
-    {
-        [self _launchTabViewController];
-    }
+    // Store introduction history
+    [DataStore sharedInstance].presentedIntroductionVersion = kIntroductionVersion;
+
+    [self _launchViewController];
 }
 
-- (void)_signUpDidFinish
+- (void)_manualSignDidFinish
 {
-    [self _signInPeriodically:kSignIntervalMax];
-    [self _launchAccountViewController];
+    [self _registerPushNotifications];
+    [self _signInAfter:kSignIntervalMax];
+    [self _launchPostSignViewController];
 }
 
 - (void)_createAccountDidFinish
 {
-    [self _registerPushNotifications];
-    [self _launchTabViewController];
-}
-
-- (void)_signInPeriodically:(CGFloat)interval
-{
-    if (self.signInTimer)
-    {
-        [self.signInTimer invalidate];
-    }
-
-    self.signInTimer = [NSTimer timerWithTimeInterval:interval target:self selector:@selector(_autoSignIn:) userInfo:nil repeats:NO];
+    [self _launchPostSignViewController];
 }
 
 - (void)_launchSignViewController
@@ -286,6 +275,21 @@
     UIViewController *viewController = [JYSignViewController new];
     UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:viewController];
     self.window.rootViewController = navigationController;
+}
+
+- (void)_launchPostSignViewController
+{
+    JYUser *user = [JYUser currentUser];
+    NSAssert([user exists], @"The user should exist when _launchPostSignViewController is called");
+
+    if (user.joyyorStatus == 0)
+    {
+        [self _launchAccountViewController];
+    }
+    else
+    {
+        [self _launchTabViewController];
+    }
 }
 
 - (void)_launchAccountViewController
@@ -302,25 +306,6 @@
 
 - (void)_launchTabViewController
 {
-    JYUser *user = [JYUser currentUser];
-    NSTimeInterval now = [NSDate timeIntervalSinceReferenceDate];
-
-    NSAssert([user exists], @"The user credential should be there when _launchTabViewController is called");
-
-    if (user.tokenExpireTimeInSecs < now)
-    {
-        if (self.signInTimer)
-        {
-            [self.signInTimer invalidate];
-            self.signInTimer = nil;
-        }
-        [self _autoSignIn:nil];
-    }
-    else if (!self.signInTimer)
-    {
-        [self _signInPeriodically:(user.tokenExpireTimeInSecs - now)];
-    }
-
     UIViewController *vc1 = [JYOrdersNearbyViewController new];
     UINavigationController *nc1 = [[UINavigationController alloc] initWithRootViewController:vc1];
     nc1.title = NSLocalizedString(@"Nearby", nil);
@@ -368,7 +353,6 @@
 
 }
 
-
 - (void)_autoSignIn:(NSTimer *)timer
 {
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
@@ -378,24 +362,26 @@
 
     NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"signin"];
 
-    NSLog(@"_autoSignIn start");
-    NSLog(@"email = %@", [JYUser currentUser].email);
-    NSLog(@"password = %@", [JYUser currentUser].password);
-
     __weak typeof(self) weakSelf = self;
     [manager GET:url
       parameters:nil
          success:^(AFHTTPRequestOperation *operation, id responseObject) {
-             NSLog(@"_autoSignIn Success");
-             [JYUser currentUser].credential = responseObject;
-             [weakSelf _signInPeriodically:kSignIntervalMax];
 
+             [JYUser currentUser].credential = responseObject;
+              NSLog(@"_autoSignIn Success, credential = %@", [JYUser currentUser].credential);
+             [weakSelf _signInAfter:kSignIntervalMax];
+
+             if (weakSelf.needShowPostSignViewController)
+             {
+                 weakSelf.needShowPostSignViewController = NO;
+                 [weakSelf _launchPostSignViewController];
+             }
              // Register push notification now to trigger device token uploading, which is to avoid server side device token lost unexpectedly
              [weakSelf _registerPushNotifications];
          }
          failure:^(AFHTTPRequestOperation *operation, NSError *error) {
              NSLog(@"_autoSignIn Error: %@", error);
-             [weakSelf _signInPeriodically:kSignIntervalMin];
+             [weakSelf _signInAfter:kSignIntervalMin];
          }];
 }
 

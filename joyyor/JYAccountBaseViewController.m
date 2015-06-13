@@ -105,6 +105,7 @@
               [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
               [KVNProgress showSuccessWithStatus:NSLocalizedString(@"Account Created!", nil)];
 
+              [JYUser currentUser].joyyorStatus = 1;
               [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationDidCreateAccount object:nil];
               [weakSelf.navigationController popToRootViewControllerAnimated:NO];
           }
