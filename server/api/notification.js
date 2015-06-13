@@ -20,9 +20,9 @@ exports.register = function (server, options, next) {
                     app: Joi.string().alphanum().lowercase()
                 },
                 payload: {
-                    service: Joi.string().allow('apn', 'gcm', 'mpn'),
-                    token: Joi.string().max(100),
-                    badge: Joi.number().min(0).max(1000).default(0)
+                    service: Joi.string().allow('apn', 'gcm', 'mpn').required(),
+                    token: Joi.string().max(100).required(),
+                    badge: Joi.number().min(0).max(1000).optional().default(0)
                 }
             }
         },

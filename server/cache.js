@@ -235,8 +235,7 @@ exports.mset = function (dataset, keys, values, callback) {
     var keyValues = _.map(keys, function (key, index) {
 
         var cacheKey = internals.generateKey(dataset, key);
-        var valueString = JSON.stringify(values[index]);
-        return [cacheKey, valueString];
+        return [cacheKey, values[index]];
     });
 
     internals.client.mset(_.flatten(keyValues), function (err) {

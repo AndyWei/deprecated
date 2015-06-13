@@ -67,7 +67,7 @@ exports.register = function (server, options, next) {
         handler: function (request, reply) {
 
             var queryValues = [request.query.after];
-            var select = 'SELECT b.id, b.order_id, b.user_id, b.price, b.status, b.expire_at, u.username, u.rating_total, u.rating_count, u.bio FROM bids AS b ';
+            var select = 'SELECT b.id, b.order_id, b.user_id, b.price, b.status, b.expire_at, u.username, u.rating_total, u.rating_count FROM bids AS b ';
             var join = 'INNER JOIN users AS u ON u.id = b.user_id ';
             var where1 = 'WHERE b.id > $1 AND b.status < 10 AND b.deleted = false AND u.deleted = false AND b.order_id IN ';
             var where2 = Utils.parametersString(2, request.query.order_id.length);
