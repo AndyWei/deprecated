@@ -292,7 +292,7 @@
 
     NSInteger badgeCount = [DataStore sharedInstance].badgeCount;
 
-    NSDictionary *parameters = @{@"service": @(1), @"token": deviceToken, @"badge": @(badgeCount)};
+    NSDictionary *parameters = @{@"service": @"apn", @"token": deviceToken, @"badge": @(badgeCount)};
     NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"notifications/devices/joyy"];
 
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];

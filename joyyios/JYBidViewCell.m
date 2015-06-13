@@ -86,6 +86,7 @@ static const CGFloat kTinyFontSize = 13.0f;
     self.ratingView = [[AXRatingView alloc] initWithFrame:frame];
     self.ratingView.markFont = [UIFont systemFontOfSize:kTinyFontSize];
     [self.ratingView setStepInterval:0.5];
+    self.ratingView.userInteractionEnabled = NO;
     [self addSubview:self.ratingView];
 }
 
@@ -97,7 +98,6 @@ static const CGFloat kTinyFontSize = 13.0f;
     self.ratingCountLabel.frame = CGRectMake(x, y, kBidderNameLabelWidth - kRatingViewWidth, kRatingViewHeight);
     self.ratingCountLabel.font = [UIFont systemFontOfSize:kTinyFontSize];
 }
-
 
 - (void)_createExpireTimeLabel
 {

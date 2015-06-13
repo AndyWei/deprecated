@@ -149,7 +149,8 @@
     [JYOrder currentOrder].endAddress = [self.formValues valueForKey:@"endAddress"];
 
     // note
-    [JYOrder currentOrder].note = [self.formValues objectForKey:@"note"] ? [self.formValues valueForKey:@"note"] : @":)";
+    id note = [self.formValues objectForKey:@"note"];
+    [JYOrder currentOrder].note = [note isKindOfClass:[NSNull class]] ? @"(ᵔᴥᵔ)" : [self.formValues valueForKey:@"note"];
 
     // startTime
     NSDate *startTime = (NSDate *)[self.formValues objectForKey:@"startTime"];
@@ -169,9 +170,8 @@
 
     if (roomsObj)
     {
-        NSString *roomsString = roomsObj.displayText;
-        NSUInteger rooms = [roomsString unsignedIntegerValue];
-        NSString *localizedString = NSLocalizedString(([NSString stringWithFormat:@" for %tu rooms", rooms]), nil);
+        NSInteger rooms = [roomsObj.formValue integerValue] + 1;
+        NSString *localizedString = NSLocalizedString(([NSString stringWithFormat:@" for %ld rooms", rooms]), nil);
         [JYOrder currentOrder].title = [NSString stringWithFormat:@"%@%@", serviceName, localizedString];
     }
     else
