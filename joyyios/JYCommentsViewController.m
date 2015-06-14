@@ -15,7 +15,7 @@
 #import "JYCommentTextView.h"
 #import "JYCommentViewCell.h"
 #import "JYCommentsViewController.h"
-#import "JYOrderItemView.h"
+#import "JYOrderCard.h"
 #import "JYUser.h"
 
 @interface JYCommentsViewController ()
@@ -173,20 +173,27 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    return [JYOrderItemView viewHeightForBiddedOrder:self.order];
+    return [JYOrderCard cardHeightForOrder:self.order withAddress:NO andBid:YES];
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-    CGFloat height = [JYOrderItemView viewHeightForBiddedOrder:self.order];
+    CGFloat height = [JYOrderCard cardHeightForOrder:self.order withAddress:NO andBid:YES];
 
-    JYOrderItemView *itemView = [[JYOrderItemView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(tableView.frame), height)];
-    itemView.tinyLabelsHidden = NO;
-    itemView.bidLabelHidden = (self.order.bids.count == 0);
-    itemView.viewColor = JoyyWhite;
-    [itemView presentBiddedOrder:self.order];
+    JYOrderCard *card = [[JYOrderCard alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(tableView.frame), height)];
+    card.tinyLabelsHidden = NO;
+    [card presentOrder:self.order withAddress:NO andBid:YES];
 
-    return itemView;
+    if (self.order.bids.count == 0)
+    {
+        card.backgroundColor = JoyyWhite;
+    }
+    else
+    {
+        JYBid *bid = [self.order.bids lastObject];
+        card.backgroundColor = bid.expired ? FlatYellow : FlatLime;
+    }
+    return card;
 }
 
 #pragma mark - Overriden Method

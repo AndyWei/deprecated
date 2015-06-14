@@ -1,5 +1,5 @@
 //
-//  JYOrderItemView.m
+//  JYOrderCard.m
 //  joyyios
 //
 //  Created by Ping Yang on 4/26/15.
@@ -8,7 +8,7 @@
 
 #import "AppDelegate.h"
 #import "JYDateView.h"
-#import "JYOrderItemView.h"
+#import "JYOrderCard.h"
 
 static const CGFloat kBidLabelHeight = 40.0f;
 static const CGFloat kBodyLabelMinHeight = 53.0f;
@@ -29,8 +29,9 @@ static const CGFloat kTitleLabelWidth = 180.0f;
 static const CGFloat kTitleLabelHeight = 25.0f;
 static const CGFloat kTopMargin = 8.0f;
 
-@interface JYOrderItemView ()
+@interface JYOrderCard ()
 
+@property(nonatomic) BOOL bidLabelHidden;
 @property(nonatomic) JYDateView *startDateView;
 @property(nonatomic) UILabel *bidLabel;
 @property(nonatomic) UILabel *bodyLabel;
@@ -44,7 +45,7 @@ static const CGFloat kTopMargin = 8.0f;
 @end
 
 
-@implementation JYOrderItemView
+@implementation JYOrderCard
 
 + (CGFloat)bodyLabelHeightForText:(NSString *)text
 {
@@ -67,17 +68,19 @@ static const CGFloat kTopMargin = 8.0f;
     return bodyLabelHeight;
 }
 
-+ (CGFloat)viewHeightForOrder:(JYOrder *)order
++ (CGFloat)cardHeightForOrder:(JYOrder *)order
 {
-    CGFloat bodyLabelHeight = [JYOrderItemView bodyLabelHeightForText:order.note];
+    CGFloat bodyLabelHeight = [JYOrderCard bodyLabelHeightForText:order.note];
 
     return kTopMargin + kTitleLabelHeight + bodyLabelHeight + kTinyLabelHeight;
 }
 
-+ (CGFloat)viewHeightForBiddedOrder:(JYOrder *)order
++ (CGFloat)cardHeightForOrder:(JYOrder *)order withAddress:(BOOL)showAddress andBid:(BOOL)showBid
 {
-    CGFloat height = [JYOrderItemView viewHeightForOrder:order];
-    height += (order.bids.count > 0) ? kBidLabelHeight : 0;
+    CGFloat height = [JYOrderCard bodyLabelHeightForText:order.note];
+    height += kTopMargin + kTitleLabelHeight + kTinyLabelHeight;
+
+    height += (showBid && order.bids.count > 0) ? kBidLabelHeight : 0;
     return height;
 }
 
@@ -93,13 +96,10 @@ static const CGFloat kTopMargin = 8.0f;
 
 - (void)_commonInit
 {
-    _viewColor = JoyyWhite;
-//    self.opaque = YES;
-    self.backgroundColor = _viewColor;
+    self.backgroundColor = JoyyWhite;
 
     self.tinyLabelsHidden = NO;
     self.bidLabelHidden = YES;
-
 
     [self _createStartDateView];
     [self _createStartTimeLabel];
@@ -135,18 +135,10 @@ static const CGFloat kTopMargin = 8.0f;
     }
 }
 
-- (void)setViewColor:(UIColor *)color
+- (void)presentOrder:(JYOrder *)order withAddress:(BOOL)showAddress andBid:(BOOL)showBid
 {
-    if (color == _viewColor)
-    {
-        return;
-    }
+    self.bidLabelHidden = !showBid;
 
-    self.backgroundColor = _viewColor = color;
-}
-
-- (void)presentOrder:(JYOrder *)order
-{
     [self _setStartDateTime:[NSDate dateWithTimeIntervalSinceReferenceDate:order.startTime]];
 
     self.priceLabel.text = order.priceString;
@@ -160,23 +152,14 @@ static const CGFloat kTopMargin = 8.0f;
     self.bodyLabel.text = order.note;
     self.cityLabel.text = order.startCity;
 
-    self.bidLabel.height = self.bidLabelHidden ? 0 : kBidLabelHeight;
-}
-
-- (void)presentBiddedOrder:(JYOrder *)order
-{
-    [self presentOrder:order];
-
-    if (order.bids.count == 0)
+    self.bidLabel.height = 0;
+    if (showBid && order.bids.count > 0)
     {
-        self.viewColor = JoyyWhite;
-        return;
+        self.bidLabel.height = kBidLabelHeight;
+        JYBid *bid = [order.bids lastObject];
+        NSString *bidPrefix = NSLocalizedString(@"You asked for", nil);
+        self.bidLabel.text = [NSString stringWithFormat:@"%@ %@     %@", bidPrefix, bid.priceString, bid.expireTimeString];
     }
-
-    JYBid *bid = [order.bids lastObject];
-    NSString *bidPrefix = NSLocalizedString(@"You asked for", nil);
-    self.bidLabel.text = [NSString stringWithFormat:@"%@ %@     %@", bidPrefix, bid.priceString, bid.expireTimeString];
-    self.viewColor = bid.expired ? FlatYellow : FlatLime;
 }
 
 - (void)_setStartDateTime:(NSDate *)date

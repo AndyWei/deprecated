@@ -13,7 +13,7 @@
 #import "JYCommentViewCell.h"
 #import "JYCommentsViewController.h"
 #import "JYOrder.h"
-#import "JYOrderItemView.h"
+#import "JYOrderCard.h"
 #import "JYOrdersEngagedViewController.h"
 #import "JYUser.h"
 
@@ -95,11 +95,11 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 
 - (void)_tapOnTableSectionHeader:(id)sender
 {
-    JYOrderItemView *itemView = (JYOrderItemView *)sender;
-    self.selectedSection = itemView.tag;
+    JYOrderCard *card = (JYOrderCard *)sender;
+    self.selectedSection = card.tag;
 
     JYOrder *order = self.orderList[self.selectedSection];
-    [self showActionSheetForOrder:order highlightView:itemView];
+    [self showActionSheetForOrder:order highlightView:card];
 }
 
 #pragma mark - UITableViewDataSource
@@ -145,26 +145,33 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
     JYOrder *order = self.orderList[section];
-    return [JYOrderItemView viewHeightForBiddedOrder:order];
+    return [JYOrderCard cardHeightForOrder:order withAddress:NO andBid:YES];
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     JYOrder *order = self.orderList[section];
-    CGFloat height = [JYOrderItemView viewHeightForBiddedOrder:order];
+    CGFloat height = [JYOrderCard cardHeightForOrder:order withAddress:NO andBid:YES];
 
-    JYOrderItemView *itemView = [[JYOrderItemView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(tableView.frame), height)];
+    JYOrderCard *card = [[JYOrderCard alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(tableView.frame), height)];
 
     // make the order item view tappable
-    itemView.tag = section;
-    [itemView addTarget:self action: @selector(_tapOnTableSectionHeader:) forControlEvents:UIControlEventTouchUpInside];
+    card.tag = section;
+    [card addTarget:self action: @selector(_tapOnTableSectionHeader:) forControlEvents:UIControlEventTouchUpInside];
 
     // show order
-    itemView.tinyLabelsHidden = NO;
-    itemView.bidLabelHidden = (order.bids.count == 0);
-    [itemView presentBiddedOrder:order];
-
-    return itemView;
+    card.tinyLabelsHidden = NO;
+    [card presentOrder:order withAddress:NO andBid:YES];
+    if (order.bids.count == 0)
+    {
+        card.backgroundColor = JoyyWhite;
+    }
+    else
+    {
+        JYBid *bid = [order.bids lastObject];
+        card.backgroundColor = bid.expired ? FlatYellow : FlatLime;
+    }
+    return card;
 }
 
 #pragma mark - UIActionSheetDelegate

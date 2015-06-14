@@ -171,7 +171,7 @@
     if (roomsObj)
     {
         NSInteger rooms = [roomsObj.formValue integerValue] + 1;
-        NSString *localizedString = NSLocalizedString(([NSString stringWithFormat:@" for %ld rooms", rooms]), nil);
+        NSString *localizedString = NSLocalizedString(([NSString stringWithFormat:@" for %ld rooms", (long)rooms]), nil);
         [JYOrder currentOrder].title = [NSString stringWithFormat:@"%@%@", serviceName, localizedString];
     }
     else

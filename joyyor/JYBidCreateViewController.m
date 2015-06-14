@@ -14,13 +14,13 @@
 
 #import "JYButton.h"
 #import "JYBidCreateViewController.h"
-#import "JYOrderItemView.h"
+#import "JYOrderCard.h"
 #import "JYPriceTextFieldCell.h"
 #import "JYUser.h"
 
 @interface JYBidCreateViewController ()
 
-@property(nonatomic) JYOrderItemView *orderView;
+@property(nonatomic) JYOrderCard *card;
 @property(nonatomic) UILabel *priceLabel;
 @property(nonatomic) UITextField *priceTextField;
 @property(nonatomic) UIScrollView *formView;
@@ -51,7 +51,6 @@ NSString *const kOrderBidCellIdentifier = @"orderBidCell";
 
     [self _createOrderView];
     [self _createForm];
-    [self.orderView presentBiddedOrder:self.order];
 }
 
 - (void)didReceiveMemoryWarning
@@ -70,17 +69,28 @@ NSString *const kOrderBidCellIdentifier = @"orderBidCell";
     CGFloat statusBarHeight = [UIApplication sharedApplication].statusBarFrame.size.height;
     CGFloat navBarHeight = self.navigationController.navigationBar.frame.size.height;
 
-    CGFloat height = [JYOrderItemView viewHeightForBiddedOrder:self.order];
+    CGFloat height = [JYOrderCard cardHeightForOrder:self.order withAddress:NO andBid:YES];
     CGFloat width = CGRectGetWidth([[UIScreen mainScreen] applicationFrame]);
-    self.orderView = [[JYOrderItemView alloc] initWithFrame:CGRectMake(0, statusBarHeight + navBarHeight, width, height)];
-    self.orderView.bidLabelHidden = (self.order.bids.count == 0);
-    [self.view addSubview:self.orderView];
+    self.card = [[JYOrderCard alloc] initWithFrame:CGRectMake(0, statusBarHeight + navBarHeight, width, height)];
+
+    [self.card presentOrder:self.order withAddress:NO andBid:YES];
+    if (self.order.bids.count == 0)
+    {
+        self.card.backgroundColor = JoyyWhite;
+    }
+    else
+    {
+        JYBid *bid = [self.order.bids lastObject];
+        self.card.backgroundColor = bid.expired ? FlatYellow : FlatLime;
+    }
+
+    [self.view addSubview:self.card];
 }
 
 - (void)_createForm
 {
     self.formView = [[UIScrollView alloc] initWithFrame:self.view.frame];
-    self.formView.y = CGRectGetMaxY(self.orderView.frame);
+    self.formView.y = CGRectGetMaxY(self.card.frame);
     self.formView.height -= kButtonDefaultHeight;
     [self.view addSubview:self.formView];
 

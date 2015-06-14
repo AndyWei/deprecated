@@ -85,7 +85,7 @@
     [actionSheet setButtonsTextColor:JoyyWhite];
     actionSheet.backgroundColor = JoyyWhite;
 
-    // Highlight the selected itemView
+    // Highlight the selected card
     CGRect frame = view.frame;
     frame.origin.y -= self.tableView.contentOffset.y;
     actionSheet.clearArea = frame;

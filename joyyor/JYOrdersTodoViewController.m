@@ -12,7 +12,7 @@
 
 #import "AppDelegate.h"
 #import "JYOrdersTodoViewController.h"
-#import "JYOrderViewCell.h"
+#import "JYOrderCardCell.h"
 #import "JYUser.h"
 
 @interface JYOrdersTodoViewController ()
@@ -54,7 +54,7 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
     self.tableView.backgroundColor = FlatWhite;
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
-    [self.tableView registerClass:[JYOrderViewCell class] forCellReuseIdentifier:kOrderCellIdentifier];
+    [self.tableView registerClass:[JYOrderCardCell class] forCellReuseIdentifier:kOrderCellIdentifier];
     [self.view addSubview:self.tableView];
 
     // Add UIRefreshControl
@@ -84,12 +84,11 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    JYOrderViewCell *cell =
-    (JYOrderViewCell *)[tableView dequeueReusableCellWithIdentifier:kOrderCellIdentifier forIndexPath:indexPath];
+    JYOrderCardCell *cell =
+    (JYOrderCardCell *)[tableView dequeueReusableCellWithIdentifier:kOrderCellIdentifier forIndexPath:indexPath];
 
     JYOrder *order = self.orderList[indexPath.row];
-    [cell presentOrder:order];
-
+    [cell presentOrder:order withAddress:YES andBid:NO];
     return cell;
 }
 
@@ -123,7 +122,7 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
     [actionSheet setButtonsTextColor:JoyyWhite];
     actionSheet.backgroundColor = JoyyWhite;
 
-    // Highlight the selected itemView
+    // Highlight the selected card
     CGRect frame = view.frame;
     frame.origin.y -= self.tableView.contentOffset.y;
     actionSheet.clearArea = frame;
@@ -163,7 +162,8 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return [JYOrderViewCell cellHeightForOrder:self.orderList[indexPath.row]];
+    JYOrder *order = self.orderList[indexPath.row];
+    return [JYOrderCardCell cellHeightForOrder:order withAddress:YES andBid:NO];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath

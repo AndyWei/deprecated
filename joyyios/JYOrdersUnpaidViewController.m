@@ -10,7 +10,7 @@
 
 #import "JYOrdersUnpaidViewController.h"
 #import "JYBidViewCell.h"
-#import "JYOrderItemView.h"
+#import "JYOrderCard.h"
 #import "JYUser.h"
 #import "UICustomActionSheet.h"
 
@@ -153,20 +153,19 @@ static NSString *const kBidCellIdentifier = @"bidCell";
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    return [JYOrderItemView viewHeightForOrder:self.orderList[section]];
+    return [JYOrderCard cardHeightForOrder:self.orderList[section] withAddress:NO andBid:NO];
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     JYOrder *order = self.orderList[section];
-    CGFloat height = [JYOrderItemView viewHeightForOrder:order];
+    CGFloat height = [JYOrderCard cardHeightForOrder:order withAddress:NO andBid:NO];
 
-    JYOrderItemView *itemView = [[JYOrderItemView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(tableView.frame), height)];
-    itemView.tinyLabelsHidden = YES;
-    itemView.bidLabelHidden = YES;
-    [itemView presentOrder:order];
+    JYOrderCard *card = [[JYOrderCard alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(tableView.frame), height)];
+    card.tinyLabelsHidden = YES;
+    [card presentOrder:order withAddress:NO andBid:NO];
 
-    return itemView;
+    return card;
 }
 
 #pragma mark - UIActionSheetDelegate

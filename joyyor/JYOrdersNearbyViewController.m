@@ -13,7 +13,7 @@
 #import "JYBidCreateViewController.h"
 #import "JYComment.h"
 #import "JYCommentsViewController.h"
-#import "JYOrderViewCell.h"
+#import "JYOrderCardCell.h"
 #import "JYOrdersNearbyViewController.h"
 #import "JYUser.h"
 
@@ -91,7 +91,7 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
     self.tableView.backgroundColor = FlatGray;
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
-    [self.tableView registerClass:[JYOrderViewCell class] forCellReuseIdentifier:kOrderCellIdentifier];
+    [self.tableView registerClass:[JYOrderCardCell class] forCellReuseIdentifier:kOrderCellIdentifier];
     [self.view addSubview:self.tableView];
 
     // Add UIRefreshControl
@@ -136,11 +136,20 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    JYOrderViewCell *cell =
-    (JYOrderViewCell *)[tableView dequeueReusableCellWithIdentifier:kOrderCellIdentifier forIndexPath:indexPath];
+    JYOrderCardCell *cell =
+    (JYOrderCardCell *)[tableView dequeueReusableCellWithIdentifier:kOrderCellIdentifier forIndexPath:indexPath];
 
     JYOrder *order = self.orderList[indexPath.row];
-    [cell presentBiddedOrder:order];
+    [cell presentOrder:order withAddress:NO andBid:YES];
+    if (order.bids.count == 0)
+    {
+        cell.cardColor = JoyyWhite;
+    }
+    else
+    {
+        JYBid *bid = [order.bids lastObject];
+        cell.cardColor = bid.expired ? FlatYellow : FlatLime;
+    }
 
     NSUInteger count = [[self.commentsCountList objectAtIndex:indexPath.row] unsignedIntegerValue];
     [cell updateCommentsCount:count];
@@ -149,7 +158,7 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
     return cell;
 }
 
-- (void)_createSwipeViewForCell:(JYOrderViewCell *)cell andOrder:(JYOrder *)order
+- (void)_createSwipeViewForCell:(JYOrderCardCell *)cell andOrder:(JYOrder *)order
 {
     __weak typeof(self) weakSelf = self;
 
@@ -183,7 +192,7 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
     }
 
     JYOrder *order = self.orderList[indexPath.row];
-    return [JYOrderViewCell cellHeightForBiddedOrder:order];
+    return [JYOrderCardCell cellHeightForOrder:order withAddress:NO andBid:YES];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
