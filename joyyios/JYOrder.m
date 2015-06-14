@@ -91,7 +91,7 @@ static JYOrder *_currentOrder;
     _price    = [[dict objectForKey:@"price"] unsignedIntegerValue];
     _country  = [dict objectForKey:@"country"];
     _currency = [dict objectForKey:@"currency"];
-    _status   = [[dict objectForKey:@"status"] integerValue];
+    _status   = (JYOrderStatus)[[dict objectForKey:@"status"] unsignedIntegerValue];
     _title    = [dict objectForKey:@"title"];
     _note     = [dict objectForKey:@"note"];
     _category = [[dict objectForKey:@"category"] unsignedIntegerValue];

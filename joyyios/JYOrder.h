@@ -10,6 +10,16 @@
 
 #import "JYServiceCategory.h"
 
+typedef NS_ENUM(NSUInteger, JYOrderStatus)
+{
+    JYOrderStatusActive = 0,
+    JYOrderStatusPending = 1,
+    JYOrderStatusOngoing = 2,
+    JYOrderStatusFinished = 3,
+    JYOrderStatusPaid = 10,
+    JYOrderStatusRevoked = 20
+};
+
 @interface JYOrder : NSObject
 
 + (JYOrder *)currentOrder;
@@ -36,13 +46,13 @@
 @property(nonatomic) NSUInteger price;
 @property(nonatomic) NSUInteger startTime;
 
-// Properties not in the create order reqeust
+// Properties not in the create order request
 @property(nonatomic) JYServiceCategoryIndex categoryIndex;
 @property(nonatomic) NSUInteger finalPrice;
 @property(nonatomic) NSUInteger orderId;
 @property(nonatomic) NSUInteger userId;
 @property(nonatomic) NSUInteger winnnerId;
-@property(nonatomic) NSInteger status;
+@property(nonatomic) JYOrderStatus status;
 
 @property(nonatomic) NSDate *createdAt;
 @property(nonatomic) NSDate *updatedAt;

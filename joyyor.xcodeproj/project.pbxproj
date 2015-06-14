@@ -355,6 +355,8 @@
 				D6F49FC51AF5DB4D001A3C89 /* JYMapDashBoardView.m */,
 				D6F49FC81AF5DB4D001A3C89 /* JYOrderItemView.h */,
 				D6F49FC91AF5DB4D001A3C89 /* JYOrderItemView.m */,
+				D6C82B751B13EB3D00876F57 /* JYOrdersBaseViewController.h */,
+				D6C82B761B13EB3D00876F57 /* JYOrdersBaseViewController.m */,
 				D6F49FCE1AF5DB4D001A3C89 /* JYPanGestureRecognizer.h */,
 				D6F49FCF1AF5DB4D001A3C89 /* JYPanGestureRecognizer.m */,
 				D6F49FD01AF5DB4D001A3C89 /* JYPinAnnotationView.h */,
@@ -385,8 +387,6 @@
 				D6F49FF31AF5DB4D001A3C89 /* UIImageEffects.m */,
 				D6F49FF41AF5DB4D001A3C89 /* UIView+Joyy.h */,
 				D6F49FF51AF5DB4D001A3C89 /* UIView+Joyy.m */,
-				D6C82B751B13EB3D00876F57 /* JYOrdersBaseViewController.h */,
-				D6C82B761B13EB3D00876F57 /* JYOrdersBaseViewController.m */,
 			);
 			name = Shared;
 			sourceTree = "<group>";

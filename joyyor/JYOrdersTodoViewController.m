@@ -17,6 +17,8 @@
 
 @interface JYOrdersTodoViewController ()
 
+@property(nonatomic) NSInteger selectedRow;
+
 @end
 
 
@@ -24,27 +26,12 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
 
 @implementation JYOrdersTodoViewController
 
-+ (UILabel *)sharedSwipeBackgroundLabel
-{
-    static UILabel *_sharedSwipeBackgroundLabel = nil;
-    static dispatch_once_t done;
-
-    dispatch_once(&done, ^{
-        _sharedSwipeBackgroundLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 60, 30)];
-        _sharedSwipeBackgroundLabel.font = [UIFont systemFontOfSize:25];
-        _sharedSwipeBackgroundLabel.text = NSLocalizedString(@"Start", nil);
-        _sharedSwipeBackgroundLabel.textColor = [UIColor whiteColor];
-        _sharedSwipeBackgroundLabel.textAlignment= NSTextAlignmentCenter;
-    });
-
-    return _sharedSwipeBackgroundLabel;
-}
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     [self setTitleText:NSLocalizedString(@"Orders Toto", nil)];
 
+    self.selectedRow = -1;
     [self _createTableView];
     [self _fetchData];
 
@@ -103,28 +90,73 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
     JYOrder *order = self.orderList[indexPath.row];
     [cell presentOrder:order];
 
-    [self _createSwipeViewForCell:cell andOrder:order];
     return cell;
 }
 
-- (void)_createSwipeViewForCell:(JYOrderViewCell *)cell andOrder:(JYOrder *)order
-{
-    __weak typeof(self) weakSelf = self;
-    [cell setSwipeGestureWithView:[[self class] sharedSwipeBackgroundLabel]
-                            color:FlatGreen
-                             mode:MCSwipeTableViewCellModeSwitch
-                            state:MCSwipeTableViewCellState3
-                  completionBlock:^(MCSwipeTableViewCell *cell, MCSwipeTableViewCellState state, MCSwipeTableViewCellMode mode) {
-                      [weakSelf _startWorkOn:order];
-                  }];
+#pragma mark - override methods
 
-    [cell setDefaultColor:FlatGreen];
-    cell.firstTrigger = 0.20;
+- (void)showActionSheetForOrder:(JYOrder *)order highlightView:(UIView *)view
+{
+    NSString *actionString = nil;
+    switch (order.status)
+    {
+        case JYOrderStatusPending:
+            actionString = NSLocalizedString(@"Start work", nil);
+            break;
+        case JYOrderStatusOngoing:
+            actionString = NSLocalizedString(@"Finish work", nil);
+            break;
+        default:
+            break;
+    }
+
+    if (actionString == nil)
+    {
+        return;
+    }
+
+    self.tabBarController.tabBar.hidden = YES;
+
+    UICustomActionSheet *actionSheet = [[UICustomActionSheet alloc] initWithTitle:nil delegate:self buttonTitles:@[NSLocalizedString(@"Cancel", nil), actionString]];
+
+    [actionSheet setButtonColors:@[JoyyBlue50, JoyyBlue, FlatLime]];
+    [actionSheet setButtonsTextColor:JoyyWhite];
+    actionSheet.backgroundColor = JoyyWhite;
+
+    // Highlight the selected itemView
+    CGRect frame = view.frame;
+    frame.origin.y -= self.tableView.contentOffset.y;
+    actionSheet.clearArea = frame;
+
+    [actionSheet showInView:self.view];
 }
 
-- (void)_startWorkOn:(JYOrder *)order
-{
+#pragma mark - UIActionSheetDelegate
 
+-(void)customActionSheet:(UICustomActionSheet *)customActionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    self.tabBarController.tabBar.hidden = NO;
+
+    if (self.selectedRow < 0)
+    {
+        return;
+    }
+
+    JYOrder *order = self.orderList[self.selectedRow];
+
+    switch (order.status)
+    {
+        case JYOrderStatusPending:
+            [self _updateOrder:order workingStatus:JYOrderStatusOngoing];
+            break;
+        case JYOrderStatusOngoing:
+            [self _updateOrder:order workingStatus:JYOrderStatusFinished];
+            break;
+        default:
+            break;
+    }
+
+    self.selectedRow = -1;
 }
 
 #pragma mark - UITableView Delegate
@@ -136,8 +168,13 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    [self _startWorkOn:self.orderList[indexPath.row]];
-    [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+    self.selectedRow = indexPath.row;
+
+    JYOrder *order = self.orderList[indexPath.row];
+    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+    [self showActionSheetForOrder:order highlightView:cell];
+
+    [self.tableView deselectRowAtIndexPath:indexPath animated:NO];
 }
 
 #pragma mark - Network
@@ -168,6 +205,32 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
                  JYOrder *newOrder = [[JYOrder alloc] initWithDictionary:dict];
                  [weakSelf.orderList addObject:newOrder];  // won orders are in DESC, so just add
              }
+
+             [weakSelf networkThreadEnd];
+         }
+         failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+             [weakSelf networkThreadEnd];
+         }
+     ];
+}
+
+- (void)_updateOrder:(JYOrder *)order workingStatus:(JYOrderStatus)status
+{
+    [self networkThreadBegin];
+
+    NSDictionary *parameters = @{@"order_id": @(order.orderId), @"status": @(status)};
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYUser currentUser].token];
+    [manager.requestSerializer setValue:token forHTTPHeaderField:@"Authorization"];
+
+    NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"orders/working_status"];
+    __weak typeof(self) weakSelf = self;
+    [manager POST:url
+      parameters:parameters
+         success:^(AFHTTPRequestOperation *operation, id responseObject) {
+             NSLog(@"orders/working_status success responseObject: %@", responseObject);
+
+             order.status = (JYOrderStatus)[[responseObject objectForKey:@"status"] unsignedIntegerValue];
 
              [weakSelf networkThreadEnd];
          }

@@ -215,11 +215,7 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
     }
     else if (buttonIndex == 2) // create or update bid
     {
-        // TODO: add logic for update bid
-        //        NSString *orderId = [order objectForKey:@"id"];
-        //        NSDictionary *bid = [self.bidDict objectForKey:orderId];
         [self _presentBidViewForOrder:order];
-
     }
     self.selectedRow = -1;
 }

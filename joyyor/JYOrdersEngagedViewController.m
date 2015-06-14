@@ -185,15 +185,11 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
     }
     else if (buttonIndex == 2) // create or update bid
     {
-        // TODO: add logic for update bid
-//        NSString *orderId = [order objectForKey:@"id"];
-//        NSDictionary *bid = [self.bidDict objectForKey:orderId];
         [self _presentBidViewForOrder:order];
 
     }
     self.selectedSection = -1;
 }
-
 
 #pragma mark - Network
 
