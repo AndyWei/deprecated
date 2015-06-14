@@ -2,6 +2,7 @@ var Async = require('async');
 var Boom = require('boom');
 var Hoek = require('hoek');
 var Joi = require('joi');
+var Push = require('../push');
 var Utils = require('../utils');
 var c = require('../constants');
 var _ = require('underscore');
@@ -437,6 +438,63 @@ exports.register = function (server, options, next) {
                 }
 
                 reply(null, order);
+            });
+        }
+    });
+
+
+    // update an order's working status to ongoing or finished. auth. This can only be done by the order winner.
+    server.route({
+        method: 'POST',
+        path: options.basePath + '/orders/working_status',
+        config: {
+            auth: {
+                strategy: 'token'
+            },
+            validate: {
+                payload: {
+                    order_id: Joi.string().regex(/^[0-9]+$/).max(19).required(),
+                    status: Joi.number().min(2).max(9).required()
+                }
+            }
+        },
+        handler: function (request, reply) {
+
+            var p = request.payload;
+            var u = request.auth.credentials;
+
+            var queryConfig = {
+                name: 'orders_working_status',
+                text: 'UPDATE orders SET status = $1, updated_at = now() ' +
+                      'WHERE id = $2 AND winner_id = $3 AND status < 10 AND deleted = false ' +
+                      'RETURNING id, user_id, status',
+                values: [p.status, p.order_id, u.id]
+            };
+
+            request.pg.client.query(queryConfig, function (err, result) {
+
+                if (err) {
+                    console.error(err);
+                    request.pg.kill = true;
+                    return reply(err);
+                }
+
+                if (result.rows.length === 0) {
+                    return reply(Boom.badRequest(c.ORDER_UPDATE_WORKING_STATUS_FAILED));
+                }
+
+                // send notification to the order owner
+                var startWorkMessage = '@' + u.username + ' will start work on your order';
+                var finishWorkMessage = 'Please confirm @' + u.username + ' has finished your order';
+                var title = (p.status === 2) ? startWorkMessage : finishWorkMessage;
+
+                Push.notify('joyy', result.rows[0].user_id, title, title, function (error) {
+
+                    if (error) {
+                        console.error(error);
+                    }
+                });
+                reply(null, result.rows[0]);
             });
         }
     });

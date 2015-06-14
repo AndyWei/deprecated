@@ -54,6 +54,8 @@ exports.ORDER_REVOKE_FAILED = 'The order is either not found or not in active st
 
 exports.ORDER_UPDATE_FAILED = 'The order is either not found or not in active status, cannot be updated.';
 
+exports.ORDER_UPDATE_WORKING_STATUS_FAILED = 'The order cannot be updated by the winner.';
+
 exports.QUERY_FAILED = 'Error when running query.';
 
 exports.QUERY_INVALID = 'The query must contain at least one parameter.';
