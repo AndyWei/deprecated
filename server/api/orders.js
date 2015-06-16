@@ -76,7 +76,7 @@ exports.register = function (server, options, next) {
                 name: 'orders_unpaid',
                 text: selectClause +
                       'WHERE id > $1 AND user_id = $2 AND status < 10 AND deleted = false \
-                       ORDER BY id DESC LIMIT 200',
+                       ORDER BY id DESC LIMIT 100',
                 values: [request.query.after, userId]
             };
 
@@ -230,7 +230,7 @@ exports.register = function (server, options, next) {
                 function (orderIds, callback) {
 
                     var where = 'WHERE status = 0 AND deleted = false AND id IN ' + Utils.parametersString(1, orderIds.length);
-                    var sort = 'ORDER BY id DESC';
+                    var sort = 'ORDER BY id DESC LIMIT 100';
 
                     var queryConfig = {
                         // Warning: Do not give this query a name!! Because it has variable number of parameters and cannot be a prepared statement.
@@ -519,7 +519,8 @@ internals.getEngagedOrderIds = function (request, callback) {
 
             var queryConfig = {
                 name: 'order_id_bidded',
-                text: 'SELECT order_id FROM bids WHERE user_id = $1 AND order_id > $2 AND status = 0 AND deleted = false',
+                text: 'SELECT order_id FROM bids WHERE user_id = $1 AND order_id > $2 AND status = 0 AND deleted = false \
+                       ORDER BY id DESC LIMIT 100',
                 values: [userId, minOrderId]
             };
 
@@ -537,7 +538,8 @@ internals.getEngagedOrderIds = function (request, callback) {
 
             var queryConfig = {
                 name: 'order_id_commented',
-                text: 'SELECT order_id FROM comments WHERE user_id = $1 AND order_id > $2 AND deleted = false',
+                text: 'SELECT order_id FROM comments WHERE user_id = $1 AND order_id > $2 AND deleted = false \
+                       ORDER BY id DESC LIMIT 100',
                 values: [userId, minOrderId]
             };
 
@@ -673,7 +675,7 @@ internals.createNearbyQueryConfig = function (query) {
 
     var where1 = 'WHERE id > $1 AND id < $2 AND ST_DWithin(start_point, ST_SetSRID(ST_MakePoint($3, $4), 4326), $5) AND status = 0 AND deleted = false ';
     var order = 'ORDER BY id DESC ';
-    var limit = 'LIMIT 50';
+    var limit = 'LIMIT 100';
 
     var queryValues = [query.after, query.before, query.lon, query.lat, degree];
     var where2 = '';
