@@ -72,7 +72,8 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
     [self _createTableView];
     [self _fetchOrders];
 
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(fetchMyBids) name:kNotificationDidCreateBid object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onBidAccepted) name:kNotificationBidAccepted object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onBidCreated) name:kNotificationDidCreateBid object:nil];
 }
 
 - (void)didReceiveMemoryWarning
@@ -83,6 +84,16 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)onBidAccepted
+{
+    [self _fetchOrders];
+}
+
+- (void)onBidCreated
+{
+    [self fetchMyBids];
 }
 
 - (void)_createTableView
@@ -141,15 +152,7 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
 
     JYOrder *order = self.orderList[indexPath.row];
     [cell presentOrder:order withAddress:NO andBid:YES];
-    if (order.bids.count == 0)
-    {
-        cell.cardColor = JoyyWhite;
-    }
-    else
-    {
-        JYBid *bid = [order.bids lastObject];
-        cell.cardColor = bid.expired ? FlatYellow : FlatLime;
-    }
+    cell.cardColor = order.bidColor;
 
     NSUInteger count = [[self.commentsCountList objectAtIndex:indexPath.row] unsignedIntegerValue];
     [cell updateCommentsCount:count];
@@ -248,20 +251,11 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
           success:^(AFHTTPRequestOperation *operation, id responseObject) {
 //              NSLog(@"orders/nearby fetch success responseObject: %@", responseObject);
 
-              NSMutableArray *newOrderList = [NSMutableArray new];
+              weakSelf.orderList = [NSMutableArray new];
               for (NSDictionary *dict in responseObject)
               {
                   JYOrder *newOrder = [[JYOrder alloc] initWithDictionary:dict];
-                  [newOrderList addObject:newOrder];
-              }
-
-              if (newOrderList.count > 0)
-              {
-                  JYOrder *lastOrder = [newOrderList firstObject];
-                  weakSelf.maxOrderId = lastOrder.orderId;
-
-                  [newOrderList addObjectsFromArray:weakSelf.orderList];
-                  weakSelf.orderList = newOrderList;
+                  [weakSelf.orderList addObject:newOrder];
               }
 
               if (weakSelf.orderList.count > 0)
@@ -340,7 +334,6 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
     CLLocationCoordinate2D currentPoint = appDelegate.currentCoordinate;
     [parameters setValue:@(currentPoint.longitude) forKey:@"lon"];
     [parameters setValue:@(currentPoint.latitude) forKey:@"lat"];
-    [parameters setValue:@(self.maxOrderId) forKey:@"after"];
 
     return parameters;
 }

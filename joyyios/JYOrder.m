@@ -8,6 +8,7 @@
 
 #import "DataStore.h"
 #import "NSMutableDictionary+Joyy.h"
+#import "JYBid.h"
 #import "JYOrder.h"
 #import "JYServiceCategory.h"
 #import "JYUser.h"
@@ -75,8 +76,6 @@ static JYOrder *_currentOrder;
 
     // DO NOT CLEAR _note, we want to keep it to reduce user inputs
 }
-
-
 
 - (void)loadFromDictionary:(NSDictionary *)dict
 {
@@ -194,6 +193,38 @@ static JYOrder *_currentOrder;
     int numberOfSeconds = (int)secondsBetween;
     NSString *seconds = NSLocalizedString(@"s", nil);
     return [NSString stringWithFormat:@"%d %@ %@", numberOfSeconds, seconds, ago];
+}
+
+- (UIColor *)bidColor
+{
+    UIColor *color = JoyyWhite;
+    if (self.bids.count > 0)
+    {
+        JYBid *bid = [self.bids lastObject];
+        color = bid.expired ? FlatYellow : FlatLime;
+    }
+    return color;
+}
+
+- (UIColor *)statusColor
+{
+    UIColor *color = JoyyWhite;
+    switch (self.status)
+    {
+        case JYOrderStatusOngoing:
+            color = FlatSand;
+            break;
+        case JYOrderStatusFinished:
+            color = FlatLime;
+            break;
+        case JYOrderStatusPaid:
+            color = FlatLimeDark;
+            break;
+        default:
+            break;
+    }
+
+    return color;
 }
 
 @end

@@ -355,8 +355,6 @@
 				D6F49FC51AF5DB4D001A3C89 /* JYMapDashBoardView.m */,
 				D6F49FC81AF5DB4D001A3C89 /* JYOrderCard.h */,
 				D6F49FC91AF5DB4D001A3C89 /* JYOrderCard.m */,
-				D6C82B751B13EB3D00876F57 /* JYOrdersBaseViewController.h */,
-				D6C82B761B13EB3D00876F57 /* JYOrdersBaseViewController.m */,
 				D6F49FCE1AF5DB4D001A3C89 /* JYPanGestureRecognizer.h */,
 				D6F49FCF1AF5DB4D001A3C89 /* JYPanGestureRecognizer.m */,
 				D6F49FD01AF5DB4D001A3C89 /* JYPinAnnotationView.h */,
@@ -418,6 +416,8 @@
 		D6F4A03F1AF5DC1F001A3C89 /* Order */ = {
 			isa = PBXGroup;
 			children = (
+				D6C82B751B13EB3D00876F57 /* JYOrdersBaseViewController.h */,
+				D6C82B761B13EB3D00876F57 /* JYOrdersBaseViewController.m */,
 				D6F4A0441AF5DD04001A3C89 /* JYOrdersNearbyViewController.h */,
 				D6F4A0451AF5DD04001A3C89 /* JYOrdersNearbyViewController.m */,
 				D65F37411B04786A007B534C /* JYOrdersEngagedViewController.h */,

@@ -229,8 +229,6 @@ static NSString *const kBidCellIdentifier = @"bidCell";
     }
     [self networkThreadBegin];
 
-    NSDictionary *parameters = @{@"after" : @(self.maxOrderId)};
-
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYUser currentUser].token];
     [manager.requestSerializer setValue:token forHTTPHeaderField:@"Authorization"];
@@ -239,24 +237,15 @@ static NSString *const kBidCellIdentifier = @"bidCell";
 
     __weak typeof(self) weakSelf = self;
     [manager GET:url
-      parameters:parameters
+      parameters:nil
          success:^(AFHTTPRequestOperation *operation, id responseObject) {
 //             NSLog(@"orders/unpaid fetch success responseObject: %@", responseObject);
 
-             NSMutableArray *newOrderList = [NSMutableArray new];
+             weakSelf.orderList = [NSMutableArray new];
              for (NSDictionary *dict in responseObject)
              {
                  JYOrder *newOrder = [[JYOrder alloc] initWithDictionary:dict];
-                 [newOrderList addObject:newOrder];
-             }
-
-             if (newOrderList.count > 0)
-             {
-                 JYOrder *lastOrder = [newOrderList firstObject];
-                 weakSelf.maxOrderId = lastOrder.orderId;
-
-                 [newOrderList addObjectsFromArray:weakSelf.orderList];
-                 weakSelf.orderList = newOrderList;
+                 [weakSelf.orderList addObject:newOrder];
              }
 
              if (weakSelf.orderList.count > 0)
@@ -296,7 +285,6 @@ static NSString *const kBidCellIdentifier = @"bidCell";
                  if (order != nil)
                  {
                      [order.bids addObject:newBid];
-                     weakSelf.maxBidId = newBid.bidId; // new bids are in ASC order
                  }
              }
 
@@ -320,7 +308,6 @@ static NSString *const kBidCellIdentifier = @"bidCell";
 
     NSMutableDictionary *parameters = [NSMutableDictionary new];
 
-    [parameters setValue:@(self.maxBidId) forKey:@"after"];
     [parameters setValue:orderIds forKey:@"order_id"];
 
     return parameters;

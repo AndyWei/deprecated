@@ -20,9 +20,6 @@
 
 @interface JYOrdersEngagedViewController ()
 
-@property(nonatomic) NSInteger selectedSection;
-@property(nonatomic) NSUInteger maxCommentId;
-
 @end
 
 static NSString *const kCommentCellIdentifier = @"commentCell";
@@ -34,14 +31,14 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
     [super viewDidLoad];
     [self setTitleText:NSLocalizedString(@"Engaged Orders", nil)];
 
-    self.maxCommentId = 0;
     self.selectedSection = -1;
 
-    [self _fetchOrders];
     [self _createTableView];
+    [self fetchOrders];
 
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_fetchOrders) name:kNotificationDidCreateBid object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_fetchOrders) name:kNotificationDidCreateComment object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onBidAccepted) name:kNotificationBidAccepted object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onBidCreated) name:kNotificationDidCreateBid object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onCommentCreated) name:kNotificationDidCreateComment object:nil];
 }
 
 - (void)didReceiveMemoryWarning
@@ -69,7 +66,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
     tableViewController.tableView = self.tableView;
 
     self.refreshControl = [UIRefreshControl new];
-    [self.refreshControl addTarget:self action:@selector(_fetchOrders) forControlEvents:UIControlEventValueChanged];
+    [self.refreshControl addTarget:self action:@selector(fetchOrders) forControlEvents:UIControlEventValueChanged];
 
     tableViewController.refreshControl = self.refreshControl;
 
@@ -93,7 +90,22 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
     [self.navigationController pushViewController:viewController animated:YES];
 }
 
-- (void)_tapOnTableSectionHeader:(id)sender
+- (void)onBidAccepted
+{
+    [self fetchOrders];
+}
+
+- (void)onBidCreated
+{
+    [self fetchOrders];
+}
+
+- (void)onCommentCreated
+{
+    [self fetchOrders];
+}
+
+- (void)tapOnTableSectionHeader:(id)sender
 {
     JYOrderCard *card = (JYOrderCard *)sender;
     self.selectedSection = card.tag;
@@ -157,20 +169,13 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 
     // make the order item view tappable
     card.tag = section;
-    [card addTarget:self action: @selector(_tapOnTableSectionHeader:) forControlEvents:UIControlEventTouchUpInside];
+    [card addTarget:self action: @selector(tapOnTableSectionHeader:) forControlEvents:UIControlEventTouchUpInside];
 
     // show order
     card.tinyLabelsHidden = NO;
     [card presentOrder:order withAddress:NO andBid:YES];
-    if (order.bids.count == 0)
-    {
-        card.backgroundColor = JoyyWhite;
-    }
-    else
-    {
-        JYBid *bid = [order.bids lastObject];
-        card.backgroundColor = bid.expired ? FlatYellow : FlatLime;
-    }
+    card.backgroundColor = order.bidColor;
+
     return card;
 }
 
@@ -200,7 +205,12 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 
 #pragma mark - Network
 
-- (void)_fetchOrders
+- (NSString *)fetchOrdersURL
+{
+    return [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"orders/engaged"];
+}
+
+- (void)fetchOrders
 {
     if (self.networkThreadCount > 0)
     {
@@ -208,40 +218,29 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
     }
     [self networkThreadBegin];
 
-    NSDictionary *parameters = @{@"after" : @(self.maxOrderId)};
-
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYUser currentUser].token];
     [manager.requestSerializer setValue:token forHTTPHeaderField:@"Authorization"];
 
-    NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"orders/engaged"];
+    NSString *url = [self fetchOrdersURL];
 
     __weak typeof(self) weakSelf = self;
     [manager GET:url
-      parameters:parameters
+      parameters:nil
          success:^(AFHTTPRequestOperation *operation, id responseObject) {
 //             NSLog(@"orders/engaged fetch success responseObject: %@", responseObject);
 
-             NSMutableArray *newOrderList = [NSMutableArray new];
+             weakSelf.orderList = [NSMutableArray new];
              for (NSDictionary *dict in responseObject)
              {
                  JYOrder *newOrder = [[JYOrder alloc] initWithDictionary:dict];
-                 [newOrderList addObject:newOrder];
-             }
-
-             if (newOrderList.count > 0)
-             {
-                 JYOrder *lastOrder = [newOrderList firstObject];
-                 weakSelf.maxOrderId = lastOrder.orderId;
-
-                 [newOrderList addObjectsFromArray:weakSelf.orderList];
-                 weakSelf.orderList = newOrderList;
+                 [weakSelf.orderList addObject:newOrder];
              }
 
              if (weakSelf.orderList.count > 0)
              {
-                 [weakSelf _fetchBids];
-                 [weakSelf _fetchComments];
+                 [weakSelf fetchMyBids];
+                 [weakSelf fetchComments];
              }
 
              [weakSelf networkThreadEnd];
@@ -250,93 +249,6 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
              [weakSelf networkThreadEnd];
          }
      ];
-}
-
-- (void)_fetchBids
-{
-    [self networkThreadBegin];
-
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYUser currentUser].token];
-    [manager.requestSerializer setValue:token forHTTPHeaderField:@"Authorization"];
-
-    NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"bids/from_me"];
-    NSDictionary *parameters = @{@"after" : @(self.maxBidId)};
-
-    __weak typeof(self) weakSelf = self;
-    [manager GET:url
-      parameters:parameters
-         success:^(AFHTTPRequestOperation *operation, id responseObject) {
-
-//             NSLog(@"bids/from_me fetch success responseObject: %@", responseObject);
-             for (NSDictionary *dict in responseObject)
-             {
-                 JYBid *newBid = [[JYBid alloc] initWithDictionary:dict];
-                 JYOrder *order = [weakSelf orderOfId:newBid.orderId];
-                 if (order != nil)
-                 {
-                     [order.bids addObject:newBid];
-                     weakSelf.maxBidId = newBid.bidId; // new bids are in ASC order
-                 }
-             }
-
-             [weakSelf networkThreadEnd];
-         }
-         failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-             [weakSelf networkThreadEnd];
-         }
-     ];
-}
-
-- (void)_fetchComments
-{
-    [self networkThreadBegin];
-
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"comments/of/orders"];
-
-    __weak typeof(self) weakSelf = self;
-    [manager GET:url
-      parameters:[self _httpCommentsParameters]
-         success:^(AFHTTPRequestOperation *operation, id responseObject) {
-
-//             NSLog(@"comments/of/orders fetch success responseObject: %@", responseObject);
-             NSArray *comments = (NSArray *)responseObject;
-
-             for (NSDictionary *dict in comments)
-             {
-                 JYComment *newComment = [[JYComment alloc] initWithDictionary:dict];
-
-                 JYOrder *order = [weakSelf orderOfId:newComment.orderId];
-                 if (order != nil)
-                 {
-                     [order.comments addObject:newComment];
-                     weakSelf.maxCommentId = newComment.commentId; // new comments are in ASC order
-                 }
-             }
-
-             [weakSelf networkThreadEnd];
-         }
-         failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-             [weakSelf networkThreadEnd];
-         }
-     ];
-}
-
-- (NSDictionary *)_httpCommentsParameters
-{
-    NSMutableArray *orderIds = [NSMutableArray new];
-    for (JYOrder *order in self.orderList)
-    {
-        [orderIds addObject:@(order.orderId)];
-    }
-    
-    NSMutableDictionary *parameters = [NSMutableDictionary new];
-    
-    [parameters setValue:@(self.maxCommentId) forKey:@"after"];
-    [parameters setValue:orderIds forKey:@"order_id"];
-    
-    return parameters;
 }
 
 @end

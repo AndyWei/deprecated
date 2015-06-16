@@ -9,6 +9,7 @@
 #import <AFNetworking/AFNetworking.h>
 
 #import "JYBid.h"
+#import "JYComment.h"
 #import "JYOrder.h"
 #import "JYOrdersBaseViewController.h"
 #import "JYUser.h"
@@ -24,10 +25,7 @@
 {
     [super viewDidLoad];
 
-    self.maxOrderId = 0;
-    self.maxBidId = 0;
     self.networkThreadCount = 0;
-
     self.orderList = [NSMutableArray new];
 }
 
@@ -98,6 +96,7 @@
 -(void)customActionSheet:(UICustomActionSheet *)customActionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     // Do nothing. Subclasses should implement it
+    NSAssert(NO, @"This method is for subclassing only");
 }
 
 
@@ -112,11 +111,10 @@
     [manager.requestSerializer setValue:token forHTTPHeaderField:@"Authorization"];
 
     NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"bids/from_me"];
-    NSDictionary *parameters = @{@"after" : @(self.maxBidId)};
 
     __weak typeof(self) weakSelf = self;
     [manager GET:url
-      parameters:parameters
+      parameters:nil
          success:^(AFHTTPRequestOperation *operation, id responseObject) {
 
              NSLog(@"bids/from_me fetch success responseObject: %@", responseObject);
@@ -127,7 +125,6 @@
                  if (order != nil)
                  {
                      [order.bids addObject:newBid];
-                     weakSelf.maxBidId = newBid.bidId; // new bids are in ASC order
                  }
              }
 
@@ -137,6 +134,55 @@
              [weakSelf networkThreadEnd];
          }
      ];
+}
+
+- (void)fetchComments
+{
+    [self networkThreadBegin];
+
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"comments/of/orders"];
+
+    __weak typeof(self) weakSelf = self;
+    [manager GET:url
+      parameters:[self _httpCommentsParameters]
+         success:^(AFHTTPRequestOperation *operation, id responseObject) {
+
+             //             NSLog(@"comments/of/orders fetch success responseObject: %@", responseObject);
+             NSArray *comments = (NSArray *)responseObject;
+
+             for (NSDictionary *dict in comments)
+             {
+                 JYComment *newComment = [[JYComment alloc] initWithDictionary:dict];
+
+                 JYOrder *order = [weakSelf orderOfId:newComment.orderId];
+                 if (order != nil)
+                 {
+                     [order.comments addObject:newComment];
+                 }
+             }
+
+             [weakSelf networkThreadEnd];
+         }
+         failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+             [weakSelf networkThreadEnd];
+         }
+     ];
+}
+
+- (NSDictionary *)_httpCommentsParameters
+{
+    NSMutableArray *orderIds = [NSMutableArray new];
+    for (JYOrder *order in self.orderList)
+    {
+        [orderIds addObject:@(order.orderId)];
+    }
+
+    NSMutableDictionary *parameters = [NSMutableDictionary new];
+
+    [parameters setValue:orderIds forKey:@"order_id"];
+    
+    return parameters;
 }
 
 @end

@@ -183,16 +183,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
     JYOrderCard *card = [[JYOrderCard alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(tableView.frame), height)];
     card.tinyLabelsHidden = NO;
     [card presentOrder:self.order withAddress:NO andBid:YES];
-
-    if (self.order.bids.count == 0)
-    {
-        card.backgroundColor = JoyyWhite;
-    }
-    else
-    {
-        JYBid *bid = [self.order.bids lastObject];
-        card.backgroundColor = bid.expired ? FlatYellow : FlatLime;
-    }
+    card.backgroundColor = self.order.bidColor;
     return card;
 }
 

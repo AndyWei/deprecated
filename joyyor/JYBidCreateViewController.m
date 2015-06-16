@@ -74,15 +74,7 @@ NSString *const kOrderBidCellIdentifier = @"orderBidCell";
     self.card = [[JYOrderCard alloc] initWithFrame:CGRectMake(0, statusBarHeight + navBarHeight, width, height)];
 
     [self.card presentOrder:self.order withAddress:NO andBid:YES];
-    if (self.order.bids.count == 0)
-    {
-        self.card.backgroundColor = JoyyWhite;
-    }
-    else
-    {
-        JYBid *bid = [self.order.bids lastObject];
-        self.card.backgroundColor = bid.expired ? FlatYellow : FlatLime;
-    }
+    self.card.backgroundColor = self.order.bidColor;
 
     [self.view addSubview:self.card];
 }

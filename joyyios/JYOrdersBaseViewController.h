@@ -16,12 +16,12 @@
 - (void)networkThreadEnd;
 - (void)showActionSheetForOrder:(JYOrder *)order highlightView:(UIView *)view;
 - (void)fetchMyBids;
+- (void)fetchComments;
+
 - (JYOrder *)orderOfId:(NSUInteger)targetOrderId;
 
 @property(nonatomic) NSInteger networkThreadCount;
 @property(nonatomic) NSMutableArray *orderList;
-@property(nonatomic) NSUInteger maxOrderId;
-@property(nonatomic) NSUInteger maxBidId;
 @property(nonatomic) UITableView *tableView;
 @property(nonatomic) UIRefreshControl *refreshControl;
 

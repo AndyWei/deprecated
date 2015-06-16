@@ -10,4 +10,11 @@
 
 @interface JYOrdersEngagedViewController : JYOrdersBaseViewController <UITableViewDataSource, UITableViewDelegate>
 
+@property(nonatomic) NSInteger selectedSection;
+
+- (void)onCommentCreated;
+- (void)tapOnTableSectionHeader:(id)sender;
+- (void)fetchOrders;
+- (NSString *)fetchOrdersURL;
+
 @end

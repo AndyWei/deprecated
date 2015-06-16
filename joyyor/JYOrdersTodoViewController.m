@@ -11,18 +11,15 @@
 #import <RKDropdownAlert/RKDropdownAlert.h>
 
 #import "AppDelegate.h"
+#import "JYCommentViewCell.h"
 #import "JYOrdersTodoViewController.h"
-#import "JYOrderCardCell.h"
+#import "JYOrderCard.h"
 #import "JYUser.h"
 
 @interface JYOrdersTodoViewController ()
 
-@property(nonatomic) NSInteger selectedRow;
-
 @end
 
-
-static NSString *const kOrderCellIdentifier = @"orderCell";
 
 @implementation JYOrdersTodoViewController
 
@@ -31,11 +28,8 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
     [super viewDidLoad];
     [self setTitleText:NSLocalizedString(@"Orders Toto", nil)];
 
-    self.selectedRow = -1;
-    [self _createTableView];
-    [self _fetchData];
-
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_fetchData) name:kNotificationBidAccepted object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onBidAccepted) name:kNotificationBidAccepted object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onCommentCreated) name:kNotificationDidCreateComment object:nil];
 }
 
 - (void)didReceiveMemoryWarning
@@ -48,48 +42,14 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (void)_createTableView
+- (void)onBidAccepted
 {
-    self.tableView = [[UITableView alloc] initWithFrame:self.view.frame style:UITableViewStylePlain];
-    self.tableView.backgroundColor = FlatWhite;
-    self.tableView.dataSource = self;
-    self.tableView.delegate = self;
-    [self.tableView registerClass:[JYOrderCardCell class] forCellReuseIdentifier:kOrderCellIdentifier];
-    [self.view addSubview:self.tableView];
-
-    // Add UIRefreshControl
-    UITableViewController *tableViewController = [[UITableViewController alloc] init];
-    tableViewController.tableView = self.tableView;
-
-    self.refreshControl = [UIRefreshControl new];
-    [self.refreshControl addTarget:self action:@selector(_fetchData) forControlEvents:UIControlEventValueChanged];
-
-    tableViewController.refreshControl = self.refreshControl;
-
-    // Enable scroll to top
-    self.scrollView = self.tableView;
+    [self fetchOrders];
 }
 
-#pragma mark - UITableViewDataSource
-
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+- (void)onCommentCreated
 {
-    return 1;
-}
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
-    return [self.orderList count];
-}
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    JYOrderCardCell *cell =
-    (JYOrderCardCell *)[tableView dequeueReusableCellWithIdentifier:kOrderCellIdentifier forIndexPath:indexPath];
-
-    JYOrder *order = self.orderList[indexPath.row];
-    [cell presentOrder:order withAddress:YES andBid:NO];
-    return cell;
+    [self fetchOrders];
 }
 
 #pragma mark - override methods
@@ -136,12 +96,12 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
 {
     self.tabBarController.tabBar.hidden = NO;
 
-    if (self.selectedRow < 0)
+    if (self.selectedSection < 0)
     {
         return;
     }
 
-    JYOrder *order = self.orderList[self.selectedRow];
+    JYOrder *order = self.orderList[self.selectedSection];
 
     switch (order.status)
     {
@@ -155,63 +115,46 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
             break;
     }
 
-    self.selectedRow = -1;
+    self.selectedSection = -1;
 }
 
 #pragma mark - UITableView Delegate
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    JYOrder *order = self.orderList[indexPath.row];
-    return [JYOrderCardCell cellHeightForOrder:order withAddress:YES andBid:NO];
-}
-
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    self.selectedRow = indexPath.row;
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+}
 
-    JYOrder *order = self.orderList[indexPath.row];
-    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-    [self showActionSheetForOrder:order highlightView:cell];
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    JYOrder *order = self.orderList[section];
+    return [JYOrderCard cardHeightForOrder:order withAddress:YES andBid:YES];
+}
 
-    [self.tableView deselectRowAtIndexPath:indexPath animated:NO];
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+{
+    JYOrder *order = self.orderList[section];
+    CGFloat height = [JYOrderCard cardHeightForOrder:order withAddress:YES andBid:YES];
+
+    JYOrderCard *card = [[JYOrderCard alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(tableView.frame), height)];
+
+    // make the order item view tappable
+    card.tag = section;
+    [card addTarget:self action: @selector(tapOnTableSectionHeader:) forControlEvents:UIControlEventTouchUpInside];
+
+    // show order
+    card.tinyLabelsHidden = NO;
+    [card presentOrder:order withAddress:YES andBid:YES];
+    card.backgroundColor = order.statusColor;
+
+    return card;
 }
 
 #pragma mark - Network
 
-- (void)_fetchData
+- (NSString *)fetchOrdersURL
 {
-    if (self.networkThreadCount > 0)
-    {
-        return;
-    }
-    [self networkThreadBegin];
-
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYUser currentUser].token];
-    [manager.requestSerializer setValue:token forHTTPHeaderField:@"Authorization"];
-
-    NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"orders/won"];
-
-     __weak typeof(self) weakSelf = self;
-    [manager GET:url
-      parameters:nil
-         success:^(AFHTTPRequestOperation *operation, id responseObject) {
-             NSLog(@"orders/won fetch success responseObject: %@", responseObject);
-
-             weakSelf.orderList = [NSMutableArray new];
-             for (NSDictionary *dict in responseObject)
-             {
-                 JYOrder *newOrder = [[JYOrder alloc] initWithDictionary:dict];
-                 [weakSelf.orderList addObject:newOrder];  // won orders are in DESC, so just add
-             }
-
-             [weakSelf networkThreadEnd];
-         }
-         failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-             [weakSelf networkThreadEnd];
-         }
-     ];
+    return [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"orders/won"];
 }
 
 - (void)_updateOrder:(JYOrder *)order workingStatus:(JYOrderStatus)status

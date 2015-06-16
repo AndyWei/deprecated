@@ -62,5 +62,7 @@ typedef NS_ENUM(NSUInteger, JYOrderStatus)
 
 @property(nonatomic, readonly) NSString *createTimeString;
 @property(nonatomic, readonly) NSString *priceString;
+@property(nonatomic, readonly) UIColor *bidColor;
+@property(nonatomic, readonly) UIColor *statusColor;
 
 @end
