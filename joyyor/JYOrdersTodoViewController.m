@@ -92,9 +92,15 @@
 
 #pragma mark - UIActionSheetDelegate
 
--(void)customActionSheet:(UICustomActionSheet *)customActionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+- (void)customActionSheet:(UICustomActionSheet *)customActionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     self.tabBarController.tabBar.hidden = NO;
+
+    if (buttonIndex == 0) // cancel
+    {
+        self.selectedSection = -1;
+        return;
+    }
 
     if (self.selectedSection < 0)
     {
@@ -155,6 +161,12 @@
 - (NSString *)fetchOrdersURL
 {
     return [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"orders/won"];
+}
+
+- (NSDictionary *)fetchMyBidsParameters
+{
+    NSDictionary *parameters = @{@"status": @(JYBidStatusAccepted)};
+    return parameters;
 }
 
 - (void)_updateOrder:(JYOrder *)order workingStatus:(JYOrderStatus)status

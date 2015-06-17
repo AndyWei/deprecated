@@ -15,8 +15,9 @@
 - (void)networkThreadBegin;
 - (void)networkThreadEnd;
 - (void)showActionSheetForOrder:(JYOrder *)order highlightView:(UIView *)view;
-- (void)fetchMyBids;
 - (void)fetchComments;
+- (void)fetchMyBids;
+- (NSDictionary *)fetchMyBidsParameters;
 
 - (JYOrder *)orderOfId:(NSUInteger)targetOrderId;
 

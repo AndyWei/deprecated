@@ -155,9 +155,13 @@ static NSString *reuseId = @"pin";
                        }
                        else
                        {
-                           CLPlacemark *placemark = [placemarks objectAtIndex:0];
-                           NSString *locatedAt = [[placemark.addressDictionary valueForKey:@"FormattedAddressLines"] componentsJoinedByString:@", "];
-                           NSString *address = [[NSString alloc] initWithString:locatedAt];
+                           CLPlacemark *placemark = [placemarks lastObject];
+
+                           NSString *address = [NSString stringWithFormat:@"%@, %@, %@ %@",
+                                                placemark.thoroughfare,
+                                                placemark.locality,
+                                                placemark.administrativeArea,
+                                                placemark.postalCode];
 
                            if (weakSelf.mapEditMode == MapEditModeStartPoint)
                            {

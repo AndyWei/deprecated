@@ -60,8 +60,10 @@ typedef NS_ENUM(NSUInteger, JYOrderStatus)
 @property(nonatomic) NSMutableArray *bids;
 @property(nonatomic) NSMutableArray *comments;
 
+@property(nonatomic, readonly) BOOL hasEndAddress;
 @property(nonatomic, readonly) NSString *createTimeString;
 @property(nonatomic, readonly) NSString *priceString;
+@property(nonatomic, readonly) NSString *finalPriceString;
 @property(nonatomic, readonly) UIColor *bidColor;
 @property(nonatomic, readonly) UIColor *statusColor;
 

@@ -21,7 +21,7 @@
             self.orderId = [[dict objectForKey:@"order_id"] unsignedIntegerValue];
             self.userId = [[dict objectForKey:@"user_id"] unsignedIntegerValue];
             self.price = [[dict objectForKey:@"price"] unsignedIntegerValue];
-            self.status = [[dict objectForKey:@"status"] integerValue];
+            self.status = (JYBidStatus)[[dict objectForKey:@"status"] unsignedIntegerValue];
             self.note = [dict objectForKey:@"note"];
 
             NSUInteger expireTimestamp = [[dict objectForKey:@"expire_at"] unsignedIntegerValue];
@@ -49,6 +49,11 @@
 
 - (NSString *)expireTimeString
 {
+    if (self.status != JYBidStatusActive)
+    {
+        return @"";
+    }
+
     NSTimeInterval secondsBetween = [self.expireTime timeIntervalSinceNow];
 
     if (secondsBetween < 0)

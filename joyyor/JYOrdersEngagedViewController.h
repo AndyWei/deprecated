@@ -6,15 +6,8 @@
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
-#import "JYOrdersBaseViewController.h"
+#import "JYOrdersEngagedBaseViewController.h"
 
-@interface JYOrdersEngagedViewController : JYOrdersBaseViewController <UITableViewDataSource, UITableViewDelegate>
-
-@property(nonatomic) NSInteger selectedSection;
-
-- (void)onCommentCreated;
-- (void)tapOnTableSectionHeader:(id)sender;
-- (void)fetchOrders;
-- (NSString *)fetchOrdersURL;
+@interface JYOrdersEngagedViewController : JYOrdersEngagedBaseViewController
 
 @end

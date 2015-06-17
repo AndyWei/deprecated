@@ -145,9 +145,6 @@
 
 - (void)_saveOrder
 {
-    [JYOrder currentOrder].startAddress = [self.formValues valueForKey:@"startAddress"];
-    [JYOrder currentOrder].endAddress = [self.formValues valueForKey:@"endAddress"];
-
     // note
     id note = [self.formValues objectForKey:@"note"];
     [JYOrder currentOrder].note = [note isKindOfClass:[NSNull class]] ? @"(ᵔᴥᵔ)" : [self.formValues valueForKey:@"note"];

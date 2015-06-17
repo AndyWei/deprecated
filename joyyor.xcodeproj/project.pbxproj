@@ -17,6 +17,7 @@
 		D679F0341B295525004F1C37 /* JYFixedLengthRowValidator.m in Sources */ = {isa = PBXBuildFile; fileRef = D679F0331B295525004F1C37 /* JYFixedLengthRowValidator.m */; };
 		D679F0371B296225004F1C37 /* JYAccountBaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D679F0361B296225004F1C37 /* JYAccountBaseViewController.m */; };
 		D679F03A1B2A2435004F1C37 /* JYAccountViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D679F0391B2A2435004F1C37 /* JYAccountViewController.m */; };
+		D679F03E1B30E58D004F1C37 /* JYOrdersEngagedBaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D679F03D1B30E58D004F1C37 /* JYOrdersEngagedBaseViewController.m */; };
 		D6C82B591B0DA5CE00876F57 /* JYCommentsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6C82B581B0DA5CE00876F57 /* JYCommentsViewController.m */; };
 		D6C82B601B0EFE0600876F57 /* JYCommentTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = D6C82B5F1B0EFE0600876F57 /* JYCommentTextView.m */; };
 		D6C82B6F1B128E9700876F57 /* JYBid.m in Sources */ = {isa = PBXBuildFile; fileRef = D6C82B6C1B128E9700876F57 /* JYBid.m */; };
@@ -85,6 +86,8 @@
 		D679F0361B296225004F1C37 /* JYAccountBaseViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYAccountBaseViewController.m; sourceTree = "<group>"; };
 		D679F0381B2A2435004F1C37 /* JYAccountViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYAccountViewController.h; sourceTree = "<group>"; };
 		D679F0391B2A2435004F1C37 /* JYAccountViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYAccountViewController.m; sourceTree = "<group>"; };
+		D679F03C1B30E58D004F1C37 /* JYOrdersEngagedBaseViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYOrdersEngagedBaseViewController.h; sourceTree = "<group>"; };
+		D679F03D1B30E58D004F1C37 /* JYOrdersEngagedBaseViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYOrdersEngagedBaseViewController.m; sourceTree = "<group>"; };
 		D6C82B571B0DA5CE00876F57 /* JYCommentsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JYCommentsViewController.h; path = joyyios/JYCommentsViewController.h; sourceTree = SOURCE_ROOT; };
 		D6C82B581B0DA5CE00876F57 /* JYCommentsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JYCommentsViewController.m; path = joyyios/JYCommentsViewController.m; sourceTree = SOURCE_ROOT; };
 		D6C82B5E1B0EFE0600876F57 /* JYCommentTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JYCommentTextView.h; path = joyyios/JYCommentTextView.h; sourceTree = SOURCE_ROOT; };
@@ -420,6 +423,8 @@
 				D6C82B761B13EB3D00876F57 /* JYOrdersBaseViewController.m */,
 				D6F4A0441AF5DD04001A3C89 /* JYOrdersNearbyViewController.h */,
 				D6F4A0451AF5DD04001A3C89 /* JYOrdersNearbyViewController.m */,
+				D679F03C1B30E58D004F1C37 /* JYOrdersEngagedBaseViewController.h */,
+				D679F03D1B30E58D004F1C37 /* JYOrdersEngagedBaseViewController.m */,
 				D65F37411B04786A007B534C /* JYOrdersEngagedViewController.h */,
 				D65F37421B04786A007B534C /* JYOrdersEngagedViewController.m */,
 				D6F4A0531AF6D188001A3C89 /* JYOrdersTodoViewController.h */,
@@ -551,6 +556,7 @@
 				D679F03A1B2A2435004F1C37 /* JYAccountViewController.m in Sources */,
 				D6F4A0081AF5DB4D001A3C89 /* JYFloatLabeledTextField.m in Sources */,
 				D6F49FFC1AF5DB4D001A3C89 /* JYAutocompleteTextField.m in Sources */,
+				D679F03E1B30E58D004F1C37 /* JYOrdersEngagedBaseViewController.m in Sources */,
 				D6F4A0041AF5DB4D001A3C89 /* JYDateView.m in Sources */,
 				D6F49F8C1AF595F2001A3C89 /* AppDelegate.m in Sources */,
 				D679F02D1B1ED683004F1C37 /* JYAccountCompanyViewController.m in Sources */,

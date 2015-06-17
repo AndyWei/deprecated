@@ -6,11 +6,19 @@
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
+typedef NS_ENUM(NSUInteger, JYBidStatus)
+{
+    JYBidStatusActive = 0,
+    JYBidStatusAccepted = 1,
+    JYBidStatusRejected = 10,
+    JYBidStatusRevoked = 20
+};
+
 @interface JYBid : NSObject
 
 - (instancetype)initWithDictionary:(NSDictionary *)dict;
 
-@property(nonatomic) NSInteger  status;
+@property(nonatomic) JYBidStatus  status;
 @property(nonatomic) NSUInteger bidId;
 @property(nonatomic) NSUInteger orderId;
 @property(nonatomic) NSUInteger userId;

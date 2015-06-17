@@ -6,8 +6,8 @@
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
-#import "JYOrdersEngagedViewController.h"
+#import "JYOrdersEngagedBaseViewController.h"
 
-@interface JYOrdersTodoViewController : JYOrdersEngagedViewController
+@interface JYOrdersTodoViewController : JYOrdersEngagedBaseViewController
 
 @end

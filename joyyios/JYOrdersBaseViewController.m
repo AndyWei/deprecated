@@ -102,6 +102,11 @@
 
 #pragma mark - Network
 
+- (NSDictionary *)fetchMyBidsParameters
+{
+    return nil;
+}
+
 - (void)fetchMyBids
 {
     [self networkThreadBegin];
@@ -111,10 +116,11 @@
     [manager.requestSerializer setValue:token forHTTPHeaderField:@"Authorization"];
 
     NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"bids/from_me"];
+    NSDictionary *parameters = [self fetchMyBidsParameters];
 
     __weak typeof(self) weakSelf = self;
     [manager GET:url
-      parameters:nil
+      parameters:parameters
          success:^(AFHTTPRequestOperation *operation, id responseObject) {
 
              NSLog(@"bids/from_me fetch success responseObject: %@", responseObject);

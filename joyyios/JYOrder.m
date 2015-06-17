@@ -111,14 +111,18 @@ static JYOrder *_currentOrder;
     _updatedAt = [dateFormatter dateFromString:updatedAtString];
 
     // optional values
-    _endAddress  = [dict objectForKey:@"end_address"];
-
     NSString *str = nil;
-    str = [dict objectForKey:@"end_point_lat"];
-    _endPointLat = [str isKindOfClass:[NSString class]] ? [str doubleValue] : 0.0;
+    if (self.hasEndAddress)
+    {
+        _endAddress  = [dict objectForKey:@"end_address"];
 
-    str = [dict objectForKey:@"end_point_lon"];
-    _endPointLon = [str isKindOfClass:[NSString class]] ? [str doubleValue] : 0.0;
+
+        str = [dict objectForKey:@"end_point_lat"];
+        _endPointLat = [str isKindOfClass:[NSString class]] ? [str doubleValue] : 0.0;
+
+        str = [dict objectForKey:@"end_point_lon"];
+        _endPointLon = [str isKindOfClass:[NSString class]] ? [str doubleValue] : 0.0;
+    }
 
     str = [dict objectForKey:@"winner_id"];
     _winnnerId = [str isKindOfClass:[NSString class]] ? [str unsignedIntegerValue] : 0.0;
@@ -145,7 +149,7 @@ static JYOrder *_currentOrder;
     [parameters setObject:@(self.startPointLon) forKey:@"start_point_lon"];
 
 
-    if (self.categoryIndex == JYServiceCategoryIndexDelivery || self.categoryIndex == JYServiceCategoryIndexMoving)
+    if (self.hasEndAddress)
     {
         [parameters setObject:self.endAddress forKey:@"end_address"];
         [parameters setObject:@(self.endPointLat) forKey:@"end_point_lat"];
@@ -155,9 +159,21 @@ static JYOrder *_currentOrder;
     return parameters;
 }
 
+- (BOOL)hasEndAddress
+{
+    BOOL result = self.categoryIndex == JYServiceCategoryIndexDelivery ||
+                  self.categoryIndex == JYServiceCategoryIndexMoving;
+    return result;
+}
+
 - (NSString *)priceString
 {
     return [NSString stringWithFormat:@"$%tu", self.price];
+}
+
+- (NSString *)finalPriceString
+{
+    return [NSString stringWithFormat:@"$%tu", self.finalPrice];
 }
 
 - (NSString *)createTimeString
