@@ -16,24 +16,24 @@ Chameleon is the **first and only** color framework on the market that focuses i
 Chameleon solves problems that many other color libraries tend to overlook. With their distracting and superfluous features, other libraries confuse and misdirect developers. They create extensions that display a few colors, but leave developers to essentially create cohesive color palettes and replace countless lines of `UIColor` code if they desire to switch to a "flat color" themselves. But now, with only a few characters of code, Chameleon does all the heavy lifting.
 
 ## Table of Contents
-[● Product Features](https://github.com/VAlexander/Chameleon#-product-features)  
-[● Requirements](https://github.com/VAlexander/Chameleon#%EF%B8%8F-requirements)  
-[● License](https://github.com/VAlexander/Chameleon#-license)  
-[● Contributions](https://github.com/VAlexander/Chameleon#-contributions)   
-[● Documentation](https://github.com/VAlexander/Chameleon#-documentation)  
-[● Storyboard Add-On](https://github.com/VAlexander/Chameleon#storyboard-add-on-)   
-[● Author](https://github.com/VAlexander/Chameleon#-author)   
-[● Special Thanks](https://github.com/VAlexander/Chameleon#-special-thanks)    
-[● To Do List](https://github.com/VAlexander/Chameleon#-to-do-list)  
-[● Change Log](https://github.com/VAlexander/Chameleon#-change-log)  
+[● Product Features](https://github.com/ViccAlexander/Chameleon#-product-features)  
+[● Requirements](https://github.com/ViccAlexander/Chameleon#%EF%B8%8F-requirements)  
+[● License](https://github.com/ViccAlexander/Chameleon#-license)  
+[● Contributions](https://github.com/ViccAlexander/Chameleon#-contributions)   
+[● Documentation](https://github.com/ViccAlexander/Chameleon#-documentation)  
+[● Storyboard Add-On](https://github.com/ViccAlexander/Chameleon#storyboard-add-on)   
+[● Author](https://github.com/ViccAlexander/Chameleon#-author)   
+[● Special Thanks](https://github.com/ViccAlexander/Chameleon#-special-thanks)    
+[● To Do List](https://github.com/ViccAlexander/Chameleon#-to-do-list)  
+[● Change Log](https://github.com/ViccAlexander/Chameleon#-change-log)  
 
 <!--- 
-&nbsp;&nbsp;￮ [Installation](https://github.com/VAlexander/Chameleon#installation)  
-&nbsp;&nbsp;￮ [Usage](https://github.com/VAlexander/Chameleon#usage)  
-&nbsp;&nbsp;￮ [UIColor Methods](https://github.com/VAlexander/Chameleon#uicolor-methods)  
-&nbsp;&nbsp;￮ [UIStatusBarStyle Methods](https://github.com/VAlexander/Chameleon#uistatusbarstyle-methods)    
-&nbsp;&nbsp;￮ [Color Scheme Methods](https://github.com/VAlexander/Chameleon#color-schemes-methods)    
-&nbsp;&nbsp;￮ [Flatify Methods (Beta)](https://github.com/VAlexander/Chameleon#flatify-methods-beta) 
+&nbsp;&nbsp;￮ [Installation](https://github.com/ViccAlexander/Chameleon#installation)  
+&nbsp;&nbsp;￮ [Usage](https://github.com/ViccAlexander/Chameleon#usage)  
+&nbsp;&nbsp;￮ [UIColor Methods](https://github.com/ViccAlexander/Chameleon#uicolor-methods)  
+&nbsp;&nbsp;￮ [UIStatusBarStyle Methods](https://github.com/ViccAlexander/Chameleon#uistatusbarstyle-methods)    
+&nbsp;&nbsp;￮ [Color Scheme Methods](https://github.com/ViccAlexander/Chameleon#color-schemes-methods)    
+&nbsp;&nbsp;￮ [Flatify Methods (Beta)](https://github.com/ViccAlexander/Chameleon#flatify-methods-beta) 
 --->
 
 ## 🌟 Product Features
@@ -77,7 +77,7 @@ The flatify feature is the most innovative and easy-to-use feature of Chameleon.
 </p>
 
 ### Gradient Colors ![New](http://i.imgur.com/BX3b9ES.png)
-With iOS 7, Apple mainstreamed flat colors. Now, with the impending release of iOS 8, Chameleon strives to elevate the game. Say 'hello' to gradient colors. Using one line of code, you can easily set any object's color properties to a gradient (background colors, text colors, tint colors, etc). Other features, like Chameleon's contrasting feature, can also be applied to create a seamless product. Experimentation is encouraged, and gutsiness is applauded!
+With iOS 7, Apple mainstreamed flat colors. Now, with the release of iOS 8, Chameleon strives to elevate the game. Say 'hello' to gradient colors. Using one line of code, you can easily set any object's color properties to a gradient (background colors, text colors, tint colors, etc). Other features, like Chameleon's contrasting feature, can also be applied to create a seamless product. Experimentation is encouraged, and gutsiness is applauded!
 
 <p align="center">
   <img src="http://i.imgur.com/7hTa5Pd.png" alt="Gradients"/>
@@ -110,7 +110,7 @@ If you're like me and love to use storyboard, Chameleon's got you covered. We've
 * Uses Apple LLVM compiler 5.1
 
 ## 🔑 License
-Chameleon is released and distributed under the terms and conditions of the [MIT license](https://github.com/VAlexander/Chameleon/blob/master/LICENSE.md).
+Chameleon is released and distributed under the terms and conditions of the [MIT license](https://github.com/ViccAlexander/Chameleon/blob/master/LICENSE.md).
 
 ## 👥 Contributions
 If you run into problems, please open up an issue. I also actively welcome pull requests. By contributing to Chameleon you agree that your contributions will be licensed under its MIT license.
@@ -121,13 +121,13 @@ If you use the Chameleon framework in your app I would love to hear about it! Dr
 All methods, properties, and types available in the Chameleon Framework are documented below. Although many people are not huge fans of macro files, I have included an optional "shorthand syntax" for each of the methods, properties, and types documented below.
 
 #####Documentation Table of Contents  
-[● Installation](https://github.com/VAlexander/Chameleon#installation)  
-[● Storyboard-Add On](https://github.com/VAlexander/Chameleon#storyboard-add-on-)  
-[● Usage](https://github.com/VAlexander/Chameleon#usage)  
-[● UIColor Methods](https://github.com/VAlexander/Chameleon#uicolor-methods)  
-[● UIStatusBarStyle Methods](https://github.com/VAlexander/Chameleon#uistatusbarstyle-methods)  
-[● Color Scheme Methods](https://github.com/VAlexander/Chameleon#color-schemes-methods)  
-[● Flatify Methods (Beta)](https://github.com/VAlexander/Chameleon#flatify-methods-beta)  
+[● Installation](https://github.com/ViccAlexander/Chameleon#installation)  
+[● Storyboard-Add On](https://github.com/ViccAlexander/Chameleon#storyboard-add-on-)  
+[● Usage](https://github.com/ViccAlexander/Chameleon#usage)  
+[● UIColor Methods](https://github.com/ViccAlexander/Chameleon#uicolor-methods)  
+[● UIStatusBarStyle Methods](https://github.com/ViccAlexander/Chameleon#uistatusbarstyle-methods)  
+[● Color Scheme Methods](https://github.com/ViccAlexander/Chameleon#color-schemes-methods)  
+[● Flatify Methods (Beta)](https://github.com/ViccAlexander/Chameleon#flatify-methods-beta)  
 
 ###Installation
 ####CocoaPods Installation
@@ -146,7 +146,7 @@ If you rather install this framework manually, just drag and drop the Chameleon 
 Note: Don't forget to manually import the *QuartzCore* & *CoreGraphics* framework if you plan on using gradient colors!
 
 ####Storyboard Add-On ![New](http://i.imgur.com/BX3b9ES.png)
-Using Chameleon's awesome palette in Storyboard is easy! Simply download and install [Chameleon Palette](https://github.com/VAlexander/Chameleon/blob/master/Extras/Chameleon.dmg?raw=true).
+Using Chameleon's awesome palette in Storyboard is easy! Simply download and install [Chameleon Palette](https://github.com/ViccAlexander/Chameleon/blob/master/Extras/Chameleon.dmg?raw=true).
 
 Once installed, make sure to restart XCode. You'll find all of Chameleon's colors in the Palette Color Picker whenever they're needed! :)
 
@@ -399,16 +399,11 @@ To implement this perform the following method call:
 ## 👑 Author
 Chameleon was developed by **Vicc Alexander** [(@ViccsMind)](https://twitter.com/viccsmind).
 
+Using Chameleon in your App? [Let me know](https://twitter.com/viccsmind). 🌈📲  
+
 ## 👏 Special Thanks
-Huge thanks to the following people for helping make Chameleon possible (seriously).
 
-* **[Asia Kwan](https://github.com/aekwan)** *(Wondering where the super awesome name idea for this framework came from? Thank her awesome mind! Not only did she pitch many ideas and suggestions, but she also reworded the entire documentation on here to make it more clear, concise, and eloquent).*
-
-* **[Saul López](https://twitter.com/SaaauuuuL)** *(MIT Genius. He aided with several algorithms, including color difference formulas and euclidian distances).*
-
-* **[Marlon López](https://twitter.com/marlonmaxmm)** *(King Beta Tester. He filtered ideas and tested the framework in its various stages. S/O: Thanks for all the time you dedicated to listening about this)!*
-
-* **[Ahmet Sulek](https://twitter.com/ahmetsulek)**  *(Chameleon was inspired by my constant use of [FlatUIColors](http://flatuicolors.com) which is an awesome project that Ahmet built. Half of the colors used in Chameleon stemmed from his project!).*
+Huge thanks to [**Alexander List**](https://github.com/alist), [**An Tran**](https://github.com/peacemoon), [**Asia Kwan**](https://github.com/aekwan), [**@Bre7**](https://github.com/bre7), [**Daniel Wang**](https://github.com/ddwang), [**Jonathan Hooper**](https://github.com/jmhooper), [**Jose Herran**](https://github.com/jherran), [**Marlon López**](https://twitter.com/MarlonMaxmm), [**Michael Cascio**](https://github.com/cascio), [**Saul López**](https://twitter.com/SaaauuuuL), [**Sophie Fader**](https://github.com/sfader), and [**Vincent Wayne**](https://github.com/smokyonion), for continuously contributing your help, and your time in improving Chameleon. All of you rock! 😆
 
 ## 📝 To Do List
 *No particular order.*
@@ -420,13 +415,34 @@ Huge thanks to the following people for helping make Chameleon possible (serious
 * ~~Gradient Colors~~ ![1.1.0](http://i.imgur.com/Py4QvaK.png)
 * ~~Update GradientStyle & ShadeStyle Syntax~~ ![1.1.1](http://i.imgur.com/AHxj8Rb.png)
 * ~~Add Radial Gradient Support~~ ![1.1.1](http://i.imgur.com/AHxj8Rb.png)
-* Update Sample App
-* Swift Version
+* ~~Fix Swift Conflict with `initWithArray:for:flatScheme:` method~~  ![1.1.1](http://i.imgur.com/7NrZ7yx.png)
+* ~~Swift Support~~ ![1.1.3](http://i.imgur.com/WgpBlLo.png)  
+* Update Sample App  
 * Color Scheme From Images
 * Flatify Support for other Controllers
 * UIAppearance Convenience Methods
 
 ## 📄 Change Log
+### 1.1.3
+• Updated Swift syntax to Swift 1.2 *(Fixed by [**@peacemoon**](https://github.com/peacemoon))*.  
+• Chameleon shorthand is now supported in Swift. *(Converted by [**@bre7**](https://github.com/bre7))*.  
+• Fixed Small Syntax Typo. *(Fixed by [**@ddwang**](https://github.com/ddwang))*.  
+• Fixed issue where `-colorWithRandomFlatColorOfShadeStyle` always returns random color of `UIShadeStyleLight` *(Fixed by [**@smokyonion**](https://github.com/smokyonion))*.    
+• UIGraphics context now uses the current screen's scale, preventing pixel wrap around for certain `UIColors` generated by `+ (UIColor *)colorWithGradientStyle` methods *(Fixed by [**@alist**](https://github.com/alist))*.  
+• Removed warnings regarding the absolute value function `fabsf` *(Fixed by [**@jherran**](https://github.com/jherran))*.  
+• Fixed the `UIColor+Chameleon.m:444:13:` *code will never be executed*, error state *(Fixed by [**@jherran**](https://github.com/jherran))*.  
+
+
+### 1.1.2
+• Updated Copyright in all files and launch images  
+• Added Launch Image in example project for iPhone 6 & iPhone 6 Plus  
+• Replaced the reserved word `for` with the word `with` in `arrayOfColorsWithColorScheme` *(Fixed by [**@sfader**](https://github.com/sfader))*.
+
+###### Deprecated Methods
+ * ~~`initWithArray:for:flatScheme:`~~
+
+Replaced with: `initWithArray:with:flatScheme:`  
+
 ### 1.1.1
 * ```ShadeStyle``` is now ```UIShadeStyle```
 * ```GradientStyle``` is now ```UIGradientStyle```
@@ -449,27 +465,27 @@ Huge thanks to the following people for helping make Chameleon possible (serious
 * New Macro: `ClearColor`
 
 ###### Deprecated Methods
-* `colorWithContrastingBlackOrWhiteColorOn:`
+* ~~`colorWithContrastingBlackOrWhiteColorOn:`~~
 
 Replaced with: `colorWithContrastingBlackOrWhiteColorOn:isFlat:`  
 
 ###### Deprecated Macros
-* `ContrastingColorOf(backgroundColor)`  
+* ~~`ContrastingColorOf(backgroundColor)`~~  
 
 Replaced with: `ContrastingColorOf(backgroundColor, isFlat)`
 
-* `ComplementaryColorOf(color)`
+* ~~`ComplementaryColorOf(color)`~~
 
 Replaced with: `ComplementaryFlatColorOf(color)`
 
-* `RandomColorWithShade(shade)`
+* ~~`RandomColorWithShade(shade)`~~
 
 Replaced with: `RandomFlatColorWithShade(shade)`
 
 ### 1.0.1
 * Added Table of Contents
 * Fixed a couple of spelling errors
-* Extra '#define' deleted
-* Imported UIKit in ChameleonStatusBar.h and NSArray+Chameleon.h
+* Extra '#define' deleted *(Fixed by [**@cascio**](https://github.com/cascio))*.  
+* Imported UIKit in ChameleonStatusBar.h and NSArray+Chameleon.h *(Fixed by [**@jmhooper**](https://github.com/jmhooper))*.
 
 

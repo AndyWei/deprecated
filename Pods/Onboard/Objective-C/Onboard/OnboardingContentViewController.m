@@ -19,6 +19,7 @@ static CGFloat const kDefaultTopPadding = 60;
 static CGFloat const kDefaultUnderIconPadding = 30;
 static CGFloat const kDefaultUnderTitlePadding = 30;
 static CGFloat const kDefaultBottomPadding = 0;
+static CGFloat const kDefaultUnderPageControlPadding = 0;
 static CGFloat const kDefaultTitleFontSize = 38;
 static CGFloat const kDefaultBodyFontSize = 28;
 static CGFloat const kDefaultButtonFontSize = 24;
@@ -47,7 +48,8 @@ static CGFloat const kMainPageControlHeight = 35;
     _body = body;
     _image = image;
     _buttonText = buttonText;
-    _actionHandler = action ?: ^{};
+
+    self.buttonActionHandler = action;
     
     // default auto-navigation
     self.movesToNextViewController = NO;
@@ -80,6 +82,7 @@ static CGFloat const kMainPageControlHeight = 35;
     self.underIconPadding = kDefaultUnderIconPadding;
     self.underTitlePadding = kDefaultUnderTitlePadding;
     self.bottomPadding = kDefaultBottomPadding;
+    self.underPageControlPadding = kDefaultUnderPageControlPadding;
     
     // default colors
     self.titleTextColor = DEFAULT_TEXT_COLOR;
@@ -89,7 +92,9 @@ static CGFloat const kMainPageControlHeight = 35;
     // default blocks
     self.viewWillAppearBlock = ^{};
     self.viewDidAppearBlock = ^{};
-    
+    self.viewWillDisappearBlock = ^{};
+    self.viewDidDisappearBlock = ^{};
+
     return self;
 }
 
@@ -110,7 +115,11 @@ static CGFloat const kMainPageControlHeight = 35;
     }
     
     // call our view will appear block
-    self.viewWillAppearBlock();
+    if (self.viewWillAppearBlock) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.viewWillAppearBlock();
+        });
+    }
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -123,7 +132,37 @@ static CGFloat const kMainPageControlHeight = 35;
     }
     
     // call our view did appear block
-    self.viewDidAppearBlock();
+    if (self.viewDidAppearBlock) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.viewDidAppearBlock();
+        });
+    }
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+
+    // call our view will disappear block
+    if (self.viewWillDisappearBlock) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.viewWillDisappearBlock();
+        });
+    }
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+
+    // call our view did disappear block
+    if (self.viewDidDisappearBlock) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.viewDidDisappearBlock();
+        });
+    }
+}
+
+- (void)setButtonActionHandler:(dispatch_block_t)action {
+    _buttonActionHandler = action ?: ^{};
 }
 
 - (void)generateView {
@@ -166,7 +205,7 @@ static CGFloat const kMainPageControlHeight = 35;
     
     // create the action button if we were given button text
     if (_buttonText) {
-        _actionButton = [[UIButton alloc] initWithFrame:CGRectMake((CGRectGetMaxX(self.view.frame) / 2) - (contentWidth / 2), CGRectGetMaxY(self.view.frame) - kMainPageControlHeight - kActionButtonHeight - self.bottomPadding, contentWidth, kActionButtonHeight)];
+        _actionButton = [[UIButton alloc] initWithFrame:CGRectMake((CGRectGetMaxX(self.view.frame) / 2) - (contentWidth / 2), CGRectGetMaxY(self.view.frame) - self.underPageControlPadding - kMainPageControlHeight - kActionButtonHeight - self.bottomPadding, contentWidth, kActionButtonHeight)];
         _actionButton.titleLabel.font = [UIFont fontWithName:self.buttonFontName size:self.buttonFontSize];
         [_actionButton setTitle:_buttonText forState:UIControlStateNormal];
         [_actionButton setTitleColor:self.buttonTextColor forState:UIControlStateNormal];
@@ -196,7 +235,9 @@ static CGFloat const kMainPageControlHeight = 35;
     }
     
     // call the provided action handler
-    _actionHandler();
+    if (_buttonActionHandler) {
+        _buttonActionHandler();
+    }
 }
 
 @end

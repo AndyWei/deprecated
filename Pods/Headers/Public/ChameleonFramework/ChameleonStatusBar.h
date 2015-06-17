@@ -1,1 +1,1 @@
-../../../ChameleonFramework/Chameleon/ChameleonStatusBar.h
+../../../ChameleonFramework/Pod/Classes/Objective-C/ChameleonStatusBar.h

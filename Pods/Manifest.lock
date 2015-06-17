@@ -1,36 +1,43 @@
 PODS:
-  - AFNetworking (2.5.2):
-    - AFNetworking/NSURLConnection (= 2.5.2)
-    - AFNetworking/NSURLSession (= 2.5.2)
-    - AFNetworking/Reachability (= 2.5.2)
-    - AFNetworking/Security (= 2.5.2)
-    - AFNetworking/Serialization (= 2.5.2)
-    - AFNetworking/UIKit (= 2.5.2)
-  - AFNetworking/NSURLConnection (2.5.2):
+  - AFNetworking (2.5.4):
+    - AFNetworking/NSURLConnection (= 2.5.4)
+    - AFNetworking/NSURLSession (= 2.5.4)
+    - AFNetworking/Reachability (= 2.5.4)
+    - AFNetworking/Security (= 2.5.4)
+    - AFNetworking/Serialization (= 2.5.4)
+    - AFNetworking/UIKit (= 2.5.4)
+  - AFNetworking/NSURLConnection (2.5.4):
     - AFNetworking/Reachability
     - AFNetworking/Security
     - AFNetworking/Serialization
-  - AFNetworking/NSURLSession (2.5.2):
+  - AFNetworking/NSURLSession (2.5.4):
     - AFNetworking/Reachability
     - AFNetworking/Security
     - AFNetworking/Serialization
-  - AFNetworking/Reachability (2.5.2)
-  - AFNetworking/Security (2.5.2)
-  - AFNetworking/Serialization (2.5.2)
-  - AFNetworking/UIKit (2.5.2):
+  - AFNetworking/Reachability (2.5.4)
+  - AFNetworking/Security (2.5.4)
+  - AFNetworking/Serialization (2.5.4)
+  - AFNetworking/UIKit (2.5.4):
     - AFNetworking/NSURLConnection
     - AFNetworking/NSURLSession
   - AXRatingView (1.0.3)
-  - ChameleonFramework (1.1.2)
-  - JVFloatLabeledTextField (1.0.2)
+  - ChameleonFramework (1.2.0)
+  - JVFloatLabeledTextField (1.0.4)
   - KVNProgress (2.2.1)
   - MCSwipeTableViewCell (2.1.2)
-  - Onboard (2.1.1)
-  - RKDropdownAlert (0.1.1)
-  - SlackTextViewController (1.5):
-    - SlackTextViewController/Additions (= 1.5)
-  - SlackTextViewController/Additions (1.5)
-  - TTTAttributedLabel (1.13.3)
+  - Onboard (2.1.5)
+  - PaymentKit (1.1.1)
+  - RKDropdownAlert (0.3.0)
+  - SlackTextViewController (1.5.2)
+  - Stripe (4.0.3):
+    - Stripe/Checkout (= 4.0.3)
+    - Stripe/Core (= 4.0.3)
+  - Stripe/ApplePay (4.0.3):
+    - Stripe/Core
+  - Stripe/Checkout (4.0.3):
+    - Stripe/Core
+  - Stripe/Core (4.0.3)
+  - TTTAttributedLabel (1.13.4)
   - UIView+Positioning (1.1)
   - XLForm (2.2.0)
 
@@ -42,24 +49,29 @@ DEPENDENCIES:
   - KVNProgress
   - MCSwipeTableViewCell
   - Onboard
+  - PaymentKit
   - RKDropdownAlert
   - SlackTextViewController
+  - Stripe
+  - Stripe/ApplePay
   - TTTAttributedLabel
   - UIView+Positioning
   - XLForm
 
 SPEC CHECKSUMS:
-  AFNetworking: fefbce9660acb17f48ae0011292d4da0f457bf36
+  AFNetworking: 05edc0ac4c4c8cf57bcf4b84be5b0744b6d8e71e
   AXRatingView: ccaadc1bbda99a4b7e1d556059482d2b933a9f4e
-  ChameleonFramework: 1b4588efcae564886e1a176fa02fb0f4c81a69b3
-  JVFloatLabeledTextField: 58a3a32cfb800e5b224f676987e7c13abf50a14d
+  ChameleonFramework: 4d6bf87fcaee176f487176cdccc4229637ec97f0
+  JVFloatLabeledTextField: 18b05449d479733841b2c451c87e201a45de26e2
   KVNProgress: 7001d2d16a2755cee5599e8e485befe056f2197b
   MCSwipeTableViewCell: 0fc22bd3635b9b5f4ce08675218b0a7278b6440f
-  Onboard: a305484bfcfa358bcfbd651ef32036fe0c58e9b7
-  RKDropdownAlert: 3f663f1e852751ad37ce95ed1e8e2c6b9bfdc95b
-  SlackTextViewController: 4a1797ac2f3616dbd37435fc62da655e61399cdd
-  TTTAttributedLabel: 6f3174aef8e738f44dff97c2eb7d8184f6ab6277
+  Onboard: c58adaef5a377b0c45b4754c5cbe17d4627898c7
+  PaymentKit: 323c25233af5060880daa0c31366d4b688c34487
+  RKDropdownAlert: f4b3364c251829ad439dc666836a1f2dad26f4c7
+  SlackTextViewController: ab240cda4c7fe1f70f6c6cf64578f3fea495ce99
+  Stripe: 43a4307dc789483a61668d187c4a917d1348b0b6
+  TTTAttributedLabel: 0a2ac7b2dd726d32a070dafb01446026b11e624f
   UIView+Positioning: e93fe9e3186d1ed7d60e344aa12787911e902056
   XLForm: 799e61ef230f519914e722bf032b19a597223c19
 
-COCOAPODS: 0.36.0
+COCOAPODS: 0.37.1

@@ -15,6 +15,7 @@ static const CGFloat kBidLabelHeight = 30.0f;
 static const CGFloat kBodyLabelMinHeight = 53.0f;
 static const CGFloat kCityLabelWidth = 80.0f;
 static const CGFloat kDistanceLabelWidth = 35.0f;
+static const CGFloat kFontSizeAddress = 15.0f;
 static const CGFloat kFontSizeBody = 18.0f;
 static const CGFloat kFontSizeDetail = 13.0f;
 static const CGFloat kLeftMargin = 8.0f;
@@ -40,12 +41,15 @@ static const CGFloat kTopMargin = 8.0f;
 @property(nonatomic) UILabel *bodyLabel;
 @property(nonatomic) UILabel *cityLabel;
 @property(nonatomic) UILabel *distanceLabel;
-@property(nonatomic) UILabel *endAddressLabel;
 @property(nonatomic) UILabel *priceLabel;
-@property(nonatomic) UILabel *startAddressLabel;
 @property(nonatomic) UILabel *startTimeLabel;
 @property(nonatomic) UILabel *timeLabel;
 @property(nonatomic) UILabel *titleLabel;
+
+@property(nonatomic) UILabel *startAddressLabel;
+@property(nonatomic) UILabel *endAddressLabel;
+@property(nonatomic) UILabel *fromLabel;
+@property(nonatomic) UILabel *toLabel;
 
 @end
 
@@ -133,8 +137,8 @@ static const CGFloat kTopMargin = 8.0f;
     self.bodyLabel.height = self.height - (kTopMargin + kTitleLabelHeight + kTinyLabelHeight);
 
     self.bidLabel.height = self.bidLabelHidden ? 0 : kBidLabelHeight;
-    self.startAddressLabel.height = self.startAddressLabelHidden ? 0 : kAddressLabelHeight;
-    self.endAddressLabel.height = self.endAddressLabelHidden ? 0 : kAddressLabelHeight;
+    self.fromLabel.height = self.startAddressLabel.height = self.startAddressLabelHidden ? 0 : kAddressLabelHeight;
+    self.toLabel.height = self.endAddressLabel.height = self.endAddressLabelHidden ? 0 : kAddressLabelHeight;
 
     self.bodyLabel.height -= (self.bidLabel.height + self.startAddressLabel.height + self.endAddressLabel.height);
 
@@ -150,8 +154,8 @@ static const CGFloat kTopMargin = 8.0f;
         self.bidLabel.y = CGRectGetMaxY(self.cityLabel.frame);
     }
 
-    self.startAddressLabel.y = CGRectGetMaxY(self.bidLabel.frame);
-    self.endAddressLabel.y = CGRectGetMaxY(self.startAddressLabel.frame);
+    self.fromLabel.y = self.startAddressLabel.y = CGRectGetMaxY(self.bidLabel.frame);
+    self.toLabel.y = self.endAddressLabel.y = CGRectGetMaxY(self.startAddressLabel.frame);
 }
 
 - (void)presentOrder:(JYOrder *)order withAddress:(BOOL)showAddress andBid:(BOOL)showBid
@@ -190,19 +194,16 @@ static const CGFloat kTopMargin = 8.0f;
 
     if (showAddress)
     {
-        NSString *prefix = nil;
+        self.startAddressLabel.text = order.startAddress;
         if (order.hasEndAddress)
         {
-            prefix = NSLocalizedString(@"From:", nil);
-            self.startAddressLabel.text = [NSString stringWithFormat:@"%@ %@", prefix, order.startAddress];
-
-            prefix = NSLocalizedString(@"To:", nil);
-            self.endAddressLabel.text = [NSString stringWithFormat:@"%@ %@", prefix, order.endAddress];
+            self.fromLabel.text = NSLocalizedString(@"From:", nil);
+            self.toLabel.text = NSLocalizedString(@"To:", nil);
+            self.endAddressLabel.text = order.endAddress;
         }
         else
         {
-            prefix = NSLocalizedString(@"Addr:", nil);
-            self.startAddressLabel.text = [NSString stringWithFormat:@"%@ %@", prefix, order.startAddress];
+            self.fromLabel.text = NSLocalizedString(@"Addr:", nil);
         }
     }
 }
@@ -339,32 +340,44 @@ static const CGFloat kTopMargin = 8.0f;
 
 - (void)_createbidLabel
 {
-    CGFloat width = CGRectGetWidth([[UIScreen mainScreen] applicationFrame]);
+    CGFloat width = CGRectGetWidth([[UIScreen mainScreen] applicationFrame]) - kTextLeftMargin - kRightMargin;
 
     self.bidLabel = [self _createLabel];
-    self.bidLabel.frame = CGRectMake(0, 0, width, kBidLabelHeight);
-    self.bidLabel.textAlignment = NSTextAlignmentCenter;
+    self.bidLabel.frame = CGRectMake(kTextLeftMargin, 0, width, kBidLabelHeight);
+    self.bidLabel.textAlignment = NSTextAlignmentRight;
 
     [self addSubview:self.bidLabel];
 }
 
 - (void)_createStartAddressLabel
 {
+    self.fromLabel = [self _createLabel];
+    self.fromLabel.frame = CGRectMake(kTextLeftMargin, 0, 35, kAddressLabelHeight);
+    self.fromLabel.font = [UIFont systemFontOfSize:kFontSizeAddress];
+    [self addSubview:self.fromLabel];
+
     CGFloat width = CGRectGetWidth([[UIScreen mainScreen] applicationFrame]) - kTextLeftMargin - kRightMargin;
 
     self.startAddressLabel = [self _createLabel];
     self.startAddressLabel.frame = CGRectMake(kTextLeftMargin, 0, width, kAddressLabelHeight);
-    self.startAddressLabel.font = [UIFont boldSystemFontOfSize:kFontSizeBody];
+    self.startAddressLabel.font = [UIFont boldSystemFontOfSize:kFontSizeAddress];
+    self.startAddressLabel.textAlignment = NSTextAlignmentRight;
     [self addSubview:self.startAddressLabel];
 }
 
 - (void)_createEndAddressLabel
 {
+    self.toLabel = [self _createLabel];
+    self.toLabel.frame = CGRectMake(kTextLeftMargin, 0, 20, kAddressLabelHeight);
+    self.toLabel.font = [UIFont systemFontOfSize:kFontSizeAddress];
+    [self addSubview:self.toLabel];
+
     CGFloat width = CGRectGetWidth([[UIScreen mainScreen] applicationFrame]) - kTextLeftMargin - kRightMargin;
 
     self.endAddressLabel = [self _createLabel];
     self.endAddressLabel.frame = CGRectMake(kTextLeftMargin, 0, width, kAddressLabelHeight);
-    self.endAddressLabel.font = [UIFont boldSystemFontOfSize:kFontSizeBody];
+    self.endAddressLabel.font = [UIFont boldSystemFontOfSize:kFontSizeAddress];
+    self.endAddressLabel.textAlignment = NSTextAlignmentRight;
     [self addSubview:self.endAddressLabel];
 }
 

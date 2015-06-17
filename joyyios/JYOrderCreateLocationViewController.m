@@ -157,7 +157,8 @@ static NSString *reuseId = @"pin";
                        {
                            CLPlacemark *placemark = [placemarks lastObject];
 
-                           NSString *address = [NSString stringWithFormat:@"%@, %@, %@ %@",
+                           NSString *address = [NSString stringWithFormat:@"%@ %@, %@, %@ %@",
+                                                placemark.subThoroughfare,
                                                 placemark.thoroughfare,
                                                 placemark.locality,
                                                 placemark.administrativeArea,

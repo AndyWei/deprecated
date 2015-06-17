@@ -12,7 +12,7 @@ https://medium.com/@cwRichardKim/devux-uialertview-alternatives-3a78ab64cbf8
 
 ##Pod
 WAIT! Don't use pods if you want to customize or use the quick and easy [RKDropdownAlert show]
-	
+
 	pod 'RKDropdownAlert'
 
 ##Demo:
@@ -42,7 +42,7 @@ First, download the file, or create a branch of the repo. Copy the following int
 #import "RKDropdownAlert.h"
 ```
 
-You will probably want to customize the default call ([RKDropdownAlert show]), as well as other features such as color, the method called when the user taps the view, etc.  Look for 
+You will probably want to customize the default call ([RKDropdownAlert show]), as well as other features such as color, the method called when the user taps the view, etc.  Look for
 ``` objc
 //%%% CUSTOMIZE
 ```
@@ -77,4 +77,25 @@ For example:
 ##Touch Up Inside Method
 Write your own method for when the user touches the view (default is hide the view)
 
+``` objc
+@interface WhateverClassYouLike : NSObject <RKDropdownAlertDelegate>
+@end
+
+@implementation WhateverClassYouLike
+
+-(BOOL)dropdownAlertWasTapped:(RKDropdownAlert*)alert {
+	// Handle the tap, then return whether or not the alert should hide.
+	return true;
+}
+
+@end
+
+```
+
 ![alt tag](http://i.imgur.com/GaVlsT0.gif?1)
+
+### Areas for Future Improvement / Involvement
+* Improve architecture to maintain single line deployment while also allowing for attribute customization without changing physical code
+* Ability to change layout of text without changing physical code
+* Singleton pattern
+* More rigorous case testing for responsive design (making sure different text lengths still look good)

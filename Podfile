@@ -16,3 +16,7 @@ pod 'SlackTextViewController'
 pod 'TTTAttributedLabel'
 pod 'UIView+Positioning'
 pod 'XLForm'
+
+pod 'Stripe'
+pod 'Stripe/ApplePay'
+pod 'PaymentKit'
