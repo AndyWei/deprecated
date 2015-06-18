@@ -183,6 +183,8 @@
     [self _submitOrder];
 }
 
+#pragma mark - Network
+
 - (void)_submitOrder
 {
     NSDictionary *parameters = [[JYOrder currentOrder] httpParameters];

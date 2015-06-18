@@ -148,7 +148,6 @@ static JYOrder *_currentOrder;
     [parameters setObject:@(self.startPointLat) forKey:@"start_point_lat"];
     [parameters setObject:@(self.startPointLon) forKey:@"start_point_lon"];
 
-
     if (self.hasEndAddress)
     {
         [parameters setObject:self.endAddress forKey:@"end_address"];
@@ -222,7 +221,31 @@ static JYOrder *_currentOrder;
     return color;
 }
 
-- (UIColor *)statusColor
+- (UIColor *)paymentStatusColor
+{
+    UIColor *color = JoyyWhite;
+    switch (self.status)
+    {
+        case JYOrderStatusPending:
+            color = FlatSand;
+            break;
+        case JYOrderStatusOngoing:
+            color = FlatSandDark;
+            break;
+        case JYOrderStatusFinished:
+            color = FlatLime;
+            break;
+        case JYOrderStatusPaid:
+            color = FlatLimeDark;
+            break;
+        default:
+            break;
+    }
+
+    return color;
+}
+
+- (UIColor *)workingStatusColor
 {
     UIColor *color = JoyyWhite;
     switch (self.status)

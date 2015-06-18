@@ -7,6 +7,7 @@
 //
 
 #import <AFNetworking/AFNetworking.h>
+#import <Stripe/Stripe.h>
 
 #import "JYOrdersUnpaidViewController.h"
 #import "JYBidViewCell.h"
@@ -17,6 +18,7 @@
 @interface JYOrdersUnpaidViewController ()
 
 @property(nonatomic) NSIndexPath *selectedIndexPath;
+@property(nonatomic) NSString *stripeToken;
 
 @end
 
@@ -47,6 +49,7 @@ static NSString *const kBidCellIdentifier = @"bidCell";
     [self setTitleText:NSLocalizedString(@"My Orders", nil)];
 
     self.selectedIndexPath = nil;
+    self.stripeToken = nil;
 
     [self _createTableView];
     [self _fetchOrders];
@@ -103,27 +106,12 @@ static NSString *const kBidCellIdentifier = @"bidCell";
     (JYBidViewCell *)[tableView dequeueReusableCellWithIdentifier:kBidCellIdentifier forIndexPath:indexPath];
 
     JYOrder *order = self.orderList[indexPath.section];
-    [cell presentBid:order.bids[indexPath.row]];
-//    [self _createSwipeViewForCell:cell andOrder:order];
+    JYBid *bid = order.bids[indexPath.row];
+    [cell presentBid:bid];
+    cell.backgroundColor = bid.statusColor;
+
     return cell;
 }
-
-//- (void)_createSwipeViewForCell:(JYBidViewCell *)cell andOrder:(NSDictionary *)order
-//{
-//    __weak typeof(self) weakSelf = self;
-//    [cell setSwipeGestureWithView:[[self class] sharedAcceptLabel]
-//                            color:FlatGreen
-//                             mode:MCSwipeTableViewCellModeSwitch
-//                            state:MCSwipeTableViewCellState3
-//                  completionBlock:^(MCSwipeTableViewCell *cell, MCSwipeTableViewCellState state, MCSwipeTableViewCellMode mode) {
-//                      [weakSelf _presentBidViewForOrder:order];
-//                  }];
-//
-//    [cell setDefaultColor:FlatGreen];
-//    cell.firstTrigger = 0.25;
-//}
-
-
 
 #pragma mark - UITableView Delegate
 
@@ -164,6 +152,7 @@ static NSString *const kBidCellIdentifier = @"bidCell";
     JYOrderCard *card = [[JYOrderCard alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(tableView.frame), height)];
     card.tinyLabelsHidden = YES;
     [card presentOrder:order withAddress:NO andBid:NO];
+    card.backgroundColor = order.paymentStatusColor;
 
     return card;
 }
@@ -182,21 +171,105 @@ static NSString *const kBidCellIdentifier = @"bidCell";
 
     if (buttonIndex == 1)
     {
+        [self _presentPaymentViewController];
+    }
+    else
+    {
+        self.selectedIndexPath = nil;
+    }
+}
+
+- (void)_onPaymentAuthorizationDone
+{
+    if ([self _isPaymentReady])
+    {
+        NSAssert(self.selectedIndexPath != nil, @"selectedIndexPath should not be nil");
         JYOrder *order = self.orderList[self.selectedIndexPath.section];
         JYBid *bid = order.bids[self.selectedIndexPath.row];
-
-        [self _acceptBid:bid.bidId];
+        [self _acceptBid:bid forOrder:order];
+    }
+    else
+    {
+        // show alert view
     }
     self.selectedIndexPath = nil;
+}
+
+- (BOOL)_isPaymentReady
+{
+    return (self.stripeToken != nil);
+}
+
+#pragma mark - Payment
+
+- (void)_presentPaymentViewController
+{
+    self.stripeToken = nil;
+
+    PKPaymentRequest *request = [Stripe paymentRequestWithMerchantIdentifier:kAppleMerchantId];
+
+    // Configure request
+    NSAssert(self.selectedIndexPath != nil, @"selectedIndexPath should not be nil");
+    JYOrder *order = self.orderList[self.selectedIndexPath.section];
+    JYBid *bid = order.bids[self.selectedIndexPath.row];
+
+    NSNumber *price = [NSNumber numberWithUnsignedInteger:bid.price];
+    NSDecimalNumber *amount = [NSDecimalNumber decimalNumberWithDecimal:[price decimalValue]];
+
+    request.paymentSummaryItems = @[[PKPaymentSummaryItem summaryItemWithLabel:order.title amount:amount]];
+
+    if ([Stripe canSubmitPaymentRequest:request]) // show Apple Pay view
+    {
+        PKPaymentAuthorizationViewController *paymentController = [[PKPaymentAuthorizationViewController alloc] initWithPaymentRequest:request];
+        paymentController.delegate = self;
+        [self presentViewController:paymentController animated:YES completion:nil];
+    }
+    else // show the user credit card form
+    {
+
+    }
+}
+
+- (void)_handlePaymentAuthorizationWithPayment:(PKPayment *)payment
+                                    completion:(void (^)(PKPaymentAuthorizationStatus))completion
+{
+    __weak typeof(self) weakSelf = self;
+    [[STPAPIClient sharedClient] createTokenWithPayment:payment
+                                             completion:^(STPToken *token, NSError *error) {
+                                                 if (error)
+                                                 {
+                                                     weakSelf.stripeToken = nil;
+                                                     completion(PKPaymentAuthorizationStatusFailure);
+                                                     return;
+                                                 }
+                                                 weakSelf.stripeToken = token.tokenId;
+                                                 completion(PKPaymentAuthorizationStatusSuccess);
+                                             }];
+}
+
+#pragma mark - PKPaymentAuthorizationViewControllerDelegate (Apple Pay)
+
+- (void)paymentAuthorizationViewController:(PKPaymentAuthorizationViewController *)controller
+                       didAuthorizePayment:(PKPayment *)payment
+                                completion:(void (^)(PKPaymentAuthorizationStatus))completion
+{
+
+    [self _handlePaymentAuthorizationWithPayment:payment completion:completion];
+}
+
+- (void)paymentAuthorizationViewControllerDidFinish:(PKPaymentAuthorizationViewController *)controller
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
+    [self _onPaymentAuthorizationDone];
 }
 
 
 #pragma mark - Network
 
-- (void)_acceptBid:(NSUInteger)bidId
+- (void)_acceptBid:(JYBid *)bid forOrder:(JYOrder *)order
 {
     [self networkThreadBegin];
-    NSDictionary *parameters = @{@"id" : @(bidId)};
+    NSDictionary *parameters = @{@"id": @(bid.bidId), @"stripe_token": self.stripeToken};
 
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYUser currentUser].token];
@@ -210,7 +283,9 @@ static NSString *const kBidCellIdentifier = @"bidCell";
          success:^(AFHTTPRequestOperation *operation, id responseObject) {
              NSLog(@"bids/accept post success responseObject: %@", responseObject);
 
-             [weakSelf _fetchBidsForOrders];
+             order.status = JYOrderStatusPending;
+             bid.status = JYBidStatusAccepted;
+
              [weakSelf networkThreadEnd];
          }
          failure:^(AFHTTPRequestOperation *operation, NSError *error) {
@@ -239,7 +314,7 @@ static NSString *const kBidCellIdentifier = @"bidCell";
     [manager GET:url
       parameters:nil
          success:^(AFHTTPRequestOperation *operation, id responseObject) {
-//             NSLog(@"orders/unpaid fetch success responseObject: %@", responseObject);
+             NSLog(@"orders/unpaid fetch success responseObject: %@", responseObject);
 
              weakSelf.orderList = [NSMutableArray new];
              for (NSDictionary *dict in responseObject)
@@ -277,14 +352,18 @@ static NSString *const kBidCellIdentifier = @"bidCell";
       parameters:[self _httpBidsParameters]
          success:^(AFHTTPRequestOperation *operation, id responseObject) {
 
-             //  NSLog(@"bids/orders fetch success responseObject: %@", responseObject);
+             NSLog(@"bids/of/orders fetch success responseObject: %@", responseObject);
              for (NSDictionary *dict in responseObject)
              {
-                 JYBid *newBid = [[JYBid alloc] initWithDictionary:dict];
-                 JYOrder *order = [weakSelf orderOfId:newBid.orderId];
+                 JYBid *bid = [[JYBid alloc] initWithDictionary:dict];
+                 JYOrder *order = [weakSelf orderOfId:bid.orderId];
                  if (order != nil)
                  {
-                     [order.bids addObject:newBid];
+                     if (order.status == JYOrderStatusActive ||
+                         (order.status == JYOrderStatusPending && bid.status == JYBidStatusAccepted))
+                     {
+                         [order.bids addObject:bid];
+                     }
                  }
              }
 

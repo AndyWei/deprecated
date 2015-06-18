@@ -45,7 +45,7 @@ static const CGFloat kTinyFontSize = 13.0f;
     if (self)
     {
         self.opaque = YES;
-        self.backgroundColor = [UIColor whiteColor];
+        self.backgroundColor = JoyyWhite;
 
         [self _createBidderNameLabel];
         [self _createRatingView];
@@ -120,8 +120,7 @@ static const CGFloat kTinyFontSize = 13.0f;
 - (UILabel *)_createLabel
 {
     UILabel *label = [UILabel new];
-    label.backgroundColor = [UIColor whiteColor];
-    label.opaque = YES;
+    label.backgroundColor = ClearColor;
     label.font = [UIFont systemFontOfSize:22.0f];
     label.textColor = FlatBlack;
     label.textAlignment = NSTextAlignmentLeft;

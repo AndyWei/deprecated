@@ -9,6 +9,7 @@
 #import <AFNetworking/AFNetworking.h>
 #import <KVNProgress/KVNProgress.h>
 #import <RKDropdownAlert/RKDropdownAlert.h>
+#import <Stripe/Stripe.h>
 
 #import "AppDelegate.h"
 #import "DataStore.h"
@@ -29,6 +30,8 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    [Stripe setDefaultPublishableKey:kStripePublishableKey];
+
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_signDidFinish) name:kNotificationDidSignIn object:nil];

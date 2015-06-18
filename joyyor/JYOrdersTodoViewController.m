@@ -151,7 +151,7 @@
     // show order
     card.tinyLabelsHidden = NO;
     [card presentOrder:order withAddress:YES andBid:YES];
-    card.backgroundColor = order.statusColor;
+    card.backgroundColor = order.workingStatusColor;
 
     return card;
 }

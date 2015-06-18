@@ -9,5 +9,7 @@
 #ifndef joyyios_AppConst_h
 #define joyyios_AppConst_h
 
+extern NSString * const kStripePublishableKey;
+extern NSString * const kAppleMerchantId;
 
 #endif

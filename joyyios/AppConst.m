@@ -7,3 +7,5 @@
 //
 
 
+NSString * const kStripePublishableKey = @"pk_test_vBPWVqtwkE8gFRVPRVki7L48";
+NSString * const kAppleMerchantId = @"merchant.com.joyy";

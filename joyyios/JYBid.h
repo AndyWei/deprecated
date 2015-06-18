@@ -29,6 +29,7 @@ typedef NS_ENUM(NSUInteger, JYBidStatus)
 @property(nonatomic, readonly) BOOL expired;
 @property(nonatomic, readonly) NSString *expireTimeString;
 @property(nonatomic, readonly) NSString *priceString;
+@property(nonatomic, readonly) UIColor *statusColor;
 
 // Optional properties
 @property(nonatomic) NSString *username;

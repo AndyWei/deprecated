@@ -96,4 +96,18 @@
     return [NSString stringWithFormat:@"$%tu", self.price];
 }
 
+- (UIColor *)statusColor
+{
+    UIColor *color = JoyyWhite;
+    switch (self.status)
+    {
+        case JYBidStatusAccepted:
+            color = FlatSand;
+            break;
+        default:
+            break;
+    }
+
+    return color;
+}
 @end
