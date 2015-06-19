@@ -19,7 +19,8 @@ CREATE TABLE orders (
     deleted        BOOLEAN       NOT NULL DEFAULT false,
     photo_urls     TEXT                  ,  -- the urls of the order photos, separated by space
     winner_id      BIGINT                ,  -- the id of the user who wins this order
-    final_price    NUMERIC(19,2)         ,  -- the final offered by provider and accepted by consumer
+    final_price    NUMERIC(11,2)         ,  -- the final offered by provider and accepted by consumer
+    stripe_token   TEXT                  ,  -- the token that represents a credit card (start with tok_ ) or the token that represents a stripe customer object (start with cus_ )
     
 
     CHECK (price >= 0),

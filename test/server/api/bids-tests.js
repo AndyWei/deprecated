@@ -96,7 +96,7 @@ lab.experiment('Bids: ', function () {
         server.inject(request, function (response) {
 
             Code.expect(response.statusCode).to.equal(200);
-            Code.expect(response.result).to.be.an.array().and.to.have.length(2);
+            Code.expect(response.result).to.be.an.array().and.to.have.length(3);
 
             done();
         });
@@ -130,7 +130,7 @@ lab.experiment('Bids: ', function () {
         server.inject(request, function (response) {
 
             Code.expect(response.statusCode).to.equal(200);
-            Code.expect(response.result).to.be.an.array().and.to.have.length(6);
+            Code.expect(response.result).to.be.an.array().and.to.have.length(4);
 
             done();
         });
@@ -186,7 +186,8 @@ lab.experiment('Bids POST: ', function () {
             method: 'POST',
             url: '/bids/accept',
             payload: {
-                id: '4'
+                id: '4',
+                stripe_token: 'token'
             },
             credentials: andy
         };
@@ -206,7 +207,8 @@ lab.experiment('Bids POST: ', function () {
             method: 'POST',
             url: '/bids/accept',
             payload: {
-                id: '2'
+                id: '2',
+                stripe_token: 'token'
             },
             credentials: jack
         };
@@ -226,7 +228,8 @@ lab.experiment('Bids POST: ', function () {
             method: 'POST',
             url: '/bids/accept',
             payload: {
-                id: '4'
+                id: '4',
+                stripe_token: 'token'
             },
             credentials: jack
         };

@@ -35,6 +35,7 @@ var manifest = {
         './server/api/accounts': { basePath: '/v1' },
         './server/api/bids': { basePath: '/v1' },
         './server/api/comments': { basePath: '/v1' },
+        './server/api/creditcards': { basePath: '/v1' },
         './server/api/notification': { basePath: '/v1' },
         './server/api/orders': { basePath: '/v1' },
         './server/api/reviews': { basePath: '/v1' },

@@ -208,7 +208,8 @@ exports.register = function (server, options, next) {
             },
             validate: {
                 payload: {
-                    id: Joi.string().regex(/^[0-9]+$/).max(19).required()
+                    id: Joi.string().regex(/^[0-9]+$/).max(19).required(),
+                    stripe_token: Joi.string().max(50).required()
                 }
             }
         },
@@ -330,7 +331,7 @@ internals.acceptBidHandler = function (request, reply) {
 
             var queryConfig = {
                 name: 'bids_order_id_by_bid_id',
-                text: 'SELECT order_id, user_id FROM bids WHERE id = $1 AND status = 0 AND deleted = false',
+                text: 'SELECT order_id, user_id, price FROM bids WHERE id = $1 AND status = 0 AND deleted = false',
                 values: [bidId]
             };
 
@@ -344,10 +345,10 @@ internals.acceptBidHandler = function (request, reply) {
                     return reply(Boom.badData(c.BID_UPDATE_FAILED));
                 }
 
-                callback(null, result.rows[0].order_id, result.rows[0].user_id);
+                callback(null, result.rows[0].order_id, result.rows[0].user_id, result.rows[0].price);
             });
         },
-        function (orderId, userId, callback) {
+        function (orderId, userId, price, callback) {
 
             request.pg.client.query('BEGIN', function(err) {
                 if (err) {
@@ -355,19 +356,19 @@ internals.acceptBidHandler = function (request, reply) {
                     return callback(err);
                 }
 
-                callback(null, orderId, userId);
+                callback(null, orderId, userId, price);
             });
         },
-        function (orderId, userId, callback) {
+        function (orderId, userId, price, callback) {
 
             var queryText = 'UPDATE orders ' +
-                      'SET winner_id = $1, status = 1, updated_at = now() ' +
-                      'WHERE id = $2 AND user_id = $3 AND status = 0 ' +
+                      'SET winner_id = $1, status = 1, final_price = $2, stripe_token = $3, updated_at = now() ' +
+                      'WHERE id = $4 AND user_id = $5 AND status = 0 ' +
                       'RETURNING id';
             var queryConfig = {
                 name: 'orders_update_pending',
                 text: queryText,
-                values: [userId, orderId, request.auth.credentials.id]
+                values: [userId, price, request.payload.stripe_token, orderId, request.auth.credentials.id]
             };
 
             request.pg.client.query(queryConfig, function (err, result) {

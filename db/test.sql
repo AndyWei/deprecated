@@ -24,14 +24,14 @@ INSERT INTO orders
 
 INSERT INTO bids
     (user_id, order_id, price, status, expire_at, created_at, updated_at,         note) VALUES
-    (      2,        1,   399,      3, 1427159567,     now(),      now(), 'for accept'),
-    (      2,        1,   299,     10, 1427159543,     now(),      now(), 'for accept'),
-    (      2,        1,    99,      2, 1427160123,     now(),      now(), 'for accept'),
-    (      2,        1,    99,      0, 1427160123,     now(),      now(), 'for accept'),
+    (      2,        1,     1,      1, 1427159567,     now(),      now(), 'for accept'),
+    (      2,        1,   299,     20, 1427159543,     now(),      now(), 'for accept'),
+    (      2,        1,     1,      0, 1427160123,     now(),      now(), 'for accept'),
+    (      2,        1,     1,      0, 1427160123,     now(),      now(), 'for accept'),
     (      2,        3,   399,      0, 1427159567,     now(),      now(), 'for revoke'),
-    (      2,        3,   299,      3, 1427159543,     now(),      now(), 'for revoke'),
-    (      2,        3,    99,      2, 1427160123,     now(),      now(), 'for revoke'),
-    (      2,        3,    99,     10, 1427160123,     now(),      now(), 'for revoke');
+    (      2,        3,   299,     10, 1427159543,     now(),      now(), 'for revoke'),
+    (      2,        3,    99,     20, 1427160123,     now(),      now(), 'for revoke'),
+    (      2,        3,    99,     20, 1427160123,     now(),      now(), 'for revoke');
 
 
 INSERT INTO comments

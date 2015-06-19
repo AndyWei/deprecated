@@ -15,4 +15,5 @@ BEGIN;
 \ir  tables/bids.sql
 \ir  tables/comments.sql
 \ir  tables/reviews.sql
+\ir  tables/creditcards.sql
 COMMIT;
