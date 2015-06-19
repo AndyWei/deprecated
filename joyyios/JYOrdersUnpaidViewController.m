@@ -218,15 +218,20 @@ static NSString *const kBidCellIdentifier = @"bidCell";
 
     request.paymentSummaryItems = @[[PKPaymentSummaryItem summaryItemWithLabel:order.title amount:amount]];
 
-    if ([Stripe canSubmitPaymentRequest:request]) // show Apple Pay view
+//    if ([Stripe canSubmitPaymentRequest:request])
+    if (NO)
     {
+        // show Apple Pay view
         PKPaymentAuthorizationViewController *paymentController = [[PKPaymentAuthorizationViewController alloc] initWithPaymentRequest:request];
         paymentController.delegate = self;
         [self presentViewController:paymentController animated:YES completion:nil];
     }
-    else // show the user credit card form
+    else
     {
-
+        // show the user credit card form
+        JYPaymentViewController *viewController = [JYPaymentViewController new];
+        viewController.delegate = self;
+        [self presentViewController:viewController animated:YES completion:nil];
     }
 }
 
@@ -243,6 +248,7 @@ static NSString *const kBidCellIdentifier = @"bidCell";
                                                      return;
                                                  }
                                                  weakSelf.stripeToken = token.tokenId;
+                                                 NSLog(@"stripeToken = %@", weakSelf.stripeToken);
                                                  completion(PKPaymentAuthorizationStatusSuccess);
                                              }];
 }
@@ -263,6 +269,18 @@ static NSString *const kBidCellIdentifier = @"bidCell";
     [self _onPaymentAuthorizationDone];
 }
 
+#pragma mark - JYPaymentViewControllerDelegate
+
+- (void)viewController:(JYPaymentViewController *)controller didCreateToken:(NSString *)token
+{
+    self.stripeToken = token;
+}
+
+- (void)viewControllerDidFinish:(JYPaymentViewController *)controller
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
+    [self _onPaymentAuthorizationDone];
+}
 
 #pragma mark - Network
 

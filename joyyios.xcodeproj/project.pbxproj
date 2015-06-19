@@ -105,6 +105,8 @@
 		D6C82B741B13EB1100876F57 /* JYOrdersBaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6C82B721B13EB1100876F57 /* JYOrdersBaseViewController.m */; };
 		D6F4A0511AF6A156001A3C89 /* AppConst.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F4A0501AF6A156001A3C89 /* AppConst.m */; };
 		D6F4A0521AF6A156001A3C89 /* AppConst.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F4A0501AF6A156001A3C89 /* AppConst.m */; };
+		D6FA6A7B1B33752C007CB30E /* JYPaymentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6FA6A7A1B33752C007CB30E /* JYPaymentViewController.m */; };
+		D6FA6A7C1B33752C007CB30E /* JYPaymentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6FA6A7A1B33752C007CB30E /* JYPaymentViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -226,6 +228,8 @@
 		D6C82B721B13EB1100876F57 /* JYOrdersBaseViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYOrdersBaseViewController.m; sourceTree = "<group>"; };
 		D6F4A04F1AF6A12D001A3C89 /* AppConst.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppConst.h; sourceTree = "<group>"; };
 		D6F4A0501AF6A156001A3C89 /* AppConst.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppConst.m; sourceTree = "<group>"; };
+		D6FA6A791B33752C007CB30E /* JYPaymentViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYPaymentViewController.h; sourceTree = "<group>"; };
+		D6FA6A7A1B33752C007CB30E /* JYPaymentViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYPaymentViewController.m; sourceTree = "<group>"; };
 		F67CA15F6F0CAF970CBFB660 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -297,6 +301,8 @@
 				D6B2F0661AD1B5EC009601B0 /* JYMapDashBoardView.m */,
 				D65AFA641AEDEF3D007867D0 /* JYOrderCard.h */,
 				D65AFA651AEDEF3D007867D0 /* JYOrderCard.m */,
+				D6C82B711B13EB1100876F57 /* JYOrdersBaseViewController.h */,
+				D6C82B721B13EB1100876F57 /* JYOrdersBaseViewController.m */,
 				D6B2F0731AD318B6009601B0 /* JYPanGestureRecognizer.h */,
 				D6B2F0741AD318B6009601B0 /* JYPanGestureRecognizer.m */,
 				D63F0DA61ACDFD1D0067C5EE /* JYPinAnnotationView.h */,
@@ -407,6 +413,7 @@
 				D63B69AB1AC5184D005600A9 /* Components */,
 				D6C82B611B1252FE00876F57 /* Model */,
 				D63F0D871ACBBDF30067C5EE /* Order */,
+				D6FA6A781B3374FB007CB30E /* Payment */,
 				D68DAF9A1AC4CD1800838E7E /* User */,
 				D69202BF1AC4C7C0001C1C3D /* Images.xcassets */,
 				D69202C11AC4C7C0001C1C3D /* LaunchScreen.xib */,
@@ -460,12 +467,19 @@
 		D6F4A0561AF6DF5A001A3C89 /* My */ = {
 			isa = PBXGroup;
 			children = (
-				D6C82B711B13EB1100876F57 /* JYOrdersBaseViewController.h */,
-				D6C82B721B13EB1100876F57 /* JYOrdersBaseViewController.m */,
 				D65AFA5C1AEC715D007867D0 /* JYOrdersUnpaidViewController.h */,
 				D65AFA5D1AEC715D007867D0 /* JYOrdersUnpaidViewController.m */,
 			);
 			name = My;
+			sourceTree = "<group>";
+		};
+		D6FA6A781B3374FB007CB30E /* Payment */ = {
+			isa = PBXGroup;
+			children = (
+				D6FA6A791B33752C007CB30E /* JYPaymentViewController.h */,
+				D6FA6A7A1B33752C007CB30E /* JYPaymentViewController.m */,
+			);
+			name = Payment;
 			sourceTree = "<group>";
 		};
 		E8953528E7D4E03D9881458B /* Frameworks */ = {
@@ -678,6 +692,7 @@
 				D6C82B551B0D9FAE00876F57 /* JYCommentsViewController.m in Sources */,
 				D6B2F05B1ACE630F009601B0 /* JYAutoCompleteTextField.m in Sources */,
 				D63F0D711AC9EC060067C5EE /* JYUser.m in Sources */,
+				D6FA6A7B1B33752C007CB30E /* JYPaymentViewController.m in Sources */,
 				D63F0DAC1ACE56E30067C5EE /* JYPinchGestureRecognizer.m in Sources */,
 				D6B2F0631ACF4755009601B0 /* JYOrderCreateDetailsViewController.m in Sources */,
 				D6C82B651B12551500876F57 /* JYBid.m in Sources */,
@@ -747,6 +762,7 @@
 				D65AFA741AEF5F3A007867D0 /* UICustomActionSheet.m in Sources */,
 				D63B69B31AC51D61005600A9 /* JYSignBaseViewController.m in Sources */,
 				D6348D301ADB4DD60002BC35 /* NSString+Joyy.m in Sources */,
+				D6FA6A7C1B33752C007CB30E /* JYPaymentViewController.m in Sources */,
 				D6C82B5D1B0EFDEA00876F57 /* JYCommentTextView.m in Sources */,
 				D63B69B71AC53BB4005600A9 /* JYFloatLabeledTextField.m in Sources */,
 				D6C82B561B0D9FAE00876F57 /* JYCommentsViewController.m in Sources */,

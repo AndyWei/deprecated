@@ -7,9 +7,10 @@
 //
 
 #import "JYOrdersBaseViewController.h"
+#import "JYPaymentViewController.h"
 
 @import PassKit;
 
-@interface JYOrdersUnpaidViewController : JYOrdersBaseViewController <UITableViewDataSource, UITableViewDelegate, PKPaymentAuthorizationViewControllerDelegate>
+@interface JYOrdersUnpaidViewController : JYOrdersBaseViewController <UITableViewDataSource, UITableViewDelegate, PKPaymentAuthorizationViewControllerDelegate, JYPaymentViewControllerDelegate>
 
 @end
