@@ -56,7 +56,7 @@ static const CGFloat kTinyFontSize = 13.0f;
     return self;
 }
 
-- (void)presentBid:(JYBid *)bid;
+- (void)presentBid:(JYBid *)bid
 {
     self.bidderNameLabel.text = bid.username;
     self.expireTimeLabel.text = bid.expireTimeString;
@@ -76,7 +76,6 @@ static const CGFloat kTinyFontSize = 13.0f;
     self.bidderNameLabel = [self _createLabel];
     self.bidderNameLabel.frame = CGRectMake(kLeftMargin + 5, kTopMargin, kBidderNameLabelWidth, kBidderNameLabelHeight);
     self.bidderNameLabel.adjustsFontSizeToFitWidth = YES;
-    [self addSubview:self.bidderNameLabel];
 }
 
 - (void)_createRatingView

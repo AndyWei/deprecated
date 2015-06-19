@@ -115,7 +115,7 @@
     NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYUser currentUser].token];
     [manager.requestSerializer setValue:token forHTTPHeaderField:@"Authorization"];
 
-    NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"bids/from_me"];
+    NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"bids/my"];
     NSDictionary *parameters = [self fetchMyBidsParameters];
 
     __weak typeof(self) weakSelf = self;
@@ -123,7 +123,7 @@
       parameters:parameters
          success:^(AFHTTPRequestOperation *operation, id responseObject) {
 
-             NSLog(@"bids/from_me fetch success responseObject: %@", responseObject);
+             NSLog(@"bids/my fetch success responseObject: %@", responseObject);
              for (NSDictionary *dict in responseObject)
              {
                  JYBid *newBid = [[JYBid alloc] initWithDictionary:dict];
