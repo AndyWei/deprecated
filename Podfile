@@ -14,10 +14,10 @@ pod 'MCSwipeTableViewCell'
 pod 'Onboard'
 pod 'RKDropdownAlert'
 pod 'SlackTextViewController'
+pod 'Stripe'
+pod 'Stripe/ApplePay'
 pod 'TTTAttributedLabel'
 pod 'UIView+Positioning'
 pod 'XLForm'
 
-pod 'Stripe'
-pod 'Stripe/ApplePay'
-pod 'PaymentKit'
+
