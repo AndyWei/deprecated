@@ -12,7 +12,6 @@
 
 @property(nonatomic) JYCreditCardType cardType;
 @property(nonatomic) NSString *last4;
-@property(nonatomic) NSString *stripeCustomerId;
 @property(nonatomic) NSUInteger expiryMonth;
 @property(nonatomic) NSUInteger expiryYear;
 
@@ -40,17 +39,45 @@
 
     _last4  = [dict objectForKey:@"number_last_4"];
     _stripeCustomerId = [dict objectForKey:@"stripe_customer_id"];
+    _cardType = [[dict objectForKey:@"card_type"] unsignedIntegerValue];
     _expiryMonth   = [[dict objectForKey:@"expiry_month"] unsignedIntegerValue];
     _expiryYear    = [[dict objectForKey:@"expiry_year"] unsignedIntegerValue];
 }
 
 - (NSString *)cardNumberString
 {
-    return [NSString stringWithFormat:@"Ending in %@", self.last4];
+    return [NSString stringWithFormat:@"ending in %@", self.last4];
 }
 
-- (NSString *)expireString
+- (NSString *)expiryString
 {
-    return [NSString stringWithFormat:@"%tu/%tu", self.expiryMonth, self.expiryYear];
+    return [NSString stringWithFormat:@"expiry: %02tu/%tu", self.expiryMonth, self.expiryYear];
 }
+
+- (NSString *)typeString
+{
+    NSString *str = nil;
+    switch (self.cardType)
+    {
+        case JYCreditCardTypeAmex:
+            str = @"amex";
+            break;
+        case JYCreditCardTypeDiscover:
+            str = @"discover";
+            break;
+        case JYCreditCardTypeJCB:
+            str = @"jcb";
+            break;
+        case JYCreditCardTypeMastercard:
+            str = @"masterCard";
+            break;
+        case JYCreditCardTypeVisa:
+            str = @"visa";
+            break;
+        default:
+            break;
+    }
+    return str;
+}
+
 @end

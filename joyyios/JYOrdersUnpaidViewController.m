@@ -7,10 +7,12 @@
 //
 
 #import <AFNetworking/AFNetworking.h>
+#import <KVNProgress/KVNProgress.h>
 #import <Stripe/Stripe.h>
 
 #import "JYOrdersUnpaidViewController.h"
 #import "JYBidViewCell.h"
+#import "JYCreditCard.h"
 #import "JYOrderCard.h"
 #import "JYUser.h"
 #import "UICustomActionSheet.h"
@@ -19,6 +21,7 @@
 
 @property(nonatomic) NSIndexPath *selectedIndexPath;
 @property(nonatomic) NSString *stripeToken;
+@property(nonatomic) NSMutableArray *creditCardList;
 
 @end
 
@@ -50,6 +53,7 @@ static NSString *const kBidCellIdentifier = @"bidCell";
 
     self.selectedIndexPath = nil;
     self.stripeToken = nil;
+    self.creditCardList = nil;
 
     [self _createTableView];
     [self _fetchOrders];
@@ -216,28 +220,41 @@ static NSString *const kBidCellIdentifier = @"bidCell";
     NSNumber *price = [NSNumber numberWithUnsignedInteger:bid.price];
     NSDecimalNumber *amount = [NSDecimalNumber decimalNumberWithDecimal:[price decimalValue]];
 
-    request.paymentSummaryItems = @[[PKPaymentSummaryItem summaryItemWithLabel:order.title amount:amount]];
+    NSString *paymentLineItem = [NSString stringWithFormat:@"Joyy %@ @%@", order.title, bid.username];
+    request.paymentSummaryItems = @[[PKPaymentSummaryItem summaryItemWithLabel:paymentLineItem amount:amount]];
 
-//    if ([Stripe canSubmitPaymentRequest:request])
-    if (NO)
+    if ([Stripe canSubmitPaymentRequest:request])
     {
         // show Apple Pay view
         PKPaymentAuthorizationViewController *paymentController = [[PKPaymentAuthorizationViewController alloc] initWithPaymentRequest:request];
         paymentController.delegate = self;
         [self presentViewController:paymentController animated:YES completion:nil];
     }
+    else if (self.creditCardList)
+    {
+        [self _doPresentPaymentViewController];
+    }
     else
     {
-        // show the user credit card form
-        JYPaymentViewController *viewController = [JYPaymentViewController new];
-        viewController.delegate = self;
-        [self presentViewController:viewController animated:YES completion:nil];
+        [self _fetchCreditCards];
     }
 }
 
-- (void)_handlePaymentAuthorizationWithPayment:(PKPayment *)payment
-                                    completion:(void (^)(PKPaymentAuthorizationStatus))completion
+- (void)_doPresentPaymentViewController
 {
+    JYPaymentViewController *viewController = [JYPaymentViewController new];
+    viewController.delegate = self;
+    viewController.creditCardList = self.creditCardList;
+    [self.navigationController pushViewController:viewController animated:YES];
+}
+
+#pragma mark - PKPaymentAuthorizationViewControllerDelegate (Apple Pay)
+
+- (void)paymentAuthorizationViewController:(PKPaymentAuthorizationViewController *)controller
+                       didAuthorizePayment:(PKPayment *)payment
+                                completion:(void (^)(PKPaymentAuthorizationStatus))completion
+{
+
     __weak typeof(self) weakSelf = self;
     [[STPAPIClient sharedClient] createTokenWithPayment:payment
                                              completion:^(STPToken *token, NSError *error) {
@@ -251,16 +268,6 @@ static NSString *const kBidCellIdentifier = @"bidCell";
                                                  NSLog(@"stripeToken = %@", weakSelf.stripeToken);
                                                  completion(PKPaymentAuthorizationStatusSuccess);
                                              }];
-}
-
-#pragma mark - PKPaymentAuthorizationViewControllerDelegate (Apple Pay)
-
-- (void)paymentAuthorizationViewController:(PKPaymentAuthorizationViewController *)controller
-                       didAuthorizePayment:(PKPayment *)payment
-                                completion:(void (^)(PKPaymentAuthorizationStatus))completion
-{
-
-    [self _handlePaymentAuthorizationWithPayment:payment completion:completion];
 }
 
 - (void)paymentAuthorizationViewControllerDidFinish:(PKPaymentAuthorizationViewController *)controller
@@ -278,11 +285,49 @@ static NSString *const kBidCellIdentifier = @"bidCell";
 
 - (void)viewControllerDidFinish:(JYPaymentViewController *)controller
 {
-    [self dismissViewControllerAnimated:YES completion:nil];
+    [self.navigationController popViewControllerAnimated:YES];
     [self _onPaymentAuthorizationDone];
 }
 
 #pragma mark - Network
+
+- (void)_fetchCreditCards
+{
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYUser currentUser].token];
+    [manager.requestSerializer setValue:token forHTTPHeaderField:@"Authorization"];
+
+    NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"creditcards/my"];
+
+    [KVNProgress show];
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+
+    __weak typeof(self) weakSelf = self;
+    [manager GET:url
+      parameters:nil
+         success:^(AFHTTPRequestOperation *operation, id responseObject) {
+             NSLog(@"/creditcards/my fetch success responseObject: %@", responseObject);
+
+             [KVNProgress dismiss];
+             [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+
+             weakSelf.creditCardList = [NSMutableArray new];
+             for (NSDictionary *dict in responseObject)
+             {
+                 JYCreditCard *card = [[JYCreditCard alloc] initWithDictionary:dict];
+                 [weakSelf.creditCardList addObject:card];
+             }
+
+             [weakSelf _doPresentPaymentViewController];
+         }
+         failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+             [KVNProgress dismiss];
+             [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+
+             [weakSelf _doPresentPaymentViewController];
+         }
+     ];
+}
 
 - (void)_acceptBid:(JYBid *)bid forOrder:(JYOrder *)order
 {

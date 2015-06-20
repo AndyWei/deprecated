@@ -54,6 +54,12 @@
 #define COCOAPODS_VERSION_MINOR_AXRatingView 0
 #define COCOAPODS_VERSION_PATCH_AXRatingView 3
 
+// CardIO
+#define COCOAPODS_POD_AVAILABLE_CardIO
+#define COCOAPODS_VERSION_MAJOR_CardIO 5
+#define COCOAPODS_VERSION_MINOR_CardIO 0
+#define COCOAPODS_VERSION_PATCH_CardIO 6
+
 // ChameleonFramework
 #define COCOAPODS_POD_AVAILABLE_ChameleonFramework
 #define COCOAPODS_VERSION_MAJOR_ChameleonFramework 1

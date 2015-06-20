@@ -6,6 +6,7 @@ platform :ios, '7.0'
 
 pod 'AFNetworking', '~> 2.5'
 pod 'AXRatingView'
+pod 'CardIO'
 pod 'ChameleonFramework'
 pod 'JVFloatLabeledTextField'
 pod 'KVNProgress'

@@ -9,12 +9,15 @@
 #import "JYCreditCardViewCell.h"
 
 static const CGFloat kLabelHeight = 55;
-static const CGFloat kLabelWidth = 100;
+static const CGFloat kCardImageWidth = 48;
+static const CGFloat kCardNumberLabelWidth = 150;
 static const CGFloat kLeftMargin = 8.0f;
+static const CGFloat kRigthMargin = 8.0f;
 static const CGFloat kFontSize = 18.0f;
 
 @interface JYCreditCardViewCell ()
 
+@property(nonatomic, weak) UIImageView *cardImageView;
 @property(nonatomic, weak) UILabel *cardNumberLabel;
 @property(nonatomic, weak) UILabel *expiryLabel;
 
@@ -37,6 +40,7 @@ static const CGFloat kFontSize = 18.0f;
         self.opaque = YES;
         self.backgroundColor = JoyyWhite;
 
+        [self _createCardImage];
         [self _createCardNumberLabel];
         [self _createExpiryLabel];
     }
@@ -47,23 +51,45 @@ static const CGFloat kFontSize = 18.0f;
 {
     self.cardNumberLabel.text = card.cardNumberString;
     self.expiryLabel.text = card.expiryString;
+
+    if (card.typeString != nil)
+    {
+        self.cardImageView.image = [UIImage imageNamed:card.typeString];
+    }
+    else
+    {
+        self.cardImageView.image = nil;
+    }
+}
+
+- (void)_createCardImage
+{
+    UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(kLeftMargin, 3, kCardImageWidth, kCardImageWidth)];
+    [self addSubview:imageView];
+    self.cardImageView = imageView;
 }
 
 - (void)_createCardNumberLabel
 {
     self.cardNumberLabel = [self _createLabel];
+    CGFloat x = CGRectGetMaxX(self.cardImageView.frame) + kLeftMargin;
+    self.cardNumberLabel.frame = CGRectMake(x, 0, kCardNumberLabelWidth, kLabelHeight);
 }
 
 - (void)_createExpiryLabel
 {
+    CGFloat screenWidth = CGRectGetWidth([[UIScreen mainScreen] applicationFrame]);
+    CGFloat x = CGRectGetMaxX(self.cardNumberLabel.frame);
+    CGFloat width = screenWidth - x - kRigthMargin;
+
     self.expiryLabel = [self _createLabel];
-    self.expiryLabel.x = CGRectGetMaxX(self.cardNumberLabel.frame);
+    self.expiryLabel.frame = CGRectMake(x, 0, width, kLabelHeight);
     self.expiryLabel.textAlignment = NSTextAlignmentRight;
 }
 
 - (UILabel *)_createLabel
 {
-    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(kLeftMargin, 0, kLabelWidth, kLabelHeight)];
+    UILabel *label = [[UILabel alloc] init];
     label.backgroundColor = ClearColor;
     label.font = [UIFont systemFontOfSize:kFontSize];
     label.textColor = FlatBlack;

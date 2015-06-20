@@ -20,6 +20,7 @@
 
 @interface JYPaymentViewController : UIViewController
 
+@property(nonatomic, weak) NSMutableArray *creditCardList;
 @property(nonatomic, weak) id<JYPaymentViewControllerDelegate> delegate;
 
 @end

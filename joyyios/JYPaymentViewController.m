@@ -7,23 +7,22 @@
 //
 
 #import <AFNetworking/AFNetworking.h>
+#import <CardIO/CardIO.h>
 #import <KVNProgress/KVNProgress.h>
 #import <RKDropdownAlert/RKDropdownAlert.h>
-#import <PaymentKit/PTKView.h>
 
 #import "JYButton.h"
 #import "JYCreditCardViewCell.h"
 #import "JYPaymentViewController.h"
 #import "JYUser.h"
 
-@interface JYPaymentViewController () <PTKViewDelegate, UITableViewDataSource, UITableViewDelegate>
+@interface JYPaymentViewController () <CardIOPaymentViewControllerDelegate, UITableViewDataSource, UITableViewDelegate>
 
-@property(nonatomic) NSInteger networkThreadCount;
-@property(nonatomic) NSMutableArray *cardList;
 @property(nonatomic) NSString *stripeToken;
+@property(nonatomic) STPCard *card;
+@property(nonatomic) JYCreditCardType cardType;
 
-@property(nonatomic, weak) JYButton *saveButton;
-@property(nonatomic, weak) PTKView *paymentView;
+@property(nonatomic, weak) JYButton *addButton;
 @property(nonatomic, weak) UITableView *tableView;
 
 @end
@@ -32,16 +31,28 @@ static NSString *const kCardCellIdentifier = @"cardCell";
 
 @implementation JYPaymentViewController
 
+- (BOOL)hidesBottomBarWhenPushed
+{
+    return YES;
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
 
-    self.stripeToken = nil;
-    self.networkThreadCount = 0;
-    self.cardList = [NSMutableArray new];
+    self.navigationItem.title = NSLocalizedString(@"Credit Card", nil);
+    self.view.backgroundColor = JoyyWhite;
 
-    [self _createTableView];
-    [self _fetchCreditCards];
+    self.cardType = JYCreditCardTypeUnrecognized;
+    self.card = nil;
+    self.stripeToken = nil;
+
+    [self _createSaveButton];
+
+    if ([self _hasSavedCreditCard])
+    {
+        [self _createTableView];
+    }
 }
 
 - (void)didReceiveMemoryWarning
@@ -49,32 +60,15 @@ static NSString *const kCardCellIdentifier = @"cardCell";
     [super didReceiveMemoryWarning];
 }
 
-- (void)_createTableView
+- (BOOL)_hasSavedCreditCard
 {
-    UITableView *tableView = [[UITableView alloc] initWithFrame:self.view.frame style:UITableViewStyleGrouped];
-    tableView.backgroundColor = JoyyWhite;
-    tableView.dataSource = self;
-    tableView.delegate = self;
-    [tableView registerClass:[JYCreditCardViewCell class] forCellReuseIdentifier:kCardCellIdentifier];
-
-    self.tableView = tableView;
-    [self.view addSubview:self.tableView];
-}
-
-- (void)_createPaymentView
-{
-    PTKView *view = [[PTKView alloc] initWithFrame:CGRectMake(8, 80, 290, 55)];
-    self.paymentView = view;
-    self.paymentView.delegate = self;
-
-    [self.view addSubview:self.paymentView];
+    return (self.creditCardList != nil && self.creditCardList.count > 0);
 }
 
 - (void)_createSaveButton
 {
-    CGFloat x = CGRectGetMaxX(self.paymentView.frame) + 8;
-    CGFloat width = CGRectGetWidth([[UIScreen mainScreen] applicationFrame]) - x - 8;
-    CGRect frame = CGRectMake(x, 80, width, 45);
+    CGFloat width = CGRectGetWidth(self.view.frame) - 16;
+    CGRect frame = CGRectMake(8, 100, width, 45);
 
     JYButton *button = [[JYButton alloc] initWithFrame:frame buttonStyle:JYButtonStyleDefault];
 
@@ -84,25 +78,52 @@ static NSString *const kCardCellIdentifier = @"cardCell";
     button.cornerRadius = 8;
     button.foregroundAnimateToColor = FlatWhite;
     button.foregroundColor = FlatGreen;
-    button.textLabel.font = [UIFont boldSystemFontOfSize:16];
-    button.textLabel.text = NSLocalizedString(@"Save", nil);
-    [button addTarget:self action:@selector(_save) forControlEvents:UIControlEventTouchUpInside];
+    button.textLabel.font = [UIFont boldSystemFontOfSize:20];
+    button.textLabel.text = NSLocalizedString(@"Add A Credit Card", nil);
+    [button addTarget:self action:@selector(_addCreditCard) forControlEvents:UIControlEventTouchUpInside];
 
-    self.saveButton = button;
-    self.saveButton.enabled = NO;
-    [self.view addSubview:self.saveButton];
+    self.addButton = button;
+    [self.view addSubview:self.addButton];
 }
 
-- (void)_save
+- (void)_createTableView
 {
-    STPCard *card = [[STPCard alloc] init];
-    card.number = self.paymentView.card.number;
-    card.expMonth = self.paymentView.card.expMonth;
-    card.expYear = self.paymentView.card.expYear;
-    card.cvc = self.paymentView.card.cvc;
+    CGFloat y = CGRectGetMaxY(self.addButton.frame) + 10;
+
+    CGRect frame =  CGRectMake(0, y, CGRectGetWidth(self.view.frame), 500);
+    UITableView *tableView = [[UITableView alloc] initWithFrame:frame style:UITableViewStyleGrouped];
+    tableView.backgroundColor = JoyyWhite;
+    tableView.dataSource = self;
+    tableView.delegate = self;
+    [tableView registerClass:[JYCreditCardViewCell class] forCellReuseIdentifier:kCardCellIdentifier];
+
+    self.tableView = tableView;
+    [self.view addSubview:self.tableView];
+}
+
+- (void)_addCreditCard
+{
+    CardIOPaymentViewController *scanViewController = [[CardIOPaymentViewController alloc] initWithPaymentDelegate:self];
+    scanViewController.modalPresentationStyle = UIModalPresentationFormSheet;
+    [self presentViewController:scanViewController animated:YES completion:nil];
+}
+
+#pragma mark - CardIOPaymentViewControllerDelegate
+
+- (void)userDidProvideCreditCardInfo:(CardIOCreditCardInfo *)info inPaymentViewController:(CardIOPaymentViewController *)paymentViewController
+{
+    NSLog(@"Credit card scan succeeded with card number = %@", info.cardNumber);
+
+    self.card = [[STPCard alloc] init];
+    self.card.number = info.cardNumber;
+    self.card.expMonth = info.expiryMonth;
+    self.card.expYear = info.expiryYear;
+    self.card.cvc = info.cvv;
+
+    self.cardType = (JYCreditCardType)info.cardType;
 
     __weak typeof(self) weakSelf = self;
-    [[STPAPIClient sharedClient] createTokenWithCard:card
+    [[STPAPIClient sharedClient] createTokenWithCard:self.card
                                           completion:^(STPToken *token, NSError *error) {
                                               if (error)
                                               {
@@ -115,10 +136,17 @@ static NSString *const kCardCellIdentifier = @"cardCell";
                                               }
                                               else
                                               {
+                                                  [weakSelf dismissViewControllerAnimated:YES completion:nil];
                                                   weakSelf.stripeToken = token.tokenId;
                                                   [weakSelf _submitCreditCard];
                                               }
                                           }];
+}
+
+- (void)userDidCancelPaymentViewController:(CardIOPaymentViewController *)paymentViewController
+{
+    NSLog(@"User cancelled scan");
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark - UITableViewDataSource
@@ -130,7 +158,7 @@ static NSString *const kCardCellIdentifier = @"cardCell";
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return self.cardList.count;
+    return self.creditCardList.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -138,7 +166,7 @@ static NSString *const kCardCellIdentifier = @"cardCell";
     JYCreditCardViewCell *cell =
     (JYCreditCardViewCell *)[tableView dequeueReusableCellWithIdentifier:kCardCellIdentifier forIndexPath:indexPath];
 
-    JYCreditCard *card = self.cardList[indexPath.row];
+    JYCreditCard *card = self.creditCardList[indexPath.row];
     [cell presentCreditCard:card];
     return cell;
 }
@@ -152,88 +180,49 @@ static NSString *const kCardCellIdentifier = @"cardCell";
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
 
+    JYCreditCard *card = self.creditCardList[indexPath.row];
+    [self.delegate viewController:self didCreateToken:card.stripeCustomerId];
+    [self.delegate viewControllerDidFinish:self];
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    return 55;
+    return 100;
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(8, 40, 300, 55)];
-    label.backgroundColor = ClearColor;
+    return [self _createHearderView];
+}
+
+- (UIView *)_createHearderView
+{
+    UIView *header = [[UIView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.view.frame), 100)];
+    UILabel *orLabel = [self _createLabel];
+    orLabel.text = NSLocalizedString(@"Or", nil);
+    [header addSubview:orLabel];
+
+    UILabel *chooseLabel = [self _createLabel];
+    chooseLabel.y = 50;
+    chooseLabel.text = NSLocalizedString(@"choose a saved credit card:", nil);
+    [header addSubview:chooseLabel];
+
+    return header;
+}
+
+- (UILabel *)_createLabel
+{
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.view.frame), 50)];
     label.font = [UIFont systemFontOfSize:22];
     label.textColor = FlatBlack;
-    label.textAlignment = NSTextAlignmentLeft;
-    label.text = NSLocalizedString(@"Choose a credit card:", nil);
+    label.textAlignment = NSTextAlignmentCenter;
 
     return label;
 }
 
-#pragma mark - PTKViewDelegate
-
-- (void)paymentView:(PTKView *)view withCard:(PTKCard *)card isValid:(BOOL)valid
-{
-    self.saveButton.enabled = valid;
-}
-
 #pragma mark - Network
-
-- (void)networkThreadBegin
-{
-    if (self.networkThreadCount == 0)
-    {
-        [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
-    }
-    self.networkThreadCount++;
-}
-
-- (void)networkThreadEnd
-{
-    self.networkThreadCount--;
-    if (self.networkThreadCount <= 0)
-    {
-        [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-        [self.tableView reloadData];
-    }
-}
-
-- (void)_fetchCreditCards
-{
-    if (self.networkThreadCount > 0)
-    {
-        return;
-    }
-    [self networkThreadBegin];
-
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYUser currentUser].token];
-    [manager.requestSerializer setValue:token forHTTPHeaderField:@"Authorization"];
-
-    NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"creditcards/my"];
-
-    __weak typeof(self) weakSelf = self;
-    [manager GET:url
-      parameters:nil
-         success:^(AFHTTPRequestOperation *operation, id responseObject) {
-             NSLog(@"/creditcards/my fetch success responseObject: %@", responseObject);
-
-             weakSelf.cardList = [NSMutableArray new];
-             for (NSDictionary *dict in responseObject)
-             {
-                 JYCreditCard *card = [[JYCreditCard alloc] initWithDictionary:dict];
-                 [weakSelf.cardList addObject:card];
-             }
-
-             [weakSelf networkThreadEnd];
-         }
-         failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-             [weakSelf networkThreadEnd];
-         }
-     ];
-}
 
 - (void)_submitCreditCard
 {
@@ -284,9 +273,10 @@ static NSString *const kCardCellIdentifier = @"cardCell";
 {
     NSMutableDictionary *parameters = [NSMutableDictionary new];
 
-    [parameters setValue:@(self.paymentView.card.expYear) forKey:@"expiry_year"];
-    [parameters setValue:@(self.paymentView.card.expMonth) forKey:@"expiry_month"];
-    [parameters setValue:self.paymentView.card.last4 forKey:@"number_last_4"];
+    [parameters setValue:@(self.cardType) forKey:@"card_type"];
+    [parameters setValue:@(self.card.expYear) forKey:@"expiry_year"];
+    [parameters setValue:@(self.card.expMonth) forKey:@"expiry_month"];
+    [parameters setValue:self.card.last4 forKey:@"number_last_4"];
     [parameters setValue:[JYUser currentUser].email forKey:@"email"];
     [parameters setValue:self.stripeToken forKey:@"stripe_token"];
 

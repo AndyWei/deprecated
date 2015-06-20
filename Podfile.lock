@@ -21,6 +21,7 @@ PODS:
     - AFNetworking/NSURLConnection
     - AFNetworking/NSURLSession
   - AXRatingView (1.0.3)
+  - CardIO (5.0.6)
   - ChameleonFramework (1.2.0)
   - JVFloatLabeledTextField (1.0.4)
   - KVNProgress (2.2.1)
@@ -44,6 +45,7 @@ PODS:
 DEPENDENCIES:
   - AFNetworking (~> 2.5)
   - AXRatingView
+  - CardIO
   - ChameleonFramework
   - JVFloatLabeledTextField
   - KVNProgress
@@ -61,6 +63,7 @@ DEPENDENCIES:
 SPEC CHECKSUMS:
   AFNetworking: 05edc0ac4c4c8cf57bcf4b84be5b0744b6d8e71e
   AXRatingView: ccaadc1bbda99a4b7e1d556059482d2b933a9f4e
+  CardIO: 3fb62d56651d80e8f98e9572bfbe589ebf13d706
   ChameleonFramework: 4d6bf87fcaee176f487176cdccc4229637ec97f0
   JVFloatLabeledTextField: 18b05449d479733841b2c451c87e201a45de26e2
   KVNProgress: 7001d2d16a2755cee5599e8e485befe056f2197b
