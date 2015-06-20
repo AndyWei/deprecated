@@ -58,9 +58,10 @@ exports.register = function (server, options, next) {
                 payload: {
                     email: Joi.string().email().lowercase().min(3).max(30).required(),
                     number_last_4: Joi.string().regex(/^[0-9]+$/).length(4).required(),
+                    card_type: Joi.number().max(256).required(),
                     stripe_token: Joi.string().max(50).required(),
-                    expire_month: Joi.number().min(1).max(12).required(),
-                    expire_year: Joi.number().min(2014).required()
+                    expiry_month: Joi.number().min(1).max(12).required(),
+                    expiry_year: Joi.number().min(2014).required()
                 }
             }
         },
@@ -105,10 +106,10 @@ internals.createCardHandler = function (request, reply) {
             var queryConfig = {
                 name: 'creditcards_create',
                 text: 'INSERT INTO creditcards \
-                           (user_id, number_last_4, stripe_customer_id, expire_month, expire_year, created_at, updated_at) VALUES \
-                           ($1, $2, $3, $4, $5, now(), now()) \
+                           (user_id, number_last_4, stripe_customer_id, expiry_month, expiry_year, card_type, created_at, updated_at) VALUES \
+                           ($1, $2, $3, $4, $5, $6, now(), now()) \
                            RETURNING id',
-                values: [userId, p.number_last_4, results.stripe.id, p.expire_month, p.expire_year]
+                values: [userId, p.number_last_4, results.stripe.id, p.expiry_month, p.expiry_year, p.card_type]
             };
 
             request.pg.client.query(queryConfig, function (err, result) {

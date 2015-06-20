@@ -51,4 +51,11 @@ INSERT INTO reviews
     (          3,           2,        2,      5, 'best quality!!',      now(),      now()),
     (          4,           2,        3,    4.5,     'super pro!',      now(),      now());
 
+INSERT INTO creditcards
+    (user_id, number_last_4,   stripe_customer_id, expiry_month, expiry_year, card_type, created_at, updated_at) VALUES
+    (      1,        '4242', 'cus_6SCDqSWmJ4OdDB',            8,        2017,        52,      now(),      now()),
+    (      1,        '3200', 'cus_6SCDqSWmJ4OdDB',           12,        2016,        51,      now(),      now()),
+    (      1,        '5201', 'cus_6SCDqSWmJ4OdDB',            1,        2016,        53,      now(),      now()),
+    (      1,        '6202', 'cus_6SCDqSWmJ4OdDB',            3,        2016,        54,      now(),      now()),
+    (      1,        '7474', 'cus_6SCDqSWmJ4OdDB',            3,        2020,        74,      now(),      now());
 

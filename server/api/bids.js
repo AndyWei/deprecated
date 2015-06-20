@@ -99,7 +99,7 @@ exports.register = function (server, options, next) {
     // get all bids placed by the current user. auth.
     server.route({
         method: 'GET',
-        path: options.basePath + '/bids/from_me',
+        path: options.basePath + '/bids/my',
         config: {
             auth: {
                 strategy: 'token'
@@ -115,7 +115,7 @@ exports.register = function (server, options, next) {
 
             var userId = request.auth.credentials.id;
             var queryConfig = {
-                name: 'bids_from_me',
+                name: 'bids_my',
                 text: 'SELECT * FROM bids WHERE user_id = $1 AND status = $2 AND id > $3 AND deleted = false \
                        ORDER BY id ASC LIMIT 200',
                 values: [userId, request.query.status, request.query.after]

@@ -85,11 +85,11 @@ lab.experiment('Bids: ', function () {
         });
     });
 
-    lab.test('/bids/from_me: found', function (done) {
+    lab.test('/bids/my: found', function (done) {
 
         request = {
             method: 'GET',
-            url: '/bids/from_me',
+            url: '/bids/my',
             credentials: andy
         };
 
@@ -102,11 +102,11 @@ lab.experiment('Bids: ', function () {
         });
     });
 
-    lab.test('/bids/from_me: not found', function (done) {
+    lab.test('/bids/my: not found', function (done) {
 
         request = {
             method: 'GET',
-            url: '/bids/from_me',
+            url: '/bids/my',
             credentials: jack
         };
 
