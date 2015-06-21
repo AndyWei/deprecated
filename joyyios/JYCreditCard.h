@@ -25,6 +25,7 @@ typedef NS_ENUM(NSInteger, JYCreditCardType)
 @property(nonatomic, readonly) NSString *cardNumberString;
 @property(nonatomic, readonly) NSString *typeString;
 @property(nonatomic, readonly) NSString *expiryString;
+@property(nonatomic, readonly) UIImage  *logoImage;
 
 
 @end

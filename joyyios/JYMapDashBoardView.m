@@ -101,51 +101,37 @@
 
 - (void)_createSubmitButton
 {
-    if (self.submitButton)
-    {
-        return;
-    }
-
-    self.submitButton = [JYButton button];
-    self.submitButton.y = CGRectGetHeight(self.frame) - kButtonDefaultHeight;
-
-    [self.submitButton addTarget:self action:@selector(_submitButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+    JYButton *button = [JYButton button];
+    button.y = CGRectGetHeight(self.frame) - kButtonDefaultHeight;
+    [button addTarget:self action:@selector(_submitButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+    self.submitButton = button;
     [self addSubview:self.submitButton];
 }
 
 - (void)_createStartButton
 {
-    if (self.startButton)
-    {
-        return;
-    }
-
     CGFloat totalWidth = CGRectGetWidth(self.frame);
     CGFloat width = (_dashBoardStyle == JYMapDashBoardStyleStartOnly)? totalWidth: totalWidth * 0.7;
     CGRect frame = CGRectMake(0,
                               CGRectGetHeight(self.frame) - 2 * kButtonDefaultHeight,
                               width,
                               kButtonDefaultHeight);
-    self.startButton = [JYButton buttonWithFrame:frame buttonStyle:JYButtonStyleImageWithTitle shouldMaskImage:NO];
-    self.startButton.backgroundColor = [UIColor whiteColor];
-    self.startButton.contentColor = FlatBlack;
-    self.startButton.foregroundAnimateToColor = FlatWhite;
-    self.startButton.imageView.image = [UIImage imageNamed:kImageNamePinBlue];
-    self.startButton.textLabel.font = [UIFont systemFontOfSize:kMapDashBoardLeadingFontSize];
-    self.startButton.textLabel.text = NSLocalizedString(@"Add Start Address", nil);
-    self.startButton.textLabel.textAlignment = NSTextAlignmentLeft;
+    JYButton *startButton = [JYButton buttonWithFrame:frame buttonStyle:JYButtonStyleImageWithTitle shouldMaskImage:NO];
+    startButton.backgroundColor = [UIColor whiteColor];
+    startButton.contentColor = FlatBlack;
+    startButton.foregroundAnimateToColor = FlatWhite;
+    startButton.imageView.image = [UIImage imageNamed:kImageNamePinBlue];
+    startButton.textLabel.font = [UIFont systemFontOfSize:kMapDashBoardLeadingFontSize];
+    startButton.textLabel.text = NSLocalizedString(@"Add Start Address", nil);
+    startButton.textLabel.textAlignment = NSTextAlignmentLeft;
+    [startButton addTarget:self action:@selector(_startButtonPressed) forControlEvents:UIControlEventTouchUpInside];
 
-    [self.startButton addTarget:self action:@selector(_startButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+    self.startButton = startButton;
     [self addSubview:self.startButton];
 }
 
 - (void)_createEndButton
 {
-    if (self.endButton)
-    {
-        return;
-    }
-
     if (_dashBoardStyle == JYMapDashBoardStyleStartOnly)
     {
         return;
@@ -155,43 +141,41 @@
                               CGRectGetMinY(self.startButton.frame),
                               CGRectGetWidth(self.frame) * 0.3,
                               CGRectGetHeight(self.startButton.frame));
-    self.endButton = [JYButton buttonWithFrame:frame buttonStyle:JYButtonStyleImageWithTitle shouldMaskImage:NO];
-    self.endButton.backgroundColor = [UIColor whiteColor];
-    self.endButton.contentColor = FlatBlack;
-    self.endButton.foregroundAnimateToColor = [UIColor whiteColor];
-    self.endButton.foregroundColor = FlatWhite;
-    self.endButton.imageView.image = [UIImage imageNamed:kImageNamePinPink];
-    self.endButton.textLabel.text = NSLocalizedString(@"Add Destination", nil);
-    self.endButton.textLabel.textAlignment = NSTextAlignmentLeft;
+    JYButton *endButton = [JYButton buttonWithFrame:frame buttonStyle:JYButtonStyleImageWithTitle shouldMaskImage:NO];
+    endButton.backgroundColor = [UIColor whiteColor];
+    endButton.contentColor = FlatBlack;
+    endButton.foregroundAnimateToColor = [UIColor whiteColor];
+    endButton.foregroundColor = FlatWhite;
+    endButton.imageView.image = [UIImage imageNamed:kImageNamePinPink];
+    endButton.textLabel.text = NSLocalizedString(@"Add Destination", nil);
+    endButton.textLabel.textAlignment = NSTextAlignmentLeft;
+    [endButton addTarget:self action:@selector(_endButtonPressed) forControlEvents:UIControlEventTouchUpInside];
 
-    [self.endButton addTarget:self action:@selector(_endButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+    self.endButton = endButton;
     [self addSubview:self.endButton];
 }
 
 - (void)_createLocateButton
 {
-    if (self.locateButton)
-    {
-        return;
-    }
-
     CGFloat margin = kMapDashBoardHeight - kButtonLocateDiameter - 2 * kButtonDefaultHeight;
     CGRect frame = CGRectMake(CGRectGetMaxX(self.frame) - kButtonLocateDiameter - margin,
                               0,
                               kButtonLocateDiameter,
                               kButtonLocateDiameter);
-    self.locateButton = [JYButton buttonWithFrame:frame buttonStyle:JYButtonStyleCentralImage shouldMaskImage:YES];
-    self.locateButton.backgroundColor = [UIColor whiteColor];
-    self.locateButton.borderColor = FlatGray;
-    self.locateButton.borderWidth = 0.5;
-    self.locateButton.cornerRadius = kButtonDefaultHeight / 2;
-    self.locateButton.contentAnimateToColor = FlatWhite;
-    self.locateButton.contentColor = FlatSkyBlue;
-    self.locateButton.contentEdgeInsets = UIEdgeInsetsMake(5, 2, 2, 5);
-    self.locateButton.foregroundAnimateToColor = FlatSkyBlue;
-    self.locateButton.foregroundColor = [UIColor whiteColor];
-    self.locateButton.imageView.image = [UIImage imageNamed:kImageNameLocationArrow];
-    [self.locateButton addTarget:self action:@selector(_locateButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+    JYButton *locateButton = [JYButton buttonWithFrame:frame buttonStyle:JYButtonStyleCentralImage shouldMaskImage:YES];
+    locateButton.backgroundColor = [UIColor whiteColor];
+    locateButton.borderColor = FlatGray;
+    locateButton.borderWidth = 0.5;
+    locateButton.cornerRadius = kButtonDefaultHeight / 2;
+    locateButton.contentAnimateToColor = FlatWhite;
+    locateButton.contentColor = FlatSkyBlue;
+    locateButton.contentEdgeInsets = UIEdgeInsetsMake(5, 2, 2, 5);
+    locateButton.foregroundAnimateToColor = FlatSkyBlue;
+    locateButton.foregroundColor = [UIColor whiteColor];
+    locateButton.imageView.image = [UIImage imageNamed:kImageNameLocationArrow];
+    [locateButton addTarget:self action:@selector(_locateButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+
+    self.locateButton = locateButton;
     [self addSubview:self.locateButton];
 }
 

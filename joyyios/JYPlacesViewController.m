@@ -13,8 +13,8 @@
 
 @property (nonatomic) MKLocalSearch *search;
 @property (nonatomic) NSArray *placesList;
-@property (nonatomic) UITableView *tableView;
-@property (nonatomic) UITextField *searchBar;
+@property (nonatomic, weak) UITableView *tableView;
+@property (nonatomic, weak) UITextField *searchBar;
 
 @end
 
@@ -39,26 +39,29 @@
 
 - (void)_createSearchBar
 {
-    self.searchBar = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, 280, 35)];
-    self.searchBar.backgroundColor = ClearColor;
-    self.searchBar.borderStyle = UITextBorderStyleRoundedRect;
-    self.searchBar.clearButtonMode = UITextFieldViewModeAlways;
-    self.searchBar.delegate = self;
-    self.searchBar.leftView = [[UIImageView alloc] initWithImage:self.searchBarImage];
-    self.searchBar.leftView.frame = CGRectMake(0, 0, 30, 30);
-    self.searchBar.leftViewMode = UITextFieldViewModeAlways;
-    self.searchBar.placeholder = NSLocalizedString(@"Enter address or place name", nil);
+    UITextField *searchBar = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, 280, 35)];
+    searchBar.backgroundColor = ClearColor;
+    searchBar.borderStyle = UITextBorderStyleRoundedRect;
+    searchBar.clearButtonMode = UITextFieldViewModeAlways;
+    searchBar.delegate = self;
+    searchBar.leftView = [[UIImageView alloc] initWithImage:self.searchBarImage];
+    searchBar.leftView.frame = CGRectMake(0, 0, 30, 30);
+    searchBar.leftViewMode = UITextFieldViewModeAlways;
+    searchBar.placeholder = NSLocalizedString(@"Enter address or place name", nil);
 
+    self.searchBar = searchBar;
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView: self.searchBar];
 }
 
 - (void)_createTableView
 {
-    self.tableView = [[UITableView alloc] initWithFrame:self.view.frame style:UITableViewStylePlain];
-    self.tableView.backgroundColor = FlatWhite;
-    self.tableView.dataSource = self;
-    self.tableView.delegate = self;
-    [self.tableView registerClass:[JYPlacesViewCell class] forCellReuseIdentifier:@"placesCellIdentifier"];
+    UITableView *tableView = [[UITableView alloc] initWithFrame:self.view.frame style:UITableViewStylePlain];
+    tableView.backgroundColor = FlatWhite;
+    tableView.dataSource = self;
+    tableView.delegate = self;
+    [tableView registerClass:[JYPlacesViewCell class] forCellReuseIdentifier:@"placesCellIdentifier"];
+
+    self.tableView = tableView;
     [self.view addSubview:self.tableView];
 }
 

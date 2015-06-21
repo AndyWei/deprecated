@@ -80,4 +80,9 @@
     return str;
 }
 
+- (UIImage *)logoImage
+{
+    return (self.typeString == nil)? nil : [UIImage imageNamed:self.typeString];
+}
+
 @end

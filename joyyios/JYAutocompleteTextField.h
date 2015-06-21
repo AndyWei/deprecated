@@ -34,20 +34,20 @@ typedef enum
 /*
  * Autocomplete behavior
  */
-@property(nonatomic, assign) JYAutoCompleteType autocompleteType; // default to JYAutoCompleteTypeNone
-@property(nonatomic, assign) BOOL ignoreCase;
-@property(nonatomic, assign) id<JYAutoCompleteTextFieldDelegate> autoCompleteTextFieldDelegate;
+@property(nonatomic) JYAutoCompleteType autocompleteType; // default to JYAutoCompleteTypeNone
+@property(nonatomic) BOOL ignoreCase;
+@property(nonatomic, weak) id<JYAutoCompleteTextFieldDelegate> autoCompleteTextFieldDelegate;
 
 /*
  * Configure text field appearance
  */
-@property(nonatomic, strong) UILabel *autocompleteLabel;
-@property(nonatomic, assign) CGPoint autocompleteTextOffset;
+@property(nonatomic) UILabel *autocompleteLabel;
+@property(nonatomic) CGPoint autocompleteTextOffset;
 
 /*
  * Specify a data source responsible for determining autocomplete text.
  */
-@property(nonatomic, assign) id<JYAutoCompleteDataSourceDelegate> autocompleteDataSource;
+@property(nonatomic) id<JYAutoCompleteDataSourceDelegate> autocompleteDataSource;
 
 /*
  * Subclassing:

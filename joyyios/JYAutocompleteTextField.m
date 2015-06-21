@@ -10,7 +10,7 @@
 
 @interface JYAutoCompleteTextField ()
 
-@property(nonatomic, strong) NSString *autocompleteString;
+@property(nonatomic) NSString *autocompleteString;
 
 @end
 

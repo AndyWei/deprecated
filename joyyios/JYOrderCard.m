@@ -36,20 +36,20 @@ static const CGFloat kTopMargin = 8.0f;
 @property(nonatomic) BOOL startAddressLabelHidden;
 @property(nonatomic) BOOL endAddressLabelHidden;
 @property(nonatomic) BOOL bidLabelHidden;
-@property(nonatomic) JYDateView *startDateView;
-@property(nonatomic) UILabel *bidLabel;
-@property(nonatomic) UILabel *bodyLabel;
-@property(nonatomic) UILabel *cityLabel;
-@property(nonatomic) UILabel *distanceLabel;
-@property(nonatomic) UILabel *priceLabel;
-@property(nonatomic) UILabel *startTimeLabel;
-@property(nonatomic) UILabel *timeLabel;
-@property(nonatomic) UILabel *titleLabel;
 
-@property(nonatomic) UILabel *startAddressLabel;
-@property(nonatomic) UILabel *endAddressLabel;
-@property(nonatomic) UILabel *fromLabel;
-@property(nonatomic) UILabel *toLabel;
+@property(nonatomic, weak) JYDateView *startDateView;
+@property(nonatomic, weak) UILabel *bidLabel;
+@property(nonatomic, weak) UILabel *bodyLabel;
+@property(nonatomic, weak) UILabel *cityLabel;
+@property(nonatomic, weak) UILabel *distanceLabel;
+@property(nonatomic, weak) UILabel *priceLabel;
+@property(nonatomic, weak) UILabel *startTimeLabel;
+@property(nonatomic, weak) UILabel *timeLabel;
+@property(nonatomic, weak) UILabel *titleLabel;
+@property(nonatomic, weak) UILabel *startAddressLabel;
+@property(nonatomic, weak) UILabel *endAddressLabel;
+@property(nonatomic, weak) UILabel *fromLabel;
+@property(nonatomic, weak) UILabel *toLabel;
 
 @end
 
@@ -254,20 +254,22 @@ static const CGFloat kTopMargin = 8.0f;
 - (void)_createStartDateView
 {
     CGRect frame = CGRectMake(kLeftMargin, kTopMargin, kStartDateViewWidth, kStartDateViewHeight);
-    self.startDateView = [[JYDateView alloc] initWithFrame:frame];
-    self.startDateView.userInteractionEnabled = NO;
+    JYDateView *startDateView = [[JYDateView alloc] initWithFrame:frame];
+    startDateView.userInteractionEnabled = NO;
+    self.startDateView = startDateView;
     [self addSubview:self.startDateView];
 }
 
 - (void)_createStartTimeLabel
 {
     CGRect frame = CGRectMake(0, kTopMargin + CGRectGetMaxY(self.startDateView.frame), kStartTimeLabelWidth, kStartTimeLabelHeight);
-    self.startTimeLabel = [[UILabel alloc] initWithFrame:frame];
-    self.startTimeLabel.centerX = self.startDateView.centerX;
-    self.startTimeLabel.font = [UIFont systemFontOfSize:15.0f];
-    self.startTimeLabel.textColor = FlatGrayDark;
-    self.startTimeLabel.textAlignment = NSTextAlignmentCenter;
+    UILabel *startTimeLabel = [[UILabel alloc] initWithFrame:frame];
+    startTimeLabel.centerX = self.startDateView.centerX;
+    startTimeLabel.font = [UIFont systemFontOfSize:15.0f];
+    startTimeLabel.textColor = FlatGrayDark;
+    startTimeLabel.textAlignment = NSTextAlignmentCenter;
 
+    self.startTimeLabel = startTimeLabel;
     [self addSubview:self.startTimeLabel];
 }
 
@@ -345,8 +347,6 @@ static const CGFloat kTopMargin = 8.0f;
     self.bidLabel = [self _createLabel];
     self.bidLabel.frame = CGRectMake(kTextLeftMargin, 0, width, kBidLabelHeight);
     self.bidLabel.textAlignment = NSTextAlignmentRight;
-
-    [self addSubview:self.bidLabel];
 }
 
 - (void)_createStartAddressLabel
@@ -354,7 +354,6 @@ static const CGFloat kTopMargin = 8.0f;
     self.fromLabel = [self _createLabel];
     self.fromLabel.frame = CGRectMake(kTextLeftMargin, 0, 35, kAddressLabelHeight);
     self.fromLabel.font = [UIFont systemFontOfSize:kFontSizeAddress];
-    [self addSubview:self.fromLabel];
 
     CGFloat width = CGRectGetWidth([[UIScreen mainScreen] applicationFrame]) - kTextLeftMargin - kRightMargin;
 
@@ -362,7 +361,6 @@ static const CGFloat kTopMargin = 8.0f;
     self.startAddressLabel.frame = CGRectMake(kTextLeftMargin, 0, width, kAddressLabelHeight);
     self.startAddressLabel.font = [UIFont boldSystemFontOfSize:kFontSizeAddress];
     self.startAddressLabel.textAlignment = NSTextAlignmentRight;
-    [self addSubview:self.startAddressLabel];
 }
 
 - (void)_createEndAddressLabel
@@ -370,7 +368,6 @@ static const CGFloat kTopMargin = 8.0f;
     self.toLabel = [self _createLabel];
     self.toLabel.frame = CGRectMake(kTextLeftMargin, 0, 20, kAddressLabelHeight);
     self.toLabel.font = [UIFont systemFontOfSize:kFontSizeAddress];
-    [self addSubview:self.toLabel];
 
     CGFloat width = CGRectGetWidth([[UIScreen mainScreen] applicationFrame]) - kTextLeftMargin - kRightMargin;
 
@@ -378,7 +375,6 @@ static const CGFloat kTopMargin = 8.0f;
     self.endAddressLabel.frame = CGRectMake(kTextLeftMargin, 0, width, kAddressLabelHeight);
     self.endAddressLabel.font = [UIFont boldSystemFontOfSize:kFontSizeAddress];
     self.endAddressLabel.textAlignment = NSTextAlignmentRight;
-    [self addSubview:self.endAddressLabel];
 }
 
 - (UILabel *)_createLabel

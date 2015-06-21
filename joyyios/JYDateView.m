@@ -27,28 +27,30 @@
     CGFloat height = width * 0.8;
     CGRect frame = CGRectMake(width * 0.1, width * 0.1, height, height);
 
-    self.topLabel = [[UILabel alloc] initWithFrame:frame];
-    self.topLabel.height = height * 0.2;
-    self.centerLabel.y = (width - height) * 0.5;
-    self.topLabel.font = [UIFont systemFontOfSize:10];
-    self.topLabel.textAlignment = NSTextAlignmentCenter;
-    self.topLabel.userInteractionEnabled = NO;
+    UILabel *topLabel = [[UILabel alloc] initWithFrame:frame];
+    topLabel.height = height * 0.2;
+    topLabel.font = [UIFont systemFontOfSize:10];
+    topLabel.textAlignment = NSTextAlignmentCenter;
+    topLabel.userInteractionEnabled = NO;
+    self.topLabel = topLabel;
     [self addSubview:self.topLabel];
 
-    self.centerLabel = [[UILabel alloc] initWithFrame:frame];
-    self.centerLabel.height = height * 0.6;
-    self.centerLabel.y = CGRectGetMaxY(self.topLabel.frame);
-    self.centerLabel.font = [UIFont systemFontOfSize:30];
-    self.centerLabel.textAlignment = NSTextAlignmentCenter;
-    self.centerLabel.userInteractionEnabled = NO;
+    UILabel *centerLabel = [[UILabel alloc] initWithFrame:frame];
+    centerLabel.height = height * 0.6;
+    centerLabel.y = CGRectGetMaxY(self.topLabel.frame);
+    centerLabel.font = [UIFont systemFontOfSize:30];
+    centerLabel.textAlignment = NSTextAlignmentCenter;
+    centerLabel.userInteractionEnabled = NO;
+    self.centerLabel = centerLabel;
     [self addSubview:self.centerLabel];
 
-    self.bottomLabel = [[UILabel alloc] initWithFrame:frame];
-    self.bottomLabel.height = height * 0.2;
-    self.bottomLabel.y = CGRectGetMaxY(self.centerLabel.frame);
-    self.bottomLabel.font = [UIFont systemFontOfSize:10];
-    self.bottomLabel.textAlignment = NSTextAlignmentCenter;
-    self.bottomLabel.userInteractionEnabled = NO;
+    UILabel *bottomLabel = [[UILabel alloc] initWithFrame:frame];
+    bottomLabel.height = height * 0.2;
+    bottomLabel.y = CGRectGetMaxY(self.centerLabel.frame);
+    bottomLabel.font = [UIFont systemFontOfSize:10];
+    bottomLabel.textAlignment = NSTextAlignmentCenter;
+    bottomLabel.userInteractionEnabled = NO;
+    self.bottomLabel = bottomLabel;
     [self addSubview:self.bottomLabel];
 
     self.layer.borderWidth = 1.0f;

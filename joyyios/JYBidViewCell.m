@@ -22,11 +22,11 @@ static const CGFloat kTinyFontSize = 13.0f;
 
 @interface JYBidViewCell ()
 
-@property(nonatomic) AXRatingView *ratingView;
-@property(nonatomic) UILabel *bidderNameLabel;
-@property(nonatomic) UILabel *priceLabel;
-@property(nonatomic) UILabel *expireTimeLabel;
-@property(nonatomic) UILabel *ratingCountLabel;
+@property(nonatomic, weak) AXRatingView *ratingView;
+@property(nonatomic, weak) UILabel *bidderNameLabel;
+@property(nonatomic, weak) UILabel *priceLabel;
+@property(nonatomic, weak) UILabel *expireTimeLabel;
+@property(nonatomic, weak) UILabel *ratingCountLabel;
 
 @end
 
@@ -82,10 +82,13 @@ static const CGFloat kTinyFontSize = 13.0f;
 {
     CGFloat y = CGRectGetMaxY(self.bidderNameLabel.frame);
     CGRect frame = CGRectMake(kLeftMargin, y, kRatingViewWidth, kRatingViewHeight);
-    self.ratingView = [[AXRatingView alloc] initWithFrame:frame];
-    self.ratingView.markFont = [UIFont systemFontOfSize:kTinyFontSize];
-    [self.ratingView setStepInterval:0.5];
-    self.ratingView.userInteractionEnabled = NO;
+
+    AXRatingView *ratingView = [[AXRatingView alloc] initWithFrame:frame];
+    ratingView.markFont = [UIFont systemFontOfSize:kTinyFontSize];
+    [ratingView setStepInterval:0.5];
+    ratingView.userInteractionEnabled = NO;
+    self.ratingView = ratingView;
+
     [self addSubview:self.ratingView];
 }
 

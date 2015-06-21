@@ -9,9 +9,9 @@
 #import "JYPinAnnotationView.h"
 
 @interface JYPinAnnotationView ()
-{
-    UIImageView *_annotationImageView;
-}
+
+@property(nonatomic, weak) UIImageView *annotationImageView;
+
 @end
 
 @implementation JYPinAnnotationView
@@ -57,14 +57,15 @@
 
     _pinColor = pinColor;
 
-    if (!_annotationImageView)
+    if (!self.annotationImageView)
     {
-        _annotationImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, kPinAnnotationWidth, kPinAnnotationHeight)];
+        UIImageView *view = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, kPinAnnotationWidth, kPinAnnotationHeight)];
 
-        [self addSubview:_annotationImageView];
+        self.annotationImageView = view;
+        [self addSubview:self.annotationImageView];
     }
 
-    _annotationImageView.image = [self annotationImage];
+    self.annotationImageView.image = [self annotationImage];
 }
 
 - (UIImage *)annotationImage

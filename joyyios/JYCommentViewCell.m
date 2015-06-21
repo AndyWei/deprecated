@@ -16,7 +16,7 @@ static const CGFloat kFontSizeComment = 16.0f;
 
 @interface JYCommentViewCell ()
 
-@property(nonatomic) TTTAttributedLabel *commentLabel;
+@property(nonatomic, weak) TTTAttributedLabel *commentLabel;
 
 @end
 
@@ -111,19 +111,20 @@ static const CGFloat kFontSizeComment = 16.0f;
 {
     CGFloat screenWidth = CGRectGetWidth([[UIScreen mainScreen] applicationFrame]);
     CGRect frame = CGRectMake(kLeftMargin, kTopMargin, screenWidth- kLeftMargin - kRightMargin, kMinHeight);
-    self.commentLabel = [[TTTAttributedLabel alloc] initWithFrame:frame];
-    self.commentLabel.delegate = self;
-    self.commentLabel.enabledTextCheckingTypes = NSTextCheckingTypeLink;
-    self.commentLabel.backgroundColor = FlatWhite;
-    self.commentLabel.font = [UIFont systemFontOfSize:kFontSizeComment];
-    self.commentLabel.lineBreakMode = NSLineBreakByWordWrapping;
-    self.commentLabel.numberOfLines = 0;
-    self.commentLabel.textColor = FlatBlack;
-    self.commentLabel.textAlignment = NSTextAlignmentLeft;
 
-    self.commentLabel.linkAttributes =  @{ (id)kCTForegroundColorAttributeName: FlatSkyBlueDark,
+    TTTAttributedLabel *commentLabel = [[TTTAttributedLabel alloc] initWithFrame:frame];;
+    commentLabel.delegate = self;
+    commentLabel.enabledTextCheckingTypes = NSTextCheckingTypeLink;
+    commentLabel.backgroundColor = FlatWhite;
+    commentLabel.font = [UIFont systemFontOfSize:kFontSizeComment];
+    commentLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    commentLabel.numberOfLines = 0;
+    commentLabel.textColor = FlatBlack;
+    commentLabel.textAlignment = NSTextAlignmentLeft;
+    commentLabel.linkAttributes =  @{ (id)kCTForegroundColorAttributeName: FlatSkyBlueDark,
                                            (id)kCTUnderlineStyleAttributeName : [NSNumber numberWithInt:NSUnderlineStyleNone] };
 
+    self.commentLabel = commentLabel;
     [self addSubview:self.commentLabel];
 }
 

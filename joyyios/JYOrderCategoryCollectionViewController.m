@@ -16,8 +16,6 @@
 
 @property(nonatomic) CGFloat cellWidth;
 @property(nonatomic) CGFloat cellHeight;
-@property(nonatomic) UICollectionView *collectionView;
-//@property(nonatomic) UILabel *titleLabel;
 
 @end
 
@@ -38,21 +36,18 @@
     layout.minimumInteritemSpacing = 1.0f;
     layout.minimumLineSpacing = 2.0f;
 
-    self.collectionView = [[UICollectionView alloc] initWithFrame:self.view.frame collectionViewLayout:layout];
-    [self.collectionView setDataSource:self];
-    [self.collectionView setDelegate:self];
+    UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:self.view.frame collectionViewLayout:layout];
+    collectionView.dataSource = self;
+    collectionView.delegate = self;
+    [collectionView registerClass:[JYCollectionViewCell class] forCellWithReuseIdentifier:@"categoryCellIdentifier"];
+    collectionView.backgroundColor = [UIColor whiteColor];
 
-    [self.collectionView registerClass:[JYCollectionViewCell class] forCellWithReuseIdentifier:@"categoryCellIdentifier"];
-
-    self.collectionView.backgroundColor = [UIColor whiteColor];
-
-    [self.view addSubview:self.collectionView];
+    [self.view addSubview:collectionView];
 }
 
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 

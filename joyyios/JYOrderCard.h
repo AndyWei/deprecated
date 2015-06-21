@@ -17,6 +17,6 @@
 - (void)presentOrder:(JYOrder *)order withAddress:(BOOL)showAddress andBid:(BOOL)showBid;
 
 @property(nonatomic) BOOL tinyLabelsHidden;
-@property(nonatomic) UILabel *commentsLabel;
+@property(nonatomic, weak) UILabel *commentsLabel;
 
 @end

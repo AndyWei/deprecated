@@ -18,21 +18,24 @@
     {
         self.backgroundColor = FlatWhite;
 
-        self.topLabel = [[UILabel alloc] initWithFrame:CGRectMake(50, 8, 315, 25)];
-        self.topLabel.textColor = FlatBlack;
-        self.topLabel.font = [UIFont boldSystemFontOfSize:17];
-        self.topLabel.backgroundColor = FlatWhite;
+        UILabel *topLabel = [[UILabel alloc] initWithFrame:CGRectMake(50, 8, 315, 25)];
+        topLabel.textColor = FlatBlack;
+        topLabel.font = [UIFont boldSystemFontOfSize:17];
+        topLabel.backgroundColor = FlatWhite;
+        self.topLabel = topLabel;
         [self addSubview:self.topLabel];
 
-        self.bottomLabel = [[UILabel alloc] initWithFrame:CGRectMake(50, 33, 315, 20)];
-        self.bottomLabel.textColor = FlatGrayDark;
-        self.bottomLabel.font = [UIFont systemFontOfSize:14];
-        self.bottomLabel.backgroundColor = FlatWhite;
+        UILabel *bottomLabel = [[UILabel alloc] initWithFrame:CGRectMake(50, 33, 315, 20)];
+        bottomLabel.textColor = FlatGrayDark;
+        bottomLabel.font = [UIFont systemFontOfSize:14];
+        bottomLabel.backgroundColor = FlatWhite;
+        self.bottomLabel = bottomLabel;
         [self addSubview:self.bottomLabel];
 
-        self.iconView = [[UIImageView alloc] initWithFrame:CGRectMake(14, 20, 22, 22)];
-        self.iconView.backgroundColor = FlatWhite;
-        self.iconView.alpha = 0.5;
+        UIImageView *iconView = [[UIImageView alloc] initWithFrame:CGRectMake(14, 20, 22, 22)];
+        iconView.backgroundColor = FlatWhite;
+        iconView.alpha = 0.5;
+        self.iconView = iconView;
         [self addSubview:self.iconView];
     }
     return self;

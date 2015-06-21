@@ -17,7 +17,7 @@ static const CGFloat kFontSize = 18.0f;
 
 @interface JYCreditCardViewCell ()
 
-@property(nonatomic, weak) UIImageView *cardImageView;
+@property(nonatomic, weak) UIImageView *cardLogoImageView;
 @property(nonatomic, weak) UILabel *cardNumberLabel;
 @property(nonatomic, weak) UILabel *expiryLabel;
 
@@ -52,27 +52,20 @@ static const CGFloat kFontSize = 18.0f;
     self.cardNumberLabel.text = card.cardNumberString;
     self.expiryLabel.text = card.expiryString;
 
-    if (card.typeString != nil)
-    {
-        self.cardImageView.image = [UIImage imageNamed:card.typeString];
-    }
-    else
-    {
-        self.cardImageView.image = nil;
-    }
+    self.cardLogoImageView.image = card.logoImage;
 }
 
 - (void)_createCardImage
 {
     UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(kLeftMargin, 3, kCardImageWidth, kCardImageWidth)];
     [self addSubview:imageView];
-    self.cardImageView = imageView;
+    self.cardLogoImageView = imageView;
 }
 
 - (void)_createCardNumberLabel
 {
     self.cardNumberLabel = [self _createLabel];
-    CGFloat x = CGRectGetMaxX(self.cardImageView.frame) + kLeftMargin;
+    CGFloat x = CGRectGetMaxX(self.cardLogoImageView.frame) + kLeftMargin;
     self.cardNumberLabel.frame = CGRectMake(x, 0, kCardNumberLabelWidth, kLabelHeight);
 }
 

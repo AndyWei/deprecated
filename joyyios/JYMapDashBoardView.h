@@ -38,12 +38,13 @@ typedef NS_ENUM(NSUInteger, MapEditMode)
 
 - (instancetype)initWithFrame:(CGRect)frame withStyle:(JYMapDashBoardStyle)style;
 
-@property(nonatomic, weak) id<JYMapDashBoardViewDelegate> delegate;
 @property(nonatomic) BOOL hidden;
 @property(nonatomic) MapEditMode mapEditMode;
-@property(nonatomic) JYButton *startButton;
-@property(nonatomic) JYButton *endButton;
-@property(nonatomic) JYButton *locateButton;
-@property(nonatomic) JYButton *submitButton;
+
+@property(nonatomic, weak) id<JYMapDashBoardViewDelegate> delegate;
+@property(nonatomic, weak) JYButton *startButton;
+@property(nonatomic, weak) JYButton *endButton;
+@property(nonatomic, weak) JYButton *locateButton;
+@property(nonatomic, weak) JYButton *submitButton;
 
 @end

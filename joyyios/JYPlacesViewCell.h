@@ -9,8 +9,8 @@
 
 @interface JYPlacesViewCell : UITableViewCell
 
-@property(nonatomic) UIImageView *iconView;
-@property(nonatomic) UILabel *topLabel;
-@property(nonatomic) UILabel *bottomLabel;
+@property(nonatomic, weak) UIImageView *iconView;
+@property(nonatomic, weak) UILabel *topLabel;
+@property(nonatomic, weak) UILabel *bottomLabel;
 
 @end
