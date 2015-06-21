@@ -1,8 +1,10 @@
 var Async = require('async');
 var Boom = require('boom');
+var Config = require('../../config');
 var Hoek = require('hoek');
 var Joi = require('joi');
 var Push = require('../push');
+var Stripe = require('stripe')(Config.get('/stripe/platformSecretKey'));
 var Utils = require('../utils');
 var c = require('../constants');
 var _ = require('underscore');
@@ -499,6 +501,24 @@ exports.register = function (server, options, next) {
         }
     });
 
+
+    // confirm an order has been finished and pay the the order winner. auth. This can only be done by the order owner.
+    server.route({
+        method: 'POST',
+        path: options.basePath + '/orders/paid',
+        config: {
+            auth: {
+                strategy: 'token'
+            },
+            validate: {
+                payload: {
+                    order_id: Joi.string().regex(/^[0-9]+$/).max(19).required()
+                }
+            }
+        },
+        handler: internals.createPaymentHandler
+    });
+
     next();
 };
 
@@ -698,6 +718,141 @@ internals.createNearbyQueryConfig = function (query) {
     };
 
     return queryConfig;
+};
+
+
+internals.createPaymentHandler = function (request, reply) {
+
+    var u = request.auth.credentials;
+    var p = request.payload;
+
+    Async.auto({
+        order: function (next) {
+
+            var queryConfig = {
+                name: 'orders_finished_by_id',
+                text: 'SELECT title, stripe_token, winner_id, final_price FROM orders ' +
+                      'WHERE id = $1 AND user_id = $2 AND status = 3 AND deleted = false ',
+                values: [p.order_id, u.id]
+            };
+
+            request.pg.client.query(queryConfig, function (err, result) {
+
+                if (err) {
+                    console.error(err);
+                    request.pg.kill = true;
+                    return next(err);
+                }
+
+                if (result.rows.length === 0) {
+                    return next(Boom.badRequest(c.ORDER_STRIPE_TOKEN_NOT_FOUND));
+                }
+
+                next(null, result.rows[0]);
+            });
+        },
+        account: ['order', function (next, results) {
+
+            var winnerId = results.order.winner_id;
+            var queryConfig = {
+                name: 'accounts_id_by_user_id',
+                text: 'SELECT stripe_account_id FROM accounts ' +
+                      'WHERE user_id = $1 AND deleted = false ',
+                values: [winnerId]
+            };
+
+            request.pg.client.query(queryConfig, function (err, result) {
+
+                if (err) {
+                    console.error(err);
+                    request.pg.kill = true;
+                    return next(err);
+                }
+
+                if (result.rows.length === 0) {
+                    return next(Boom.badRequest(c.ACCOUNT_NOT_FOUND));
+                }
+
+                next(null, result.rows[0].stripe_account_id);
+            });
+        }],
+        stripe: ['account', function (next, results) {
+
+            var amount = results.order.final_price * 100; // amount in cents while final_price in dollars
+            var applicationFee = results.order.final_price * 5; // fee is 5%, in cents.
+
+            var description = 'Pay Joyy ' + results.order.title;
+            var tokenPrefix = results.order.stripe_token.substring(0, 4);
+            var shouldChargeOnCustomerId = (tokenPrefix === 'cus_');
+
+            var chargeParameters = {
+                amount: amount,
+                currency: 'usd',
+                destination: results.account,
+                application_fee: applicationFee,
+                description: description
+            };
+
+            if (shouldChargeOnCustomerId) {
+                chargeParameters.customer = results.order.stripe_token;
+            }
+            else {
+                chargeParameters.source = results.order.stripe_token;
+            }
+
+            Stripe.charges.create(chargeParameters, function (err, charge) {
+
+                if (err) {
+                    return next(err);
+                }
+
+                console.log(charge);
+
+                next(null, null);
+            });
+        }],
+        orderStatus: ['stripe', function (next) {
+
+            var queryConfig = {
+                name: 'orders_paid',
+                text: 'UPDATE orders SET status = 10, updated_at = now() ' +
+                      'WHERE id = $1 AND user_id = $2 AND status = 3 AND deleted = false ' +
+                      'RETURNING id, status',
+                values: [p.order_id, u.id]
+            };
+
+            request.pg.client.query(queryConfig, function (err, result) {
+
+                if (err) {
+                    console.error(err);
+                    request.pg.kill = true;
+                    return next(err);
+                }
+
+                if (result.rows.length === 0) {
+                    return next(Boom.badRequest(c.ORDER_UPDATE_WORKING_STATUS_FAILED));
+                }
+
+                next(null, result.rows[0]);
+            });
+        }]
+    }, function (err, results) {
+
+        if (err) {
+            console.error(err);
+            return reply(err);
+        }
+
+        // send notification to the order winner
+        var title = 'Received payment $' + results.order.final_price + 'from @' + u.username;
+        Push.notify('joyyor', results.order.winner_id, title, title, function (error) {
+
+            if (error) {
+                console.error(error);
+            }
+        });
+        reply(null, results.orderStatus);
+    });
 };
 
 

@@ -34,6 +34,8 @@ exports.DEGREE_FACTOR = 0.0089827983;
 exports.TOKEN_LENGTH = 20;
 
 //Error strings
+exports.ACCOUNT_NOT_FOUND = 'The joyyor stripe account is not found.';
+
 exports.BID_REVOKE_FAILED = 'The bid is not in active status, cannot be revoked.';
 
 exports.BID_UPDATE_FAILED = 'The order is either not found or not in active status, cannot be bidded.';
@@ -61,6 +63,8 @@ exports.QUERY_FAILED = 'Error when running query.';
 exports.QUERY_INVALID = 'The query must contain at least one parameter.';
 
 exports.RECORD_NOT_FOUND = 'Query excuted but no record found.';
+
+exports.ORDER_STRIPE_TOKEN_NOT_FOUND = 'The payment token is not found, payment failed';
 
 exports.TOKEN_INVALID = 'Token is invalid';
 

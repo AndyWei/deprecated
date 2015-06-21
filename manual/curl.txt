@@ -30,6 +30,8 @@ curl -i -X POST -H "Authorization: Bearer 6SjrTCgJPqFqOwdblR4Y" "http://localhos
 curl -i -X POST -H "Authorization: Bearer 6SjrTCgJPqFqOwdblR4Y" --data "price=1.1&category=1" "http://localhost:8000/v1/orders/3"
 curl -i -X POST -H "Authorization: Bearer 6SjrTCgJPqFqOwdblR4Y" --data "price=1.1&category=1&note='what ever:)'" "http://localhost:8000/v1/orders/3"
 
+# pay an order
+curl -i -X POST -H "Authorization: Bearer 6rZY58HWsKeKzYz4vl3f" --data "order_id=1" "http://localhost:8000/v1/orders/paid"
 
 
 ## bids
