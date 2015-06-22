@@ -130,28 +130,28 @@ lab.experiment('Orders GET: ', function () {
         });
     });
 
-    lab.test('/orders/unpaid: found', function (done) {
+    lab.test('/orders/my: found active orders for jack', function (done) {
 
         request = {
             method: 'GET',
-            url: '/orders/unpaid',
+            url: '/orders/my?status=0',
             credentials: jack
         };
 
         server.inject(request, function (response) {
 
             Code.expect(response.statusCode).to.equal(200);
-            Code.expect(response.result).to.be.an.array().and.to.have.length(3);
+            Code.expect(response.result).to.be.an.array().and.to.have.length(2);
 
             done();
         });
     });
 
-    lab.test('/orders/unpaid: not found', function (done) {
+    lab.test('/orders/my: not found active orders for andy', function (done) {
 
         request = {
             method: 'GET',
-            url: '/orders/unpaid',
+            url: '/orders/my?status=0',
             credentials: andy
         };
 
@@ -164,11 +164,11 @@ lab.experiment('Orders GET: ', function () {
         });
     });
 
-    lab.test('/orders/paid: found', function (done) {
+    lab.test('/orders/my: found paid orders for jack', function (done) {
 
         request = {
             method: 'GET',
-            url: '/orders/paid',
+            url: '/orders/my?status=10',
             credentials: jack
         };
 
@@ -181,11 +181,11 @@ lab.experiment('Orders GET: ', function () {
         });
     });
 
-    lab.test('/orders/paid: not found', function (done) {
+    lab.test('/orders/my: not found paid orders for andy', function (done) {
 
         request = {
             method: 'GET',
-            url: '/orders/paid',
+            url: '/orders/my?status=10',
             credentials: andy
         };
 

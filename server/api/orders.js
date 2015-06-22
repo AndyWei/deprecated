@@ -60,60 +60,29 @@ exports.register = function (server, options, next) {
     // get all unpaid orders placed by the current user. auth.
     server.route({
         method: 'GET',
-        path: options.basePath + '/orders/unpaid',
+        path: options.basePath + '/orders/my',
         config: {
             auth: {
                 strategy: 'token'
             },
             validate: {
                 query: {
-                    after: Joi.string().regex(/^[0-9]+$/).max(19).default('0')
+                    status: Joi.number().min(0).max(100).default(0),
+                    after: Joi.string().regex(/^[0-9]+$/).max(19).default('0'),
+                    before: Joi.string().regex(/^[0-9]+$/).max(19).default('9223372036854775807')
                 }
             }
         },
         handler: function (request, reply) {
 
             var userId = request.auth.credentials.id;
+            var q = request.query;
             var queryConfig = {
-                name: 'orders_unpaid',
+                name: 'orders_my',
                 text: selectClause +
-                      'WHERE id > $1 AND user_id = $2 AND status < 10 AND deleted = false \
+                      'WHERE user_id = $1 AND status = $2 AND id > $3 AND id < $4 AND deleted = false \
                        ORDER BY id DESC LIMIT 100',
-                values: [request.query.after, userId]
-            };
-
-            request.pg.client.query(queryConfig, function (err, result) {
-
-                if (err) {
-                    console.error(err);
-                    request.pg.kill = true;
-                    return reply(err);
-                }
-
-                reply(null, result.rows);
-            });
-        }
-    });
-
-
-    // get all paid orders placed by the current user. auth.
-    server.route({
-        method: 'GET',
-        path: options.basePath + '/orders/paid',
-        config: {
-            auth: {
-                strategy: 'token'
-            }
-        },
-        handler: function (request, reply) {
-
-            var userId = request.auth.credentials.id;
-            var queryConfig = {
-                name: 'orders_paid',
-                text: selectClause +
-                      'WHERE user_id = $1 AND status = 10 AND deleted = false \
-                       ORDER BY id DESC LIMIT 200',
-                values: [userId]
+                values: [userId, q.status, q.after, q.before]
             };
 
             request.pg.client.query(queryConfig, function (err, result) {
