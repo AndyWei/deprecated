@@ -32,6 +32,19 @@ static JYOrder *_currentOrder;
     return _currentOrder;
 }
 
++ (NSNumberFormatter *)sharedPriceFormatter
+{
+    static NSNumberFormatter *_sharedPriceFormatter = nil;
+    static dispatch_once_t done;
+
+    dispatch_once(&done, ^{
+        _sharedPriceFormatter = [[NSNumberFormatter alloc] init];
+        _sharedPriceFormatter.numberStyle = NSNumberFormatterCurrencyStyle;
+//        _sharedPriceFormatter.maximumFractionDigits = 0;
+    });
+
+    return _sharedPriceFormatter;
+}
 - (instancetype)init
 {
     self = [super init];
@@ -62,7 +75,7 @@ static JYOrder *_currentOrder;
     _categoryIndex = 0;
     _country       = @"us";
     _currency      = @"usd";
-    _price         = 0.0f;
+    _price         = 0;
     _startTime     = 0;
     _title         = nil;
 
@@ -165,14 +178,26 @@ static JYOrder *_currentOrder;
     return result;
 }
 
+- (NSString *)moneyString:(NSUInteger)amount
+{
+    NSNumberFormatter *formatter = [[self class] sharedPriceFormatter];
+
+    NSNumber *centsNumber = [NSNumber numberWithUnsignedInteger:amount];
+    NSDecimalNumber *cents = [NSDecimalNumber decimalNumberWithDecimal:[centsNumber decimalValue]];
+    NSDecimalNumber *divisor = [[NSDecimalNumber alloc] initWithInt:100];
+    NSDecimalNumber *dollars = [cents decimalNumberByDividingBy:divisor];
+
+    return [formatter stringFromNumber:dollars];
+}
+
 - (NSString *)priceString
 {
-    return [NSString stringWithFormat:@"$%tu", self.price];
+    return [self moneyString:self.price];
 }
 
 - (NSString *)finalPriceString
 {
-    return [NSString stringWithFormat:@"$%tu", self.finalPrice];
+    return [self moneyString:self.finalPrice];
 }
 
 - (NSString *)createTimeString

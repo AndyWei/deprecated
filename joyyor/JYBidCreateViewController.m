@@ -125,8 +125,9 @@ NSString *const kOrderBidCellIdentifier = @"orderBidCell";
 
     // price
     NSString *priceString = [[self.formViewController.formValues valueForKey:@"price"] substringFromIndex:1];
-    NSUInteger price = priceString? [priceString  unsignedIntegerValue]: 0;
-    [parameters setObject:@(price) forKey:@"price"];
+    NSUInteger priceInDollars = priceString? [priceString  unsignedIntegerValue]: 0;
+    NSUInteger priceInCents = priceInDollars * 100;
+    [parameters setObject:@(priceInCents) forKey:@"price"];
 
     // expire time
     NSDate *expire = (NSDate *)[self.formViewController.formValues objectForKey:@"expire_at"];

@@ -155,7 +155,9 @@
 
     // price
     NSString *priceString = [[self.formValues valueForKey:@"price"] substringFromIndex:1];
-    [JYOrder currentOrder].price = priceString? [priceString  unsignedIntegerValue]: 0;
+    NSUInteger priceInDollars = priceString? [priceString  unsignedIntegerValue]: 0;
+    NSUInteger priceInCents = priceInDollars * 100;
+    [JYOrder currentOrder].price = priceInCents;
 
     // category
     NSUInteger index = [JYOrder currentOrder].categoryIndex;

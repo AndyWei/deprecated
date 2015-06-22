@@ -10,6 +10,20 @@
 
 @implementation JYBid
 
++ (NSNumberFormatter *)sharedPriceFormatter
+{
+    static NSNumberFormatter *_sharedPriceFormatter = nil;
+    static dispatch_once_t done;
+
+    dispatch_once(&done, ^{
+        _sharedPriceFormatter = [[NSNumberFormatter alloc] init];
+        _sharedPriceFormatter.numberStyle = NSNumberFormatterCurrencyStyle;
+//        _sharedPriceFormatter.maximumFractionDigits = 0;
+    });
+
+    return _sharedPriceFormatter;
+}
+
 - (instancetype)initWithDictionary:(NSDictionary *)dict
 {
     self = [super init];
@@ -93,7 +107,14 @@
 
 - (NSString *)priceString
 {
-    return [NSString stringWithFormat:@"$%tu", self.price];
+    NSNumberFormatter *formatter = [[self class] sharedPriceFormatter];
+
+    NSNumber *centsNumber = [NSNumber numberWithUnsignedInteger:self.price];
+    NSDecimalNumber *cents = [NSDecimalNumber decimalNumberWithDecimal:[centsNumber decimalValue]];
+    NSDecimalNumber *divisor = [[NSDecimalNumber alloc] initWithInt:100];
+    NSDecimalNumber *dollars = [cents decimalNumberByDividingBy:divisor];
+
+    return [formatter stringFromNumber:dollars];
 }
 
 - (UIColor *)statusColor
