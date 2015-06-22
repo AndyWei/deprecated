@@ -286,7 +286,7 @@ exports.register = function (server, options, next) {
                     currency: Joi.string().length(3).regex(/^[a-z]+$/).required(),
                     title: Joi.string().max(100).required(),
                     note: Joi.string().max(1000).required(),
-                    price: Joi.number().precision(2).min(0).max(100000000).required(),
+                    price: Joi.number().min(0).max(10000000000).required(),
                     start_time: Joi.number().min(450600000).required(),
                     start_point_lon: Joi.number().min(-180).max(180).required(),
                     start_point_lat: Joi.number().min(-90).max(90).required(),
@@ -399,7 +399,7 @@ exports.register = function (server, options, next) {
                     note: Joi.string().max(1000).optional(),
                     start_point_lat: Joi.number().min(-90).max(90).optional(),
                     start_point_lon: Joi.number().min(-180).max(180).optional(),
-                    price: Joi.number().precision(2).min(0).max(100000000).optional()
+                    price: Joi.number().min(0).max(10000000000).optional()
                 }
             }
         },
@@ -778,8 +778,10 @@ internals.createPaymentHandler = function (request, reply) {
         }],
         stripe: ['account', function (next, results) {
 
-            var amount = results.order.final_price * 100; // amount in cents while final_price in dollars
-            var applicationFee = results.order.final_price * 5; // fee is 5%, in cents.
+            var amount = results.order.final_price;             // both amount and final_price are in cents
+            var joyyFee = amount * 0.05;                        // fee is 5%, in cents.
+            var stripeFee = Math.floor(amount * 0.029) + 30;    // strie will take 30 cents plus 2.9% of amount
+            var applicationFee = Math.max(joyyFee, stripeFee);  // application fee should at least cover joyy fee
 
             var description = 'Pay Joyy ' + results.order.title;
             var tokenPrefix = results.order.stripe_token.substring(0, 4);
@@ -808,17 +810,17 @@ internals.createPaymentHandler = function (request, reply) {
 
                 console.log(charge);
 
-                next(null, null);
+                next(null, charge);
             });
         }],
-        orderStatus: ['stripe', function (next) {
+        orderStatus: ['stripe', function (next, results) {
 
             var queryConfig = {
                 name: 'orders_paid',
-                text: 'UPDATE orders SET status = 10, updated_at = now() ' +
-                      'WHERE id = $1 AND user_id = $2 AND status = 3 AND deleted = false ' +
+                text: 'UPDATE orders SET status = 10, stripe_charge_id = $1, updated_at = now() ' +
+                      'WHERE id = $2 AND user_id = $3 AND status = 3 AND deleted = false ' +
                       'RETURNING id, status',
-                values: [p.order_id, u.id]
+                values: [results.stripe.id, p.order_id, u.id]
             };
 
             request.pg.client.query(queryConfig, function (err, result) {
@@ -844,7 +846,8 @@ internals.createPaymentHandler = function (request, reply) {
         }
 
         // send notification to the order winner
-        var title = 'Received payment $' + results.order.final_price + 'from @' + u.username;
+        var amount = Utils.formatMoney(results.order.final_price);
+        var title = 'Received payment $' + amount + 'from @' + u.username;
         Push.notify('joyyor', results.order.winner_id, title, title, function (error) {
 
             if (error) {

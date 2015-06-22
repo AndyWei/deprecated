@@ -146,7 +146,7 @@ exports.register = function (server, options, next) {
             validate: {
                 payload: {
                     order_id: Joi.string().regex(/^[0-9]+$/).max(19).required(),
-                    price: Joi.number().precision(2).min(0).max(100000000).required(),
+                    price: Joi.number().min(0).max(10000000000).required(),
                     note: Joi.string().max(1000).required(),
                     expire_at: Joi.number().min(0).required(),
                     old_bid_id: Joi.string().regex(/^[0-9]+$/).max(19).default('0')
@@ -312,7 +312,8 @@ internals.createBidHandler = function (request, reply) {
         reply(null, { bid_id: results.bidId });
 
         // send notification to the asker
-        var title = 'Received a bid: ' + request.auth.credentials.username + ' ask for $' + request.payload.price;
+        var amount = Utils.formatMoney(request.payload.price);
+        var title = 'Received a bid: ' + request.auth.credentials.username + ' ask for $' + amount;
         Push.notify('joyy', results.askerId, title, title, function (error) {
 
             if (error) {
