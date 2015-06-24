@@ -11,7 +11,8 @@ var _ = require('underscore');
 
 
 var internals = {};
-var selectClause = 'SELECT id, user_id, price, currency, country, status, category, title, note, start_time, start_city, start_address, end_address, winner_id, final_price, created_at, updated_at, \
+var selectClause = 'SELECT id, user_id, price, currency, country, status, category, title, note, start_time, start_city, start_address, end_address, \
+                    winner_id, winner_name, final_price, created_at, updated_at, \
                     ST_X(start_point) AS start_point_lon, ST_Y(start_point) AS start_point_lat, ST_X(end_point) AS end_point_lon, ST_Y(end_point) AS end_point_lat \
                     FROM orders ';
 

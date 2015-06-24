@@ -331,8 +331,10 @@ internals.acceptBidHandler = function (request, reply) {
         function (callback) {
 
             var queryConfig = {
-                name: 'bids_order_id_by_bid_id',
-                text: 'SELECT order_id, user_id, price FROM bids WHERE id = $1 AND status = 0 AND deleted = false',
+                name: 'bids_users_by_bid_id',
+                text: 'SELECT b.order_id, b.user_id, b.price, u.username FROM bids AS b \
+                       INNER JOIN users AS u ON u.id = b.user_id \
+                       WHERE b.id = $1 AND b.status = 0 AND b.deleted = false',
                 values: [bidId]
             };
 
@@ -346,10 +348,10 @@ internals.acceptBidHandler = function (request, reply) {
                     return reply(Boom.badData(c.BID_UPDATE_FAILED));
                 }
 
-                callback(null, result.rows[0].order_id, result.rows[0].user_id, result.rows[0].price);
+                callback(null, result.rows[0]);
             });
         },
-        function (orderId, userId, price, callback) {
+        function (bid, callback) {
 
             request.pg.client.query('BEGIN', function(err) {
                 if (err) {
@@ -357,19 +359,19 @@ internals.acceptBidHandler = function (request, reply) {
                     return callback(err);
                 }
 
-                callback(null, orderId, userId, price);
+                callback(null, bid);
             });
         },
-        function (orderId, userId, price, callback) {
+        function (bid, callback) {
 
             var queryText = 'UPDATE orders ' +
-                      'SET winner_id = $1, status = 1, final_price = $2, stripe_token = $3, updated_at = now() ' +
-                      'WHERE id = $4 AND user_id = $5 AND status = 0 ' +
+                      'SET winner_id = $1, winner_name = $2, status = 1, final_price = $3, stripe_token = $4, updated_at = now() ' +
+                      'WHERE id = $5 AND user_id = $6 AND status = 0 ' +
                       'RETURNING id';
             var queryConfig = {
                 name: 'orders_update_pending',
                 text: queryText,
-                values: [userId, price, request.payload.stripe_token, orderId, request.auth.credentials.id]
+                values: [bid.user_id, bid.username, bid.price, request.payload.stripe_token, bid.order_id, request.auth.credentials.id]
             };
 
             request.pg.client.query(queryConfig, function (err, result) {
@@ -383,7 +385,7 @@ internals.acceptBidHandler = function (request, reply) {
                     return reply(Boom.badData(c.ORDER_UPDATE_FAILED));
                 }
 
-                callback(null, orderId);
+                callback(null, bid.order_id);
             });
         },
         function (orderId, callback) {

@@ -19,6 +19,7 @@ CREATE TABLE orders (
     deleted            BOOLEAN       NOT NULL DEFAULT false,
     photo_urls         TEXT                  ,  -- the urls of the order photos, separated by space
     winner_id          BIGINT                ,  -- the id of the user who wins this order
+    winner_name        TEXT                  ,  -- the username of the user who wins this order. Putting here to reduce join.
     final_price        NUMERIC(11)           ,  -- the final offered by provider and accepted by consumer. In cents.
     stripe_token       TEXT                  ,  -- the string that represents a credit card (start with tok_ ) or a stripe customer object (start with cus_ )
     stripe_charge_id   TEXT                  ,  -- the string that represents a sucessful charge, which will be used for refund
