@@ -456,8 +456,6 @@ internals.acceptBidHandler = function (request, reply) {
         }
         else {
 
-            reply(null, { winner: winnerId });
-
             // send notification to the winner
             var title = request.auth.credentials.username + ' accepted your bid!';
             Push.notify('joyyor', winnerId, title, title, function (error) {
@@ -467,8 +465,9 @@ internals.acceptBidHandler = function (request, reply) {
                 }
             });
 
-            // send notification to the losers
             console.info('losers = %j', losers);
+
+            reply(null, { winner: winnerId });
         }
     });
 };
