@@ -16,10 +16,6 @@ static const CGFloat kBodyLabelMinHeight = 53.0f;
 static const CGFloat kCityLabelWidth = 80.0f;
 static const CGFloat kDistanceLabelWidth = 35.0f;
 static const CGFloat kFontSizeAddress = 15.0f;
-static const CGFloat kFontSizeBody = 18.0f;
-static const CGFloat kFontSizeDetail = 13.0f;
-static const CGFloat kLeftMargin = 8.0f;
-static const CGFloat kRightMargin = 8.0f;
 static const CGFloat kStartDateViewWidth = 70.0f;
 static const CGFloat kStartDateViewHeight = 70.0f;
 static const CGFloat kStartTimeLabelWidth = 85.0f;
@@ -58,8 +54,8 @@ static const CGFloat kTopMargin = 8.0f;
 
 + (CGFloat)bodyLabelHeightForText:(NSString *)text
 {
-    CGFloat bodyLabelX = kTextLeftMargin + kLeftMargin + kStartDateViewWidth;
-    CGFloat bodyLabelWidth = CGRectGetWidth([[UIScreen mainScreen] applicationFrame]) - bodyLabelX - kRightMargin;
+    CGFloat bodyLabelX = kTextLeftMargin + kMarginLeft + kStartDateViewWidth;
+    CGFloat bodyLabelWidth = CGRectGetWidth([[UIScreen mainScreen] applicationFrame]) - bodyLabelX - kMarginRight;
     CGSize maximumSize = CGSizeMake(bodyLabelWidth, 10000);
 
     static UILabel *dummyLabel = nil;
@@ -253,7 +249,7 @@ static const CGFloat kTopMargin = 8.0f;
 
 - (void)_createStartDateView
 {
-    CGRect frame = CGRectMake(kLeftMargin, kTopMargin, kStartDateViewWidth, kStartDateViewHeight);
+    CGRect frame = CGRectMake(kMarginLeft, kTopMargin, kStartDateViewWidth, kStartDateViewHeight);
     JYDateView *startDateView = [[JYDateView alloc] initWithFrame:frame];
     startDateView.userInteractionEnabled = NO;
     self.startDateView = startDateView;
@@ -286,7 +282,7 @@ static const CGFloat kTopMargin = 8.0f;
     self.priceLabel.textAlignment = NSTextAlignmentRight;
 
     CGFloat x = kTextLeftMargin + CGRectGetMaxX(self.titleLabel.frame);
-    CGFloat width = CGRectGetWidth([[UIScreen mainScreen] applicationFrame]) - x - kRightMargin;
+    CGFloat width = CGRectGetWidth([[UIScreen mainScreen] applicationFrame]) - x - kMarginRight;
     self.priceLabel.frame = CGRectMake(x, kTopMargin, width, kTitleLabelHeight);
 }
 
@@ -294,7 +290,7 @@ static const CGFloat kTopMargin = 8.0f;
 {
     self.bodyLabel = [self _createLabel];
     CGFloat x = kTextLeftMargin + CGRectGetMaxX(self.startDateView.frame);
-    CGFloat width = CGRectGetWidth([[UIScreen mainScreen] applicationFrame]) - x - kRightMargin;
+    CGFloat width = CGRectGetWidth([[UIScreen mainScreen] applicationFrame]) - x - kMarginRight;
     CGFloat height = kBodyLabelMinHeight;
 
     self.bodyLabel.frame = CGRectMake(x, CGRectGetMaxY(self.titleLabel.frame), width, height);
@@ -315,7 +311,7 @@ static const CGFloat kTopMargin = 8.0f;
 {
     self.distanceLabel = [self _createLabel];
     self.distanceLabel.font = [UIFont systemFontOfSize:kFontSizeDetail];
-    CGFloat x = kLeftMargin + CGRectGetMaxX(self.cityLabel.frame);
+    CGFloat x = kMarginLeft + CGRectGetMaxX(self.cityLabel.frame);
     self.distanceLabel.frame = CGRectMake(x, 0, kDistanceLabelWidth, kTinyLabelHeight);
     self.distanceLabel.textColor = FlatGrayDark;
 }
@@ -324,7 +320,7 @@ static const CGFloat kTopMargin = 8.0f;
 {
     self.timeLabel = [self _createLabel];
     self.timeLabel.font = [UIFont systemFontOfSize:kFontSizeDetail];
-    CGFloat x = kLeftMargin + CGRectGetMaxX(self.distanceLabel.frame);
+    CGFloat x = kMarginLeft + CGRectGetMaxX(self.distanceLabel.frame);
     self.timeLabel.frame = CGRectMake(x, 0, kTimeLabelWidth, kTinyLabelHeight);
     self.timeLabel.textColor = FlatGrayDark;
 }
@@ -334,15 +330,15 @@ static const CGFloat kTopMargin = 8.0f;
     self.commentsLabel = [self _createLabel];
     self.commentsLabel.textAlignment = NSTextAlignmentRight;
     self.commentsLabel.font = [UIFont systemFontOfSize:kFontSizeDetail];
-    CGFloat x = kLeftMargin + CGRectGetMaxX(self.timeLabel.frame);
-    CGFloat width = CGRectGetWidth([[UIScreen mainScreen] applicationFrame]) - x - kRightMargin;
+    CGFloat x = kMarginLeft + CGRectGetMaxX(self.timeLabel.frame);
+    CGFloat width = CGRectGetWidth([[UIScreen mainScreen] applicationFrame]) - x - kMarginRight;
     self.commentsLabel.frame = CGRectMake(x, 0, width, kTinyLabelHeight);
     self.commentsLabel.textColor = FlatGrayDark;
 }
 
 - (void)_createbidLabel
 {
-    CGFloat width = CGRectGetWidth([[UIScreen mainScreen] applicationFrame]) - kTextLeftMargin - kRightMargin;
+    CGFloat width = CGRectGetWidth([[UIScreen mainScreen] applicationFrame]) - kTextLeftMargin - kMarginRight;
 
     self.bidLabel = [self _createLabel];
     self.bidLabel.frame = CGRectMake(kTextLeftMargin, 0, width, kBidLabelHeight);
@@ -355,7 +351,7 @@ static const CGFloat kTopMargin = 8.0f;
     self.fromLabel.frame = CGRectMake(kTextLeftMargin, 0, 35, kAddressLabelHeight);
     self.fromLabel.font = [UIFont systemFontOfSize:kFontSizeAddress];
 
-    CGFloat width = CGRectGetWidth([[UIScreen mainScreen] applicationFrame]) - kTextLeftMargin - kRightMargin;
+    CGFloat width = CGRectGetWidth([[UIScreen mainScreen] applicationFrame]) - kTextLeftMargin - kMarginRight;
 
     self.startAddressLabel = [self _createLabel];
     self.startAddressLabel.frame = CGRectMake(kTextLeftMargin, 0, width, kAddressLabelHeight);
@@ -369,7 +365,7 @@ static const CGFloat kTopMargin = 8.0f;
     self.toLabel.frame = CGRectMake(kTextLeftMargin, 0, 20, kAddressLabelHeight);
     self.toLabel.font = [UIFont systemFontOfSize:kFontSizeAddress];
 
-    CGFloat width = CGRectGetWidth([[UIScreen mainScreen] applicationFrame]) - kTextLeftMargin - kRightMargin;
+    CGFloat width = CGRectGetWidth([[UIScreen mainScreen] applicationFrame]) - kTextLeftMargin - kMarginRight;
 
     self.endAddressLabel = [self _createLabel];
     self.endAddressLabel.frame = CGRectMake(kTextLeftMargin, 0, width, kAddressLabelHeight);

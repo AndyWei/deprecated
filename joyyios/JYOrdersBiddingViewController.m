@@ -10,14 +10,14 @@
 #import <KVNProgress/KVNProgress.h>
 #import <Stripe/Stripe.h>
 
-#import "JYOrdersUnpaidViewController.h"
+#import "JYOrdersBiddingViewController.h"
 #import "JYBidViewCell.h"
 #import "JYCreditCard.h"
 #import "JYOrderCard.h"
 #import "JYUser.h"
 #import "UICustomActionSheet.h"
 
-@interface JYOrdersUnpaidViewController ()
+@interface JYOrdersBiddingViewController ()
 
 @property(nonatomic) NSIndexPath *selectedIndexPath;
 @property(nonatomic) NSString *stripeToken;
@@ -28,7 +28,7 @@
 
 static NSString *const kBidCellIdentifier = @"bidCell";
 
-@implementation JYOrdersUnpaidViewController
+@implementation JYOrdersBiddingViewController
 
 + (UILabel *)sharedAcceptLabel
 {
@@ -49,7 +49,7 @@ static NSString *const kBidCellIdentifier = @"bidCell";
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [self setTitleText:NSLocalizedString(@"My Orders", nil)];
+    [self setTitleText:NSLocalizedString(@"Orders In Bidding", nil)];
 
     self.selectedIndexPath = nil;
     self.stripeToken = nil;
@@ -75,6 +75,7 @@ static NSString *const kBidCellIdentifier = @"bidCell";
 - (void)_createTableView
 {
     self.tableView = [[UITableView alloc] initWithFrame:self.view.frame style:UITableViewStyleGrouped];
+    self.tableView.separatorColor = ClearColor;
     self.tableView.backgroundColor = FlatGray;
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
@@ -371,11 +372,12 @@ static NSString *const kBidCellIdentifier = @"bidCell";
     NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYUser currentUser].token];
     [manager.requestSerializer setValue:token forHTTPHeaderField:@"Authorization"];
 
-    NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"orders/unpaid"];
+    NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"orders/my"];
+    NSDictionary *parameters = @{@"status": @(JYOrderStatusActive)};
 
     __weak typeof(self) weakSelf = self;
     [manager GET:url
-      parameters:nil
+      parameters:parameters
          success:^(AFHTTPRequestOperation *operation, id responseObject) {
              NSLog(@"orders/unpaid fetch success responseObject: %@", responseObject);
 

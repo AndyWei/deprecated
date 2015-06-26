@@ -13,8 +13,9 @@
 
 #import "AppDelegate.h"
 #import "DataStore.h"
-#import "JYOrdersUnpaidViewController.h"
 #import "JYOrderCategoryCollectionViewController.h"
+#import "JYOrdersBiddingViewController.h"
+#import "JYOrdersFinishedViewController.h"
 #import "JYSignViewController.h"
 #import "JYUser.h"
 #import "OnboardingViewController.h"
@@ -272,14 +273,18 @@
 
     UIViewController *vc1 = [JYOrderCategoryCollectionViewController new];
     UINavigationController *nc1 = [[UINavigationController alloc] initWithRootViewController:vc1];
-    nc1.title = NSLocalizedString(@"Home", nil);
+    nc1.title = NSLocalizedString(@"New", nil);
 
-    UIViewController *vc2 = [JYOrdersUnpaidViewController new];
+    UIViewController *vc2 = [JYOrdersBiddingViewController new];
     UINavigationController *nc2 = [[UINavigationController alloc] initWithRootViewController:vc2];
-    nc2.title = NSLocalizedString(@"My", nil);
+    nc2.title = NSLocalizedString(@"Bidding", nil);
+
+    UIViewController *vc3 = [JYOrdersFinishedViewController new];
+    UINavigationController *nc3 = [[UINavigationController alloc] initWithRootViewController:vc3];
+    nc3.title = NSLocalizedString(@"Finished", nil);
 
     UITabBarController *tabBarController = [UITabBarController new];
-    tabBarController.viewControllers = @[ nc1, nc2 ];
+    tabBarController.viewControllers = @[ nc1, nc2, nc3 ];
 
     self.window.rootViewController = tabBarController;
 }

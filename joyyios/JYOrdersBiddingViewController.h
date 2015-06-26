@@ -11,6 +11,6 @@
 
 @import PassKit;
 
-@interface JYOrdersUnpaidViewController : JYOrdersBaseViewController <UITableViewDataSource, UITableViewDelegate, PKPaymentAuthorizationViewControllerDelegate, JYPaymentViewControllerDelegate>
+@interface JYOrdersBiddingViewController : JYOrdersBaseViewController <UITableViewDataSource, UITableViewDelegate, PKPaymentAuthorizationViewControllerDelegate, JYPaymentViewControllerDelegate>
 
 @end

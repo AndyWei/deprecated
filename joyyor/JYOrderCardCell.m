@@ -67,4 +67,5 @@
     NSString *comments = NSLocalizedString(@"comments", nil);
     self.card.commentsLabel.text = [NSString stringWithFormat:@"%tu %@", count, comments];
 }
+
 @end

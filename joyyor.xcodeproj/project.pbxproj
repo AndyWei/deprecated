@@ -40,9 +40,7 @@
 		D6F4A00A1AF5DB4D001A3C89 /* JYMapDashBoardView.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F49FC51AF5DB4D001A3C89 /* JYMapDashBoardView.m */; };
 		D6F4A00C1AF5DB4D001A3C89 /* JYOrder.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F49FC71AF5DB4D001A3C89 /* JYOrder.m */; };
 		D6F4A00E1AF5DB4D001A3C89 /* JYOrderCard.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F49FC91AF5DB4D001A3C89 /* JYOrderCard.m */; };
-		D6F4A0141AF5DB4D001A3C89 /* JYPanGestureRecognizer.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F49FCF1AF5DB4D001A3C89 /* JYPanGestureRecognizer.m */; };
 		D6F4A0161AF5DB4D001A3C89 /* JYPinAnnotationView.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F49FD11AF5DB4D001A3C89 /* JYPinAnnotationView.m */; };
-		D6F4A0181AF5DB4D001A3C89 /* JYPinchGestureRecognizer.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F49FD31AF5DB4D001A3C89 /* JYPinchGestureRecognizer.m */; };
 		D6F4A01A1AF5DB4D001A3C89 /* JYPlacesViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F49FD51AF5DB4D001A3C89 /* JYPlacesViewCell.m */; };
 		D6F4A01C1AF5DB4D001A3C89 /* JYPlacesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F49FD71AF5DB4D001A3C89 /* JYPlacesViewController.m */; };
 		D6F4A01E1AF5DB4D001A3C89 /* JYPriceTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F49FD91AF5DB4D001A3C89 /* JYPriceTextFieldCell.m */; };
@@ -134,12 +132,8 @@
 		D6F49FC71AF5DB4D001A3C89 /* JYOrder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JYOrder.m; path = joyyios/JYOrder.m; sourceTree = SOURCE_ROOT; };
 		D6F49FC81AF5DB4D001A3C89 /* JYOrderCard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JYOrderCard.h; path = joyyios/JYOrderCard.h; sourceTree = SOURCE_ROOT; };
 		D6F49FC91AF5DB4D001A3C89 /* JYOrderCard.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JYOrderCard.m; path = joyyios/JYOrderCard.m; sourceTree = SOURCE_ROOT; };
-		D6F49FCE1AF5DB4D001A3C89 /* JYPanGestureRecognizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JYPanGestureRecognizer.h; path = joyyios/JYPanGestureRecognizer.h; sourceTree = SOURCE_ROOT; };
-		D6F49FCF1AF5DB4D001A3C89 /* JYPanGestureRecognizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JYPanGestureRecognizer.m; path = joyyios/JYPanGestureRecognizer.m; sourceTree = SOURCE_ROOT; };
 		D6F49FD01AF5DB4D001A3C89 /* JYPinAnnotationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JYPinAnnotationView.h; path = joyyios/JYPinAnnotationView.h; sourceTree = SOURCE_ROOT; };
 		D6F49FD11AF5DB4D001A3C89 /* JYPinAnnotationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JYPinAnnotationView.m; path = joyyios/JYPinAnnotationView.m; sourceTree = SOURCE_ROOT; };
-		D6F49FD21AF5DB4D001A3C89 /* JYPinchGestureRecognizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JYPinchGestureRecognizer.h; path = joyyios/JYPinchGestureRecognizer.h; sourceTree = SOURCE_ROOT; };
-		D6F49FD31AF5DB4D001A3C89 /* JYPinchGestureRecognizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JYPinchGestureRecognizer.m; path = joyyios/JYPinchGestureRecognizer.m; sourceTree = SOURCE_ROOT; };
 		D6F49FD41AF5DB4D001A3C89 /* JYPlacesViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JYPlacesViewCell.h; path = joyyios/JYPlacesViewCell.h; sourceTree = SOURCE_ROOT; };
 		D6F49FD51AF5DB4D001A3C89 /* JYPlacesViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JYPlacesViewCell.m; path = joyyios/JYPlacesViewCell.m; sourceTree = SOURCE_ROOT; };
 		D6F49FD61AF5DB4D001A3C89 /* JYPlacesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JYPlacesViewController.h; path = joyyios/JYPlacesViewController.h; sourceTree = SOURCE_ROOT; };
@@ -360,12 +354,8 @@
 				D6F49FC91AF5DB4D001A3C89 /* JYOrderCard.m */,
 				D6C82B751B13EB3D00876F57 /* JYOrdersBaseViewController.h */,
 				D6C82B761B13EB3D00876F57 /* JYOrdersBaseViewController.m */,
-				D6F49FCE1AF5DB4D001A3C89 /* JYPanGestureRecognizer.h */,
-				D6F49FCF1AF5DB4D001A3C89 /* JYPanGestureRecognizer.m */,
 				D6F49FD01AF5DB4D001A3C89 /* JYPinAnnotationView.h */,
 				D6F49FD11AF5DB4D001A3C89 /* JYPinAnnotationView.m */,
-				D6F49FD21AF5DB4D001A3C89 /* JYPinchGestureRecognizer.h */,
-				D6F49FD31AF5DB4D001A3C89 /* JYPinchGestureRecognizer.m */,
 				D6F49FD41AF5DB4D001A3C89 /* JYPlacesViewCell.h */,
 				D6F49FD51AF5DB4D001A3C89 /* JYPlacesViewCell.m */,
 				D6F49FD61AF5DB4D001A3C89 /* JYPlacesViewController.h */,
@@ -564,7 +554,6 @@
 				D6F4A00E1AF5DB4D001A3C89 /* JYOrderCard.m in Sources */,
 				D6F4A02A1AF5DB4D001A3C89 /* JYSignViewController.m in Sources */,
 				D6F4A0461AF5DD04001A3C89 /* JYOrdersNearbyViewController.m in Sources */,
-				D6F4A0181AF5DB4D001A3C89 /* JYPinchGestureRecognizer.m in Sources */,
 				D6F4A01C1AF5DB4D001A3C89 /* JYPlacesViewController.m in Sources */,
 				D6F49FFA1AF5DB4D001A3C89 /* JYAutoCompleteDataSource.m in Sources */,
 				D6F49FFE1AF5DB4D001A3C89 /* JYBidViewCell.m in Sources */,
@@ -580,7 +569,6 @@
 				D6F4A0551AF6D188001A3C89 /* JYOrdersTodoViewController.m in Sources */,
 				D679F0231B1C1513004F1C37 /* JYAccountIndividualViewController.m in Sources */,
 				D6C82B591B0DA5CE00876F57 /* JYCommentsViewController.m in Sources */,
-				D6F4A0141AF5DB4D001A3C89 /* JYPanGestureRecognizer.m in Sources */,
 				D6F4A0241AF5DB4D001A3C89 /* JYSignBaseViewController.m in Sources */,
 				D6F4A0221AF5DB4D001A3C89 /* JYServiceCategory.m in Sources */,
 				D6F49F891AF595F2001A3C89 /* main.m in Sources */,

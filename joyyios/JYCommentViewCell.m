@@ -9,8 +9,6 @@
 #import "JYCommentViewCell.h"
 
 static const CGFloat kMinHeight = 10;
-static const CGFloat kLeftMargin = 8;
-static const CGFloat kRightMargin = 8;
 static const CGFloat kTopMargin = 3;
 static const CGFloat kFontSizeComment = 16.0f;
 
@@ -26,7 +24,7 @@ static const CGFloat kFontSizeComment = 16.0f;
 + (CGFloat)cellHeightForComment:(JYComment *)comment
 {
     CGFloat screenWidth = CGRectGetWidth([[UIScreen mainScreen] applicationFrame]);
-    CGSize maximumSize = CGSizeMake(screenWidth - kLeftMargin - kRightMargin, 10000);
+    CGSize maximumSize = CGSizeMake(screenWidth - kMarginLeft - kMarginRight, 10000);
 
     static UILabel *dummyLabel = nil;
     if (!dummyLabel)
@@ -110,7 +108,7 @@ static const CGFloat kFontSizeComment = 16.0f;
 - (void)_createCommentLabel
 {
     CGFloat screenWidth = CGRectGetWidth([[UIScreen mainScreen] applicationFrame]);
-    CGRect frame = CGRectMake(kLeftMargin, kTopMargin, screenWidth- kLeftMargin - kRightMargin, kMinHeight);
+    CGRect frame = CGRectMake(kMarginLeft, kTopMargin, screenWidth- kMarginLeft - kMarginRight, kMinHeight);
 
     TTTAttributedLabel *commentLabel = [[TTTAttributedLabel alloc] initWithFrame:frame];;
     commentLabel.delegate = self;

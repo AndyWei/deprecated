@@ -13,12 +13,19 @@ const CGFloat kButtonLocateDiameter = 40;
 
 const CGFloat kIntroductionVersion = 1.0;
 
+const CGFloat kFontSizeBody = 18.0f;
+const CGFloat kFontSizeDetail = 13.0f;
+
 const CGFloat kMapDashBoardHeight = 165.0f;
 const CGFloat kMapDashBoardLeadingFontSize = 16.0f;
 const CGFloat kMapDashBoardSupportingFontSize = 15.0f;
 const CGFloat kMapEndPointCenterOffset = 0.003f;
 const CGFloat kMapDefaultAltitude = 2000.0f;
 const CGFloat kMapDefaultSpanDistance = 3000.0f;
+
+const CGFloat kMarginLeft = 8.0f;
+const CGFloat kMarginRight = 8.0f;
+const CGFloat kMarginTop = 8.0f;
 
 const CGFloat kNavBarTitleFontSize = 20.0f;
 
@@ -59,6 +66,7 @@ NSString *const kNotificationDidCreateAccount = @"didCreateAccount";
 NSString *const kNotificationDidCreateBid = @"didCreateBid";
 NSString *const kNotificationDidCreateComment = @"didCreateComment";
 NSString *const kNotificationDidCreateOrder = @"didCreateOrder";
+NSString *const kNotificationDidFinishOrder = @"didFinishOrder";
 NSString *const kNotificationDidReceiveBid = @"didReceiveBid";
 NSString *const kNotificationDidSignIn = @"didSignIn";
 NSString *const kNotificationDidSignUp = @"didSignUp";
@@ -68,5 +76,5 @@ NSString *const kSystemFontItalic = @"AvenirNextCondensed-Italic ";
 NSString *const kSystemFontLight = @"AvenirNextCondensed-UltraLight ";
 NSString *const kSystemFontRegular = @"AvenirNextCondensed-Regular";
 
-//NSString *const kUrlAPIBase = @"http://api.joyyapp.com:8000/v1/";
-NSString *const kUrlAPIBase = @"http://192.168.1.145:8000/v1/";
+NSString *const kUrlAPIBase = @"http://api.joyyapp.com:8000/v1/";
+//NSString *const kUrlAPIBase = @"http://192.168.1.145:8000/v1/";

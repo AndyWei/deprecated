@@ -99,6 +99,7 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
 - (void)_createTableView
 {
     self.tableView = [[UITableView alloc] initWithFrame:self.view.frame style:UITableViewStylePlain];
+    self.tableView.separatorColor = ClearColor;
     self.tableView.backgroundColor = FlatGray;
     self.tableView.dataSource = self;
     self.tableView.delegate = self;

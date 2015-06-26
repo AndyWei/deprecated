@@ -18,15 +18,18 @@
 
 @property(nonatomic) BOOL mapNeedsPadding;
 @property(nonatomic) CLLocationCoordinate2D userSelectedMapCenter;
-@property(nonatomic) JYMapDashBoardView *dashBoard;
-@property(nonatomic) JYPanGestureRecognizer *panRecognizer;
-@property(nonatomic) JYPinchGestureRecognizer *pinchRecognizer;
 @property(nonatomic) MapEditMode mapEditMode;
-@property(nonatomic) MKMapView *mapView;
 @property(nonatomic) MKPointAnnotation *startPoint;
 @property(nonatomic) MKPointAnnotation *endPoint;
 @property(nonatomic) UIImageView *startPointView;
 @property(nonatomic) UIImageView *endPointView;
+
+@property(nonatomic, weak) JYMapDashBoardView *dashBoard;
+@property(nonatomic, weak) MKMapView *mapView;
+
+// for pinch gesture
+@property(nonatomic) CLLocationDistance originalAltitude;
+@property(nonatomic) CLLocationCoordinate2D originalCenterCoordinate;
 
 @end
 
@@ -95,32 +98,33 @@ static NSString *reuseId = @"pin";
     CGFloat topMargin = CGRectGetHeight(statusBarFrame) + CGRectGetHeight(self.navigationController.navigationBar.frame);
     CGRect mapFrame = CGRectMake(0, topMargin, CGRectGetWidth(self.view.frame), CGRectGetHeight(self.view.frame) - topMargin);
 
-    self.mapView = [[MKMapView alloc] initWithFrame:mapFrame];
-    self.mapView.delegate = self;
-    self.mapView.showsUserLocation = YES;
-    self.mapView.pitchEnabled = NO;
-    self.mapView.rotateEnabled = NO;
+    MKMapView *mapView = [[MKMapView alloc] initWithFrame:mapFrame];
+    mapView.delegate = self;
+    mapView.showsUserLocation = YES;
+    mapView.pitchEnabled = NO;
+    mapView.rotateEnabled = NO;
 
     // To resolve the map center moving while zooming issue, distable default zooming and use our own pintch gesture recognizer
-    self.mapView.scrollEnabled = YES;
-    self.mapView.zoomEnabled = NO;
+    mapView.scrollEnabled = YES;
+    mapView.zoomEnabled = NO;
 
     // The panRecognizer only be used to detect begin and of of pans for hidding and showing self.dashBoard
-    self.panRecognizer = [[JYPanGestureRecognizer alloc] init];
-    self.panRecognizer.delegate = self;
-    [self.mapView addGestureRecognizer:self.panRecognizer];
+    UIPanGestureRecognizer *panRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(_handlePanGesture:)];
+    panRecognizer.delegate = self;
+    [mapView addGestureRecognizer:panRecognizer];
 
-    self.pinchRecognizer = [[JYPinchGestureRecognizer alloc] initWithMapView:self.mapView];
-    self.pinchRecognizer.delegate = self;
-    [self.mapView addGestureRecognizer:self.pinchRecognizer];
+    UIPinchGestureRecognizer *pinchRecognizer = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(_handlePinchGesture:)];
+    pinchRecognizer.delegate = self;
+    [mapView addGestureRecognizer:pinchRecognizer];
 
-    // The self.mapView.userlocation hasn't been initiated at this time point, so use the currentLocation in AppDelegate
+    // The mapView.userlocation hasn't been initiated at this time point, so use the currentLocation in AppDelegate
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     self.userSelectedMapCenter = appDelegate.currentCoordinate;
 
-    self.mapView.camera.altitude = kMapDefaultAltitude;
-    self.mapView.centerCoordinate = self.userSelectedMapCenter;
+    mapView.camera.altitude = kMapDefaultAltitude;
+    mapView.centerCoordinate = self.userSelectedMapCenter;
 
+    self.mapView = mapView;
     [self.view addSubview:self.mapView];
 }
 
@@ -130,10 +134,50 @@ static NSString *reuseId = @"pin";
     CGRect frame = CGRectMake(0, y, CGRectGetWidth(self.view.frame), kMapDashBoardHeight);
 
     JYMapDashBoardStyle style = ([self _shouldHaveEndPoint]) ? JYMapDashBoardStyleStartAndEnd : JYMapDashBoardStyleStartOnly;
-    self.dashBoard = [[JYMapDashBoardView alloc] initWithFrame:frame withStyle:style];
-    self.dashBoard.delegate = self;
+    JYMapDashBoardView *dashBoard = [[JYMapDashBoardView alloc] initWithFrame:frame withStyle:style];
+    dashBoard.delegate = self;
 
+    self.dashBoard = dashBoard;
     [self.view addSubview:self.dashBoard];
+}
+
+- (void)_handlePanGesture:(UIPanGestureRecognizer *)sender
+{
+    if (sender.state == UIGestureRecognizerStateBegan)
+    {
+        self.dashBoard.hidden = YES;
+    }
+    else if (sender.state == UIGestureRecognizerStateChanged)
+    {
+        // Do nothing. The mapview has scroll enabled and will handle scrolling by itself.
+    }
+    else
+    {
+        self.dashBoard.hidden = NO;
+        [self _updateAddress];
+    }
+}
+
+- (void)_handlePinchGesture:(UIPinchGestureRecognizer *)sender
+{
+    if (sender.state == UIGestureRecognizerStateBegan)
+    {
+        self.originalAltitude = self.mapView.camera.altitude;
+        self.originalCenterCoordinate = self.mapView.centerCoordinate;
+        self.dashBoard.hidden = YES;
+    }
+    else if (sender.state == UIGestureRecognizerStateChanged)
+    {
+        CLLocationDistance altitude = self.originalAltitude / sender.scale;
+        altitude = fmax(altitude, 350.f);
+        self.mapView.centerCoordinate = self.originalCenterCoordinate;
+        self.mapView.camera.altitude = altitude;
+    }
+    else
+    {
+        self.dashBoard.hidden = NO;
+        [self _updateAddress];
+    }
 }
 
 - (void)_updateAddress
@@ -578,37 +622,27 @@ static NSString *reuseId = @"pin";
     }
 }
 
-#pragma mark - JYPanGestureRecognizerDelegate
-
-- (void)panGestureBegin
-{
-    self.dashBoard.hidden = YES;
-}
-
-- (void)panGestureEnd
-{
-    self.dashBoard.hidden = NO;
-    [self _updateAddress];
-}
-
-#pragma mark - JYPinchGestureRecognizerDelegate
-
-- (void)pinchGestureBegin
-{
-    self.dashBoard.hidden = YES;
-}
-
-- (void)pinchGestureEnd
-{
-    self.dashBoard.hidden = NO;
-    [self _updateAddress];
-}
-
 #pragma mark - JYPlacesViewControllerDelegate
 
 - (void)placesViewController:(JYPlacesViewController *)viewController placemarkSelected:(MKPlacemark *)placemark
 {
     self.userSelectedMapCenter = placemark? placemark.coordinate: self.mapView.userLocation.location.coordinate;
+}
+
+#pragma mark - UIGestureRecognizerDelegate
+- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer
+{
+    return YES;
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
+{
+    return YES;
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
+{
+    return YES;
 }
 
 @end

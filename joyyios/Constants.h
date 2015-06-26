@@ -16,12 +16,19 @@ extern const CGFloat kButtonLocateDiameter;
 
 extern const CGFloat kIntroductionVersion;
 
+extern const CGFloat kFontSizeBody;
+extern const CGFloat kFontSizeDetail;
+
 extern const CGFloat kMapDashBoardHeight;
 extern const CGFloat kMapDashBoardLeadingFontSize;
 extern const CGFloat kMapDashBoardSupportingFontSize;
 extern const CGFloat kMapEndPointCenterOffset;
 extern const CGFloat kMapDefaultAltitude;
 extern const CGFloat kMapDefaultSpanDistance;
+
+extern const CGFloat kMarginLeft;
+extern const CGFloat kMarginRight;
+extern const CGFloat kMarginTop;
 
 extern const CGFloat kNavBarTitleFontSize;
 
@@ -61,6 +68,7 @@ extern NSString *const kNotificationDidCreateAccount;
 extern NSString *const kNotificationDidCreateBid;
 extern NSString *const kNotificationDidCreateComment;
 extern NSString *const kNotificationDidCreateOrder;
+extern NSString *const kNotificationDidFinishOrder;
 extern NSString *const kNotificationDidReceiveBid;
 extern NSString *const kNotificationDidSignIn;
 extern NSString *const kNotificationDidSignUp;
