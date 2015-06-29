@@ -59,10 +59,10 @@
     NSString *actionString = nil;
     switch (order.status)
     {
-        case JYOrderStatusPending:
+        case JYOrderStatusDealt:
             actionString = NSLocalizedString(@"Start work", nil);
             break;
-        case JYOrderStatusOngoing:
+        case JYOrderStatusStarted:
             actionString = NSLocalizedString(@"Finish work", nil);
             break;
         default:
@@ -111,11 +111,11 @@
     NSString *url = nil;
     switch (order.status)
     {
-        case JYOrderStatusPending:
-            url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"orders/ongoing"];
+        case JYOrderStatusDealt:
+            url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"orders/started"];
             [self _updateOrder:order withURL:url];
             break;
-        case JYOrderStatusOngoing:
+        case JYOrderStatusStarted:
             url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"orders/finished"];
             [self _updateOrder:order withURL:url];
             break;

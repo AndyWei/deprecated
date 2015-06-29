@@ -1,5 +1,5 @@
 //
-//  JYOrdersUnpaidViewController.m
+//  JYOrdersOngoingViewController.m
 //  joyyios
 //
 //  Created by Ping Yang on 4/25/15.
@@ -10,15 +10,16 @@
 #import <KVNProgress/KVNProgress.h>
 #import <Stripe/Stripe.h>
 
-#import "JYOrdersBiddingViewController.h"
 #import "JYBidViewCell.h"
 #import "JYCreditCard.h"
 #import "JYOrderCard.h"
+#import "JYOrdersOngoingViewController.h"
 #import "JYUser.h"
 #import "UICustomActionSheet.h"
 
-@interface JYOrdersBiddingViewController ()
+@interface JYOrdersOngoingViewController ()
 
+@property(nonatomic) NSMutableArray *dealtOrderList;
 @property(nonatomic) NSIndexPath *selectedIndexPath;
 @property(nonatomic) NSString *stripeToken;
 @property(nonatomic) NSMutableArray *creditCardList;
@@ -28,7 +29,7 @@
 
 static NSString *const kBidCellIdentifier = @"bidCell";
 
-@implementation JYOrdersBiddingViewController
+@implementation JYOrdersOngoingViewController
 
 + (UILabel *)sharedAcceptLabel
 {
@@ -55,11 +56,14 @@ static NSString *const kBidCellIdentifier = @"bidCell";
     self.stripeToken = nil;
     self.creditCardList = nil;
 
+    self.orderList = [NSMutableArray new]; // contains all active orders
+    self.dealtOrderList = [NSMutableArray new]; // contains all dealt orders
+
     [self _createTableView];
     [self _fetchOrders];
 
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_fetchOrders) name:kNotificationDidCreateOrder object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_fetchOrders) name:kNotificationDidReceiveBid object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_fetchActiveOrders) name:kNotificationDidCreateOrder object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_fetchActiveOrders) name:kNotificationDidReceiveBid object:nil];
 }
 
 - (void)didReceiveMemoryWarning
@@ -92,16 +96,30 @@ static NSString *const kBidCellIdentifier = @"bidCell";
     tableViewController.refreshControl = self.refreshControl;
 }
 
+- (JYOrder *)_orderAt:(NSInteger)index
+{
+    JYOrder *order = nil;
+    if (index < self.dealtOrderList.count)
+    {
+        order = self.dealtOrderList[index];
+    }
+    else
+    {
+        order = self.orderList[index - self.dealtOrderList.count];
+    }
+    return order;
+}
+
 #pragma mark - UITableViewDataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return self.orderList.count;
+    return self.dealtOrderList.count + self.orderList.count;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    JYOrder *order = self.orderList[section];
+    JYOrder *order = [self _orderAt:section];
     return order.bids.count;
 }
 
@@ -110,7 +128,7 @@ static NSString *const kBidCellIdentifier = @"bidCell";
     JYBidViewCell *cell =
     (JYBidViewCell *)[tableView dequeueReusableCellWithIdentifier:kBidCellIdentifier forIndexPath:indexPath];
 
-    JYOrder *order = self.orderList[indexPath.section];
+    JYOrder *order = [self _orderAt:indexPath.section];
     JYBid *bid = order.bids[indexPath.row];
     [cell presentBid:bid];
     cell.backgroundColor = bid.statusColor;
@@ -146,12 +164,13 @@ static NSString *const kBidCellIdentifier = @"bidCell";
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    return [JYOrderCard cardHeightForOrder:self.orderList[section] withAddress:NO andBid:NO];
+    JYOrder * order = [self _orderAt:section];
+    return [JYOrderCard cardHeightForOrder:order withAddress:NO andBid:NO];
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-    JYOrder *order = self.orderList[section];
+    JYOrder *order = [self _orderAt:section];
     CGFloat height = [JYOrderCard cardHeightForOrder:order withAddress:NO andBid:NO];
 
     JYOrderCard *card = [[JYOrderCard alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(tableView.frame), height)];
@@ -189,7 +208,7 @@ static NSString *const kBidCellIdentifier = @"bidCell";
     if ([self _isPaymentReady])
     {
         NSAssert(self.selectedIndexPath != nil, @"selectedIndexPath should not be nil");
-        JYOrder *order = self.orderList[self.selectedIndexPath.section];
+        JYOrder *order = [self _orderAt:self.selectedIndexPath.section];
         JYBid *bid = order.bids[self.selectedIndexPath.row];
         [self _acceptBid:bid forOrder:order];
     }
@@ -215,7 +234,7 @@ static NSString *const kBidCellIdentifier = @"bidCell";
 
     // Configure request
     NSAssert(self.selectedIndexPath != nil, @"selectedIndexPath should not be nil");
-    JYOrder *order = self.orderList[self.selectedIndexPath.section];
+    JYOrder *order = [self _orderAt:self.selectedIndexPath.section];
     JYBid *bid = order.bids[self.selectedIndexPath.row];
 
     NSNumber *price = [NSNumber numberWithUnsignedInteger:bid.price];
@@ -349,7 +368,7 @@ static NSString *const kBidCellIdentifier = @"bidCell";
          success:^(AFHTTPRequestOperation *operation, id responseObject) {
              NSLog(@"bids/accept post success responseObject: %@", responseObject);
 
-             order.status = JYOrderStatusPending;
+             order.status = JYOrderStatusDealt;
              bid.status = JYBidStatusAccepted;
 
              [weakSelf networkThreadEnd];
@@ -368,6 +387,45 @@ static NSString *const kBidCellIdentifier = @"bidCell";
     {
         return;
     }
+
+    [self _fetchDealtOrders];
+    [self _fetchActiveOrders];
+}
+
+- (void)_fetchDealtOrders
+{
+    [self networkThreadBegin];
+
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYUser currentUser].token];
+    [manager.requestSerializer setValue:token forHTTPHeaderField:@"Authorization"];
+
+    NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"orders/my"];
+    NSDictionary *parameters = @{@"status": @(JYOrderStatusDealt)};
+
+    __weak typeof(self) weakSelf = self;
+    [manager GET:url
+      parameters:parameters
+         success:^(AFHTTPRequestOperation *operation, id responseObject) {
+             NSLog(@"my dealt orders fetch success responseObject: %@", responseObject);
+
+             weakSelf.dealtOrderList = [NSMutableArray new];
+             for (NSDictionary *dict in responseObject)
+             {
+                 JYOrder *newOrder = [[JYOrder alloc] initWithDictionary:dict];
+                 [weakSelf.dealtOrderList addObject:newOrder];
+             }
+
+             [weakSelf networkThreadEnd];
+         }
+         failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+             [weakSelf networkThreadEnd];
+         }
+     ];
+}
+
+- (void)_fetchActiveOrders
+{
     [self networkThreadBegin];
 
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
@@ -381,7 +439,7 @@ static NSString *const kBidCellIdentifier = @"bidCell";
     [manager GET:url
       parameters:parameters
          success:^(AFHTTPRequestOperation *operation, id responseObject) {
-             NSLog(@"orders/my fetch success responseObject: %@", responseObject);
+             NSLog(@"my active orders fetch success responseObject: %@", responseObject);
 
              weakSelf.orderList = [NSMutableArray new];
              for (NSDictionary *dict in responseObject)
@@ -427,7 +485,7 @@ static NSString *const kBidCellIdentifier = @"bidCell";
                  if (order != nil)
                  {
                      if (order.status == JYOrderStatusActive ||
-                         (order.status == JYOrderStatusPending && bid.status == JYBidStatusAccepted))
+                         (order.status == JYOrderStatusDealt && bid.status == JYBidStatusAccepted))
                      {
                          [order.bids addObject:bid];
                      }

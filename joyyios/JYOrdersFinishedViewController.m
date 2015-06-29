@@ -15,7 +15,8 @@
 
 @interface JYOrdersFinishedViewController ()
 
-@property(nonatomic) NSMutableArray *unpaidOrderList;
+@property(nonatomic) NSMutableArray *startedOrderList;
+@property(nonatomic) NSMutableArray *finishedOrderList;
 @property(nonatomic) NSMutableArray *paidOrderList;
 
 @end
@@ -31,7 +32,7 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
     [super viewDidLoad];
     [self setTitleText:NSLocalizedString(@"Finished Orders", nil)];
 
-    self.unpaidOrderList = [NSMutableArray new];
+    self.finishedOrderList = [NSMutableArray new];
     self.paidOrderList = [NSMutableArray new];
 
     [self _createTableView];
@@ -79,7 +80,7 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return (section == 0) ? self.unpaidOrderList.count : self.paidOrderList.count;
+    return (section == 0) ? self.finishedOrderList.count : self.paidOrderList.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -87,7 +88,7 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
     JYOrderViewCell *cell =
     (JYOrderViewCell *)[tableView dequeueReusableCellWithIdentifier:kOrderCellIdentifier forIndexPath:indexPath];
 
-    cell.order = (indexPath.section == 0) ? self.unpaidOrderList[indexPath.row] : self.paidOrderList[indexPath.row];
+    cell.order = (indexPath.section == 0) ? self.finishedOrderList[indexPath.row] : self.paidOrderList[indexPath.row];
 
     return cell;
 }
@@ -96,7 +97,7 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    JYOrder *order = (indexPath.section == 0) ? self.unpaidOrderList[indexPath.row] : self.paidOrderList[indexPath.row];
+    JYOrder *order = (indexPath.section == 0) ? self.finishedOrderList[indexPath.row] : self.paidOrderList[indexPath.row];
     return [JYOrderViewCell cellHeightForOrder:order];
 }
 
@@ -113,7 +114,7 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
     {
         NSString *youHave = NSLocalizedString(@"You have", nil);
         NSString *unpaidOrders = NSLocalizedString(@"unpaid orders", nil);
-        headerLabel.text = [NSString stringWithFormat:@"%@ %tu %@", youHave, self.unpaidOrderList.count, unpaidOrders];
+        headerLabel.text = [NSString stringWithFormat:@"%@ %tu %@", youHave, self.finishedOrderList.count, unpaidOrders];
     }
     else
     {
@@ -179,11 +180,11 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
          success:^(AFHTTPRequestOperation *operation, id responseObject) {
              NSLog(@"orders/my finished fetch success responseObject: %@", responseObject);
 
-             weakSelf.unpaidOrderList = [NSMutableArray new];
+             weakSelf.finishedOrderList = [NSMutableArray new];
              for (NSDictionary *dict in responseObject)
              {
                  JYOrder *order = [[JYOrder alloc] initWithDictionary:dict];
-                 [weakSelf.unpaidOrderList addObject:order];
+                 [weakSelf.finishedOrderList addObject:order];
              }
 
              [weakSelf networkThreadEnd];

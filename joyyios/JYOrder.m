@@ -244,10 +244,10 @@ static JYOrder *_currentOrder;
     UIColor *color = JoyyWhite;
     switch (self.status)
     {
-        case JYOrderStatusPending:
+        case JYOrderStatusDealt:
             color = FlatSand;
             break;
-        case JYOrderStatusOngoing:
+        case JYOrderStatusStarted:
             color = FlatSandDark;
             break;
         case JYOrderStatusFinished:
@@ -268,7 +268,7 @@ static JYOrder *_currentOrder;
     UIColor *color = JoyyWhite;
     switch (self.status)
     {
-        case JYOrderStatusOngoing:
+        case JYOrderStatusStarted:
             color = FlatSand;
             break;
         case JYOrderStatusFinished:

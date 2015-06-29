@@ -12,7 +12,6 @@
 
 static const CGFloat kBidderNameLabelHeight = 35;
 static const CGFloat kBidderNameLabelWidth = 150;
-static const CGFloat kLabelHeight = 60.0f;
 static const CGFloat kRatingViewHeight = 20;
 static const CGFloat kRatingViewWidth = 70;
 static const CGFloat kTinyFontSize = 13.0f;
@@ -33,7 +32,7 @@ static const CGFloat kTinyFontSize = 13.0f;
 
 + (CGFloat)cellHeight
 {
-    return kMarginTop + kLabelHeight;
+    return kMarginTop + kBidderNameLabelHeight + kRatingViewHeight;
 }
 
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
@@ -47,8 +46,8 @@ static const CGFloat kTinyFontSize = 13.0f;
         [self _createBidderNameLabel];
         [self _createRatingView];
         [self _createRatingCountLabel];
-        [self _createExpireTimeLabel];
         [self _createPriceLabel];
+        [self _createExpireTimeLabel];
     }
     return self;
 }
@@ -57,7 +56,7 @@ static const CGFloat kTinyFontSize = 13.0f;
 {
     self.bidderNameLabel.text = bid.username;
     self.expireTimeLabel.text = bid.expireTimeString;
-    self.priceLabel.text = bid.priceString;
+    self.priceLabel.text = [NSString stringWithFormat:@"asks for    %@", bid.priceString];
 
     [self setRatingTotalScore:bid.userRatingTotal count:bid.userRatingCount];
 }
@@ -98,22 +97,24 @@ static const CGFloat kTinyFontSize = 13.0f;
     self.ratingCountLabel.font = [UIFont systemFontOfSize:kTinyFontSize];
 }
 
-- (void)_createExpireTimeLabel
-{
-    self.expireTimeLabel = [self _createLabel];
-    CGFloat x = kMarginLeft + CGRectGetMaxX(self.bidderNameLabel.frame);
-    self.expireTimeLabel.frame = CGRectMake(x, CGRectGetMaxY(self.bidderNameLabel.frame), 120, kRatingViewHeight);
-    self.expireTimeLabel.font = [UIFont systemFontOfSize:kTinyFontSize];
-}
-
 - (void)_createPriceLabel
 {
     self.priceLabel = [self _createLabel];
     self.priceLabel.textAlignment = NSTextAlignmentRight;
 
-    CGFloat x = CGRectGetMaxX(self.expireTimeLabel.frame);
+    CGFloat x = CGRectGetMaxX(self.bidderNameLabel.frame);
     CGFloat width = CGRectGetWidth([[UIScreen mainScreen] applicationFrame]) - x - kMarginRight;
-    self.priceLabel.frame = CGRectMake(x, kMarginTop, width, kLabelHeight);
+    self.priceLabel.frame = CGRectMake(x, kMarginTop, width, kBidderNameLabelHeight);
+}
+
+- (void)_createExpireTimeLabel
+{
+    self.expireTimeLabel = [self _createLabel];
+    CGFloat x = CGRectGetMaxX(self.ratingCountLabel.frame);
+    CGFloat y = CGRectGetMaxY(self.priceLabel.frame);
+    CGFloat width = CGRectGetWidth([[UIScreen mainScreen] applicationFrame]) - x - kMarginRight;
+    self.expireTimeLabel.frame = CGRectMake(x, y, width, kRatingViewHeight);
+    self.expireTimeLabel.font = [UIFont systemFontOfSize:kTinyFontSize];
 }
 
 - (UILabel *)_createLabel

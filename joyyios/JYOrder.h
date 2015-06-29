@@ -13,8 +13,8 @@
 typedef NS_ENUM(NSUInteger, JYOrderStatus)
 {
     JYOrderStatusActive = 0,
-    JYOrderStatusPending = 1,
-    JYOrderStatusOngoing = 2,
+    JYOrderStatusDealt = 1,
+    JYOrderStatusStarted = 2,
     JYOrderStatusFinished = 3,
     JYOrderStatusPaid = 10,
     JYOrderStatusRevoked = 20

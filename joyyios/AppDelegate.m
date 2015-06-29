@@ -14,7 +14,7 @@
 #import "AppDelegate.h"
 #import "DataStore.h"
 #import "JYOrderCategoryCollectionViewController.h"
-#import "JYOrdersBiddingViewController.h"
+#import "JYOrdersOngoingViewController.h"
 #import "JYOrdersFinishedViewController.h"
 #import "JYSignViewController.h"
 #import "JYUser.h"
@@ -275,7 +275,7 @@
     UINavigationController *nc1 = [[UINavigationController alloc] initWithRootViewController:vc1];
     nc1.title = NSLocalizedString(@"New", nil);
 
-    UIViewController *vc2 = [JYOrdersBiddingViewController new];
+    UIViewController *vc2 = [JYOrdersOngoingViewController new];
     UINavigationController *nc2 = [[UINavigationController alloc] initWithRootViewController:vc2];
     nc2.title = NSLocalizedString(@"Ongoing", nil);
 

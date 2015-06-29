@@ -47,8 +47,8 @@
 		D63F0DA51ACD16190067C5EE /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D63F0DA41ACD16190067C5EE /* CoreLocation.framework */; };
 		D63F0DA81ACDFD1D0067C5EE /* JYPinAnnotationView.m in Sources */ = {isa = PBXBuildFile; fileRef = D63F0DA71ACDFD1D0067C5EE /* JYPinAnnotationView.m */; };
 		D63F0DA91ACDFD1D0067C5EE /* JYPinAnnotationView.m in Sources */ = {isa = PBXBuildFile; fileRef = D63F0DA71ACDFD1D0067C5EE /* JYPinAnnotationView.m */; };
-		D65AFA5E1AEC715D007867D0 /* JYOrdersBiddingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D65AFA5D1AEC715D007867D0 /* JYOrdersBiddingViewController.m */; };
-		D65AFA5F1AEC715D007867D0 /* JYOrdersBiddingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D65AFA5D1AEC715D007867D0 /* JYOrdersBiddingViewController.m */; };
+		D65AFA5E1AEC715D007867D0 /* JYOrdersOngoingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D65AFA5D1AEC715D007867D0 /* JYOrdersOngoingViewController.m */; };
+		D65AFA5F1AEC715D007867D0 /* JYOrdersOngoingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D65AFA5D1AEC715D007867D0 /* JYOrdersOngoingViewController.m */; };
 		D65AFA621AEC791D007867D0 /* JYBidViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D65AFA611AEC791D007867D0 /* JYBidViewCell.m */; };
 		D65AFA631AEC791D007867D0 /* JYBidViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D65AFA611AEC791D007867D0 /* JYBidViewCell.m */; };
 		D65AFA661AEDEF3D007867D0 /* JYOrderCard.m in Sources */ = {isa = PBXBuildFile; fileRef = D65AFA651AEDEF3D007867D0 /* JYOrderCard.m */; };
@@ -164,8 +164,8 @@
 		D63F0DA41ACD16190067C5EE /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		D63F0DA61ACDFD1D0067C5EE /* JYPinAnnotationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYPinAnnotationView.h; sourceTree = "<group>"; };
 		D63F0DA71ACDFD1D0067C5EE /* JYPinAnnotationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYPinAnnotationView.m; sourceTree = "<group>"; };
-		D65AFA5C1AEC715D007867D0 /* JYOrdersBiddingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYOrdersBiddingViewController.h; sourceTree = "<group>"; };
-		D65AFA5D1AEC715D007867D0 /* JYOrdersBiddingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYOrdersBiddingViewController.m; sourceTree = "<group>"; };
+		D65AFA5C1AEC715D007867D0 /* JYOrdersOngoingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYOrdersOngoingViewController.h; sourceTree = "<group>"; };
+		D65AFA5D1AEC715D007867D0 /* JYOrdersOngoingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYOrdersOngoingViewController.m; sourceTree = "<group>"; };
 		D65AFA601AEC791D007867D0 /* JYBidViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYBidViewCell.h; sourceTree = "<group>"; };
 		D65AFA611AEC791D007867D0 /* JYBidViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYBidViewCell.m; sourceTree = "<group>"; };
 		D65AFA641AEDEF3D007867D0 /* JYOrderCard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYOrderCard.h; sourceTree = "<group>"; };
@@ -471,8 +471,8 @@
 		D6F4A0561AF6DF5A001A3C89 /* My */ = {
 			isa = PBXGroup;
 			children = (
-				D65AFA5C1AEC715D007867D0 /* JYOrdersBiddingViewController.h */,
-				D65AFA5D1AEC715D007867D0 /* JYOrdersBiddingViewController.m */,
+				D65AFA5C1AEC715D007867D0 /* JYOrdersOngoingViewController.h */,
+				D65AFA5D1AEC715D007867D0 /* JYOrdersOngoingViewController.m */,
 				D6FA6A851B37CAF2007CB30E /* JYOrdersFinishedViewController.h */,
 				D6FA6A861B37CAF2007CB30E /* JYOrdersFinishedViewController.m */,
 				D6FA6A891B37CDB3007CB30E /* JYOrderViewCell.h */,
@@ -713,7 +713,7 @@
 				D6B2F07D1AD44370009601B0 /* JYExpandViewController.m in Sources */,
 				D63B69B61AC53BB4005600A9 /* JYFloatLabeledTextField.m in Sources */,
 				D6B2F0671AD1B5EC009601B0 /* JYMapDashBoardView.m in Sources */,
-				D65AFA5E1AEC715D007867D0 /* JYOrdersBiddingViewController.m in Sources */,
+				D65AFA5E1AEC715D007867D0 /* JYOrdersOngoingViewController.m in Sources */,
 				D6FA6A871B37CAF2007CB30E /* JYOrdersFinishedViewController.m in Sources */,
 				D6B2F0851AD5E165009601B0 /* JYPlacesViewCell.m in Sources */,
 				D65AFA751AEF5F3A007867D0 /* UIImageEffects.m in Sources */,
@@ -769,7 +769,7 @@
 				D63F0D9E1ACCEB420067C5EE /* JYServiceCategory.m in Sources */,
 				D6F4A0521AF6A156001A3C89 /* AppConst.m in Sources */,
 				D65AFA671AEDEF3D007867D0 /* JYOrderCard.m in Sources */,
-				D65AFA5F1AEC715D007867D0 /* JYOrdersBiddingViewController.m in Sources */,
+				D65AFA5F1AEC715D007867D0 /* JYOrdersOngoingViewController.m in Sources */,
 				D65AFA761AEF5F3A007867D0 /* UIImageEffects.m in Sources */,
 				D63F0D981ACC95B00067C5EE /* JYOrderCreateLocationViewController.m in Sources */,
 				D63F0DA31ACD08260067C5EE /* UIColor+Joyy.m in Sources */,

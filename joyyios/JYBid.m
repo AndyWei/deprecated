@@ -72,10 +72,10 @@
 
     if (secondsBetween < 0)
     {
-        return NSLocalizedString(@"expired", nil);
+        return NSLocalizedString(@"The bid expired", nil);
     }
 
-    NSString *expireString = NSLocalizedString(@"expire in", nil);
+    NSString *expireString = NSLocalizedString(@"The bid will expire in", nil);
     int numberOfDays = secondsBetween / 86400;
     if (numberOfDays > 0)
     {
