@@ -13,7 +13,7 @@
 
 @interface JYOrderCard : UIControl
 
-+ (CGFloat)cardHeightForOrder:(JYOrder *)order withAddress:(BOOL)showAddress andBid:(BOOL)showBid;
++ (CGFloat)heightForOrder:(JYOrder *)order withAddress:(BOOL)showAddress andBid:(BOOL)showBid;
 - (void)presentOrder:(JYOrder *)order withAddress:(BOOL)showAddress andBid:(BOOL)showBid;
 
 @property(nonatomic) BOOL tinyLabelsHidden;

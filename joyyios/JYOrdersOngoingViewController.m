@@ -12,7 +12,7 @@
 
 #import "JYBidViewCell.h"
 #import "JYCreditCard.h"
-#import "JYOrderCard.h"
+#import "JYOrderControl.h"
 #import "JYOrdersOngoingViewController.h"
 #import "JYUser.h"
 #import "UICustomActionSheet.h"
@@ -165,20 +165,19 @@ static NSString *const kBidCellIdentifier = @"bidCell";
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
     JYOrder * order = [self _orderAt:section];
-    return [JYOrderCard cardHeightForOrder:order withAddress:NO andBid:NO];
+    return [JYOrderControl heightForOrder:order];
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     JYOrder *order = [self _orderAt:section];
-    CGFloat height = [JYOrderCard cardHeightForOrder:order withAddress:NO andBid:NO];
+    CGFloat height = [JYOrderControl heightForOrder:order];
 
-    JYOrderCard *card = [[JYOrderCard alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(tableView.frame), height)];
-    card.tinyLabelsHidden = YES;
-    [card presentOrder:order withAddress:NO andBid:NO];
-    card.backgroundColor = order.paymentStatusColor;
+    JYOrderControl *orderContrl = [[JYOrderControl alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(tableView.frame), height)];
+    orderContrl.order = order;
+    orderContrl.color = order.paymentStatusColor;
 
-    return card;
+    return orderContrl;
 }
 
 #pragma mark - UIActionSheetDelegate

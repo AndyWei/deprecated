@@ -69,7 +69,7 @@ NSString *const kOrderBidCellIdentifier = @"orderBidCell";
     CGFloat statusBarHeight = [UIApplication sharedApplication].statusBarFrame.size.height;
     CGFloat navBarHeight = self.navigationController.navigationBar.frame.size.height;
 
-    CGFloat height = [JYOrderCard cardHeightForOrder:self.order withAddress:NO andBid:YES];
+    CGFloat height = [JYOrderCard heightForOrder:self.order withAddress:NO andBid:YES];
     CGFloat width = CGRectGetWidth([[UIScreen mainScreen] applicationFrame]);
     self.card = [[JYOrderCard alloc] initWithFrame:CGRectMake(0, statusBarHeight + navBarHeight, width, height)];
 

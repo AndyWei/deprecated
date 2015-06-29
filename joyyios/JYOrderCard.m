@@ -73,7 +73,7 @@ static const CGFloat kTopMargin = 8.0f;
     return bodyLabelHeight;
 }
 
-+ (CGFloat)cardHeightForOrder:(JYOrder *)order withAddress:(BOOL)showAddress andBid:(BOOL)showBid
++ (CGFloat)heightForOrder:(JYOrder *)order withAddress:(BOOL)showAddress andBid:(BOOL)showBid
 {
     CGFloat height = [JYOrderCard bodyLabelHeightForText:order.note];
     height += kTopMargin + kTitleLabelHeight + kTinyLabelHeight;
@@ -343,6 +343,7 @@ static const CGFloat kTopMargin = 8.0f;
     self.bidLabel = [self _createLabel];
     self.bidLabel.frame = CGRectMake(kTextLeftMargin, 0, width, kBidLabelHeight);
     self.bidLabel.textAlignment = NSTextAlignmentRight;
+    self.bidLabel.font = [UIFont systemFontOfSize:kFontSizeAddress];
 }
 
 - (void)_createStartAddressLabel

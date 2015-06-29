@@ -173,12 +173,12 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    return [JYOrderCard cardHeightForOrder:self.order withAddress:NO andBid:YES];
+    return [JYOrderCard heightForOrder:self.order withAddress:NO andBid:YES];
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-    CGFloat height = [JYOrderCard cardHeightForOrder:self.order withAddress:NO andBid:YES];
+    CGFloat height = [JYOrderCard heightForOrder:self.order withAddress:NO andBid:YES];
 
     JYOrderCard *card = [[JYOrderCard alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(tableView.frame), height)];
     card.tinyLabelsHidden = NO;

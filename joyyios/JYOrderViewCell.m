@@ -7,30 +7,22 @@
 //
 
 #import "JYButton.h"
-#import "JYOrderCard.h"
+#import "JYOrderControl.h"
 #import "JYOrderViewCell.h"
 
-static const CGFloat kLabelHeight = 30.0f;
-static const CGFloat kButtonHeight = 30.0f;
 
 @interface JYOrderViewCell ()
 
-@property(nonatomic, weak) JYOrderCard *card;
-@property(nonatomic, weak) UILabel *label1;
-@property(nonatomic, weak) UILabel *label2;
-@property(nonatomic, weak) JYButton *payButton;
+@property(nonatomic, weak) JYOrderControl *orderControl;
 
 @end
 
 
 @implementation JYOrderViewCell
 
-+ (CGFloat)cellHeightForOrder:(JYOrder *)order
++ (CGFloat)heightForOrder:(JYOrder *)order
 {
-    CGFloat cardHeight = [JYOrderCard cardHeightForOrder:order withAddress:NO andBid:NO];
-    CGFloat labelHeight = (order.status == JYOrderStatusFinished) ? kLabelHeight * 2 : kLabelHeight;
-    CGFloat buttonHeight = (order.status == JYOrderStatusFinished) ? kButtonHeight : 0;
-    return  cardHeight + labelHeight + buttonHeight;
+    return [JYOrderControl heightForOrder:order];
 }
 
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
@@ -39,122 +31,47 @@ static const CGFloat kButtonHeight = 30.0f;
     if (self)
     {
         self.opaque = YES;
-        [self _createOrderCard];
-        self.label1 = [self _createLabel];
-        self.label2 = [self _createLabel];
-        [self _createPayButton];
-
+        [self _createOrderControl];
     }
     return self;
 }
 
-- (void)_createOrderCard
+- (void)_createOrderControl
 {
     CGFloat width = CGRectGetWidth([[UIScreen mainScreen] applicationFrame]);
 
-    JYOrderCard *card = [[JYOrderCard alloc] initWithFrame:CGRectMake(0, 0, width, 100)];
-    card.userInteractionEnabled = NO;
+    JYOrderControl *orderControl = [[JYOrderControl alloc] initWithFrame:CGRectMake(0, 0, width, self.height)];
+    orderControl.userInteractionEnabled = NO;
 
-    self.card = card;
-    _cellColor = self.backgroundColor = self.card.backgroundColor = JoyyWhite;
+    self.orderControl = orderControl;
+    _color = self.backgroundColor = self.orderControl.color = JoyyWhite;
 
-    [self addSubview:self.card];
+    [self addSubview:self.orderControl];
 }
 
-- (UILabel *)_createLabel
+
+- (void)setColor:(UIColor *)color
 {
-    CGFloat width = CGRectGetWidth([[UIScreen mainScreen] applicationFrame])  - kMarginRight;
-    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, width, kLabelHeight)];
-    label.font = [UIFont systemFontOfSize:kFontSizeBody];
-    label.textColor = FlatBlack;
-    label.textAlignment = NSTextAlignmentRight;
-    label.userInteractionEnabled = NO;
-
-    [self addSubview:label];
-
-    return label;
-}
-
-- (void)_createPayButton
-{
-    CGFloat width = CGRectGetWidth([[UIScreen mainScreen] applicationFrame]);
-    CGRect frame = CGRectMake(0, 0, width, 0);
-    JYButton *button = [[JYButton alloc] initWithFrame:frame buttonStyle:JYButtonStyleDefault];
-
-    button.backgroundColor = ClearColor;
-    button.contentColor = JoyyWhite;
-    button.foregroundColor = FlatGreen;
-    button.textLabel.font = [UIFont boldSystemFontOfSize:18];
-    [button addTarget:self action:@selector(_pay) forControlEvents:UIControlEventTouchUpInside];
-
-    self.payButton = button;
-    [self addSubview:self.payButton];
-}
-
-- (void)_pay
-{
-}
-
-- (void)setCellColor:(UIColor *)color
-{
-    if (_cellColor == color)
+    if (_color == color)
     {
         return;
     }
-    _cellColor = color;
-    self.backgroundColor = self.card.backgroundColor = color;
+    _color = color;
+    self.backgroundColor = self.orderControl.color = color;
 }
 
 - (void)setOrder:(JYOrder *)order
 {
     _order = order;
-    [self.card presentOrder:order withAddress:NO andBid:NO];
-    self.card.height = [JYOrderCard cardHeightForOrder:self.order withAddress:NO andBid:NO];
-
-    if (order.status == JYOrderStatusFinished)
-    {
-        NSString *chose = NSLocalizedString(@"You chose", nil);
-        NSString *atPrice = NSLocalizedString(@"at the price", nil);
-        self.label1.text = [NSString stringWithFormat:@"%@ @%@ %@ %@", chose, order.winnerName, atPrice, order.finalPriceString];
-
-        NSString *fnished = NSLocalizedString(@"finished the service", nil);
-        self.label2.text = [NSString stringWithFormat:@"@%@ %@ %@ ", order.winnerName, fnished, order.finishTimeString];
-
-        self.payButton.textLabel.text = NSLocalizedString(@"Pay", nil);
-    }
-    else
-    {
-        NSString *paid = NSLocalizedString(@"You paid", nil);
-        self.label1.text = [NSString stringWithFormat:@"%@ @%@ %@", paid, order.winnerName, order.finalPriceString];
-        self.label2.text = nil;
-    }
+    self.orderControl.order = order;
+    self.orderControl.height = self.height;
 }
 
 - (void)layoutSubviews
 {
     [super layoutSubviews];
 
-    [self.card layoutSubviews];
-    self.label1.y = CGRectGetMaxY(self.card.frame);
-
-    if (self.order.status == JYOrderStatusFinished)
-    {
-        // show label2
-        self.label2.y = CGRectGetMaxY(self.label1.frame);
-        self.label2.height = kLabelHeight;
-
-        // show paybutton
-        self.payButton.y = CGRectGetMaxY(self.label2.frame);
-        self.payButton.height = kButtonHeight;
-    }
-    else
-    {
-        // hide label2
-        self.label2.height = 0;
-
-        // hide paybutton
-        self.payButton.height = 0;
-    }
+    [self.orderControl layoutSubviews];
 }
 
 @end

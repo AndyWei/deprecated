@@ -196,7 +196,7 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
     }
 
     JYOrder *order = self.orderList[indexPath.row];
-    return [JYOrderCardCell cellHeightForOrder:order withAddress:NO andBid:YES];
+    return [JYOrderCardCell heightForOrder:order withAddress:NO andBid:YES];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath

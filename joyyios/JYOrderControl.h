@@ -1,14 +1,14 @@
 //
-//  JYOrderViewCell.h
+//  JYOrderControl.h
 //  joyyios
 //
-//  Created by Ping Yang on 6/21/15.
+//  Created by Ping Yang on 6/29/15.
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
 #import "JYOrder.h"
 
-@interface JYOrderViewCell : UITableViewCell
+@interface JYOrderControl : UIControl
 
 + (CGFloat)heightForOrder:(JYOrder *)order;
 

@@ -12,7 +12,7 @@
 
 @interface JYOrderCardCell : MCSwipeTableViewCell
 
-+ (CGFloat)cellHeightForOrder:(JYOrder *)order withAddress:(BOOL)showAddress andBid:(BOOL)showBid;
++ (CGFloat)heightForOrder:(JYOrder *)order withAddress:(BOOL)showAddress andBid:(BOOL)showBid;
 
 @property(nonatomic) UIColor *cardColor;
 

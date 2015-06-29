@@ -18,9 +18,9 @@
 
 @implementation JYOrderCardCell
 
-+ (CGFloat)cellHeightForOrder:(JYOrder *)order withAddress:(BOOL)showAddress andBid:(BOOL)showBid
++ (CGFloat)heightForOrder:(JYOrder *)order withAddress:(BOOL)showAddress andBid:(BOOL)showBid
 {
-    return [JYOrderCard cardHeightForOrder:order withAddress:showAddress andBid:showBid];
+    return [JYOrderCard heightForOrder:order withAddress:showAddress andBid:showBid];
 }
 
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier

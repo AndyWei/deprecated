@@ -90,13 +90,13 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
     JYOrder *order = self.orderList[section];
-    return [JYOrderCard cardHeightForOrder:order withAddress:NO andBid:YES];
+    return [JYOrderCard heightForOrder:order withAddress:NO andBid:YES];
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     JYOrder *order = self.orderList[section];
-    CGFloat height = [JYOrderCard cardHeightForOrder:order withAddress:NO andBid:YES];
+    CGFloat height = [JYOrderCard heightForOrder:order withAddress:NO andBid:YES];
 
     JYOrderCard *card = [[JYOrderCard alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(tableView.frame), height)];
 

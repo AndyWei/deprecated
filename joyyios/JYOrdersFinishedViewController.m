@@ -98,7 +98,7 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     JYOrder *order = (indexPath.section == 0) ? self.finishedOrderList[indexPath.row] : self.paidOrderList[indexPath.row];
-    return [JYOrderViewCell cellHeightForOrder:order];
+    return [JYOrderViewCell heightForOrder:order];
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
