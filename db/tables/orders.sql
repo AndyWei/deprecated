@@ -17,7 +17,7 @@ CREATE TABLE orders (
     created_at         TIMESTAMPTZ   NOT NULL,
     updated_at         TIMESTAMPTZ   NOT NULL,
     deleted            BOOLEAN       NOT NULL DEFAULT false,
-    photo_urls         TEXT                  ,  -- the urls of the order photos, separated by space
+    finished_at        TIMESTAMPTZ           ,  -- the timestamp of finished the order
     winner_id          BIGINT                ,  -- the id of the user who wins this order
     winner_name        TEXT                  ,  -- the username of the user who wins this order. Putting here to reduce join.
     final_price        NUMERIC(11)           ,  -- the final offered by provider and accepted by consumer. In cents.

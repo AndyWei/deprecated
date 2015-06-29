@@ -12,7 +12,7 @@ var _ = require('underscore');
 
 var internals = {};
 var selectClause = 'SELECT id, user_id, price, currency, country, status, category, title, note, start_time, start_city, start_address, end_address, \
-                    winner_id, winner_name, final_price, created_at, updated_at, \
+                    winner_id, winner_name, final_price, created_at, updated_at, finished_at, \
                     ST_X(start_point) AS start_point_lon, ST_Y(start_point) AS start_point_lat, ST_X(end_point) AS end_point_lon, ST_Y(end_point) AS end_point_lat \
                     FROM orders ';
 
@@ -415,18 +415,17 @@ exports.register = function (server, options, next) {
     });
 
 
-    // update an order's working status to ongoing or finished. auth. This can only be done by the order winner.
+    // update an order's working status to ongoing. auth. This can only be done by the order winner.
     server.route({
         method: 'POST',
-        path: options.basePath + '/orders/working_status',
+        path: options.basePath + '/orders/ongoing',
         config: {
             auth: {
                 strategy: 'token'
             },
             validate: {
                 payload: {
-                    order_id: Joi.string().regex(/^[0-9]+$/).max(19).required(),
-                    status: Joi.number().min(2).max(9).required()
+                    order_id: Joi.string().regex(/^[0-9]+$/).max(19).required()
                 }
             }
         },
@@ -436,11 +435,11 @@ exports.register = function (server, options, next) {
             var u = request.auth.credentials;
 
             var queryConfig = {
-                name: 'orders_working_status',
-                text: 'UPDATE orders SET status = $1, updated_at = now() ' +
-                      'WHERE id = $2 AND winner_id = $3 AND status < 10 AND deleted = false ' +
+                name: 'orders_ongoing',
+                text: 'UPDATE orders SET status = 2, updated_at = now() ' +
+                      'WHERE id = $1 AND winner_id = $2 AND status = 1 AND deleted = false ' +
                       'RETURNING id, user_id, status',
-                values: [p.status, p.order_id, u.id]
+                values: [p.order_id, u.id]
             };
 
             request.pg.client.query(queryConfig, function (err, result) {
@@ -456,10 +455,60 @@ exports.register = function (server, options, next) {
                 }
 
                 // send notification to the order owner
-                var startWorkMessage = '@' + u.username + ' will start work on your order';
-                var finishWorkMessage = 'Please confirm @' + u.username + ' has finished your order';
-                var title = (p.status === 2) ? startWorkMessage : finishWorkMessage;
+                var title = '@' + u.username + ' will start serve you';
+                Push.notify('joyy', result.rows[0].user_id, title, title, function (error) {
 
+                    if (error) {
+                        console.error(error);
+                    }
+                });
+                reply(null, result.rows[0]);
+            });
+        }
+    });
+
+
+    // update an order's working status to finished. auth. This can only be done by the order winner.
+    server.route({
+        method: 'POST',
+        path: options.basePath + '/orders/finished',
+        config: {
+            auth: {
+                strategy: 'token'
+            },
+            validate: {
+                payload: {
+                    order_id: Joi.string().regex(/^[0-9]+$/).max(19).required()
+                }
+            }
+        },
+        handler: function (request, reply) {
+
+            var p = request.payload;
+            var u = request.auth.credentials;
+
+            var queryConfig = {
+                name: 'orders_finished',
+                text: 'UPDATE orders SET status = 3, finished_at = now(), updated_at = now() ' +
+                      'WHERE id = $1 AND winner_id = $2 AND status = 2 AND deleted = false ' +
+                      'RETURNING id, user_id, status',
+                values: [p.order_id, u.id]
+            };
+
+            request.pg.client.query(queryConfig, function (err, result) {
+
+                if (err) {
+                    console.error(err);
+                    request.pg.kill = true;
+                    return reply(err);
+                }
+
+                if (result.rows.length === 0) {
+                    return reply(Boom.badRequest(c.ORDER_UPDATE_WORKING_STATUS_FAILED));
+                }
+
+                // send notification to the order owner
+                var title = 'Please confirm @' + u.username + ' has finished the service';
                 Push.notify('joyy', result.rows[0].user_id, title, title, function (error) {
 
                     if (error) {
