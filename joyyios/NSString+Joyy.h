@@ -8,6 +8,8 @@
 
 @interface NSString (Joyy)
 
++ (NSString *)stringFromTimeInterval:(NSTimeInterval)interval;
+
 - (BOOL)isValidEmail;
 - (NSUInteger)unsignedIntegerValue;
 

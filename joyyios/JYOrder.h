@@ -51,17 +51,20 @@ typedef NS_ENUM(NSUInteger, JYOrderStatus)
 @property(nonatomic) NSUInteger finalPrice;
 @property(nonatomic) NSUInteger orderId;
 @property(nonatomic) NSUInteger userId;
-@property(nonatomic) NSUInteger winnnerId;
+@property(nonatomic) NSUInteger winnerId;
+@property(nonatomic) NSString *winnerName;
 @property(nonatomic) JYOrderStatus status;
 
 @property(nonatomic) NSDate *createdAt;
 @property(nonatomic) NSDate *updatedAt;
+@property(nonatomic) NSDate *finishedAt;
 
 @property(nonatomic) NSMutableArray *bids;
 @property(nonatomic) NSMutableArray *comments;
 
 @property(nonatomic, readonly) BOOL hasEndAddress;
 @property(nonatomic, readonly) NSString *createTimeString;
+@property(nonatomic, readonly) NSString *finishTimeString;
 @property(nonatomic, readonly) NSString *priceString;
 @property(nonatomic, readonly) NSString *finalPriceString;
 @property(nonatomic, readonly) UIColor *bidColor;

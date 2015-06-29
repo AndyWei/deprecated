@@ -108,14 +108,16 @@
     }
 
     JYOrder *order = self.orderList[self.selectedSection];
-
+    NSString *url = nil;
     switch (order.status)
     {
         case JYOrderStatusPending:
-            [self _updateOrder:order workingStatus:JYOrderStatusOngoing];
+            url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"orders/ongoing"];
+            [self _updateOrder:order withURL:url];
             break;
         case JYOrderStatusOngoing:
-            [self _updateOrder:order workingStatus:JYOrderStatusFinished];
+            url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"orders/finished"];
+            [self _updateOrder:order withURL:url];
             break;
         default:
             break;
@@ -169,21 +171,20 @@
     return parameters;
 }
 
-- (void)_updateOrder:(JYOrder *)order workingStatus:(JYOrderStatus)status
+- (void)_updateOrder:(JYOrder *)order withURL:(NSString *)url
 {
     [self networkThreadBegin];
 
-    NSDictionary *parameters = @{@"order_id": @(order.orderId), @"status": @(status)};
+    NSDictionary *parameters = @{@"order_id": @(order.orderId)};
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYUser currentUser].token];
     [manager.requestSerializer setValue:token forHTTPHeaderField:@"Authorization"];
 
-    NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"orders/working_status"];
     __weak typeof(self) weakSelf = self;
     [manager POST:url
       parameters:parameters
          success:^(AFHTTPRequestOperation *operation, id responseObject) {
-             NSLog(@"orders/working_status success responseObject: %@", responseObject);
+             NSLog(@"orders/update success responseObject: %@", responseObject);
 
              order.status = (JYOrderStatus)[[responseObject objectForKey:@"status"] unsignedIntegerValue];
 

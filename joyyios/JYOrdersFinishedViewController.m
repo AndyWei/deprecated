@@ -100,6 +100,40 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
     return [JYOrderViewCell cellHeightForOrder:order];
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    return 30;
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+{
+    UILabel *headerLabel = [self _createLabel];
+
+    if (section == 0)
+    {
+        NSString *youHave = NSLocalizedString(@"You have", nil);
+        NSString *unpaidOrders = NSLocalizedString(@"unpaid orders", nil);
+        headerLabel.text = [NSString stringWithFormat:@"%@ %tu %@", youHave, self.unpaidOrderList.count, unpaidOrders];
+    }
+    else
+    {
+        headerLabel.text = NSLocalizedString(@"Paid Orders", nil);
+    }
+
+    return headerLabel;
+}
+
+- (UILabel *)_createLabel
+{
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.view.frame), 50)];
+    label.font = [UIFont systemFontOfSize:22];
+    label.backgroundColor = FlatWhite;
+    label.textColor = FlatBlack;
+    label.textAlignment = NSTextAlignmentCenter;
+
+    return label;
+}
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
 //    self.selectedIndexPath = indexPath;
@@ -143,7 +177,7 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
     [manager GET:url
       parameters:parameters
          success:^(AFHTTPRequestOperation *operation, id responseObject) {
-             NSLog(@"orders/unpaid fetch success responseObject: %@", responseObject);
+             NSLog(@"orders/my finished fetch success responseObject: %@", responseObject);
 
              weakSelf.unpaidOrderList = [NSMutableArray new];
              for (NSDictionary *dict in responseObject)
@@ -175,7 +209,7 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
     [manager GET:url
       parameters:parameters
          success:^(AFHTTPRequestOperation *operation, id responseObject) {
-             NSLog(@"orders/unpaid fetch success responseObject: %@", responseObject);
+             NSLog(@"orders/my paid fetch success responseObject: %@", responseObject);
 
              NSMutableArray *newOrderList = [NSMutableArray new];
              for (NSDictionary *dict in responseObject)

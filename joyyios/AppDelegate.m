@@ -277,7 +277,7 @@
 
     UIViewController *vc2 = [JYOrdersBiddingViewController new];
     UINavigationController *nc2 = [[UINavigationController alloc] initWithRootViewController:vc2];
-    nc2.title = NSLocalizedString(@"Bidding", nil);
+    nc2.title = NSLocalizedString(@"Ongoing", nil);
 
     UIViewController *vc3 = [JYOrdersFinishedViewController new];
     UINavigationController *nc3 = [[UINavigationController alloc] initWithRootViewController:vc3];

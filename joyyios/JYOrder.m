@@ -40,7 +40,6 @@ static JYOrder *_currentOrder;
     dispatch_once(&done, ^{
         _sharedPriceFormatter = [[NSNumberFormatter alloc] init];
         _sharedPriceFormatter.numberStyle = NSNumberFormatterCurrencyStyle;
-//        _sharedPriceFormatter.maximumFractionDigits = 0;
     });
 
     return _sharedPriceFormatter;
@@ -117,7 +116,9 @@ static JYOrder *_currentOrder;
 
     // created date and updated date
     NSString *createdAtString = [dict objectForKey:@"created_at"];
-    NSString *updatedAtString = [dict objectForKey:@"created_at"];
+    NSString *updatedAtString = [dict objectForKey:@"updated_at"];
+
+
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSSZ"];
     _createdAt = [dateFormatter dateFromString:createdAtString];
@@ -138,10 +139,16 @@ static JYOrder *_currentOrder;
     }
 
     str = [dict objectForKey:@"winner_id"];
-    _winnnerId = [str isKindOfClass:[NSString class]] ? [str unsignedIntegerValue] : 0.0;
+    _winnerId = [str isKindOfClass:[NSString class]] ? [str unsignedIntegerValue] : 0.0;
+
+    str = [dict objectForKey:@"winner_name"];
+    _winnerName = [str isKindOfClass:[NSString class]] ? str : nil;
 
     str = [dict objectForKey:@"final_price"];
     _finalPrice = [str isKindOfClass:[NSString class]] ? [str unsignedIntegerValue] : 0.0;
+
+    str = [dict objectForKey:@"finished_at"];
+    _finishedAt = [str isKindOfClass:[NSString class]] ? [dateFormatter dateFromString:str] : nil;
 }
 
 - (NSDictionary *)httpParameters
@@ -203,36 +210,22 @@ static JYOrder *_currentOrder;
 - (NSString *)createTimeString
 {
     NSDate *now = [NSDate date];
-    NSTimeInterval secondsBetween = [now timeIntervalSinceDate:self.createdAt];
+    NSTimeInterval seconds = [now timeIntervalSinceDate:self.createdAt];
 
-    NSString *ago = NSLocalizedString(@"ago", nil);
-    int numberOfDays = secondsBetween / 86400;
-    if (numberOfDays > 0)
+    return [NSString stringFromTimeInterval:seconds];
+}
+
+- (NSString *)finishTimeString
+{
+    if (!self.finishedAt)
     {
-        NSString *days = NSLocalizedString(@"d", nil);
-
-        return [NSString stringWithFormat:@"%d %@ %@", numberOfDays, days, ago];
+        return @"";
     }
 
-    int numberOfHours = secondsBetween / 3600;
-    if (numberOfHours > 0)
-    {
-        NSString *hours = NSLocalizedString(@"h", nil);
+    NSDate *now = [NSDate date];
+    NSTimeInterval seconds = [now timeIntervalSinceDate:self.finishedAt];
 
-        return [NSString stringWithFormat:@"%d %@ %@", numberOfHours, hours, ago];
-    }
-
-    int numberOfMinutes = secondsBetween / 60;
-    if (numberOfMinutes > 0)
-    {
-        NSString *minutes = NSLocalizedString(@"m", nil);
-
-        return [NSString stringWithFormat:@"%d %@ %@", numberOfMinutes, minutes, ago];
-    }
-
-    int numberOfSeconds = (int)secondsBetween;
-    NSString *seconds = NSLocalizedString(@"s", nil);
-    return [NSString stringWithFormat:@"%d %@ %@", numberOfSeconds, seconds, ago];
+    return [NSString stringFromTimeInterval:seconds];
 }
 
 - (UIColor *)bidColor

@@ -49,7 +49,7 @@ static NSString *const kBidCellIdentifier = @"bidCell";
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [self setTitleText:NSLocalizedString(@"Orders In Bidding", nil)];
+    [self setTitleText:NSLocalizedString(@"Orders Ongoing", nil)];
 
     self.selectedIndexPath = nil;
     self.stripeToken = nil;
@@ -219,10 +219,12 @@ static NSString *const kBidCellIdentifier = @"bidCell";
     JYBid *bid = order.bids[self.selectedIndexPath.row];
 
     NSNumber *price = [NSNumber numberWithUnsignedInteger:bid.price];
-    NSDecimalNumber *amount = [NSDecimalNumber decimalNumberWithDecimal:[price decimalValue]];
+    NSDecimalNumber *amountInCents = [NSDecimalNumber decimalNumberWithDecimal:[price decimalValue]];
+    NSDecimalNumber *divisor = [[NSDecimalNumber alloc] initWithInt:100];
+    NSDecimalNumber *amountInDollars = [amountInCents decimalNumberByDividingBy:divisor];
 
     NSString *paymentLineItem = [NSString stringWithFormat:@"Joyy %@ @%@", order.title, bid.username];
-    request.paymentSummaryItems = @[[PKPaymentSummaryItem summaryItemWithLabel:paymentLineItem amount:amount]];
+    request.paymentSummaryItems = @[[PKPaymentSummaryItem summaryItemWithLabel:paymentLineItem amount:amountInDollars]];
 
     if ([Stripe canSubmitPaymentRequest:request])
     {
@@ -379,7 +381,7 @@ static NSString *const kBidCellIdentifier = @"bidCell";
     [manager GET:url
       parameters:parameters
          success:^(AFHTTPRequestOperation *operation, id responseObject) {
-             NSLog(@"orders/unpaid fetch success responseObject: %@", responseObject);
+             NSLog(@"orders/my fetch success responseObject: %@", responseObject);
 
              weakSelf.orderList = [NSMutableArray new];
              for (NSDictionary *dict in responseObject)

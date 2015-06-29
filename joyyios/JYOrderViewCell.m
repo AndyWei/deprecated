@@ -11,12 +11,13 @@
 #import "JYOrderViewCell.h"
 
 static const CGFloat kLabelHeight = 30.0f;
+static const CGFloat kButtonHeight = 30.0f;
 
 @interface JYOrderViewCell ()
 
 @property(nonatomic, weak) JYOrderCard *card;
-@property(nonatomic, weak) UILabel *bidLabel;
-@property(nonatomic, weak) UILabel *statusLabel;
+@property(nonatomic, weak) UILabel *label1;
+@property(nonatomic, weak) UILabel *label2;
 @property(nonatomic, weak) JYButton *payButton;
 
 @end
@@ -26,7 +27,10 @@ static const CGFloat kLabelHeight = 30.0f;
 
 + (CGFloat)cellHeightForOrder:(JYOrder *)order
 {
-    return [JYOrderCard cardHeightForOrder:order withAddress:NO andBid:NO];
+    CGFloat cardHeight = [JYOrderCard cardHeightForOrder:order withAddress:NO andBid:NO];
+    CGFloat labelHeight = (order.status == JYOrderStatusFinished) ? kLabelHeight * 2 : kLabelHeight;
+    CGFloat buttonHeight = (order.status == JYOrderStatusFinished) ? kButtonHeight : 0;
+    return  cardHeight + labelHeight + buttonHeight;
 }
 
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
@@ -36,8 +40,8 @@ static const CGFloat kLabelHeight = 30.0f;
     {
         self.opaque = YES;
         [self _createOrderCard];
-        self.bidLabel = [self _createLabel];
-        self.statusLabel = [self _createLabel];
+        self.label1 = [self _createLabel];
+        self.label2 = [self _createLabel];
         [self _createPayButton];
 
     }
@@ -74,10 +78,9 @@ static const CGFloat kLabelHeight = 30.0f;
 - (void)_createPayButton
 {
     CGFloat width = CGRectGetWidth([[UIScreen mainScreen] applicationFrame]);
-    CGRect frame = CGRectMake(0, 0, width, kLabelHeight);
+    CGRect frame = CGRectMake(0, 0, width, 0);
     JYButton *button = [[JYButton alloc] initWithFrame:frame buttonStyle:JYButtonStyleDefault];
 
-    button.textLabel.text = NSLocalizedString(@"Pay", nil);
     button.backgroundColor = ClearColor;
     button.contentColor = JoyyWhite;
     button.foregroundColor = FlatGreen;
@@ -106,16 +109,52 @@ static const CGFloat kLabelHeight = 30.0f;
 {
     _order = order;
     [self.card presentOrder:order withAddress:NO andBid:NO];
-    self.bidLabel.text = @"you accepted xxx's bid at $mmm"; // TODO
-    self.statusLabel.text = @"xxx finished your order at";
+    self.card.height = [JYOrderCard cardHeightForOrder:self.order withAddress:NO andBid:NO];
+
+    if (order.status == JYOrderStatusFinished)
+    {
+        NSString *chose = NSLocalizedString(@"You chose", nil);
+        NSString *atPrice = NSLocalizedString(@"at the price", nil);
+        self.label1.text = [NSString stringWithFormat:@"%@ @%@ %@ %@", chose, order.winnerName, atPrice, order.finalPriceString];
+
+        NSString *fnished = NSLocalizedString(@"finished the service", nil);
+        self.label2.text = [NSString stringWithFormat:@"@%@ %@ %@ ", order.winnerName, fnished, order.finishTimeString];
+
+        self.payButton.textLabel.text = NSLocalizedString(@"Pay", nil);
+    }
+    else
+    {
+        NSString *paid = NSLocalizedString(@"You paid", nil);
+        self.label1.text = [NSString stringWithFormat:@"%@ @%@ %@", paid, order.winnerName, order.finalPriceString];
+        self.label2.text = nil;
+    }
 }
 
 - (void)layoutSubviews
 {
     [super layoutSubviews];
-    CGFloat cardHeight = self.height - kLabelHeight * 2;
-    cardHeight -= (self.order.status == JYOrderStatusPaid) ? 0 : kLabelHeight;
-    self.card.height = cardHeight;
+
     [self.card layoutSubviews];
+    self.label1.y = CGRectGetMaxY(self.card.frame);
+
+    if (self.order.status == JYOrderStatusFinished)
+    {
+        // show label2
+        self.label2.y = CGRectGetMaxY(self.label1.frame);
+        self.label2.height = kLabelHeight;
+
+        // show paybutton
+        self.payButton.y = CGRectGetMaxY(self.label2.frame);
+        self.payButton.height = kButtonHeight;
+    }
+    else
+    {
+        // hide label2
+        self.label2.height = 0;
+
+        // hide paybutton
+        self.payButton.height = 0;
+    }
 }
+
 @end
