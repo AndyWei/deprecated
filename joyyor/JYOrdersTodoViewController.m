@@ -60,10 +60,10 @@
     switch (order.status)
     {
         case JYOrderStatusDealt:
-            actionString = NSLocalizedString(@"Start work", nil);
+            actionString = NSLocalizedString(@"Start the job", nil);
             break;
         case JYOrderStatusStarted:
-            actionString = NSLocalizedString(@"Finish work", nil);
+            actionString = NSLocalizedString(@"The job is Finished", nil);
             break;
         default:
             break;

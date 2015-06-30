@@ -19,6 +19,7 @@
 
 @interface JYOrdersOngoingViewController ()
 
+@property(nonatomic) NSMutableArray *startedOrderList;
 @property(nonatomic) NSMutableArray *dealtOrderList;
 @property(nonatomic) NSIndexPath *selectedIndexPath;
 @property(nonatomic) NSString *stripeToken;
@@ -56,8 +57,9 @@ static NSString *const kBidCellIdentifier = @"bidCell";
     self.stripeToken = nil;
     self.creditCardList = nil;
 
-    self.orderList = [NSMutableArray new]; // contains all active orders
+    self.startedOrderList = [NSMutableArray new]; // contains all started orders
     self.dealtOrderList = [NSMutableArray new]; // contains all dealt orders
+    self.orderList = [NSMutableArray new]; // contains all active orders
 
     [self _createTableView];
     [self _fetchOrders];
@@ -99,14 +101,22 @@ static NSString *const kBidCellIdentifier = @"bidCell";
 - (JYOrder *)_orderAt:(NSInteger)index
 {
     JYOrder *order = nil;
+    if (index < self.startedOrderList.count)
+    {
+        order = self.startedOrderList[index];
+        return order;
+    }
+
+    index -= self.startedOrderList.count;
     if (index < self.dealtOrderList.count)
     {
         order = self.dealtOrderList[index];
+        return order;
     }
-    else
-    {
-        order = self.orderList[index - self.dealtOrderList.count];
-    }
+
+    index -= self.dealtOrderList.count;
+    order = self.orderList[index];
+
     return order;
 }
 
@@ -114,7 +124,7 @@ static NSString *const kBidCellIdentifier = @"bidCell";
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return self.dealtOrderList.count + self.orderList.count;
+    return self.startedOrderList.count + self.dealtOrderList.count + self.orderList.count;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -387,8 +397,41 @@ static NSString *const kBidCellIdentifier = @"bidCell";
         return;
     }
 
+    [self _fetchStartedOrders];
     [self _fetchDealtOrders];
     [self _fetchActiveOrders];
+}
+
+- (void)_fetchStartedOrders
+{
+    [self networkThreadBegin];
+
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYUser currentUser].token];
+    [manager.requestSerializer setValue:token forHTTPHeaderField:@"Authorization"];
+
+    NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"orders/my"];
+    NSDictionary *parameters = @{@"status": @(JYOrderStatusStarted)};
+
+    __weak typeof(self) weakSelf = self;
+    [manager GET:url
+      parameters:parameters
+         success:^(AFHTTPRequestOperation *operation, id responseObject) {
+             NSLog(@"my dealt orders fetch success responseObject: %@", responseObject);
+
+             weakSelf.startedOrderList = [NSMutableArray new];
+             for (NSDictionary *dict in responseObject)
+             {
+                 JYOrder *newOrder = [[JYOrder alloc] initWithDictionary:dict];
+                 [weakSelf.startedOrderList addObject:newOrder];
+             }
+
+             [weakSelf networkThreadEnd];
+         }
+         failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+             [weakSelf networkThreadEnd];
+         }
+     ];
 }
 
 - (void)_fetchDealtOrders
