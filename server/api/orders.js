@@ -455,7 +455,7 @@ exports.register = function (server, options, next) {
                 }
 
                 // send notification to the order owner
-                var title = '@' + u.username + ' will start service';
+                var title = '@' + u.username + ' will serve you soon';
                 Push.notify('joyy', result.rows[0].user_id, title, 'start_service', function (error) {
 
                     if (error) {
