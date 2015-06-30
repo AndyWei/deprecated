@@ -11,7 +11,8 @@
 #import "JYOrderCard.h"
 
 static const CGFloat kLabelHeight = 30.0f;
-static const CGFloat kButtonHeight = 30.0f;
+static const CGFloat kButtonHeight = 40.0f;
+static const CGFloat kButtonAreaHeight = 50.0f;
 
 @interface JYOrderControl ()
 
@@ -34,19 +35,16 @@ static const CGFloat kButtonHeight = 30.0f;
     {
         case JYOrderStatusDealt:
             labelHeight = kLabelHeight;
-            buttonHeight = 0;
             break;
         case JYOrderStatusStarted:
             labelHeight = kLabelHeight * 2;
-            buttonHeight = 0;
             break;
         case JYOrderStatusFinished:
             labelHeight = kLabelHeight * 2;
-            buttonHeight = kButtonHeight;
+            buttonHeight = kButtonAreaHeight;
             break;
         case JYOrderStatusPaid:
             labelHeight = kLabelHeight;
-            buttonHeight = 0;
             break;
         default:
             break;
@@ -103,12 +101,15 @@ static const CGFloat kButtonHeight = 30.0f;
 
 - (void)_createPayButton
 {
-    CGFloat width = CGRectGetWidth([[UIScreen mainScreen] applicationFrame]);
-    CGRect frame = CGRectMake(0, 0, width, 0);
+    CGFloat width = CGRectGetWidth([[UIScreen mainScreen] applicationFrame]) - kMarginLeft - kMarginRight;
+    CGRect frame = CGRectMake(kMarginLeft, 0, width, 0);
     JYButton *button = [[JYButton alloc] initWithFrame:frame buttonStyle:JYButtonStyleDefault];
 
     button.backgroundColor = ClearColor;
-    button.contentColor = JoyyWhite;
+    button.contentAnimateToColor = FlatGreen;
+    button.contentColor = FlatWhite;
+    button.cornerRadius = 8;
+    button.foregroundAnimateToColor = FlatWhite;
     button.foregroundColor = FlatGreen;
     button.textLabel.font = [UIFont boldSystemFontOfSize:18];
     [button addTarget:self action:@selector(_pay) forControlEvents:UIControlEventTouchUpInside];
@@ -119,6 +120,8 @@ static const CGFloat kButtonHeight = 30.0f;
 
 - (void)_pay
 {
+    NSDictionary *userInfo = [NSDictionary dictionaryWithObject:self.order forKey:@"order"];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationDidPressPayButton object:nil userInfo:userInfo];
 }
 
 - (void)setColor:(UIColor *)color
@@ -201,6 +204,7 @@ static const CGFloat kButtonHeight = 30.0f;
     switch (self.order.status)
     {
         case JYOrderStatusDealt:
+        case JYOrderStatusPaid:
             self.label1.height = kLabelHeight;
             break;
         case JYOrderStatusStarted:

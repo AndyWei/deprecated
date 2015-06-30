@@ -39,6 +39,7 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
     [self _fetchAllOrders];
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_fetchUnpaidOrders) name:kNotificationDidFinishOrder object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_pay:) name:kNotificationDidPressPayButton object:nil];
 }
 
 - (void)didReceiveMemoryWarning
@@ -71,6 +72,13 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
     tableViewController.refreshControl = self.refreshControl;
 }
 
+- (void)_pay:(NSNotification *) notification
+{
+    NSDictionary *userInfo = notification.userInfo;
+    JYOrder *order = [userInfo objectForKey:@"order"];
+    [self _payOrder:order];
+}
+
 #pragma mark - UITableViewDataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -89,7 +97,6 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
     (JYOrderViewCell *)[tableView dequeueReusableCellWithIdentifier:kOrderCellIdentifier forIndexPath:indexPath];
 
     cell.order = (indexPath.section == 0) ? self.finishedOrderList[indexPath.row] : self.paidOrderList[indexPath.row];
-
     return cell;
 }
 
@@ -137,25 +144,39 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-//    self.selectedIndexPath = indexPath;
-//    self.tabBarController.tabBar.hidden = YES;
-//
-//    UICustomActionSheet *actionSheet = [[UICustomActionSheet alloc] initWithTitle:nil delegate:self buttonTitles:@[NSLocalizedString(@"Cancel", nil), NSLocalizedString(@"Accept", nil)]];
-//
-//    [actionSheet setButtonColors:@[JoyyBlue50, JoyyBlue]];
-//    [actionSheet setButtonsTextColor:JoyyWhite];
-//    actionSheet.backgroundColor = JoyyWhite;
-//
-//    // Highlight the selected cell
-//    CGRect frame = [tableView cellForRowAtIndexPath:indexPath].frame;
-//    frame.origin.y -= tableView.contentOffset.y;
-//    actionSheet.clearArea = frame;
-//
-//    [actionSheet showInView:self.view];
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 #pragma mark - Network
+
+- (void)_payOrder:(JYOrder *)order
+{
+    [self networkThreadBegin];
+
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYUser currentUser].token];
+    [manager.requestSerializer setValue:token forHTTPHeaderField:@"Authorization"];
+
+    NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"orders/paid"];
+    NSDictionary *parameters = @{@"order_id": @(order.orderId)};
+
+    __weak typeof(self) weakSelf = self;
+    [manager POST:url
+       parameters:parameters
+          success:^(AFHTTPRequestOperation *operation, id responseObject) {
+              NSLog(@"orders/paid post success responseObject: %@", responseObject);
+
+              order.status = JYOrderStatusPaid;
+
+              [weakSelf networkThreadEnd];
+          }
+          failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+
+              NSLog(@"orders/paid post error: %@", error);
+              [weakSelf networkThreadEnd];
+          }
+     ];
+}
 
 - (void)_fetchAllOrders
 {

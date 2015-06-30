@@ -11,5 +11,5 @@
 
 extern NSString * const kStripePublishableKey;
 extern NSString * const kAppleMerchantId;
-
+extern NSString * const kNotificationDidPressPayButton;
 #endif
