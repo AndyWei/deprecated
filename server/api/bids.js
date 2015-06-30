@@ -369,7 +369,7 @@ internals.acceptBidHandler = function (request, reply) {
                       'WHERE id = $5 AND user_id = $6 AND status = 0 ' +
                       'RETURNING id';
             var queryConfig = {
-                name: 'orders_update_pending',
+                name: 'orders_update_dealt',
                 text: queryText,
                 values: [bid.user_id, bid.username, bid.price, request.payload.stripe_token, bid.order_id, request.auth.credentials.id]
             };

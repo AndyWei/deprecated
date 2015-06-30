@@ -58,7 +58,7 @@ exports.register = function (server, options, next) {
     });
 
 
-    // get all unpaid orders placed by the current user. auth.
+    // get all orders with specified status placed by the current user. auth.
     server.route({
         method: 'GET',
         path: options.basePath + '/orders/my',
@@ -418,7 +418,7 @@ exports.register = function (server, options, next) {
     // update an order's working status to ongoing. auth. This can only be done by the order winner.
     server.route({
         method: 'POST',
-        path: options.basePath + '/orders/ongoing',
+        path: options.basePath + '/orders/started',
         config: {
             auth: {
                 strategy: 'token'
@@ -435,7 +435,7 @@ exports.register = function (server, options, next) {
             var u = request.auth.credentials;
 
             var queryConfig = {
-                name: 'orders_ongoing',
+                name: 'orders_started',
                 text: 'UPDATE orders SET status = 2, updated_at = now() ' +
                       'WHERE id = $1 AND winner_id = $2 AND status = 1 AND deleted = false ' +
                       'RETURNING id, user_id, status',
@@ -455,8 +455,8 @@ exports.register = function (server, options, next) {
                 }
 
                 // send notification to the order owner
-                var title = '@' + u.username + ' will start serve you';
-                Push.notify('joyy', result.rows[0].user_id, title, title, function (error) {
+                var title = '@' + u.username + ' will start service';
+                Push.notify('joyy', result.rows[0].user_id, title, 'start_service', function (error) {
 
                     if (error) {
                         console.error(error);
@@ -509,7 +509,7 @@ exports.register = function (server, options, next) {
 
                 // send notification to the order owner
                 var title = 'Please confirm @' + u.username + ' has finished the service';
-                Push.notify('joyy', result.rows[0].user_id, title, title, function (error) {
+                Push.notify('joyy', result.rows[0].user_id, title, 'finish_service', function (error) {
 
                     if (error) {
                         console.error(error);
