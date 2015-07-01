@@ -10,12 +10,12 @@
 #import <KVNProgress/KVNProgress.h>
 #import <RKDropdownAlert/RKDropdownAlert.h>
 #import <Stripe/Stripe.h>
+#import <RESideMenu/RESideMenu.h>
 
 #import "AppDelegate.h"
 #import "DataStore.h"
-#import "JYOrderCategoryCollectionViewController.h"
-#import "JYOrdersOngoingViewController.h"
-#import "JYOrdersFinishedViewController.h"
+#import "JYMenuViewController.h"
+#import "JYOrderCreateLocationViewController.h"
 #import "JYSignViewController.h"
 #import "JYUser.h"
 #import "OnboardingViewController.h"
@@ -24,7 +24,7 @@
 @interface AppDelegate ()
 
 @property(nonatomic) NSTimer *signInTimer;
-
+@property(nonatomic, weak) RESideMenu *sideMenuViewController;
 @end
 
 @implementation AppDelegate
@@ -37,6 +37,7 @@
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_signDidFinish) name:kNotificationDidSignIn object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_signDidFinish) name:kNotificationDidSignUp object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_menuButtonPressed) name:kNotificationDidPressMenuButton object:nil];
 
     [self _setupGlobalAppearance];
     [self _setupLocationManager];
@@ -271,22 +272,23 @@
         [self _signInAfter:(user.tokenExpireTimeInSecs - now)];
     }
 
-    UIViewController *vc1 = [JYOrderCategoryCollectionViewController new];
-    UINavigationController *nc1 = [[UINavigationController alloc] initWithRootViewController:vc1];
-    nc1.title = NSLocalizedString(@"New", nil);
+    UIViewController *contentVC = [[JYOrderCreateLocationViewController alloc] init];
+    UINavigationController *contentNC = [[UINavigationController alloc] initWithRootViewController:contentVC];
+    contentNC.title = NSLocalizedString(@"New", nil);
 
-    UIViewController *vc2 = [JYOrdersOngoingViewController new];
-    UINavigationController *nc2 = [[UINavigationController alloc] initWithRootViewController:vc2];
-    nc2.title = NSLocalizedString(@"Ongoing", nil);
+    UIViewController *leftVC = [[JYMenuViewController alloc] init];
 
-    UIViewController *vc3 = [JYOrdersFinishedViewController new];
-    UINavigationController *nc3 = [[UINavigationController alloc] initWithRootViewController:vc3];
-    nc3.title = NSLocalizedString(@"Finished", nil);
+    RESideMenu *sideMenuViewController = [[RESideMenu alloc] initWithContentViewController:contentNC
+                                                                    leftMenuViewController:leftVC
+                                                                   rightMenuViewController:nil];
 
-    UITabBarController *tabBarController = [UITabBarController new];
-    tabBarController.viewControllers = @[ nc1, nc2, nc3 ];
+    self.sideMenuViewController = sideMenuViewController;
+    self.window.rootViewController = sideMenuViewController;
+}
 
-    self.window.rootViewController = tabBarController;
+- (void)_menuButtonPressed
+{
+    [self.sideMenuViewController presentLeftMenuViewController];
 }
 
 #pragma mark - Network

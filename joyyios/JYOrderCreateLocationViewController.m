@@ -67,8 +67,9 @@ static NSString *reuseId = @"pin";
     [super viewDidLoad];
 
     self.view.backgroundColor = [UIColor whiteColor];
-    NSUInteger categoryIndex = [JYOrder currentOrder].categoryIndex;
-    self.navigationItem.title = [JYServiceCategory names][categoryIndex];
+
+    UIBarButtonItem *menuButton = [[UIBarButtonItem alloc] initWithTitle:@"JOYY" style:UIBarButtonItemStylePlain target:self action:@selector(_menu)];
+    self.navigationItem.leftBarButtonItem = menuButton;
 
     [self _createMapView];
     [self _createDashBoard];
@@ -90,6 +91,11 @@ static NSString *reuseId = @"pin";
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
+}
+
+- (void)_menu
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationDidPressMenuButton object:nil];
 }
 
 - (void)_createMapView

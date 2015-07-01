@@ -9,6 +9,12 @@
 /* Begin PBXBuildFile section */
 		665FCD8CB532AA82E3F40351 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8E034C4F8FC61E210B60EDCC /* libPods.a */; };
 		743498E564A05714440866C9 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8E034C4F8FC61E210B60EDCC /* libPods.a */; };
+		D61C489C1B4483B4009E422A /* JYMenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D61C489B1B4483B4009E422A /* JYMenuViewController.m */; };
+		D61C489D1B4483B4009E422A /* JYMenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D61C489B1B4483B4009E422A /* JYMenuViewController.m */; };
+		D61C48A01B449143009E422A /* JYMenuViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D61C489F1B449143009E422A /* JYMenuViewCell.m */; };
+		D61C48A11B449143009E422A /* JYMenuViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D61C489F1B449143009E422A /* JYMenuViewCell.m */; };
+		D61C48A41B44A8A5009E422A /* JYModalViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D61C48A31B44A8A5009E422A /* JYModalViewController.m */; };
+		D61C48A51B44A8A5009E422A /* JYModalViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D61C48A31B44A8A5009E422A /* JYModalViewController.m */; };
 		D6348D271ADA3BC90002BC35 /* JYPriceTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D6348D261ADA3BC90002BC35 /* JYPriceTextFieldCell.m */; };
 		D6348D281ADA3BC90002BC35 /* JYPriceTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D6348D261ADA3BC90002BC35 /* JYPriceTextFieldCell.m */; };
 		D6348D2B1ADA4A650002BC35 /* JYRestrictedTextViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D6348D2A1ADA4A650002BC35 /* JYRestrictedTextViewCell.m */; };
@@ -128,6 +134,12 @@
 /* Begin PBXFileReference section */
 		47240DA3592328D7C382C992 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		8E034C4F8FC61E210B60EDCC /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		D61C489A1B4483B4009E422A /* JYMenuViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYMenuViewController.h; sourceTree = "<group>"; };
+		D61C489B1B4483B4009E422A /* JYMenuViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYMenuViewController.m; sourceTree = "<group>"; };
+		D61C489E1B449143009E422A /* JYMenuViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYMenuViewCell.h; sourceTree = "<group>"; };
+		D61C489F1B449143009E422A /* JYMenuViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYMenuViewCell.m; sourceTree = "<group>"; };
+		D61C48A21B44A8A5009E422A /* JYModalViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYModalViewController.h; sourceTree = "<group>"; };
+		D61C48A31B44A8A5009E422A /* JYModalViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYModalViewController.m; sourceTree = "<group>"; };
 		D6348D251ADA3BC90002BC35 /* JYPriceTextFieldCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYPriceTextFieldCell.h; sourceTree = "<group>"; };
 		D6348D261ADA3BC90002BC35 /* JYPriceTextFieldCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYPriceTextFieldCell.m; sourceTree = "<group>"; };
 		D6348D291ADA4A180002BC35 /* JYRestrictedTextViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYRestrictedTextViewCell.h; sourceTree = "<group>"; };
@@ -276,6 +288,17 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
+		D61C48991B44838A009E422A /* Menu */ = {
+			isa = PBXGroup;
+			children = (
+				D61C489A1B4483B4009E422A /* JYMenuViewController.h */,
+				D61C489B1B4483B4009E422A /* JYMenuViewController.m */,
+				D61C489E1B449143009E422A /* JYMenuViewCell.h */,
+				D61C489F1B449143009E422A /* JYMenuViewCell.m */,
+			);
+			name = Menu;
+			sourceTree = "<group>";
+		};
 		D63B69AB1AC5184D005600A9 /* Components */ = {
 			isa = PBXGroup;
 			children = (
@@ -311,6 +334,8 @@
 				D679F0251B1C39BB004F1C37 /* JYFloatLabeledTextFieldCell.m */,
 				D6B2F0651AD1B5EC009601B0 /* JYMapDashBoardView.h */,
 				D6B2F0661AD1B5EC009601B0 /* JYMapDashBoardView.m */,
+				D61C48A21B44A8A5009E422A /* JYModalViewController.h */,
+				D61C48A31B44A8A5009E422A /* JYModalViewController.m */,
 				D65AFA641AEDEF3D007867D0 /* JYOrderCard.h */,
 				D65AFA651AEDEF3D007867D0 /* JYOrderCard.m */,
 				D6C82B711B13EB1100876F57 /* JYOrdersBaseViewController.h */,
@@ -419,6 +444,7 @@
 				D69202B41AC4C7C0001C1C3D /* AppDelegate.m */,
 				D68DAF991AC4CD0800838E7E /* Common */,
 				D63B69AB1AC5184D005600A9 /* Components */,
+				D61C48991B44838A009E422A /* Menu */,
 				D6C82B611B1252FE00876F57 /* Model */,
 				D63F0D871ACBBDF30067C5EE /* Order */,
 				D6FA6A781B3374FB007CB30E /* Payment */,
@@ -688,6 +714,7 @@
 				D6FA6A7F1B33E3DD007CB30E /* JYCreditCardViewCell.m in Sources */,
 				D6F4A0511AF6A156001A3C89 /* AppConst.m in Sources */,
 				D68DAF961AC4CACD00838E7E /* Constants.m in Sources */,
+				D61C48A41B44A8A5009E422A /* JYModalViewController.m in Sources */,
 				D689ED621AE01F9C00CB4D2B /* JYDateView.m in Sources */,
 				D65AFA621AEC791D007867D0 /* JYBidViewCell.m in Sources */,
 				D689ED6A1AE42C8300CB4D2B /* UIView+Joyy.m in Sources */,
@@ -711,6 +738,7 @@
 				D69202B81AC4C7C0001C1C3D /* JYOrderCategoryCollectionViewController.m in Sources */,
 				D6C82B551B0D9FAE00876F57 /* JYCommentsViewController.m in Sources */,
 				D6B2F05B1ACE630F009601B0 /* JYAutoCompleteTextField.m in Sources */,
+				D61C48A01B449143009E422A /* JYMenuViewCell.m in Sources */,
 				D63F0D711AC9EC060067C5EE /* JYUser.m in Sources */,
 				D6FA6A7B1B33752C007CB30E /* JYPaymentViewController.m in Sources */,
 				D6B2F0631ACF4755009601B0 /* JYOrderCreateDetailsViewController.m in Sources */,
@@ -721,6 +749,7 @@
 				D63B69B61AC53BB4005600A9 /* JYFloatLabeledTextField.m in Sources */,
 				D6B2F0671AD1B5EC009601B0 /* JYMapDashBoardView.m in Sources */,
 				D65AFA5E1AEC715D007867D0 /* JYOrdersOngoingViewController.m in Sources */,
+				D61C489C1B4483B4009E422A /* JYMenuViewController.m in Sources */,
 				D6FA6A871B37CAF2007CB30E /* JYOrdersFinishedViewController.m in Sources */,
 				D6B2F0851AD5E165009601B0 /* JYPlacesViewCell.m in Sources */,
 				D65AFA751AEF5F3A007867D0 /* UIImageEffects.m in Sources */,
@@ -756,6 +785,7 @@
 				D65AFA631AEC791D007867D0 /* JYBidViewCell.m in Sources */,
 				D6B2F0641ACF4755009601B0 /* JYOrderCreateDetailsViewController.m in Sources */,
 				D63F0D561AC7ACB70067C5EE /* JYSignUpViewController.m in Sources */,
+				D61C48A51B44A8A5009E422A /* JYModalViewController.m in Sources */,
 				D63F0D7E1ACA5E260067C5EE /* JYSignViewController.m in Sources */,
 				D63B69BB1AC624F8005600A9 /* JYAutoCompleteDataSource.m in Sources */,
 				D679F0311B2951D5004F1C37 /* JYFixedLengthRowValidator.m in Sources */,
@@ -768,6 +798,7 @@
 				D63F0D761AC9F6F80067C5EE /* DataStore.m in Sources */,
 				D6348D2C1ADA4A650002BC35 /* JYRestrictedTextViewCell.m in Sources */,
 				D679F0271B1C39BB004F1C37 /* JYFloatLabeledTextFieldCell.m in Sources */,
+				D61C48A11B449143009E422A /* JYMenuViewCell.m in Sources */,
 				D65F37471B04807D007B534C /* JYCommentViewCell.m in Sources */,
 				D6B2F0821AD5A679009601B0 /* JYPlacesViewController.m in Sources */,
 				D6B2F05C1ACE630F009601B0 /* JYAutoCompleteTextField.m in Sources */,
@@ -785,6 +816,7 @@
 				D6FA6A801B33E3DD007CB30E /* JYCreditCardViewCell.m in Sources */,
 				D65AFA741AEF5F3A007867D0 /* UICustomActionSheet.m in Sources */,
 				D63B69B31AC51D61005600A9 /* JYSignBaseViewController.m in Sources */,
+				D61C489D1B4483B4009E422A /* JYMenuViewController.m in Sources */,
 				D6348D301ADB4DD60002BC35 /* NSString+Joyy.m in Sources */,
 				D6FA6A7C1B33752C007CB30E /* JYPaymentViewController.m in Sources */,
 				D6C82B5D1B0EFDEA00876F57 /* JYCommentTextView.m in Sources */,

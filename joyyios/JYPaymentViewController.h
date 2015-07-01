@@ -8,6 +8,8 @@
 
 #import <Stripe/Stripe.h>
 
+#import "JYModalViewController.h"
+
 @class JYPaymentViewController;
 
 @protocol JYPaymentViewControllerDelegate <NSObject>
@@ -18,7 +20,7 @@
 @end
 
 
-@interface JYPaymentViewController : UIViewController
+@interface JYPaymentViewController : JYModalViewController
 
 @property(nonatomic, weak) NSMutableArray *creditCardList;
 @property(nonatomic, weak) id<JYPaymentViewControllerDelegate> delegate;
