@@ -27,6 +27,7 @@ PODS:
   - KVNProgress (2.2.1)
   - MCSwipeTableViewCell (2.1.2)
   - Onboard (2.1.5)
+  - RESideMenu (4.0.7)
   - RKDropdownAlert (0.3.0)
   - SlackTextViewController (1.5.2)
   - Stripe (4.0.3):
@@ -50,6 +51,7 @@ DEPENDENCIES:
   - KVNProgress
   - MCSwipeTableViewCell
   - Onboard
+  - RESideMenu (~> 4.0.7)
   - RKDropdownAlert
   - SlackTextViewController
   - Stripe
@@ -67,6 +69,7 @@ SPEC CHECKSUMS:
   KVNProgress: 7001d2d16a2755cee5599e8e485befe056f2197b
   MCSwipeTableViewCell: 0fc22bd3635b9b5f4ce08675218b0a7278b6440f
   Onboard: c58adaef5a377b0c45b4754c5cbe17d4627898c7
+  RESideMenu: f24c508404b49c667344c54aba7e590883533958
   RKDropdownAlert: f4b3364c251829ad439dc666836a1f2dad26f4c7
   SlackTextViewController: ab240cda4c7fe1f70f6c6cf64578f3fea495ce99
   Stripe: 43a4307dc789483a61668d187c4a917d1348b0b6
