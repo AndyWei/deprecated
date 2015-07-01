@@ -866,8 +866,8 @@ internals.createPaymentHandler = function (request, reply) {
 
         // send notification to the order winner
         var amount = Utils.formatMoney(results.order.final_price);
-        var title = 'Received payment $' + amount + 'from @' + u.username;
-        Push.notify('joyyor', results.order.winner_id, title, title, function (error) {
+        var title = 'Received payment $' + amount + ' from @' + u.username;
+        Push.notify('joyyor', results.order.winner_id, title, 'receive_payment', function (error) {
 
             if (error) {
                 console.error(error);

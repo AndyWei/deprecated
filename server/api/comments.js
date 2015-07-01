@@ -240,11 +240,11 @@ internals.createCommentHandler = function (request, reply) {
 
         // send notification to recipientIds in joyyor
         var title = request.auth.credentials.username + ': ' + request.payload.body;
-        Push.mnotify('joyyor', results.recipientIds, title, title);
+        Push.mnotify('joyyor', results.recipientIds, title, 'receive_comment');
 
         // send notification to the customer
         if (results.customerId !== userId.toString()) {
-            Push.notify('joyy', results.customerId, title, title, function (error) {
+            Push.notify('joyy', results.customerId, title, 'receive_comment', function (error) {
                 if (error) {
                     console.error(error);
                 }

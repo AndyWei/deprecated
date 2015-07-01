@@ -314,7 +314,7 @@ internals.createBidHandler = function (request, reply) {
         // send notification to the asker
         var amount = Utils.formatMoney(request.payload.price);
         var title = 'Received a bid: ' + request.auth.credentials.username + ' ask for $' + amount;
-        Push.notify('joyy', results.askerId, title, title, function (error) {
+        Push.notify('joyy', results.askerId, title, 'receive_bid', function (error) {
 
             if (error) {
                 console.error(error);
@@ -458,7 +458,7 @@ internals.acceptBidHandler = function (request, reply) {
 
             // send notification to the winner
             var title = request.auth.credentials.username + ' accepted your bid!';
-            Push.notify('joyyor', winnerId, title, title, function (error) {
+            Push.notify('joyyor', winnerId, title, 'accept_bid', function (error) {
 
                 if (error) {
                     console.error(error);
