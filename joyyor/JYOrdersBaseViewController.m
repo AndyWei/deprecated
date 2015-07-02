@@ -25,7 +25,6 @@
 {
     [super viewDidLoad];
 
-    self.networkThreadCount = 0;
     self.orderList = [NSMutableArray new];
 }
 
@@ -37,38 +36,6 @@
 - (void)dealloc
 {
     self.orderList = nil;
-}
-
-- (JYOrder *)orderOfId:(NSUInteger)targetOrderId
-{
-    for (JYOrder *order in self.orderList)
-    {
-        if (order.orderId == targetOrderId)
-        {
-            return order;
-        }
-    }
-    return nil;
-}
-
-- (void)networkThreadBegin
-{
-    if (self.networkThreadCount == 0)
-    {
-        [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
-    }
-    self.networkThreadCount++;
-}
-
-- (void)networkThreadEnd
-{
-    self.networkThreadCount--;
-    if (self.networkThreadCount <= 0)
-    {
-        [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-        [self.refreshControl endRefreshing];
-        [self.tableView reloadData];
-    }
 }
 
 - (void)showActionSheetForOrder:(JYOrder *)order highlightView:(UIView *)view

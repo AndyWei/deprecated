@@ -7,7 +7,6 @@
 //
 
 #import <AFNetworking/AFNetworking.h>
-#import <CardIO/CardIO.h>
 #import <KVNProgress/KVNProgress.h>
 #import <RKDropdownAlert/RKDropdownAlert.h>
 
@@ -16,16 +15,15 @@
 #import "JYPaymentViewController.h"
 #import "JYUser.h"
 
-@interface JYPaymentViewController () <CardIOPaymentViewControllerDelegate, UITableViewDataSource, UITableViewDelegate>
+@interface JYPaymentViewController ()
 
 @property(nonatomic) NSString *stripeToken;
 @property(nonatomic) STPCard *card;
 @property(nonatomic) JYCreditCardType cardType;
-
 @property(nonatomic, weak) JYButton *addButton;
-@property(nonatomic, weak) UITableView *tableView;
 
 @end
+
 
 static NSString *const kCardCellIdentifier = @"cardCell";
 

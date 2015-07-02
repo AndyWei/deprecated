@@ -18,6 +18,8 @@
 {
     [super viewDidLoad];
 
+    self.networkThreadCount = 0;
+
     UIBarButtonItem *doneButton = [[UIBarButtonItem alloc] initWithTitle:@"DONE" style:UIBarButtonItemStylePlain target:self action:@selector(_done)];
     self.navigationItem.leftBarButtonItem = doneButton;
 }
@@ -25,6 +27,38 @@
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
+}
+
+- (void)networkThreadBegin
+{
+    if (self.networkThreadCount == 0)
+    {
+        [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+    }
+    self.networkThreadCount++;
+}
+
+- (void)networkThreadEnd
+{
+    self.networkThreadCount--;
+    if (self.networkThreadCount <= 0)
+    {
+        [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+        [self.refreshControl endRefreshing];
+        [self.tableView reloadData];
+    }
+}
+
+- (JYOrder *)orderOfId:(NSUInteger)targetOrderId
+{
+    for (JYOrder *order in self.orderList)
+    {
+        if (order.orderId == targetOrderId)
+        {
+            return order;
+        }
+    }
+    return nil;
 }
 
 - (void)_done

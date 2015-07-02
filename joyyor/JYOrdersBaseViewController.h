@@ -12,19 +12,9 @@
 
 @interface JYOrdersBaseViewController : JYModalViewController <UICustomActionSheetDelegate>
 
-- (void)networkThreadBegin;
-- (void)networkThreadEnd;
 - (void)showActionSheetForOrder:(JYOrder *)order highlightView:(UIView *)view;
 - (void)fetchComments;
 - (void)fetchMyBids;
 - (NSDictionary *)fetchMyBidsParameters;
-
-- (JYOrder *)orderOfId:(NSUInteger)targetOrderId;
-
-@property(nonatomic) NSInteger networkThreadCount;
-@property(nonatomic) NSMutableArray *orderList;
-@property(nonatomic) UITableView *tableView;
-@property(nonatomic) UIRefreshControl *refreshControl;
-
 
 @end

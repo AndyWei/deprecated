@@ -163,6 +163,8 @@ static NSString *const kBidCellIdentifier = @"bidCell";
     }
 }
 
+#pragma mark - Payment
+
 - (void)_onPaymentAuthorizationDone
 {
     if ([self _isPaymentReady])
@@ -183,8 +185,6 @@ static NSString *const kBidCellIdentifier = @"bidCell";
 {
     return (self.stripeToken != nil);
 }
-
-#pragma mark - Payment
 
 - (void)_presentPaymentViewController
 {

@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
+#import <CardIO/CardIO.h>
 #import <Stripe/Stripe.h>
 
 #import "JYModalViewController.h"
@@ -20,7 +21,7 @@
 @end
 
 
-@interface JYPaymentViewController : JYModalViewController
+@interface JYPaymentViewController : JYModalViewController <CardIOPaymentViewControllerDelegate, UITableViewDataSource, UITableViewDelegate>
 
 @property(nonatomic, weak) NSMutableArray *creditCardList;
 @property(nonatomic, weak) id<JYPaymentViewControllerDelegate> delegate;

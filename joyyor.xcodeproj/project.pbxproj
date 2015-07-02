@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		4A97C952E583F70673F3F803 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BF9E643DBA1E8D6E7E6558EC /* libPods.a */; };
 		D61C48AC1B4511D7009E422A /* JYModalViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D61C48AB1B4511D7009E422A /* JYModalViewController.m */; };
+		D61C48B71B45B75A009E422A /* JYOrdersBaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D61C48B61B45B75A009E422A /* JYOrdersBaseViewController.m */; };
 		D65F37401AFEF868007B534C /* JYOrderCardCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D65F373F1AFEF868007B534C /* JYOrderCardCell.m */; };
 		D65F37431B04786A007B534C /* JYOrdersEngagedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D65F37421B04786A007B534C /* JYOrdersEngagedViewController.m */; };
 		D65F374A1B0485A7007B534C /* JYCommentViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D65F37491B0485A7007B534C /* JYCommentViewCell.m */; };
@@ -23,7 +24,6 @@
 		D6C82B601B0EFE0600876F57 /* JYCommentTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = D6C82B5F1B0EFE0600876F57 /* JYCommentTextView.m */; };
 		D6C82B6F1B128E9700876F57 /* JYBid.m in Sources */ = {isa = PBXBuildFile; fileRef = D6C82B6C1B128E9700876F57 /* JYBid.m */; };
 		D6C82B701B128E9700876F57 /* JYComment.m in Sources */ = {isa = PBXBuildFile; fileRef = D6C82B6E1B128E9700876F57 /* JYComment.m */; };
-		D6C82B771B13EB3D00876F57 /* JYOrdersBaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6C82B761B13EB3D00876F57 /* JYOrdersBaseViewController.m */; };
 		D6F49F891AF595F2001A3C89 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F49F881AF595F2001A3C89 /* main.m */; };
 		D6F49F8C1AF595F2001A3C89 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F49F8B1AF595F2001A3C89 /* AppDelegate.m */; };
 		D6F49F971AF595F2001A3C89 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D6F49F961AF595F2001A3C89 /* Images.xcassets */; };
@@ -68,6 +68,8 @@
 		BF9E643DBA1E8D6E7E6558EC /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		D61C48AA1B4511D7009E422A /* JYModalViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JYModalViewController.h; path = joyyios/JYModalViewController.h; sourceTree = SOURCE_ROOT; };
 		D61C48AB1B4511D7009E422A /* JYModalViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JYModalViewController.m; path = joyyios/JYModalViewController.m; sourceTree = SOURCE_ROOT; };
+		D61C48B51B45B75A009E422A /* JYOrdersBaseViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYOrdersBaseViewController.h; sourceTree = "<group>"; };
+		D61C48B61B45B75A009E422A /* JYOrdersBaseViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYOrdersBaseViewController.m; sourceTree = "<group>"; };
 		D65F373E1AFEF868007B534C /* JYOrderCardCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYOrderCardCell.h; sourceTree = "<group>"; };
 		D65F373F1AFEF868007B534C /* JYOrderCardCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYOrderCardCell.m; sourceTree = "<group>"; };
 		D65F37411B04786A007B534C /* JYOrdersEngagedViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYOrdersEngagedViewController.h; sourceTree = "<group>"; };
@@ -96,8 +98,6 @@
 		D6C82B6C1B128E9700876F57 /* JYBid.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JYBid.m; path = joyyios/JYBid.m; sourceTree = SOURCE_ROOT; };
 		D6C82B6D1B128E9700876F57 /* JYComment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JYComment.h; path = joyyios/JYComment.h; sourceTree = SOURCE_ROOT; };
 		D6C82B6E1B128E9700876F57 /* JYComment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JYComment.m; path = joyyios/JYComment.m; sourceTree = SOURCE_ROOT; };
-		D6C82B751B13EB3D00876F57 /* JYOrdersBaseViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JYOrdersBaseViewController.h; path = joyyios/JYOrdersBaseViewController.h; sourceTree = SOURCE_ROOT; };
-		D6C82B761B13EB3D00876F57 /* JYOrdersBaseViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JYOrdersBaseViewController.m; path = joyyios/JYOrdersBaseViewController.m; sourceTree = SOURCE_ROOT; };
 		D6F49F831AF595F2001A3C89 /* joyyor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = joyyor.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D6F49F871AF595F2001A3C89 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D6F49F881AF595F2001A3C89 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -352,8 +352,6 @@
 				D61C48AB1B4511D7009E422A /* JYModalViewController.m */,
 				D6F49FC81AF5DB4D001A3C89 /* JYOrderCard.h */,
 				D6F49FC91AF5DB4D001A3C89 /* JYOrderCard.m */,
-				D6C82B751B13EB3D00876F57 /* JYOrdersBaseViewController.h */,
-				D6C82B761B13EB3D00876F57 /* JYOrdersBaseViewController.m */,
 				D6F49FD01AF5DB4D001A3C89 /* JYPinAnnotationView.h */,
 				D6F49FD11AF5DB4D001A3C89 /* JYPinAnnotationView.m */,
 				D6F49FD41AF5DB4D001A3C89 /* JYPlacesViewCell.h */,
@@ -411,6 +409,8 @@
 		D6F4A03F1AF5DC1F001A3C89 /* Order */ = {
 			isa = PBXGroup;
 			children = (
+				D61C48B51B45B75A009E422A /* JYOrdersBaseViewController.h */,
+				D61C48B61B45B75A009E422A /* JYOrdersBaseViewController.m */,
 				D6F4A0441AF5DD04001A3C89 /* JYOrdersNearbyViewController.h */,
 				D6F4A0451AF5DD04001A3C89 /* JYOrdersNearbyViewController.m */,
 				D679F03C1B30E58D004F1C37 /* JYOrdersEngagedBaseViewController.h */,
@@ -534,7 +534,7 @@
 				D6F4A00A1AF5DB4D001A3C89 /* JYMapDashBoardView.m in Sources */,
 				D6F4A0201AF5DB4D001A3C89 /* JYRestrictedTextViewCell.m in Sources */,
 				D6F4A0361AF5DB4D001A3C89 /* UIFont+Joyy.m in Sources */,
-				D6C82B771B13EB3D00876F57 /* JYOrdersBaseViewController.m in Sources */,
+				D61C48B71B45B75A009E422A /* JYOrdersBaseViewController.m in Sources */,
 				D679F0341B295525004F1C37 /* JYFixedLengthRowValidator.m in Sources */,
 				D679F0371B296225004F1C37 /* JYAccountBaseViewController.m in Sources */,
 				D6F4A00C1AF5DB4D001A3C89 /* JYOrder.m in Sources */,
