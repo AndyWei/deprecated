@@ -309,7 +309,7 @@ static NSString *const kBidCellIdentifier = @"bidCell";
 
 #pragma mark - JYPaymentViewControllerDelegate
 
-- (void)viewController:(JYPaymentViewController *)controller didCreateToken:(NSString *)token
+- (void)viewControllerDidCreateToken:(NSString *)token
 {
     self.stripeToken = token;
 }

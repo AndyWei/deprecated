@@ -183,8 +183,11 @@ static NSString *const kCardCellIdentifier = @"cardCell";
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 
     JYCreditCard *card = self.creditCardList[indexPath.row];
-    [self.delegate viewController:self didCreateToken:card.stripeCustomerId];
-    [self.delegate viewControllerDidFinish:self];
+    if (self.delegate)
+    {
+        [self.delegate viewControllerDidCreateToken:card.stripeCustomerId];
+        [self.delegate viewControllerDidFinish:self];
+    }
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
@@ -249,15 +252,23 @@ static NSString *const kCardCellIdentifier = @"cardCell";
 
               NSDictionary *result = (NSDictionary *)responseObject;
               NSString *stripeCustomerId = [result valueForKey:@"customer_id"];
-              [weakSelf.delegate viewController:weakSelf didCreateToken:stripeCustomerId];
-              [weakSelf.delegate viewControllerDidFinish:weakSelf];
+
+              if (weakSelf.delegate)
+              {
+                  [weakSelf.delegate viewControllerDidCreateToken:stripeCustomerId];
+                  [weakSelf.delegate viewControllerDidFinish:weakSelf];
+              }
           }
           failure:^(AFHTTPRequestOperation *operation, NSError *error) {
 
               [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
               [KVNProgress dismiss];
 
-              [weakSelf.delegate viewController:weakSelf didCreateToken:nil];
+              if (weakSelf.delegate)
+              {
+                  [weakSelf.delegate viewControllerDidCreateToken:nil];
+              }
+
               NSString *errorMessage = NSLocalizedString(@"Can't save the credit card due to network failure, please retry later", nil);
               [RKDropdownAlert title:NSLocalizedString(kErrorTitle, nil)
                              message:errorMessage

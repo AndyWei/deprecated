@@ -15,7 +15,6 @@
 
 @interface JYOrdersFinishedViewController ()
 
-@property(nonatomic) NSMutableArray *startedOrderList;
 @property(nonatomic) NSMutableArray *finishedOrderList;
 @property(nonatomic) NSMutableArray *paidOrderList;
 

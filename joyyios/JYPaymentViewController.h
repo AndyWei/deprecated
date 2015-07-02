@@ -14,7 +14,7 @@
 
 @protocol JYPaymentViewControllerDelegate <NSObject>
 
-- (void)viewController:(JYPaymentViewController *)controller didCreateToken:(NSString *)token;
+- (void)viewControllerDidCreateToken:(NSString *)token;
 - (void)viewControllerDidFinish:(JYPaymentViewController *)controller;
 
 @end

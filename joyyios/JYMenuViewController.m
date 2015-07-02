@@ -11,6 +11,17 @@
 #import "JYPaymentViewController.h"
 #import "JYUser.h"
 
+
+typedef NS_ENUM(NSUInteger, JYMenuItem)
+{
+    JYMenuItemBids = 0,    // The bids for the active orders 
+    JYMenuItemOrders = 1,  // The dealt, started, finished orders
+    JYMenuItemHistory = 2, // The paid orders
+    JYMenuItemPayment = 3, // Payment method
+    JYMenuItemHelp = 4,
+    JYMenuItemSettings = 5
+};
+
 @interface JYMenuViewController ()
 
 @property(nonatomic) NSArray *stringList;
@@ -32,10 +43,11 @@ static NSString *const kMenuCellIdentifier = @"menuCell";
     [super viewDidLoad];
 
     self.stringList = [NSArray arrayWithObjects:
-                       NSLocalizedString(@"PAYMENT", nil),
+                       NSLocalizedString(@"BIDS", nil),
+                       NSLocalizedString(@"ORDERS", nil),
                        NSLocalizedString(@"HISTORY", nil),
+                       NSLocalizedString(@"PAYMENT", nil),
                        NSLocalizedString(@"HELP", nil),
-                       NSLocalizedString(@"NOTIFICATIONS", nil),
                        NSLocalizedString(@"SETTINGS", nil),
                        nil];
     self.iconList = [NSArray new];
@@ -122,7 +134,25 @@ static NSString *const kMenuCellIdentifier = @"menuCell";
 {
     UIViewController *viewController = nil;
 
-    viewController = [[JYPaymentViewController alloc] init];
+    JYMenuItem selection = (JYMenuItem)indexPath.row;
+    switch (selection)
+    {
+        case JYMenuItemBids:
+            break;
+        case JYMenuItemOrders:
+            break;
+        case JYMenuItemHistory:
+            break;
+        case JYMenuItemPayment:
+            viewController = [[JYPaymentViewController alloc] init];
+            break;
+        case JYMenuItemHelp:
+            break;
+        case JYMenuItemSettings:
+            break;
+        default:
+            break;
+    }
 
     UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController: viewController];
     [self presentViewController:navigationController animated:YES completion:nil];
