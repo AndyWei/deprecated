@@ -8,9 +8,10 @@
 
 #import <AFNetworking/AFNetworking.h>
 #import <KVNProgress/KVNProgress.h>
+#import <MMDrawerController/MMDrawerController.h>
+#import <MMDrawerController/MMDrawerVisualState.h>
 #import <RKDropdownAlert/RKDropdownAlert.h>
 #import <Stripe/Stripe.h>
-#import <RESideMenu/RESideMenu.h>
 
 #import "AppDelegate.h"
 #import "DataStore.h"
@@ -24,7 +25,7 @@
 @interface AppDelegate ()
 
 @property(nonatomic) NSTimer *signInTimer;
-@property(nonatomic, weak) RESideMenu *sideMenuViewController;
+@property(nonatomic, weak) MMDrawerController *drawerController;
 @end
 
 @implementation AppDelegate
@@ -193,7 +194,7 @@
     }
     else if ([user exists])
     {
-        [self _launchTabViewController];
+        [self _launchMainViewController];
     }
     else
     {
@@ -226,7 +227,7 @@
 {
     [self _registerPushNotifications];
     [self _signInAfter:kSignIntervalMax];
-    [self _launchTabViewController];
+    [self _launchMainViewController];
 }
 
 - (void)_signInAfter:(NSTimeInterval)interval
@@ -251,12 +252,12 @@
     self.window.rootViewController = [self _onboardingViewController];
 }
 
-- (void)_launchTabViewController
+- (void)_launchMainViewController
 {
     JYUser *user = [JYUser currentUser];
     NSTimeInterval now = [NSDate timeIntervalSinceReferenceDate];
 
-    NSAssert([user exists], @"The user credential should be there when _launchTabViewController is called");
+    NSAssert([user exists], @"The user credential should be there when _launchMainViewController is called");
 
     if (user.tokenExpireTimeInSecs < now)
     {
@@ -272,23 +273,33 @@
         [self _signInAfter:(user.tokenExpireTimeInSecs - now)];
     }
 
-    UIViewController *contentVC = [[JYOrderCreateLocationViewController alloc] init];
-    UINavigationController *contentNC = [[UINavigationController alloc] initWithRootViewController:contentVC];
-    contentNC.title = NSLocalizedString(@"New", nil);
+    [self _launchDrawerViewController];
+}
 
-    UIViewController *leftVC = [[JYMenuViewController alloc] init];
+- (void)_launchDrawerViewController
+{
+    UIViewController *contentViewController = [[JYOrderCreateLocationViewController alloc] init];
+    UINavigationController *contentNavigationController = [[UINavigationController alloc] initWithRootViewController:contentViewController];
 
-    RESideMenu *sideMenuViewController = [[RESideMenu alloc] initWithContentViewController:contentNC
-                                                                    leftMenuViewController:leftVC
-                                                                   rightMenuViewController:nil];
+    UIViewController *menuViewController = [[JYMenuViewController alloc] init];
 
-    self.sideMenuViewController = sideMenuViewController;
-    self.window.rootViewController = sideMenuViewController;
+    MMDrawerController * drawerController = [[MMDrawerController alloc]
+                                             initWithCenterViewController:contentNavigationController
+                                             leftDrawerViewController:menuViewController
+                                             rightDrawerViewController:nil];
+
+    drawerController.openDrawerGestureModeMask = MMOpenDrawerGestureModePanningNavigationBar;
+    drawerController.closeDrawerGestureModeMask = MMCloseDrawerGestureModeAll;
+    [drawerController setDrawerVisualStateBlock:[MMDrawerVisualState slideAndScaleVisualStateBlock]];
+
+    self.drawerController = drawerController;
+
+    self.window.rootViewController = drawerController;
 }
 
 - (void)_menuButtonPressed
 {
-    [self.sideMenuViewController presentLeftMenuViewController];
+    [self.drawerController openDrawerSide:MMDrawerSideLeft animated:YES completion:nil];
 }
 
 #pragma mark - Network

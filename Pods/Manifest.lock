@@ -26,6 +26,18 @@ PODS:
   - JVFloatLabeledTextField (1.0.4)
   - KVNProgress (2.2.1)
   - MCSwipeTableViewCell (2.1.2)
+  - MMDrawerController (0.6.0):
+    - MMDrawerController/Core (= 0.6.0)
+    - MMDrawerController/MMDrawerBarButtonItem (= 0.6.0)
+    - MMDrawerController/MMDrawerVisualStates (= 0.6.0)
+    - MMDrawerController/Subclass (= 0.6.0)
+  - MMDrawerController/Core (0.6.0)
+  - MMDrawerController/MMDrawerBarButtonItem (0.6.0):
+    - MMDrawerController/Core
+  - MMDrawerController/MMDrawerVisualStates (0.6.0):
+    - MMDrawerController/Core
+  - MMDrawerController/Subclass (0.6.0):
+    - MMDrawerController/Core
   - Onboard (2.1.5)
   - RESideMenu (4.0.7)
   - RKDropdownAlert (0.3.0)
@@ -50,6 +62,7 @@ DEPENDENCIES:
   - JVFloatLabeledTextField
   - KVNProgress
   - MCSwipeTableViewCell
+  - MMDrawerController
   - Onboard
   - RESideMenu (~> 4.0.7)
   - RKDropdownAlert
@@ -68,6 +81,7 @@ SPEC CHECKSUMS:
   JVFloatLabeledTextField: 18b05449d479733841b2c451c87e201a45de26e2
   KVNProgress: 7001d2d16a2755cee5599e8e485befe056f2197b
   MCSwipeTableViewCell: 0fc22bd3635b9b5f4ce08675218b0a7278b6440f
+  MMDrawerController: e3a54a5570388463ad3b36975251575b50c4e1a0
   Onboard: c58adaef5a377b0c45b4754c5cbe17d4627898c7
   RESideMenu: f24c508404b49c667344c54aba7e590883533958
   RKDropdownAlert: f4b3364c251829ad439dc666836a1f2dad26f4c7
