@@ -33,7 +33,7 @@ static NSString *const kBidCellIdentifier = @"bidCell";
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.title = NSLocalizedString(@"Orders Ongoing", nil);
+    self.title = NSLocalizedString(@"BIDS", nil);
 
     self.selectedIndexPath = nil;
     self.stripeToken = nil;
@@ -57,7 +57,7 @@ static NSString *const kBidCellIdentifier = @"bidCell";
 - (void)_createTableView
 {
     self.tableView = [[UITableView alloc] initWithFrame:self.view.frame style:UITableViewStyleGrouped];
-    self.tableView.backgroundColor = FlatGray;
+    self.tableView.backgroundColor = FlatBlack;
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
     [self.tableView registerClass:[JYBidViewCell class] forCellReuseIdentifier:kBidCellIdentifier];

@@ -46,7 +46,7 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
 - (void)_createTableView
 {
     self.tableView = [[UITableView alloc] initWithFrame:self.view.frame style:UITableViewStylePlain];
-    self.tableView.backgroundColor = FlatWhite;
+    self.tableView.backgroundColor = FlatBlack;
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
     [self.tableView registerClass:[JYOrderViewCell class] forCellReuseIdentifier:kOrderCellIdentifier];

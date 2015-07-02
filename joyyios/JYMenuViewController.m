@@ -10,6 +10,7 @@
 #import "JYMenuViewCell.h"
 #import "JYOrdersBidsViewController.h"
 #import "JYOrdersHistoryViewController.h"
+#import "JYOrdersViewController.h"
 #import "JYPaymentViewController.h"
 #import "JYUser.h"
 
@@ -147,6 +148,7 @@ static NSString *const kMenuCellIdentifier = @"menuCell";
             viewController = [JYOrdersBidsViewController new];
             break;
         case JYMenuItemOrders:
+            viewController = [JYOrdersViewController new];
             break;
         case JYMenuItemHistory:
             viewController = [JYOrdersHistoryViewController new];
