@@ -29,7 +29,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [self setTitleText:NSLocalizedString(@"Engaged Orders", nil)];
+    self.navigationItem.leftBarButtonItem = nil;
 
     self.selectedSection = -1;
 
@@ -67,7 +67,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
     tableViewController.refreshControl = self.refreshControl;
 
     // Enable scroll to top
-    self.scrollView = self.tableView;
+//    self.scrollView = self.tableView;
 }
 
 - (void)tapOnTableSectionHeader:(id)sender

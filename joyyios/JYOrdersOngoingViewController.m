@@ -51,7 +51,7 @@ static NSString *const kBidCellIdentifier = @"bidCell";
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [self setTitleText:NSLocalizedString(@"Orders Ongoing", nil)];
+    self.title = NSLocalizedString(@"Orders Ongoing", nil);
 
     self.selectedIndexPath = nil;
     self.stripeToken = nil;

@@ -7,7 +7,6 @@
 //
 
 #import "JYServiceCategory.h"
-#import "JYOrderCreateDetailsViewController.h"
 
 @implementation JYServiceCategory
 

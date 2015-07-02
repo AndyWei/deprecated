@@ -16,7 +16,7 @@
 #import "AppDelegate.h"
 #import "DataStore.h"
 #import "JYMenuViewController.h"
-#import "JYOrderCreateLocationViewController.h"
+#import "JYOrderMapViewController.h"
 #import "JYSignViewController.h"
 #import "JYUser.h"
 #import "OnboardingViewController.h"
@@ -278,10 +278,10 @@
 
 - (void)_launchDrawerViewController
 {
-    UIViewController *contentViewController = [[JYOrderCreateLocationViewController alloc] init];
+    UIViewController *contentViewController = [JYOrderMapViewController new];
     UINavigationController *contentNavigationController = [[UINavigationController alloc] initWithRootViewController:contentViewController];
 
-    UIViewController *menuViewController = [[JYMenuViewController alloc] init];
+    UIViewController *menuViewController = [JYMenuViewController new];
 
     MMDrawerController * drawerController = [[MMDrawerController alloc]
                                              initWithCenterViewController:contentNavigationController

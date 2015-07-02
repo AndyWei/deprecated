@@ -6,11 +6,11 @@
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
-#import "JYExpandViewController.h"
+#import "JYModalViewController.h"
 #import "JYOrder.h"
 #import "UICustomActionSheet.h"
 
-@interface JYOrdersBaseViewController : JYExpandViewController <UICustomActionSheetDelegate>
+@interface JYOrdersBaseViewController : JYModalViewController <UICustomActionSheetDelegate>
 
 - (void)networkThreadBegin;
 - (void)networkThreadEnd;

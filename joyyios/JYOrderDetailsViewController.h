@@ -1,5 +1,5 @@
 //
-//  JYOrderCreateDetailsViewController.h
+//  JYOrderDetailsViewController.h
 //  joyyios
 //
 //  Created by Ping Yang on 4/3/15.
@@ -8,6 +8,6 @@
 
 #import <XLForm/XLFormViewController.h>
 
-@interface JYOrderCreateDetailsViewController : XLFormViewController
+@interface JYOrderDetailsViewController : XLFormViewController
 
 @end

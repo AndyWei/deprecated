@@ -1,5 +1,5 @@
 //
-//  JYOrderLocationCreateViewController.h
+//  JYOrderMapViewController.h
 //  joyyios
 //
 //  Created by Ping Yang on 4/1/15.
@@ -12,6 +12,6 @@
 
 @import MapKit;
 
-@interface JYOrderCreateLocationViewController : UIViewController <JYMapDashBoardViewDelegate, JYPlacesViewControllerDelegate, MKMapViewDelegate, UIGestureRecognizerDelegate>
+@interface JYOrderMapViewController : UIViewController <JYMapDashBoardViewDelegate, JYPlacesViewControllerDelegate, MKMapViewDelegate, UIGestureRecognizerDelegate>
 
 @end

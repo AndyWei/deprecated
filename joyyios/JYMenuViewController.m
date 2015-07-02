@@ -8,6 +8,7 @@
 
 #import "JYMenuViewController.h"
 #import "JYMenuViewCell.h"
+#import "JYOrdersHistoryViewController.h"
 #import "JYPaymentViewController.h"
 #import "JYUser.h"
 
@@ -124,10 +125,12 @@ static NSString *const kMenuCellIdentifier = @"menuCell";
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
+    UIView *base = [[UIView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.view.frame), kHeaderHeight)];
     UILabel *label = [self _createLabel];
     label.text = [JYUser currentUser].email;
 
-    return label;
+    [base addSubview:label];
+    return base;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
@@ -142,9 +145,10 @@ static NSString *const kMenuCellIdentifier = @"menuCell";
         case JYMenuItemOrders:
             break;
         case JYMenuItemHistory:
+            viewController = [JYOrdersHistoryViewController new];
             break;
         case JYMenuItemPayment:
-            viewController = [[JYPaymentViewController alloc] init];
+            viewController = [JYPaymentViewController new];
             break;
         case JYMenuItemHelp:
             break;

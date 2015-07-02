@@ -26,7 +26,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [self setTitleText:NSLocalizedString(@"Orders Toto", nil)];
+    self.title = NSLocalizedString(@"Toto", nil);
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onBidAccepted) name:kNotificationBidAccepted object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onCommentCreated) name:kNotificationDidCreateComment object:nil];

@@ -1,5 +1,5 @@
 //
-//  JYOrderCreateDetailsViewController.m
+//  JYOrderDetailsViewController.m
 //  joyyios
 //
 //  Created by Ping Yang on 4/3/15.
@@ -13,17 +13,17 @@
 
 #import "JYButton.h"
 #import "JYOrder.h"
-#import "JYOrderCreateDetailsViewController.h"
+#import "JYOrderDetailsViewController.h"
 #import "JYPriceTextFieldCell.h"
 #import "JYRestrictedTextViewCell.h"
 #import "JYServiceCategory.h"
 #import "JYUser.h"
 
-@interface JYOrderCreateDetailsViewController ()
+@interface JYOrderDetailsViewController ()
 
 @end
 
-@implementation JYOrderCreateDetailsViewController
+@implementation JYOrderDetailsViewController
 
 - (void)viewDidLoad
 {

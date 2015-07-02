@@ -40,7 +40,7 @@ static CGFloat kCellHeight = 50;
 {
     CGFloat width = CGRectGetWidth(self.frame) - kMarginLeft;
     UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(kMarginLeft, 0, width, kCellHeight)];
-    label.font = [UIFont boldSystemFontOfSize:20];
+    label.font = [UIFont systemFontOfSize:20];
     label.backgroundColor = FlatBlack;
     label.textColor = FlatWhite;
     label.textAlignment = NSTextAlignmentLeft;

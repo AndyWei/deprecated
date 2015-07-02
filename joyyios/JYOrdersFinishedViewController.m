@@ -29,7 +29,7 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [self setTitleText:NSLocalizedString(@"Finished Orders", nil)];
+    self.title = NSLocalizedString(@"Finished Orders", nil);
 
     self.finishedOrderList = [NSMutableArray new];
     self.paidOrderList = [NSMutableArray new];

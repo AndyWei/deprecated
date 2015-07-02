@@ -1,5 +1,5 @@
 //
-//  JYOrderCreateLocationViewController.m
+//  JYOrderMapViewController.m
 //  joyyios
 //
 //  Created by Ping Yang on 4/1/15.
@@ -9,12 +9,12 @@
 #import "AppDelegate.h"
 #import "JYButton.h"
 #import "JYOrder.h"
-#import "JYOrderCreateDetailsViewController.h"
-#import "JYOrderCreateLocationViewController.h"
+#import "JYOrderDetailsViewController.h"
+#import "JYOrderMapViewController.h"
 #import "JYPinAnnotationView.h"
 #import "JYServiceCategory.h"
 
-@interface JYOrderCreateLocationViewController ()
+@interface JYOrderMapViewController ()
 
 @property(nonatomic) BOOL mapNeedsPadding;
 @property(nonatomic) CLLocationCoordinate2D userSelectedMapCenter;
@@ -35,7 +35,7 @@
 
 static NSString *reuseId = @"pin";
 
-@implementation JYOrderCreateLocationViewController
+@implementation JYOrderMapViewController
 
 - (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -316,7 +316,7 @@ static NSString *reuseId = @"pin";
         currentOrder.endPointLon = self.endPoint.coordinate.longitude;
     }
 
-    UIViewController *viewController = [JYOrderCreateDetailsViewController new];
+    UIViewController *viewController = [JYOrderDetailsViewController new];
     [self.navigationController pushViewController:viewController animated:YES];
 }
 

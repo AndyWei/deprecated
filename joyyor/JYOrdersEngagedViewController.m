@@ -29,7 +29,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [self setTitleText:NSLocalizedString(@"Engaged Orders", nil)];
+    self.title = NSLocalizedString(@"Engaged", nil);
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onBidAccepted) name:kNotificationBidAccepted object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onBidCreated) name:kNotificationDidCreateBid object:nil];

@@ -64,7 +64,8 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [self setTitleText:NSLocalizedString(@"Orders Nearby", nil)];
+    self.title = NSLocalizedString(@"Nearby", nil);
+    self.navigationItem.leftBarButtonItem = nil;
 
     self.selectedRow = -1;
     self.commentsCountList = [NSArray new];
@@ -116,7 +117,7 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
     tableViewController.refreshControl = self.refreshControl;
 
     // Enable scroll to top
-    self.scrollView = self.tableView;
+//    self.scrollView = self.tableView;
 }
 
 - (void)_presentBidViewForOrder:(JYOrder *)order
