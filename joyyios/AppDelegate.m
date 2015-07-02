@@ -278,18 +278,19 @@
 
 - (void)_launchDrawerViewController
 {
-    UIViewController *contentViewController = [JYOrderMapViewController new];
-    UINavigationController *contentNavigationController = [[UINavigationController alloc] initWithRootViewController:contentViewController];
+    UIViewController *map = [JYOrderMapViewController new];
+    UINavigationController *orderNC = [[UINavigationController alloc] initWithRootViewController:map];
 
-    UIViewController *menuViewController = [JYMenuViewController new];
+    UIViewController *menu = [JYMenuViewController new];
 
     MMDrawerController * drawerController = [[MMDrawerController alloc]
-                                             initWithCenterViewController:contentNavigationController
-                                             leftDrawerViewController:menuViewController
+                                             initWithCenterViewController:orderNC
+                                             leftDrawerViewController:menu
                                              rightDrawerViewController:nil];
 
     drawerController.openDrawerGestureModeMask = MMOpenDrawerGestureModePanningNavigationBar;
     drawerController.closeDrawerGestureModeMask = MMCloseDrawerGestureModeAll;
+
     [drawerController setDrawerVisualStateBlock:[MMDrawerVisualState slideAndScaleVisualStateBlock]];
 
     self.drawerController = drawerController;

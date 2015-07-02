@@ -28,6 +28,8 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
     [super viewDidLoad];
     self.title = NSLocalizedString(@"HISTORY", nil);
 
+    self.orderList = [NSMutableArray new];
+
     [self _createTableView];
     [self _fetchOrders];
 }

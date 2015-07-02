@@ -24,12 +24,14 @@
 
         _tintColor = [UIColor grayColor];
         _buttonsTextColor = [UIColor whiteColor];
-        _blurredBackground = YES;
+
+//        _blurredBackground = YES;  // This version of blur will cause crash in modal view. Disable it temporarily
+        _blurredBackground = NO;
+
         _titleColor = [UIColor whiteColor];
         _subtitleColor = [UIColor lightGrayColor];
         _backgroundColor = [UIColor blackColor];
         _blurTintColor = [UIColor colorWithWhite:0.1 alpha:0.4];
-        ;
         _titleFontSize = 22;
         _subtitleFontSize = 14;
 

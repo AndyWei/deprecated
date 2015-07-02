@@ -17,6 +17,8 @@
 		D61C48A51B44A8A5009E422A /* JYModalViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D61C48A31B44A8A5009E422A /* JYModalViewController.m */; };
 		D61C48A81B45085C009E422A /* JYOrdersHistoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D61C48A71B45085C009E422A /* JYOrdersHistoryViewController.m */; };
 		D61C48A91B45085C009E422A /* JYOrdersHistoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D61C48A71B45085C009E422A /* JYOrdersHistoryViewController.m */; };
+		D61C48AF1B451877009E422A /* JYOrdersBidsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D61C48AE1B451877009E422A /* JYOrdersBidsViewController.m */; };
+		D61C48B01B451877009E422A /* JYOrdersBidsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D61C48AE1B451877009E422A /* JYOrdersBidsViewController.m */; };
 		D6348D271ADA3BC90002BC35 /* JYPriceTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D6348D261ADA3BC90002BC35 /* JYPriceTextFieldCell.m */; };
 		D6348D281ADA3BC90002BC35 /* JYPriceTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D6348D261ADA3BC90002BC35 /* JYPriceTextFieldCell.m */; };
 		D6348D2B1ADA4A650002BC35 /* JYRestrictedTextViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D6348D2A1ADA4A650002BC35 /* JYRestrictedTextViewCell.m */; };
@@ -141,6 +143,8 @@
 		D61C48A31B44A8A5009E422A /* JYModalViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYModalViewController.m; sourceTree = "<group>"; };
 		D61C48A61B45085C009E422A /* JYOrdersHistoryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYOrdersHistoryViewController.h; sourceTree = "<group>"; };
 		D61C48A71B45085C009E422A /* JYOrdersHistoryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYOrdersHistoryViewController.m; sourceTree = "<group>"; };
+		D61C48AD1B451877009E422A /* JYOrdersBidsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYOrdersBidsViewController.h; sourceTree = "<group>"; };
+		D61C48AE1B451877009E422A /* JYOrdersBidsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYOrdersBidsViewController.m; sourceTree = "<group>"; };
 		D6348D251ADA3BC90002BC35 /* JYPriceTextFieldCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYPriceTextFieldCell.h; sourceTree = "<group>"; };
 		D6348D261ADA3BC90002BC35 /* JYPriceTextFieldCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYPriceTextFieldCell.m; sourceTree = "<group>"; };
 		D6348D291ADA4A180002BC35 /* JYRestrictedTextViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYRestrictedTextViewCell.h; sourceTree = "<group>"; };
@@ -349,13 +353,23 @@
 			name = Components;
 			sourceTree = "<group>";
 		};
-		D63F0D871ACBBDF30067C5EE /* Order */ = {
+		D63F0D871ACBBDF30067C5EE /* Orders */ = {
 			isa = PBXGroup;
 			children = (
-				D6F4A0561AF6DF5A001A3C89 /* My */,
-				D63F0D881ACBBE280067C5EE /* Create */,
+				D61C48AD1B451877009E422A /* JYOrdersBidsViewController.h */,
+				D61C48AE1B451877009E422A /* JYOrdersBidsViewController.m */,
+				D65AFA5C1AEC715D007867D0 /* JYOrdersOngoingViewController.h */,
+				D65AFA5D1AEC715D007867D0 /* JYOrdersOngoingViewController.m */,
+				D6FA6A851B37CAF2007CB30E /* JYOrdersFinishedViewController.h */,
+				D6FA6A861B37CAF2007CB30E /* JYOrdersFinishedViewController.m */,
+				D61C48A61B45085C009E422A /* JYOrdersHistoryViewController.h */,
+				D61C48A71B45085C009E422A /* JYOrdersHistoryViewController.m */,
+				D64C27E81B41D00600C85E55 /* JYOrderControl.h */,
+				D64C27E91B41D00600C85E55 /* JYOrderControl.m */,
+				D6FA6A891B37CDB3007CB30E /* JYOrderViewCell.h */,
+				D6FA6A8A1B37CDB3007CB30E /* JYOrderViewCell.m */,
 			);
-			name = Order;
+			name = Orders;
 			sourceTree = "<group>";
 		};
 		D63F0D881ACBBE280067C5EE /* Create */ = {
@@ -437,9 +451,10 @@
 				D69202B41AC4C7C0001C1C3D /* AppDelegate.m */,
 				D68DAF991AC4CD0800838E7E /* Common */,
 				D63B69AB1AC5184D005600A9 /* Components */,
+				D63F0D881ACBBE280067C5EE /* Create */,
 				D61C48991B44838A009E422A /* Menu */,
 				D6C82B611B1252FE00876F57 /* Model */,
-				D63F0D871ACBBDF30067C5EE /* Order */,
+				D63F0D871ACBBDF30067C5EE /* Orders */,
 				D6FA6A781B3374FB007CB30E /* Payment */,
 				D68DAF9A1AC4CD1800838E7E /* User */,
 				D69202BF1AC4C7C0001C1C3D /* Images.xcassets */,
@@ -489,23 +504,6 @@
 				D63F0D701AC9EC060067C5EE /* JYUser.m */,
 			);
 			name = Model;
-			sourceTree = "<group>";
-		};
-		D6F4A0561AF6DF5A001A3C89 /* My */ = {
-			isa = PBXGroup;
-			children = (
-				D65AFA5C1AEC715D007867D0 /* JYOrdersOngoingViewController.h */,
-				D65AFA5D1AEC715D007867D0 /* JYOrdersOngoingViewController.m */,
-				D6FA6A851B37CAF2007CB30E /* JYOrdersFinishedViewController.h */,
-				D6FA6A861B37CAF2007CB30E /* JYOrdersFinishedViewController.m */,
-				D61C48A61B45085C009E422A /* JYOrdersHistoryViewController.h */,
-				D61C48A71B45085C009E422A /* JYOrdersHistoryViewController.m */,
-				D64C27E81B41D00600C85E55 /* JYOrderControl.h */,
-				D64C27E91B41D00600C85E55 /* JYOrderControl.m */,
-				D6FA6A891B37CDB3007CB30E /* JYOrderViewCell.h */,
-				D6FA6A8A1B37CDB3007CB30E /* JYOrderViewCell.m */,
-			);
-			name = My;
 			sourceTree = "<group>";
 		};
 		D6FA6A781B3374FB007CB30E /* Payment */ = {
@@ -715,6 +713,7 @@
 				D689ED6A1AE42C8300CB4D2B /* UIView+Joyy.m in Sources */,
 				D65AFA661AEDEF3D007867D0 /* JYOrderCard.m in Sources */,
 				D65AFA731AEF5F3A007867D0 /* UICustomActionSheet.m in Sources */,
+				D61C48AF1B451877009E422A /* JYOrdersBidsViewController.m in Sources */,
 				D6C82B731B13EB1100876F57 /* JYOrdersBaseViewController.m in Sources */,
 				D6348D271ADA3BC90002BC35 /* JYPriceTextFieldCell.m in Sources */,
 				D679F0301B2951D5004F1C37 /* JYFixedLengthRowValidator.m in Sources */,
@@ -813,6 +812,7 @@
 				D6348D301ADB4DD60002BC35 /* NSString+Joyy.m in Sources */,
 				D61C48A91B45085C009E422A /* JYOrdersHistoryViewController.m in Sources */,
 				D6FA6A7C1B33752C007CB30E /* JYPaymentViewController.m in Sources */,
+				D61C48B01B451877009E422A /* JYOrdersBidsViewController.m in Sources */,
 				D6C82B5D1B0EFDEA00876F57 /* JYCommentTextView.m in Sources */,
 				D63B69B71AC53BB4005600A9 /* JYFloatLabeledTextField.m in Sources */,
 				D6FA6A881B37CAF2007CB30E /* JYOrdersFinishedViewController.m in Sources */,

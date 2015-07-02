@@ -8,6 +8,7 @@
 
 #import "JYMenuViewController.h"
 #import "JYMenuViewCell.h"
+#import "JYOrdersBidsViewController.h"
 #import "JYOrdersHistoryViewController.h"
 #import "JYPaymentViewController.h"
 #import "JYUser.h"
@@ -135,12 +136,15 @@ static NSString *const kMenuCellIdentifier = @"menuCell";
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+
     UIViewController *viewController = nil;
 
     JYMenuItem selection = (JYMenuItem)indexPath.row;
     switch (selection)
     {
         case JYMenuItemBids:
+            viewController = [JYOrdersBidsViewController new];
             break;
         case JYMenuItemOrders:
             break;
@@ -160,8 +164,6 @@ static NSString *const kMenuCellIdentifier = @"menuCell";
 
     UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController: viewController];
     [self presentViewController:navigationController animated:YES completion:nil];
-
-    [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 
