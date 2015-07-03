@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
+#import "DataStore.h"
 #import "JYCreditCard.h"
 
 @interface JYCreditCard ()
@@ -19,6 +20,29 @@
 
 
 @implementation JYCreditCard
+
++ (instancetype)applePayCard
+{
+    JYCreditCard *card = [JYCreditCard new];
+    card.cardType = JYCreditCardTypeApplePay;
+    card.stripeCustomerId = @"applePay";
+    card.last4 = @"0000";
+    return card;
+}
+
++ (instancetype)dummyCard
+{
+    JYCreditCard *card = [JYCreditCard new];
+    card.cardType = JYCreditCardTypeAdd;
+    return card;
+}
+
+- (instancetype)init
+{
+    self = [super init];
+
+    return self;
+}
 
 - (instancetype)initWithDictionary:(NSDictionary *)dict
 {
@@ -44,13 +68,42 @@
     _expiryYear    = [[dict objectForKey:@"expiry_year"] unsignedIntegerValue];
 }
 
+- (BOOL)isDefault
+{
+    NSString *defaultCustomerId = [DataStore sharedInstance].defaultCustomerId;
+    NSString *defaultCardNumber = [DataStore sharedInstance].defaultCardNumber;
+
+    return [self.stripeCustomerId isEqualToString:defaultCustomerId] && [self.last4 isEqualToString:defaultCardNumber];
+}
+
+- (void)setAsDefault
+{
+    [DataStore sharedInstance].defaultCardNumber = self.last4;
+    [DataStore sharedInstance].defaultCustomerId = self.stripeCustomerId;
+}
+
 - (NSString *)cardNumberString
 {
-    return [NSString stringWithFormat:@"ending in %@", self.last4];
+    if (self.cardType == JYCreditCardTypeAdd)
+    {
+        return NSLocalizedString(@"ADD CREDIT CARD", nil);
+    }
+    else if (self.cardType == JYCreditCardTypeApplePay)
+    {
+        return NSLocalizedString(@"APPLE PAY", nil);
+    }
+
+    NSString *prefix = NSLocalizedString(@"ENDING IN", nil);
+    return [NSString stringWithFormat:@"%@ %@", prefix, self.last4];
 }
 
 - (NSString *)expiryString
 {
+    if (self.cardType == JYCreditCardTypeAdd || self.cardType == JYCreditCardTypeApplePay)
+    {
+        return @"";
+    }
+
     return [NSString stringWithFormat:@"expiry: %02tu/%tu", self.expiryMonth, self.expiryYear];
 }
 
@@ -73,6 +126,12 @@
             break;
         case JYCreditCardTypeVisa:
             str = @"visa";
+            break;
+        case JYCreditCardTypeAdd:
+            str = @"addCard";
+            break;
+        case JYCreditCardTypeApplePay:
+            str = @"applePay";
             break;
         default:
             break;

@@ -21,7 +21,6 @@
 
 @property(nonatomic) NSIndexPath *selectedIndexPath;
 @property(nonatomic) NSString *stripeToken;
-@property(nonatomic) NSMutableArray *creditCardList;
 
 @end
 
@@ -37,7 +36,6 @@ static NSString *const kBidCellIdentifier = @"bidCell";
 
     self.selectedIndexPath = nil;
     self.stripeToken = nil;
-    self.creditCardList = nil;
 
     self.orderList = [NSMutableArray new];
 
@@ -212,21 +210,20 @@ static NSString *const kBidCellIdentifier = @"bidCell";
         paymentController.delegate = self;
         [self presentViewController:paymentController animated:YES completion:nil];
     }
-    else if (self.creditCardList)
-    {
-        [self _doPresentPaymentViewController];
-    }
-    else
-    {
-        [self _fetchCreditCards];
-    }
+//    else if (self.creditCardList)
+//    {
+//        [self _doPresentPaymentViewController];
+//    }
+//    else
+//    {
+//        [self _fetchCreditCards];
+//    }
 }
 
 - (void)_doPresentPaymentViewController
 {
     JYPaymentViewController *viewController = [JYPaymentViewController new];
     viewController.delegate = self;
-    viewController.creditCardList = self.creditCardList;
     [self.navigationController pushViewController:viewController animated:YES];
 }
 
@@ -272,44 +269,6 @@ static NSString *const kBidCellIdentifier = @"bidCell";
 }
 
 #pragma mark - Network
-
-- (void)_fetchCreditCards
-{
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYUser currentUser].token];
-    [manager.requestSerializer setValue:token forHTTPHeaderField:@"Authorization"];
-
-    NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"creditcards/my"];
-
-    [KVNProgress show];
-    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
-
-    __weak typeof(self) weakSelf = self;
-    [manager GET:url
-      parameters:nil
-         success:^(AFHTTPRequestOperation *operation, id responseObject) {
-             NSLog(@"/creditcards/my fetch success responseObject: %@", responseObject);
-
-             [KVNProgress dismiss];
-             [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-
-             weakSelf.creditCardList = [NSMutableArray new];
-             for (NSDictionary *dict in responseObject)
-             {
-                 JYCreditCard *card = [[JYCreditCard alloc] initWithDictionary:dict];
-                 [weakSelf.creditCardList addObject:card];
-             }
-
-             [weakSelf _doPresentPaymentViewController];
-         }
-         failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-             [KVNProgress dismiss];
-             [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-
-             [weakSelf _doPresentPaymentViewController];
-         }
-     ];
-}
 
 - (void)_acceptBid:(JYBid *)bid forOrder:(JYOrder *)order
 {

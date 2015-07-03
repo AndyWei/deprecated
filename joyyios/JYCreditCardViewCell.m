@@ -10,14 +10,15 @@
 
 static const CGFloat kLabelHeight = 55;
 static const CGFloat kCardImageWidth = 48;
-static const CGFloat kCardNumberLabelWidth = 150;
-static const CGFloat kLeftMargin = 8.0f;
-static const CGFloat kRigthMargin = 8.0f;
+static const CGFloat kCardNumberLabelWidth = 120;
+static const CGFloat kCheckMarkImageWidth = 20;
+static const CGFloat kExpiryLabelWidth = 120;
 static const CGFloat kFontSize = 18.0f;
 
 @interface JYCreditCardViewCell ()
 
 @property(nonatomic, weak) UIImageView *cardLogoImageView;
+@property(nonatomic, weak) UIImageView *checkMarkImageView;
 @property(nonatomic, weak) UILabel *cardNumberLabel;
 @property(nonatomic, weak) UILabel *expiryLabel;
 
@@ -40,7 +41,8 @@ static const CGFloat kFontSize = 18.0f;
         self.opaque = YES;
         self.backgroundColor = JoyyWhite;
 
-        [self _createCardImage];
+        [self _createCardImageView];
+        [self _createCheckMarkImageView];
         [self _createCardNumberLabel];
         [self _createExpiryLabel];
     }
@@ -53,31 +55,39 @@ static const CGFloat kFontSize = 18.0f;
     self.expiryLabel.text = card.expiryString;
 
     self.cardLogoImageView.image = card.logoImage;
+
+    self.checkMarkImageView.image = [card isDefault] ? [UIImage imageNamed:@"checkMark"] : nil;
 }
 
-- (void)_createCardImage
+- (void)_createCardImageView
 {
-    UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(kLeftMargin, 3, kCardImageWidth, kCardImageWidth)];
+    UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(kMarginLeft, 3, kCardImageWidth, kCardImageWidth)];
     [self addSubview:imageView];
     self.cardLogoImageView = imageView;
+}
+
+- (void)_createCheckMarkImageView
+{
+    CGFloat x = CGRectGetWidth([[UIScreen mainScreen] applicationFrame]) - kMarginRight - kCheckMarkImageWidth;
+    UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(x, 13, kCheckMarkImageWidth, kCheckMarkImageWidth)];
+    [self addSubview:imageView];
+    self.checkMarkImageView = imageView;
 }
 
 - (void)_createCardNumberLabel
 {
     self.cardNumberLabel = [self _createLabel];
-    CGFloat x = CGRectGetMaxX(self.cardLogoImageView.frame) + kLeftMargin;
+    CGFloat x = CGRectGetMaxX(self.cardLogoImageView.frame) + kMarginLeft;
     self.cardNumberLabel.frame = CGRectMake(x, 0, kCardNumberLabelWidth, kLabelHeight);
 }
 
 - (void)_createExpiryLabel
 {
-    CGFloat screenWidth = CGRectGetWidth([[UIScreen mainScreen] applicationFrame]);
     CGFloat x = CGRectGetMaxX(self.cardNumberLabel.frame);
-    CGFloat width = screenWidth - x - kRigthMargin;
 
     self.expiryLabel = [self _createLabel];
-    self.expiryLabel.frame = CGRectMake(x, 0, width, kLabelHeight);
-    self.expiryLabel.textAlignment = NSTextAlignmentRight;
+    self.expiryLabel.frame = CGRectMake(x, 0, kExpiryLabelWidth, kLabelHeight);
+    self.expiryLabel.textAlignment = NSTextAlignmentLeft;
 }
 
 - (UILabel *)_createLabel

@@ -7,7 +7,6 @@
 //
 
 #import <CardIO/CardIO.h>
-#import <Stripe/Stripe.h>
 
 #import "JYModalViewController.h"
 
@@ -21,9 +20,9 @@
 @end
 
 
+
 @interface JYPaymentViewController : JYModalViewController <CardIOPaymentViewControllerDelegate, UITableViewDataSource, UITableViewDelegate>
 
-@property(nonatomic, weak) NSMutableArray *creditCardList;
 @property(nonatomic, weak) id<JYPaymentViewControllerDelegate> delegate;
 
 @end

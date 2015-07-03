@@ -12,6 +12,8 @@
 NSString *const kKeyAPITokenExpireTime = @"APITokenExpireTime";
 NSString *const kKeyBadgeCount = @"BadgeCount";
 NSString *const kKeyCurrentOrder = @"CurrentOrder";
+NSString *const kKeyDefaultCardNumber = @"DefaultCardNumber";
+NSString *const kKeyDefaultCustomerId = @"DefaultCustomerId";
 NSString *const kKeyDeviceToken = @"DeviceToken";
 NSString *const kKeyLastCoordinateLat = @"LastCoordinateLat";
 NSString *const kKeyLastCoordinateLon = @"LastCoordinateLon";
@@ -89,12 +91,31 @@ NSString *const kKeyUserCredential = @"UserCredential";
 
 - (NSString *)deviceToken
 {
-    NSString *token = nil;
-    if ([[NSUserDefaults standardUserDefaults] objectForKey:kKeyDeviceToken])
-    {
-        token = [[NSUserDefaults standardUserDefaults] objectForKey:kKeyDeviceToken];
-    }
-    return token;
+    return [[NSUserDefaults standardUserDefaults] stringForKey:kKeyDeviceToken];
+}
+
+// DefaultCardNumber
+- (void)setDefaultCardNumber:(NSString *)defaultCardNumber
+{
+    [[NSUserDefaults standardUserDefaults] setObject:defaultCardNumber forKey:kKeyDefaultCardNumber];
+}
+
+- (NSString *)defaultCardNumber
+{
+    return [[NSUserDefaults standardUserDefaults] stringForKey:kKeyDefaultCardNumber];
+
+}
+
+// DefaultCustomerId
+- (void)setDefaultCustomerId:(NSString *)defaultCustomerId
+{
+    [[NSUserDefaults standardUserDefaults] setObject:defaultCustomerId forKey:kKeyDefaultCustomerId];
+}
+
+- (NSString *)defaultCustomerId
+{
+    return [[NSUserDefaults standardUserDefaults] stringForKey:kKeyDefaultCustomerId];
+
 }
 
 // BadgeCount

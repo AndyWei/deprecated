@@ -9,6 +9,7 @@
 #import <AFNetworking/AFNetworking.h>
 #import <KVNProgress/KVNProgress.h>
 #import <RKDropdownAlert/RKDropdownAlert.h>
+#import <Stripe/Stripe.h>
 
 #import "JYButton.h"
 #import "JYCreditCardViewCell.h"
@@ -17,9 +18,11 @@
 
 @interface JYPaymentViewController ()
 
-@property(nonatomic) NSString *stripeToken;
-@property(nonatomic) STPCard *card;
 @property(nonatomic) JYCreditCardType cardType;
+@property(nonatomic) STPCard *card;
+@property(nonatomic) NSMutableArray *creditCardList;
+@property(nonatomic) NSString *stripeToken;
+
 @property(nonatomic, weak) JYButton *addButton;
 
 @end
@@ -38,19 +41,16 @@ static NSString *const kCardCellIdentifier = @"cardCell";
 {
     [super viewDidLoad];
 
-    self.navigationItem.title = NSLocalizedString(@"Credit Card", nil);
+    self.navigationItem.title = NSLocalizedString(@"Payment", nil);
     self.view.backgroundColor = JoyyWhite;
 
     self.cardType = JYCreditCardTypeUnrecognized;
     self.card = nil;
     self.stripeToken = nil;
+    self.creditCardList = [NSMutableArray new];
 
-    [self _createSaveButton];
-
-    if ([self _hasSavedCreditCard])
-    {
-        [self _createTableView];
-    }
+    [self _createTableView];
+    [self _fetchCreditCards];
 }
 
 - (void)didReceiveMemoryWarning
@@ -58,38 +58,12 @@ static NSString *const kCardCellIdentifier = @"cardCell";
     [super didReceiveMemoryWarning];
 }
 
-- (BOOL)_hasSavedCreditCard
-{
-    return (self.creditCardList != nil && self.creditCardList.count > 0);
-}
-
-- (void)_createSaveButton
-{
-    CGFloat width = CGRectGetWidth(self.view.frame) - 16;
-    CGRect frame = CGRectMake(8, 100, width, 45);
-
-    JYButton *button = [[JYButton alloc] initWithFrame:frame buttonStyle:JYButtonStyleDefault];
-
-    button.backgroundColor = ClearColor;
-    button.contentAnimateToColor = FlatGreen;
-    button.contentColor = FlatWhite;
-    button.cornerRadius = 8;
-    button.foregroundAnimateToColor = FlatWhite;
-    button.foregroundColor = FlatGreen;
-    button.textLabel.font = [UIFont boldSystemFontOfSize:20];
-    button.textLabel.text = NSLocalizedString(@"Add A Credit Card", nil);
-    [button addTarget:self action:@selector(_addCreditCard) forControlEvents:UIControlEventTouchUpInside];
-
-    self.addButton = button;
-    [self.view addSubview:self.addButton];
-}
-
 - (void)_createTableView
 {
     CGFloat y = CGRectGetMaxY(self.addButton.frame) + 10;
 
     CGRect frame =  CGRectMake(0, y, CGRectGetWidth(self.view.frame), 500);
-    UITableView *tableView = [[UITableView alloc] initWithFrame:frame style:UITableViewStyleGrouped];
+    UITableView *tableView = [[UITableView alloc] initWithFrame:frame style:UITableViewStylePlain];
     tableView.backgroundColor = JoyyWhite;
     tableView.dataSource = self;
     tableView.delegate = self;
@@ -99,7 +73,56 @@ static NSString *const kCardCellIdentifier = @"cardCell";
     [self.view addSubview:self.tableView];
 }
 
-- (void)_addCreditCard
+- ( BOOL)_isApplePayConfigured
+{
+    if (![PKPaymentAuthorizationViewController class])
+    {
+        return NO;
+    }
+
+    NSArray *networks = @[PKPaymentNetworkAmex, PKPaymentNetworkMasterCard, PKPaymentNetworkVisa];
+
+    BOOL deviceOK = [PKPaymentAuthorizationViewController canMakePayments];
+    BOOL cardOK = [PKPaymentAuthorizationViewController canMakePaymentsUsingNetworks:networks];
+    return deviceOK && cardOK;
+}
+
+- (void)_createCreditCardListFromArray:(NSArray *)array
+{
+    BOOL hasSetDefault = NO;
+    JYCreditCard *applePay = nil;
+    self.creditCardList = [NSMutableArray new];
+
+
+    // apple pay
+    if ([self _isApplePayConfigured])
+    {
+        applePay = [JYCreditCard applePayCard];
+        [self.creditCardList addObject:applePay];
+    }
+
+    // real creadit cards
+    for (NSDictionary *dict in array)
+    {
+        JYCreditCard *card = [[JYCreditCard alloc] initWithDictionary:dict];
+        if ([card isDefault])
+        {
+            hasSetDefault = YES;
+        }
+        [self.creditCardList addObject:card];
+    }
+
+    // set apply pay as default
+    if (!hasSetDefault && applePay)
+    {
+        [applePay setAsDefault];
+    }
+
+    // the dummy card for the "add new card" cell
+    [self.creditCardList addObject:[JYCreditCard dummyCard]];
+}
+
+- (void)_presentCreditCardScanner
 {
     CardIOPaymentViewController *scanViewController = [[CardIOPaymentViewController alloc] initWithPaymentDelegate:self];
     scanViewController.modalPresentationStyle = UIModalPresentationFormSheet;
@@ -180,50 +203,53 @@ static NSString *const kCardCellIdentifier = @"cardCell";
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 
-    JYCreditCard *card = self.creditCardList[indexPath.row];
-    if (self.delegate)
+
+    if (indexPath.row == self.creditCardList.count - 1)
     {
-        [self.delegate viewControllerDidCreateToken:card.stripeCustomerId];
-        [self.delegate viewControllerDidFinish:self];
+        [self _presentCreditCardScanner];
     }
-}
+    else
+    {
+        JYCreditCard *card = self.creditCardList[indexPath.row];
+        [card setAsDefault];
+        [tableView reloadData];
+    }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
-{
-    return 100;
-}
-
-- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
-{
-    return [self _createHearderView];
-}
-
-- (UIView *)_createHearderView
-{
-    UIView *header = [[UIView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.view.frame), 100)];
-    UILabel *orLabel = [self _createLabel];
-    orLabel.text = NSLocalizedString(@"Or", nil);
-    [header addSubview:orLabel];
-
-    UILabel *chooseLabel = [self _createLabel];
-    chooseLabel.y = 50;
-    chooseLabel.text = NSLocalizedString(@"choose a saved credit card:", nil);
-    [header addSubview:chooseLabel];
-
-    return header;
-}
-
-- (UILabel *)_createLabel
-{
-    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.view.frame), 50)];
-    label.font = [UIFont systemFontOfSize:22];
-    label.textColor = FlatBlack;
-    label.textAlignment = NSTextAlignmentCenter;
-
-    return label;
+//    if (self.delegate)
+//    {
+//        [self.delegate viewControllerDidCreateToken:card.stripeCustomerId];
+//        [self.delegate viewControllerDidFinish:self];
+//    }
 }
 
 #pragma mark - Network
+
+- (void)_fetchCreditCards
+{
+    [self networkThreadBegin];
+
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYUser currentUser].token];
+    [manager.requestSerializer setValue:token forHTTPHeaderField:@"Authorization"];
+
+    NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"creditcards/my"];
+
+    __weak typeof(self) weakSelf = self;
+    [manager GET:url
+      parameters:nil
+         success:^(AFHTTPRequestOperation *operation, id responseObject) {
+             NSLog(@"/creditcards/my fetch success responseObject: %@", responseObject);
+
+             [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+
+             [weakSelf _createCreditCardListFromArray:responseObject];
+             [weakSelf networkThreadEnd];
+         }
+         failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+             [weakSelf networkThreadEnd];
+         }
+     ];
+}
 
 - (void)_submitCreditCard
 {

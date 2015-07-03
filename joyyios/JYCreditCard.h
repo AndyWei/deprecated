@@ -11,15 +11,22 @@ typedef NS_ENUM(NSInteger, JYCreditCardType)
     JYCreditCardTypeUnrecognized = 0, // The card number does not correspond to any recognizable card type.
     JYCreditCardTypeAmbiguous = 1,    // The card number corresponds to multiple card types
     JYCreditCardTypeAmex = '3',       // American Express
-    JYCreditCardTypeJCB = 'J',        // Japan Credit Bureau
     JYCreditCardTypeVisa = '4',       // VISA
     JYCreditCardTypeMastercard = '5', // MasterCard
-    JYCreditCardTypeDiscover = '6'    // Discover Card
+    JYCreditCardTypeDiscover = '6',   // Discover Card
+    JYCreditCardTypeApplePay = 'A',   // Apple Pay
+    JYCreditCardTypeJCB = 'J',        // Japan Credit Bureau
+    JYCreditCardTypeAdd = 'N'         // Dummy credit card type for add button
 };
 
 @interface JYCreditCard : NSObject
 
++ (instancetype)applePayCard;
++ (instancetype)dummyCard;
+- (instancetype)init;
 - (instancetype)initWithDictionary:(NSDictionary *)dict;
+- (BOOL)isDefault;
+- (void)setAsDefault;
 
 @property(nonatomic) NSString *stripeCustomerId;
 @property(nonatomic, readonly) NSString *cardNumberString;
