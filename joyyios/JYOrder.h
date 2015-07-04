@@ -8,7 +8,14 @@
 
 @import MapKit;
 
-#import "JYServiceCategory.h"
+typedef NS_ENUM(NSUInteger, JYServiceCategory)
+{
+    JYServiceCategoryNone = 0,
+    JYServiceCategoryAssistant,
+    JYServiceCategoryEscort,
+    JYServiceCategoryMassage,
+    JYServiceCategoryPerformer
+};
 
 typedef NS_ENUM(NSUInteger, JYOrderStatus)
 {
@@ -42,12 +49,11 @@ typedef NS_ENUM(NSUInteger, JYOrderStatus)
 @property(nonatomic) NSString *startAddress;
 @property(nonatomic) NSString *endAddress;
 
-@property(nonatomic) NSUInteger category;
+@property(nonatomic) JYServiceCategory category;
 @property(nonatomic) NSUInteger price;
 @property(nonatomic) NSUInteger startTime;
 
 // Properties not in the create order request
-@property(nonatomic) JYServiceCategoryIndex categoryIndex;
 @property(nonatomic) NSUInteger finalPrice;
 @property(nonatomic) NSUInteger orderId;
 @property(nonatomic) NSUInteger userId;
@@ -63,6 +69,7 @@ typedef NS_ENUM(NSUInteger, JYOrderStatus)
 @property(nonatomic) NSMutableArray *comments;
 
 @property(nonatomic, readonly) BOOL hasEndAddress;
+@property(nonatomic, readonly) NSString *categoryName;
 @property(nonatomic, readonly) NSString *createTimeString;
 @property(nonatomic, readonly) NSString *finishTimeString;
 @property(nonatomic, readonly) NSString *priceString;

@@ -50,8 +50,6 @@
 		D63F0D971ACC95B00067C5EE /* JYOrderMapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D63F0D961ACC95B00067C5EE /* JYOrderMapViewController.m */; };
 		D63F0D981ACC95B00067C5EE /* JYOrderMapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D63F0D961ACC95B00067C5EE /* JYOrderMapViewController.m */; };
 		D63F0D9A1ACC96230067C5EE /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D63F0D991ACC96230067C5EE /* MapKit.framework */; };
-		D63F0D9D1ACCEB420067C5EE /* JYServiceCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = D63F0D9C1ACCEB420067C5EE /* JYServiceCategory.m */; };
-		D63F0D9E1ACCEB420067C5EE /* JYServiceCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = D63F0D9C1ACCEB420067C5EE /* JYServiceCategory.m */; };
 		D63F0DA21ACD08260067C5EE /* UIColor+Joyy.m in Sources */ = {isa = PBXBuildFile; fileRef = D63F0DA11ACD08260067C5EE /* UIColor+Joyy.m */; };
 		D63F0DA31ACD08260067C5EE /* UIColor+Joyy.m in Sources */ = {isa = PBXBuildFile; fileRef = D63F0DA11ACD08260067C5EE /* UIColor+Joyy.m */; };
 		D63F0DA51ACD16190067C5EE /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D63F0DA41ACD16190067C5EE /* CoreLocation.framework */; };
@@ -172,8 +170,6 @@
 		D63F0D951ACC95B00067C5EE /* JYOrderMapViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYOrderMapViewController.h; sourceTree = "<group>"; };
 		D63F0D961ACC95B00067C5EE /* JYOrderMapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYOrderMapViewController.m; sourceTree = "<group>"; };
 		D63F0D991ACC96230067C5EE /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
-		D63F0D9B1ACCEB420067C5EE /* JYServiceCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYServiceCategory.h; sourceTree = "<group>"; };
-		D63F0D9C1ACCEB420067C5EE /* JYServiceCategory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYServiceCategory.m; sourceTree = "<group>"; };
 		D63F0DA01ACD08260067C5EE /* UIColor+Joyy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+Joyy.h"; sourceTree = "<group>"; };
 		D63F0DA11ACD08260067C5EE /* UIColor+Joyy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Joyy.m"; sourceTree = "<group>"; };
 		D63F0DA41ACD16190067C5EE /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
@@ -378,8 +374,6 @@
 				D68DAF931AC4CACD00838E7E /* Constants.m */,
 				D63F0D731AC9F6F80067C5EE /* DataStore.h */,
 				D63F0D741AC9F6F80067C5EE /* DataStore.m */,
-				D63F0D9B1ACCEB420067C5EE /* JYServiceCategory.h */,
-				D63F0D9C1ACCEB420067C5EE /* JYServiceCategory.m */,
 				D6348D351ADB7ABC0002BC35 /* NSMutableDictionary+Joyy.h */,
 				D6348D361ADB7ABC0002BC35 /* NSMutableDictionary+Joyy.m */,
 				D6348D2D1ADB4DD60002BC35 /* NSString+Joyy.h */,
@@ -737,7 +731,6 @@
 				D61C48A81B45085C009E422A /* JYOrdersHistoryViewController.m in Sources */,
 				D6C82B5C1B0EFDEA00876F57 /* JYCommentTextView.m in Sources */,
 				D6348D2F1ADB4DD60002BC35 /* NSString+Joyy.m in Sources */,
-				D63F0D9D1ACCEB420067C5EE /* JYServiceCategory.m in Sources */,
 				D63F0D551AC7ACB70067C5EE /* JYSignUpViewController.m in Sources */,
 				D63B69A91AC51302005600A9 /* UIFont+Joyy.m in Sources */,
 				D63F0D971ACC95B00067C5EE /* JYOrderMapViewController.m in Sources */,
@@ -782,7 +775,6 @@
 				D69202CF1AC4C7C1001C1C3D /* joyyiosTests.m in Sources */,
 				D63F0D5A1AC7CFF20067C5EE /* JYButton.m in Sources */,
 				D6B2F08E1AD714DA009601B0 /* JYOrder.m in Sources */,
-				D63F0D9E1ACCEB420067C5EE /* JYServiceCategory.m in Sources */,
 				D6F4A0521AF6A156001A3C89 /* AppConst.m in Sources */,
 				D65AFA671AEDEF3D007867D0 /* JYOrderCard.m in Sources */,
 				D65AFA5F1AEC715D007867D0 /* JYOrdersViewController.m in Sources */,

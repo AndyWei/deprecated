@@ -16,7 +16,6 @@
 #import "JYOrderDetailsViewController.h"
 #import "JYPriceTextFieldCell.h"
 #import "JYRestrictedTextViewCell.h"
-#import "JYServiceCategory.h"
 #import "JYUser.h"
 
 @interface JYOrderDetailsViewController ()
@@ -76,28 +75,23 @@
     row.value = @"$";
     [section addFormRow:row];
 
-    // Number of rooms
-    NSUInteger categoryIndex = [JYOrder currentOrder].categoryIndex;
-    BOOL showRoomNumberField = (categoryIndex == JYServiceCategoryIndexCleaning || categoryIndex == JYServiceCategoryIndexMoving);
+    // Number of hours
+    section = [XLFormSectionDescriptor formSection];
+    [form addFormSection:section];
+    row = [XLFormRowDescriptor formRowDescriptorWithTag:@"hours" rowType:XLFormRowDescriptorTypeSelectorPickerView title:NSLocalizedString(@"Rooms", nil)];
+    row.selectorOptions = @[[XLFormOptionsObject formOptionsObjectWithValue:@(0) displayText:@"1"],
+                            [XLFormOptionsObject formOptionsObjectWithValue:@(1) displayText:@"2"],
+                            [XLFormOptionsObject formOptionsObjectWithValue:@(2) displayText:@"3"],
+                            [XLFormOptionsObject formOptionsObjectWithValue:@(3) displayText:@"4"],
+                            [XLFormOptionsObject formOptionsObjectWithValue:@(4) displayText:@"5"],
+                            [XLFormOptionsObject formOptionsObjectWithValue:@(5) displayText:@"6"],
+                            [XLFormOptionsObject formOptionsObjectWithValue:@(6) displayText:@"7"],
+                            [XLFormOptionsObject formOptionsObjectWithValue:@(7) displayText:@"8"],
+                            [XLFormOptionsObject formOptionsObjectWithValue:@(8) displayText:@"9"]
+                            ];
+    row.value = [XLFormOptionsObject formOptionsObjectWithValue:@(2) displayText:@"3"];
+    [section addFormRow:row];
 
-    if (showRoomNumberField)
-    {
-        section = [XLFormSectionDescriptor formSection];
-        [form addFormSection:section];
-        row = [XLFormRowDescriptor formRowDescriptorWithTag:@"rooms" rowType:XLFormRowDescriptorTypeSelectorPickerView title:NSLocalizedString(@"Rooms", nil)];
-        row.selectorOptions = @[[XLFormOptionsObject formOptionsObjectWithValue:@(0) displayText:@"1"],
-                                [XLFormOptionsObject formOptionsObjectWithValue:@(1) displayText:@"2"],
-                                [XLFormOptionsObject formOptionsObjectWithValue:@(2) displayText:@"3"],
-                                [XLFormOptionsObject formOptionsObjectWithValue:@(3) displayText:@"4"],
-                                [XLFormOptionsObject formOptionsObjectWithValue:@(4) displayText:@"5"],
-                                [XLFormOptionsObject formOptionsObjectWithValue:@(5) displayText:@"6"],
-                                [XLFormOptionsObject formOptionsObjectWithValue:@(6) displayText:@"7"],
-                                [XLFormOptionsObject formOptionsObjectWithValue:@(7) displayText:@"8"],
-                                [XLFormOptionsObject formOptionsObjectWithValue:@(8) displayText:@"9"]
-                                ];
-        row.value = [XLFormOptionsObject formOptionsObjectWithValue:@(2) displayText:@"3"];
-        [section addFormRow:row];
-    }
 
     // Note
     section = [XLFormSectionDescriptor formSection];
@@ -109,13 +103,6 @@
     [section addFormRow:row];
 
     // Address
-    // When the room number field is not shown, we have enough space to add a section head
-    if (!showRoomNumberField)
-    {
-        section = [XLFormSectionDescriptor formSection];
-        [form addFormSection:section];
-    }
-
     NSString *title = ([JYOrder currentOrder].endAddress)? NSLocalizedString(@"From:", nil): NSLocalizedString(@"Addr:", nil);
     row = [XLFormRowDescriptor formRowDescriptorWithTag:@"startAddress" rowType:XLFormRowDescriptorTypeInfo title:title];
     [row.cellConfig setObject:ClearColor forKey:@"backgroundColor"];
@@ -160,17 +147,16 @@
     [JYOrder currentOrder].price = priceInCents;
 
     // category
-    NSUInteger index = [JYOrder currentOrder].categoryIndex;
-    [JYOrder currentOrder].category = [JYServiceCategory categoryAtIndex:index];
+//    [JYOrder currentOrder].category = userChosedCategory;
 
     // title
-    NSString *serviceName = [JYServiceCategory names][index];
-    XLFormOptionsObject *roomsObj = [self.formValues valueForKey:@"rooms"];
+    NSString *serviceName = [JYOrder currentOrder].categoryName;
+    XLFormOptionsObject *hoursObj = [self.formValues valueForKey:@"hours"];
 
-    if (roomsObj)
+    if (hoursObj)
     {
-        NSInteger rooms = [roomsObj.formValue integerValue] + 1;
-        NSString *localizedString = NSLocalizedString(([NSString stringWithFormat:@" for %ld rooms", (long)rooms]), nil);
+        NSInteger hours = [hoursObj.formValue integerValue] + 1;
+        NSString *localizedString = NSLocalizedString(([NSString stringWithFormat:@" for %ld hours", (long)hours]), nil);
         [JYOrder currentOrder].title = [NSString stringWithFormat:@"%@%@", serviceName, localizedString];
     }
     else

@@ -12,7 +12,6 @@
 #import "JYOrderDetailsViewController.h"
 #import "JYOrderMapViewController.h"
 #import "JYPinAnnotationView.h"
-#import "JYServiceCategory.h"
 
 @interface JYOrderMapViewController ()
 
@@ -430,18 +429,7 @@ static NSString *reuseId = @"pin";
 
 - (BOOL)_shouldHaveEndPoint
 {
-    BOOL result = NO;
-    NSUInteger categoryIndex = [JYOrder currentOrder].categoryIndex;
-    switch (categoryIndex)
-    {
-        case JYServiceCategoryIndexDelivery:
-        case JYServiceCategoryIndexMoving:
-            result = YES;
-            break;
-        default:
-            break;
-    }
-    return result;
+    return NO;
 }
 
 - (BOOL)_shouldJumpToDone

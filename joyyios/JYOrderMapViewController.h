@@ -8,7 +8,6 @@
 
 #import "JYMapDashBoardView.h"
 #import "JYPlacesViewController.h"
-#import "JYServiceCategory.h"
 
 @import MapKit;
 

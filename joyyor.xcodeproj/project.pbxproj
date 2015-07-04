@@ -45,7 +45,6 @@
 		D6F4A01C1AF5DB4D001A3C89 /* JYPlacesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F49FD71AF5DB4D001A3C89 /* JYPlacesViewController.m */; };
 		D6F4A01E1AF5DB4D001A3C89 /* JYPriceTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F49FD91AF5DB4D001A3C89 /* JYPriceTextFieldCell.m */; };
 		D6F4A0201AF5DB4D001A3C89 /* JYRestrictedTextViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F49FDB1AF5DB4D001A3C89 /* JYRestrictedTextViewCell.m */; };
-		D6F4A0221AF5DB4D001A3C89 /* JYServiceCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F49FDD1AF5DB4D001A3C89 /* JYServiceCategory.m */; };
 		D6F4A0241AF5DB4D001A3C89 /* JYSignBaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F49FDF1AF5DB4D001A3C89 /* JYSignBaseViewController.m */; };
 		D6F4A0261AF5DB4D001A3C89 /* JYSignInViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F49FE11AF5DB4D001A3C89 /* JYSignInViewController.m */; };
 		D6F4A0281AF5DB4D001A3C89 /* JYSignUpViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F49FE31AF5DB4D001A3C89 /* JYSignUpViewController.m */; };
@@ -142,8 +141,6 @@
 		D6F49FD91AF5DB4D001A3C89 /* JYPriceTextFieldCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JYPriceTextFieldCell.m; path = joyyios/JYPriceTextFieldCell.m; sourceTree = SOURCE_ROOT; };
 		D6F49FDA1AF5DB4D001A3C89 /* JYRestrictedTextViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JYRestrictedTextViewCell.h; path = joyyios/JYRestrictedTextViewCell.h; sourceTree = SOURCE_ROOT; };
 		D6F49FDB1AF5DB4D001A3C89 /* JYRestrictedTextViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JYRestrictedTextViewCell.m; path = joyyios/JYRestrictedTextViewCell.m; sourceTree = SOURCE_ROOT; };
-		D6F49FDC1AF5DB4D001A3C89 /* JYServiceCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JYServiceCategory.h; path = joyyios/JYServiceCategory.h; sourceTree = SOURCE_ROOT; };
-		D6F49FDD1AF5DB4D001A3C89 /* JYServiceCategory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JYServiceCategory.m; path = joyyios/JYServiceCategory.m; sourceTree = SOURCE_ROOT; };
 		D6F49FDE1AF5DB4D001A3C89 /* JYSignBaseViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JYSignBaseViewController.h; path = joyyios/JYSignBaseViewController.h; sourceTree = SOURCE_ROOT; };
 		D6F49FDF1AF5DB4D001A3C89 /* JYSignBaseViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JYSignBaseViewController.m; path = joyyios/JYSignBaseViewController.m; sourceTree = SOURCE_ROOT; };
 		D6F49FE01AF5DB4D001A3C89 /* JYSignInViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JYSignInViewController.h; path = joyyios/JYSignInViewController.h; sourceTree = SOURCE_ROOT; };
@@ -362,8 +359,6 @@
 				D6F49FD91AF5DB4D001A3C89 /* JYPriceTextFieldCell.m */,
 				D6F49FDA1AF5DB4D001A3C89 /* JYRestrictedTextViewCell.h */,
 				D6F49FDB1AF5DB4D001A3C89 /* JYRestrictedTextViewCell.m */,
-				D6F49FDC1AF5DB4D001A3C89 /* JYServiceCategory.h */,
-				D6F49FDD1AF5DB4D001A3C89 /* JYServiceCategory.m */,
 				D6F49FE81AF5DB4D001A3C89 /* NSMutableDictionary+Joyy.h */,
 				D6F49FE91AF5DB4D001A3C89 /* NSMutableDictionary+Joyy.m */,
 				D6F49FEA1AF5DB4D001A3C89 /* NSString+Joyy.h */,
@@ -570,7 +565,6 @@
 				D679F0231B1C1513004F1C37 /* JYAccountIndividualViewController.m in Sources */,
 				D6C82B591B0DA5CE00876F57 /* JYCommentsViewController.m in Sources */,
 				D6F4A0241AF5DB4D001A3C89 /* JYSignBaseViewController.m in Sources */,
-				D6F4A0221AF5DB4D001A3C89 /* JYServiceCategory.m in Sources */,
 				D6F49F891AF595F2001A3C89 /* main.m in Sources */,
 				D6C82B6F1B128E9700876F57 /* JYBid.m in Sources */,
 				D6F4A0341AF5DB4D001A3C89 /* UICustomActionSheet.m in Sources */,

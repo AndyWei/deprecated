@@ -10,7 +10,6 @@
 #import "NSMutableDictionary+Joyy.h"
 #import "JYBid.h"
 #import "JYOrder.h"
-#import "JYServiceCategory.h"
 #import "JYUser.h"
 
 static JYOrder *_currentOrder;
@@ -71,7 +70,6 @@ static JYOrder *_currentOrder;
 - (void)clear
 {
     _category      = 0;
-    _categoryIndex = 0;
     _country       = @"us";
     _currency      = @"usd";
     _price         = 0;
@@ -106,7 +104,6 @@ static JYOrder *_currentOrder;
     _title    = [dict objectForKey:@"title"];
     _note     = [dict objectForKey:@"note"];
     _category = [[dict objectForKey:@"category"] unsignedIntegerValue];
-    _categoryIndex = [JYServiceCategory indexOfCategory:_category];
 
     // start time and point
     _startTime = [[dict objectForKey:@"start_time"] unsignedIntegerValue];
@@ -180,9 +177,31 @@ static JYOrder *_currentOrder;
 
 - (BOOL)hasEndAddress
 {
-    BOOL result = self.categoryIndex == JYServiceCategoryIndexDelivery ||
-                  self.categoryIndex == JYServiceCategoryIndexMoving;
-    return result;
+    return NO;
+}
+
+- (NSString *)categoryName
+{
+    NSString *name = nil;
+    switch (self.category)
+    {
+        case JYServiceCategoryAssistant:
+            name = NSLocalizedString(@"ASSISTANT", nil);
+            break;
+        case JYServiceCategoryEscort:
+            name = NSLocalizedString(@"ESCORT", nil);
+            break;
+        case JYServiceCategoryMassage:
+            name = NSLocalizedString(@"MASSAGE", nil);
+            break;
+        case JYServiceCategoryPerformer:
+            name = NSLocalizedString(@"PERFORMER", nil);
+            break;
+        default:
+            name = NSLocalizedString(@"OTHER", nil);
+            break;
+    }
+    return name;
 }
 
 - (NSString *)moneyString:(NSUInteger)amount
