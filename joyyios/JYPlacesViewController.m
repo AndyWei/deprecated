@@ -67,7 +67,7 @@
 
 - (void)_close
 {
-    [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)_searchForInput:(NSString *)string

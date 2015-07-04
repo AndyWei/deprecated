@@ -7,13 +7,11 @@
 //
 
 @import MapKit;
-
 @class JYPlacesViewController;
 
+
 @protocol JYPlacesViewControllerDelegate <NSObject>
-
 - (void)placesViewController:(JYPlacesViewController *)viewController placemarkSelected:(MKPlacemark *)placemark;
-
 @end
 
 @interface JYPlacesViewController : UIViewController <UIScrollViewDelegate, UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate>

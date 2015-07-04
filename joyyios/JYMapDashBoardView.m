@@ -11,30 +11,16 @@
 
 @interface JYMapDashBoardView ()
 
-@property(nonatomic) JYMapDashBoardStyle dashBoardStyle;
-
 @end
 
 
 @implementation JYMapDashBoardView
-
-- (instancetype)initWithFrame:(CGRect)frame withStyle:(JYMapDashBoardStyle)style
-{
-    self = [super initWithFrame:frame];
-    if (self)
-    {
-        self.dashBoardStyle = style;
-        [self _commonInit];
-    }
-    return self;
-}
 
 - (instancetype)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
     if (self)
     {
-        self.dashBoardStyle = JYMapDashBoardStyleStartOnly;
         [self _commonInit];
     }
     return self;
@@ -45,23 +31,9 @@
     self = [super initWithCoder:aDecoder];
     if (self)
     {
-        self.dashBoardStyle = JYMapDashBoardStyleStartOnly;
         [self _commonInit];
     }
     return self;
-}
-
-- (void)setMapEditMode:(MapEditMode)mode
-{
-    if (mode == _mapEditMode)
-    {
-        return;
-    }
-
-    [self _updateSubmitButton:mode];
-    [self _updateAddressButtons:mode];
-
-    _mapEditMode = mode;
 }
 
 - (void)setHidden:(BOOL)hide
@@ -93,8 +65,7 @@
 
 - (void)_commonInit
 {
-    [self _createStartButton];
-    [self _createEndButton];
+    [self _createAddressButton];
     [self _createSubmitButton];
     [self _createLocateButton];
 }
@@ -104,55 +75,27 @@
     JYButton *button = [JYButton button];
     button.y = CGRectGetHeight(self.frame) - kButtonDefaultHeight;
     [button addTarget:self action:@selector(_submitButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+    button.textLabel.text = NSLocalizedString(@"Set Sevice Location", nil);
     self.submitButton = button;
     [self addSubview:self.submitButton];
 }
 
-- (void)_createStartButton
+- (void)_createAddressButton
 {
-    CGFloat totalWidth = CGRectGetWidth(self.frame);
-    CGFloat width = (_dashBoardStyle == JYMapDashBoardStyleStartOnly)? totalWidth: totalWidth * 0.7;
-    CGRect frame = CGRectMake(0,
-                              CGRectGetHeight(self.frame) - 2 * kButtonDefaultHeight,
-                              width,
-                              kButtonDefaultHeight);
-    JYButton *startButton = [JYButton buttonWithFrame:frame buttonStyle:JYButtonStyleImageWithTitle shouldMaskImage:NO];
-    startButton.backgroundColor = [UIColor whiteColor];
-    startButton.contentColor = FlatBlack;
-    startButton.foregroundAnimateToColor = FlatWhite;
-    startButton.imageView.image = [UIImage imageNamed:kImageNamePinBlue];
-    startButton.textLabel.font = [UIFont systemFontOfSize:kMapDashBoardLeadingFontSize];
-    startButton.textLabel.text = NSLocalizedString(@"Add Start Address", nil);
-    startButton.textLabel.textAlignment = NSTextAlignmentLeft;
-    [startButton addTarget:self action:@selector(_startButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+    CGFloat width = CGRectGetWidth(self.frame);
+    CGFloat y = CGRectGetHeight(self.frame) - 2 * kButtonDefaultHeight;
+    CGRect frame = CGRectMake(0, y, width, kButtonDefaultHeight);
+    JYButton *button = [JYButton buttonWithFrame:frame buttonStyle:JYButtonStyleImageWithTitle shouldMaskImage:NO];
+    button.backgroundColor = [UIColor whiteColor];
+    button.contentColor = FlatBlack;
+    button.foregroundAnimateToColor = FlatWhite;
+    button.imageView.image = [UIImage imageNamed:kImageNamePinBlue];
+    button.textLabel.font = [UIFont systemFontOfSize:kMapDashBoardLeadingFontSize];
+    button.textLabel.textAlignment = NSTextAlignmentLeft;
+    [button addTarget:self action:@selector(_addressButtonPressed) forControlEvents:UIControlEventTouchUpInside];
 
-    self.startButton = startButton;
-    [self addSubview:self.startButton];
-}
-
-- (void)_createEndButton
-{
-    if (_dashBoardStyle == JYMapDashBoardStyleStartOnly)
-    {
-        return;
-    }
-
-    CGRect frame = CGRectMake(CGRectGetMaxX(self.startButton.frame),
-                              CGRectGetMinY(self.startButton.frame),
-                              CGRectGetWidth(self.frame) * 0.3,
-                              CGRectGetHeight(self.startButton.frame));
-    JYButton *endButton = [JYButton buttonWithFrame:frame buttonStyle:JYButtonStyleImageWithTitle shouldMaskImage:NO];
-    endButton.backgroundColor = [UIColor whiteColor];
-    endButton.contentColor = FlatBlack;
-    endButton.foregroundAnimateToColor = [UIColor whiteColor];
-    endButton.foregroundColor = FlatWhite;
-    endButton.imageView.image = [UIImage imageNamed:kImageNamePinPink];
-    endButton.textLabel.text = NSLocalizedString(@"Add Destination", nil);
-    endButton.textLabel.textAlignment = NSTextAlignmentLeft;
-    [endButton addTarget:self action:@selector(_endButtonPressed) forControlEvents:UIControlEventTouchUpInside];
-
-    self.endButton = endButton;
-    [self addSubview:self.endButton];
+    self.addressButton = button;
+    [self addSubview:self.addressButton];
 }
 
 - (void)_createLocateButton
@@ -179,6 +122,7 @@
     [self addSubview:self.locateButton];
 }
 
+
 - (void)_submitButtonPressed
 {
     if (self.delegate)
@@ -187,19 +131,11 @@
     }
 }
 
-- (void)_startButtonPressed
+- (void)_addressButtonPressed
 {
     if (self.delegate)
     {
-        [self.delegate dashBoard:self startButtonPressed:self.startButton];
-    }
-}
-
-- (void)_endButtonPressed
-{
-    if (self.delegate)
-    {
-        [self.delegate dashBoard:self endButtonPressed:self.endButton];
+        [self.delegate dashBoard:self addressButtonPressed:self.addressButton];
     }
 }
 
@@ -208,93 +144,6 @@
     if (self.delegate)
     {
         [self.delegate dashBoard:self locateButtonPressed:self.locateButton];
-    }
-}
-
-- (void)_updateSubmitButton:(MapEditMode)mode
-{
-    NSString *text = nil;
-    switch (mode)
-    {
-        case MapEditModeStartPoint:
-            text = (_dashBoardStyle == JYMapDashBoardStyleStartOnly)? NSLocalizedString(@"Set Sevice Location", nil) : NSLocalizedString(@"Set Pickup Location", nil);
-            break;
-        case MapEditModeEndPoint:
-            text = NSLocalizedString(@"Set Destination Location", nil);
-            break;
-        case MapEditModeDone:
-            text = NSLocalizedString(@"Next", nil);
-            break;
-        default:
-            text = @"";
-            break;
-    }
-    self.submitButton.textLabel.text = text;
-}
-
-- (void)_updateAddressButtons:(MapEditMode)mode
-{
-    if (_dashBoardStyle == JYMapDashBoardStyleStartOnly)
-    {
-        return;
-    }
-
-    __weak typeof(self) weakSelf = self;
-    if (mode == MapEditModeStartPoint)
-    {
-        [UIView animateWithDuration:0.2f animations:^{
-            weakSelf.startButton.foregroundColor = [UIColor whiteColor];
-            weakSelf.startButton.textLabel.font = [UIFont systemFontOfSize:kMapDashBoardLeadingFontSize];
-            weakSelf.startButton.frame = CGRectMake(CGRectGetMinX(weakSelf.startButton.frame),
-                                                CGRectGetMinY(weakSelf.startButton.frame),
-                                                CGRectGetWidth(weakSelf.frame) * 0.7,
-                                                CGRectGetHeight(weakSelf.startButton.frame));
-
-            weakSelf.endButton.foregroundColor = FlatWhite;
-            weakSelf.endButton.textLabel.font = [UIFont systemFontOfSize:kMapDashBoardSupportingFontSize];
-            weakSelf.endButton.frame = CGRectMake(CGRectGetWidth(weakSelf.frame) * 0.7,
-                                              CGRectGetMinY(weakSelf.endButton.frame),
-                                              CGRectGetWidth(weakSelf.frame) * 0.3,
-                                              CGRectGetHeight(weakSelf.endButton.frame));
-        }];
-    }
-    else if (mode == MapEditModeEndPoint)
-    {
-        NSAssert(weakSelf.endButton, @"endButton must not be nil in MapEditModeEndPoint mode");
-        [UIView animateWithDuration:0.2f animations:^{
-            weakSelf.endButton.foregroundColor = [UIColor whiteColor];
-            weakSelf.endButton.textLabel.font = [UIFont systemFontOfSize:kMapDashBoardLeadingFontSize];
-            weakSelf.endButton.frame = CGRectMake(CGRectGetWidth(weakSelf.frame) * 0.3,
-                                              CGRectGetMinY(weakSelf.endButton.frame),
-                                              CGRectGetWidth(weakSelf.frame) * 0.7,
-                                              CGRectGetHeight(weakSelf.endButton.frame));
-
-            weakSelf.startButton.foregroundColor = FlatWhite;
-            weakSelf.startButton.textLabel.font = [UIFont systemFontOfSize:kMapDashBoardSupportingFontSize];
-            weakSelf.startButton.frame = CGRectMake(CGRectGetMinX(weakSelf.startButton.frame),
-                                                CGRectGetMinY(weakSelf.startButton.frame),
-                                                CGRectGetWidth(weakSelf.frame) * 0.3,
-                                                CGRectGetHeight(weakSelf.startButton.frame));
-        }];
-    }
-    else if (mode == MapEditModeDone)
-    {
-        NSAssert(weakSelf.endButton, @"endButton must not be nil in MapEditModeDone mode");
-        [UIView animateWithDuration:0.2f animations:^{
-            weakSelf.startButton.foregroundColor = [UIColor whiteColor];
-            weakSelf.startButton.textLabel.font = [UIFont systemFontOfSize:kMapDashBoardLeadingFontSize];
-            weakSelf.startButton.frame = CGRectMake(CGRectGetMinX(weakSelf.startButton.frame),
-                                                    CGRectGetMinY(weakSelf.startButton.frame),
-                                                    CGRectGetWidth(weakSelf.frame) * 0.5,
-                                                    CGRectGetHeight(weakSelf.startButton.frame));
-
-            weakSelf.endButton.foregroundColor = [UIColor whiteColor];
-            weakSelf.endButton.textLabel.font = [UIFont systemFontOfSize:kMapDashBoardLeadingFontSize];
-            weakSelf.endButton.frame = CGRectMake(CGRectGetWidth(weakSelf.frame) * 0.5,
-                                                  CGRectGetMinY(weakSelf.endButton.frame),
-                                                  CGRectGetWidth(weakSelf.frame) * 0.5,
-                                                  CGRectGetHeight(weakSelf.endButton.frame));
-        }];
     }
 }
 

@@ -17,11 +17,8 @@
 
 @property(nonatomic) BOOL mapNeedsPadding;
 @property(nonatomic) CLLocationCoordinate2D userSelectedMapCenter;
-@property(nonatomic) MapEditMode mapEditMode;
-@property(nonatomic) MKPointAnnotation *startPoint;
-@property(nonatomic) MKPointAnnotation *endPoint;
-@property(nonatomic) UIImageView *startPointView;
-@property(nonatomic) UIImageView *endPointView;
+@property(nonatomic) MKPointAnnotation *point;
+@property(nonatomic) UIImageView *pointView;
 
 @property(nonatomic, weak) JYMapDashBoardView *dashBoard;
 @property(nonatomic, weak) MKMapView *mapView;
@@ -35,26 +32,6 @@
 static NSString *reuseId = @"pin";
 
 @implementation JYOrderMapViewController
-
-- (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self)
-    {
-        _mapEditMode = MapEditModeNone;
-    }
-    return self;
-}
-
-- (instancetype)initWithCoder:(NSCoder *)aDecoder
-{
-    self = [super initWithCoder:aDecoder];
-    if (self)
-    {
-        _mapEditMode = MapEditModeNone;
-    }
-    return self;
-}
 
 - (BOOL)hidesBottomBarWhenPushed
 {
@@ -72,13 +49,16 @@ static NSString *reuseId = @"pin";
 
     [self _createMapView];
     [self _createDashBoard];
-    self.mapEditMode = MapEditModeStartPoint;
+    [self _enterMapEditMode:YES];
     [self _updateAddress];
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
+
+    [self _enterMapEditMode:YES];
+
     if (self.userSelectedMapCenter.latitude == self.mapView.centerCoordinate.latitude &&
         self.userSelectedMapCenter.longitude == self.mapView.centerCoordinate.longitude)
     {
@@ -138,8 +118,7 @@ static NSString *reuseId = @"pin";
     CGFloat y = CGRectGetHeight(self.view.frame) - kMapDashBoardHeight;
     CGRect frame = CGRectMake(0, y, CGRectGetWidth(self.view.frame), kMapDashBoardHeight);
 
-    JYMapDashBoardStyle style = ([self _shouldHaveEndPoint]) ? JYMapDashBoardStyleStartAndEnd : JYMapDashBoardStyleStartOnly;
-    JYMapDashBoardView *dashBoard = [[JYMapDashBoardView alloc] initWithFrame:frame withStyle:style];
+    JYMapDashBoardView *dashBoard = [[JYMapDashBoardView alloc] initWithFrame:frame];
     dashBoard.delegate = self;
 
     self.dashBoard = dashBoard;
@@ -187,11 +166,6 @@ static NSString *reuseId = @"pin";
 
 - (void)_updateAddress
 {
-    if (self.mapEditMode != MapEditModeStartPoint && self.mapEditMode != MapEditModeEndPoint)
-    {
-        return;
-    }
-
     CLLocation *location = [[CLLocation alloc] initWithLatitude:self.mapView.centerCoordinate.latitude longitude:self.mapView.centerCoordinate.longitude];
     CLGeocoder *geocoder = [[CLGeocoder alloc] init];
     __weak typeof(self) weakSelf = self;
@@ -212,17 +186,9 @@ static NSString *reuseId = @"pin";
                                                 placemark.administrativeArea,
                                                 placemark.postalCode];
 
-                           if (weakSelf.mapEditMode == MapEditModeStartPoint)
-                           {
-                               weakSelf.dashBoard.startButton.textLabel.text = address;
-                               [JYOrder currentOrder].address = address;
-                               [JYOrder currentOrder].city = placemark.locality;
-                           }
-                           else if (weakSelf.mapEditMode == MapEditModeEndPoint)
-                           {
-                               weakSelf.dashBoard.endButton.textLabel.text = address;
-//                               [JYOrder currentOrder].endAddress = address;
-                           }
+                           weakSelf.dashBoard.addressButton.textLabel.text = address;
+                           [JYOrder currentOrder].address = address;
+                           [JYOrder currentOrder].city = placemark.locality;
                        }
                    }];
 }
@@ -248,43 +214,6 @@ static NSString *reuseId = @"pin";
     [self _moveMapToPoint:self.mapView.userLocation.location.coordinate];
 }
 
-- (void)_moveMapToPoint:(CLLocationCoordinate2D)center andEnterMode:(MapEditMode)mode
-{
-    MKCoordinateRegion newRegion = MKCoordinateRegionMakeWithDistance(center, kMapDefaultSpanDistance, kMapDefaultSpanDistance);
-    __weak typeof(self) weakSelf = self;
-    [UIView animateWithDuration:0.5f
-                     animations:^{
-                         [weakSelf.mapView setRegion:newRegion animated:YES];
-                     }
-                     completion:^(BOOL finished) {
-                         if (finished)
-                         {
-                             weakSelf.mapEditMode = mode;
-                             [weakSelf _updateAddress];
-                         }
-                     }];
-}
-
-- (void)_moveMapToPointAnnotation:(MKPointAnnotation *)pointAnnotation andEnterMode:(MapEditMode)mode
-{
-    // Hide startPointView, show startPointAnnotation
-    self.mapEditMode = MapEditModeNone;
-
-    CLLocationCoordinate2D newCenter;
-
-    if (pointAnnotation)
-    {
-        newCenter = pointAnnotation.coordinate;
-    }
-    else
-    {
-        newCenter = CLLocationCoordinate2DMake(self.mapView.centerCoordinate.latitude + kMapEndPointCenterOffset,
-                                               self.mapView.centerCoordinate.longitude + kMapEndPointCenterOffset);
-    }
-
-    [self _moveMapToPoint:newCenter andEnterMode:(MapEditMode)mode];
-}
-
 - (void)_navigateToNextView
 {
     JYOrder *currentOrder = [JYOrder currentOrder];
@@ -295,198 +224,70 @@ static NSString *reuseId = @"pin";
         return;
     }
 
-    currentOrder.lat = self.startPoint.coordinate.latitude;
-    currentOrder.lon = self.startPoint.coordinate.longitude;
+    currentOrder.lat = self.point.coordinate.latitude;
+    currentOrder.lon = self.point.coordinate.longitude;
 
     if (currentOrder.lat == 0.0 && currentOrder.lon == 0.0)
     {
-        NSLog(@"startPoint not set");
+        NSLog(@"point not set");
         return;
     }
-
-//    if (self.endPoint)
-//    {
-//        if (!currentOrder.endAddress)
-//        {
-//            NSLog(@"endAddress not set");
-//            return;
-//        }
-//        currentOrder.endPointLat = self.endPoint.coordinate.latitude;
-//        currentOrder.endPointLon = self.endPoint.coordinate.longitude;
-//    }
 
     UIViewController *viewController = [JYOrderDetailsViewController new];
     [self.navigationController pushViewController:viewController animated:YES];
 }
 
-- (void)_showStartPointAnnotation:(BOOL)show
+- (void)_showPointAnnotation:(BOOL)show
 {
     if (show)
     {
-        if (!self.startPoint)
+        if (!self.point)
         {
-            self.startPoint = [MKPointAnnotation new];
-            self.startPoint.coordinate = self.mapView.centerCoordinate;
-            self.startPoint.title = kAnnotationTitleStart;
-            [self.mapView addAnnotation:self.startPoint];
+            self.point = [MKPointAnnotation new];
+            self.point.coordinate = self.mapView.centerCoordinate;
+            self.point.title = kAnnotationTitleStart;
+            [self.mapView addAnnotation:self.point];
         }
     }
     else
     {
-        if (self.startPoint)
+        if (self.point)
         {
-            [self.mapView removeAnnotation:self.startPoint];
-            self.startPoint = nil;
+            [self.mapView removeAnnotation:self.point];
+            self.point = nil;
         }
     }
 }
 
-- (void)_showEndPointAnnotation:(BOOL)show
+- (void)_showPointView:(BOOL)show
 {
     if (show)
     {
-        if (!self.endPoint)
+        if (!self.pointView)
         {
-            self.endPoint = [MKPointAnnotation new];
-            self.endPoint.coordinate = self.mapView.centerCoordinate;
-            self.endPoint.title = kAnnotationTitleEnd;
-            [self.mapView addAnnotation:self.endPoint];
+            self.pointView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, kPinAnnotationWidth, kPinAnnotationHeight)];
+            CGFloat y = (CGRectGetHeight(self.mapView.frame) - CGRectGetHeight(self.pointView.frame)) / 2;
+            self.pointView.center = CGPointMake(CGRectGetMidX(self.mapView.frame), y);
+
+            self.pointView.image = [UIImage imageNamed:kImageNamePinBlue];
+            [self.mapView addSubview:self.pointView];
         }
     }
     else
     {
-        if (self.endPoint)
+        if (self.pointView)
         {
-            [self.mapView removeAnnotation:self.endPoint];
-            self.endPoint = nil;
+            [self.pointView removeFromSuperview];
+            self.pointView = nil;
         }
     }
 }
 
-- (void)_showStartPointView:(BOOL)show
+- (void)_enterMapEditMode:(BOOL)edit
 {
-    if (show)
-    {
-        if (!self.startPointView)
-        {
-            self.startPointView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, kPinAnnotationWidth, kPinAnnotationHeight)];
-            CGFloat y = (CGRectGetHeight(self.mapView.frame) - CGRectGetHeight(self.startPointView.frame)) / 2;
-            self.startPointView.center = CGPointMake(CGRectGetMidX(self.mapView.frame), y);
-
-            self.startPointView.image = [UIImage imageNamed:kImageNamePinBlue];
-            [self.mapView addSubview:self.startPointView];
-        }
-    }
-    else
-    {
-        if (self.startPointView)
-        {
-            [self.startPointView removeFromSuperview];
-            self.startPointView = nil;
-        }
-    }
-}
-
-- (void)_showEndPointView:(BOOL)show
-{
-    if (show)
-    {
-        if (!self.endPointView)
-        {
-            self.endPointView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, kPinAnnotationWidth, kPinAnnotationHeight)];
-            CGFloat y = (CGRectGetHeight(self.mapView.frame) - CGRectGetHeight(self.endPointView.frame)) / 2;
-            self.endPointView.center = CGPointMake(CGRectGetMidX(self.mapView.frame), y);
-
-            self.endPointView.image = [UIImage imageNamed:kImageNamePinPink];
-            [self.mapView addSubview:self.endPointView];
-        }
-    }
-    else
-    {
-        if (self.endPointView)
-        {
-            [self.endPointView removeFromSuperview];
-            self.endPointView = nil;
-        }
-    }
-}
-
-- (BOOL)_shouldEditEndPoint
-{
-    if (self.mapEditMode != MapEditModeStartPoint)
-    {
-        return NO;
-    }
-
-    // Already edited end point previously
-    if (self.endPoint)
-    {
-        return NO;
-    }
-
-    return [self _shouldHaveEndPoint];
-}
-
-- (BOOL)_shouldHaveEndPoint
-{
-    return NO;
-}
-
-- (BOOL)_shouldJumpToDone
-{
-    return (self.mapEditMode == MapEditModeStartPoint && self.endPoint);
-}
-
-- (void)setMapEditMode:(MapEditMode)mode
-{
-    if (_mapEditMode == mode)
-    {
-        return;
-    }
-
-    // Finish current mode
-    switch (_mapEditMode)
-    {
-        case MapEditModeStartPoint:
-            [self _showStartPointView:NO];
-            [self _showStartPointAnnotation:YES];
-            break;
-        case MapEditModeEndPoint:
-            [self _showEndPointView:NO];
-            break;
-        default:
-            break;
-    }
-
-    // Enter new mode
-    switch (mode)
-    {
-        case MapEditModeStartPoint:
-            [self _showStartPointView:YES];
-            [self _showStartPointAnnotation:NO];
-            break;
-        case MapEditModeEndPoint:
-            [self _showEndPointView:YES];
-            [self _showEndPointAnnotation:NO];
-            break;
-        case MapEditModeDone:
-            [self _showEndPointAnnotation:YES];
-            [self _presentAnnotations];
-            break;
-        default:
-            break;
-    }
-
-    _mapEditMode = mode;
-    self.dashBoard.mapEditMode = mode;
-}
-
-- (void)_presentAnnotations
-{
-    NSAssert(self.startPoint && self.endPoint, @"Both startPoint and endPoint annotations should exist");
-
-    self.mapNeedsPadding = YES;
-    [self.mapView showAnnotations:@[ self.startPoint, self.endPoint ] animated:YES];
+    [self _showPointView:edit];
+    [self _showPointAnnotation:!edit];
+    self.userSelectedMapCenter = self.mapView.centerCoordinate;
 }
 
 - (void)_presentPlacesViewController
@@ -497,7 +298,7 @@ static NSString *reuseId = @"pin";
     JYPlacesViewController *placesViewController = [JYPlacesViewController new];
     placesViewController.delegate = self;
 
-    NSString *imageName = (self.mapEditMode == MapEditModeStartPoint)? kImageNamePinBlue: kImageNamePinPink;
+    NSString *imageName = kImageNamePinBlue;
     placesViewController.searchBarImage = [UIImage imageNamed:imageName];
     placesViewController.searchCenter = self.mapView.centerCoordinate;
 
@@ -507,61 +308,15 @@ static NSString *reuseId = @"pin";
 
 #pragma mark - JYMapDashBoardViewDelegate
 
-- (void)dashBoard:(JYMapDashBoardView *)dashBoard startButtonPressed:(UIButton *)button
+- (void)dashBoard:(JYMapDashBoardView *)dashBoard addressButtonPressed:(UIButton *)button
 {
-    if (self.mapEditMode == MapEditModeStartPoint)
-    {
-        [self _presentPlacesViewController];
-    }
-    else
-    {
-        [self _moveMapToPointAnnotation:self.startPoint andEnterMode:MapEditModeStartPoint];
-    }
-}
-
-- (void)dashBoard:(JYMapDashBoardView *)dashBoard endButtonPressed:(UIButton *)button
-{
-    if (self.mapEditMode == MapEditModeEndPoint)
-    {
-        [self _presentPlacesViewController];
-    }
-    else
-    {
-        [self _moveMapToPointAnnotation:self.endPoint andEnterMode:MapEditModeEndPoint];
-    }
+    [self _presentPlacesViewController];
 }
 
 - (void)dashBoard:(JYMapDashBoardView *)dashBoard submitButtonPressed:(UIButton *)button
 {
-    switch (self.mapEditMode)
-    {
-        case MapEditModeStartPoint:
-            if ([self _shouldEditEndPoint])
-            {
-                [self _moveMapToPointAnnotation:self.endPoint andEnterMode:MapEditModeEndPoint];
-            }
-            else if ([self _shouldJumpToDone])
-            {
-                // Make sure startPointAnnotation is set
-                self.mapEditMode = MapEditModeNone;
-                self.mapEditMode = MapEditModeDone;
-            }
-            else
-            {
-                [self _showStartPointView:NO];
-                [self _showStartPointAnnotation:YES];
-                [self _navigateToNextView];
-            }
-            break;
-        case MapEditModeEndPoint:
-            self.mapEditMode = MapEditModeDone;
-            break;
-        case MapEditModeDone:
-            [self _navigateToNextView];
-            break;
-        default:
-            break;
-    }
+    [self _enterMapEditMode:NO];
+    [self _navigateToNextView];
 }
 
 - (void)dashBoard:(JYMapDashBoardView *)dashBoard locateButtonPressed:(UIControl *)button
@@ -601,11 +356,11 @@ static NSString *reuseId = @"pin";
     {
         self.mapNeedsPadding = NO;
 
-        // When _presentAnnotations was called, must make sure both of the annotations aren't under the dashBoard
+        // When _presentAnnotations was called, must make sure the point annotations not under the dashBoard
         // Add a bottom edge inset is the solution
 
         CGFloat submitButtonHeight = CGRectGetHeight(self.dashBoard.submitButton.frame);
-        CGFloat startButtonHeight = CGRectGetHeight(self.dashBoard.startButton.frame);
+        CGFloat startButtonHeight = CGRectGetHeight(self.dashBoard.addressButton.frame);
         UIEdgeInsets edgeInsets = UIEdgeInsetsMake(0, 0, submitButtonHeight + startButtonHeight, 0);
 
         [self.mapView setVisibleMapRect:self.mapView.visibleMapRect edgePadding:edgeInsets animated:YES];
