@@ -361,10 +361,10 @@ lab.experiment('Orders POST: ', function () {
                 note: 'Just Bedrooms',
                 title: 'Cleaning for 4 rooms',
                 start_time: 450690000,
-                start_city: 'Fremont',
-                start_address: '37010 Dusterberry Way, Fremont, CA 94536',
-                start_point_lon: -122.0135916,
-                start_point_lat: 37.555883
+                city: 'Fremont',
+                address: '37010 Dusterberry Way, Fremont, CA 94536',
+                lon: -122.0135916,
+                lat: 37.555883
             },
             credentials: andy
         };
@@ -378,7 +378,7 @@ lab.experiment('Orders POST: ', function () {
         });
     });
 
-    lab.test('/orders: create failed due to bad start_point_lon', function (done) {
+    lab.test('/orders: create failed due to bad lon', function (done) {
 
         request = {
             method: 'POST',
@@ -389,10 +389,10 @@ lab.experiment('Orders POST: ', function () {
                 country: 'us',
                 note: 'jump start',
                 start_time: 450690000,
-                start_city: 'Fremont',
-                start_address: '2290 good ave, Fremont, CA 94555',
-                start_point_lon: 180.3,
-                start_point_lat: 75.84
+                city: 'Fremont',
+                address: '2290 good ave, Fremont, CA 94555',
+                lon: 180.3,
+                lat: 75.84
             },
             credentials: jack
         };
@@ -412,11 +412,11 @@ lab.experiment('Orders POST: ', function () {
             method: 'POST',
             url: '/orders/2',
             payload: {
-                start_address: '37010 Dusterberry Way Fremont, CA 94536',
+                address: '37010 Dusterberry Way Fremont, CA 94536',
                 category: 6,
                 note: 'what ever:)',
-                start_point_lat: 37.555883,
-                start_point_lon: -122.0135916,
+                lat: 37.555883,
+                lon: -122.0135916,
                 price: 1.13
             },
             credentials: jack
@@ -478,11 +478,11 @@ lab.experiment('Orders POST: ', function () {
             method: 'POST',
             url: '/orders/2',
             payload: {
-                start_address: '37010 Dusterberry Way Fremont, CA 94536',
+                address: '37010 Dusterberry Way Fremont, CA 94536',
                 category: 6,
                 note: 'what ever:)',
-                start_point_lat: 37.555883,
-                start_point_lon: -122.0135916,
+                lat: 37.555883,
+                lon: -122.0135916,
                 price: 1.13
             },
             credentials: andy
@@ -503,11 +503,11 @@ lab.experiment('Orders POST: ', function () {
             method: 'POST',
             url: '/orders/4',
             payload: {
-                start_address: '37010 Dusterberry Way Fremont, CA 94536',
+                address: '37010 Dusterberry Way Fremont, CA 94536',
                 category: 6,
                 note: 'what ever:)',
-                start_point_lat: 37.555883,
-                start_point_lon: -122.0135916,
+                lat: 37.555883,
+                lon: -122.0135916,
                 price: 1.13
             },
             credentials: jack
@@ -547,8 +547,8 @@ lab.experiment('Orders POST: ', function () {
             payload: {
                 category: 6,
                 note: 'what ever:)',
-                start_address: '37010 Dusterberry Way Fremont, CA 94536',
-                start_point_lat: 37.555883,
+                address: '37010 Dusterberry Way Fremont, CA 94536',
+                lat: 37.555883,
                 price: 1.13
             },
             credentials: jack

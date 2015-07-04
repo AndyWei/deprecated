@@ -15,7 +15,7 @@ INSERT INTO accounts
 
 
 INSERT INTO orders
-    (user_id, winner_id, winner_name,    price,  final_price, status, category, created_at, updated_at, finished_at,      title,     note,                                              start_point,   start_city,     start_address, start_time) VALUES
+    (user_id, winner_id, winner_name,    price,  final_price, status, category, created_at, updated_at, finished_at,      title,     note,                                               coordinate,         city,           address, start_time) VALUES
     (      1,      NULL,        NULL,    19900,         NULL,      0,        1,      now(),      now(),        NULL,    'clean', 'order0', ST_SetSRID(ST_MakePoint(-122.4164623, 37.7766092), 4326),    'Fremont',      '1 Joyy Way', 450694731),
     (      1,      NULL,        NULL,    89900,         NULL,      0,        5,      now(),      now(),        NULL,   'moving', 'order1', ST_SetSRID(ST_MakePoint(-122.4074981, 37.7879331), 4326), 'Menlo Park',      '1 Hack Way', 451594731),
     (      1,      NULL,        NULL, 23456700,         NULL,      0,        4,      now(),      now(),        NULL, 'handyman', 'order2', ST_SetSRID(ST_MakePoint(-121.9989519, 37.5293864), 4326),  'Cupertino', '1 Infinite Loop', 450794731),

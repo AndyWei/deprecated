@@ -22,7 +22,7 @@ var jrApnOptions = {
     'passphrase': ''
 };
 
-exports.connect = function () {
+exports.connect = internals.connect = function () {
     jyApnConnection = new Apn.Connection(jyApnOptions);
     jrApnConnection = new Apn.Connection(jrApnOptions);
 };
@@ -130,7 +130,13 @@ internals.apnSend = function (app, token, badge, title, body) {
     notification.payload = {'message': body};
 
     var connection = (app === 'joyy') ? jyApnConnection : jrApnConnection;
-    connection.pushNotification(notification, device);
+
+    if (connection) {
+        connection.pushNotification(notification, device);
+    }
+    else {
+        console.error('No APN connection');
+    }
 };
 
 

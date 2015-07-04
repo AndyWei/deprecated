@@ -11,9 +11,9 @@ var _ = require('underscore');
 
 
 var internals = {};
-var selectClause = 'SELECT id, user_id, price, currency, country, status, category, title, note, start_time, start_city, start_address, end_address, \
+var selectClause = 'SELECT id, user_id, price, currency, country, status, category, title, note, start_time, city, address, \
                     winner_id, winner_name, final_price, created_at, updated_at, finished_at, \
-                    ST_X(start_point) AS start_point_lon, ST_Y(start_point) AS start_point_lat, ST_X(end_point) AS end_point_lon, ST_Y(end_point) AS end_point_lat \
+                    ST_X(coordinate) AS lon, ST_Y(coordinate) AS lat \
                     FROM orders ';
 
 exports.register = function (server, options, next) {
@@ -258,13 +258,10 @@ exports.register = function (server, options, next) {
                     note: Joi.string().max(1000).required(),
                     price: Joi.number().min(0).max(10000000000).required(),
                     start_time: Joi.number().min(450600000).required(),
-                    start_point_lon: Joi.number().min(-180).max(180).required(),
-                    start_point_lat: Joi.number().min(-90).max(90).required(),
-                    start_city: Joi.string().max(30).required(),
-                    start_address: Joi.string().max(200).required(),
-                    end_point_lon: Joi.number().min(-180).max(180).optional(),
-                    end_point_lat: Joi.number().min(-90).max(90).optional(),
-                    end_address: Joi.string().optional()
+                    lon: Joi.number().min(-180).max(180).required(),
+                    lat: Joi.number().min(-90).max(90).required(),
+                    city: Joi.string().max(30).required(),
+                    address: Joi.string().max(200).required()
                 }
             }
         },
@@ -364,11 +361,11 @@ exports.register = function (server, options, next) {
                     order_id: Joi.string().regex(/^[0-9]+$/).max(19)
                 },
                 payload: {
-                    start_address: Joi.string().max(100).optional(),
+                    address: Joi.string().max(100).optional(),
                     category: Joi.number().min(0).max(100).optional(),
                     note: Joi.string().max(1000).optional(),
-                    start_point_lat: Joi.number().min(-90).max(90).optional(),
-                    start_point_lon: Joi.number().min(-180).max(180).optional(),
+                    lat: Joi.number().min(-90).max(90).optional(),
+                    lon: Joi.number().min(-180).max(180).optional(),
                     price: Joi.number().min(0).max(10000000000).optional()
                 }
             }
@@ -455,7 +452,7 @@ exports.register = function (server, options, next) {
                 }
 
                 // send notification to the order owner
-                var title = '@' + u.username + ' will serve you soon';
+                var title = '@' + u.username + ' starts serving you';
                 Push.notify('joyy', result.rows[0].user_id, title, 'start_service', function (error) {
 
                     if (error) {
@@ -610,29 +607,12 @@ internals.createInsertQueryConfig = function (request, callback) {
     var userId = request.auth.credentials.id;
     var p = request.payload;
 
-    var queryText1 = 'INSERT INTO orders (user_id, price, currency, country, category, title, note, start_time, start_city, start_address, start_point, created_at, updated_at';
-    var queryText2 = '($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, ST_SetSRID(ST_MakePoint($11, $12), 4326), now(), now()';
-    var queryValues = [userId, p.price, p.currency, p.country, p.category, p.title, p.note, p.start_time, p.start_city, p.start_address, p.start_point_lon, p.start_point_lat];
-
-    if (p.end_point_lon && p.end_point_lat && p.end_address) {
-        queryText1 += ', end_address, end_point) VALUES ';
-        queryText2 += ', $13, ST_SetSRID(ST_MakePoint($14, $15), 4326)) RETURNING id';
-
-        queryValues.push(p.end_address);
-        queryValues.push(p.end_point_lon);
-        queryValues.push(p.end_point_lat);
-    }
-    else if (p.end_point_lon || p.end_point_lat || p.end_address) {
-        return callback(Boom.badData(c.COORDINATE_INVALID));
-    }
-    else {
-        queryText1 += ') VALUES ';
-        queryText2 += ') RETURNING id';
-    }
+    var queryText1 = 'INSERT INTO orders (user_id, price, currency, country, category, title, note, start_time, city, address, coordinate, created_at, updated_at) VALUES';
+    var queryText2 = '($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, ST_SetSRID(ST_MakePoint($11, $12), 4326), now(), now()) RETURNING id';
+    var queryValues = [userId, p.price, p.currency, p.country, p.category, p.title, p.note, p.start_time, p.city, p.address, p.lon, p.lat];
 
     var queryConfig = {
-        // Warning: Do not give this query a name!! Because it has variable number of parameters and cannot be a prepared statement.
-        // See https://github.com/brianc/node-postgres/wiki/Client#method-query-prepared
+        name: 'orders_create',
         text: queryText1 + queryText2,
         values: queryValues
     };
@@ -651,19 +631,19 @@ internals.createUpdateQueryConfig = function (request, callback) {
     var queryValues = [];
     var index = 1;
 
-    if (p.start_point_lon && p.start_point_lat) {
-        queryText += 'start_point = ST_SetSRID(ST_MakePoint($1, $2), 4326),';
-        queryValues.push(p.start_point_lon);
-        queryValues.push(p.start_point_lat);
+    if (p.lon && p.lat) {
+        queryText += 'coordinate = ST_SetSRID(ST_MakePoint($1, $2), 4326),';
+        queryValues.push(p.lon);
+        queryValues.push(p.lat);
         index += 2;
     }
-    else if (p.start_point_lon || p.start_point_lat) {
+    else if (p.lon || p.lat) {
         return callback(Boom.badData(c.COORDINATE_INVALID));
     }
 
-    if (p.start_address) {
-        queryText += 'start_address = $' + index.toString() + ',';
-        queryValues.push(p.start_address);
+    if (p.address) {
+        queryText += 'address = $' + index.toString() + ',';
+        queryValues.push(p.address);
         ++index;
     }
 
@@ -691,8 +671,8 @@ internals.createUpdateQueryConfig = function (request, callback) {
 
     queryText += 'updated_at = now() ';
     queryText += 'WHERE id = $' + index.toString() + ' AND user_id = $' + (index + 1).toString() + ' AND status = 0 AND deleted = false ';
-    queryText += 'RETURNING id, price, status, category, note, start_address, created_at, updated_at, \
-                  ST_X(start_point) AS start_point_lon, ST_Y(start_point) AS start_point_lat, ST_X(end_point) AS end_point_lon, ST_Y(end_point) AS end_point_lat';
+    queryText += 'RETURNING id, price, status, category, note, address, created_at, updated_at, \
+                  ST_X(coordinate) AS lon, ST_Y(coordinate) AS lat';
 
     queryValues.push(orderId);
     queryValues.push(userId);
@@ -712,7 +692,7 @@ internals.createNearbyQueryConfig = function (query) {
 
     var degree = internals.degreeFromDistance(query.distance);
 
-    var where1 = 'WHERE id > $1 AND id < $2 AND ST_DWithin(start_point, ST_SetSRID(ST_MakePoint($3, $4), 4326), $5) AND status = 0 AND deleted = false ';
+    var where1 = 'WHERE id > $1 AND id < $2 AND ST_DWithin(coordinate, ST_SetSRID(ST_MakePoint($3, $4), 4326), $5) AND status = 0 AND deleted = false ';
     var order = 'ORDER BY id DESC ';
     var limit = 'LIMIT 100';
 
