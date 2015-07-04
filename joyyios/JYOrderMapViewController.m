@@ -215,13 +215,13 @@ static NSString *reuseId = @"pin";
                            if (weakSelf.mapEditMode == MapEditModeStartPoint)
                            {
                                weakSelf.dashBoard.startButton.textLabel.text = address;
-                               [JYOrder currentOrder].startAddress = address;
-                               [JYOrder currentOrder].startCity = placemark.locality;
+                               [JYOrder currentOrder].address = address;
+                               [JYOrder currentOrder].city = placemark.locality;
                            }
                            else if (weakSelf.mapEditMode == MapEditModeEndPoint)
                            {
                                weakSelf.dashBoard.endButton.textLabel.text = address;
-                               [JYOrder currentOrder].endAddress = address;
+//                               [JYOrder currentOrder].endAddress = address;
                            }
                        }
                    }];
@@ -289,31 +289,31 @@ static NSString *reuseId = @"pin";
 {
     JYOrder *currentOrder = [JYOrder currentOrder];
 
-    if (!currentOrder.startAddress)
+    if (!currentOrder.address)
     {
-        NSLog(@"startAddress not set");
+        NSLog(@"address not set");
         return;
     }
 
-    currentOrder.startPointLat = self.startPoint.coordinate.latitude;
-    currentOrder.startPointLon = self.startPoint.coordinate.longitude;
+    currentOrder.lat = self.startPoint.coordinate.latitude;
+    currentOrder.lon = self.startPoint.coordinate.longitude;
 
-    if (currentOrder.startPointLat == 0.0 && currentOrder.startPointLon == 0.0)
+    if (currentOrder.lat == 0.0 && currentOrder.lon == 0.0)
     {
         NSLog(@"startPoint not set");
         return;
     }
 
-    if (self.endPoint)
-    {
-        if (!currentOrder.endAddress)
-        {
-            NSLog(@"endAddress not set");
-            return;
-        }
-        currentOrder.endPointLat = self.endPoint.coordinate.latitude;
-        currentOrder.endPointLon = self.endPoint.coordinate.longitude;
-    }
+//    if (self.endPoint)
+//    {
+//        if (!currentOrder.endAddress)
+//        {
+//            NSLog(@"endAddress not set");
+//            return;
+//        }
+//        currentOrder.endPointLat = self.endPoint.coordinate.latitude;
+//        currentOrder.endPointLon = self.endPoint.coordinate.longitude;
+//    }
 
     UIViewController *viewController = [JYOrderDetailsViewController new];
     [self.navigationController pushViewController:viewController animated:YES];

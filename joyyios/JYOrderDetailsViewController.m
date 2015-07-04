@@ -103,19 +103,11 @@
     [section addFormRow:row];
 
     // Address
-    NSString *title = ([JYOrder currentOrder].endAddress)? NSLocalizedString(@"From:", nil): NSLocalizedString(@"Addr:", nil);
-    row = [XLFormRowDescriptor formRowDescriptorWithTag:@"startAddress" rowType:XLFormRowDescriptorTypeInfo title:title];
+    NSString *title = NSLocalizedString(@"Addr:", nil);
+    row = [XLFormRowDescriptor formRowDescriptorWithTag:@"address" rowType:XLFormRowDescriptorTypeInfo title:title];
     [row.cellConfig setObject:ClearColor forKey:@"backgroundColor"];
-    row.value = [JYOrder currentOrder].startAddress;
+    row.value = [JYOrder currentOrder].address;
     [section addFormRow:row];
-
-    if ([JYOrder currentOrder].endAddress)
-    {
-        row = [XLFormRowDescriptor formRowDescriptorWithTag:@"endAddress" rowType:XLFormRowDescriptorTypeInfo title:NSLocalizedString(@"To:", nil)];
-        [row.cellConfig setObject:ClearColor forKey:@"backgroundColor"];
-        row.value = [JYOrder currentOrder].endAddress;
-        [section addFormRow:row];
-    }
 
     self.form = form;
 }

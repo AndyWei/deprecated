@@ -76,13 +76,9 @@ static JYOrder *_currentOrder;
     _startTime     = 0;
     _title         = nil;
 
-    _startPointLat = 0.0f;
-    _startPointLon = 0.0f;
-    _startAddress  = nil;
-
-    _endPointLat = 0.0f;
-    _endPointLon = 0.0f;
-    _endAddress  = nil;
+    _lat = 0.0f;
+    _lon = 0.0f;
+    _address  = nil;
 
     // DO NOT CLEAR _note, we want to keep it to reduce user inputs
 }
@@ -107,14 +103,14 @@ static JYOrder *_currentOrder;
 
     // start time and point
     _startTime = [[dict objectForKey:@"start_time"] unsignedIntegerValue];
-    _startAddress  = [dict objectForKey:@"start_address"];
-    _startPointLat = [[dict objectForKey:@"start_point_lat"] doubleValue];
-    _startPointLon = [[dict objectForKey:@"start_point_lon"] doubleValue];
+    _address  = [dict objectForKey:@"address"];
+    _city  = [dict objectForKey:@"city"];
+    _lat = [[dict objectForKey:@"lat"] doubleValue];
+    _lon = [[dict objectForKey:@"lon"] doubleValue];
 
     // created date and updated date
     NSString *createdAtString = [dict objectForKey:@"created_at"];
     NSString *updatedAtString = [dict objectForKey:@"updated_at"];
-
 
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSSZ"];
@@ -123,17 +119,6 @@ static JYOrder *_currentOrder;
 
     // optional values
     NSString *str = nil;
-    if (self.hasEndAddress)
-    {
-        _endAddress  = [dict objectForKey:@"end_address"];
-
-
-        str = [dict objectForKey:@"end_point_lat"];
-        _endPointLat = [str isKindOfClass:[NSString class]] ? [str doubleValue] : 0.0;
-
-        str = [dict objectForKey:@"end_point_lon"];
-        _endPointLon = [str isKindOfClass:[NSString class]] ? [str doubleValue] : 0.0;
-    }
 
     str = [dict objectForKey:@"winner_id"];
     _winnerId = [str isKindOfClass:[NSString class]] ? [str unsignedIntegerValue] : 0.0;
@@ -160,24 +145,12 @@ static JYOrder *_currentOrder;
     [parameters setObject:self.title forKey:@"title"];
     [parameters setObject:self.note forKey:@"note"];
 
-    [parameters setObject:self.startAddress forKey:@"start_address"];
-    [parameters setObject:self.startCity forKey:@"start_city"];
-    [parameters setObject:@(self.startPointLat) forKey:@"start_point_lat"];
-    [parameters setObject:@(self.startPointLon) forKey:@"start_point_lon"];
-
-    if (self.hasEndAddress)
-    {
-        [parameters setObject:self.endAddress forKey:@"end_address"];
-        [parameters setObject:@(self.endPointLat) forKey:@"end_point_lat"];
-        [parameters setObject:@(self.endPointLon) forKey:@"end_point_lon"];
-    }
+    [parameters setObject:self.address forKey:@"address"];
+    [parameters setObject:self.city forKey:@"city"];
+    [parameters setObject:@(self.lat) forKey:@"lat"];
+    [parameters setObject:@(self.lon) forKey:@"lon"];
 
     return parameters;
-}
-
-- (BOOL)hasEndAddress
-{
-    return NO;
 }
 
 - (NSString *)categoryName

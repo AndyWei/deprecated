@@ -11,10 +11,10 @@
 typedef NS_ENUM(NSUInteger, JYServiceCategory)
 {
     JYServiceCategoryNone = 0,
-    JYServiceCategoryAssistant,
-    JYServiceCategoryEscort,
-    JYServiceCategoryMassage,
-    JYServiceCategoryPerformer
+    JYServiceCategoryAssistant = 10,
+    JYServiceCategoryEscort = 20,
+    JYServiceCategoryMassage = 30,
+    JYServiceCategoryPerformer = 40
 };
 
 typedef NS_ENUM(NSUInteger, JYOrderStatus)
@@ -36,18 +36,15 @@ typedef NS_ENUM(NSUInteger, JYOrderStatus)
 - (NSDictionary *)httpParameters;
 
 // Properties in the create order reqeust
-@property(nonatomic) CLLocationDegrees startPointLat;
-@property(nonatomic) CLLocationDegrees startPointLon;
-@property(nonatomic) CLLocationDegrees endPointLat;
-@property(nonatomic) CLLocationDegrees endPointLon;
+@property(nonatomic) CLLocationDegrees lat;
+@property(nonatomic) CLLocationDegrees lon;
 
 @property(nonatomic) NSString *currency;
 @property(nonatomic) NSString *country;
 @property(nonatomic) NSString *title;
 @property(nonatomic) NSString *note;
-@property(nonatomic) NSString *startCity;
-@property(nonatomic) NSString *startAddress;
-@property(nonatomic) NSString *endAddress;
+@property(nonatomic) NSString *city;
+@property(nonatomic) NSString *address;
 
 @property(nonatomic) JYServiceCategory category;
 @property(nonatomic) NSUInteger price;
@@ -68,12 +65,11 @@ typedef NS_ENUM(NSUInteger, JYOrderStatus)
 @property(nonatomic) NSMutableArray *bids;
 @property(nonatomic) NSMutableArray *comments;
 
-@property(nonatomic, readonly) BOOL hasEndAddress;
 @property(nonatomic, readonly) NSString *categoryName;
 @property(nonatomic, readonly) NSString *createTimeString;
+@property(nonatomic, readonly) NSString *finalPriceString;
 @property(nonatomic, readonly) NSString *finishTimeString;
 @property(nonatomic, readonly) NSString *priceString;
-@property(nonatomic, readonly) NSString *finalPriceString;
 @property(nonatomic, readonly) UIColor *bidColor;
 @property(nonatomic, readonly) UIColor *paymentStatusColor;
 @property(nonatomic, readonly) UIColor *workingStatusColor;
