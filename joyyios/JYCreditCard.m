@@ -12,9 +12,9 @@
 @interface JYCreditCard ()
 
 @property(nonatomic) JYCreditCardType cardType;
-@property(nonatomic) NSString *last4;
 @property(nonatomic) NSUInteger expiryMonth;
 @property(nonatomic) NSUInteger expiryYear;
+@property(nonatomic, copy) NSString *last4;
 
 @end
 
@@ -34,6 +34,17 @@
 {
     JYCreditCard *card = [JYCreditCard new];
     card.cardType = JYCreditCardTypeAdd;
+    return card;
+}
+
++ (instancetype)cardWithType:(JYCreditCardType)type fromSTPCard:(STPCard *)stpCard
+{
+    JYCreditCard *card = [JYCreditCard new];
+    card.cardType = type;
+    card.last4 = stpCard.last4;
+    card.expiryMonth = stpCard.expMonth;
+    card.expiryYear = stpCard.expYear;
+
     return card;
 }
 

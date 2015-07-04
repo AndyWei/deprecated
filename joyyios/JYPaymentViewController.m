@@ -19,7 +19,7 @@
 @interface JYPaymentViewController ()
 
 @property(nonatomic) JYCreditCardType cardType;
-@property(nonatomic) STPCard *card;
+@property(nonatomic) STPCard *stpCard;
 @property(nonatomic) NSMutableArray *creditCardList;
 @property(nonatomic) NSString *stripeToken;
 
@@ -45,7 +45,7 @@ static NSString *const kCardCellIdentifier = @"cardCell";
     self.view.backgroundColor = JoyyWhite;
 
     self.cardType = JYCreditCardTypeUnrecognized;
-    self.card = nil;
+    self.stpCard = nil;
     self.stripeToken = nil;
     self.creditCardList = [NSMutableArray new];
 
@@ -122,6 +122,21 @@ static NSString *const kCardCellIdentifier = @"cardCell";
     [self.creditCardList addObject:[JYCreditCard dummyCard]];
 }
 
+- (void)_didAddCreditCardWithCustomerId:(NSString *)customerId
+{
+    NSAssert(self.creditCardList.count > 0, @"self.creditCardList should contain at least the dummy card");
+
+    NSInteger index = self.creditCardList.count - 1;
+
+    JYCreditCard *newCard = [JYCreditCard cardWithType:self.cardType fromSTPCard:self.stpCard];
+    newCard.stripeCustomerId = customerId;
+    [newCard setAsDefault];
+
+    [self.creditCardList insertObject:newCard atIndex:index];
+
+    [self.tableView reloadData];
+}
+
 - (void)_presentCreditCardScanner
 {
     CardIOPaymentViewController *scanViewController = [[CardIOPaymentViewController alloc] initWithPaymentDelegate:self];
@@ -135,16 +150,16 @@ static NSString *const kCardCellIdentifier = @"cardCell";
 {
     NSLog(@"Credit card scan succeeded with card number = %@", info.cardNumber);
 
-    self.card = [[STPCard alloc] init];
-    self.card.number = info.cardNumber;
-    self.card.expMonth = info.expiryMonth;
-    self.card.expYear = info.expiryYear;
-    self.card.cvc = info.cvv;
+    self.stpCard = [[STPCard alloc] init];
+    self.stpCard.number = info.cardNumber;
+    self.stpCard.expMonth = info.expiryMonth;
+    self.stpCard.expYear = info.expiryYear;
+    self.stpCard.cvc = info.cvv;
 
     self.cardType = (JYCreditCardType)info.cardType;
 
     __weak typeof(self) weakSelf = self;
-    [[STPAPIClient sharedClient] createTokenWithCard:self.card
+    [[STPAPIClient sharedClient] createTokenWithCard:self.stpCard
                                           completion:^(STPToken *token, NSError *error) {
                                               if (error)
                                               {
@@ -275,27 +290,27 @@ static NSString *const kCardCellIdentifier = @"cardCell";
               [KVNProgress dismiss];
 
               NSDictionary *result = (NSDictionary *)responseObject;
-              NSString *stripeCustomerId = [result valueForKey:@"customer_id"];
+              NSString *customerId = [result valueForKey:@"customer_id"];
+              [weakSelf _didAddCreditCardWithCustomerId:customerId];
 
-              if (weakSelf.delegate)
-              {
-                  [weakSelf.delegate viewControllerDidCreateToken:stripeCustomerId];
-                  [weakSelf.delegate viewControllerDidFinish:weakSelf];
-              }
+//              if (weakSelf.delegate)
+//
+//                  [weakSelf.delegate viewControllerDidCreateToken:stripeCustomerId];
+//                  [weakSelf.delegate viewControllerDidFinish:weakSelf];
+//              }
           }
           failure:^(AFHTTPRequestOperation *operation, NSError *error) {
 
               [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
               [KVNProgress dismiss];
 
-              if (weakSelf.delegate)
-              {
-                  [weakSelf.delegate viewControllerDidCreateToken:nil];
-              }
+//              if (weakSelf.delegate)
+//              {
+//                  [weakSelf.delegate viewControllerDidCreateToken:nil];
+//              }
 
-              NSString *errorMessage = NSLocalizedString(@"Can't save the credit card due to network failure, please retry later", nil);
               [RKDropdownAlert title:NSLocalizedString(kErrorTitle, nil)
-                             message:errorMessage
+                             message:error.localizedDescription
                      backgroundColor:FlatYellow
                            textColor:FlatBlack
                                 time:5];
@@ -309,9 +324,9 @@ static NSString *const kCardCellIdentifier = @"cardCell";
     NSMutableDictionary *parameters = [NSMutableDictionary new];
 
     [parameters setValue:@(self.cardType) forKey:@"card_type"];
-    [parameters setValue:@(self.card.expYear) forKey:@"expiry_year"];
-    [parameters setValue:@(self.card.expMonth) forKey:@"expiry_month"];
-    [parameters setValue:self.card.last4 forKey:@"number_last_4"];
+    [parameters setValue:@(self.stpCard.expYear) forKey:@"expiry_year"];
+    [parameters setValue:@(self.stpCard.expMonth) forKey:@"expiry_month"];
+    [parameters setValue:self.stpCard.last4 forKey:@"number_last_4"];
     [parameters setValue:[JYUser currentUser].email forKey:@"email"];
     [parameters setValue:self.stripeToken forKey:@"stripe_token"];
 

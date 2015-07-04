@@ -6,6 +6,8 @@
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
+#import <Stripe/Stripe.h>
+
 typedef NS_ENUM(NSInteger, JYCreditCardType)
 {
     JYCreditCardTypeUnrecognized = 0, // The card number does not correspond to any recognizable card type.
@@ -23,6 +25,7 @@ typedef NS_ENUM(NSInteger, JYCreditCardType)
 
 + (instancetype)applePayCard;
 + (instancetype)dummyCard;
++ (instancetype)cardWithType:(JYCreditCardType)type fromSTPCard:(STPCard *)stpCard;
 - (instancetype)init;
 - (instancetype)initWithDictionary:(NSDictionary *)dict;
 - (BOOL)isDefault;
