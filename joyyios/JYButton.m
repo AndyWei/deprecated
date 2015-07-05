@@ -299,9 +299,9 @@ static CGRect CGRectEdgeInset(CGRect rect, UIEdgeInsets insets)
 
         case JYButtonStyleImageWithTitle:
             self.topTextLayer.frame = CGRectNull;
-            self.imageLayer.frame = CGRectMake(boxRect.origin.x, boxRect.origin.y, CGRectGetWidth(boxRect) * 0.1, CGRectGetHeight(boxRect));
+            self.imageLayer.frame = CGRectMake(boxRect.origin.x + 5, boxRect.origin.y, CGRectGetWidth(boxRect) * 0.05, CGRectGetHeight(boxRect));
             self.textLayer.frame =
-                CGRectMake(CGRectGetMaxX(self.imageLayer.frame), boxRect.origin.y, CGRectGetWidth(boxRect) * 0.9, CGRectGetHeight(boxRect));
+                CGRectMake(CGRectGetMaxX(self.imageLayer.frame), boxRect.origin.y, CGRectGetWidth(boxRect) * 0.95 - 5, CGRectGetHeight(boxRect));
             self.detailTextLayer.frame = CGRectNull;
             break;
 

@@ -20,6 +20,7 @@
 @property(nonatomic) MKPointAnnotation *point;
 @property(nonatomic) UIImageView *pointView;
 
+@property(nonatomic, weak) JYButton *addressButton;
 @property(nonatomic, weak) JYMapDashBoardView *dashBoard;
 @property(nonatomic, weak) MKMapView *mapView;
 
@@ -53,6 +54,7 @@ static NSString *reuseId = @"pin";
     self.navigationItem.leftBarButtonItems = [NSArray arrayWithObjects:negativeSpacer, menuButton, nil];
 
     [self _createMapView];
+    [self _createAddressButton];
     [self _createDashBoard];
     [self _enterMapEditMode:YES];
     [self _updateAddress];
@@ -116,6 +118,26 @@ static NSString *reuseId = @"pin";
 
     self.mapView = mapView;
     [self.view addSubview:self.mapView];
+}
+
+- (void)_createAddressButton
+{
+    CGFloat width = CGRectGetWidth(self.view.frame) - kMarginLeft - kMarginRight;
+    CGRect frame = CGRectMake(kMarginLeft, 75, width, 40);
+    JYButton *button = [JYButton buttonWithFrame:frame buttonStyle:JYButtonStyleImageWithTitle shouldMaskImage:NO];
+
+    button.backgroundColor = JoyyWhite;
+    button.contentColor = FlatBlack;
+    button.cornerRadius = kButtonCornerRadius;
+    button.foregroundAnimateToColor = FlatWhite;
+    button.foregroundColor = JoyyWhite;
+    button.imageView.image = [UIImage imageNamed:@"search"];
+    button.textLabel.font = [UIFont systemFontOfSize:kMapDashBoardLeadingFontSize];
+    button.textLabel.textAlignment = NSTextAlignmentCenter;
+    [button addTarget:self action:@selector(_addressButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+
+    self.addressButton = button;
+    [self.view addSubview:self.addressButton];
 }
 
 - (void)_createDashBoard
@@ -191,7 +213,7 @@ static NSString *reuseId = @"pin";
                                                 placemark.administrativeArea,
                                                 placemark.postalCode];
 
-                           weakSelf.dashBoard.addressButton.textLabel.text = address;
+                           weakSelf.addressButton.textLabel.text = address;
                            [JYInvite currentInvite].address = address;
                            [JYInvite currentInvite].city = placemark.locality;
                        }
@@ -315,12 +337,12 @@ static NSString *reuseId = @"pin";
     [self presentViewController:nav animated:YES completion:nil];
 }
 
-#pragma mark - JYMapDashBoardViewDelegate
-
-- (void)dashBoard:(JYMapDashBoardView *)dashBoard addressButtonPressed:(UIButton *)button
+- (void)_addressButtonPressed
 {
     [self _presentPlacesViewController];
 }
+
+#pragma mark - JYMapDashBoardViewDelegate
 
 - (void)dashBoard:(JYMapDashBoardView *)dashBoard submitButtonPressed:(UIButton *)button
 {
@@ -369,8 +391,7 @@ static NSString *reuseId = @"pin";
         // Add a bottom edge inset is the solution
 
         CGFloat submitButtonHeight = CGRectGetHeight(self.dashBoard.submitButton.frame);
-        CGFloat startButtonHeight = CGRectGetHeight(self.dashBoard.addressButton.frame);
-        UIEdgeInsets edgeInsets = UIEdgeInsetsMake(0, 0, submitButtonHeight + startButtonHeight, 0);
+        UIEdgeInsets edgeInsets = UIEdgeInsetsMake(0, 0, submitButtonHeight, 0);
 
         [self.mapView setVisibleMapRect:self.mapView.visibleMapRect edgePadding:edgeInsets animated:YES];
     }

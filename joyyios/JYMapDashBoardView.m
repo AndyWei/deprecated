@@ -65,7 +65,6 @@
 
 - (void)_commonInit
 {
-    [self _createAddressButton];
     [self _createSubmitButton];
     [self _createLocateButton];
 }
@@ -78,24 +77,6 @@
     button.textLabel.text = NSLocalizedString(@"Set Sevice Location", nil);
     self.submitButton = button;
     [self addSubview:self.submitButton];
-}
-
-- (void)_createAddressButton
-{
-    CGFloat width = CGRectGetWidth(self.frame);
-    CGFloat y = CGRectGetHeight(self.frame) - 2 * kButtonDefaultHeight;
-    CGRect frame = CGRectMake(0, y, width, kButtonDefaultHeight);
-    JYButton *button = [JYButton buttonWithFrame:frame buttonStyle:JYButtonStyleImageWithTitle shouldMaskImage:NO];
-    button.backgroundColor = [UIColor whiteColor];
-    button.contentColor = FlatBlack;
-    button.foregroundAnimateToColor = FlatWhite;
-    button.imageView.image = [UIImage imageNamed:kImageNamePinBlue];
-    button.textLabel.font = [UIFont systemFontOfSize:kMapDashBoardLeadingFontSize];
-    button.textLabel.textAlignment = NSTextAlignmentLeft;
-    [button addTarget:self action:@selector(_addressButtonPressed) forControlEvents:UIControlEventTouchUpInside];
-
-    self.addressButton = button;
-    [self addSubview:self.addressButton];
 }
 
 - (void)_createLocateButton
@@ -128,14 +109,6 @@
     if (self.delegate)
     {
         [self.delegate dashBoard:self submitButtonPressed:self.submitButton];
-    }
-}
-
-- (void)_addressButtonPressed
-{
-    if (self.delegate)
-    {
-        [self.delegate dashBoard:self addressButtonPressed:self.addressButton];
     }
 }
 
