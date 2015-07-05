@@ -20,9 +20,6 @@ extern const CGFloat kFontSizeBody;
 extern const CGFloat kFontSizeDetail;
 
 extern const CGFloat kMapDashBoardHeight;
-extern const CGFloat kMapDashBoardLeadingFontSize;
-extern const CGFloat kMapDashBoardSupportingFontSize;
-extern const CGFloat kMapEndPointCenterOffset;
 extern const CGFloat kMapDefaultAltitude;
 extern const CGFloat kMapDefaultSpanDistance;
 

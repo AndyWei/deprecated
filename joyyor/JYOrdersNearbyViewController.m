@@ -66,6 +66,7 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
     [super viewDidLoad];
     self.title = NSLocalizedString(@"Nearby", nil);
     self.navigationItem.leftBarButtonItem = nil;
+    self.navigationItem.rightBarButtonItem = nil;
 
     self.selectedRow = -1;
     self.commentsCountList = [NSArray new];

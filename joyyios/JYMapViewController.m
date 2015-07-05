@@ -15,12 +15,12 @@
 
 @interface JYMapViewController ()
 
-@property(nonatomic) BOOL mapNeedsPadding;
 @property(nonatomic) CLLocationCoordinate2D userSelectedMapCenter;
 @property(nonatomic) MKPointAnnotation *point;
-@property(nonatomic) UIImageView *pointView;
 
+@property(nonatomic, weak) UIImageView *pointView;
 @property(nonatomic, weak) JYButton *addressButton;
+@property(nonatomic, weak) JYButton *submitButton;
 @property(nonatomic, weak) JYMapDashBoardView *dashBoard;
 @property(nonatomic, weak) MKMapView *mapView;
 
@@ -55,6 +55,8 @@ static NSString *reuseId = @"pin";
 
     [self _createMapView];
     [self _createAddressButton];
+    [self _createPointView];
+    [self _createSubmitButton];
     [self _createDashBoard];
     [self _enterMapEditMode:YES];
     [self _updateAddress];
@@ -123,21 +125,57 @@ static NSString *reuseId = @"pin";
 - (void)_createAddressButton
 {
     CGFloat width = CGRectGetWidth(self.view.frame) - kMarginLeft - kMarginRight;
-    CGRect frame = CGRectMake(kMarginLeft, 75, width, 40);
+    CGRect frame = CGRectMake(kMarginLeft, 15, width, 50);
     JYButton *button = [JYButton buttonWithFrame:frame buttonStyle:JYButtonStyleImageWithTitle shouldMaskImage:NO];
 
     button.backgroundColor = JoyyWhite;
     button.contentColor = FlatBlack;
+    button.contentEdgeInsets = UIEdgeInsetsMake(0, 5, 0, 0);
     button.cornerRadius = kButtonCornerRadius;
     button.foregroundAnimateToColor = FlatWhite;
     button.foregroundColor = JoyyWhite;
     button.imageView.image = [UIImage imageNamed:@"search"];
-    button.textLabel.font = [UIFont systemFontOfSize:kMapDashBoardLeadingFontSize];
+    button.textLabel.font = [UIFont systemFontOfSize:20];
+    button.textLabel.adjustsFontSizeToFitWidth = YES;
     button.textLabel.textAlignment = NSTextAlignmentCenter;
     [button addTarget:self action:@selector(_addressButtonPressed) forControlEvents:UIControlEventTouchUpInside];
 
     self.addressButton = button;
-    [self.view addSubview:self.addressButton];
+    [self.mapView addSubview:self.addressButton];
+}
+
+- (void)_createPointView
+{
+    UIImageView *pointView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, kPinAnnotationWidth, kPinAnnotationHeight)];
+    CGFloat y = (CGRectGetHeight(self.mapView.frame) - CGRectGetHeight(pointView.frame)) / 2;
+    pointView.center = CGPointMake(CGRectGetMidX(self.mapView.frame), y);
+    pointView.image = [UIImage imageNamed:kImageNamePinBlue];
+
+    self.pointView = pointView;
+    [self.mapView addSubview:self.pointView];
+}
+
+- (void)_createSubmitButton
+{
+    CGFloat y = CGRectGetMinY(self.pointView.frame) - 40;
+    CGRect frame = CGRectMake(0, y, 220, 40);
+    JYButton *button = [JYButton buttonWithFrame:frame buttonStyle:JYButtonStyleDefault shouldMaskImage:NO];
+    button.centerX = self.mapView.centerX;
+
+    button.backgroundColor = FlatBlackDark;
+    button.borderColor = FlatGray;
+    button.borderAnimateToColor = FlatPurple;
+    button.borderWidth = 1;
+    button.cornerRadius = 20;
+    button.contentColor = JoyyBlueLight;
+    button.contentAnimateToColor = FlatPurple;
+    button.foregroundColor = FlatBlackDark;
+    button.textLabel.text = NSLocalizedString(@"Set Service Location >>", nil);
+    button.textLabel.font = [UIFont boldSystemFontOfSize:22];
+    [button addTarget:self action:@selector(_submitButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+
+    self.submitButton = button;
+    [self.mapView addSubview:self.submitButton];
 }
 
 - (void)_createDashBoard
@@ -150,6 +188,17 @@ static NSString *reuseId = @"pin";
 
     self.dashBoard = dashBoard;
     [self.view addSubview:self.dashBoard];
+}
+
+- (void)_addressButtonPressed
+{
+    [self _presentPlacesViewController];
+}
+
+- (void)_submitButtonPressed
+{
+    self.userSelectedMapCenter = self.mapView.centerCoordinate;
+    [self _navigateToNextView];
 }
 
 - (void)_handlePanGesture:(UIPanGestureRecognizer *)sender
@@ -251,8 +300,8 @@ static NSString *reuseId = @"pin";
         return;
     }
 
-    currentInvite.lat = self.point.coordinate.latitude;
-    currentInvite.lon = self.point.coordinate.longitude;
+    currentInvite.lat = self.mapView.centerCoordinate.latitude;
+    currentInvite.lon = self.mapView.centerCoordinate.longitude;
 
     if (currentInvite.lat == 0.0 && currentInvite.lon == 0.0)
     {
@@ -264,56 +313,9 @@ static NSString *reuseId = @"pin";
     [self.navigationController pushViewController:viewController animated:YES];
 }
 
-- (void)_showPointAnnotation:(BOOL)show
-{
-    if (show)
-    {
-        if (!self.point)
-        {
-            self.point = [MKPointAnnotation new];
-            self.point.coordinate = self.mapView.centerCoordinate;
-            self.point.title = kAnnotationTitleStart;
-            [self.mapView addAnnotation:self.point];
-        }
-    }
-    else
-    {
-        if (self.point)
-        {
-            [self.mapView removeAnnotation:self.point];
-            self.point = nil;
-        }
-    }
-}
-
-- (void)_showPointView:(BOOL)show
-{
-    if (show)
-    {
-        if (!self.pointView)
-        {
-            self.pointView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, kPinAnnotationWidth, kPinAnnotationHeight)];
-            CGFloat y = (CGRectGetHeight(self.mapView.frame) - CGRectGetHeight(self.pointView.frame)) / 2;
-            self.pointView.center = CGPointMake(CGRectGetMidX(self.mapView.frame), y);
-
-            self.pointView.image = [UIImage imageNamed:kImageNamePinBlue];
-            [self.mapView addSubview:self.pointView];
-        }
-    }
-    else
-    {
-        if (self.pointView)
-        {
-            [self.pointView removeFromSuperview];
-            self.pointView = nil;
-        }
-    }
-}
-
 - (void)_enterMapEditMode:(BOOL)edit
 {
-    [self _showPointView:edit];
-    [self _showPointAnnotation:!edit];
+
 
     if (!edit)
     {
@@ -337,22 +339,16 @@ static NSString *reuseId = @"pin";
     [self presentViewController:nav animated:YES completion:nil];
 }
 
-- (void)_addressButtonPressed
-{
-    [self _presentPlacesViewController];
-}
-
 #pragma mark - JYMapDashBoardViewDelegate
 
-- (void)dashBoard:(JYMapDashBoardView *)dashBoard submitButtonPressed:(UIButton *)button
-{
-    [self _enterMapEditMode:NO];
-    [self _navigateToNextView];
-}
-
-- (void)dashBoard:(JYMapDashBoardView *)dashBoard locateButtonPressed:(UIControl *)button
+- (void)didPressLocateButton
 {
     [self _moveMapToUserLocation];
+}
+
+- (void)didSelectSegment:(NSInteger)index
+{
+    [JYInvite currentInvite].category = index + 1;
 }
 
 #pragma mark - MKMapViewDelegate
@@ -379,26 +375,6 @@ static NSString *reuseId = @"pin";
         pinView.pinColor = [kAnnotationTitleStart isEqualToString:annotation.title] ? JYPinAnnotationColorBlue : JYPinAnnotationColorPink;
     }
     return pinView;
-}
-
-- (void)mapView:(MKMapView *)mapView regionDidChangeAnimated:(BOOL)animated
-{
-    if (self.mapNeedsPadding)
-    {
-        self.mapNeedsPadding = NO;
-
-        // When _presentAnnotations was called, must make sure the point annotations not under the dashBoard
-        // Add a bottom edge inset is the solution
-
-        CGFloat submitButtonHeight = CGRectGetHeight(self.dashBoard.submitButton.frame);
-        UIEdgeInsets edgeInsets = UIEdgeInsetsMake(0, 0, submitButtonHeight, 0);
-
-        [self.mapView setVisibleMapRect:self.mapView.visibleMapRect edgePadding:edgeInsets animated:YES];
-    }
-    else
-    {
-        [self.mapView setVisibleMapRect:self.mapView.visibleMapRect edgePadding:UIEdgeInsetsMake(0, 0, 0, 0) animated:NO];
-    }
 }
 
 #pragma mark - JYPlacesViewControllerDelegate

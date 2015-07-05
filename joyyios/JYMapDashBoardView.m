@@ -6,6 +6,8 @@
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
+#import <HMSegmentedControl/HMSegmentedControl.h>
+
 #import "JYMapDashBoardView.h"
 #import "JYButton.h"
 
@@ -65,24 +67,35 @@
 
 - (void)_commonInit
 {
-    [self _createSubmitButton];
+    [self _createServiceCategorySelector];
     [self _createLocateButton];
 }
 
-- (void)_createSubmitButton
+
+- (void)_createServiceCategorySelector
 {
-    JYButton *button = [JYButton button];
-    button.y = CGRectGetHeight(self.frame) - kButtonDefaultHeight;
-    [button addTarget:self action:@selector(_submitButtonPressed) forControlEvents:UIControlEventTouchUpInside];
-    button.textLabel.text = NSLocalizedString(@"Set Sevice Location", nil);
-    self.submitButton = button;
-    [self addSubview:self.submitButton];
+    CGFloat y = CGRectGetHeight(self.frame) - kButtonDefaultHeight;
+    CGFloat width = CGRectGetWidth(self.frame);
+    NSString *assistant = NSLocalizedString(@"Assistant", nil);
+    NSString *escort = NSLocalizedString(@"Escort", nil);
+    NSString *massage = NSLocalizedString(@"Massage", nil);
+    NSString *performer = NSLocalizedString(@"Performer", nil);
+
+    HMSegmentedControl *segmentedControl = [[HMSegmentedControl alloc] initWithSectionTitles:@[assistant, escort, massage, performer]];
+    segmentedControl.frame = CGRectMake(0, y, width, kButtonDefaultHeight);
+    segmentedControl.selectedSegmentIndex = 1;
+    [segmentedControl addTarget:self action:@selector(_segmentedControlValueChanged:) forControlEvents:UIControlEventValueChanged];
+    [self addSubview:segmentedControl];
+}
+
+- (void)_segmentedControlValueChanged:(HMSegmentedControl *)segmentedControl
+{
+    [self.delegate didSelectSegment:segmentedControl.selectedSegmentIndex];
 }
 
 - (void)_createLocateButton
 {
-    CGFloat margin = kMapDashBoardHeight - kButtonLocateDiameter - 2 * kButtonDefaultHeight;
-    CGRect frame = CGRectMake(CGRectGetMaxX(self.frame) - kButtonLocateDiameter - margin,
+    CGRect frame = CGRectMake(CGRectGetMaxX(self.frame) - kButtonLocateDiameter - kMarginRight,
                               0,
                               kButtonLocateDiameter,
                               kButtonLocateDiameter);
@@ -92,9 +105,9 @@
     locateButton.borderWidth = 0.5;
     locateButton.cornerRadius = kButtonDefaultHeight / 2;
     locateButton.contentAnimateToColor = FlatWhite;
-    locateButton.contentColor = FlatSkyBlue;
+    locateButton.contentColor = JoyyBlueLight;
     locateButton.contentEdgeInsets = UIEdgeInsetsMake(5, 2, 2, 5);
-    locateButton.foregroundAnimateToColor = FlatSkyBlue;
+    locateButton.foregroundAnimateToColor = JoyyBlueLight;
     locateButton.foregroundColor = [UIColor whiteColor];
     locateButton.imageView.image = [UIImage imageNamed:kImageNameLocationArrow];
     [locateButton addTarget:self action:@selector(_locateButtonPressed) forControlEvents:UIControlEventTouchUpInside];
@@ -103,21 +116,9 @@
     [self addSubview:self.locateButton];
 }
 
-
-- (void)_submitButtonPressed
-{
-    if (self.delegate)
-    {
-        [self.delegate dashBoard:self submitButtonPressed:self.submitButton];
-    }
-}
-
 - (void)_locateButtonPressed
 {
-    if (self.delegate)
-    {
-        [self.delegate dashBoard:self locateButtonPressed:self.locateButton];
-    }
+    [self.delegate didPressLocateButton];
 }
 
 @end

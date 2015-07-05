@@ -16,10 +16,7 @@ const CGFloat kIntroductionVersion = 1.0;
 const CGFloat kFontSizeBody = 18.0f;
 const CGFloat kFontSizeDetail = 13.0f;
 
-const CGFloat kMapDashBoardHeight = 165.0f;
-const CGFloat kMapDashBoardLeadingFontSize = 16.0f;
-const CGFloat kMapDashBoardSupportingFontSize = 15.0f;
-const CGFloat kMapEndPointCenterOffset = 0.003f;
+const CGFloat kMapDashBoardHeight = 135.0f;
 const CGFloat kMapDefaultAltitude = 2000.0f;
 const CGFloat kMapDefaultSpanDistance = 3000.0f;
 

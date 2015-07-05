@@ -20,4 +20,8 @@
     return hsba(204, 76, 86, 0.5);
 }
 
++ (UIColor *)joyyBlueLightColor
+{
+    return rgb(52, 181, 229);
+}
 @end

@@ -11,8 +11,8 @@
 
 @protocol JYMapDashBoardViewDelegate <NSObject>
 
-- (void)dashBoard:(JYMapDashBoardView *)dashBoard submitButtonPressed:(UIControl *)button;
-- (void)dashBoard:(JYMapDashBoardView *)dashBoard locateButtonPressed:(UIControl *)button;
+- (void)didPressLocateButton;
+- (void)didSelectSegment:(NSInteger)index;
 
 @end
 
@@ -26,6 +26,5 @@
 
 @property(nonatomic, weak) id<JYMapDashBoardViewDelegate> delegate;
 @property(nonatomic, weak) JYButton *locateButton;
-@property(nonatomic, weak) JYButton *submitButton;
 
 @end

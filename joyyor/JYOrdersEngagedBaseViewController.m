@@ -30,6 +30,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 {
     [super viewDidLoad];
     self.navigationItem.leftBarButtonItem = nil;
+    self.navigationItem.rightBarButtonItem = nil;
 
     self.selectedSection = -1;
 

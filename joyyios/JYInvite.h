@@ -11,10 +11,10 @@
 typedef NS_ENUM(NSUInteger, JYServiceCategory)
 {
     JYServiceCategoryNone = 0,
-    JYServiceCategoryAssistant = 10,
-    JYServiceCategoryEscort = 20,
-    JYServiceCategoryMassage = 30,
-    JYServiceCategoryPerformer = 40
+    JYServiceCategoryAssistant = 1,
+    JYServiceCategoryEscort = 2,
+    JYServiceCategoryMassage = 3,
+    JYServiceCategoryPerformer = 4
 };
 
 typedef NS_ENUM(NSUInteger, JYInviteStatus)
