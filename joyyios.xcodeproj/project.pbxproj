@@ -84,6 +84,14 @@
 		D69202C01AC4C7C0001C1C3D /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D69202BF1AC4C7C0001C1C3D /* Images.xcassets */; };
 		D69202C31AC4C7C0001C1C3D /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = D69202C11AC4C7C0001C1C3D /* LaunchScreen.xib */; };
 		D69202CF1AC4C7C1001C1C3D /* joyyiosTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D69202CE1AC4C7C1001C1C3D /* joyyiosTests.m */; };
+		D6A507E71B49C00B005D9FC3 /* JYSelectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6A507E61B49C00B005D9FC3 /* JYSelectionViewController.m */; };
+		D6A507E81B49C00B005D9FC3 /* JYSelectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6A507E61B49C00B005D9FC3 /* JYSelectionViewController.m */; };
+		D6A507EC1B49E32F005D9FC3 /* Joyyor.m in Sources */ = {isa = PBXBuildFile; fileRef = D6A507EB1B49E32F005D9FC3 /* Joyyor.m */; };
+		D6A507ED1B49E32F005D9FC3 /* Joyyor.m in Sources */ = {isa = PBXBuildFile; fileRef = D6A507EB1B49E32F005D9FC3 /* Joyyor.m */; };
+		D6A507F01B49E5AA005D9FC3 /* JYImageLabelView.m in Sources */ = {isa = PBXBuildFile; fileRef = D6A507EF1B49E5AA005D9FC3 /* JYImageLabelView.m */; };
+		D6A507F11B49E5AA005D9FC3 /* JYImageLabelView.m in Sources */ = {isa = PBXBuildFile; fileRef = D6A507EF1B49E5AA005D9FC3 /* JYImageLabelView.m */; };
+		D6A507F41B49E61C005D9FC3 /* JoyyorCard.m in Sources */ = {isa = PBXBuildFile; fileRef = D6A507F31B49E61C005D9FC3 /* JoyyorCard.m */; };
+		D6A507F51B49E61C005D9FC3 /* JoyyorCard.m in Sources */ = {isa = PBXBuildFile; fileRef = D6A507F31B49E61C005D9FC3 /* JoyyorCard.m */; };
 		D6B2F05B1ACE630F009601B0 /* JYAutoCompleteTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B2F05A1ACE630F009601B0 /* JYAutoCompleteTextField.m */; };
 		D6B2F05C1ACE630F009601B0 /* JYAutoCompleteTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B2F05A1ACE630F009601B0 /* JYAutoCompleteTextField.m */; };
 		D6B2F0631ACF4755009601B0 /* JYOrderDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B2F0621ACF4755009601B0 /* JYOrderDetailsViewController.m */; };
@@ -213,6 +221,14 @@
 		D69202C81AC4C7C1001C1C3D /* joyyiosTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = joyyiosTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D69202CD1AC4C7C1001C1C3D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D69202CE1AC4C7C1001C1C3D /* joyyiosTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = joyyiosTests.m; sourceTree = "<group>"; };
+		D6A507E51B49C00B005D9FC3 /* JYSelectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYSelectionViewController.h; sourceTree = "<group>"; };
+		D6A507E61B49C00B005D9FC3 /* JYSelectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYSelectionViewController.m; sourceTree = "<group>"; };
+		D6A507EA1B49E32F005D9FC3 /* Joyyor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Joyyor.h; sourceTree = "<group>"; };
+		D6A507EB1B49E32F005D9FC3 /* Joyyor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Joyyor.m; sourceTree = "<group>"; };
+		D6A507EE1B49E5AA005D9FC3 /* JYImageLabelView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYImageLabelView.h; sourceTree = "<group>"; };
+		D6A507EF1B49E5AA005D9FC3 /* JYImageLabelView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYImageLabelView.m; sourceTree = "<group>"; };
+		D6A507F21B49E61C005D9FC3 /* JoyyorCard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JoyyorCard.h; sourceTree = "<group>"; };
+		D6A507F31B49E61C005D9FC3 /* JoyyorCard.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JoyyorCard.m; sourceTree = "<group>"; };
 		D6B2F0591ACE630F009601B0 /* JYAutoCompleteTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYAutoCompleteTextField.h; sourceTree = "<group>"; };
 		D6B2F05A1ACE630F009601B0 /* JYAutoCompleteTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYAutoCompleteTextField.m; sourceTree = "<group>"; };
 		D6B2F0611ACF4755009601B0 /* JYOrderDetailsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYOrderDetailsViewController.h; sourceTree = "<group>"; };
@@ -354,7 +370,7 @@
 			name = Orders;
 			sourceTree = "<group>";
 		};
-		D63F0D881ACBBE280067C5EE /* Invite */ = {
+		D63F0D881ACBBE280067C5EE /* Map */ = {
 			isa = PBXGroup;
 			children = (
 				D6B2F0651AD1B5EC009601B0 /* JYMapDashBoardView.h */,
@@ -364,7 +380,7 @@
 				D6B2F0611ACF4755009601B0 /* JYOrderDetailsViewController.h */,
 				D6B2F0621ACF4755009601B0 /* JYOrderDetailsViewController.m */,
 			);
-			name = Invite;
+			name = Map;
 			sourceTree = "<group>";
 		};
 		D68DAF991AC4CD0800838E7E /* Common */ = {
@@ -433,9 +449,10 @@
 				D69202B41AC4C7C0001C1C3D /* AppDelegate.m */,
 				D68DAF991AC4CD0800838E7E /* Common */,
 				D63B69AB1AC5184D005600A9 /* Shared */,
-				D63F0D881ACBBE280067C5EE /* Invite */,
+				D63F0D881ACBBE280067C5EE /* Map */,
 				D61C48991B44838A009E422A /* Menu */,
 				D6C82B611B1252FE00876F57 /* Model */,
+				D6A507E91B49E2DF005D9FC3 /* Selection */,
 				D63F0D871ACBBDF30067C5EE /* Orders */,
 				D6FA6A781B3374FB007CB30E /* Payment */,
 				D68DAF9A1AC4CD1800838E7E /* User */,
@@ -473,9 +490,24 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		D6A507E91B49E2DF005D9FC3 /* Selection */ = {
+			isa = PBXGroup;
+			children = (
+				D6A507EE1B49E5AA005D9FC3 /* JYImageLabelView.h */,
+				D6A507EF1B49E5AA005D9FC3 /* JYImageLabelView.m */,
+				D6A507F21B49E61C005D9FC3 /* JoyyorCard.h */,
+				D6A507F31B49E61C005D9FC3 /* JoyyorCard.m */,
+				D6A507E51B49C00B005D9FC3 /* JYSelectionViewController.h */,
+				D6A507E61B49C00B005D9FC3 /* JYSelectionViewController.m */,
+			);
+			name = Selection;
+			sourceTree = "<group>";
+		};
 		D6C82B611B1252FE00876F57 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				D6A507EA1B49E32F005D9FC3 /* Joyyor.h */,
+				D6A507EB1B49E32F005D9FC3 /* Joyyor.m */,
 				D6C82B631B12551500876F57 /* JYBid.h */,
 				D6C82B641B12551500876F57 /* JYBid.m */,
 				D6C82B671B12553D00876F57 /* JYComment.h */,
@@ -686,6 +718,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D6A507F41B49E61C005D9FC3 /* JoyyorCard.m in Sources */,
 				D6FA6A7F1B33E3DD007CB30E /* JYCreditCardViewCell.m in Sources */,
 				D6F4A0511AF6A156001A3C89 /* AppConst.m in Sources */,
 				D68DAF961AC4CACD00838E7E /* Constants.m in Sources */,
@@ -716,6 +749,7 @@
 				D63F0D711AC9EC060067C5EE /* JYUser.m in Sources */,
 				D6FA6A7B1B33752C007CB30E /* JYPaymentViewController.m in Sources */,
 				D6B2F0631ACF4755009601B0 /* JYOrderDetailsViewController.m in Sources */,
+				D6A507F01B49E5AA005D9FC3 /* JYImageLabelView.m in Sources */,
 				D6C82B651B12551500876F57 /* JYBid.m in Sources */,
 				D6348D2B1ADA4A650002BC35 /* JYRestrictedTextViewCell.m in Sources */,
 				D63F0D7D1ACA5E260067C5EE /* JYSignViewController.m in Sources */,
@@ -731,7 +765,9 @@
 				D61C48A81B45085C009E422A /* JYOrdersHistoryViewController.m in Sources */,
 				D6C82B5C1B0EFDEA00876F57 /* JYCommentTextView.m in Sources */,
 				D6348D2F1ADB4DD60002BC35 /* NSString+Joyy.m in Sources */,
+				D6A507E71B49C00B005D9FC3 /* JYSelectionViewController.m in Sources */,
 				D63F0D551AC7ACB70067C5EE /* JYSignUpViewController.m in Sources */,
+				D6A507EC1B49E32F005D9FC3 /* Joyyor.m in Sources */,
 				D63B69A91AC51302005600A9 /* UIFont+Joyy.m in Sources */,
 				D63F0D971ACC95B00067C5EE /* JYMapViewController.m in Sources */,
 				D68DAF971AC4CACD00838E7E /* JYSignInViewController.m in Sources */,
@@ -750,6 +786,7 @@
 				D63F0D721AC9EC060067C5EE /* JYUser.m in Sources */,
 				D689ED6B1AE42C8300CB4D2B /* UIView+Joyy.m in Sources */,
 				D6FA6A841B33E466007CB30E /* JYCreditCard.m in Sources */,
+				D6A507ED1B49E32F005D9FC3 /* Joyyor.m in Sources */,
 				D6C82B6A1B12553D00876F57 /* JYComment.m in Sources */,
 				D63F0D8D1ACBBF1F0067C5EE /* JYCollectionViewCell.m in Sources */,
 				D6C82B661B12551500876F57 /* JYBid.m in Sources */,
@@ -757,6 +794,8 @@
 				D6B2F0641ACF4755009601B0 /* JYOrderDetailsViewController.m in Sources */,
 				D63F0D561AC7ACB70067C5EE /* JYSignUpViewController.m in Sources */,
 				D61C48A51B44A8A5009E422A /* JYModalViewController.m in Sources */,
+				D6A507F11B49E5AA005D9FC3 /* JYImageLabelView.m in Sources */,
+				D6A507E81B49C00B005D9FC3 /* JYSelectionViewController.m in Sources */,
 				D63F0D7E1ACA5E260067C5EE /* JYSignViewController.m in Sources */,
 				D63B69BB1AC624F8005600A9 /* JYAutoCompleteDataSource.m in Sources */,
 				D679F0311B2951D5004F1C37 /* JYFixedLengthRowValidator.m in Sources */,
@@ -785,6 +824,7 @@
 				D6FA6A801B33E3DD007CB30E /* JYCreditCardViewCell.m in Sources */,
 				D65AFA741AEF5F3A007867D0 /* UICustomActionSheet.m in Sources */,
 				D63B69B31AC51D61005600A9 /* JYSignBaseViewController.m in Sources */,
+				D6A507F51B49E61C005D9FC3 /* JoyyorCard.m in Sources */,
 				D61C489D1B4483B4009E422A /* JYMenuViewController.m in Sources */,
 				D6348D301ADB4DD60002BC35 /* NSString+Joyy.m in Sources */,
 				D61C48A91B45085C009E422A /* JYOrdersHistoryViewController.m in Sources */,

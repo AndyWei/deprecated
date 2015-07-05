@@ -9,9 +9,9 @@
 #import "AppDelegate.h"
 #import "JYButton.h"
 #import "JYInvite.h"
-#import "JYOrderDetailsViewController.h"
 #import "JYMapViewController.h"
 #import "JYPinAnnotationView.h"
+#import "JYSelectionViewController.h"
 
 @interface JYMapViewController ()
 
@@ -58,15 +58,12 @@ static NSString *reuseId = @"pin";
     [self _createPointView];
     [self _createSubmitButton];
     [self _createDashBoard];
-    [self _enterMapEditMode:YES];
     [self _updateAddress];
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-
-    [self _enterMapEditMode:YES];
 
     if (self.userSelectedMapCenter.latitude == self.mapView.centerCoordinate.latitude &&
         self.userSelectedMapCenter.longitude == self.mapView.centerCoordinate.longitude)
@@ -135,7 +132,7 @@ static NSString *reuseId = @"pin";
     button.foregroundAnimateToColor = FlatWhite;
     button.foregroundColor = JoyyWhite;
     button.imageView.image = [UIImage imageNamed:@"search"];
-    button.textLabel.font = [UIFont systemFontOfSize:20];
+    button.textLabel.font = [UIFont systemFontOfSize:18];
     button.textLabel.adjustsFontSizeToFitWidth = YES;
     button.textLabel.textAlignment = NSTextAlignmentCenter;
     [button addTarget:self action:@selector(_addressButtonPressed) forControlEvents:UIControlEventTouchUpInside];
@@ -198,7 +195,7 @@ static NSString *reuseId = @"pin";
 - (void)_submitButtonPressed
 {
     self.userSelectedMapCenter = self.mapView.centerCoordinate;
-    [self _navigateToNextView];
+    [self _presentSelectionViewController];
 }
 
 - (void)_handlePanGesture:(UIPanGestureRecognizer *)sender
@@ -290,7 +287,7 @@ static NSString *reuseId = @"pin";
     [self _moveMapToPoint:self.mapView.userLocation.location.coordinate];
 }
 
-- (void)_navigateToNextView
+- (void)_presentSelectionViewController
 {
     JYInvite *currentInvite = [JYInvite currentInvite];
 
@@ -309,18 +306,8 @@ static NSString *reuseId = @"pin";
         return;
     }
 
-    UIViewController *viewController = [JYOrderDetailsViewController new];
+    UIViewController *viewController = [JYSelectionViewController new];
     [self.navigationController pushViewController:viewController animated:YES];
-}
-
-- (void)_enterMapEditMode:(BOOL)edit
-{
-
-
-    if (!edit)
-    {
-        self.userSelectedMapCenter = self.mapView.centerCoordinate;
-    }
 }
 
 - (void)_presentPlacesViewController
