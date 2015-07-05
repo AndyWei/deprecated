@@ -12,6 +12,7 @@ pod 'HMSegmentedControl'
 pod 'JVFloatLabeledTextField'
 pod 'KVNProgress'
 pod 'MCSwipeTableViewCell'
+pod 'MDCSwipeToChoose'
 pod 'MMDrawerController'
 pod 'Onboard'
 pod 'RKDropdownAlert'
@@ -21,5 +22,3 @@ pod 'Stripe/ApplePay'
 pod 'TTTAttributedLabel'
 pod 'UIView+Positioning'
 pod 'XLForm'
-
-

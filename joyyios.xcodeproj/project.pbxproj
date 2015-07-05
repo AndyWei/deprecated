@@ -354,7 +354,7 @@
 			name = Orders;
 			sourceTree = "<group>";
 		};
-		D63F0D881ACBBE280067C5EE /* Create */ = {
+		D63F0D881ACBBE280067C5EE /* Invite */ = {
 			isa = PBXGroup;
 			children = (
 				D6B2F0651AD1B5EC009601B0 /* JYMapDashBoardView.h */,
@@ -364,7 +364,7 @@
 				D6B2F0611ACF4755009601B0 /* JYOrderDetailsViewController.h */,
 				D6B2F0621ACF4755009601B0 /* JYOrderDetailsViewController.m */,
 			);
-			name = Create;
+			name = Invite;
 			sourceTree = "<group>";
 		};
 		D68DAF991AC4CD0800838E7E /* Common */ = {
@@ -433,7 +433,7 @@
 				D69202B41AC4C7C0001C1C3D /* AppDelegate.m */,
 				D68DAF991AC4CD0800838E7E /* Common */,
 				D63B69AB1AC5184D005600A9 /* Shared */,
-				D63F0D881ACBBE280067C5EE /* Create */,
+				D63F0D881ACBBE280067C5EE /* Invite */,
 				D61C48991B44838A009E422A /* Menu */,
 				D6C82B611B1252FE00876F57 /* Model */,
 				D63F0D871ACBBDF30067C5EE /* Orders */,
