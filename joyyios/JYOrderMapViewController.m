@@ -43,9 +43,14 @@ static NSString *reuseId = @"pin";
     [super viewDidLoad];
 
     self.view.backgroundColor = [UIColor whiteColor];
+    self.title = @"JOYY";
 
-    UIBarButtonItem *menuButton = [[UIBarButtonItem alloc] initWithTitle:@"JOYY" style:UIBarButtonItemStylePlain target:self action:@selector(_menu)];
-    self.navigationItem.leftBarButtonItem = menuButton;
+    UIImage *menu = [UIImage imageNamed:@"menu"];
+    UIBarButtonItem *menuButton = [[UIBarButtonItem alloc] initWithImage:menu style:UIBarButtonItemStylePlain target:self action:@selector(_menu)];
+    UIBarButtonItem *negativeSpacer = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
+    negativeSpacer.width = -15;
+
+    self.navigationItem.leftBarButtonItems = [NSArray arrayWithObjects:negativeSpacer, menuButton, nil];
 
     [self _createMapView];
     [self _createDashBoard];
@@ -287,7 +292,11 @@ static NSString *reuseId = @"pin";
 {
     [self _showPointView:edit];
     [self _showPointAnnotation:!edit];
-    self.userSelectedMapCenter = self.mapView.centerCoordinate;
+
+    if (!edit)
+    {
+        self.userSelectedMapCenter = self.mapView.centerCoordinate;
+    }
 }
 
 - (void)_presentPlacesViewController

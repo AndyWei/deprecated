@@ -20,7 +20,7 @@
 
     self.networkThreadCount = 0;
 
-    UIBarButtonItem *doneButton = [[UIBarButtonItem alloc] initWithTitle:@"DONE" style:UIBarButtonItemStylePlain target:self action:@selector(_done)];
+    UIBarButtonItem *doneButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(_done)];
     self.navigationItem.leftBarButtonItem = doneButton;
 }
 

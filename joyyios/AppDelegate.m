@@ -118,7 +118,7 @@
         setTitleTextAttributes:[NSDictionary
                                    dictionaryWithObjectsAndKeys:[UIFont lightSystemFontOfSize:kNavBarTitleFontSize], NSFontAttributeName, nil]];
 
-//    [[UINavigationBar appearance] setTintColor:JoyyBlue];
+    [[UINavigationBar appearance] setTintColor:FlatBlackDark];
 //
 //    [[UITabBar appearance] setTintColor:JoyyBlue];
 
