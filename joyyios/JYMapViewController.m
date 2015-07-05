@@ -162,16 +162,16 @@ static NSString *reuseId = @"pin";
     JYButton *button = [JYButton buttonWithFrame:frame buttonStyle:JYButtonStyleDefault shouldMaskImage:NO];
     button.centerX = self.mapView.centerX;
 
-    button.backgroundColor = FlatBlackDark;
+    button.backgroundColor = JoyyWhite;
     button.borderColor = FlatGray;
-    button.borderAnimateToColor = FlatPurple;
-    button.borderWidth = 1;
+    button.borderWidth = 0.5;
     button.cornerRadius = 20;
     button.contentColor = JoyyBlueLight;
-    button.contentAnimateToColor = FlatPurple;
-    button.foregroundColor = FlatBlackDark;
+    button.contentAnimateToColor = JoyyWhite;
+    button.foregroundColor = JoyyWhite;
+    button.foregroundAnimateToColor = JoyyBlueLight;
     button.textLabel.text = NSLocalizedString(@"Set Service Location >>", nil);
-    button.textLabel.font = [UIFont boldSystemFontOfSize:22];
+    button.textLabel.font = [UIFont systemFontOfSize:20];
     [button addTarget:self action:@selector(_submitButtonPressed) forControlEvents:UIControlEventTouchUpInside];
 
     self.submitButton = button;
