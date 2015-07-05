@@ -1,5 +1,5 @@
 //
-//  JYOrder.m
+//  JYInvite.m
 //  joyyios
 //
 //  Created by Ping Yang on 4/9/15.
@@ -9,26 +9,26 @@
 #import "DataStore.h"
 #import "NSMutableDictionary+Joyy.h"
 #import "JYBid.h"
-#import "JYOrder.h"
+#import "JYInvite.h"
 #import "JYUser.h"
 
-static JYOrder *_currentOrder;
+static JYInvite *_currentInvite;
 
-@implementation JYOrder
+@implementation JYInvite
 
-+ (JYOrder *)currentOrder
++ (JYInvite *)currentInvite
 {
-    if (!_currentOrder)
+    if (!_currentInvite)
     {
-        _currentOrder = [DataStore sharedInstance].currentOrder;
+        _currentInvite = [DataStore sharedInstance].currentInvite;
 
-        if (!_currentOrder)
+        if (!_currentInvite)
         {
-            _currentOrder = [[JYOrder alloc] init];
+            _currentInvite = [[JYInvite alloc] init];
         }
     }
 
-    return _currentOrder;
+    return _currentInvite;
 }
 
 + (NSNumberFormatter *)sharedPriceFormatter
@@ -96,7 +96,7 @@ static JYOrder *_currentOrder;
     _price    = [[dict objectForKey:@"price"] unsignedIntegerValue];
     _country  = [dict objectForKey:@"country"];
     _currency = [dict objectForKey:@"currency"];
-    _status   = (JYOrderStatus)[[dict objectForKey:@"status"] unsignedIntegerValue];
+    _status   = (JYInviteStatus)[[dict objectForKey:@"status"] unsignedIntegerValue];
     _title    = [dict objectForKey:@"title"];
     _note     = [dict objectForKey:@"note"];
     _category = [[dict objectForKey:@"category"] unsignedIntegerValue];
@@ -236,16 +236,16 @@ static JYOrder *_currentOrder;
     UIColor *color = JoyyWhite;
     switch (self.status)
     {
-        case JYOrderStatusDealt:
+        case JYInviteStatusDealt:
             color = FlatSand;
             break;
-        case JYOrderStatusStarted:
+        case JYInviteStatusStarted:
             color = FlatSandDark;
             break;
-        case JYOrderStatusFinished:
+        case JYInviteStatusFinished:
             color = FlatLime;
             break;
-        case JYOrderStatusPaid:
+        case JYInviteStatusPaid:
             color = FlatLimeDark;
             break;
         default:
@@ -260,13 +260,13 @@ static JYOrder *_currentOrder;
     UIColor *color = JoyyWhite;
     switch (self.status)
     {
-        case JYOrderStatusStarted:
+        case JYInviteStatusStarted:
             color = FlatSand;
             break;
-        case JYOrderStatusFinished:
+        case JYInviteStatusFinished:
             color = FlatLime;
             break;
-        case JYOrderStatusPaid:
+        case JYInviteStatusPaid:
             color = FlatLimeDark;
             break;
         default:

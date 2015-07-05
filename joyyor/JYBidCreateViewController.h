@@ -6,10 +6,10 @@
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
-#import "JYOrder.h"
+#import "JYInvite.h"
 
 @interface JYBidCreateViewController : UIViewController
 
-@property(nonatomic) JYOrder *order;
+@property(nonatomic) JYInvite *order;
 
 @end

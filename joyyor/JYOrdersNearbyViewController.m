@@ -120,7 +120,7 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
 //    self.scrollView = self.tableView;
 }
 
-- (void)_presentBidViewForOrder:(JYOrder *)order
+- (void)_presentBidViewForOrder:(JYInvite *)order
 {
     JYBidCreateViewController *bidViewController = [JYBidCreateViewController new];
     bidViewController.order = order;
@@ -129,7 +129,7 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
     [self presentViewController:nav animated:YES completion:nil];
 }
 
-- (void)_presentCommentViewForOrder:(JYOrder *)order
+- (void)_presentCommentViewForOrder:(JYInvite *)order
 {
     JYCommentsViewController *viewController = [[JYCommentsViewController alloc] initWithOrder:order];
     [self.navigationController pushViewController:viewController animated:YES];
@@ -152,7 +152,7 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
     JYOrderCardCell *cell =
     (JYOrderCardCell *)[tableView dequeueReusableCellWithIdentifier:kOrderCellIdentifier forIndexPath:indexPath];
 
-    JYOrder *order = self.orderList[indexPath.row];
+    JYInvite *order = self.orderList[indexPath.row];
     [cell presentOrder:order withAddress:NO andBid:YES];
     cell.cardColor = order.bidColor;
 
@@ -163,7 +163,7 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
     return cell;
 }
 
-- (void)_createSwipeViewForCell:(JYOrderCardCell *)cell andOrder:(JYOrder *)order
+- (void)_createSwipeViewForCell:(JYOrderCardCell *)cell andOrder:(JYInvite *)order
 {
     __weak typeof(self) weakSelf = self;
 
@@ -196,14 +196,14 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
         return 100;
     }
 
-    JYOrder *order = self.orderList[indexPath.row];
+    JYInvite *order = self.orderList[indexPath.row];
     return [JYOrderCardCell heightForOrder:order withAddress:NO andBid:YES];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     self.selectedRow = indexPath.row;
-    JYOrder *order = self.orderList[indexPath.row];
+    JYInvite *order = self.orderList[indexPath.row];
     [self _fetchCommentsOfOrder:order];
     UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
     [self showActionSheetForOrder:order highlightView:cell];
@@ -221,7 +221,7 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
         return;
     }
 
-    JYOrder *order = self.orderList[self.selectedRow];
+    JYInvite *order = self.orderList[self.selectedRow];
 
     if (buttonIndex == 1) // create comment
     {
@@ -256,7 +256,7 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
               weakSelf.orderList = [NSMutableArray new];
               for (NSDictionary *dict in responseObject)
               {
-                  JYOrder *newOrder = [[JYOrder alloc] initWithDictionary:dict];
+                  JYInvite *newOrder = [[JYInvite alloc] initWithDictionary:dict];
                   [weakSelf.orderList addObject:newOrder];
               }
 
@@ -299,7 +299,7 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
      ];
 }
 
-- (void)_fetchCommentsOfOrder:(JYOrder *)order
+- (void)_fetchCommentsOfOrder:(JYInvite *)order
 {
     [self networkThreadBegin];
 
@@ -343,7 +343,7 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
 - (NSDictionary *)_httpParametersForCommentsCount
 {
     NSMutableArray *orderIds = [NSMutableArray new];
-    for (JYOrder *order in self.orderList)
+    for (JYInvite *order in self.orderList)
     {
         [orderIds addObject:@(order.orderId)];
     }
@@ -355,7 +355,7 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
     return parameters;
 }
 
-- (NSDictionary *)_httpParametersForCommentsOfOrder:(JYOrder *)order
+- (NSDictionary *)_httpParametersForCommentsOfOrder:(JYInvite *)order
 {
     NSMutableDictionary *parameters = [NSMutableDictionary new];
 

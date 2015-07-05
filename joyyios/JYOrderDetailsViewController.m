@@ -12,7 +12,7 @@
 #import <XLForm/XLForm.h>
 
 #import "JYButton.h"
-#import "JYOrder.h"
+#import "JYInvite.h"
 #import "JYOrderDetailsViewController.h"
 #import "JYPriceTextFieldCell.h"
 #import "JYRestrictedTextViewCell.h"
@@ -99,14 +99,14 @@
     // Use the title to pass the leng limit value 300. 
     row = [XLFormRowDescriptor formRowDescriptorWithTag:@"note" rowType:XLFormRowDescriptorTypeTextViewRestricted title:@"300"];
     [row.cellConfigAtConfigure setObject:NSLocalizedString(@"More details", nil) forKey:@"textView.placeholder"];
-    row.value = [JYOrder currentOrder].note;
+    row.value = [JYInvite currentInvite].note;
     [section addFormRow:row];
 
     // Address
     NSString *title = NSLocalizedString(@"Addr:", nil);
     row = [XLFormRowDescriptor formRowDescriptorWithTag:@"address" rowType:XLFormRowDescriptorTypeInfo title:title];
     [row.cellConfig setObject:ClearColor forKey:@"backgroundColor"];
-    row.value = [JYOrder currentOrder].address;
+    row.value = [JYInvite currentInvite].address;
     [section addFormRow:row];
 
     self.form = form;
@@ -126,34 +126,34 @@
 {
     // note
     id note = [self.formValues objectForKey:@"note"];
-    [JYOrder currentOrder].note = [note isKindOfClass:[NSNull class]] ? @"(ᵔᴥᵔ)" : [self.formValues valueForKey:@"note"];
+    [JYInvite currentInvite].note = [note isKindOfClass:[NSNull class]] ? @"(ᵔᴥᵔ)" : [self.formValues valueForKey:@"note"];
 
     // startTime
     NSDate *startTime = (NSDate *)[self.formValues objectForKey:@"startTime"];
-    [JYOrder currentOrder].startTime = (NSUInteger)startTime.timeIntervalSinceReferenceDate;
+    [JYInvite currentInvite].startTime = (NSUInteger)startTime.timeIntervalSinceReferenceDate;
 
     // price
     NSString *priceString = [[self.formValues valueForKey:@"price"] substringFromIndex:1];
     NSUInteger priceInDollars = priceString? [priceString  unsignedIntegerValue]: 0;
     NSUInteger priceInCents = priceInDollars * 100;
-    [JYOrder currentOrder].price = priceInCents;
+    [JYInvite currentInvite].price = priceInCents;
 
     // category
-//    [JYOrder currentOrder].category = userChosedCategory;
+//    [JYOrder currentInvite].category = userChosedCategory;
 
     // title
-    NSString *serviceName = [JYOrder currentOrder].categoryName;
+    NSString *serviceName = [JYInvite currentInvite].categoryName;
     XLFormOptionsObject *hoursObj = [self.formValues valueForKey:@"hours"];
 
     if (hoursObj)
     {
         NSInteger hours = [hoursObj.formValue integerValue] + 1;
         NSString *localizedString = NSLocalizedString(([NSString stringWithFormat:@" for %ld hours", (long)hours]), nil);
-        [JYOrder currentOrder].title = [NSString stringWithFormat:@"%@%@", serviceName, localizedString];
+        [JYInvite currentInvite].title = [NSString stringWithFormat:@"%@%@", serviceName, localizedString];
     }
     else
     {
-        [JYOrder currentOrder].title = serviceName;
+        [JYInvite currentInvite].title = serviceName;
     }
 }
 
@@ -167,7 +167,7 @@
 
 - (void)_submitOrder
 {
-    NSDictionary *parameters = [[JYOrder currentOrder] httpParameters];
+    NSDictionary *parameters = [[JYInvite currentInvite] httpParameters];
     NSLog(@"parameters = %@", parameters);
 
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];

@@ -1,5 +1,5 @@
 //
-//  JYOrder.h
+//  JYInvite.h
 //  joyyios
 //
 //  Created by Ping Yang on 4/9/15.
@@ -17,19 +17,19 @@ typedef NS_ENUM(NSUInteger, JYServiceCategory)
     JYServiceCategoryPerformer = 40
 };
 
-typedef NS_ENUM(NSUInteger, JYOrderStatus)
+typedef NS_ENUM(NSUInteger, JYInviteStatus)
 {
-    JYOrderStatusActive = 0,
-    JYOrderStatusDealt = 1,
-    JYOrderStatusStarted = 2,
-    JYOrderStatusFinished = 3,
-    JYOrderStatusPaid = 10,
-    JYOrderStatusRevoked = 20
+    JYInviteStatusActive = 0,
+    JYInviteStatusDealt = 1,
+    JYInviteStatusStarted = 2,
+    JYInviteStatusFinished = 3,
+    JYInviteStatusPaid = 10,
+    JYInviteStatusRevoked = 20
 };
 
-@interface JYOrder : NSObject
+@interface JYInvite : NSObject
 
-+ (JYOrder *)currentOrder;
++ (JYInvite *)currentInvite;
 
 - (instancetype)initWithDictionary:(NSDictionary *)dict;
 - (void)clear;
@@ -56,7 +56,7 @@ typedef NS_ENUM(NSUInteger, JYOrderStatus)
 @property(nonatomic) NSUInteger userId;
 @property(nonatomic) NSUInteger winnerId;
 @property(nonatomic) NSString *winnerName;
-@property(nonatomic) JYOrderStatus status;
+@property(nonatomic) JYInviteStatus status;
 
 @property(nonatomic) NSDate *createdAt;
 @property(nonatomic) NSDate *updatedAt;

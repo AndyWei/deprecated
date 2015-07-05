@@ -54,15 +54,15 @@
 
 #pragma mark - override methods
 
-- (void)showActionSheetForOrder:(JYOrder *)order highlightView:(UIView *)view
+- (void)showActionSheetForOrder:(JYInvite *)order highlightView:(UIView *)view
 {
     NSString *actionString = nil;
     switch (order.status)
     {
-        case JYOrderStatusDealt:
+        case JYInviteStatusDealt:
             actionString = NSLocalizedString(@"Start the job", nil);
             break;
-        case JYOrderStatusStarted:
+        case JYInviteStatusStarted:
             actionString = NSLocalizedString(@"The job is Finished", nil);
             break;
         default:
@@ -107,15 +107,15 @@
         return;
     }
 
-    JYOrder *order = self.orderList[self.selectedSection];
+    JYInvite *order = self.orderList[self.selectedSection];
     NSString *url = nil;
     switch (order.status)
     {
-        case JYOrderStatusDealt:
+        case JYInviteStatusDealt:
             url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"orders/started"];
             [self _updateOrder:order withURL:url];
             break;
-        case JYOrderStatusStarted:
+        case JYInviteStatusStarted:
             url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"orders/finished"];
             [self _updateOrder:order withURL:url];
             break;
@@ -135,13 +135,13 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    JYOrder *order = self.orderList[section];
+    JYInvite *order = self.orderList[section];
     return [JYOrderCard heightForOrder:order withAddress:YES andBid:YES];
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-    JYOrder *order = self.orderList[section];
+    JYInvite *order = self.orderList[section];
     CGFloat height = [JYOrderCard heightForOrder:order withAddress:YES andBid:YES];
 
     JYOrderCard *card = [[JYOrderCard alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(tableView.frame), height)];
@@ -171,7 +171,7 @@
     return parameters;
 }
 
-- (void)_updateOrder:(JYOrder *)order withURL:(NSString *)url
+- (void)_updateOrder:(JYInvite *)order withURL:(NSString *)url
 {
     [self networkThreadBegin];
 
@@ -186,7 +186,7 @@
          success:^(AFHTTPRequestOperation *operation, id responseObject) {
              NSLog(@"orders/update success responseObject: %@", responseObject);
 
-             order.status = (JYOrderStatus)[[responseObject objectForKey:@"status"] unsignedIntegerValue];
+             order.status = (JYInviteStatus)[[responseObject objectForKey:@"status"] unsignedIntegerValue];
 
              [weakSelf networkThreadEnd];
          }

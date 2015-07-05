@@ -20,7 +20,7 @@
 
 @interface JYCommentsViewController ()
 
-@property(nonatomic) JYOrder *order;
+@property(nonatomic) JYInvite *order;
 @property(nonatomic) NSMutableArray *commentList;
 @property(nonatomic) NSUInteger maxCommentId;
 
@@ -30,7 +30,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 
 @implementation JYCommentsViewController
 
-- (instancetype)initWithOrder:(JYOrder *)order
+- (instancetype)initWithOrder:(JYInvite *)order
 {
     self = [super initWithTableViewStyle:UITableViewStylePlain];
     if (self)

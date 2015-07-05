@@ -70,7 +70,7 @@ static const CGFloat kTopMargin = 8.0f;
     return bodyLabelHeight;
 }
 
-+ (CGFloat)heightForOrder:(JYOrder *)order withAddress:(BOOL)showAddress andBid:(BOOL)showBid
++ (CGFloat)heightForOrder:(JYInvite *)order withAddress:(BOOL)showAddress andBid:(BOOL)showBid
 {
     CGFloat height = [JYOrderCard bodyLabelHeightForText:order.note];
     height += kTopMargin + kTitleLabelHeight + kTinyLabelHeight;
@@ -147,7 +147,7 @@ static const CGFloat kTopMargin = 8.0f;
     self.fromLabel.y = self.addressLabel.y = CGRectGetMaxY(self.bidLabel.frame);
 }
 
-- (void)presentOrder:(JYOrder *)order withAddress:(BOOL)showAddress andBid:(BOOL)showBid
+- (void)presentOrder:(JYInvite *)order withAddress:(BOOL)showAddress andBid:(BOOL)showBid
 {
     self.bidLabelHidden = !showBid;
     self.addressLabelHidden = !showAddress;

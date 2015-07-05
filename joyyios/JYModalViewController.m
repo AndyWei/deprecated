@@ -49,9 +49,9 @@
     }
 }
 
-- (JYOrder *)orderOfId:(NSUInteger)targetOrderId
+- (JYInvite *)orderOfId:(NSUInteger)targetOrderId
 {
-    for (JYOrder *order in self.orderList)
+    for (JYInvite *order in self.orderList)
     {
         if (order.orderId == targetOrderId)
         {

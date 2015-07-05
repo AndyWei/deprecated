@@ -6,11 +6,11 @@
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
-#import "JYOrder.h"
+#import "JYInvite.h"
 
 @interface JYModalViewController : UIViewController
 
-- (JYOrder *)orderOfId:(NSUInteger)targetOrderId;
+- (JYInvite *)orderOfId:(NSUInteger)targetOrderId;
 - (void)networkThreadBegin;
 - (void)networkThreadEnd;
 

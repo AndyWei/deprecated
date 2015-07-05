@@ -9,12 +9,12 @@
 @import CoreLocation;
 
 #import "JYBid.h"
-#import "JYOrder.h"
+#import "JYInvite.h"
 
 @interface JYOrderCard : UIControl
 
-+ (CGFloat)heightForOrder:(JYOrder *)order withAddress:(BOOL)showAddress andBid:(BOOL)showBid;
-- (void)presentOrder:(JYOrder *)order withAddress:(BOOL)showAddress andBid:(BOOL)showBid;
++ (CGFloat)heightForOrder:(JYInvite *)order withAddress:(BOOL)showAddress andBid:(BOOL)showBid;
+- (void)presentOrder:(JYInvite *)order withAddress:(BOOL)showAddress andBid:(BOOL)showBid;
 
 @property(nonatomic) BOOL tinyLabelsHidden;
 @property(nonatomic, weak) UILabel *commentsLabel;

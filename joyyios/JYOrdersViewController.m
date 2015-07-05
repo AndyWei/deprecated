@@ -69,9 +69,9 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
     tableViewController.refreshControl = self.refreshControl;
 }
 
-- (JYOrder *)_orderAt:(NSIndexPath *)indexPath
+- (JYInvite *)_orderAt:(NSIndexPath *)indexPath
 {
-    JYOrder *order = nil;
+    JYInvite *order = nil;
     NSInteger index = indexPath.row;
 
     if (index < self.finishedOrderList.count)
@@ -109,7 +109,7 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
     JYOrderViewCell *cell =
     (JYOrderViewCell *)[tableView dequeueReusableCellWithIdentifier:kOrderCellIdentifier forIndexPath:indexPath];
 
-    JYOrder *order = [self _orderAt:indexPath];
+    JYInvite *order = [self _orderAt:indexPath];
     cell.order = order;
     cell.color = order.paymentStatusColor;
 
@@ -120,7 +120,7 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    JYOrder *order = [self _orderAt:indexPath];
+    JYInvite *order = [self _orderAt:indexPath];
     return [JYOrderViewCell heightForOrder:order];
 }
 
@@ -159,7 +159,7 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
     [manager.requestSerializer setValue:token forHTTPHeaderField:@"Authorization"];
 
     NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"orders/my"];
-    NSDictionary *parameters = @{@"status": @(JYOrderStatusStarted)};
+    NSDictionary *parameters = @{@"status": @(JYInviteStatusStarted)};
 
     __weak typeof(self) weakSelf = self;
     [manager GET:url
@@ -170,7 +170,7 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
              weakSelf.startedOrderList = [NSMutableArray new];
              for (NSDictionary *dict in responseObject)
              {
-                 JYOrder *newOrder = [[JYOrder alloc] initWithDictionary:dict];
+                 JYInvite *newOrder = [[JYInvite alloc] initWithDictionary:dict];
                  [weakSelf.startedOrderList addObject:newOrder];
              }
 
@@ -191,7 +191,7 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
     [manager.requestSerializer setValue:token forHTTPHeaderField:@"Authorization"];
 
     NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"orders/my"];
-    NSDictionary *parameters = @{@"status": @(JYOrderStatusDealt)};
+    NSDictionary *parameters = @{@"status": @(JYInviteStatusDealt)};
 
     __weak typeof(self) weakSelf = self;
     [manager GET:url
@@ -202,7 +202,7 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
              weakSelf.dealtOrderList = [NSMutableArray new];
              for (NSDictionary *dict in responseObject)
              {
-                 JYOrder *newOrder = [[JYOrder alloc] initWithDictionary:dict];
+                 JYInvite *newOrder = [[JYInvite alloc] initWithDictionary:dict];
                  [weakSelf.dealtOrderList addObject:newOrder];
              }
 
@@ -223,7 +223,7 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
     [manager.requestSerializer setValue:token forHTTPHeaderField:@"Authorization"];
 
     NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"orders/my"];
-    NSDictionary *parameters = @{@"status": @(JYOrderStatusFinished)};
+    NSDictionary *parameters = @{@"status": @(JYInviteStatusFinished)};
 
     __weak typeof(self) weakSelf = self;
     [manager GET:url
@@ -234,7 +234,7 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
              weakSelf.finishedOrderList = [NSMutableArray new];
              for (NSDictionary *dict in responseObject)
              {
-                 JYOrder *newOrder = [[JYOrder alloc] initWithDictionary:dict];
+                 JYInvite *newOrder = [[JYInvite alloc] initWithDictionary:dict];
                  [weakSelf.finishedOrderList addObject:newOrder];
              }
 

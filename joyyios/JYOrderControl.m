@@ -25,7 +25,7 @@ static const CGFloat kButtonAreaHeight = 50.0f;
 
 @implementation JYOrderControl
 
-+ (CGFloat)heightForOrder:(JYOrder *)order
++ (CGFloat)heightForOrder:(JYInvite *)order
 {
     CGFloat cardHeight = [JYOrderCard heightForOrder:order withAddress:NO andBid:NO];
     CGFloat labelHeight = 0;
@@ -33,17 +33,17 @@ static const CGFloat kButtonAreaHeight = 50.0f;
 
     switch (order.status)
     {
-        case JYOrderStatusDealt:
+        case JYInviteStatusDealt:
             labelHeight = kLabelHeight;
             break;
-        case JYOrderStatusStarted:
+        case JYInviteStatusStarted:
             labelHeight = kLabelHeight * 2;
             break;
-        case JYOrderStatusFinished:
+        case JYInviteStatusFinished:
             labelHeight = kLabelHeight * 2;
             buttonHeight = kButtonAreaHeight;
             break;
-        case JYOrderStatusPaid:
+        case JYInviteStatusPaid:
             labelHeight = kLabelHeight;
             break;
         default:
@@ -134,7 +134,7 @@ static const CGFloat kButtonAreaHeight = 50.0f;
     self.backgroundColor = self.card.backgroundColor = color;
 }
 
-- (void)setOrder:(JYOrder *)order
+- (void)setOrder:(JYInvite *)order
 {
     _order = order;
     [self.card presentOrder:order withAddress:NO andBid:NO];
@@ -145,19 +145,19 @@ static const CGFloat kButtonAreaHeight = 50.0f;
     self.payButton.textLabel.text = nil;
     switch (order.status)
     {
-        case JYOrderStatusDealt:
+        case JYInviteStatusDealt:
             self.label1.text = [self _choseString];
             break;
-        case JYOrderStatusStarted:
+        case JYInviteStatusStarted:
             self.label1.text = [self _choseString];
             self.label2.text = [self _startedString];
             break;
-        case JYOrderStatusFinished:
+        case JYInviteStatusFinished:
             self.label1.text = [self _choseString];
             self.label2.text = [self _finishedString];
             self.payButton.textLabel.text = NSLocalizedString(@"Pay", nil);
             break;
-        case JYOrderStatusPaid:
+        case JYInviteStatusPaid:
             self.label1.text = [self _paidString];
             break;
         default:
@@ -203,16 +203,16 @@ static const CGFloat kButtonAreaHeight = 50.0f;
 
     switch (self.order.status)
     {
-        case JYOrderStatusDealt:
-        case JYOrderStatusPaid:
+        case JYInviteStatusDealt:
+        case JYInviteStatusPaid:
             self.label1.height = kLabelHeight;
             break;
-        case JYOrderStatusStarted:
+        case JYInviteStatusStarted:
             self.label1.height = kLabelHeight;
             self.label2.y = CGRectGetMaxY(self.label1.frame);
             self.label2.height = kLabelHeight;
             break;
-        case JYOrderStatusFinished:
+        case JYInviteStatusFinished:
             self.label1.height = kLabelHeight;
             self.label2.y = CGRectGetMaxY(self.label1.frame);
             self.label2.height = kLabelHeight;

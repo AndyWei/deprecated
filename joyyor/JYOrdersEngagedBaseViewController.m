@@ -12,7 +12,7 @@
 #import "JYComment.h"
 #import "JYCommentViewCell.h"
 #import "JYCommentsViewController.h"
-#import "JYOrder.h"
+#import "JYInvite.h"
 #import "JYOrderCard.h"
 #import "JYOrdersEngagedBaseViewController.h"
 #import "JYUser.h"
@@ -75,7 +75,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
     JYOrderCard *card = (JYOrderCard *)sender;
     self.selectedSection = card.tag;
 
-    JYOrder *order = self.orderList[self.selectedSection];
+    JYInvite *order = self.orderList[self.selectedSection];
     [self showActionSheetForOrder:order highlightView:card];
 }
 
@@ -88,7 +88,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    JYOrder *order = self.orderList[section];
+    JYInvite *order = self.orderList[section];
     return order.comments.count;
 }
 
@@ -97,7 +97,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
     JYCommentViewCell *cell =
     (JYCommentViewCell *)[tableView dequeueReusableCellWithIdentifier:kCommentCellIdentifier forIndexPath:indexPath];
 
-    JYOrder *order = self.orderList[indexPath.section];
+    JYInvite *order = self.orderList[indexPath.section];
     [cell presentComment:order.comments[indexPath.row]];
 
     return cell;
@@ -107,7 +107,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    JYOrder *order = self.orderList[indexPath.section];
+    JYInvite *order = self.orderList[indexPath.section];
     return [JYCommentViewCell cellHeightForComment:order.comments[indexPath.row]];
 }
 
@@ -171,7 +171,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
              weakSelf.orderList = [NSMutableArray new];
              for (NSDictionary *dict in responseObject)
              {
-                 JYOrder *newOrder = [[JYOrder alloc] initWithDictionary:dict];
+                 JYInvite *newOrder = [[JYInvite alloc] initWithDictionary:dict];
                  [weakSelf.orderList addObject:newOrder];
              }
 

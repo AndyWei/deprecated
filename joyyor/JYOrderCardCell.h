@@ -8,15 +8,15 @@
 
 #import <MCSwipeTableViewCell/MCSwipeTableViewCell.h>
 
-#import "JYOrder.h"
+#import "JYInvite.h"
 
 @interface JYOrderCardCell : MCSwipeTableViewCell
 
-+ (CGFloat)heightForOrder:(JYOrder *)order withAddress:(BOOL)showAddress andBid:(BOOL)showBid;
++ (CGFloat)heightForOrder:(JYInvite *)order withAddress:(BOOL)showAddress andBid:(BOOL)showBid;
 
 @property(nonatomic) UIColor *cardColor;
 
-- (void)presentOrder:(JYOrder *)order withAddress:(BOOL)showAddress andBid:(BOOL)showBid;
+- (void)presentOrder:(JYInvite *)order withAddress:(BOOL)showAddress andBid:(BOOL)showBid;
 - (void)updateCommentsCount:(NSUInteger)count;
 
 @end

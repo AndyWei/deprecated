@@ -87,7 +87,7 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    JYOrder *order = self.orderList[indexPath.row];
+    JYInvite *order = self.orderList[indexPath.row];
     return [JYOrderViewCell heightForOrder:order];
 }
 
@@ -128,7 +128,7 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
              NSMutableArray *newOrderList = [NSMutableArray new];
              for (NSDictionary *dict in responseObject)
              {
-                 JYOrder *order = [[JYOrder alloc] initWithDictionary:dict];
+                 JYInvite *order = [[JYInvite alloc] initWithDictionary:dict];
                  [newOrderList addObject:order];
              }
 
@@ -157,18 +157,18 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
 - (NSDictionary *)_httpParametersForPaidOrders:(BOOL)loadMore
 {
     NSMutableDictionary *parameters = [NSMutableDictionary new];
-    [parameters setObject:@(JYOrderStatusPaid) forKey:@"status"];
+    [parameters setObject:@(JYInviteStatusPaid) forKey:@"status"];
 
     if (self.orderList.count > 0)
     {
         if (loadMore)
         {
-            JYOrder *oldestOrder = self.orderList.lastObject;
+            JYInvite *oldestOrder = self.orderList.lastObject;
             [parameters setObject:@(oldestOrder.orderId) forKey:@"before"];
         }
         else
         {
-            JYOrder *newestOrder = self.orderList.firstObject;
+            JYInvite *newestOrder = self.orderList.firstObject;
             [parameters setObject:@(newestOrder.orderId) forKey:@"after"];
         }
     }

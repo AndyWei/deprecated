@@ -10,7 +10,7 @@
 
 #import "JYBid.h"
 #import "JYComment.h"
-#import "JYOrder.h"
+#import "JYInvite.h"
 #import "JYOrdersBaseViewController.h"
 #import "JYUser.h"
 
@@ -38,7 +38,7 @@
     self.orderList = nil;
 }
 
-- (void)showActionSheetForOrder:(JYOrder *)order highlightView:(UIView *)view
+- (void)showActionSheetForOrder:(JYInvite *)order highlightView:(UIView *)view
 {
     self.tabBarController.tabBar.hidden = YES;
 
@@ -94,7 +94,7 @@
              for (NSDictionary *dict in responseObject)
              {
                  JYBid *newBid = [[JYBid alloc] initWithDictionary:dict];
-                 JYOrder *order = [weakSelf orderOfId:newBid.orderId];
+                 JYInvite *order = [weakSelf orderOfId:newBid.orderId];
                  if (order != nil)
                  {
                      [order.bids addObject:newBid];
@@ -128,7 +128,7 @@
              {
                  JYComment *newComment = [[JYComment alloc] initWithDictionary:dict];
 
-                 JYOrder *order = [weakSelf orderOfId:newComment.orderId];
+                 JYInvite *order = [weakSelf orderOfId:newComment.orderId];
                  if (order != nil)
                  {
                      [order.comments addObject:newComment];
@@ -146,7 +146,7 @@
 - (NSDictionary *)_httpCommentsParameters
 {
     NSMutableArray *orderIds = [NSMutableArray new];
-    for (JYOrder *order in self.orderList)
+    for (JYInvite *order in self.orderList)
     {
         [orderIds addObject:@(order.orderId)];
     }

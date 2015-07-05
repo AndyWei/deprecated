@@ -20,7 +20,7 @@
 
 @implementation JYOrderViewCell
 
-+ (CGFloat)heightForOrder:(JYOrder *)order
++ (CGFloat)heightForOrder:(JYInvite *)order
 {
     return [JYOrderControl heightForOrder:order];
 }
@@ -58,7 +58,7 @@
     self.backgroundColor = self.orderControl.color = color;
 }
 
-- (void)setOrder:(JYOrder *)order
+- (void)setOrder:(JYInvite *)order
 {
     _order = order;
     self.orderControl.order = order;

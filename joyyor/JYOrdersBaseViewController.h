@@ -7,12 +7,12 @@
 //
 
 #import "JYModalViewController.h"
-#import "JYOrder.h"
+#import "JYInvite.h"
 #import "UICustomActionSheet.h"
 
 @interface JYOrdersBaseViewController : JYModalViewController <UICustomActionSheetDelegate>
 
-- (void)showActionSheetForOrder:(JYOrder *)order highlightView:(UIView *)view;
+- (void)showActionSheetForOrder:(JYInvite *)order highlightView:(UIView *)view;
 - (void)fetchComments;
 - (void)fetchMyBids;
 - (NSDictionary *)fetchMyBidsParameters;

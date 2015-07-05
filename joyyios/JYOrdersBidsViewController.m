@@ -80,7 +80,7 @@ static NSString *const kBidCellIdentifier = @"bidCell";
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    JYOrder *order = self.orderList[section];
+    JYInvite *order = self.orderList[section];
     return order.bids.count;
 }
 
@@ -89,7 +89,7 @@ static NSString *const kBidCellIdentifier = @"bidCell";
     JYBidViewCell *cell =
     (JYBidViewCell *)[tableView dequeueReusableCellWithIdentifier:kBidCellIdentifier forIndexPath:indexPath];
 
-    JYOrder *order = self.orderList[indexPath.section];
+    JYInvite *order = self.orderList[indexPath.section];
     JYBid *bid = order.bids[indexPath.row];
     [cell presentBid:bid];
     cell.backgroundColor = bid.statusColor;
@@ -124,13 +124,13 @@ static NSString *const kBidCellIdentifier = @"bidCell";
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    JYOrder * order = self.orderList[section];
+    JYInvite * order = self.orderList[section];
     return [JYOrderControl heightForOrder:order];
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-    JYOrder *order = self.orderList[section];
+    JYInvite *order = self.orderList[section];
     CGFloat height = [JYOrderControl heightForOrder:order];
 
     JYOrderControl *orderContrl = [[JYOrderControl alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(tableView.frame), height)];
@@ -168,7 +168,7 @@ static NSString *const kBidCellIdentifier = @"bidCell";
     if ([self _isPaymentReady])
     {
         NSAssert(self.selectedIndexPath != nil, @"selectedIndexPath should not be nil");
-        JYOrder *order = self.orderList[self.selectedIndexPath.section];
+        JYInvite *order = self.orderList[self.selectedIndexPath.section];
         JYBid *bid = order.bids[self.selectedIndexPath.row];
         [self _acceptBid:bid forOrder:order];
     }
@@ -192,7 +192,7 @@ static NSString *const kBidCellIdentifier = @"bidCell";
 
     // Configure request
     NSAssert(self.selectedIndexPath != nil, @"selectedIndexPath should not be nil");
-    JYOrder *order = self.orderList[self.selectedIndexPath.section];
+    JYInvite *order = self.orderList[self.selectedIndexPath.section];
     JYBid *bid = order.bids[self.selectedIndexPath.row];
 
     NSNumber *price = [NSNumber numberWithUnsignedInteger:bid.price];
@@ -270,7 +270,7 @@ static NSString *const kBidCellIdentifier = @"bidCell";
 
 #pragma mark - Network
 
-- (void)_acceptBid:(JYBid *)bid forOrder:(JYOrder *)order
+- (void)_acceptBid:(JYBid *)bid forOrder:(JYInvite *)order
 {
     [self networkThreadBegin];
     NSDictionary *parameters = @{@"id": @(bid.bidId), @"stripe_token": self.stripeToken};
@@ -287,7 +287,7 @@ static NSString *const kBidCellIdentifier = @"bidCell";
           success:^(AFHTTPRequestOperation *operation, id responseObject) {
               NSLog(@"bids/accept post success responseObject: %@", responseObject);
 
-              order.status = JYOrderStatusDealt;
+              order.status = JYInviteStatusDealt;
               bid.status = JYBidStatusAccepted;
 
               [weakSelf networkThreadEnd];
@@ -319,7 +319,7 @@ static NSString *const kBidCellIdentifier = @"bidCell";
     [manager.requestSerializer setValue:token forHTTPHeaderField:@"Authorization"];
 
     NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"orders/my"];
-    NSDictionary *parameters = @{@"status": @(JYOrderStatusActive)};
+    NSDictionary *parameters = @{@"status": @(JYInviteStatusActive)};
 
     __weak typeof(self) weakSelf = self;
     [manager GET:url
@@ -330,7 +330,7 @@ static NSString *const kBidCellIdentifier = @"bidCell";
              weakSelf.orderList = [NSMutableArray new];
              for (NSDictionary *dict in responseObject)
              {
-                 JYOrder *newOrder = [[JYOrder alloc] initWithDictionary:dict];
+                 JYInvite *newOrder = [[JYInvite alloc] initWithDictionary:dict];
                  [weakSelf.orderList addObject:newOrder];
              }
 
@@ -367,11 +367,11 @@ static NSString *const kBidCellIdentifier = @"bidCell";
              for (NSDictionary *dict in responseObject)
              {
                  JYBid *bid = [[JYBid alloc] initWithDictionary:dict];
-                 JYOrder *order = [weakSelf orderOfId:bid.orderId];
+                 JYInvite *order = [weakSelf orderOfId:bid.orderId];
                  if (order != nil)
                  {
-                     if (order.status == JYOrderStatusActive ||
-                         (order.status == JYOrderStatusDealt && bid.status == JYBidStatusAccepted))
+                     if (order.status == JYInviteStatusActive ||
+                         (order.status == JYInviteStatusDealt && bid.status == JYBidStatusAccepted))
                      {
                          [order.bids addObject:bid];
                      }
@@ -391,7 +391,7 @@ static NSString *const kBidCellIdentifier = @"bidCell";
 - (NSDictionary *)_httpBidsParameters
 {
     NSMutableArray *orderIds = [NSMutableArray new];
-    for (JYOrder *order in self.orderList)
+    for (JYInvite *order in self.orderList)
     {
         [orderIds addObject:@(order.orderId)];
     }

@@ -1,5 +1,5 @@
 //
-//  JYOrderMapViewController.m
+//  JYMapViewController.m
 //  joyyios
 //
 //  Created by Ping Yang on 4/1/15.
@@ -8,12 +8,12 @@
 
 #import "AppDelegate.h"
 #import "JYButton.h"
-#import "JYOrder.h"
+#import "JYInvite.h"
 #import "JYOrderDetailsViewController.h"
-#import "JYOrderMapViewController.h"
+#import "JYMapViewController.h"
 #import "JYPinAnnotationView.h"
 
-@interface JYOrderMapViewController ()
+@interface JYMapViewController ()
 
 @property(nonatomic) BOOL mapNeedsPadding;
 @property(nonatomic) CLLocationCoordinate2D userSelectedMapCenter;
@@ -31,7 +31,7 @@
 
 static NSString *reuseId = @"pin";
 
-@implementation JYOrderMapViewController
+@implementation JYMapViewController
 
 - (BOOL)hidesBottomBarWhenPushed
 {
@@ -192,8 +192,8 @@ static NSString *reuseId = @"pin";
                                                 placemark.postalCode];
 
                            weakSelf.dashBoard.addressButton.textLabel.text = address;
-                           [JYOrder currentOrder].address = address;
-                           [JYOrder currentOrder].city = placemark.locality;
+                           [JYInvite currentInvite].address = address;
+                           [JYInvite currentInvite].city = placemark.locality;
                        }
                    }];
 }
@@ -221,18 +221,18 @@ static NSString *reuseId = @"pin";
 
 - (void)_navigateToNextView
 {
-    JYOrder *currentOrder = [JYOrder currentOrder];
+    JYInvite *currentInvite = [JYInvite currentInvite];
 
-    if (!currentOrder.address)
+    if (!currentInvite.address)
     {
         NSLog(@"address not set");
         return;
     }
 
-    currentOrder.lat = self.point.coordinate.latitude;
-    currentOrder.lon = self.point.coordinate.longitude;
+    currentInvite.lat = self.point.coordinate.latitude;
+    currentInvite.lon = self.point.coordinate.longitude;
 
-    if (currentOrder.lat == 0.0 && currentOrder.lon == 0.0)
+    if (currentInvite.lat == 0.0 && currentInvite.lon == 0.0)
     {
         NSLog(@"point not set");
         return;

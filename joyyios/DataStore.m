@@ -11,7 +11,7 @@
 
 NSString *const kKeyAPITokenExpireTime = @"APITokenExpireTime";
 NSString *const kKeyBadgeCount = @"BadgeCount";
-NSString *const kKeyCurrentOrder = @"CurrentOrder";
+NSString *const kKeyCurrentInvite = @"CurrentInvite";
 NSString *const kKeyDefaultCardNumber = @"DefaultCardNumber";
 NSString *const kKeyDefaultCustomerId = @"DefaultCustomerId";
 NSString *const kKeyDeviceToken = @"DeviceToken";
@@ -67,18 +67,18 @@ NSString *const kKeyUserCredential = @"UserCredential";
     return expireTime;
 }
 
-// CurrentOrder
-- (void)setCurrentOrder:(JYOrder *)order
+// CurrentInvite
+- (void)setCurrentInvite:(JYInvite *)order
 {
-    [[NSUserDefaults standardUserDefaults] setObject:order forKey:kKeyCurrentOrder];
+    [[NSUserDefaults standardUserDefaults] setObject:order forKey:kKeyCurrentInvite];
 }
 
-- (JYOrder *)currentOrder
+- (JYInvite *)currentInvite
 {
-    JYOrder *order = nil;
-    if ([[NSUserDefaults standardUserDefaults] objectForKey:kKeyCurrentOrder])
+    JYInvite *order = nil;
+    if ([[NSUserDefaults standardUserDefaults] objectForKey:kKeyCurrentInvite])
     {
-        order = [[NSUserDefaults standardUserDefaults] objectForKey:kKeyCurrentOrder];
+        order = [[NSUserDefaults standardUserDefaults] objectForKey:kKeyCurrentInvite];
     }
     return order;
 }

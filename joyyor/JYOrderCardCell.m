@@ -18,7 +18,7 @@
 
 @implementation JYOrderCardCell
 
-+ (CGFloat)heightForOrder:(JYOrder *)order withAddress:(BOOL)showAddress andBid:(BOOL)showBid
++ (CGFloat)heightForOrder:(JYInvite *)order withAddress:(BOOL)showAddress andBid:(BOOL)showBid
 {
     return [JYOrderCard heightForOrder:order withAddress:showAddress andBid:showBid];
 }
@@ -57,9 +57,9 @@
     [self.card layoutSubviews];
 }
 
-- (void)presentOrder:(JYOrder *)order withAddress:(BOOL)showAddress andBid:(BOOL)showBid
+- (void)presentOrder:(JYInvite *)order withAddress:(BOOL)showAddress andBid:(BOOL)showBid
 {
-    [self.card presentOrder:(JYOrder *)order withAddress:showAddress andBid:showBid];
+    [self.card presentOrder:(JYInvite *)order withAddress:showAddress andBid:showBid];
 }
 
 - (void)updateCommentsCount:(NSUInteger)count

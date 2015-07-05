@@ -12,7 +12,7 @@
 #import "JYComment.h"
 #import "JYCommentViewCell.h"
 #import "JYCommentsViewController.h"
-#import "JYOrder.h"
+#import "JYInvite.h"
 #import "JYOrderCard.h"
 #import "JYOrdersEngagedViewController.h"
 #import "JYUser.h"
@@ -46,7 +46,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (void)_presentBidViewForOrder:(JYOrder *)order
+- (void)_presentBidViewForOrder:(JYInvite *)order
 {
     JYBidCreateViewController *bidViewController = [JYBidCreateViewController new];
     bidViewController.order = order;
@@ -55,7 +55,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
     [self presentViewController:nav animated:YES completion:nil];
 }
 
-- (void)_presentCommentViewForOrder:(JYOrder *)order replyTo:(NSInteger)originCommentIndex
+- (void)_presentCommentViewForOrder:(JYInvite *)order replyTo:(NSInteger)originCommentIndex
 {
     JYCommentsViewController *viewController = [[JYCommentsViewController alloc] initWithOrder:order];
     viewController.originalCommentIndex = originCommentIndex;
@@ -81,7 +81,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    JYOrder *order = self.orderList[indexPath.section];
+    JYInvite *order = self.orderList[indexPath.section];
 
     [self _presentCommentViewForOrder:order replyTo:indexPath.row];
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
@@ -89,13 +89,13 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    JYOrder *order = self.orderList[section];
+    JYInvite *order = self.orderList[section];
     return [JYOrderCard heightForOrder:order withAddress:NO andBid:YES];
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-    JYOrder *order = self.orderList[section];
+    JYInvite *order = self.orderList[section];
     CGFloat height = [JYOrderCard heightForOrder:order withAddress:NO andBid:YES];
 
     JYOrderCard *card = [[JYOrderCard alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(tableView.frame), height)];
@@ -122,7 +122,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
         return;
     }
 
-    JYOrder *order = self.orderList[self.selectedSection];
+    JYInvite *order = self.orderList[self.selectedSection];
 
     if (buttonIndex == 1) // create comment
     {

@@ -16,7 +16,7 @@
 #import "AppDelegate.h"
 #import "DataStore.h"
 #import "JYMenuViewController.h"
-#import "JYOrderMapViewController.h"
+#import "JYMapViewController.h"
 #import "JYSignViewController.h"
 #import "JYUser.h"
 #import "OnboardingViewController.h"
@@ -278,7 +278,7 @@
 
 - (void)_launchDrawerViewController
 {
-    UIViewController *map = [JYOrderMapViewController new];
+    UIViewController *map = [JYMapViewController new];
     UINavigationController *orderNC = [[UINavigationController alloc] initWithRootViewController:map];
 
     UIViewController *menu = [JYMenuViewController new];

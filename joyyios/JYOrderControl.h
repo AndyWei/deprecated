@@ -6,13 +6,13 @@
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
-#import "JYOrder.h"
+#import "JYInvite.h"
 
 @interface JYOrderControl : UIControl
 
-+ (CGFloat)heightForOrder:(JYOrder *)order;
++ (CGFloat)heightForOrder:(JYInvite *)order;
 
 @property(nonatomic) UIColor *color;
-@property(nonatomic, weak) JYOrder *order;
+@property(nonatomic, weak) JYInvite *order;
 
 @end
