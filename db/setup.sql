@@ -11,7 +11,7 @@ CREATE EXTENSION postgis;
 BEGIN;
 \ir  tables/users.sql
 \ir  tables/accounts.sql
-\ir  tables/joyyor.sql
+\ir  tables/invite.sql
 \ir  tables/orders.sql
 \ir  tables/bids.sql
 \ir  tables/comments.sql
