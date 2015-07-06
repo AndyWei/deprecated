@@ -70,7 +70,8 @@ static const CGFloat kVerticalPadding = 20.f;
     // MDCSwipeOptions class). Since the front card view is gone, we
     // move the back card to the front, and create a new back card.
     self.frontCard = self.backCard;
-    if ((self.backCard = [self popJoyyorCardWithFrame:[self backCardFrame]])) {
+    if ((self.backCard = [self popJoyyorCardWithFrame:[self backCardFrame]]))
+    {
         // Fade the back card into view.
         self.backCard.alpha = 0.f;
         [self.view insertSubview:self.backCard belowSubview:self.frontCard];
@@ -124,7 +125,7 @@ static const CGFloat kVerticalPadding = 20.f;
 
     MDCSwipeToChooseViewOptions *options = [MDCSwipeToChooseViewOptions new];
     options.delegate = self;
-    options.threshold = 160.f;
+    options.threshold = 120.f;
     options.likedText = NSLocalizedString(@"LIKE", nil);
     options.nopeText = NSLocalizedString(@"NOPE", nil);
     options.onPan = ^(MDCPanState *state)
@@ -136,9 +137,7 @@ static const CGFloat kVerticalPadding = 20.f;
                                              CGRectGetHeight(frame));
     };
 
-    JoyyorCard *personView = [[JoyyorCard alloc] initWithFrame:frame
-                                                                    joyyor:self.joyyorList[0]
-                                                                   options:options];
+    JoyyorCard *personView = [[JoyyorCard alloc] initWithFrame:frame joyyor:self.joyyorList[0] options:options];
     [self.joyyorList removeObjectAtIndex:0];
     return personView;
 }
@@ -175,13 +174,8 @@ static const CGFloat kVerticalPadding = 20.f;
                               image.size.width,
                               image.size.height);
     [button setImage:image forState:UIControlStateNormal];
-    [button setTintColor:[UIColor colorWithRed:247.f/255.f
-                                         green:91.f/255.f
-                                          blue:37.f/255.f
-                                         alpha:1.f]];
-    [button addTarget:self
-               action:@selector(_nopeFrontCard)
-     forControlEvents:UIControlEventTouchUpInside];
+    [button setTintColor:FlatWatermelon];
+    [button addTarget:self action:@selector(_nopeFrontCard) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:button];
 }
 
@@ -195,13 +189,8 @@ static const CGFloat kVerticalPadding = 20.f;
                               image.size.width,
                               image.size.height);
     [button setImage:image forState:UIControlStateNormal];
-    [button setTintColor:[UIColor colorWithRed:29.f/255.f
-                                         green:245.f/255.f
-                                          blue:106.f/255.f
-                                         alpha:1.f]];
-    [button addTarget:self
-               action:@selector(_likeFrontCard)
-     forControlEvents:UIControlEventTouchUpInside];
+    [button setTintColor:FlatGreen];
+    [button addTarget:self action:@selector(_likeFrontCard) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:button];
 }
 

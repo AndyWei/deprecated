@@ -6,11 +6,11 @@
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
+#import "Joyyor.h"
 #import "JoyyorCard.h"
 #import "JYImageLabelView.h"
-#import "Joyyor.h"
 
-static const CGFloat ChoosePersonViewImageLabelWidth = 42.f;
+static const CGFloat kImageLabelWidth = 42.f;
 
 @interface JoyyorCard ()
 @property (nonatomic) UIView *informationView;
@@ -109,9 +109,9 @@ static const CGFloat ChoosePersonViewImageLabelWidth = 42.f;
 
 - (JYImageLabelView *)buildImageLabelViewLeftOf:(CGFloat)x image:(UIImage *)image text:(NSString *)text
 {
-    CGRect frame = CGRectMake(x - ChoosePersonViewImageLabelWidth,
+    CGRect frame = CGRectMake(x - kImageLabelWidth,
                               0,
-                              ChoosePersonViewImageLabelWidth,
+                              kImageLabelWidth,
                               CGRectGetHeight(_informationView.bounds));
     JYImageLabelView *view = [[JYImageLabelView alloc] initWithFrame:frame
                                                            image:image

@@ -39,6 +39,7 @@ const void * const MDCViewStateKey = &MDCViewStateKey;
     self.mdc_options = options ? options : [MDCSwipeOptions new];
     self.mdc_viewState = [MDCViewState new];
     self.mdc_viewState.originalCenter = self.center;
+    self.mdc_viewState.originalTransform = CGAffineTransformMake(1, 0, 0, 1, 0, 0);
 
     [self mdc_setupPanGestureRecognizer];
 }
