@@ -13,7 +13,7 @@ exports.register = function (server, options, next) {
     // get a single review by id. no auth.
     server.route({
         method: 'GET',
-        path: options.basePath + '/reviews/{id}',
+        path: options.basePath + '/review/{id}',
         config: {
             validate: {
                 params: {
@@ -24,8 +24,8 @@ exports.register = function (server, options, next) {
         handler: function (request, reply) {
 
             var queryConfig = {
-                name: 'reviews_by_id',
-                text: 'SELECT * FROM reviews WHERE id = $1 AND deleted = false',
+                name: 'review_by_id',
+                text: 'SELECT * FROM review WHERE id = $1 AND deleted = false',
                 values: [request.params.id]
             };
 
@@ -50,7 +50,7 @@ exports.register = function (server, options, next) {
     // get all reviews provided by the current user. auth.
     server.route({
         method: 'GET',
-        path: options.basePath + '/reviews/from_me',
+        path: options.basePath + '/review/from_me',
         config: {
             auth: {
                 strategy: 'token'
@@ -60,8 +60,8 @@ exports.register = function (server, options, next) {
 
             var userId = request.auth.credentials.id;
             var queryConfig = {
-                name: 'reviews_from_me',
-                text: 'SELECT * FROM reviews WHERE reviewer_id = $1 AND deleted = false \
+                name: 'review_from_me',
+                text: 'SELECT * FROM review WHERE reviewer_id = $1 AND deleted = false \
                        ORDER BY id DESC',
                 values: [userId]
             };
@@ -80,10 +80,10 @@ exports.register = function (server, options, next) {
     });
 
 
-    // get all reviews received by the user. no auth.
+    // get all review received by the user. no auth.
     server.route({
         method: 'GET',
-        path: options.basePath + '/reviews/of/{id}',
+        path: options.basePath + '/review/of/{id}',
         config: {
             validate: {
                 params: {
@@ -94,8 +94,8 @@ exports.register = function (server, options, next) {
         handler: function (request, reply) {
 
             var queryConfig = {
-                name: 'reviews_of',
-                text: 'SELECT * FROM reviews WHERE reviewee_id = $1 AND deleted = false \
+                name: 'review_of',
+                text: 'SELECT * FROM review WHERE reviewee_id = $1 AND deleted = false \
                        ORDER BY id DESC',
                 values: [request.params.id]
             };
@@ -117,7 +117,7 @@ exports.register = function (server, options, next) {
     // Create an review. auth.
     server.route({
         method: 'POST',
-        path: options.basePath + '/reviews',
+        path: options.basePath + '/review',
         config: {
             auth: {
                 strategy: 'token'
@@ -139,7 +139,7 @@ exports.register = function (server, options, next) {
 
 
 exports.register.attributes = {
-    name: 'reviews'
+    name: 'review'
 };
 
 
@@ -151,8 +151,8 @@ internals.createReviewHandler = function (request, reply) {
             var userId = request.auth.credentials.id;
             var p = request.payload;
             var queryConfig = {
-                name: 'reviews_create',
-                text: 'INSERT INTO reviews \
+                name: 'review_create',
+                text: 'INSERT INTO review \
                            (reviewer_id, reviewee_id, order_id, rating, body, created_at, updated_at) VALUES \
                            ($1, $2, $3, $4, $5, now(), now()) \
                            RETURNING id',

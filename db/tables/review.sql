@@ -1,4 +1,4 @@
-CREATE TABLE reviews (
+CREATE TABLE review (
     id             BIGSERIAL  PRIMARY KEY,
     reviewer_id    BIGINT        NOT NULL,  -- the id of the user who wrote this review
     reviewee_id    BIGINT        NOT NULL,  -- the id of the user who is reviewed
@@ -17,6 +17,6 @@ CREATE TABLE reviews (
 );
 
 
-CREATE INDEX reviews_reviewer_id_index ON reviews (reviewer_id);
+CREATE INDEX review_reviewer_id_index ON review (reviewer_id);
 
-CREATE INDEX reviews_reviewee_id_index ON reviews (reviewee_id);
+CREATE INDEX review_reviewee_id_index ON review (reviewee_id);

@@ -15,7 +15,7 @@ exports.register = function (server, options, next) {
     // get all credit cards of the current user. auth.
     server.route({
         method: 'GET',
-        path: options.basePath + '/creditcards/my',
+        path: options.basePath + '/creditcard/my',
         config: {
             auth: {
                 strategy: 'token'
@@ -25,8 +25,8 @@ exports.register = function (server, options, next) {
 
             var userId = request.auth.credentials.id;
             var queryConfig = {
-                name: 'creditcards_my',
-                text: 'SELECT * FROM creditcards \
+                name: 'creditcard_my',
+                text: 'SELECT * FROM creditcard \
                        WHERE user_id = $1 AND deleted = false \
                        ORDER BY id DESC',
                 values: [userId]
@@ -49,7 +49,7 @@ exports.register = function (server, options, next) {
     // create a creditcard. auth.
     server.route({
         method: 'POST',
-        path: options.basePath + '/creditcards',
+        path: options.basePath + '/creditcard',
         config: {
             auth: {
                 strategy: 'token'
@@ -73,7 +73,7 @@ exports.register = function (server, options, next) {
 
 
 exports.register.attributes = {
-    name: 'creditcards'
+    name: 'creditcard'
 };
 
 
@@ -104,8 +104,8 @@ internals.createCardHandler = function (request, reply) {
         creditCard: ['stripe', function (next, results) {
 
             var queryConfig = {
-                name: 'creditcards_create',
-                text: 'INSERT INTO creditcards \
+                name: 'creditcard_create',
+                text: 'INSERT INTO creditcard \
                            (user_id, number_last_4, stripe_customer_id, expiry_month, expiry_year, card_type, created_at, updated_at) VALUES \
                            ($1, $2, $3, $4, $5, $6, now(), now()) \
                            RETURNING id',

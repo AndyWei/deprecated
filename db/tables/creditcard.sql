@@ -1,4 +1,4 @@
-CREATE TABLE creditcards (
+CREATE TABLE creditcard (
     id                  BIGSERIAL  PRIMARY KEY,
     user_id             BIGINT        NOT NULL,  -- the id of the user who own this card
     number_last_4       CHAR(4)       NOT NULL,  -- the last 4 digits of the credit card number
@@ -13,7 +13,7 @@ CREATE TABLE creditcards (
     FOREIGN KEY (user_id) REFERENCES jyuser(id)
 );
 
-CREATE INDEX creditcards_user_id_index ON creditcards (user_id);
+CREATE INDEX creditcard_user_id_index ON creditcard (user_id);
 
 
 

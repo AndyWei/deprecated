@@ -90,7 +90,7 @@ exports.register = function (server, options, next) {
 
 
 exports.register.attributes = {
-    name: 'accounts'
+    name: 'account'
 };
 
 internals.getIndividualAccountParameters = function (request) {
@@ -209,8 +209,8 @@ internals.createAccountHandler = function (accountType, request, reply) {
 
             var s = results.stripe;
             var queryConfig = {
-                name: 'accounts_create',
-                text: 'INSERT INTO accounts \
+                name: 'account_create',
+                text: 'INSERT INTO account \
                            (account_type, user_id, email, stripe_account_id, secret, publishable, created_at, updated_at) VALUES \
                            ($1, $2, $3, $4, $5, $6, now(), now()) \
                            RETURNING id',

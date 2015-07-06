@@ -11,10 +11,10 @@ CREATE EXTENSION postgis;
 BEGIN;
 \ir  tables/jyuser.sql
 \ir  tables/invite.sql
-\ir  tables/accounts.sql
+\ir  tables/account.sql
+\ir  tables/creditcard.sql
 \ir  tables/orders.sql
 \ir  tables/bids.sql
 \ir  tables/comments.sql
-\ir  tables/reviews.sql
-\ir  tables/creditcards.sql
+\ir  tables/review.sql
 COMMIT;

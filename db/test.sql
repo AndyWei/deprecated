@@ -9,7 +9,7 @@ INSERT INTO jyuser
     (  'mike', '$2a$10$sTaFcBz.lhDXr2bVNZJZeenPJ3qiKG.NaQQ5zqiz0peku0fDvO0YG', 'mike95273@gmail.com',             0,           13,            3,      now(),      now(),   FALSE);
 
 
-INSERT INTO accounts
+INSERT INTO account
     (user_id,                 email,       stripe_account_id,                             secret,                        publishable,  created_at, updated_at) VALUES
     (      2, 'andy94555@gmail.com', 'acct_16CNevL3foSC1Ck4', 'sk_test_y6qiee71SA8RB4eA7ubfcabt', 'pk_test_A5X5cmWlRb6OvOzjdBlpKszB',       now(),      now());
 
@@ -45,13 +45,13 @@ INSERT INTO comments
     (       2,       4,   'mike',      now(),      now(), 'Mike always talk a lot: I know your house is quite huge bro, its really difficult at this price man. I may consider 500 bucks'),
     (       2,       1,   'jack',      now(),      now(), '@mike Just 3000 sqft, and 500 bucks is ridiculous！$499 is my bottomline!!');
 
-INSERT INTO reviews
+INSERT INTO review
     (reviewer_id, reviewee_id, order_id, rating,             body, created_at,  updated_at) VALUES
     (          2,           1,        1,      4, 'fixedin 5 mins',      now(),      now()),
     (          3,           2,        2,      5, 'best quality!!',      now(),      now()),
     (          4,           2,        3,    4.5,     'super pro!',      now(),      now());
 
-INSERT INTO creditcards
+INSERT INTO creditcard
     (user_id, number_last_4,   stripe_customer_id, expiry_month, expiry_year, card_type, created_at, updated_at) VALUES
     (      1,        '4242', 'cus_6SCDqSWmJ4OdDB',            8,        2017,        52,      now(),      now()),
     (      1,        '3200', 'cus_6SCDqSWmJ4OdDB',           12,        2016,        51,      now(),      now()),

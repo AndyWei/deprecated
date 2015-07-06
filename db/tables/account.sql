@@ -1,4 +1,4 @@
-CREATE TABLE accounts (
+CREATE TABLE account (
     id                 BIGSERIAL  PRIMARY KEY,
     user_id            BIGINT        NOT NULL,
     email              TEXT          NOT NULL,  -- The user email provided on creating account, it's to make the account easier to identify with Stripe
@@ -14,4 +14,4 @@ CREATE TABLE accounts (
 );
 
 
-CREATE INDEX accounts_user_id_index ON accounts (user_id);
+CREATE INDEX account_user_id_index ON account (user_id);

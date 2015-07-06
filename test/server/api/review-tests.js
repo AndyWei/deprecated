@@ -5,7 +5,7 @@ var Hapi = require('hapi');
 var HapiAuthBasic = require('hapi-auth-basic');
 var HapiAuthToken = require('hapi-auth-bearer-token');
 var Lab = require('lab');
-var ReviewsPlugin = require('../../../server/api/reviews');
+var ReviewsPlugin = require('../../../server/api/review');
 
 
 var lab = exports.lab = Lab.script();
@@ -54,11 +54,11 @@ lab.afterEach(function (done) {
 
 lab.experiment('Reviews GET: ', function () {
 
-    lab.test('/reviews/1: return a record successfully', function (done) {
+    lab.test('/review/1: return a record successfully', function (done) {
 
         request = {
             method: 'GET',
-            url: '/reviews/1'
+            url: '/review/1'
         };
 
         server.inject(request, function (response) {
@@ -70,11 +70,11 @@ lab.experiment('Reviews GET: ', function () {
         });
     });
 
-    lab.test('/reviews/from_me: found', function (done) {
+    lab.test('/review/from_me: found', function (done) {
 
         request = {
             method: 'GET',
-            url: '/reviews/from_me',
+            url: '/review/from_me',
             credentials: andy
         };
 
@@ -87,11 +87,11 @@ lab.experiment('Reviews GET: ', function () {
         });
     });
 
-    lab.test('/reviews/from_me: not found', function (done) {
+    lab.test('/review/from_me: not found', function (done) {
 
         request = {
             method: 'GET',
-            url: '/reviews/from_me',
+            url: '/review/from_me',
             credentials: jack
         };
 
@@ -104,11 +104,11 @@ lab.experiment('Reviews GET: ', function () {
         });
     });
 
-    lab.test('/reviews/of: found', function (done) {
+    lab.test('/review/of: found', function (done) {
 
         request = {
             method: 'GET',
-            url: '/reviews/of/2'
+            url: '/review/of/2'
         };
 
         server.inject(request, function (response) {
@@ -120,11 +120,11 @@ lab.experiment('Reviews GET: ', function () {
         });
     });
 
-    lab.test('/reviews/of: not found', function (done) {
+    lab.test('/review/of: not found', function (done) {
 
         request = {
             method: 'GET',
-            url: '/reviews/of/3'
+            url: '/review/of/3'
         };
 
         server.inject(request, function (response) {
@@ -138,13 +138,13 @@ lab.experiment('Reviews GET: ', function () {
 });
 
 
-lab.experiment('Reviews POST: ', function () {
+lab.experiment('Review POST: ', function () {
 
-    lab.test('/reviews: create successfully', function (done) {
+    lab.test('/review: create successfully', function (done) {
 
         request = {
             method: 'POST',
-            url: '/reviews',
+            url: '/review',
             payload: {
                 reviewee_id: '4',
                 order_id: '3',
