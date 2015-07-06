@@ -9,9 +9,9 @@ COMMENT ON SCHEMA public IS 'standard public schema';
 CREATE EXTENSION postgis;
 
 BEGIN;
-\ir  tables/users.sql
-\ir  tables/accounts.sql
+\ir  tables/jyuser.sql
 \ir  tables/invite.sql
+\ir  tables/accounts.sql
 \ir  tables/orders.sql
 \ir  tables/bids.sql
 \ir  tables/comments.sql

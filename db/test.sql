@@ -1,7 +1,7 @@
 \ir  setup.sql
 
 
-INSERT INTO users
+INSERT INTO jyuser
     (username,                                                       password,                 email, joyyor_status, rating_total, rating_count, created_at, updated_at, deleted) VALUES
     (  'jack', '$2a$10$sTaFcBz.lhDXr2bVNZJZeenPJ3qiKG.NaQQ5zqiz0peku0fDvO0YG',      'jack@gmail.com',             0,           10,            2,      now(),      now(),   FALSE),
     (  'andy', '$2a$10$sTaFcBz.lhDXr2bVNZJZeenPJ3qiKG.NaQQ5zqiz0peku0fDvO0YG', 'andy94555@gmail.com',             1,            9,            2,      now(),      now(),   FALSE),

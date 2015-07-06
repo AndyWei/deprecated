@@ -11,8 +11,8 @@ CREATE TABLE reviews (
 
     CHECK (rating >= 0),
 
-    FOREIGN KEY (reviewer_id)  REFERENCES users(id),
-    FOREIGN KEY (reviewee_id)  REFERENCES users(id),
+    FOREIGN KEY (reviewer_id)  REFERENCES jyuser(id),
+    FOREIGN KEY (reviewee_id)  REFERENCES jyuser(id),
     FOREIGN KEY (order_id)     REFERENCES orders(id)
 );
 

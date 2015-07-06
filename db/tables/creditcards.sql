@@ -10,7 +10,7 @@ CREATE TABLE creditcards (
     updated_at          TIMESTAMPTZ   NOT NULL,
     deleted             BOOLEAN       NOT NULL DEFAULT false,
 
-    FOREIGN KEY (user_id) REFERENCES users(id)
+    FOREIGN KEY (user_id) REFERENCES jyuser(id)
 );
 
 CREATE INDEX creditcards_user_id_index ON creditcards (user_id);

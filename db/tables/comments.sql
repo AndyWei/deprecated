@@ -8,7 +8,7 @@ CREATE TABLE comments (
     updated_at     TIMESTAMPTZ   NOT NULL,
     deleted        BOOLEAN       NOT NULL DEFAULT false,
 
-    FOREIGN KEY (user_id)  REFERENCES users(id),
+    FOREIGN KEY (user_id)  REFERENCES jyuser(id),
     FOREIGN KEY (order_id) REFERENCES orders(id)
 );
 

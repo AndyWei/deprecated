@@ -45,9 +45,9 @@ exports.register.attributes = {
 internals.emailCheck = function (request, reply) {
 
     var queryConfig = {
-        text: 'SELECT id FROM users WHERE email = $1 AND deleted = false ',
+        text: 'SELECT id FROM jyuser WHERE email = $1 AND deleted = false ',
         values: [request.payload.email],
-        name: 'users_select_id_by_email'
+        name: 'jyuser_select_id_by_email'
     };
 
     request.pg.client.query(queryConfig, function (err, result) {
@@ -68,7 +68,7 @@ internals.emailCheck = function (request, reply) {
 
 
 // Before create user we need to generate a username from the user's email address
-// Since the username will be visible for other users in non-anonymous scenarios, below requirem should be followed:
+// Since the username will be visible for other users in non-anonymous scenarios, below requirement should be followed:
 //   1. Security: there should be no one can conduct the user's email address from the generated username, so michael@gmail.com should not map to "michael"
 //   2. User-friendly: if the user has already implied his/her name, use it. E.g., frank.underwood@whitehouse.com -> "frank"
 //   3. Unique: In case the best name from step 1 and 2 has already been taken, some random numbers will be appended
@@ -86,9 +86,9 @@ internals.createUser = function (request, reply) {
 
             var available = results.usernameCandidates;
             var query = request.pg.client.query({
-                text: 'SELECT username FROM users WHERE username IN ($1, $2, $3, $4, $5) AND deleted = false ',
+                text: 'SELECT username FROM jyuser WHERE username IN ($1, $2, $3, $4, $5) AND deleted = false ',
                 values: results.usernameCandidates,
-                name: 'users_select_username_in_usernames'
+                name: 'jyuser_select_username_in_usernames'
             });
 
             query.on('row', function (row) {
@@ -135,12 +135,12 @@ internals.createUser = function (request, reply) {
         userid: ['username', 'password', function (callback, results) {
 
             var queryConfig = {
-                text: 'INSERT INTO users ' +
+                text: 'INSERT INTO jyuser ' +
                           '(username, password, email, created_at, updated_at) VALUES ' +
                           '($1, $2, $3, now(), now()) ' +
                           'RETURNING id',
                 values: [results.username, results.password, email],
-                name: 'users_create'
+                name: 'jyuser_create'
             };
 
             request.pg.client.query(queryConfig, function (err, queryResult) {

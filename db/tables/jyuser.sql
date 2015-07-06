@@ -1,4 +1,4 @@
-CREATE TABLE users (
+CREATE TABLE jyuser (
     id                 BIGSERIAL  PRIMARY KEY,
     username           TEXT          NOT NULL,  -- when user signup, this field is generated automatically, and the user can modify it later
     password           TEXT          NOT NULL,  -- bcrypt hashed password, it always 60 bytes, however TEXT makes it flexible
@@ -33,10 +33,10 @@ CREATE TABLE users (
 );
 
 
-CREATE INDEX users_rating_index     ON users (rating);
-CREATE INDEX users_coordinate_index ON users USING gist(coordinate);
+CREATE INDEX jyuser_rating_index     ON jyuser (rating);
+CREATE INDEX jyuser_coordinate_index ON jyuser USING gist(coordinate);
 
 /* To reduce index size, we don't use UNIQUE constraint on email field. In stead, we created a expression index that
  * only indexes the account part of an email address, which could make the email index about 50% smaller.
  */
-CREATE INDEX users_email_index ON users (split_part(email, '@', 1));
+CREATE INDEX jyuser_email_index ON jyuser (split_part(email, '@', 1));

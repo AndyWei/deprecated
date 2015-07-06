@@ -68,7 +68,7 @@ exports.register = function (server, options, next) {
 
             var queryValues = [request.query.after];
             var select = 'SELECT b.id, b.order_id, b.user_id, b.price, b.status, b.expire_at, u.username, u.rating_total, u.rating_count FROM bids AS b ';
-            var join = 'INNER JOIN users AS u ON u.id = b.user_id ';
+            var join = 'INNER JOIN jyuser AS u ON u.id = b.user_id ';
             var where1 = 'WHERE b.id > $1 AND b.status < 10 AND b.deleted = false AND u.deleted = false AND b.order_id IN ';
             var where2 = Utils.parametersString(2, request.query.order_id.length);
             var sort = 'ORDER BY b.id ASC LIMIT 200';
@@ -331,9 +331,9 @@ internals.acceptBidHandler = function (request, reply) {
         function (callback) {
 
             var queryConfig = {
-                name: 'bids_users_by_bid_id',
+                name: 'bids_jyuser_by_bid_id',
                 text: 'SELECT b.order_id, b.user_id, b.price, u.username FROM bids AS b \
-                       INNER JOIN users AS u ON u.id = b.user_id \
+                       INNER JOIN jyuser AS u ON u.id = b.user_id \
                        WHERE b.id = $1 AND b.status = 0 AND b.deleted = false',
                 values: [bidId]
             };

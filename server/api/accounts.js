@@ -234,8 +234,8 @@ internals.createAccountHandler = function (accountType, request, reply) {
         joyyorStatus: ['accountId', function (next) {
 
             var queryConfig = {
-                name: 'users_update_joyyor_status_unverified',
-                text: 'UPDATE users ' +
+                name: 'jyuser_update_joyyor_status_unverified',
+                text: 'UPDATE jyuser ' +
                       'SET joyyor_status = 1, updated_at = now() ' +
                       'WHERE id = $1 AND joyyor_status = 0 ' +
                       'RETURNING id',

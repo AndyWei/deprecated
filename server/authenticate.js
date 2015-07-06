@@ -21,9 +21,9 @@ var validateSimple = function (email, password, finish) {
         function (client, done, callback) {
 
             var queryConfig = {
-                text: 'SELECT id, username, password, email, joyyor_status FROM users WHERE email = $1',
+                text: 'SELECT id, username, password, email, joyyor_status FROM jyuser WHERE email = $1',
                 values: [email],
-                name: 'users_select_one_by_email'
+                name: 'jyuser_select_one_by_email'
             };
 
             client.query(queryConfig, function (err, queryResult) {

@@ -13,7 +13,7 @@ CREATE TABLE bids (
     CHECK (price >= 0),
     CHECK (status >= 0),
 
-    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (user_id) REFERENCES jyuser(id),
     FOREIGN KEY (order_id)  REFERENCES orders(id)
 );
 

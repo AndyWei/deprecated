@@ -29,8 +29,8 @@ CREATE TABLE orders (
     CHECK (status >= 0),
     CHECK (category >= 0),
 
-    FOREIGN KEY (user_id)   REFERENCES users(id),
-    FOREIGN KEY (winner_id) REFERENCES users(id)
+    FOREIGN KEY (user_id)   REFERENCES jyuser(id),
+    FOREIGN KEY (winner_id) REFERENCES jyuser(id)
 );
 
 
