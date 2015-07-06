@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
-#import <MDCSwipeToChoose/MDCSwipeToChoose.h>
+#import "MDCSwipeToChoose.h"
 
 @class Joyyor;
 

@@ -90,12 +90,6 @@
 #define COCOAPODS_VERSION_MINOR_MCSwipeTableViewCell 1
 #define COCOAPODS_VERSION_PATCH_MCSwipeTableViewCell 2
 
-// MDCSwipeToChoose
-#define COCOAPODS_POD_AVAILABLE_MDCSwipeToChoose
-#define COCOAPODS_VERSION_MAJOR_MDCSwipeToChoose 0
-#define COCOAPODS_VERSION_MINOR_MDCSwipeToChoose 2
-#define COCOAPODS_VERSION_PATCH_MDCSwipeToChoose 2
-
 // MMDrawerController
 #define COCOAPODS_POD_AVAILABLE_MMDrawerController
 #define COCOAPODS_VERSION_MAJOR_MMDrawerController 0

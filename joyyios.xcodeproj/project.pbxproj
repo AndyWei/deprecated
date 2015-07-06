@@ -19,6 +19,26 @@
 		D61C48A91B45085C009E422A /* JYOrdersHistoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D61C48A71B45085C009E422A /* JYOrdersHistoryViewController.m */; };
 		D61C48AF1B451877009E422A /* JYOrdersBidsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D61C48AE1B451877009E422A /* JYOrdersBidsViewController.m */; };
 		D61C48B01B451877009E422A /* JYOrdersBidsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D61C48AE1B451877009E422A /* JYOrdersBidsViewController.m */; };
+		D61D1D471B4A65F200DE37DF /* MDCGeometry.m in Sources */ = {isa = PBXBuildFile; fileRef = D61D1D2B1B4A65F200DE37DF /* MDCGeometry.m */; };
+		D61D1D481B4A65F200DE37DF /* MDCGeometry.m in Sources */ = {isa = PBXBuildFile; fileRef = D61D1D2B1B4A65F200DE37DF /* MDCGeometry.m */; };
+		D61D1D491B4A65F200DE37DF /* MDCViewState.m in Sources */ = {isa = PBXBuildFile; fileRef = D61D1D2E1B4A65F200DE37DF /* MDCViewState.m */; };
+		D61D1D4A1B4A65F200DE37DF /* MDCViewState.m in Sources */ = {isa = PBXBuildFile; fileRef = D61D1D2E1B4A65F200DE37DF /* MDCViewState.m */; };
+		D61D1D4B1B4A65F200DE37DF /* UIColor+MDCRGB8Bit.m in Sources */ = {isa = PBXBuildFile; fileRef = D61D1D301B4A65F200DE37DF /* UIColor+MDCRGB8Bit.m */; };
+		D61D1D4C1B4A65F200DE37DF /* UIColor+MDCRGB8Bit.m in Sources */ = {isa = PBXBuildFile; fileRef = D61D1D301B4A65F200DE37DF /* UIColor+MDCRGB8Bit.m */; };
+		D61D1D4D1B4A65F200DE37DF /* UIView+MDCBorderedLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = D61D1D331B4A65F200DE37DF /* UIView+MDCBorderedLabel.m */; };
+		D61D1D4E1B4A65F200DE37DF /* UIView+MDCBorderedLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = D61D1D331B4A65F200DE37DF /* UIView+MDCBorderedLabel.m */; };
+		D61D1D4F1B4A65F200DE37DF /* MDCSwipeOptions.m in Sources */ = {isa = PBXBuildFile; fileRef = D61D1D381B4A65F200DE37DF /* MDCSwipeOptions.m */; };
+		D61D1D501B4A65F200DE37DF /* MDCSwipeOptions.m in Sources */ = {isa = PBXBuildFile; fileRef = D61D1D381B4A65F200DE37DF /* MDCSwipeOptions.m */; };
+		D61D1D511B4A65F200DE37DF /* MDCSwipeToChooseViewOptions.m in Sources */ = {isa = PBXBuildFile; fileRef = D61D1D3A1B4A65F200DE37DF /* MDCSwipeToChooseViewOptions.m */; };
+		D61D1D521B4A65F200DE37DF /* MDCSwipeToChooseViewOptions.m in Sources */ = {isa = PBXBuildFile; fileRef = D61D1D3A1B4A65F200DE37DF /* MDCSwipeToChooseViewOptions.m */; };
+		D61D1D531B4A65F200DE37DF /* MDCPanState.m in Sources */ = {isa = PBXBuildFile; fileRef = D61D1D3D1B4A65F200DE37DF /* MDCPanState.m */; };
+		D61D1D541B4A65F200DE37DF /* MDCPanState.m in Sources */ = {isa = PBXBuildFile; fileRef = D61D1D3D1B4A65F200DE37DF /* MDCPanState.m */; };
+		D61D1D551B4A65F200DE37DF /* MDCSwipeResult.m in Sources */ = {isa = PBXBuildFile; fileRef = D61D1D401B4A65F200DE37DF /* MDCSwipeResult.m */; };
+		D61D1D561B4A65F200DE37DF /* MDCSwipeResult.m in Sources */ = {isa = PBXBuildFile; fileRef = D61D1D401B4A65F200DE37DF /* MDCSwipeResult.m */; };
+		D61D1D571B4A65F200DE37DF /* MDCSwipeToChooseView.m in Sources */ = {isa = PBXBuildFile; fileRef = D61D1D441B4A65F200DE37DF /* MDCSwipeToChooseView.m */; };
+		D61D1D581B4A65F200DE37DF /* MDCSwipeToChooseView.m in Sources */ = {isa = PBXBuildFile; fileRef = D61D1D441B4A65F200DE37DF /* MDCSwipeToChooseView.m */; };
+		D61D1D591B4A65F200DE37DF /* UIView+MDCSwipeToChoose.m in Sources */ = {isa = PBXBuildFile; fileRef = D61D1D461B4A65F200DE37DF /* UIView+MDCSwipeToChoose.m */; };
+		D61D1D5A1B4A65F200DE37DF /* UIView+MDCSwipeToChoose.m in Sources */ = {isa = PBXBuildFile; fileRef = D61D1D461B4A65F200DE37DF /* UIView+MDCSwipeToChoose.m */; };
 		D6348D271ADA3BC90002BC35 /* JYPriceTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D6348D261ADA3BC90002BC35 /* JYPriceTextFieldCell.m */; };
 		D6348D281ADA3BC90002BC35 /* JYPriceTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D6348D261ADA3BC90002BC35 /* JYPriceTextFieldCell.m */; };
 		D6348D2B1ADA4A650002BC35 /* JYRestrictedTextViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D6348D2A1ADA4A650002BC35 /* JYRestrictedTextViewCell.m */; };
@@ -147,6 +167,29 @@
 		D61C48A71B45085C009E422A /* JYOrdersHistoryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYOrdersHistoryViewController.m; sourceTree = "<group>"; };
 		D61C48AD1B451877009E422A /* JYOrdersBidsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYOrdersBidsViewController.h; sourceTree = "<group>"; };
 		D61C48AE1B451877009E422A /* JYOrdersBidsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYOrdersBidsViewController.m; sourceTree = "<group>"; };
+		D61D1D2A1B4A65F200DE37DF /* MDCGeometry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDCGeometry.h; sourceTree = "<group>"; };
+		D61D1D2B1B4A65F200DE37DF /* MDCGeometry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDCGeometry.m; sourceTree = "<group>"; };
+		D61D1D2D1B4A65F200DE37DF /* MDCViewState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDCViewState.h; sourceTree = "<group>"; };
+		D61D1D2E1B4A65F200DE37DF /* MDCViewState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDCViewState.m; sourceTree = "<group>"; };
+		D61D1D2F1B4A65F200DE37DF /* UIColor+MDCRGB8Bit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+MDCRGB8Bit.h"; sourceTree = "<group>"; };
+		D61D1D301B4A65F200DE37DF /* UIColor+MDCRGB8Bit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+MDCRGB8Bit.m"; sourceTree = "<group>"; };
+		D61D1D321B4A65F200DE37DF /* UIView+MDCBorderedLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+MDCBorderedLabel.h"; sourceTree = "<group>"; };
+		D61D1D331B4A65F200DE37DF /* UIView+MDCBorderedLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+MDCBorderedLabel.m"; sourceTree = "<group>"; };
+		D61D1D351B4A65F200DE37DF /* MDCSwipeToChoose.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDCSwipeToChoose.h; sourceTree = "<group>"; };
+		D61D1D371B4A65F200DE37DF /* MDCSwipeOptions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDCSwipeOptions.h; sourceTree = "<group>"; };
+		D61D1D381B4A65F200DE37DF /* MDCSwipeOptions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDCSwipeOptions.m; sourceTree = "<group>"; };
+		D61D1D391B4A65F200DE37DF /* MDCSwipeToChooseViewOptions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDCSwipeToChooseViewOptions.h; sourceTree = "<group>"; };
+		D61D1D3A1B4A65F200DE37DF /* MDCSwipeToChooseViewOptions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDCSwipeToChooseViewOptions.m; sourceTree = "<group>"; };
+		D61D1D3C1B4A65F200DE37DF /* MDCPanState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDCPanState.h; sourceTree = "<group>"; };
+		D61D1D3D1B4A65F200DE37DF /* MDCPanState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDCPanState.m; sourceTree = "<group>"; };
+		D61D1D3E1B4A65F200DE37DF /* MDCSwipeDirection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDCSwipeDirection.h; sourceTree = "<group>"; };
+		D61D1D3F1B4A65F200DE37DF /* MDCSwipeResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDCSwipeResult.h; sourceTree = "<group>"; };
+		D61D1D401B4A65F200DE37DF /* MDCSwipeResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDCSwipeResult.m; sourceTree = "<group>"; };
+		D61D1D421B4A65F200DE37DF /* MDCSwipeToChooseDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDCSwipeToChooseDelegate.h; sourceTree = "<group>"; };
+		D61D1D431B4A65F200DE37DF /* MDCSwipeToChooseView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDCSwipeToChooseView.h; sourceTree = "<group>"; };
+		D61D1D441B4A65F200DE37DF /* MDCSwipeToChooseView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDCSwipeToChooseView.m; sourceTree = "<group>"; };
+		D61D1D451B4A65F200DE37DF /* UIView+MDCSwipeToChoose.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+MDCSwipeToChoose.h"; sourceTree = "<group>"; };
+		D61D1D461B4A65F200DE37DF /* UIView+MDCSwipeToChoose.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+MDCSwipeToChoose.m"; sourceTree = "<group>"; };
 		D6348D251ADA3BC90002BC35 /* JYPriceTextFieldCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYPriceTextFieldCell.h; sourceTree = "<group>"; };
 		D6348D261ADA3BC90002BC35 /* JYPriceTextFieldCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYPriceTextFieldCell.m; sourceTree = "<group>"; };
 		D6348D291ADA4A180002BC35 /* JYRestrictedTextViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYRestrictedTextViewCell.h; sourceTree = "<group>"; };
@@ -304,9 +347,96 @@
 			name = Menu;
 			sourceTree = "<group>";
 		};
+		D61D1D281B4A65F200DE37DF /* MDCSwipeToChoose */ = {
+			isa = PBXGroup;
+			children = (
+				D61D1D291B4A65F200DE37DF /* Internal */,
+				D61D1D341B4A65F200DE37DF /* Public */,
+			);
+			path = MDCSwipeToChoose;
+			sourceTree = "<group>";
+		};
+		D61D1D291B4A65F200DE37DF /* Internal */ = {
+			isa = PBXGroup;
+			children = (
+				D61D1D2A1B4A65F200DE37DF /* MDCGeometry.h */,
+				D61D1D2B1B4A65F200DE37DF /* MDCGeometry.m */,
+				D61D1D2C1B4A65F200DE37DF /* State */,
+				D61D1D2F1B4A65F200DE37DF /* UIColor+MDCRGB8Bit.h */,
+				D61D1D301B4A65F200DE37DF /* UIColor+MDCRGB8Bit.m */,
+				D61D1D311B4A65F200DE37DF /* Views */,
+			);
+			path = Internal;
+			sourceTree = "<group>";
+		};
+		D61D1D2C1B4A65F200DE37DF /* State */ = {
+			isa = PBXGroup;
+			children = (
+				D61D1D2D1B4A65F200DE37DF /* MDCViewState.h */,
+				D61D1D2E1B4A65F200DE37DF /* MDCViewState.m */,
+			);
+			path = State;
+			sourceTree = "<group>";
+		};
+		D61D1D311B4A65F200DE37DF /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				D61D1D321B4A65F200DE37DF /* UIView+MDCBorderedLabel.h */,
+				D61D1D331B4A65F200DE37DF /* UIView+MDCBorderedLabel.m */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		D61D1D341B4A65F200DE37DF /* Public */ = {
+			isa = PBXGroup;
+			children = (
+				D61D1D351B4A65F200DE37DF /* MDCSwipeToChoose.h */,
+				D61D1D361B4A65F200DE37DF /* Options */,
+				D61D1D3B1B4A65F200DE37DF /* State */,
+				D61D1D411B4A65F200DE37DF /* Views */,
+			);
+			path = Public;
+			sourceTree = "<group>";
+		};
+		D61D1D361B4A65F200DE37DF /* Options */ = {
+			isa = PBXGroup;
+			children = (
+				D61D1D371B4A65F200DE37DF /* MDCSwipeOptions.h */,
+				D61D1D381B4A65F200DE37DF /* MDCSwipeOptions.m */,
+				D61D1D391B4A65F200DE37DF /* MDCSwipeToChooseViewOptions.h */,
+				D61D1D3A1B4A65F200DE37DF /* MDCSwipeToChooseViewOptions.m */,
+			);
+			path = Options;
+			sourceTree = "<group>";
+		};
+		D61D1D3B1B4A65F200DE37DF /* State */ = {
+			isa = PBXGroup;
+			children = (
+				D61D1D3C1B4A65F200DE37DF /* MDCPanState.h */,
+				D61D1D3D1B4A65F200DE37DF /* MDCPanState.m */,
+				D61D1D3E1B4A65F200DE37DF /* MDCSwipeDirection.h */,
+				D61D1D3F1B4A65F200DE37DF /* MDCSwipeResult.h */,
+				D61D1D401B4A65F200DE37DF /* MDCSwipeResult.m */,
+			);
+			path = State;
+			sourceTree = "<group>";
+		};
+		D61D1D411B4A65F200DE37DF /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				D61D1D421B4A65F200DE37DF /* MDCSwipeToChooseDelegate.h */,
+				D61D1D431B4A65F200DE37DF /* MDCSwipeToChooseView.h */,
+				D61D1D441B4A65F200DE37DF /* MDCSwipeToChooseView.m */,
+				D61D1D451B4A65F200DE37DF /* UIView+MDCSwipeToChoose.h */,
+				D61D1D461B4A65F200DE37DF /* UIView+MDCSwipeToChoose.m */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
 		D63B69AB1AC5184D005600A9 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				D61D1D281B4A65F200DE37DF /* MDCSwipeToChoose */,
 				D65AFA6F1AEF5F3A007867D0 /* UICustomActionSheet.h */,
 				D65AFA701AEF5F3A007867D0 /* UICustomActionSheet.m */,
 				D65AFA711AEF5F3A007867D0 /* UIImageEffects.h */,
@@ -724,11 +854,16 @@
 				D68DAF961AC4CACD00838E7E /* Constants.m in Sources */,
 				D61C48A41B44A8A5009E422A /* JYModalViewController.m in Sources */,
 				D689ED621AE01F9C00CB4D2B /* JYDateView.m in Sources */,
+				D61D1D551B4A65F200DE37DF /* MDCSwipeResult.m in Sources */,
 				D65AFA621AEC791D007867D0 /* JYBidViewCell.m in Sources */,
+				D61D1D4D1B4A65F200DE37DF /* UIView+MDCBorderedLabel.m in Sources */,
 				D689ED6A1AE42C8300CB4D2B /* UIView+Joyy.m in Sources */,
 				D65AFA661AEDEF3D007867D0 /* JYOrderCard.m in Sources */,
 				D65AFA731AEF5F3A007867D0 /* UICustomActionSheet.m in Sources */,
+				D61D1D591B4A65F200DE37DF /* UIView+MDCSwipeToChoose.m in Sources */,
+				D61D1D511B4A65F200DE37DF /* MDCSwipeToChooseViewOptions.m in Sources */,
 				D61C48AF1B451877009E422A /* JYOrdersBidsViewController.m in Sources */,
+				D61D1D471B4A65F200DE37DF /* MDCGeometry.m in Sources */,
 				D6348D271ADA3BC90002BC35 /* JYPriceTextFieldCell.m in Sources */,
 				D679F0301B2951D5004F1C37 /* JYFixedLengthRowValidator.m in Sources */,
 				D679F0261B1C39BB004F1C37 /* JYFloatLabeledTextFieldCell.m in Sources */,
@@ -742,14 +877,17 @@
 				D6348D371ADB7ABC0002BC35 /* NSMutableDictionary+Joyy.m in Sources */,
 				D69202B51AC4C7C0001C1C3D /* AppDelegate.m in Sources */,
 				D63F0DA21ACD08260067C5EE /* UIColor+Joyy.m in Sources */,
+				D61D1D491B4A65F200DE37DF /* MDCViewState.m in Sources */,
 				D6FA6A8B1B37CDB3007CB30E /* JYOrderViewCell.m in Sources */,
 				D6C82B551B0D9FAE00876F57 /* JYCommentsViewController.m in Sources */,
 				D6B2F05B1ACE630F009601B0 /* JYAutoCompleteTextField.m in Sources */,
 				D61C48A01B449143009E422A /* JYMenuViewCell.m in Sources */,
+				D61D1D4F1B4A65F200DE37DF /* MDCSwipeOptions.m in Sources */,
 				D63F0D711AC9EC060067C5EE /* JYUser.m in Sources */,
 				D6FA6A7B1B33752C007CB30E /* JYPaymentViewController.m in Sources */,
 				D6B2F0631ACF4755009601B0 /* JYOrderDetailsViewController.m in Sources */,
 				D6A507F01B49E5AA005D9FC3 /* JYImageLabelView.m in Sources */,
+				D61D1D4B1B4A65F200DE37DF /* UIColor+MDCRGB8Bit.m in Sources */,
 				D6C82B651B12551500876F57 /* JYBid.m in Sources */,
 				D6348D2B1ADA4A650002BC35 /* JYRestrictedTextViewCell.m in Sources */,
 				D63F0D7D1ACA5E260067C5EE /* JYSignViewController.m in Sources */,
@@ -766,12 +904,14 @@
 				D6C82B5C1B0EFDEA00876F57 /* JYCommentTextView.m in Sources */,
 				D6348D2F1ADB4DD60002BC35 /* NSString+Joyy.m in Sources */,
 				D6A507E71B49C00B005D9FC3 /* JYSelectionViewController.m in Sources */,
+				D61D1D531B4A65F200DE37DF /* MDCPanState.m in Sources */,
 				D63F0D551AC7ACB70067C5EE /* JYSignUpViewController.m in Sources */,
 				D6A507EC1B49E32F005D9FC3 /* Joyyor.m in Sources */,
 				D63B69A91AC51302005600A9 /* UIFont+Joyy.m in Sources */,
 				D63F0D971ACC95B00067C5EE /* JYMapViewController.m in Sources */,
 				D68DAF971AC4CACD00838E7E /* JYSignInViewController.m in Sources */,
 				D6FA6A831B33E466007CB30E /* JYCreditCard.m in Sources */,
+				D61D1D571B4A65F200DE37DF /* MDCSwipeToChooseView.m in Sources */,
 				D6B2F08D1AD714DA009601B0 /* JYInvite.m in Sources */,
 				D6B2F0811AD5A679009601B0 /* JYPlacesViewController.m in Sources */,
 			);
@@ -786,6 +926,7 @@
 				D63F0D721AC9EC060067C5EE /* JYUser.m in Sources */,
 				D689ED6B1AE42C8300CB4D2B /* UIView+Joyy.m in Sources */,
 				D6FA6A841B33E466007CB30E /* JYCreditCard.m in Sources */,
+				D61D1D4C1B4A65F200DE37DF /* UIColor+MDCRGB8Bit.m in Sources */,
 				D6A507ED1B49E32F005D9FC3 /* Joyyor.m in Sources */,
 				D6C82B6A1B12553D00876F57 /* JYComment.m in Sources */,
 				D63F0D8D1ACBBF1F0067C5EE /* JYCollectionViewCell.m in Sources */,
@@ -796,6 +937,7 @@
 				D61C48A51B44A8A5009E422A /* JYModalViewController.m in Sources */,
 				D6A507F11B49E5AA005D9FC3 /* JYImageLabelView.m in Sources */,
 				D6A507E81B49C00B005D9FC3 /* JYSelectionViewController.m in Sources */,
+				D61D1D501B4A65F200DE37DF /* MDCSwipeOptions.m in Sources */,
 				D63F0D7E1ACA5E260067C5EE /* JYSignViewController.m in Sources */,
 				D63B69BB1AC624F8005600A9 /* JYAutoCompleteDataSource.m in Sources */,
 				D679F0311B2951D5004F1C37 /* JYFixedLengthRowValidator.m in Sources */,
@@ -806,13 +948,18 @@
 				D6FA6A8C1B37CDB3007CB30E /* JYOrderViewCell.m in Sources */,
 				D63F0D761AC9F6F80067C5EE /* DataStore.m in Sources */,
 				D6348D2C1ADA4A650002BC35 /* JYRestrictedTextViewCell.m in Sources */,
+				D61D1D5A1B4A65F200DE37DF /* UIView+MDCSwipeToChoose.m in Sources */,
 				D679F0271B1C39BB004F1C37 /* JYFloatLabeledTextFieldCell.m in Sources */,
+				D61D1D481B4A65F200DE37DF /* MDCGeometry.m in Sources */,
 				D61C48A11B449143009E422A /* JYMenuViewCell.m in Sources */,
 				D65F37471B04807D007B534C /* JYCommentViewCell.m in Sources */,
 				D6B2F0821AD5A679009601B0 /* JYPlacesViewController.m in Sources */,
 				D6B2F05C1ACE630F009601B0 /* JYAutoCompleteTextField.m in Sources */,
 				D69202CF1AC4C7C1001C1C3D /* joyyiosTests.m in Sources */,
+				D61D1D521B4A65F200DE37DF /* MDCSwipeToChooseViewOptions.m in Sources */,
 				D63F0D5A1AC7CFF20067C5EE /* JYButton.m in Sources */,
+				D61D1D581B4A65F200DE37DF /* MDCSwipeToChooseView.m in Sources */,
+				D61D1D4E1B4A65F200DE37DF /* UIView+MDCBorderedLabel.m in Sources */,
 				D6B2F08E1AD714DA009601B0 /* JYInvite.m in Sources */,
 				D6F4A0521AF6A156001A3C89 /* AppConst.m in Sources */,
 				D65AFA671AEDEF3D007867D0 /* JYOrderCard.m in Sources */,
@@ -821,13 +968,16 @@
 				D63F0D981ACC95B00067C5EE /* JYMapViewController.m in Sources */,
 				D63F0DA31ACD08260067C5EE /* UIColor+Joyy.m in Sources */,
 				D6B2F0861AD5E165009601B0 /* JYPlacesViewCell.m in Sources */,
+				D61D1D4A1B4A65F200DE37DF /* MDCViewState.m in Sources */,
 				D6FA6A801B33E3DD007CB30E /* JYCreditCardViewCell.m in Sources */,
 				D65AFA741AEF5F3A007867D0 /* UICustomActionSheet.m in Sources */,
+				D61D1D541B4A65F200DE37DF /* MDCPanState.m in Sources */,
 				D63B69B31AC51D61005600A9 /* JYSignBaseViewController.m in Sources */,
 				D6A507F51B49E61C005D9FC3 /* JoyyorCard.m in Sources */,
 				D61C489D1B4483B4009E422A /* JYMenuViewController.m in Sources */,
 				D6348D301ADB4DD60002BC35 /* NSString+Joyy.m in Sources */,
 				D61C48A91B45085C009E422A /* JYOrdersHistoryViewController.m in Sources */,
+				D61D1D561B4A65F200DE37DF /* MDCSwipeResult.m in Sources */,
 				D6FA6A7C1B33752C007CB30E /* JYPaymentViewController.m in Sources */,
 				D61C48B01B451877009E422A /* JYOrdersBidsViewController.m in Sources */,
 				D6C82B5D1B0EFDEA00876F57 /* JYCommentTextView.m in Sources */,

@@ -114,9 +114,9 @@ static CGFloat const MDCSwipeToChooseViewLabelWidth = 65.f;
             nopeImageView.alpha = 0.f;
         } else if (state.direction == MDCSwipeDirectionLeft) {
             likedImageView.alpha = 0.f;
-            nopeImageView.alpha = 3 * state.thresholdRatio;
+            nopeImageView.alpha = 2 * state.thresholdRatio;
         } else if (state.direction == MDCSwipeDirectionRight) {
-            likedImageView.alpha = 3 * state.thresholdRatio;
+            likedImageView.alpha = 2 * state.thresholdRatio;
             nopeImageView.alpha = 0.f;
         }
 
