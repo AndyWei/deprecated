@@ -247,13 +247,13 @@ static NSString *const kCardCellIdentifier = @"cardCell";
     NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYUser currentUser].token];
     [manager.requestSerializer setValue:token forHTTPHeaderField:@"Authorization"];
 
-    NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"creditcards/my"];
+    NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"creditcard/my"];
 
     __weak typeof(self) weakSelf = self;
     [manager GET:url
       parameters:nil
          success:^(AFHTTPRequestOperation *operation, id responseObject) {
-             NSLog(@"/creditcards/my fetch success responseObject: %@", responseObject);
+             NSLog(@"/creditcard/my fetch success responseObject: %@", responseObject);
 
              [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
 
@@ -272,7 +272,7 @@ static NSString *const kCardCellIdentifier = @"cardCell";
     NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYUser currentUser].token];
     [manager.requestSerializer setValue:token forHTTPHeaderField:@"Authorization"];
 
-    NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"creditcards"];
+    NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"creditcard"];
     NSMutableDictionary *parameters = [self _submitCreditCardParameters];
 
     NSLog(@"parameters: %@", parameters);
