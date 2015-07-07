@@ -2,11 +2,11 @@
 
 
 INSERT INTO jyuser
-    (username,                                                       password,                 email, joyyor_status, rating_total, rating_count, created_at, updated_at, deleted) VALUES
-    (  'jack', '$2a$10$sTaFcBz.lhDXr2bVNZJZeenPJ3qiKG.NaQQ5zqiz0peku0fDvO0YG',      'jack@gmail.com',             0,           10,            2,      now(),      now(),   FALSE),
-    (  'andy', '$2a$10$sTaFcBz.lhDXr2bVNZJZeenPJ3qiKG.NaQQ5zqiz0peku0fDvO0YG', 'andy94555@gmail.com',             1,            9,            2,      now(),      now(),   FALSE),
-    (  'ping', '$2a$10$sTaFcBz.lhDXr2bVNZJZeenPJ3qiKG.NaQQ5zqiz0peku0fDvO0YG', 'ping@gmail.com',                  0,            0,            0,      now(),      now(),   FALSE),
-    (  'mike', '$2a$10$sTaFcBz.lhDXr2bVNZJZeenPJ3qiKG.NaQQ5zqiz0peku0fDvO0YG', 'mike95273@gmail.com',             0,           13,            3,      now(),      now(),   FALSE);
+    (username,                                                       password,                 email, joyyor_status, category, rating, rating_total, rating_count, created_at, updated_at, coordinate) VALUES
+    (  'jack', '$2a$10$sTaFcBz.lhDXr2bVNZJZeenPJ3qiKG.NaQQ5zqiz0peku0fDvO0YG',      'jack@gmail.com',             0,        0,   5000,        10000,            2,      now(),      now(),   ST_SetSRID(ST_MakePoint(-122.4164623, 37.7766092), 4326)),
+    (  'andy', '$2a$10$sTaFcBz.lhDXr2bVNZJZeenPJ3qiKG.NaQQ5zqiz0peku0fDvO0YG', 'andy94555@gmail.com',             1,        1,   4500,         9000,            2,      now(),      now(),   ST_SetSRID(ST_MakePoint(-122.4074981, 37.7879331), 4326)),
+    (  'ping', '$2a$10$sTaFcBz.lhDXr2bVNZJZeenPJ3qiKG.NaQQ5zqiz0peku0fDvO0YG', 'ping@gmail.com',                  0,        0,   4200,         4200,            0,      now(),      now(),   ST_SetSRID(ST_MakePoint(-121.9989519, 37.5293864), 4326)),
+    (  'mike', '$2a$10$sTaFcBz.lhDXr2bVNZJZeenPJ3qiKG.NaQQ5zqiz0peku0fDvO0YG', 'mike95273@gmail.com',             0,        1,   4333,        13000,            3,      now(),      now(),   ST_SetSRID(ST_MakePoint(-121.9989519, 37.5293864), 4326));
 
 
 INSERT INTO account

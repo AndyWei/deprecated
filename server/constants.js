@@ -64,12 +64,13 @@ exports.QUERY_INVALID = 'The query must contain at least one parameter.';
 
 exports.RECORD_NOT_FOUND = 'Query excuted but no record found.';
 
-exports.ORDER_STRIPE_TOKEN_NOT_FOUND = 'The payment token is not found, payment failed';
+exports.ORDER_STRIPE_TOKEN_NOT_FOUND = 'The payment token is not found, payment failed.';
 
 exports.TOKEN_INVALID = 'Token is invalid';
 
 exports.USER_NOT_FOUND = 'User not found.';
 
+exports.USER_UPDATE_FAILED = 'User record update failed.';
 
 exports.Role = new Enum({
     user: 0,

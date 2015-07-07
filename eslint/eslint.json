@@ -53,7 +53,7 @@
         "no-loop-func": 2,
         "no-mixed-requires": [0, false],
         "no-mixed-spaces-and-tabs": [2, false],
-        "no-multi-spaces": 2,
+        "no-multi-spaces": 0,
         "no-multi-str": 0,
         "no-multiple-empty-lines": [0, {"max": 2}],
         "no-native-reassign": 2,
