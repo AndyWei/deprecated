@@ -1,6 +1,7 @@
 CREATE TABLE invite (
     id                 BIGSERIAL  PRIMARY KEY,
-    user_id            BIGINT        NOT NULL,  -- the id of the customer who placed this order
+    user_id            BIGINT        NOT NULL,  -- the id of the customer who placed this invite
+    invitee_id         BIGINT[]      NOT NULL,  -- the array of invited joyyor user_ids
     duration           NUMERIC(2)    NOT NULL,  -- the duration that the customer wants. In hours.
     currency           CHAR(3)       NOT NULL DEFAULT 'usd',  -- ISO 4217 Currency Codes
     country            CHAR(2)       NOT NULL DEFAULT 'us',   -- country code
@@ -14,9 +15,9 @@ CREATE TABLE invite (
     created_at         TIMESTAMPTZ   NOT NULL,
     updated_at         TIMESTAMPTZ   NOT NULL,
     deleted            BOOLEAN       NOT NULL DEFAULT false,
-    finished_at        TIMESTAMPTZ           ,  -- the timestamp of finished the order
+    finished_at        TIMESTAMPTZ           ,  -- the timestamp of finished the invite
     winner_id          BIGINT                ,  -- the user_id of the joyyor who won this invite
-    winner_name        TEXT                  ,  -- the display_name of the joyyor who wins this order.
+    winner_name        TEXT                  ,  -- the display_name of the joyyor who won this invite.
     final_price        NUMERIC(10)           ,  -- final_price = duration * joyyor.hourly_rate. In cents.
     stripe_token       TEXT                  ,  -- the string that represents a credit card (start with tok_ ) or a stripe customer object (start with cus_ )
     stripe_charge_id   TEXT                  ,  -- the string that represents a sucessful charge, which will be used for refund

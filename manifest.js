@@ -36,11 +36,13 @@ var manifest = {
         './server/api/bids': { basePath: '/v1' },
         './server/api/comments': { basePath: '/v1' },
         './server/api/creditcard': { basePath: '/v1' },
+        './server/api/invite': { basePath: '/v1' },
         './server/api/notification': { basePath: '/v1' },
         './server/api/orders': { basePath: '/v1' },
         './server/api/review': { basePath: '/v1' },
         './server/api/signin': { basePath: '/v1' },
-        './server/api/signup': { basePath: '/v1' }
+        './server/api/signup': { basePath: '/v1' },
+        './server/api/user': { basePath: '/v1' }
     }
 };
 
