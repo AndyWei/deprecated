@@ -8,6 +8,6 @@
 
 @interface UIFont (Joyy)
 
-+ (UIFont *)lightSystemFontOfSize:(CGFloat)size;
+//+ (UIFont *)lightSystemFontOfSize:(CGFloat)size;
 
 @end

@@ -64,7 +64,6 @@ NSString *const kNotificationDidCreateBid = @"didCreateBid";
 NSString *const kNotificationDidCreateComment = @"didCreateComment";
 NSString *const kNotificationDidCreateOrder = @"didCreateOrder";
 NSString *const kNotificationDidFinishOrder = @"didFinishOrder";
-NSString *const kNotificationDidPressMenuButton = @"didPressMenuButton";
 NSString *const kNotificationDidReceiveBid = @"didReceiveBid";
 NSString *const kNotificationDidSignIn = @"didSignIn";
 NSString *const kNotificationDidSignUp = @"didSignUp";

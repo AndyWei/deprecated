@@ -80,7 +80,7 @@ static NSString *reuseId = @"pin";
 
 - (void)_menu
 {
-    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationDidPressMenuButton object:nil];
+
 }
 
 - (void)_createMapView

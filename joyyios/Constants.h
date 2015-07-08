@@ -66,7 +66,6 @@ extern NSString *const kNotificationDidCreateBid;
 extern NSString *const kNotificationDidCreateComment;
 extern NSString *const kNotificationDidCreateOrder;
 extern NSString *const kNotificationDidFinishOrder;
-extern NSString *const kNotificationDidPressMenuButton;
 extern NSString *const kNotificationDidReceiveBid;
 extern NSString *const kNotificationDidSignIn;
 extern NSString *const kNotificationDidSignUp;

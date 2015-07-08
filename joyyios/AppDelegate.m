@@ -38,7 +38,6 @@
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_signDidFinish) name:kNotificationDidSignIn object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_signDidFinish) name:kNotificationDidSignUp object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_menuButtonPressed) name:kNotificationDidPressMenuButton object:nil];
 
     [self _setupGlobalAppearance];
     [self _setupLocationManager];
@@ -114,23 +113,23 @@
 {
     self.window.backgroundColor = [UIColor whiteColor];
 
-    [[UINavigationBar appearance]
-        setTitleTextAttributes:[NSDictionary
-                                   dictionaryWithObjectsAndKeys:[UIFont lightSystemFontOfSize:kNavBarTitleFontSize], NSFontAttributeName, nil]];
+    [[UINavigationBar appearance] setTintColor:JoyyBlue];
+    [[UITabBar appearance] setTintColor:JoyyBlue];
 
-    [[UINavigationBar appearance] setTintColor:FlatBlackDark];
+//    [[UINavigationBar appearance]
+//        setTitleTextAttributes:[NSDictionary
+//                                   dictionaryWithObjectsAndKeys:[UIFont systemFontOfSize:kNavBarTitleFontSize], NSFontAttributeName, nil]];
+
+
+//    [[UITabBarItem appearance]
+//        setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIFont systemFontOfSize:kTabBarTitleFontSize], NSFontAttributeName, nil]
+//                      forState:UIControlStateNormal];
 //
-//    [[UITabBar appearance] setTintColor:JoyyBlue];
+//    [[UITabBarItem appearance]
+//        setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIFont systemFontOfSize:kTabBarTitleFontSize], NSFontAttributeName, nil]
+//                      forState:UIControlStateSelected];
 
-    [[UITabBarItem appearance]
-        setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIFont systemFontOfSize:kTabBarTitleFontSize], NSFontAttributeName, nil]
-                      forState:UIControlStateNormal];
-
-    [[UITabBarItem appearance]
-        setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIFont systemFontOfSize:kTabBarTitleFontSize], NSFontAttributeName, nil]
-                      forState:UIControlStateSelected];
-
-    [[UITabBarItem appearance] setTitlePositionAdjustment:UIOffsetMake(0.0, -10.0f)];
+//    [[UITabBarItem appearance] setTitlePositionAdjustment:UIOffsetMake(0.0, -10.0f)];
 }
 
 - (void)_setupLocationManager
@@ -273,34 +272,49 @@
         [self _signInAfter:(user.tokenExpireTimeInSecs - now)];
     }
 
-    [self _launchDrawerViewController];
+    [self _launchTabViewController];
 }
 
-- (void)_launchDrawerViewController
+- (void)_launchTabViewController
 {
-    UIViewController *map = [JYMapViewController new];
-    UINavigationController *orderNC = [[UINavigationController alloc] initWithRootViewController:map];
+    UIViewController *vc1 = [JYMenuViewController new];
+    UINavigationController *nc1 = [[UINavigationController alloc] initWithRootViewController:vc1];
 
-    UIViewController *menu = [JYMenuViewController new];
+    UIViewController *vc2 = [JYMenuViewController new];
+    UINavigationController *nc2 = [[UINavigationController alloc] initWithRootViewController:vc2];
 
-    MMDrawerController * drawerController = [[MMDrawerController alloc]
-                                             initWithCenterViewController:orderNC
-                                             leftDrawerViewController:menu
-                                             rightDrawerViewController:nil];
+    UIViewController *vc3 = [JYMenuViewController new];
+    UINavigationController *nc3 = [[UINavigationController alloc] initWithRootViewController:vc3];
 
-    drawerController.openDrawerGestureModeMask = MMOpenDrawerGestureModePanningNavigationBar;
-    drawerController.closeDrawerGestureModeMask = MMCloseDrawerGestureModeAll;
+    UIViewController *vc4 = [JYMenuViewController new];
+    UINavigationController *nc4 = [[UINavigationController alloc] initWithRootViewController:vc4];
 
-    [drawerController setDrawerVisualStateBlock:[MMDrawerVisualState slideAndScaleVisualStateBlock]];
+    UITabBarController *tabBarController = [UITabBarController new];
+    tabBarController.viewControllers = @[ nc1, nc2, nc3, nc4 ];
 
-    self.drawerController = drawerController;
+    UITabBar *tabBar = tabBarController.tabBar;
+    UITabBarItem *tabBarItem1 = [tabBar.items objectAtIndex:0];
+    UITabBarItem *tabBarItem2 = [tabBar.items objectAtIndex:1];
+    UITabBarItem *tabBarItem3 = [tabBar.items objectAtIndex:2];
+    UITabBarItem *tabBarItem4 = [tabBar.items objectAtIndex:3];
 
-    self.window.rootViewController = drawerController;
-}
+    tabBarItem1.selectedImage = [[UIImage imageNamed:@"mask_selected"] imageWithRenderingMode:UIImageRenderingModeAutomatic];
+    tabBarItem1.image = [[UIImage imageNamed:@"mask"] imageWithRenderingMode:UIImageRenderingModeAutomatic];
+    tabBarItem1.title = NSLocalizedString(@"Mask", nil);
 
-- (void)_menuButtonPressed
-{
-    [self.drawerController openDrawerSide:MMDrawerSideLeft animated:YES completion:nil];
+    tabBarItem2.selectedImage = [[UIImage imageNamed:@"search_selected"]imageWithRenderingMode:UIImageRenderingModeAutomatic];
+    tabBarItem2.image = [[UIImage imageNamed:@"search"]imageWithRenderingMode:UIImageRenderingModeAutomatic];
+    tabBarItem2.title = NSLocalizedString(@"Search", nil);
+
+    tabBarItem3.selectedImage = [[UIImage imageNamed:@"chat_selected"]imageWithRenderingMode:UIImageRenderingModeAutomatic];
+    tabBarItem3.image = [[UIImage imageNamed:@"chat"]imageWithRenderingMode:UIImageRenderingModeAutomatic];
+    tabBarItem3.title = NSLocalizedString(@"Chat", nil);
+
+    tabBarItem4.selectedImage = [[UIImage imageNamed:@"me_selected"]imageWithRenderingMode:UIImageRenderingModeAutomatic];
+    tabBarItem4.image = [[UIImage imageNamed:@"me"]imageWithRenderingMode:UIImageRenderingModeAutomatic];
+    tabBarItem4.title = NSLocalizedString(@"Me", nil);
+
+    self.window.rootViewController = tabBarController;
 }
 
 #pragma mark - Network

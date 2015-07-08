@@ -12,7 +12,8 @@
 
 + (UIColor *)joyyBlueColor
 {
-    return hsb(204, 76, 86);
+//    return hsb(204, 76, 86);
+    return rgb(52, 181, 229);
 }
 
 + (UIColor *)joyyBlueColor50
