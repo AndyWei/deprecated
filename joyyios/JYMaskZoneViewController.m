@@ -1,5 +1,5 @@
 //
-//  JYOrdersOngoingViewController.m
+//  JYMaskZoneViewController.m
 //  joyyios
 //
 //  Created by Ping Yang on 4/25/15.
@@ -10,11 +10,11 @@
 #import <KVNProgress/KVNProgress.h>
 
 #import "JYOrderViewCell.h"
-#import "JYOrdersViewController.h"
+#import "JYMaskZoneViewController.h"
 #import "JYUser.h"
 #import "UICustomActionSheet.h"
 
-@interface JYOrdersViewController ()
+@interface JYMaskZoneViewController ()
 
 @property(nonatomic) NSMutableArray *dealtOrderList;
 @property(nonatomic) NSMutableArray *startedOrderList;
@@ -26,12 +26,15 @@
 
 static NSString *const kOrderCellIdentifier = @"orderCell";
 
-@implementation JYOrdersViewController
+@implementation JYMaskZoneViewController
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.title = NSLocalizedString(@"ORDERS", nil);
+    self.title = NSLocalizedString(@"MASK ZONE", nil);
+
+    UIBarButtonItem *cameraButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCamera target:self action:@selector(_cameraButtonPressed)];
+    self.navigationItem.rightBarButtonItem = cameraButton;
 
     self.selectedIndexPath = nil;
 
@@ -90,6 +93,29 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
 
     order = self.dealtOrderList[index];
     return order;
+}
+
+- (void)_cameraButtonPressed
+{
+    UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+    picker.delegate = self;
+    picker.allowsEditing = YES;
+    picker.sourceType = UIImagePickerControllerSourceTypeCamera;
+    picker.cameraCaptureMode = UIImagePickerControllerCameraCaptureModePhoto;
+    [self presentViewController:picker animated:YES completion:NULL];
+}
+
+#pragma mark - UIImagePickerController Delegate Methods
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
+
+//    self.imageView.image = info[UIImagePickerControllerEditedImage];
+    [picker dismissViewControllerAnimated:YES completion:NULL];
+}
+
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
+
+    [picker dismissViewControllerAnimated:YES completion:NULL];
 }
 
 #pragma mark - UITableViewDataSource

@@ -1,5 +1,5 @@
 //
-//  JYModalViewController.h
+//  JYBaseViewController.h
 //  joyyios
 //
 //  Created by Ping Yang on 7/1/15.
@@ -8,7 +8,7 @@
 
 #import "JYInvite.h"
 
-@interface JYModalViewController : UIViewController
+@interface JYBaseViewController : UIViewController
 
 - (JYInvite *)orderOfId:(NSUInteger)targetOrderId;
 - (void)networkThreadBegin;

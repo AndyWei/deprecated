@@ -6,12 +6,12 @@
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
-#import "JYModalViewController.h"
+#import "JYBaseViewController.h"
 #import "JYPaymentViewController.h"
 #import "UICustomActionSheet.h"
 
 @import PassKit;
 
-@interface JYOrdersBidsViewController : JYModalViewController <JYPaymentViewControllerDelegate, PKPaymentAuthorizationViewControllerDelegate, UICustomActionSheetDelegate, UITableViewDataSource, UITableViewDelegate>
+@interface JYOrdersBidsViewController : JYBaseViewController <JYPaymentViewControllerDelegate, PKPaymentAuthorizationViewControllerDelegate, UICustomActionSheetDelegate, UITableViewDataSource, UITableViewDelegate>
 
 @end

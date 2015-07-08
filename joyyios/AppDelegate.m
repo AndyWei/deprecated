@@ -15,6 +15,7 @@
 
 #import "AppDelegate.h"
 #import "DataStore.h"
+#import "JYMaskZoneViewController.h"
 #import "JYMenuViewController.h"
 #import "JYMapViewController.h"
 #import "JYSignViewController.h"
@@ -277,7 +278,7 @@
 
 - (void)_launchTabViewController
 {
-    UIViewController *vc1 = [JYMenuViewController new];
+    UIViewController *vc1 = [JYMaskZoneViewController new];
     UINavigationController *nc1 = [[UINavigationController alloc] initWithRootViewController:vc1];
 
     UIViewController *vc2 = [JYMenuViewController new];

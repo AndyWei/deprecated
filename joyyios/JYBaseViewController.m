@@ -1,27 +1,24 @@
 //
-//  JYModalViewController.m
+//  JYBaseViewController.m
 //  joyyios
 //
 //  Created by Ping Yang on 7/1/15.
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
-#import "JYModalViewController.h"
+#import "JYBaseViewController.h"
 
-@interface JYModalViewController ()
+@interface JYBaseViewController ()
 
 @end
 
-@implementation JYModalViewController
+@implementation JYBaseViewController
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
 
     self.networkThreadCount = 0;
-
-    UIBarButtonItem *doneButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(_done)];
-    self.navigationItem.rightBarButtonItem = doneButton;
 }
 
 - (void)didReceiveMemoryWarning
@@ -59,11 +56,6 @@
         }
     }
     return nil;
-}
-
-- (void)_done
-{
-    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 @end

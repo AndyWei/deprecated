@@ -8,7 +8,7 @@
 
 #import <CardIO/CardIO.h>
 
-#import "JYModalViewController.h"
+#import "JYBaseViewController.h"
 
 @class JYPaymentViewController;
 
@@ -21,7 +21,7 @@
 
 
 
-@interface JYPaymentViewController : JYModalViewController <CardIOPaymentViewControllerDelegate, UITableViewDataSource, UITableViewDelegate>
+@interface JYPaymentViewController : JYBaseViewController <CardIOPaymentViewControllerDelegate, UITableViewDataSource, UITableViewDelegate>
 
 @property(nonatomic, weak) id<JYPaymentViewControllerDelegate> delegate;
 

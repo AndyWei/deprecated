@@ -6,9 +6,9 @@
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
-#import "JYModalViewController.h"
+#import "JYBaseViewController.h"
 
-@interface JYOrdersHistoryViewController : JYModalViewController <UITableViewDataSource, UITableViewDelegate>
+@interface JYOrdersHistoryViewController : JYBaseViewController <UITableViewDataSource, UITableViewDelegate>
 
 @end
 
