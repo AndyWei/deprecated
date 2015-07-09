@@ -8,8 +8,10 @@
 
 #import <AFNetworking/AFNetworking.h>
 #import <KVNProgress/KVNProgress.h>
+#import "TGCameraColor.h"
 
 #import "JYOrderViewCell.h"
+#import "JYCameraOverlayView.h"
 #import "JYMaskZoneViewController.h"
 #import "JYUser.h"
 #import "UICustomActionSheet.h"
@@ -21,6 +23,8 @@
 @property(nonatomic) NSMutableArray *finishedOrderList;
 @property(nonatomic) NSIndexPath *selectedIndexPath;
 
+@property(nonatomic, weak) UIImagePickerController *picker;
+
 @end
 
 
@@ -31,7 +35,7 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.title = NSLocalizedString(@"MASK ZONE", nil);
+    self.title = NSLocalizedString(@"Mask Zone", nil);
 
     UIBarButtonItem *cameraButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCamera target:self action:@selector(_cameraButtonPressed)];
     self.navigationItem.rightBarButtonItem = cameraButton;
@@ -97,25 +101,29 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
 
 - (void)_cameraButtonPressed
 {
-    UIImagePickerController *picker = [[UIImagePickerController alloc] init];
-    picker.delegate = self;
-    picker.allowsEditing = YES;
-    picker.sourceType = UIImagePickerControllerSourceTypeCamera;
-    picker.cameraCaptureMode = UIImagePickerControllerCameraCaptureModePhoto;
-    [self presentViewController:picker animated:YES completion:NULL];
+    [TGCameraColor setTintColor:JoyyBlue];
+    TGCameraNavigationController *camera = [TGCameraNavigationController newWithCameraDelegate:self];
+
+    [self presentViewController:camera animated:YES completion:nil];
 }
 
-#pragma mark - UIImagePickerController Delegate Methods
+#pragma mark - TGCameraDelegate Methods
 
-- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
-
-//    self.imageView.image = info[UIImagePickerControllerEditedImage];
-    [picker dismissViewControllerAnimated:YES completion:NULL];
+- (void)cameraDidCancel
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
+- (void)cameraDidTakePhoto:(UIImage *)image
+{
+//    _photoView.image = image;
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
 
-    [picker dismissViewControllerAnimated:YES completion:NULL];
+- (void)cameraDidSelectAlbumPhoto:(UIImage *)image
+{
+//    _photoView.image = image;
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark - UITableViewDataSource

@@ -77,4 +77,7 @@ extern NSString *const kSystemFontRegular;
 
 extern NSString *const kUrlAPIBase;
 
+#define SCREEN_WIDTH  CGRectGetWidth([[UIScreen mainScreen] applicationFrame])
+#define SCREEN_HEIGHT CGRectGetHeight([[UIScreen mainScreen] applicationFrame])
+
 #endif

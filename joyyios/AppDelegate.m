@@ -301,7 +301,7 @@
 
     tabBarItem1.selectedImage = [[UIImage imageNamed:@"mask_selected"] imageWithRenderingMode:UIImageRenderingModeAutomatic];
     tabBarItem1.image = [[UIImage imageNamed:@"mask"] imageWithRenderingMode:UIImageRenderingModeAutomatic];
-    tabBarItem1.title = NSLocalizedString(@"Mask", nil);
+    tabBarItem1.title = NSLocalizedString(@"MaskZone", nil);
 
     tabBarItem2.selectedImage = [[UIImage imageNamed:@"search_selected"]imageWithRenderingMode:UIImageRenderingModeAutomatic];
     tabBarItem2.image = [[UIImage imageNamed:@"search"]imageWithRenderingMode:UIImageRenderingModeAutomatic];

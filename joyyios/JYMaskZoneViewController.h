@@ -6,8 +6,10 @@
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
+#import "TGCameraViewController.h"
+
 #import "JYBaseViewController.h"
 
-@interface JYMaskZoneViewController : JYBaseViewController <UIImagePickerControllerDelegate, UINavigationControllerDelegate,UITableViewDataSource, UITableViewDelegate>
+@interface JYMaskZoneViewController : JYBaseViewController <TGCameraDelegate, UITableViewDataSource, UITableViewDelegate>
 
 @end

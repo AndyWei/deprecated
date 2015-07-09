@@ -1,6 +1,5 @@
 workspace 'joyyios.xcworkspace'
 xcodeproj 'joyyios.xcodeproj'
-xcodeproj 'joyyor.xcodeproj'
 
 platform :ios, '7.0'
 
