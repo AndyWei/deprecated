@@ -59,7 +59,7 @@
 
 - (void)insertSublayerWithCaptureView:(UIView *)captureView atRootView:(UIView *)rootView;
 
-- (void)disPlayGridView;
+- (void)changeGridViewWithButton:(UIButton *)button;
 
 - (void)changeFlashModeWithButton:(UIButton *)button;
 

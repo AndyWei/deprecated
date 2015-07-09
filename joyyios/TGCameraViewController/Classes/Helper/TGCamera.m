@@ -132,9 +132,9 @@ NSMutableDictionary *optionDictionary;
     [captureView insertSubview:self.gridView atIndex:index];
 }
 
-- (void)disPlayGridView
+- (void)changeGridViewWithButton:(UIButton *)button
 {
-    [TGCameraGrid disPlayGridView:self.gridView];
+    [TGCameraGrid changeGridView:self.gridView andButton:button];
 }
 
 - (void)changeFlashModeWithButton:(UIButton *)button

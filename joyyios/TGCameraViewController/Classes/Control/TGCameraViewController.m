@@ -144,7 +144,8 @@
         _bottomRightView.hidden = NO;
         
         _actionsView.hidden = NO;
-        
+
+        [(TGTintedButton*)_gridButton setCustomTintColorOverride:[UIColor grayColor]];
         _gridButton.enabled =
         _toggleButton.enabled =
         _shotButton.enabled =
@@ -234,7 +235,7 @@
 
 - (IBAction)gridTapped
 {
-    [_camera disPlayGridView];
+    [_camera changeGridViewWithButton:_gridButton];
 }
 
 - (IBAction)flashTapped

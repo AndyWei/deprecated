@@ -23,8 +23,6 @@
 @property(nonatomic) NSMutableArray *finishedOrderList;
 @property(nonatomic) NSIndexPath *selectedIndexPath;
 
-@property(nonatomic, weak) UIImagePickerController *picker;
-
 @end
 
 
