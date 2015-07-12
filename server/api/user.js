@@ -3,10 +3,10 @@ var Hoek = require('hoek');
 var Joi = require('joi');
 var c = require('../constants');
 
-
 var internals = {};
+
 var selectClause = 'SELECT id, gender, rating, rating_count, invite_count, \
-                    display_name, age, bio, pp_url, hourly_rate, created_at, updated_at, \
+                    display_name, age, bio, portrait_url, hourly_rate, created_at, updated_at, \
                     ST_X(coordinate) AS lon, ST_Y(coordinate) AS lat \
                     FROM jyuser ';
 
@@ -97,7 +97,7 @@ exports.register = function (server, options, next) {
                 query: {
                     lon: Joi.number().min(-180).max(180).required(),
                     lat: Joi.number().min(-90).max(90).required(),
-                    distance: Joi.number().min(1).max(1000).default(50),  // in kilometers
+                    distance: Joi.number().min(1).max(1000).default(2),  // in kilometers
                     category: Joi.number().min(1).max(4).required(),      // the service category
                     rating_below: Joi.number().min(0).max(5000).default(5000)
                 }
@@ -233,13 +233,15 @@ exports.register = function (server, options, next) {
     next();
 };
 
-exports.register.attributes = {
-    name: 'user'
-};
 
-
-// convert distance in km to GPS degree
+/*
+ *  convert distance in km to GPS degree
+ */
 internals.degreeFromDistance = function(distance) {
 
     return distance * c.DEGREE_FACTOR;
+};
+
+exports.register.attributes = {
+    name: 'user'
 };

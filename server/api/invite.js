@@ -1,16 +1,6 @@
-var Async = require('async');
-var Boom = require('boom');
-var Config = require('../../config');
 var Hoek = require('hoek');
 var Joi = require('joi');
-var Push = require('../push');
-var Stripe = require('stripe')(Config.get('/stripe/platformSecretKey'));
-var Utils = require('../utils');
-var c = require('../constants');
-var _ = require('underscore');
 
-
-var internals = {};
 
 exports.register = function (server, options, next) {
 
@@ -60,9 +50,6 @@ exports.register = function (server, options, next) {
             });
         }
     });
-
-
-    
 
     next();
 };

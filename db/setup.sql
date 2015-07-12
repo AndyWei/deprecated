@@ -11,6 +11,7 @@ CREATE EXTENSION postgis;
 BEGIN;
 \ir  tables/jyuser.sql
 \ir  tables/invite.sql
+\ir  tables/media.sql
 \ir  tables/account.sql
 \ir  tables/creditcard.sql
 \ir  tables/orders.sql

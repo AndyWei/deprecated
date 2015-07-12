@@ -19,7 +19,7 @@ CREATE TABLE jyuser (
     display_name       TEXT                  ,
     age                NUMERIC(3)            ,
     bio                TEXT                  ,
-    pp_url             TEXT                  , -- the url of the profile photo
+    portrait_url       TEXT                  , -- the url of the portrait photo
     hourly_rate        NUMERIC(7)            , -- the hourly rate that the joyyor asks. In cents.
     coordinate         GEOMETRY(Point, 4326) , -- the point where the user last reported
 

@@ -99,7 +99,7 @@ lab.experiment('user GET: ', function () {
 
         request = {
             method: 'GET',
-            url: '/user/nearby?lon=-122.4376&lat=37.7577&category=1&rating_below=5000'
+            url: '/user/nearby?lon=-122.416462&lat=37.776609&category=1&rating_below=5000'
         };
 
         server.inject(request, function (response) {
@@ -115,7 +115,7 @@ lab.experiment('user GET: ', function () {
 
         request = {
             method: 'GET',
-            url: '/user/nearby?lon=-121.3018775&lat=37.9730234&category=1&rating_below=5000'
+            url: '/user/nearby?lon=-122.4376&lat=37.7577&category=1&rating_below=5000'
         };
 
         server.inject(request, function (response) {

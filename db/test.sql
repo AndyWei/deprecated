@@ -9,6 +9,14 @@ INSERT INTO jyuser
     (  'mike', '$2a$10$sTaFcBz.lhDXr2bVNZJZeenPJ3qiKG.NaQQ5zqiz0peku0fDvO0YG', 'mike95273@gmail.com',             0,        1,   4333,        13000,            3,      now(),      now(),   ST_SetSRID(ST_MakePoint(-121.9989519, 37.5293864), 4326));
 
 
+INSERT INTO media
+    (user_id,                 filename, path_version, created_at, updated_at, coordinate) VALUES
+    (      1, 'j0176_458354045799.jpg',            0,      now(),      now(),   ST_SetSRID(ST_MakePoint(-122.4164623, 37.7766092), 4326)),
+    (      1, 'j0176_458354045700.jpg',            0,      now(),      now(),   ST_SetSRID(ST_MakePoint(-122.4164629, 37.7766082), 4326)),
+    (      2, 'j0176_458354045701.jpg',            0,      now(),      now(),   ST_SetSRID(ST_MakePoint(-121.9989519, 37.5293864), 4326)),
+    (      2, 'j0176_458354045702.jpg',            0,      now(),      now(),   ST_SetSRID(ST_MakePoint(-121.9989519, 37.5293864), 4326));
+
+
 INSERT INTO account
     (user_id,                 email,       stripe_account_id,                             secret,                        publishable,  created_at, updated_at) VALUES
     (      2, 'andy94555@gmail.com', 'acct_16CNevL3foSC1Ck4', 'sk_test_y6qiee71SA8RB4eA7ubfcabt', 'pk_test_A5X5cmWlRb6OvOzjdBlpKszB',       now(),      now());
