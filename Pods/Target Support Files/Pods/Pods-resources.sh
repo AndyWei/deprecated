@@ -59,10 +59,12 @@ install_resource()
 }
 if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_resource "KVNProgress/KVNProgress/Resources/KVNProgressView.xib"
+  install_resource "MJRefresh/MJRefresh/MJRefresh.bundle"
   install_resource "XLForm/XLForm/XLForm.bundle"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
   install_resource "KVNProgress/KVNProgress/Resources/KVNProgressView.xib"
+  install_resource "MJRefresh/MJRefresh/MJRefresh.bundle"
   install_resource "XLForm/XLForm/XLForm.bundle"
 fi
 

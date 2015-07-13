@@ -8,6 +8,7 @@
 
 #import <AFNetworking/AFNetworking.h>
 #import <KVNProgress/KVNProgress.h>
+#import <MJRefresh/MJRefresh.h>
 #import <RKDropdownAlert/RKDropdownAlert.h>
 
 #import "AppDelegate.h"
@@ -23,8 +24,11 @@
 
 @interface JYAnonymousViewController ()
 
+@property(nonatomic) BOOL needReloadTable;
+@property(nonatomic) NSInteger networkThreadCount;
 @property(nonatomic) NSMutableArray *mediaList;
 @property(nonatomic) NSIndexPath *selectedIndexPath;
+@property(nonatomic, weak) UITableView *tableView;
 
 @end
 
@@ -41,12 +45,14 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
     UIBarButtonItem *cameraButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCamera target:self action:@selector(_cameraButtonPressed)];
     self.navigationItem.rightBarButtonItem = cameraButton;
 
+    self.needReloadTable = NO;
+    self.networkThreadCount = 0;
     self.selectedIndexPath = nil;
 
     self.mediaList = [NSMutableArray new];
 
     [self _createTableView];
-    [self _fetchMedia];
+    [self _fetchNewMedia];
 }
 
 - (void)didReceiveMemoryWarning
@@ -60,19 +66,52 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
 
 - (void)_createTableView
 {
-    self.tableView = [[UITableView alloc] initWithFrame:self.view.frame style:UITableViewStylePlain];
-    self.tableView.backgroundColor = FlatBlack;
-    self.tableView.dataSource = self;
-    self.tableView.delegate = self;
-    [self.tableView registerClass:[JYMediaViewCell class] forCellReuseIdentifier:kMediaCellIdentifier];
-    [self.view addSubview:self.tableView];
+    UITableView *tableView = [[UITableView alloc] initWithFrame:self.view.frame style:UITableViewStylePlain];
+    tableView.backgroundColor = JoyyWhite;
+    tableView.separatorColor = ClearColor;
+    tableView.dataSource = self;
+    tableView.delegate = self;
+    [tableView registerClass:[JYMediaViewCell class] forCellReuseIdentifier:kMediaCellIdentifier];
 
-    // Add UIRefreshControl
-    UITableViewController *tableViewController = [[UITableViewController alloc] init];
-    tableViewController.tableView = self.tableView;
-    self.refreshControl = [UIRefreshControl new];
-    [self.refreshControl addTarget:self action:@selector(_fetchMedia) forControlEvents:UIControlEventValueChanged];
-    tableViewController.refreshControl = self.refreshControl;
+    MJRefreshNormalHeader *header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(_fetchNewMedia)];
+    header.lastUpdatedTimeLabel.hidden = YES;
+    header.stateLabel.hidden = YES;
+    tableView.header = header;
+
+    MJRefreshAutoNormalFooter *footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(_fetchOldMedia)];
+    footer.refreshingTitleHidden = YES;
+    footer.stateLabel.hidden = YES;
+    tableView.footer = footer;
+
+    [self.view addSubview:tableView];
+
+    self.tableView = tableView;
+}
+
+- (void)_networkThreadBegin
+{
+    if (self.networkThreadCount == 0)
+    {
+        [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+    }
+    self.networkThreadCount++;
+}
+
+- (void)_networkThreadEnd
+{
+    self.networkThreadCount--;
+    if (self.networkThreadCount <= 0)
+    {
+        [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+        [self.tableView.header endRefreshing];
+        [self.tableView.footer endRefreshing];
+        if (self.needReloadTable)
+        {
+            self.needReloadTable = NO;
+            [self.tableView reloadData];
+        }
+
+    }
 }
 
 - (JYMedia *)_meidaAt:(NSIndexPath *)indexPath
@@ -209,9 +248,14 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
     return parameters;
 }
 
-- (void)_fetchMedia
+- (void)_fetchNewMedia
 {
     [self _fetchMediaForBottomCells:NO];
+}
+
+- (void)_fetchOldMedia
+{
+    [self _fetchMediaForBottomCells:YES];
 }
 
 - (void)_fetchMediaForBottomCells:(BOOL)isForBttomCells
@@ -221,7 +265,7 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
         return;
     }
 
-    [self networkThreadBegin];
+    [self _networkThreadBegin];
 
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYUser currentUser].token];
@@ -254,10 +298,10 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
              }
 
              self.needReloadTable = [(NSArray *)responseObject count] > 0;
-             [weakSelf networkThreadEnd];
+             [weakSelf _networkThreadEnd];
          }
          failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-             [weakSelf networkThreadEnd];
+             [weakSelf _networkThreadEnd];
          }
      ];
 }

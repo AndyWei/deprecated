@@ -6,9 +6,8 @@
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
-#import "JYBaseViewController.h"
 #import "TGCameraViewController.h"
 
-@interface JYAnonymousViewController : JYBaseViewController <TGCameraDelegate, UITableViewDataSource, UITableViewDelegate>
+@interface JYAnonymousViewController : UIViewController <TGCameraDelegate, UITableViewDataSource, UITableViewDelegate>
 
 @end
