@@ -18,6 +18,7 @@
 {
     [super viewDidLoad];
 
+    self.needReloadTable = NO;
     self.networkThreadCount = 0;
 }
 
@@ -42,7 +43,12 @@
     {
         [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
         [self.refreshControl endRefreshing];
-        [self.tableView reloadData];
+        if (self.needReloadTable)
+        {
+            self.needReloadTable = NO;
+            [self.tableView reloadData];
+        }
+
     }
 }
 

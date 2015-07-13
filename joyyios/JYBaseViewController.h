@@ -14,6 +14,7 @@
 - (void)networkThreadBegin;
 - (void)networkThreadEnd;
 
+@property(nonatomic) BOOL needReloadTable;
 @property(nonatomic) NSInteger networkThreadCount;
 @property(nonatomic) NSMutableArray *orderList;
 @property(nonatomic) UITableView *tableView;

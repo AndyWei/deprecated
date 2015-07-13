@@ -101,7 +101,7 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
     [self dismissViewControllerAnimated:YES completion:nil];
 
     UIImage *image = [UIImage imageWithImage:photo scaledToSize:CGSizeMake(kPhotoWidth, kPhotoWidth)];
-    NSData *imageData = UIImageJPEGRepresentation(image, 0.7);
+    NSData *imageData = UIImageJPEGRepresentation(image, kPhotoQuality);
     [self _uploadImageNamed:[JYPhotoName name] withData:imageData];
 }
 
@@ -234,28 +234,26 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
     [manager GET:url
       parameters:parameters
          success:^(AFHTTPRequestOperation *operation, id responseObject) {
-             NSLog(@"orders/my paid fetch success responseObject: %@", responseObject);
+             NSLog(@"media/nearby paid fetch success responseObject: %@", responseObject);
 
-             NSMutableArray *mediaList = [NSMutableArray new];
-             for (NSDictionary *dict in responseObject)
+             if (isForBttomCells)
              {
-                 JYMedia *media = [[JYMedia alloc] initWithDictionary:dict];
-                 [mediaList addObject:media];
-             }
-
-             if (mediaList.count > 0)
-             {
-                 if (isForBttomCells)
+                 for (NSDictionary *dict in responseObject)
                  {
-                     [weakSelf.orderList addObjectsFromArray:mediaList];
+                     JYMedia *media = [[JYMedia alloc] initWithDictionary:dict];
+                     [weakSelf.mediaList addObject:media];
                  }
-                 else
+             }
+             else
+             {
+                 for (NSDictionary *dict in [responseObject reverseObjectEnumerator])
                  {
-                     [mediaList addObjectsFromArray:weakSelf.orderList];
-                     weakSelf.mediaList = mediaList;
+                     JYMedia *media = [[JYMedia alloc] initWithDictionary:dict];
+                     [weakSelf.mediaList insertObject:media atIndex:0];
                  }
              }
 
+             self.needReloadTable = [(NSArray *)responseObject count] > 0;
              [weakSelf networkThreadEnd];
          }
          failure:^(AFHTTPRequestOperation *operation, NSError *error) {
@@ -287,6 +285,8 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
             [parameters setValue:@(media.mediaId) forKey:@"after"];
         }
     }
+
+    NSLog(@"fetchMedia parameters: %@", parameters);
     return parameters;
 }
 

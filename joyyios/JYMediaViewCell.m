@@ -6,6 +6,8 @@
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
+#import <AFNetworking/UIImageView+AFNetworking.h>
+
 #import "JYMedia.h"
 #import "JYMediaViewCell.h"
 
@@ -46,12 +48,25 @@ static const CGFloat kCaptionMinHeight = 40;
 - (void)setMedia:(JYMedia *)media
 {
     self.captionLabel.text = media.caption;
-    self.photoView.image = [UIImage imageNamed: media.url];
+
+    NSURL *url = [NSURL URLWithString:media.url];
+    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+
+    __weak typeof(self) weakSelf = self;
+    [self.photoView setImageWithURLRequest:request
+                          placeholderImage:nil
+                                   success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image)
+                                   {
+                                       weakSelf.photoView.image = image;
+                                       [weakSelf setNeedsLayout];
+
+                                   } failure:nil];
 }
 
 - (void)_createPhotoView
 {
     UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_WIDTH)];
+    imageView.contentMode = UIViewContentModeScaleAspectFit;
     [self addSubview:imageView];
     self.photoView = imageView;
 }
@@ -59,7 +74,7 @@ static const CGFloat kCaptionMinHeight = 40;
 - (void)_createCaptionLabel
 {
     self.captionLabel = [self _createLabel];
-    self.captionLabel.frame = CGRectMake(0, 0, SCREEN_WIDTH, kCaptionMinHeight);
+    self.captionLabel.frame = CGRectMake(0, SCREEN_WIDTH, SCREEN_WIDTH, kCaptionMinHeight);
 }
 
 - (UILabel *)_createLabel
