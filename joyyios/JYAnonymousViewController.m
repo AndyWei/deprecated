@@ -140,7 +140,7 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
 
     [TGCameraColor setTintColor:JoyyBlue];
     TGCameraNavigationController *camera = [TGCameraNavigationController newWithCameraDelegate:self];
-    camera.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+    camera.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
 
     [self presentViewController:camera animated:YES completion:nil];
 }

@@ -66,8 +66,8 @@ static NSString* const kExceptionMessage = @"Invoked abstract method";
 
 + (void)hideSlideUpView:(TGCameraSlideView *)slideUpView slideDownView:(TGCameraSlideView *)slideDownView atView:(UIView *)view completion:(void (^)(void))completion
 {
-    [slideUpView hideWithAnimationAtView:view withTimeInterval:.6 completion:nil];
-    [slideDownView hideWithAnimationAtView:view withTimeInterval:.6 completion:completion];
+    [slideUpView hideWithAnimationAtView:view withTimeInterval:0.05f completion:nil];
+    [slideDownView hideWithAnimationAtView:view withTimeInterval:0.05f completion:completion];
 }
 
 - (void)showWithAnimationAtView:(UIView *)view completion:(void (^)(void))completion
@@ -134,7 +134,7 @@ static NSString* const kExceptionMessage = @"Invoked abstract method";
         [NSThread sleepForTimeInterval:timeInterval];
         dispatch_async(dispatch_get_main_queue(), ^{
             [self removeSlideFromSuperview:YES
-                              withDuration:.5
+                              withDuration:.05f
                                    originY:[self finalPosition]
                                 completion:completion];
         });

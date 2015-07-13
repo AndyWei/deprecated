@@ -23,21 +23,13 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-#import "TGCameraColor.h"
 #import "TGCameraGrid.h"
-#import "TGTintedButton.h"
 
 @implementation TGCameraGrid
 
-+ (void)changeGridView:(TGCameraGridView *)gridView andButton:(UIButton *)button
++ (void)changeGridView:(TGCameraGridView *)gridView
 {
     CGFloat newAlpha = ([gridView alpha] == 0.) ? 1. : 0.;
-
-    if ([button isKindOfClass:[TGTintedButton class]])
-    {
-        UIColor *tintColor = (newAlpha == 0.) ? [UIColor grayColor] : [TGCameraColor tintColor];
-        [(TGTintedButton*)button setCustomTintColorOverride:tintColor];
-    }
 
     [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
         gridView.alpha = newAlpha;

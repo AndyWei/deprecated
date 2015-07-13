@@ -23,6 +23,7 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
+#import "TGCameraColor.h"
 #import "TGCameraViewController.h"
 #import "TGPhotoViewController.h"
 #import "TGCameraSlideView.h"
@@ -31,6 +32,8 @@
 
 @interface TGCameraViewController () <UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 
+@property (nonatomic) UIColor *toggleOnColor;
+@property (nonatomic) UIColor *toggleOffColor;
 @property (strong, nonatomic) IBOutlet UIView *captureView;
 @property (strong, nonatomic) IBOutlet UIImageView *topLeftView;
 @property (strong, nonatomic) IBOutlet UIImageView *topRightView;
@@ -38,8 +41,8 @@
 @property (strong, nonatomic) IBOutlet UIImageView *bottomRightView;
 @property (strong, nonatomic) IBOutlet UIView *separatorView;
 @property (strong, nonatomic) IBOutlet UIView *actionsView;
-@property (strong, nonatomic) IBOutlet UIButton *gridButton;
-@property (strong, nonatomic) IBOutlet UIButton *toggleButton;
+@property (strong, nonatomic) IBOutlet TGTintedButton *gridButton;
+@property (strong, nonatomic) IBOutlet TGTintedButton *toggleButton;
 @property (strong, nonatomic) IBOutlet UIButton *shotButton;
 @property (strong, nonatomic) IBOutlet TGTintedButton *albumButton;
 @property (strong, nonatomic) IBOutlet UIButton *flashButton;
@@ -74,7 +77,12 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
+
+    [self deviceOrientationDidChangeNotification];
+
+    _camera = [TGCamera cameraWithFlashButton:_flashButton];
+    [_camera startRunning];
+
     if (CGRectGetHeight([[UIScreen mainScreen] bounds]) <= 480) {
         _topViewHeight.constant = 0;
     }
@@ -90,16 +98,34 @@
     
     [_albumButton.layer setCornerRadius:10.f];
     [_albumButton.layer setMasksToBounds:YES];
-    
-    
-    _camera = [TGCamera cameraWithFlashButton:_flashButton];
-    
+
     _captureView.backgroundColor = [UIColor clearColor];
     
     _topLeftView.transform = CGAffineTransformMakeRotation(0);
     _topRightView.transform = CGAffineTransformMakeRotation(M_PI_2);
     _bottomLeftView.transform = CGAffineTransformMakeRotation(-M_PI_2);
     _bottomRightView.transform = CGAffineTransformMakeRotation(M_PI_2*2);
+
+    _separatorView.hidden = YES;
+
+    _toggleOnColor = [TGCameraColor tintColor];
+    _toggleOffColor = [UIColor grayColor];
+    _gridButton.customTintColorOverride = _toggleButton.customTintColorOverride = _toggleOffColor;
+}
+
+- (void)showControls:(BOOL)show
+{
+    _actionsView.hidden =
+    _topLeftView.hidden =
+    _topRightView.hidden =
+    _bottomLeftView.hidden =
+    _bottomRightView.hidden = !show;
+
+    _gridButton.enabled =
+    _toggleButton.enabled =
+    _shotButton.enabled =
+    _albumButton.enabled =
+    _flashButton.enabled = show;
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -111,48 +137,19 @@
                                                  name:UIDeviceOrientationDidChangeNotification
                                                object:nil];
     
-    _separatorView.hidden = NO;
-    
-    _actionsView.hidden = YES;
-    
-    _topLeftView.hidden =
-    _topRightView.hidden =
-    _bottomLeftView.hidden =
-    _bottomRightView.hidden = YES;
-    
-    _gridButton.enabled =
-    _toggleButton.enabled =
-    _shotButton.enabled =
-    _albumButton.enabled =
-    _flashButton.enabled = NO;
+    [self showControls:NO];
+
+    __weak typeof(self) weakSelf = self;
+    [TGCameraSlideView hideSlideUpView:_slideUpView slideDownView:_slideDownView atView:_captureView completion:^{
+        [weakSelf showControls:YES];
+    }];
+
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    
-    [self deviceOrientationDidChangeNotification];
-    
-    [_camera startRunning];
-    
-    _separatorView.hidden = YES;
-    
-    [TGCameraSlideView hideSlideUpView:_slideUpView slideDownView:_slideDownView atView:_captureView completion:^{
-        _topLeftView.hidden =
-        _topRightView.hidden =
-        _bottomLeftView.hidden =
-        _bottomRightView.hidden = NO;
-        
-        _actionsView.hidden = NO;
 
-        [(TGTintedButton*)_gridButton setCustomTintColorOverride:[UIColor grayColor]];
-        _gridButton.enabled =
-        _toggleButton.enabled =
-        _shotButton.enabled =
-        _albumButton.enabled =
-        _flashButton.enabled = YES;
-    }];
-    
     if (_wasLoaded == NO) {
         _wasLoaded = YES;
         [_camera insertSublayerWithCaptureView:_captureView atRootView:self.view];
@@ -235,7 +232,9 @@
 
 - (IBAction)gridTapped
 {
-    [_camera changeGridViewWithButton:_gridButton];
+    BOOL isOff = [_gridButton.customTintColorOverride isEqual:_toggleOffColor];
+    _gridButton.customTintColorOverride = isOff ? _toggleOnColor: _toggleOffColor;
+    [_camera changeGridView];
 }
 
 - (IBAction)flashTapped
@@ -273,6 +272,9 @@
 
 - (IBAction)toggleTapped
 {
+    BOOL isOff = [_toggleButton.customTintColorOverride isEqual:_toggleOffColor];
+    _toggleButton.customTintColorOverride = isOff ? _toggleOnColor: _toggleOffColor;
+
     [_camera toogleWithFlashButton:_flashButton];
 }
 
