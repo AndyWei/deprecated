@@ -18,7 +18,7 @@ lab.experiment('Config', function () {
 
     lab.test('it gets config meta data', function (done) {
 
-        Code.expect(Config.meta('/')).to.match(/this file configures the plot device/i);
+        Code.expect(Config.meta('/')).to.match(/This file configures the joyyserver./i);
 
         done();
     });

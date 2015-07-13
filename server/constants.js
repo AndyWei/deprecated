@@ -3,6 +3,7 @@ var Enum = require('enum');
 
 var exports = module.exports = {};
 
+
 // cache dataset settings
 exports.API_TOKEN_CACHE = {
     segment: 'apit',
@@ -42,11 +43,15 @@ exports.BID_UPDATE_FAILED = 'The order is either not found or not in active stat
 
 exports.COORDINATE_INVALID = 'Lon and lat should occur together.';
 
-exports.DEVICE_TOKEN_NOT_FOUND = 'The device token of the user not found';
+exports.DEVICE_TOKEN_NOT_FOUND = 'The device token of the user not found.';
 
-exports.DEVICE_TOKEN_INVALID = 'The device token of the user is invalid';
+exports.DEVICE_TOKEN_INVALID = 'The device token of the user is invalid.';
 
 exports.EMAIL_IN_USE = 'Email already in use.';
+
+exports.FILENAME_MISSING = 'The upload file must have a name.';
+
+exports.MEDIA_CREATE_FAILED = 'The media file has been uploaded to s3, but create media record failed.';
 
 exports.ORDER_CREATE_FAILED = 'The order has not been created.';
 
@@ -66,7 +71,7 @@ exports.RECORD_NOT_FOUND = 'Query excuted but no record found.';
 
 exports.ORDER_STRIPE_TOKEN_NOT_FOUND = 'The payment token is not found, payment failed.';
 
-exports.TOKEN_INVALID = 'Token is invalid';
+exports.TOKEN_INVALID = 'Token is invalid.';
 
 exports.USER_NOT_FOUND = 'User not found.';
 

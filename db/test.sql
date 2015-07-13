@@ -10,11 +10,14 @@ INSERT INTO jyuser
 
 
 INSERT INTO media
-    (user_id,                 filename, path_version, created_at, updated_at, coordinate) VALUES
-    (      1, 'j0176_458354045799.jpg',            0,      now(),      now(),   ST_SetSRID(ST_MakePoint(-122.4164623, 37.7766092), 4326)),
-    (      1, 'j0176_458354045700.jpg',            0,      now(),      now(),   ST_SetSRID(ST_MakePoint(-122.4164629, 37.7766082), 4326)),
-    (      2, 'j0176_458354045701.jpg',            0,      now(),      now(),   ST_SetSRID(ST_MakePoint(-121.9989519, 37.5293864), 4326)),
-    (      2, 'j0176_458354045702.jpg',            0,      now(),      now(),   ST_SetSRID(ST_MakePoint(-121.9989519, 37.5293864), 4326));
+    (user_id,                 filename, path_version,  caption, created_at, updated_at, coordinate) VALUES
+    (      1, 'j5802_458440716099.jpg',            0, '750_.7',      now(),      now(),   ST_SetSRID(ST_MakePoint(-122.4164623, 37.7766092), 4326)),
+    (      1, 'j0128_458441665579.jpg',            0, '375_.7',      now(),      now(),   ST_SetSRID(ST_MakePoint(-122.4164629, 37.7766082), 4326)),
+    (      1, 'j6301_458441807960.jpg',            0, '375_.7',      now(),      now(),   ST_SetSRID(ST_MakePoint(-121.9989519, 37.5293864), 4326)),
+    (      1, 'j5222_458441928465.jpg',            0, '375_.9',      now(),      now(),   ST_SetSRID(ST_MakePoint(-121.9989519, 37.5293864), 4326)),
+    (      1, 'j2552_458446437154.jpg',            0, '375_.7',      now(),      now(),   ST_SetSRID(ST_MakePoint(-121.9989519, 37.5293864), 4326)),
+    (      1, 'j9187_458447815669.jpg',            0, '375_.7',      now(),      now(),   ST_SetSRID(ST_MakePoint(-121.9989519, 37.5293864), 4326)),
+    (      1, 'j2715_458447869224.jpg',            0, '375_.7',      now(),      now(),   ST_SetSRID(ST_MakePoint(-121.9989519, 37.5293864), 4326));
 
 
 INSERT INTO account
