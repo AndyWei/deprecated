@@ -31,6 +31,7 @@ extern const CGFloat kNavBarTitleFontSize;
 
 extern const CGFloat kPinAnnotationHeight;
 extern const CGFloat kPinAnnotationWidth;
+extern const CGFloat kPhotoWidth;
 
 extern const CGFloat kTabBarTitleFontSize;
 extern const CGFloat kTokenValidInSecs;

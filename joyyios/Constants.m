@@ -28,7 +28,7 @@ const CGFloat kNavBarTitleFontSize = 20.0f;
 
 const CGFloat kPinAnnotationHeight = 55.0f;
 const CGFloat kPinAnnotationWidth = 55.0f;
-
+const CGFloat kPhotoWidth = 375.0;
 const CGFloat kTabBarTitleFontSize = 20.0f;
 const CGFloat kTokenValidInSecs = 3600.0;
 

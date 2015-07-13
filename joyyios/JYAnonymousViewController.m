@@ -13,7 +13,8 @@
 #import "AppDelegate.h"
 #import "JYAnonymousViewController.h"
 #import "JYCameraOverlayView.h"
-#import "JYOrderViewCell.h"
+#import "JYMedia.h"
+#import "JYMediaViewCell.h"
 #import "JYPhotoName.h"
 #import "JYUser.h"
 #import "TGCameraColor.h"
@@ -22,15 +23,13 @@
 
 @interface JYAnonymousViewController ()
 
-@property(nonatomic) NSMutableArray *dealtOrderList;
-@property(nonatomic) NSMutableArray *startedOrderList;
-@property(nonatomic) NSMutableArray *finishedOrderList;
+@property(nonatomic) NSMutableArray *mediaList;
 @property(nonatomic) NSIndexPath *selectedIndexPath;
 
 @end
 
 
-static NSString *const kOrderCellIdentifier = @"orderCell";
+static NSString *const kMediaCellIdentifier = @"mediaCell";
 
 @implementation JYAnonymousViewController
 
@@ -44,12 +43,10 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
 
     self.selectedIndexPath = nil;
 
-    self.dealtOrderList = [NSMutableArray new];
-    self.startedOrderList = [NSMutableArray new];
-    self.finishedOrderList = [NSMutableArray new];
+    self.mediaList = [NSMutableArray new];
 
     [self _createTableView];
-    [self _fetchOrders];
+    [self _fetchMedia];
 }
 
 - (void)didReceiveMemoryWarning
@@ -67,38 +64,21 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
     self.tableView.backgroundColor = FlatBlack;
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
-    [self.tableView registerClass:[JYOrderViewCell class] forCellReuseIdentifier:kOrderCellIdentifier];
+    [self.tableView registerClass:[JYMediaViewCell class] forCellReuseIdentifier:kMediaCellIdentifier];
     [self.view addSubview:self.tableView];
 
     // Add UIRefreshControl
     UITableViewController *tableViewController = [[UITableViewController alloc] init];
     tableViewController.tableView = self.tableView;
     self.refreshControl = [UIRefreshControl new];
-    [self.refreshControl addTarget:self action:@selector(_fetchOrders) forControlEvents:UIControlEventValueChanged];
+    [self.refreshControl addTarget:self action:@selector(_fetchMedia) forControlEvents:UIControlEventValueChanged];
     tableViewController.refreshControl = self.refreshControl;
 }
 
-- (JYInvite *)_orderAt:(NSIndexPath *)indexPath
+- (JYMedia *)_meidaAt:(NSIndexPath *)indexPath
 {
-    JYInvite *order = nil;
     NSInteger index = indexPath.row;
-
-    if (index < self.finishedOrderList.count)
-    {
-        order = self.finishedOrderList[index];
-        return order;
-    }
-    index -= self.finishedOrderList.count;
-
-    if (index < self.startedOrderList.count)
-    {
-        order = self.startedOrderList[index];
-        return order;
-    }
-    index -= self.startedOrderList.count;
-
-    order = self.dealtOrderList[index];
-    return order;
+    return self.mediaList[index];
 }
 
 - (void)_cameraButtonPressed
@@ -120,16 +100,14 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
 {
     [self dismissViewControllerAnimated:YES completion:nil];
 
-    UIImage *image = [UIImage imageWithImage:photo scaledToSize:CGSizeMake(375, 375)];
-    NSLog(@"image size width = %f, height = %f", image.size.width, image.size.height);
+    UIImage *image = [UIImage imageWithImage:photo scaledToSize:CGSizeMake(kPhotoWidth, kPhotoWidth)];
     NSData *imageData = UIImageJPEGRepresentation(image, 0.7);
     [self _uploadImageNamed:[JYPhotoName name] withData:imageData];
 }
 
 - (void)cameraDidSelectAlbumPhoto:(UIImage *)image
 {
-//    _photoView.image = image;
-    [self dismissViewControllerAnimated:YES completion:nil];
+    [self cameraDidTakePhoto:image];
 }
 
 #pragma mark - UITableViewDataSource
@@ -141,17 +119,16 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return self.finishedOrderList.count + self.startedOrderList.count + self.dealtOrderList.count;
+    return self.mediaList.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    JYOrderViewCell *cell =
-    (JYOrderViewCell *)[tableView dequeueReusableCellWithIdentifier:kOrderCellIdentifier forIndexPath:indexPath];
+    JYMediaViewCell *cell =
+    (JYMediaViewCell *)[tableView dequeueReusableCellWithIdentifier:kMediaCellIdentifier forIndexPath:indexPath];
 
-    JYInvite *order = [self _orderAt:indexPath];
-    cell.order = order;
-    cell.color = order.paymentStatusColor;
+    JYMedia *media = [self _meidaAt:indexPath];
+    cell.media = media;
 
     return cell;
 }
@@ -160,8 +137,8 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    JYInvite *order = [self _orderAt:indexPath];
-    return [JYOrderViewCell heightForOrder:order];
+    JYMedia *media = [self _meidaAt:indexPath];
+    return [JYMediaViewCell heightForMedia:media];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
@@ -232,40 +209,51 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
     return parameters;
 }
 
-- (void)_fetchOrders
+- (void)_fetchMedia
+{
+    [self _fetchMediaForBottomCells:NO];
+}
+
+- (void)_fetchMediaForBottomCells:(BOOL)isForBttomCells
 {
     if (self.networkThreadCount > 0)
     {
         return;
     }
 
-    [self _fetchFinishedOrders];
-    [self _fetchStartedOrders];
-    [self _fetchDealtOrders];
-}
-
-- (void)_fetchStartedOrders
-{
     [self networkThreadBegin];
 
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYUser currentUser].token];
     [manager.requestSerializer setValue:token forHTTPHeaderField:@"Authorization"];
 
-    NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"orders/my"];
-    NSDictionary *parameters = @{@"status": @(JYInviteStatusStarted)};
+    NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"media/nearby"];
+    NSDictionary *parameters = [self _fetchMediaHttpParameters:isForBttomCells];
 
     __weak typeof(self) weakSelf = self;
     [manager GET:url
       parameters:parameters
          success:^(AFHTTPRequestOperation *operation, id responseObject) {
-             NSLog(@"my dealt orders fetch success responseObject: %@", responseObject);
+             NSLog(@"orders/my paid fetch success responseObject: %@", responseObject);
 
-             weakSelf.startedOrderList = [NSMutableArray new];
+             NSMutableArray *mediaList = [NSMutableArray new];
              for (NSDictionary *dict in responseObject)
              {
-                 JYInvite *newOrder = [[JYInvite alloc] initWithDictionary:dict];
-                 [weakSelf.startedOrderList addObject:newOrder];
+                 JYMedia *media = [[JYMedia alloc] initWithDictionary:dict];
+                 [mediaList addObject:media];
+             }
+
+             if (mediaList.count > 0)
+             {
+                 if (isForBttomCells)
+                 {
+                     [weakSelf.orderList addObjectsFromArray:mediaList];
+                 }
+                 else
+                 {
+                     [mediaList addObjectsFromArray:weakSelf.orderList];
+                     weakSelf.mediaList = mediaList;
+                 }
              }
 
              [weakSelf networkThreadEnd];
@@ -276,68 +264,30 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
      ];
 }
 
-- (void)_fetchDealtOrders
+- (NSDictionary *)_fetchMediaHttpParameters:(BOOL)isForBttomCells
 {
-    [self networkThreadBegin];
+    NSMutableDictionary *parameters = [NSMutableDictionary new];
 
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYUser currentUser].token];
-    [manager.requestSerializer setValue:token forHTTPHeaderField:@"Authorization"];
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    CLLocationCoordinate2D currentPoint = appDelegate.currentCoordinate;
+    [parameters setValue:@(currentPoint.longitude) forKey:@"lon"];
+    [parameters setValue:@(currentPoint.latitude) forKey:@"lat"];
+    [parameters setValue:@(2) forKey:@"distance"];
 
-    NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"orders/my"];
-    NSDictionary *parameters = @{@"status": @(JYInviteStatusDealt)};
-
-    __weak typeof(self) weakSelf = self;
-    [manager GET:url
-      parameters:parameters
-         success:^(AFHTTPRequestOperation *operation, id responseObject) {
-             NSLog(@"my dealt orders fetch success responseObject: %@", responseObject);
-
-             weakSelf.dealtOrderList = [NSMutableArray new];
-             for (NSDictionary *dict in responseObject)
-             {
-                 JYInvite *newOrder = [[JYInvite alloc] initWithDictionary:dict];
-                 [weakSelf.dealtOrderList addObject:newOrder];
-             }
-
-             [weakSelf networkThreadEnd];
-         }
-         failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-             [weakSelf networkThreadEnd];
-         }
-     ];
-}
-
-- (void)_fetchFinishedOrders
-{
-    [self networkThreadBegin];
-
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYUser currentUser].token];
-    [manager.requestSerializer setValue:token forHTTPHeaderField:@"Authorization"];
-
-    NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"orders/my"];
-    NSDictionary *parameters = @{@"status": @(JYInviteStatusFinished)};
-
-    __weak typeof(self) weakSelf = self;
-    [manager GET:url
-      parameters:parameters
-         success:^(AFHTTPRequestOperation *operation, id responseObject) {
-             NSLog(@"my finished orders fetch success responseObject: %@", responseObject);
-
-             weakSelf.finishedOrderList = [NSMutableArray new];
-             for (NSDictionary *dict in responseObject)
-             {
-                 JYInvite *newOrder = [[JYInvite alloc] initWithDictionary:dict];
-                 [weakSelf.finishedOrderList addObject:newOrder];
-             }
-
-             [weakSelf networkThreadEnd];
-         }
-         failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-             [weakSelf networkThreadEnd];
-         }
-     ];
+    if (self.mediaList.count > 0)
+    {
+        if (isForBttomCells)
+        {
+            JYMedia *media = self.mediaList.lastObject;
+            [parameters setValue:@(media.mediaId) forKey:@"before"];
+        }
+        else
+        {
+            JYMedia *media = self.mediaList.firstObject;
+            [parameters setValue:@(media.mediaId) forKey:@"after"];
+        }
+    }
+    return parameters;
 }
 
 @end
