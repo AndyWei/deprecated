@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
-#import "DataStore.h"
+#import "JYDataStore.h"
 #import "JYCreditCard.h"
 
 @interface JYCreditCard ()
@@ -81,16 +81,16 @@
 
 - (BOOL)isDefault
 {
-    NSString *defaultCustomerId = [DataStore sharedInstance].defaultCustomerId;
-    NSString *defaultCardNumber = [DataStore sharedInstance].defaultCardNumber;
+    NSString *defaultCustomerId = [JYDataStore sharedInstance].defaultCustomerId;
+    NSString *defaultCardNumber = [JYDataStore sharedInstance].defaultCardNumber;
 
     return [self.stripeCustomerId isEqualToString:defaultCustomerId] && [self.last4 isEqualToString:defaultCardNumber];
 }
 
 - (void)setAsDefault
 {
-    [DataStore sharedInstance].defaultCardNumber = self.last4;
-    [DataStore sharedInstance].defaultCustomerId = self.stripeCustomerId;
+    [JYDataStore sharedInstance].defaultCardNumber = self.last4;
+    [JYDataStore sharedInstance].defaultCustomerId = self.stripeCustomerId;
 }
 
 - (NSString *)cardNumberString

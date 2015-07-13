@@ -14,8 +14,8 @@
 #import <Stripe/Stripe.h>
 
 #import "AppDelegate.h"
-#import "DataStore.h"
-#import "JYMaskZoneViewController.h"
+#import "JYDataStore.h"
+#import "JYAnonymousViewController.h"
 #import "JYMenuViewController.h"
 #import "JYMapViewController.h"
 #import "JYSignViewController.h"
@@ -94,7 +94,7 @@
     NSString *token = [[deviceToken description] stringByTrimmingCharactersInSet: [NSCharacterSet characterSetWithCharactersInString:@"<>"]];
     token = [token stringByReplacingOccurrencesOfString:@" " withString:@""];
 
-    [DataStore sharedInstance].deviceToken = token;
+    [JYDataStore sharedInstance].deviceToken = token;
     [self _uploadDeviceToken];
 }
 
@@ -136,7 +136,7 @@
 - (void)_setupLocationManager
 {
     // use last location before we get current one
-    self.currentCoordinate = [DataStore sharedInstance].lastCoordinate;
+    self.currentCoordinate = [JYDataStore sharedInstance].lastCoordinate;
 
     self.locationManager = [CLLocationManager new];
     self.locationManager.delegate = self;
@@ -186,7 +186,7 @@
 {
     JYUser *user = [JYUser currentUser];
 
-    BOOL needIntro = ([DataStore sharedInstance].presentedIntroductionVersion < kIntroductionVersion);
+    BOOL needIntro = ([JYDataStore sharedInstance].presentedIntroductionVersion < kIntroductionVersion);
 
     if (needIntro)
     {
@@ -218,7 +218,7 @@
 - (void)_introductionDidFinish
 {
     // Store introduction history
-    [DataStore sharedInstance].presentedIntroductionVersion = kIntroductionVersion;
+    [JYDataStore sharedInstance].presentedIntroductionVersion = kIntroductionVersion;
 
     [self _launchViewController];
 }
@@ -278,7 +278,7 @@
 
 - (void)_launchTabViewController
 {
-    UIViewController *vc1 = [JYMaskZoneViewController new];
+    UIViewController *vc1 = [JYAnonymousViewController new];
     UINavigationController *nc1 = [[UINavigationController alloc] initWithRootViewController:vc1];
 
     UIViewController *vc2 = [JYMenuViewController new];
@@ -301,7 +301,7 @@
 
     tabBarItem1.selectedImage = [[UIImage imageNamed:@"mask_selected"] imageWithRenderingMode:UIImageRenderingModeAutomatic];
     tabBarItem1.image = [[UIImage imageNamed:@"mask"] imageWithRenderingMode:UIImageRenderingModeAutomatic];
-    tabBarItem1.title = NSLocalizedString(@"MaskZone", nil);
+    tabBarItem1.title = NSLocalizedString(@"Anonymous", nil);
 
     tabBarItem2.selectedImage = [[UIImage imageNamed:@"search_selected"]imageWithRenderingMode:UIImageRenderingModeAutomatic];
     tabBarItem2.image = [[UIImage imageNamed:@"search"]imageWithRenderingMode:UIImageRenderingModeAutomatic];
@@ -321,13 +321,13 @@
 #pragma mark - Network
 - (void)_uploadDeviceToken
 {
-    NSString *deviceToken = [DataStore sharedInstance].deviceToken;
+    NSString *deviceToken = [JYDataStore sharedInstance].deviceToken;
     if (!deviceToken)
     {
         return;
     }
 
-    NSInteger badgeCount = [DataStore sharedInstance].badgeCount;
+    NSInteger badgeCount = [JYDataStore sharedInstance].badgeCount;
 
     NSDictionary *parameters = @{@"service": @"apn", @"token": deviceToken, @"badge": @(badgeCount)};
     NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"notifications/devices/joyy"];
@@ -384,7 +384,7 @@
 {
     CLLocation *currentLocation = [locations lastObject];
     self.currentCoordinate = currentLocation.coordinate;
-    [DataStore sharedInstance].lastCoordinate = self.currentCoordinate;
+    [JYDataStore sharedInstance].lastCoordinate = self.currentCoordinate;
 }
 
 - (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status

@@ -54,8 +54,6 @@ extern NSString *const kAnnotationTitleStart;
 extern NSString *const kErrorAuthenticationFailed;
 extern NSString *const kErrorTitle;
 
-extern NSString *const kGoogleAPIBrowserKey;
-
 extern NSString *const kImageNameLocationArrow;
 extern NSString *const kImageNamePinBlue;
 extern NSString *const kImageNamePinGreen;

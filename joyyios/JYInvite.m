@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
-#import "DataStore.h"
+#import "JYDataStore.h"
 #import "NSMutableDictionary+Joyy.h"
 #import "JYBid.h"
 #import "JYInvite.h"
@@ -20,7 +20,7 @@ static JYInvite *_currentInvite;
 {
     if (!_currentInvite)
     {
-        _currentInvite = [DataStore sharedInstance].currentInvite;
+        _currentInvite = [JYDataStore sharedInstance].currentInvite;
 
         if (!_currentInvite)
         {

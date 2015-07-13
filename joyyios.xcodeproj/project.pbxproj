@@ -97,6 +97,10 @@
 		D61D1DD51B4E336E00DE37DF /* TGCameraViewController.bundle in Resources */ = {isa = PBXBuildFile; fileRef = D61D1D9E1B4E336E00DE37DF /* TGCameraViewController.bundle */; };
 		D61D1DD61B4E336E00DE37DF /* TGCameraViewController.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D61D1D9F1B4E336E00DE37DF /* TGCameraViewController.xcassets */; };
 		D61D1DD71B4E336E00DE37DF /* TGCameraViewController.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D61D1D9F1B4E336E00DE37DF /* TGCameraViewController.xcassets */; };
+		D61D1DDA1B51DB1F00DE37DF /* JYPhotoName.m in Sources */ = {isa = PBXBuildFile; fileRef = D61D1DD91B51DB1F00DE37DF /* JYPhotoName.m */; };
+		D61D1DDB1B51DB1F00DE37DF /* JYPhotoName.m in Sources */ = {isa = PBXBuildFile; fileRef = D61D1DD91B51DB1F00DE37DF /* JYPhotoName.m */; };
+		D61D1DDE1B5342DD00DE37DF /* UIImage+Joyy.m in Sources */ = {isa = PBXBuildFile; fileRef = D61D1DDD1B5342DD00DE37DF /* UIImage+Joyy.m */; };
+		D61D1DDF1B5342DD00DE37DF /* UIImage+Joyy.m in Sources */ = {isa = PBXBuildFile; fileRef = D61D1DDD1B5342DD00DE37DF /* UIImage+Joyy.m */; };
 		D6348D271ADA3BC90002BC35 /* JYPriceTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D6348D261ADA3BC90002BC35 /* JYPriceTextFieldCell.m */; };
 		D6348D281ADA3BC90002BC35 /* JYPriceTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D6348D261ADA3BC90002BC35 /* JYPriceTextFieldCell.m */; };
 		D6348D2B1ADA4A650002BC35 /* JYRestrictedTextViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D6348D2A1ADA4A650002BC35 /* JYRestrictedTextViewCell.m */; };
@@ -119,8 +123,8 @@
 		D63F0D5A1AC7CFF20067C5EE /* JYButton.m in Sources */ = {isa = PBXBuildFile; fileRef = D63F0D581AC7CFF20067C5EE /* JYButton.m */; };
 		D63F0D711AC9EC060067C5EE /* JYUser.m in Sources */ = {isa = PBXBuildFile; fileRef = D63F0D701AC9EC060067C5EE /* JYUser.m */; };
 		D63F0D721AC9EC060067C5EE /* JYUser.m in Sources */ = {isa = PBXBuildFile; fileRef = D63F0D701AC9EC060067C5EE /* JYUser.m */; };
-		D63F0D751AC9F6F80067C5EE /* DataStore.m in Sources */ = {isa = PBXBuildFile; fileRef = D63F0D741AC9F6F80067C5EE /* DataStore.m */; };
-		D63F0D761AC9F6F80067C5EE /* DataStore.m in Sources */ = {isa = PBXBuildFile; fileRef = D63F0D741AC9F6F80067C5EE /* DataStore.m */; };
+		D63F0D751AC9F6F80067C5EE /* JYDataStore.m in Sources */ = {isa = PBXBuildFile; fileRef = D63F0D741AC9F6F80067C5EE /* JYDataStore.m */; };
+		D63F0D761AC9F6F80067C5EE /* JYDataStore.m in Sources */ = {isa = PBXBuildFile; fileRef = D63F0D741AC9F6F80067C5EE /* JYDataStore.m */; };
 		D63F0D7D1ACA5E260067C5EE /* JYSignViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D63F0D7C1ACA5E260067C5EE /* JYSignViewController.m */; };
 		D63F0D7E1ACA5E260067C5EE /* JYSignViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D63F0D7C1ACA5E260067C5EE /* JYSignViewController.m */; };
 		D63F0D8C1ACBBF1F0067C5EE /* JYCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D63F0D8B1ACBBF1F0067C5EE /* JYCollectionViewCell.m */; };
@@ -135,8 +139,8 @@
 		D63F0DA91ACDFD1D0067C5EE /* JYPinAnnotationView.m in Sources */ = {isa = PBXBuildFile; fileRef = D63F0DA71ACDFD1D0067C5EE /* JYPinAnnotationView.m */; };
 		D64C27EA1B41D00600C85E55 /* JYOrderControl.m in Sources */ = {isa = PBXBuildFile; fileRef = D64C27E91B41D00600C85E55 /* JYOrderControl.m */; };
 		D64C27EB1B41D00600C85E55 /* JYOrderControl.m in Sources */ = {isa = PBXBuildFile; fileRef = D64C27E91B41D00600C85E55 /* JYOrderControl.m */; };
-		D65AFA5E1AEC715D007867D0 /* JYMaskZoneViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D65AFA5D1AEC715D007867D0 /* JYMaskZoneViewController.m */; };
-		D65AFA5F1AEC715D007867D0 /* JYMaskZoneViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D65AFA5D1AEC715D007867D0 /* JYMaskZoneViewController.m */; };
+		D65AFA5E1AEC715D007867D0 /* JYAnonymousViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D65AFA5D1AEC715D007867D0 /* JYAnonymousViewController.m */; };
+		D65AFA5F1AEC715D007867D0 /* JYAnonymousViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D65AFA5D1AEC715D007867D0 /* JYAnonymousViewController.m */; };
 		D65AFA621AEC791D007867D0 /* JYBidViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D65AFA611AEC791D007867D0 /* JYBidViewCell.m */; };
 		D65AFA631AEC791D007867D0 /* JYBidViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D65AFA611AEC791D007867D0 /* JYBidViewCell.m */; };
 		D65AFA661AEDEF3D007867D0 /* JYOrderCard.m in Sources */ = {isa = PBXBuildFile; fileRef = D65AFA651AEDEF3D007867D0 /* JYOrderCard.m */; };
@@ -302,6 +306,10 @@
 		D61D1D9C1B4E336E00DE37DF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/TGPhotoViewController.xib; sourceTree = "<group>"; };
 		D61D1D9E1B4E336E00DE37DF /* TGCameraViewController.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = TGCameraViewController.bundle; sourceTree = "<group>"; };
 		D61D1D9F1B4E336E00DE37DF /* TGCameraViewController.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = TGCameraViewController.xcassets; sourceTree = "<group>"; };
+		D61D1DD81B51DB1E00DE37DF /* JYPhotoName.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYPhotoName.h; sourceTree = "<group>"; };
+		D61D1DD91B51DB1F00DE37DF /* JYPhotoName.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYPhotoName.m; sourceTree = "<group>"; };
+		D61D1DDC1B5342DD00DE37DF /* UIImage+Joyy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Joyy.h"; sourceTree = "<group>"; };
+		D61D1DDD1B5342DD00DE37DF /* UIImage+Joyy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Joyy.m"; sourceTree = "<group>"; };
 		D6348D251ADA3BC90002BC35 /* JYPriceTextFieldCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYPriceTextFieldCell.h; sourceTree = "<group>"; };
 		D6348D261ADA3BC90002BC35 /* JYPriceTextFieldCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYPriceTextFieldCell.m; sourceTree = "<group>"; };
 		D6348D291ADA4A180002BC35 /* JYRestrictedTextViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYRestrictedTextViewCell.h; sourceTree = "<group>"; };
@@ -324,8 +332,8 @@
 		D63F0D581AC7CFF20067C5EE /* JYButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYButton.m; sourceTree = "<group>"; };
 		D63F0D6F1AC9EC060067C5EE /* JYUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYUser.h; sourceTree = "<group>"; };
 		D63F0D701AC9EC060067C5EE /* JYUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYUser.m; sourceTree = "<group>"; };
-		D63F0D731AC9F6F80067C5EE /* DataStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataStore.h; sourceTree = "<group>"; };
-		D63F0D741AC9F6F80067C5EE /* DataStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataStore.m; sourceTree = "<group>"; };
+		D63F0D731AC9F6F80067C5EE /* JYDataStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYDataStore.h; sourceTree = "<group>"; };
+		D63F0D741AC9F6F80067C5EE /* JYDataStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYDataStore.m; sourceTree = "<group>"; };
 		D63F0D7B1ACA5E260067C5EE /* JYSignViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYSignViewController.h; sourceTree = "<group>"; };
 		D63F0D7C1ACA5E260067C5EE /* JYSignViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYSignViewController.m; sourceTree = "<group>"; };
 		D63F0D8A1ACBBF1F0067C5EE /* JYCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYCollectionViewCell.h; sourceTree = "<group>"; };
@@ -340,8 +348,8 @@
 		D63F0DA71ACDFD1D0067C5EE /* JYPinAnnotationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYPinAnnotationView.m; sourceTree = "<group>"; };
 		D64C27E81B41D00600C85E55 /* JYOrderControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYOrderControl.h; sourceTree = "<group>"; };
 		D64C27E91B41D00600C85E55 /* JYOrderControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYOrderControl.m; sourceTree = "<group>"; };
-		D65AFA5C1AEC715D007867D0 /* JYMaskZoneViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYMaskZoneViewController.h; sourceTree = "<group>"; };
-		D65AFA5D1AEC715D007867D0 /* JYMaskZoneViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYMaskZoneViewController.m; sourceTree = "<group>"; };
+		D65AFA5C1AEC715D007867D0 /* JYAnonymousViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYAnonymousViewController.h; sourceTree = "<group>"; };
+		D65AFA5D1AEC715D007867D0 /* JYAnonymousViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYAnonymousViewController.m; sourceTree = "<group>"; };
 		D65AFA601AEC791D007867D0 /* JYBidViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYBidViewCell.h; sourceTree = "<group>"; };
 		D65AFA611AEC791D007867D0 /* JYBidViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYBidViewCell.m; sourceTree = "<group>"; };
 		D65AFA641AEDEF3D007867D0 /* JYOrderCard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYOrderCard.h; sourceTree = "<group>"; };
@@ -545,13 +553,13 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
-		D61D1D5B1B4DBA5D00DE37DF /* MaskZone */ = {
+		D61D1D5B1B4DBA5D00DE37DF /* Anonymous */ = {
 			isa = PBXGroup;
 			children = (
-				D65AFA5C1AEC715D007867D0 /* JYMaskZoneViewController.h */,
-				D65AFA5D1AEC715D007867D0 /* JYMaskZoneViewController.m */,
+				D65AFA5C1AEC715D007867D0 /* JYAnonymousViewController.h */,
+				D65AFA5D1AEC715D007867D0 /* JYAnonymousViewController.m */,
 			);
-			name = MaskZone;
+			name = Anonymous;
 			sourceTree = "<group>";
 		};
 		D61D1D601B4E336E00DE37DF /* TGCameraViewController */ = {
@@ -763,8 +771,10 @@
 			children = (
 				D68DAF921AC4CACD00838E7E /* Constants.h */,
 				D68DAF931AC4CACD00838E7E /* Constants.m */,
-				D63F0D731AC9F6F80067C5EE /* DataStore.h */,
-				D63F0D741AC9F6F80067C5EE /* DataStore.m */,
+				D63F0D731AC9F6F80067C5EE /* JYDataStore.h */,
+				D63F0D741AC9F6F80067C5EE /* JYDataStore.m */,
+				D61D1DD81B51DB1E00DE37DF /* JYPhotoName.h */,
+				D61D1DD91B51DB1F00DE37DF /* JYPhotoName.m */,
 				D6348D351ADB7ABC0002BC35 /* NSMutableDictionary+Joyy.h */,
 				D6348D361ADB7ABC0002BC35 /* NSMutableDictionary+Joyy.m */,
 				D6348D2D1ADB4DD60002BC35 /* NSString+Joyy.h */,
@@ -775,6 +785,8 @@
 				D63F0DA11ACD08260067C5EE /* UIColor+Joyy.m */,
 				D689ED681AE42C8300CB4D2B /* UIView+Joyy.h */,
 				D689ED691AE42C8300CB4D2B /* UIView+Joyy.m */,
+				D61D1DDC1B5342DD00DE37DF /* UIImage+Joyy.h */,
+				D61D1DDD1B5342DD00DE37DF /* UIImage+Joyy.m */,
 			);
 			name = Common;
 			sourceTree = "<group>";
@@ -824,7 +836,7 @@
 				D69202B41AC4C7C0001C1C3D /* AppDelegate.m */,
 				D68DAF991AC4CD0800838E7E /* Common */,
 				D63B69AB1AC5184D005600A9 /* Shared */,
-				D61D1D5B1B4DBA5D00DE37DF /* MaskZone */,
+				D61D1D5B1B4DBA5D00DE37DF /* Anonymous */,
 				D63F0D881ACBBE280067C5EE /* Map */,
 				D61C48991B44838A009E422A /* Menu */,
 				D6C82B611B1252FE00876F57 /* Model */,
@@ -1124,7 +1136,9 @@
 				D6348D271ADA3BC90002BC35 /* JYPriceTextFieldCell.m in Sources */,
 				D679F0301B2951D5004F1C37 /* JYFixedLengthRowValidator.m in Sources */,
 				D61D1DC61B4E336E00DE37DF /* TGCameraSlideUpView.m in Sources */,
+				D61D1DDE1B5342DD00DE37DF /* UIImage+Joyy.m in Sources */,
 				D679F0261B1C39BB004F1C37 /* JYFloatLabeledTextFieldCell.m in Sources */,
+				D61D1DDA1B51DB1F00DE37DF /* JYPhotoName.m in Sources */,
 				D61D1DC21B4E336E00DE37DF /* TGCameraGridView.m in Sources */,
 				D63F0D591AC7CFF20067C5EE /* JYButton.m in Sources */,
 				D63F0D8C1ACBBF1F0067C5EE /* JYCollectionViewCell.m in Sources */,
@@ -1134,7 +1148,7 @@
 				D61D1DC41B4E336E00DE37DF /* TGCameraSlideDownView.m in Sources */,
 				D65F37461B04807D007B534C /* JYCommentViewCell.m in Sources */,
 				D61D1DAE1B4E336E00DE37DF /* TGCamera.m in Sources */,
-				D63F0D751AC9F6F80067C5EE /* DataStore.m in Sources */,
+				D63F0D751AC9F6F80067C5EE /* JYDataStore.m in Sources */,
 				D6348D371ADB7ABC0002BC35 /* NSMutableDictionary+Joyy.m in Sources */,
 				D69202B51AC4C7C0001C1C3D /* AppDelegate.m in Sources */,
 				D63F0DA21ACD08260067C5EE /* UIColor+Joyy.m in Sources */,
@@ -1158,7 +1172,7 @@
 				D63F0D7D1ACA5E260067C5EE /* JYSignViewController.m in Sources */,
 				D63B69B61AC53BB4005600A9 /* JYFloatLabeledTextField.m in Sources */,
 				D6B2F0671AD1B5EC009601B0 /* JYMapDashBoardView.m in Sources */,
-				D65AFA5E1AEC715D007867D0 /* JYMaskZoneViewController.m in Sources */,
+				D65AFA5E1AEC715D007867D0 /* JYAnonymousViewController.m in Sources */,
 				D61C489C1B4483B4009E422A /* JYMenuViewController.m in Sources */,
 				D6B2F0851AD5E165009601B0 /* JYPlacesViewCell.m in Sources */,
 				D61D1DB21B4E336E00DE37DF /* TGCameraFlash.m in Sources */,
@@ -1206,6 +1220,7 @@
 				D64C27EB1B41D00600C85E55 /* JYOrderControl.m in Sources */,
 				D61D1DCD1B4E336E00DE37DF /* TGTintedLabel.m in Sources */,
 				D63F0D721AC9EC060067C5EE /* JYUser.m in Sources */,
+				D61D1DDF1B5342DD00DE37DF /* UIImage+Joyy.m in Sources */,
 				D689ED6B1AE42C8300CB4D2B /* UIView+Joyy.m in Sources */,
 				D61D1DA31B4E336E00DE37DF /* TGCameraAuthorizationViewController.m in Sources */,
 				D6FA6A841B33E466007CB30E /* JYCreditCard.m in Sources */,
@@ -1235,9 +1250,10 @@
 				D61D1DAD1B4E336E00DE37DF /* TGAssetsLibrary.m in Sources */,
 				D6FA6A8C1B37CDB3007CB30E /* JYOrderViewCell.m in Sources */,
 				D61D1D5F1B4DDCB200DE37DF /* JYCameraOverlayView.m in Sources */,
-				D63F0D761AC9F6F80067C5EE /* DataStore.m in Sources */,
+				D63F0D761AC9F6F80067C5EE /* JYDataStore.m in Sources */,
 				D6348D2C1ADA4A650002BC35 /* JYRestrictedTextViewCell.m in Sources */,
 				D61D1D5A1B4A65F200DE37DF /* UIView+MDCSwipeToChoose.m in Sources */,
+				D61D1DDB1B51DB1F00DE37DF /* JYPhotoName.m in Sources */,
 				D679F0271B1C39BB004F1C37 /* JYFloatLabeledTextFieldCell.m in Sources */,
 				D61D1D481B4A65F200DE37DF /* MDCGeometry.m in Sources */,
 				D61C48A11B449143009E422A /* JYMenuViewCell.m in Sources */,
@@ -1255,7 +1271,7 @@
 				D65AFA671AEDEF3D007867D0 /* JYOrderCard.m in Sources */,
 				D61D1DB51B4E336E00DE37DF /* TGCameraFocus.m in Sources */,
 				D61D1DB11B4E336E00DE37DF /* TGCameraColor.m in Sources */,
-				D65AFA5F1AEC715D007867D0 /* JYMaskZoneViewController.m in Sources */,
+				D65AFA5F1AEC715D007867D0 /* JYAnonymousViewController.m in Sources */,
 				D61D1DBF1B4E336E00DE37DF /* TGCameraFilterView.m in Sources */,
 				D65AFA761AEF5F3A007867D0 /* UIImageEffects.m in Sources */,
 				D63F0D981ACC95B00067C5EE /* JYMapViewController.m in Sources */,

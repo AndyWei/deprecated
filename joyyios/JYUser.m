@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
-#import "DataStore.h"
+#import "JYDataStore.h"
 #import "JYUser.h"
 
 @implementation JYUser
@@ -37,8 +37,8 @@
     [self _loadProperties];
     _tokenExpireTimeInSecs = [NSDate timeIntervalSinceReferenceDate] + kTokenValidInSecs;
 
-    [DataStore sharedInstance].tokenExpireTime = _tokenExpireTimeInSecs;
-    [DataStore sharedInstance].userCredential = _credential;
+    [JYDataStore sharedInstance].tokenExpireTime = _tokenExpireTimeInSecs;
+    [JYDataStore sharedInstance].userCredential = _credential;
 }
 
 - (BOOL)exists
@@ -48,12 +48,12 @@
         return YES;
     }
 
-    _credential = [DataStore sharedInstance].userCredential;
+    _credential = [JYDataStore sharedInstance].userCredential;
 
     if (_credential != nil)
     {
         [self _loadProperties];
-        _tokenExpireTimeInSecs = [DataStore sharedInstance].tokenExpireTime;
+        _tokenExpireTimeInSecs = [JYDataStore sharedInstance].tokenExpireTime;
         return YES;
     }
 

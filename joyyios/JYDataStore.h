@@ -1,5 +1,5 @@
 //
-//  DataStore.h
+//  JYDataStore.h
 //  joyyios
 //
 //  Created by Ping Yang on 3/30/15.
@@ -10,9 +10,9 @@
 
 @import CoreLocation;
 
-@interface DataStore : NSObject
+@interface JYDataStore : NSObject
 
-+ (DataStore *)sharedInstance;
++ (JYDataStore *)sharedInstance;
 
 @property(nonatomic) CGFloat presentedIntroductionVersion;
 @property(nonatomic) CLLocationCoordinate2D lastCoordinate;

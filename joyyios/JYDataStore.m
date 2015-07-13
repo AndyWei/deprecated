@@ -1,12 +1,12 @@
 //
-//  DataStore.m
+//  JYDataStore.m
 //  joyyios
 //
 //  Created by Ping Yang on 3/30/15.
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
-#import "DataStore.h"
+#import "JYDataStore.h"
 
 
 NSString *const kKeyAPITokenExpireTime = @"APITokenExpireTime";
@@ -21,15 +21,15 @@ NSString *const kKeyPresentedIntroductionVersion = @"PresentedIntroductionVersio
 NSString *const kKeyUserCredential = @"UserCredential";
 
 
-@implementation DataStore
+@implementation JYDataStore
 
 + (instancetype)sharedInstance
 {
-    static DataStore *_sharedInstance = nil;
+    static JYDataStore *_sharedInstance = nil;
     static dispatch_once_t done;
 
     dispatch_once(&done, ^{
-        _sharedInstance = [DataStore new];
+        _sharedInstance = [JYDataStore new];
     });
 
     return _sharedInstance;

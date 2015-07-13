@@ -52,8 +52,6 @@ NSString *const kAnnotationTitleStart = @"startPoint";
 NSString *const kErrorAuthenticationFailed = @"Incorrect Email or password";
 NSString *const kErrorTitle = @"(ᵔᴥᵔ) something wrong";
 
-NSString *const kGoogleAPIBrowserKey = @"AIzaSyC_iSgM7DRZEZxEah_foIl4k6ICSduyYww";
-
 NSString *const kImageNameLocationArrow = @"locationArrow";
 NSString *const kImageNamePinBlue = @"pinBlue";
 NSString *const kImageNamePinGreen = @"pinGreen";
@@ -73,5 +71,5 @@ NSString *const kSystemFontItalic = @"AvenirNextCondensed-Italic ";
 NSString *const kSystemFontLight = @"AvenirNextCondensed-UltraLight ";
 NSString *const kSystemFontRegular = @"AvenirNextCondensed-Regular";
 
-NSString *const kUrlAPIBase = @"http://api.joyyapp.com:8000/v1/";
-//NSString *const kUrlAPIBase = @"http://192.168.1.145:8000/v1/";
+//NSString *const kUrlAPIBase = @"http://api.joyyapp.com:8000/v1/";
+NSString *const kUrlAPIBase = @"http://192.168.1.145:8000/v1/";

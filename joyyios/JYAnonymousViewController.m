@@ -1,5 +1,5 @@
 //
-//  JYMaskZoneViewController.m
+//  JYAnonymousViewController.m
 //  joyyios
 //
 //  Created by Ping Yang on 4/25/15.
@@ -8,15 +8,19 @@
 
 #import <AFNetworking/AFNetworking.h>
 #import <KVNProgress/KVNProgress.h>
-#import "TGCameraColor.h"
+#import <RKDropdownAlert/RKDropdownAlert.h>
 
-#import "JYOrderViewCell.h"
+#import "AppDelegate.h"
+#import "JYAnonymousViewController.h"
 #import "JYCameraOverlayView.h"
-#import "JYMaskZoneViewController.h"
+#import "JYOrderViewCell.h"
+#import "JYPhotoName.h"
 #import "JYUser.h"
+#import "TGCameraColor.h"
 #import "UICustomActionSheet.h"
+#import "UIImage+Joyy.h"
 
-@interface JYMaskZoneViewController ()
+@interface JYAnonymousViewController ()
 
 @property(nonatomic) NSMutableArray *dealtOrderList;
 @property(nonatomic) NSMutableArray *startedOrderList;
@@ -28,12 +32,12 @@
 
 static NSString *const kOrderCellIdentifier = @"orderCell";
 
-@implementation JYMaskZoneViewController
+@implementation JYAnonymousViewController
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.title = NSLocalizedString(@"Mask Zone", nil);
+    self.title = NSLocalizedString(@"Anonymous", nil);
 
     UIBarButtonItem *cameraButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCamera target:self action:@selector(_cameraButtonPressed)];
     self.navigationItem.rightBarButtonItem = cameraButton;
@@ -112,10 +116,14 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-- (void)cameraDidTakePhoto:(UIImage *)image
+- (void)cameraDidTakePhoto:(UIImage *)photo
 {
-//    _photoView.image = image;
     [self dismissViewControllerAnimated:YES completion:nil];
+
+    UIImage *image = [UIImage imageWithImage:photo scaledToSize:CGSizeMake(375, 375)];
+    NSLog(@"image size width = %f, height = %f", image.size.width, image.size.height);
+    NSData *imageData = UIImageJPEGRepresentation(image, 0.7);
+    [self _uploadImageNamed:[JYPhotoName name] withData:imageData];
 }
 
 - (void)cameraDidSelectAlbumPhoto:(UIImage *)image
@@ -169,6 +177,60 @@ static NSString *const kOrderCellIdentifier = @"orderCell";
 }
 
 #pragma mark - Network
+
+- (void)_uploadImageNamed:(NSString *)filename withData:(NSData *)imageData
+{
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYUser currentUser].token];
+    [manager.requestSerializer setValue:token forHTTPHeaderField:@"Authorization"];
+
+    NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"media"];
+    NSMutableDictionary *parameters = [self _uploadImageParameters];
+
+    NSLog(@"parameters: %@", parameters);
+
+    [KVNProgress show];
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+
+//    __weak typeof(self) weakSelf = self;
+
+    [manager POST:url parameters:parameters constructingBodyWithBlock:^(id<AFMultipartFormData> formData){
+
+        [formData appendPartWithFileData:imageData name:@"file" fileName:filename mimeType:@"image/jpeg"];
+    } success:^(AFHTTPRequestOperation *operation, id responseObject) {
+
+        NSLog(@"Success: %@ ***** %@", operation.responseString, responseObject);
+
+        [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+        [KVNProgress dismiss];
+
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"Error: %@ ***** %@", operation.responseString, error);
+
+        [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+        [KVNProgress dismiss];
+
+        [RKDropdownAlert title:NSLocalizedString(kErrorTitle, nil)
+                       message:error.localizedDescription
+               backgroundColor:FlatYellow
+                     textColor:FlatBlack
+                          time:5];
+    }];
+}
+
+- (NSMutableDictionary *)_uploadImageParameters
+{
+    NSMutableDictionary *parameters = [NSMutableDictionary new];
+
+    [parameters setObject:@(0) forKey:@"media_type"]; // TODO: define media type
+    [parameters setObject:@"test(ᵔᴥᵔ)" forKey:@"caption"];
+
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    [parameters setObject:@(appDelegate.currentCoordinate.latitude) forKey:@"lat"];
+    [parameters setObject:@(appDelegate.currentCoordinate.longitude) forKey:@"lon"];
+
+    return parameters;
+}
 
 - (void)_fetchOrders
 {

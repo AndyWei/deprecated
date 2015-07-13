@@ -1,5 +1,5 @@
 //
-//  JYMaskZoneViewController.h
+//  JYAnonymousViewController.h
 //  joyyios
 //
 //  Created by Ping Yang on 4/25/15.
@@ -10,6 +10,6 @@
 
 #import "JYBaseViewController.h"
 
-@interface JYMaskZoneViewController : JYBaseViewController <TGCameraDelegate, UITableViewDataSource, UITableViewDelegate>
+@interface JYAnonymousViewController : JYBaseViewController <TGCameraDelegate, UITableViewDataSource, UITableViewDelegate>
 
 @end
