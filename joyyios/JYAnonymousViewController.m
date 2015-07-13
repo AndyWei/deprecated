@@ -40,7 +40,16 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+
     self.title = NSLocalizedString(@"Anonymous", nil);
+
+    // Do not use UIBarStyleBlack in the next line, because it will make the status bar text white, which is not what we want
+    // self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
+
+    // Setup the navigationBar appearence
+    self.navigationController.navigationBar.barTintColor = FlatBlack;
+    self.navigationController.navigationBar.translucent = NO;
+    [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName: JoyyGray}];
 
     UIBarButtonItem *cameraButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCamera target:self action:@selector(_cameraButtonPressed)];
     self.navigationItem.rightBarButtonItem = cameraButton;
@@ -67,17 +76,21 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
 - (void)_createTableView
 {
     UITableView *tableView = [[UITableView alloc] initWithFrame:self.view.frame style:UITableViewStylePlain];
-    tableView.backgroundColor = JoyyWhite;
-    tableView.separatorColor = ClearColor;
     tableView.dataSource = self;
     tableView.delegate = self;
+    tableView.backgroundColor = FlatBlack;
+    tableView.separatorColor = ClearColor;
+    tableView.showsHorizontalScrollIndicator = NO;
+    tableView.showsVerticalScrollIndicator = NO;
     [tableView registerClass:[JYMediaViewCell class] forCellReuseIdentifier:kMediaCellIdentifier];
 
+    // Setup the pull-down-to-refresh header
     MJRefreshNormalHeader *header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(_fetchNewMedia)];
     header.lastUpdatedTimeLabel.hidden = YES;
     header.stateLabel.hidden = YES;
     tableView.header = header;
 
+    // Setup the pull-up-to-refresh footer
     MJRefreshAutoNormalFooter *footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(_fetchOldMedia)];
     footer.refreshingTitleHidden = YES;
     footer.stateLabel.hidden = YES;
@@ -122,10 +135,32 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
 
 - (void)_cameraButtonPressed
 {
+    // fetch new media here is to prefare for the QuickShow
+    [self _fetchNewMedia];
+
     [TGCameraColor setTintColor:JoyyBlue];
     TGCameraNavigationController *camera = [TGCameraNavigationController newWithCameraDelegate:self];
+    camera.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
 
     [self presentViewController:camera animated:YES completion:nil];
+}
+
+- (void)_quickShow:(UIImage *)image
+{
+
+    JYMedia *media = [[JYMedia alloc] initWithLocalImage:image];
+    if (self.mediaList.count > 0)
+    {
+        JYMedia *lastMedia = self.mediaList.lastObject;
+        media.mediaId = lastMedia.mediaId; // Make sure the future _fetchNewMedia call get the correct last media id
+    }
+    [self.mediaList insertObject:media atIndex:0];
+
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
+    [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:NO];
+    [self.tableView beginUpdates];
+    [self.tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+    [self.tableView endUpdates];
 }
 
 #pragma mark - TGCameraDelegate Methods
@@ -139,6 +174,10 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
 {
     [self dismissViewControllerAnimated:YES completion:nil];
 
+    // QuickShow is to make the user feel light speed uploading
+    [self _quickShow:photo];
+
+    // Handling and upload the photo
     UIImage *image = [UIImage imageWithImage:photo scaledToSize:CGSizeMake(kPhotoWidth, kPhotoWidth)];
     NSData *imageData = UIImageJPEGRepresentation(image, kPhotoQuality);
     [self _uploadImageNamed:[JYPhotoName name] withData:imageData];
@@ -202,26 +241,22 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
 
     NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"media"];
     NSMutableDictionary *parameters = [self _uploadImageParameters];
-
     NSLog(@"parameters: %@", parameters);
 
-    [KVNProgress show];
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
-
-//    __weak typeof(self) weakSelf = self;
 
     [manager POST:url parameters:parameters constructingBodyWithBlock:^(id<AFMultipartFormData> formData){
 
         [formData appendPartWithFileData:imageData name:@"file" fileName:filename mimeType:@"image/jpeg"];
     } success:^(AFHTTPRequestOperation *operation, id responseObject) {
 
-        NSLog(@"Success: %@ ***** %@", operation.responseString, responseObject);
+        NSLog(@"Image upload success: %@", responseObject);
 
         [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
         [KVNProgress dismiss];
 
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        NSLog(@"Error: %@ ***** %@", operation.responseString, error);
+        NSLog(@"Image upload error: %@ ***** %@", operation.responseString, error);
 
         [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
         [KVNProgress dismiss];

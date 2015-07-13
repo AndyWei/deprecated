@@ -9,7 +9,10 @@
 #define JoyyBlue      [UIColor joyyBlueColor]
 #define JoyyBlue50    [UIColor joyyBlueColor50]
 #define JoyyBlueLight [UIColor joyyBlueLightColor]
+#define JoyyBlack     [UIColor blackColor]
+#define JoyyGray      [UIColor grayColor]
 #define JoyyWhite     [UIColor whiteColor]
+
 
 @interface UIColor (Joyy)
 

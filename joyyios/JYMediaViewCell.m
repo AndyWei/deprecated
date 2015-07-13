@@ -37,7 +37,7 @@ static const CGFloat kCaptionMinHeight = 40;
     if (self)
     {
         self.opaque = YES;
-        self.backgroundColor = JoyyWhite;
+        self.backgroundColor = FlatBlack;
 
         [self _createPhotoView];
         [self _createCaptionLabel];
@@ -49,6 +49,14 @@ static const CGFloat kCaptionMinHeight = 40;
 {
     self.captionLabel.text = media.caption;
 
+    // Use local image
+    if (media.localImage)
+    {
+        self.photoView.image = media.localImage;
+        return;
+    }
+
+    // Fetch network image
     NSURL *url = [NSURL URLWithString:media.url];
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
 
@@ -80,9 +88,9 @@ static const CGFloat kCaptionMinHeight = 40;
 - (UILabel *)_createLabel
 {
     UILabel *label = [[UILabel alloc] init];
-    label.backgroundColor = JoyyWhite;
+    label.backgroundColor = FlatBlack;
     label.font = [UIFont systemFontOfSize:16];
-    label.textColor = FlatBlack;
+    label.textColor = FlatWhite;
     label.textAlignment = NSTextAlignmentCenter;
     [self addSubview:label];
 

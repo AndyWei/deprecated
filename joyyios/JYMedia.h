@@ -16,14 +16,15 @@ typedef NS_ENUM(NSUInteger, JYMediaType)
 @interface JYMedia : NSObject
 
 - (instancetype)initWithDictionary:(NSDictionary *)dict;
+- (instancetype)initWithLocalImage:(UIImage *)image;
 
 @property(nonatomic) JYMediaType type;
 @property(nonatomic) NSUInteger mediaId;
 @property(nonatomic) NSUInteger userId;
 @property(nonatomic) NSUInteger pathVersion;
+@property(nonatomic) UIImage *localImage;
 @property(nonatomic, copy) NSString *filename;
 @property(nonatomic, copy) NSString *caption;
-@property(nonatomic) BOOL isLocal;
 @property(nonatomic, readonly) NSString *url;
 
 @end
