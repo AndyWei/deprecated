@@ -23,9 +23,9 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
+#import "JYPhotoCaptionViewController.h"
 #import "TGCameraColor.h"
 #import "TGCameraViewController.h"
-#import "TGPhotoViewController.h"
 #import "TGCameraSlideView.h"
 #import "TGTintedButton.h"
 
@@ -36,10 +36,6 @@
 @property (nonatomic) UIColor *toggleOffColor;
 
 @property (strong, nonatomic) IBOutlet UIView *captureView;
-@property (strong, nonatomic) IBOutlet UIImageView *topLeftView;
-@property (strong, nonatomic) IBOutlet UIImageView *topRightView;
-@property (strong, nonatomic) IBOutlet UIImageView *bottomLeftView;
-@property (strong, nonatomic) IBOutlet UIImageView *bottomRightView;
 @property (strong, nonatomic) IBOutlet UIView *separatorView;
 @property (strong, nonatomic) IBOutlet UIView *actionsView;
 @property (strong, nonatomic) IBOutlet TGTintedButton *gridButton;
@@ -52,7 +48,6 @@
 
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *topViewHeight;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *toggleButtonWidth;
-@property (weak, nonatomic) UILabel *titleLabel;
 
 @property (strong, nonatomic) TGCamera *camera;
 @property (nonatomic) BOOL wasLoaded;
@@ -102,12 +97,6 @@
     [_albumButton.layer setMasksToBounds:YES];
 
     _captureView.backgroundColor = [UIColor clearColor];
-    
-    _topLeftView.transform = CGAffineTransformMakeRotation(0);
-    _topRightView.transform = CGAffineTransformMakeRotation(M_PI_2);
-    _bottomLeftView.transform = CGAffineTransformMakeRotation(-M_PI_2);
-    _bottomRightView.transform = CGAffineTransformMakeRotation(M_PI_2*2);
-
     _separatorView.hidden = YES;
 
     _toggleOnColor = [TGCameraColor tintColor];
@@ -117,23 +106,19 @@
 
 - (void)createTitleLabel
 {
-    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 44)];
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 5, SCREEN_WIDTH, 44)];
     label.text = self.title;
+    self.title = nil;
     label.textAlignment = NSTextAlignmentCenter;
     label.textColor = JoyyGray;
     label.font = [UIFont boldSystemFontOfSize:17];
 
     [self.view addSubview:label];
-    self.titleLabel = label;
 }
 
 - (void)showControls:(BOOL)show
 {
-    _actionsView.hidden =
-    _topLeftView.hidden =
-    _topRightView.hidden =
-    _bottomLeftView.hidden =
-    _bottomRightView.hidden = !show;
+    _actionsView.hidden = !show;
 
     _gridButton.enabled =
     _toggleButton.enabled =
@@ -145,7 +130,8 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    
+    self.navigationController.navigationBarHidden = YES;
+
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(deviceOrientationDidChangeNotification)
                                                  name:UIDeviceOrientationDidChangeNotification
@@ -194,10 +180,6 @@
 - (void)dealloc
 {
     _captureView = nil;
-    _topLeftView = nil;
-    _topRightView = nil;
-    _bottomLeftView = nil;
-    _bottomRightView = nil;
     _separatorView = nil;
     _actionsView = nil;
     _gridButton = nil;
@@ -217,8 +199,8 @@
 {
     UIImage *photo = [TGAlbum imageWithMediaInfo:info];
     
-    TGPhotoViewController *viewController = [TGPhotoViewController newWithDelegate:_delegate photo:photo];
-    [viewController setAlbumPhoto:YES];
+    JYPhotoCaptionViewController *viewController = [JYPhotoCaptionViewController newWithDelegate:_delegate photo:photo];
+    viewController.albumPhoto = YES;
     [self.navigationController pushViewController:viewController animated:NO];
     
     [self dismissViewControllerAnimated:YES completion:nil];
@@ -262,7 +244,7 @@
     __weak typeof(self) weakSelf = self;
     [_camera takePhotoWithCaptureView:_captureView videoOrientation:videoOrientation cropSize:_captureView.frame.size
          completion:^(UIImage *photo) {
-             TGPhotoViewController *viewController = [TGPhotoViewController newWithDelegate:_delegate photo:photo];
+             UIViewController *viewController = [JYPhotoCaptionViewController newWithDelegate:_delegate photo:photo];
              [weakSelf.navigationController pushViewController:viewController animated:NO];
     }];
 }

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="7702" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="7706" systemVersion="14E46" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7701"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
     </dependencies>
     <objects>
@@ -10,8 +10,6 @@
             <connections>
                 <outlet property="actionsView" destination="Ni6-M2-hWT" id="SLr-Oc-ge0"/>
                 <outlet property="albumButton" destination="wxI-gO-dPX" id="WtA-c8-1cs"/>
-                <outlet property="bottomLeftView" destination="2rS-OA-lDQ" id="3Tj-6s-eEi"/>
-                <outlet property="bottomRightView" destination="HFV-tF-409" id="gvx-Rz-7bX"/>
                 <outlet property="captureView" destination="dIq-rQ-gzr" id="F4T-QP-lPu"/>
                 <outlet property="flashButton" destination="p7O-pE-Mp0" id="Tqo-vg-CGw"/>
                 <outlet property="gridButton" destination="Nol-dD-ETh" id="tfG-QF-CbC"/>
@@ -21,8 +19,6 @@
                 <outlet property="slideUpView" destination="vJp-kA-okD" id="hiW-4t-8lC"/>
                 <outlet property="toggleButton" destination="WJG-N5-BnZ" id="QRP-Z9-Zpe"/>
                 <outlet property="toggleButtonWidth" destination="6Yw-v5-k8c" id="Tt0-Xt-LUE"/>
-                <outlet property="topLeftView" destination="ljD-PV-2sR" id="6yh-RZ-d0w"/>
-                <outlet property="topRightView" destination="umk-ea-F3l" id="bIA-Jv-2nh"/>
                 <outlet property="topViewHeight" destination="0mu-lN-Lkb" id="RZR-8e-pHu"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
@@ -42,20 +38,6 @@
                 <view multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dIq-rQ-gzr" userLabel="Capture View">
                     <rect key="frame" x="0.0" y="60" width="600" height="600"/>
                     <subviews>
-                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="CameraDetail" translatesAutoresizingMaskIntoConstraints="NO" id="ljD-PV-2sR" userLabel="Top Left">
-                            <rect key="frame" x="0.0" y="0.0" width="58" height="58"/>
-                            <constraints>
-                                <constraint firstAttribute="height" constant="58" id="1gn-ke-nrx"/>
-                                <constraint firstAttribute="width" constant="58" id="cfo-2C-tKa"/>
-                            </constraints>
-                        </imageView>
-                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="CameraDetail" translatesAutoresizingMaskIntoConstraints="NO" id="umk-ea-F3l" userLabel="Top Right">
-                            <rect key="frame" x="542" y="0.0" width="58" height="58"/>
-                            <constraints>
-                                <constraint firstAttribute="width" constant="58" id="3kF-VG-r1w"/>
-                                <constraint firstAttribute="height" constant="58" id="fo1-rR-IP5"/>
-                            </constraints>
-                        </imageView>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="xFF-75-cke" userLabel="Separator View">
                             <rect key="frame" x="0.0" y="299" width="600" height="2"/>
                             <subviews>
@@ -84,35 +66,13 @@
                                 <constraint firstAttribute="trailing" secondItem="GxH-mC-xM3" secondAttribute="trailing" id="z8J-Z0-2e5"/>
                             </constraints>
                         </view>
-                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="CameraDetail" translatesAutoresizingMaskIntoConstraints="NO" id="2rS-OA-lDQ" userLabel="Bottom Left">
-                            <rect key="frame" x="0.0" y="542" width="58" height="58"/>
-                            <constraints>
-                                <constraint firstAttribute="height" constant="58" id="m8b-0G-cS3"/>
-                                <constraint firstAttribute="width" constant="58" id="r8H-hS-XjU"/>
-                            </constraints>
-                        </imageView>
-                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="CameraDetail" translatesAutoresizingMaskIntoConstraints="NO" id="HFV-tF-409" userLabel="Bottom Right">
-                            <rect key="frame" x="542" y="542" width="58" height="58"/>
-                            <constraints>
-                                <constraint firstAttribute="width" constant="58" id="Hf0-do-VjA"/>
-                                <constraint firstAttribute="height" constant="58" id="eM7-tr-8mw"/>
-                            </constraints>
-                        </imageView>
                     </subviews>
                     <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                     <gestureRecognizers/>
                     <constraints>
-                        <constraint firstItem="umk-ea-F3l" firstAttribute="top" secondItem="dIq-rQ-gzr" secondAttribute="top" id="1zC-th-e2x"/>
-                        <constraint firstAttribute="trailing" secondItem="umk-ea-F3l" secondAttribute="trailing" id="AUl-cM-5JL"/>
-                        <constraint firstItem="ljD-PV-2sR" firstAttribute="top" secondItem="dIq-rQ-gzr" secondAttribute="top" id="Fdo-v8-dKt"/>
-                        <constraint firstAttribute="bottom" secondItem="HFV-tF-409" secondAttribute="bottom" id="RFt-42-nJc"/>
                         <constraint firstAttribute="trailing" secondItem="xFF-75-cke" secondAttribute="trailing" id="Sxr-sS-Eqz"/>
-                        <constraint firstAttribute="trailing" secondItem="HFV-tF-409" secondAttribute="trailing" id="WYU-Tw-4V7"/>
-                        <constraint firstItem="2rS-OA-lDQ" firstAttribute="leading" secondItem="dIq-rQ-gzr" secondAttribute="leading" id="cyk-bG-M9K"/>
                         <constraint firstAttribute="centerY" secondItem="xFF-75-cke" secondAttribute="centerY" id="fOl-Ic-N0Q"/>
-                        <constraint firstAttribute="bottom" secondItem="2rS-OA-lDQ" secondAttribute="bottom" id="fjD-cR-2nv"/>
                         <constraint firstAttribute="width" secondItem="dIq-rQ-gzr" secondAttribute="height" multiplier="1:1" priority="999" id="rY0-Cn-lea"/>
-                        <constraint firstItem="ljD-PV-2sR" firstAttribute="leading" secondItem="dIq-rQ-gzr" secondAttribute="leading" id="rxy-AI-9fw"/>
                         <constraint firstItem="xFF-75-cke" firstAttribute="leading" secondItem="dIq-rQ-gzr" secondAttribute="leading" id="vve-NH-MbK"/>
                     </constraints>
                     <connections>
@@ -193,10 +153,10 @@
                             </connections>
                         </button>
                         <button opaque="NO" contentMode="scaleAspectFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wxI-gO-dPX" userLabel="Album" customClass="TGTintedButton">
-                            <rect key="frame" x="500" y="15" width="80" height="80"/>
+                            <rect key="frame" x="540" y="35" width="40" height="40"/>
                             <constraints>
-                                <constraint firstAttribute="height" constant="80" id="Qit-id-URc"/>
-                                <constraint firstAttribute="width" constant="80" id="twe-nl-2AZ"/>
+                                <constraint firstAttribute="height" constant="40" id="Qit-id-URc"/>
+                                <constraint firstAttribute="width" constant="40" id="twe-nl-2AZ"/>
                             </constraints>
                             <state key="normal" image="CameraRoll"/>
                             <connections>
@@ -290,7 +250,6 @@
     </objects>
     <resources>
         <image name="CameraClose" width="26" height="26"/>
-        <image name="CameraDetail" width="58" height="58"/>
         <image name="CameraFlashAuto" width="41" height="41"/>
         <image name="CameraGrid" width="26" height="26"/>
         <image name="CameraRoll" width="26" height="26"/>

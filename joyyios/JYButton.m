@@ -205,7 +205,7 @@ static CGRect CGRectEdgeInset(CGRect rect, UIEdgeInsets insets)
 
 + (instancetype)button
 {
-    CGRect frame = CGRectMake(0, 0,  CGRectGetWidth([[UIScreen mainScreen] applicationFrame]), kButtonDefaultHeight);
+    CGRect frame = CGRectMake(0, 0, SCREEN_WIDTH, kButtonDefaultHeight);
 
     JYButton *button = [[JYButton alloc] initWithFrame:frame buttonStyle:JYButtonStyleDefault];
     button.backgroundColor = FlatWhite;

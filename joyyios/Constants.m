@@ -7,7 +7,7 @@
 //
 
 const CGFloat kButtonCornerRadius = 4.0f;
-const CGFloat kButtonDefaultHeight = 55.0f;
+const CGFloat kButtonDefaultHeight = 44.0f;
 const CGFloat kButtonDefaultFontSize = 18.0f;
 const CGFloat kButtonLocateDiameter = 40;
 
