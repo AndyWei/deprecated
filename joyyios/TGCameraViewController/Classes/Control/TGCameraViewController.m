@@ -52,7 +52,6 @@
 @property (strong, nonatomic) TGCamera *camera;
 @property (nonatomic) BOOL wasLoaded;
 
-- (IBAction)closeTapped;
 - (IBAction)gridTapped;
 - (IBAction)flashTapped;
 - (IBAction)shotTapped;
@@ -75,6 +74,8 @@
 {
     [super viewDidLoad];
 
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"CameraClose"] style:UIBarButtonItemStylePlain target:self action:@selector(_close)];
+
     [self deviceOrientationDidChangeNotification];
 
     _camera = [TGCamera cameraWithFlashButton:_flashButton];
@@ -92,7 +93,6 @@
         _albumButton.hidden = YES;
     }
 
-    [self createTitleLabel];
     [_albumButton.layer setCornerRadius:10.f];
     [_albumButton.layer setMasksToBounds:YES];
 
@@ -102,18 +102,6 @@
     _toggleOnColor = [TGCameraColor tintColor];
     _toggleOffColor = [UIColor grayColor];
     _gridButton.customTintColorOverride = _toggleButton.customTintColorOverride = _toggleOffColor;
-}
-
-- (void)createTitleLabel
-{
-    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 5, SCREEN_WIDTH, 44)];
-    label.text = self.title;
-    self.title = nil;
-    label.textAlignment = NSTextAlignmentCenter;
-    label.textColor = JoyyGray;
-    label.font = [UIFont boldSystemFontOfSize:17];
-
-    [self.view addSubview:label];
 }
 
 - (void)showControls:(BOOL)show
@@ -130,7 +118,6 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    self.navigationController.navigationBarHidden = YES;
 
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(deviceOrientationDidChangeNotification)
@@ -214,7 +201,7 @@
 #pragma mark -
 #pragma mark - Actions
 
-- (IBAction)closeTapped
+- (void)_close
 {
     if ([_delegate respondsToSelector:@selector(cameraDidCancel)]) {
         [_delegate cameraDidCancel];

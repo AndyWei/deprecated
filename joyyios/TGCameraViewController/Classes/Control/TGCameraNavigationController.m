@@ -42,11 +42,10 @@
 
 + (instancetype)newWithCameraDelegate:(id<TGCameraDelegate>)delegate
 {
+    AVAuthorizationStatus status = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
     TGCameraNavigationController *navigationController = [super new];
-    navigationController.navigationBarHidden = YES;
-    
+
     if (navigationController) {
-        AVAuthorizationStatus status = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
 
         switch (status) {
             case AVAuthorizationStatusAuthorized:
@@ -64,6 +63,11 @@
         }
     }
 
+    navigationController.navigationBarHidden = NO;
+    navigationController.navigationBar.barTintColor = FlatBlack;
+    navigationController.navigationBar.translucent = NO;
+    [navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName: JoyyGray}];
+
     return navigationController;
 }
 
@@ -71,6 +75,7 @@
 {
     [super viewDidLoad];
     [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
+
     for (UIViewController *viewController in self.viewControllers)
     {
         viewController.title = self.title;
@@ -100,7 +105,6 @@
 {
     TGCameraViewController *viewController = [TGCameraViewController new];
     viewController.delegate = delegate;
-    
     self.viewControllers = @[viewController];
 }
 

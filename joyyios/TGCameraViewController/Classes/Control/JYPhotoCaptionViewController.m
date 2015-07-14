@@ -12,43 +12,40 @@
 @interface JYPhotoCaptionViewController ()
 
 @property (nonatomic) UIImage *photo;
-@property (nonatomic) NSCache *cachePhoto;
+@property (nonatomic) UIImageView *imageView;
+@property (nonatomic) UITextView *textView;
 @property (nonatomic, weak) id<TGCameraDelegate> delegate;
-@property (nonatomic, weak) UIImageView *imageView;
 
 @end
+
+static NSString *const kImageCellIdentifier = @"imageCell";
+
+const CGFloat  kTextViewHeight = 60;
 
 @implementation JYPhotoCaptionViewController
 
 + (instancetype)newWithDelegate:(id<TGCameraDelegate>)delegate photo:(UIImage *)photo
 {
-    JYPhotoCaptionViewController *viewController = [JYPhotoCaptionViewController newController];
-
-    if (viewController) {
-        viewController.delegate = delegate;
-        viewController.photo = photo;
-        viewController.cachePhoto = [[NSCache alloc] init];
-    }
-
-    return viewController;
+    return [[JYPhotoCaptionViewController alloc] initWithWithDelegate:delegate photo:photo];
 }
 
-+ (instancetype)newController
+- (instancetype)initWithWithDelegate:(id<TGCameraDelegate>)delegate photo:(UIImage *)photo
 {
-    return [super new];
-}
+    self = [super initWithStyle:UITableViewStylePlain];
 
+    if (self)
+    {
+        self.delegate = delegate;
+        self.photo = photo;
+    }
+    return self;
+}
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
 
-    self.navigationController.navigationBarHidden = NO;
-    self.navigationController.navigationBar.barTintColor = FlatBlack;
-    self.navigationController.navigationBar.translucent = NO;
-    [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName: JoyyGray}];
-
-    self.view.backgroundColor = JoyyBlack;
+    self.view.backgroundColor = FlatBlack;
     self.title = NSLocalizedString(@"Caption", nil);
 
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"CameraBack"] style:UIBarButtonItemStylePlain target:self action:@selector(_back)];
@@ -56,7 +53,8 @@
     NSString *text = NSLocalizedString(@"Send", nil);
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:text style:UIBarButtonItemStyleDone target:self action:@selector(_send)];
 
-    [self _createImageView];
+    [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:kImageCellIdentifier];
+    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
 }
 
 - (void)didReceiveMemoryWarning
@@ -78,12 +76,72 @@
 {
 }
 
-- (void)_createImageView
+- (UIImageView *)imageView
 {
-    UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_WIDTH)];
-    imageView.image = self.photo;
-    [self.view addSubview:imageView];
-    self.imageView = imageView;
+    if (!_imageView)
+    {
+        _imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_WIDTH)];
+        _imageView.centerX = self.tableView.centerX;
+        _imageView.image = self.photo;
+    }
+    return _imageView;
 }
+
+- (UITextView *)textView
+{
+    if (!_textView)
+    {
+        _textView = [[UITextView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, kTextViewHeight)];
+        _textView.font = [UIFont systemFontOfSize:14];
+        _textView.backgroundColor = FlatBlack;
+        _textView.textColor = FlatWhite;
+    }
+    return _textView;
+}
+
+#pragma mark - UITableViewDataSource
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    return 1;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return 2;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kImageCellIdentifier forIndexPath:indexPath];
+    cell.backgroundColor = FlatBlack;
+
+    if (indexPath.row == 0)
+    {
+        [cell addSubview:self.imageView];
+    }
+    else
+    {
+        [cell addSubview:self.textView];
+        [self.textView becomeFirstResponder];
+    }
+
+    return cell;
+}
+
+#pragma mark - UITableView Delegate
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return (indexPath.row == 0) ? SCREEN_WIDTH : kTextViewHeight;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+}
+
+#pragma mark - Overriden Method
+
 
 @end

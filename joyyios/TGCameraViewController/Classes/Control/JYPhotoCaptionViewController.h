@@ -8,7 +8,7 @@
 
 #import "TGCamera.h"
 
-@interface JYPhotoCaptionViewController : UIViewController
+@interface JYPhotoCaptionViewController : UITableViewController
 
 + (instancetype)new __attribute__
 ((unavailable("[+new] is not allowed, use [+newWithDelegate:photo:]")));
