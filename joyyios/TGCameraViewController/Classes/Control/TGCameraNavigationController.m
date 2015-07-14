@@ -71,6 +71,10 @@
 {
     [super viewDidLoad];
     [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
+    for (UIViewController *viewController in self.viewControllers)
+    {
+        viewController.title = self.title;
+    }
 }
 
 - (void)viewWillDisappear:(BOOL)animated

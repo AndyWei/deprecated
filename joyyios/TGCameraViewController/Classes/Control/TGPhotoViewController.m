@@ -128,7 +128,7 @@ static NSString* const kTGCacheVignetteKey = @"TGCacheVignetteKey";
 
 - (IBAction)backTapped
 {
-    [self.navigationController popViewControllerAnimated:YES];
+    [self.navigationController popViewControllerAnimated:NO];
 }
 
 - (IBAction)confirmTapped

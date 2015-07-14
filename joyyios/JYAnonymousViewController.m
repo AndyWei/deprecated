@@ -140,14 +140,14 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
 
     [TGCameraColor setTintColor:JoyyBlue];
     TGCameraNavigationController *camera = [TGCameraNavigationController newWithCameraDelegate:self];
-    camera.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
+    camera.title = self.title;
+    camera.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
 
     [self presentViewController:camera animated:YES completion:nil];
 }
 
 - (void)_quickShow:(UIImage *)image
 {
-
     JYMedia *media = [[JYMedia alloc] initWithLocalImage:image];
     if (self.mediaList.count > 0)
     {
@@ -163,6 +163,26 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
     [self.tableView endUpdates];
 }
 
+- (void)_removeQuickShowMedia
+{
+    // Not sure if the right thing to do this, commented out for now
+//    for (NSUInteger index = 0; index < self.mediaList.count; index++)
+//    {
+//        JYMedia *media = self.mediaList[index];
+//        if (media.localImage)
+//        {
+//            [self.mediaList removeObjectAtIndex:index];
+//
+//            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
+//            [self.tableView beginUpdates];
+//            [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+//            [self.tableView endUpdates];
+//
+//            return;
+//        }
+//    }
+}
+
 #pragma mark - TGCameraDelegate Methods
 
 - (void)cameraDidCancel
@@ -172,15 +192,16 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
 
 - (void)cameraDidTakePhoto:(UIImage *)photo
 {
-    [self dismissViewControllerAnimated:YES completion:nil];
-
-    // QuickShow is to make the user feel light speed uploading
-    [self _quickShow:photo];
-
     // Handling and upload the photo
     UIImage *image = [UIImage imageWithImage:photo scaledToSize:CGSizeMake(kPhotoWidth, kPhotoWidth)];
     NSData *imageData = UIImageJPEGRepresentation(image, kPhotoQuality);
     [self _uploadImageNamed:[JYPhotoName name] withData:imageData];
+
+    __weak typeof(self) weakSelf = self;
+    [self dismissViewControllerAnimated:YES completion:^{
+        // QuickShow is to make the user feel speedy before the uploading has been really done
+        [weakSelf _quickShow:photo];
+    }];
 }
 
 - (void)cameraDidSelectAlbumPhoto:(UIImage *)image
@@ -245,6 +266,7 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
 
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
 
+    __weak typeof(self) weakSelf = self;
     [manager POST:url parameters:parameters constructingBodyWithBlock:^(id<AFMultipartFormData> formData){
 
         [formData appendPartWithFileData:imageData name:@"file" fileName:filename mimeType:@"image/jpeg"];
@@ -253,13 +275,12 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
         NSLog(@"Image upload success: %@", responseObject);
 
         [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-        [KVNProgress dismiss];
 
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         NSLog(@"Image upload error: %@ ***** %@", operation.responseString, error);
 
         [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-        [KVNProgress dismiss];
+        [weakSelf _removeQuickShowMedia];
 
         [RKDropdownAlert title:NSLocalizedString(kErrorTitle, nil)
                        message:error.localizedDescription

@@ -34,6 +34,7 @@
 
 @property (nonatomic) UIColor *toggleOnColor;
 @property (nonatomic) UIColor *toggleOffColor;
+
 @property (strong, nonatomic) IBOutlet UIView *captureView;
 @property (strong, nonatomic) IBOutlet UIImageView *topLeftView;
 @property (strong, nonatomic) IBOutlet UIImageView *topRightView;
@@ -51,6 +52,7 @@
 
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *topViewHeight;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *toggleButtonWidth;
+@property (weak, nonatomic) UILabel *titleLabel;
 
 @property (strong, nonatomic) TGCamera *camera;
 @property (nonatomic) BOOL wasLoaded;
@@ -81,7 +83,6 @@
     [self deviceOrientationDidChangeNotification];
 
     _camera = [TGCamera cameraWithFlashButton:_flashButton];
-    [_camera startRunning];
 
     if (CGRectGetHeight([[UIScreen mainScreen] bounds]) <= 480) {
         _topViewHeight.constant = 0;
@@ -95,7 +96,8 @@
     if ([[TGCamera getOption:kTGCameraOptionHiddenAlbumButton] boolValue] == YES) {
         _albumButton.hidden = YES;
     }
-    
+
+    [self createTitleLabel];
     [_albumButton.layer setCornerRadius:10.f];
     [_albumButton.layer setMasksToBounds:YES];
 
@@ -111,6 +113,18 @@
     _toggleOnColor = [TGCameraColor tintColor];
     _toggleOffColor = [UIColor grayColor];
     _gridButton.customTintColorOverride = _toggleButton.customTintColorOverride = _toggleOffColor;
+}
+
+- (void)createTitleLabel
+{
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 44)];
+    label.text = self.title;
+    label.textAlignment = NSTextAlignmentCenter;
+    label.textColor = JoyyGray;
+    label.font = [UIFont boldSystemFontOfSize:17];
+
+    [self.view addSubview:label];
+    self.titleLabel = label;
 }
 
 - (void)showControls:(BOOL)show
@@ -136,14 +150,9 @@
                                              selector:@selector(deviceOrientationDidChangeNotification)
                                                  name:UIDeviceOrientationDidChangeNotification
                                                object:nil];
-    
-    [self showControls:NO];
 
-    __weak typeof(self) weakSelf = self;
-    [TGCameraSlideView hideSlideUpView:_slideUpView slideDownView:_slideDownView atView:_captureView completion:^{
-        [weakSelf showControls:YES];
-    }];
-
+    [_camera startRunning];
+    [self showControls:YES];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -249,13 +258,12 @@
     
     UIDeviceOrientation deviceOrientation = [[UIDevice currentDevice] orientation];
     AVCaptureVideoOrientation videoOrientation = [self videoOrientationForDeviceOrientation:deviceOrientation];
-    
-    [self viewWillDisappearWithCompletion:^{
-        [_camera takePhotoWithCaptureView:_captureView videoOrientation:videoOrientation cropSize:_captureView.frame.size
-                               completion:^(UIImage *photo) {
-                                   TGPhotoViewController *viewController = [TGPhotoViewController newWithDelegate:_delegate photo:photo];
-                                   [self.navigationController pushViewController:viewController animated:YES];
-                               }];
+
+    __weak typeof(self) weakSelf = self;
+    [_camera takePhotoWithCaptureView:_captureView videoOrientation:videoOrientation cropSize:_captureView.frame.size
+         completion:^(UIImage *photo) {
+             TGPhotoViewController *viewController = [TGPhotoViewController newWithDelegate:_delegate photo:photo];
+             [weakSelf.navigationController pushViewController:viewController animated:NO];
     }];
 }
 
@@ -263,10 +271,11 @@
 {
     _shotButton.enabled =
     _albumButton.enabled = NO;
-    
+
+    __weak typeof(self) weakSelf = self;
     [self viewWillDisappearWithCompletion:^{
         UIImagePickerController *pickerController = [TGAlbum imagePickerControllerWithDelegate:self];
-        [self presentViewController:pickerController animated:YES completion:nil];
+        [weakSelf presentViewController:pickerController animated:YES completion:nil];
     }];
 }
 
@@ -328,10 +337,10 @@
 {
     TGAssetsLibrary *library = [TGAssetsLibrary defaultAssetsLibrary];
     
-    __weak __typeof(self)wSelf = self;
+    __weak __typeof(self) weakSelf = self;
     [library latestPhotoWithCompletion:^(UIImage *photo) {
-        wSelf.albumButton.disableTint = YES;
-        [wSelf.albumButton setImage:photo forState:UIControlStateNormal];
+        weakSelf.albumButton.disableTint = YES;
+        [weakSelf.albumButton setImage:photo forState:UIControlStateNormal];
     }];
 }
 
