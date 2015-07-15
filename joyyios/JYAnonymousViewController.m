@@ -13,6 +13,7 @@
 
 #import "AppDelegate.h"
 #import "JYAnonymousViewController.h"
+#import "JYButton.h"
 #import "JYCameraOverlayView.h"
 #import "JYMedia.h"
 #import "JYMediaViewCell.h"
@@ -28,11 +29,12 @@
 @property(nonatomic) NSInteger networkThreadCount;
 @property(nonatomic) NSMutableArray *mediaList;
 @property(nonatomic) NSIndexPath *selectedIndexPath;
+@property(nonatomic) JYButton *cameraButton;
 @property(nonatomic, weak) UITableView *tableView;
 
 @end
 
-
+const CGFloat kCamerButtonWidth = 50;
 static NSString *const kMediaCellIdentifier = @"mediaCell";
 
 @implementation JYAnonymousViewController
@@ -47,12 +49,9 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
     // self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
 
     // Setup the navigationBar appearence
-    self.navigationController.navigationBar.barTintColor = FlatBlack;
+    self.navigationController.navigationBar.barTintColor = JoyyBlack;
     self.navigationController.navigationBar.translucent = NO;
     [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName: JoyyGray}];
-
-    UIBarButtonItem *cameraButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCamera target:self action:@selector(_cameraButtonPressed)];
-    self.navigationItem.rightBarButtonItem = cameraButton;
 
     self.needReloadTable = NO;
     self.networkThreadCount = 0;
@@ -62,6 +61,7 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
 
     [self _createTableView];
     [self _fetchNewMedia];
+    [self _createCameraButton];
 }
 
 - (void)didReceiveMemoryWarning
@@ -78,7 +78,7 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
     UITableView *tableView = [[UITableView alloc] initWithFrame:self.view.frame style:UITableViewStylePlain];
     tableView.dataSource = self;
     tableView.delegate = self;
-    tableView.backgroundColor = FlatBlack;
+    tableView.backgroundColor = JoyyBlack;
     tableView.separatorColor = ClearColor;
     tableView.showsHorizontalScrollIndicator = NO;
     tableView.showsVerticalScrollIndicator = NO;
@@ -99,6 +99,23 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
     [self.view addSubview:tableView];
 
     self.tableView = tableView;
+}
+
+- (void)_createCameraButton
+{
+    CGRect frame = CGRectMake(0, 0, kCamerButtonWidth, kCamerButtonWidth);
+    JYButton *cameraButton = [JYButton buttonWithFrame:frame buttonStyle:JYButtonStyleCentralImage shouldMaskImage:YES];
+    cameraButton.centerX = self.view.centerX;
+    cameraButton.centerY = SCREEN_HEIGHT - 120;
+
+    cameraButton.imageView.image = [UIImage imageNamed:@"CameraShot"];
+    cameraButton.contentColor = JoyyGray50;
+    cameraButton.contentAnimateToColor = JoyyGray;
+    cameraButton.foregroundColor = ClearColor;
+    [cameraButton addTarget:self action:@selector(_cameraButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+
+    [self.view addSubview:cameraButton];
+    self.cameraButton = cameraButton;
 }
 
 - (void)_networkThreadBegin
@@ -141,14 +158,14 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
     [TGCameraColor setTintColor:JoyyBlue];
     TGCameraNavigationController *camera = [TGCameraNavigationController newWithCameraDelegate:self];
     camera.title = self.title;
-    camera.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
 
-    [self presentViewController:camera animated:YES completion:nil];
+    [self presentViewController:camera animated:NO completion:nil];
 }
 
-- (void)_quickShow:(UIImage *)image
+- (void)_quickShow:(UIImage *)image withCaption:(NSString *)caption
 {
     JYMedia *media = [[JYMedia alloc] initWithLocalImage:image];
+    media.caption = caption;
     if (self.mediaList.count > 0)
     {
         JYMedia *lastMedia = self.mediaList.lastObject;
@@ -187,26 +204,29 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
 
 - (void)cameraDidCancel
 {
-    [self dismissViewControllerAnimated:YES completion:nil];
+    [self dismissViewControllerAnimated:NO completion:nil];
 }
 
-- (void)cameraDidTakePhoto:(UIImage *)photo
+- (void)cameraDidTakePhoto:(UIImage *)photo withCaption:(NSString *)caption
 {
+    // Default caption
+    caption = (caption.length == 0) ? @"(ᵔᴥᵔ)" : caption;
+
     // Handling and upload the photo
     UIImage *image = [UIImage imageWithImage:photo scaledToSize:CGSizeMake(kPhotoWidth, kPhotoWidth)];
     NSData *imageData = UIImageJPEGRepresentation(image, kPhotoQuality);
-    [self _uploadImageNamed:[JYPhotoName name] withData:imageData];
+    [self _uploadImageNamed:[JYPhotoName name] withData:imageData andCaption:caption];
 
     __weak typeof(self) weakSelf = self;
-    [self dismissViewControllerAnimated:YES completion:^{
+    [self dismissViewControllerAnimated:NO completion:^{
         // QuickShow is to make the user feel speedy before the uploading has been really done
-        [weakSelf _quickShow:photo];
+        [weakSelf _quickShow:photo withCaption:caption];
     }];
 }
 
-- (void)cameraDidSelectAlbumPhoto:(UIImage *)image
+- (void)cameraDidSelectAlbumPhoto:(UIImage *)image withCaption:(NSString *)caption
 {
-    [self cameraDidTakePhoto:image];
+    [self cameraDidTakePhoto:image withCaption:caption];
 }
 
 #pragma mark - UITableViewDataSource
@@ -254,7 +274,7 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
 
 #pragma mark - Network
 
-- (void)_uploadImageNamed:(NSString *)filename withData:(NSData *)imageData
+- (void)_uploadImageNamed:(NSString *)filename withData:(NSData *)imageData andCaption:(NSString *)caption
 {
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYUser currentUser].token];
@@ -262,6 +282,8 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
 
     NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"media"];
     NSMutableDictionary *parameters = [self _uploadImageParameters];
+
+    [parameters setObject:caption forKey:@"caption"];
     NSLog(@"parameters: %@", parameters);
 
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
@@ -295,7 +317,6 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
     NSMutableDictionary *parameters = [NSMutableDictionary new];
 
     [parameters setObject:@(0) forKey:@"media_type"]; // TODO: define media type
-    [parameters setObject:@"test(ᵔᴥᵔ)" forKey:@"caption"];
 
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     [parameters setObject:@(appDelegate.currentCoordinate.latitude) forKey:@"lat"];

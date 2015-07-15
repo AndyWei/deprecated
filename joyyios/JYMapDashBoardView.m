@@ -100,15 +100,15 @@
                               kButtonLocateDiameter,
                               kButtonLocateDiameter);
     JYButton *locateButton = [JYButton buttonWithFrame:frame buttonStyle:JYButtonStyleCentralImage shouldMaskImage:YES];
-    locateButton.backgroundColor = [UIColor whiteColor];
+    locateButton.backgroundColor = JoyyWhite;
     locateButton.borderColor = FlatGray;
     locateButton.borderWidth = 0.5;
     locateButton.cornerRadius = kButtonDefaultHeight / 2;
     locateButton.contentAnimateToColor = FlatWhite;
-    locateButton.contentColor = JoyyBlueLight;
+    locateButton.contentColor = JoyyBlue;
     locateButton.contentEdgeInsets = UIEdgeInsetsMake(5, 2, 2, 5);
-    locateButton.foregroundAnimateToColor = JoyyBlueLight;
-    locateButton.foregroundColor = [UIColor whiteColor];
+    locateButton.foregroundAnimateToColor = JoyyBlue;
+    locateButton.foregroundColor = JoyyWhite;
     locateButton.imageView.image = [UIImage imageNamed:kImageNameLocationArrow];
     [locateButton addTarget:self action:@selector(_locateButtonPressed) forControlEvents:UIControlEventTouchUpInside];
 

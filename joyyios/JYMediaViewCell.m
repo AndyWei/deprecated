@@ -37,7 +37,7 @@ static const CGFloat kCaptionMinHeight = 40;
     if (self)
     {
         self.opaque = YES;
-        self.backgroundColor = FlatBlack;
+        self.backgroundColor = JoyyBlack;
 
         [self _createPhotoView];
         [self _createCaptionLabel];
@@ -88,9 +88,9 @@ static const CGFloat kCaptionMinHeight = 40;
 - (UILabel *)_createLabel
 {
     UILabel *label = [[UILabel alloc] init];
-    label.backgroundColor = FlatBlack;
+    label.backgroundColor = JoyyBlack;
     label.font = [UIFont systemFontOfSize:16];
-    label.textColor = FlatWhite;
+    label.textColor = JoyyWhite;
     label.textAlignment = NSTextAlignmentCenter;
     [self addSubview:label];
 

@@ -10,19 +10,39 @@
 
 @implementation UIColor (Joyy)
 
++ (UIColor *)joyyBlackColor
+{
+    return rgb(40, 40, 40);
+}
+
++ (UIColor *)joyyBlackColor50
+{
+    return rgba(40, 40, 40, 0.5);
+}
+
 + (UIColor *)joyyBlueColor
 {
-//    return hsb(204, 76, 86);
     return rgb(52, 181, 229);
 }
 
 + (UIColor *)joyyBlueColor50
 {
-    return hsba(204, 76, 86, 0.5);
+    return rgba(52, 181, 229, 0.5);
 }
 
-+ (UIColor *)joyyBlueLightColor
++ (UIColor *)joyyBlueColor30
 {
-    return rgb(52, 181, 229);
+    return rgba(52, 181, 229, 0.3);
 }
+
++ (UIColor *)joyyGrayColor50
+{
+    return rgba(128, 128, 128, 0.5);
+}
+
++ (UIColor *)joyyWhiteColor
+{
+    return rgb(215, 215, 215);
+}
+
 @end
