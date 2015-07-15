@@ -25,10 +25,8 @@
 
 @interface JYAnonymousViewController ()
 
-@property(nonatomic) BOOL needReloadTable;
 @property(nonatomic) NSInteger networkThreadCount;
 @property(nonatomic) NSMutableArray *mediaList;
-@property(nonatomic) NSIndexPath *selectedIndexPath;
 @property(nonatomic) UIColor *originalTabBarTintColor;
 @property(nonatomic) JYButton *cameraButton;
 @property(nonatomic) UITableView *tableView;
@@ -54,10 +52,7 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
     self.navigationController.navigationBar.translucent = YES;
     [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName: JoyyGray}];
 
-    self.needReloadTable = NO;
     self.networkThreadCount = 0;
-    self.selectedIndexPath = nil;
-
     self.mediaList = [NSMutableArray new];
 
     [self.view addSubview:self.tableView];
@@ -151,11 +146,6 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
         [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
         [self.tableView.header endRefreshing];
         [self.tableView.footer endRefreshing];
-        if (self.needReloadTable)
-        {
-            self.needReloadTable = NO;
-            [self.tableView reloadData];
-        }
     }
 }
 
@@ -313,15 +303,15 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
 
 - (void)_fetchNewMedia
 {
-    [self _fetchMediaForBottomCells:NO];
+    [self _fetchMediaToEnd:NO];
 }
 
 - (void)_fetchOldMedia
 {
-    [self _fetchMediaForBottomCells:YES];
+    [self _fetchMediaToEnd:YES];
 }
 
-- (void)_fetchMediaForBottomCells:(BOOL)isForBttomCells
+- (void)_fetchMediaToEnd:(BOOL)toEnd
 {
     if (self.networkThreadCount > 0)
     {
@@ -335,7 +325,7 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
     [manager.requestSerializer setValue:token forHTTPHeaderField:@"Authorization"];
 
     NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"media/nearby"];
-    NSDictionary *parameters = [self _fetchMediaHttpParameters:isForBttomCells];
+    NSDictionary *parameters = [self _fetchMediaHttpParameters:toEnd];
 
     __weak typeof(self) weakSelf = self;
     [manager GET:url
@@ -343,24 +333,7 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
          success:^(AFHTTPRequestOperation *operation, id responseObject) {
              NSLog(@"media/nearby paid fetch success responseObject: %@", responseObject);
 
-             if (isForBttomCells)
-             {
-                 for (NSDictionary *dict in responseObject)
-                 {
-                     JYMedia *media = [[JYMedia alloc] initWithDictionary:dict];
-                     [weakSelf.mediaList addObject:media];
-                 }
-             }
-             else
-             {
-                 for (NSDictionary *dict in [responseObject reverseObjectEnumerator])
-                 {
-                     JYMedia *media = [[JYMedia alloc] initWithDictionary:dict];
-                     [weakSelf.mediaList insertObject:media atIndex:0];
-                 }
-             }
-
-             self.needReloadTable = [(NSArray *)responseObject count] > 0;
+             [weakSelf _updateTableWithMedia:responseObject toEnd:toEnd];
              [weakSelf _networkThreadEnd];
          }
          failure:^(AFHTTPRequestOperation *operation, NSError *error) {
