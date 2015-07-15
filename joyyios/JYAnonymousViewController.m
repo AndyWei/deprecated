@@ -331,7 +331,7 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
     [manager GET:url
       parameters:parameters
          success:^(AFHTTPRequestOperation *operation, id responseObject) {
-             NSLog(@"media/nearby paid fetch success responseObject: %@", responseObject);
+//             NSLog(@"media/nearby fetch success responseObject: %@", responseObject);
 
              [weakSelf _updateTableWithMedia:responseObject toEnd:toEnd];
              [weakSelf _networkThreadEnd];
@@ -349,13 +349,9 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
         return;
     }
 
-    NSArray *indexPaths = [self _indexPathsOfMedia:mediaList toEnd:toEnd];
-
     dispatch_async(dispatch_get_main_queue(), ^{
         [self _addMedia:mediaList toEnd:toEnd];
-        [self.tableView beginUpdates];
-        [self.tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
-        [self.tableView endUpdates];
+        [self.tableView reloadData];
     });
 }
 
@@ -366,6 +362,7 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
         return;
     }
 
+    // The items in mediaList are DESC sorted by media_id
     if (toEnd)
     {
         for (NSDictionary *dict in mediaList)
@@ -384,19 +381,7 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
     }
 }
 
-- (NSArray *)_indexPathsOfMedia:(NSArray *)mediaList toEnd:(BOOL)toEnd
-{
-    NSMutableArray *indexPaths = [NSMutableArray new];
-    for (NSUInteger i = 0; i < mediaList.count; ++i)
-    {
-        NSUInteger row = toEnd ? self.mediaList.count + i : i;
-        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:0];
-        [indexPaths addObject:indexPath];
-    }
-    return indexPaths;
-}
-
-- (NSDictionary *)_fetchMediaHttpParameters:(BOOL)isForBttomCells
+- (NSDictionary *)_fetchMediaHttpParameters:(BOOL)toEnd
 {
     NSMutableDictionary *parameters = [NSMutableDictionary new];
 
@@ -408,7 +393,7 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
 
     if (self.mediaList.count > 0)
     {
-        if (isForBttomCells)
+        if (toEnd)
         {
             JYMedia *media = self.mediaList.lastObject;
             [parameters setValue:@(media.mediaId) forKey:@"before"];
