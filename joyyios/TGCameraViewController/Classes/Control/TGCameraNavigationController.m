@@ -64,7 +64,7 @@
     }
 
     navigationController.navigationBarHidden = NO;
-    navigationController.navigationBar.barTintColor = FlatBlack;
+    navigationController.navigationBar.barTintColor = JoyyBlack;
     navigationController.navigationBar.translucent = NO;
     [navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName: JoyyGray}];
 

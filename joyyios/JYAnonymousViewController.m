@@ -29,8 +29,9 @@
 @property(nonatomic) NSInteger networkThreadCount;
 @property(nonatomic) NSMutableArray *mediaList;
 @property(nonatomic) NSIndexPath *selectedIndexPath;
+@property(nonatomic) UIColor *originalTabBarTintColor;
 @property(nonatomic) JYButton *cameraButton;
-@property(nonatomic, weak) UITableView *tableView;
+@property(nonatomic) UITableView *tableView;
 
 @end
 
@@ -50,7 +51,7 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
 
     // Setup the navigationBar appearence
     self.navigationController.navigationBar.barTintColor = JoyyBlack;
-    self.navigationController.navigationBar.translucent = NO;
+    self.navigationController.navigationBar.translucent = YES;
     [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName: JoyyGray}];
 
     self.needReloadTable = NO;
@@ -59,9 +60,23 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
 
     self.mediaList = [NSMutableArray new];
 
-    [self _createTableView];
+    [self.view addSubview:self.tableView];
+    [self.view addSubview:self.cameraButton];
     [self _fetchNewMedia];
-    [self _createCameraButton];
+
+    self.originalTabBarTintColor = self.tabBarController.tabBar.barTintColor;
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    self.tabBarController.tabBar.barTintColor = JoyyBlack;
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
+    self.tabBarController.tabBar.barTintColor = self.originalTabBarTintColor;
 }
 
 - (void)didReceiveMemoryWarning
@@ -73,49 +88,50 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
 {
 }
 
-- (void)_createTableView
+- (UITableView *)tableView
 {
-    UITableView *tableView = [[UITableView alloc] initWithFrame:self.view.frame style:UITableViewStylePlain];
-    tableView.dataSource = self;
-    tableView.delegate = self;
-    tableView.backgroundColor = JoyyBlack;
-    tableView.separatorColor = ClearColor;
-    tableView.showsHorizontalScrollIndicator = NO;
-    tableView.showsVerticalScrollIndicator = NO;
-    [tableView registerClass:[JYMediaViewCell class] forCellReuseIdentifier:kMediaCellIdentifier];
+    if (!_tableView)
+    {
+        _tableView = [[UITableView alloc] initWithFrame:self.view.frame style:UITableViewStylePlain];
+        _tableView.dataSource = self;
+        _tableView.delegate = self;
+        _tableView.backgroundColor = JoyyBlack;
+        _tableView.separatorColor = ClearColor;
+        _tableView.showsHorizontalScrollIndicator = NO;
+        _tableView.showsVerticalScrollIndicator = NO;
+        [_tableView registerClass:[JYMediaViewCell class] forCellReuseIdentifier:kMediaCellIdentifier];
 
-    // Setup the pull-down-to-refresh header
-    MJRefreshNormalHeader *header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(_fetchNewMedia)];
-    header.lastUpdatedTimeLabel.hidden = YES;
-    header.stateLabel.hidden = YES;
-    tableView.header = header;
+        // Setup the pull-down-to-refresh header
+        MJRefreshNormalHeader *header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(_fetchNewMedia)];
+        header.lastUpdatedTimeLabel.hidden = YES;
+        header.stateLabel.hidden = YES;
+        _tableView.header = header;
 
-    // Setup the pull-up-to-refresh footer
-    MJRefreshAutoNormalFooter *footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(_fetchOldMedia)];
-    footer.refreshingTitleHidden = YES;
-    footer.stateLabel.hidden = YES;
-    tableView.footer = footer;
-
-    [self.view addSubview:tableView];
-
-    self.tableView = tableView;
+        // Setup the pull-up-to-refresh footer
+        MJRefreshAutoNormalFooter *footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(_fetchOldMedia)];
+        footer.refreshingTitleHidden = YES;
+        footer.stateLabel.hidden = YES;
+        _tableView.footer = footer;
+    }
+    return _tableView;
 }
 
-- (void)_createCameraButton
+- (JYButton *)cameraButton
 {
-    CGRect frame = CGRectMake(0, 0, kCamerButtonWidth, kCamerButtonWidth);
-    JYButton *cameraButton = [JYButton buttonWithFrame:frame buttonStyle:JYButtonStyleCentralImage shouldMaskImage:YES];
-    cameraButton.centerX = self.view.centerX;
-    cameraButton.centerY = SCREEN_HEIGHT - 120;
+    if (!_cameraButton)
+    {
+        CGRect frame = CGRectMake(0, 0, kCamerButtonWidth, kCamerButtonWidth);
+        _cameraButton = [JYButton buttonWithFrame:frame buttonStyle:JYButtonStyleCentralImage shouldMaskImage:YES];
+        _cameraButton.centerX = self.view.centerX;
+        _cameraButton.centerY = SCREEN_HEIGHT - self.tabBarController.tabBar.height;
 
-    cameraButton.imageView.image = [UIImage imageNamed:@"CameraShot"];
-    cameraButton.contentColor = JoyyGray50;
-    cameraButton.contentAnimateToColor = JoyyGray;
-    cameraButton.foregroundColor = ClearColor;
-    [cameraButton addTarget:self action:@selector(_cameraButtonPressed) forControlEvents:UIControlEventTouchUpInside];
-
-    [self.view addSubview:cameraButton];
-    self.cameraButton = cameraButton;
+        _cameraButton.imageView.image = [UIImage imageNamed:@"CameraShot"];
+        _cameraButton.contentColor = JoyyGray50;
+        _cameraButton.contentAnimateToColor = JoyyGray;
+        _cameraButton.foregroundColor = ClearColor;
+        [_cameraButton addTarget:self action:@selector(_showCamera) forControlEvents:UIControlEventTouchUpInside];
+    }
+    return _cameraButton;
 }
 
 - (void)_networkThreadBegin
@@ -150,7 +166,7 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
     return self.mediaList[index];
 }
 
-- (void)_cameraButtonPressed
+- (void)_showCamera
 {
     // fetch new media here is to prefare for the QuickShow
     [self _fetchNewMedia];
@@ -178,26 +194,6 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
     [self.tableView beginUpdates];
     [self.tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
     [self.tableView endUpdates];
-}
-
-- (void)_removeQuickShowMedia
-{
-    // Not sure if the right thing to do this, commented out for now
-//    for (NSUInteger index = 0; index < self.mediaList.count; index++)
-//    {
-//        JYMedia *media = self.mediaList[index];
-//        if (media.localImage)
-//        {
-//            [self.mediaList removeObjectAtIndex:index];
-//
-//            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
-//            [self.tableView beginUpdates];
-//            [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-//            [self.tableView endUpdates];
-//
-//            return;
-//        }
-//    }
 }
 
 #pragma mark - TGCameraDelegate Methods
@@ -262,14 +258,7 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-
-}
-
-#pragma mark - UIActionSheetDelegate
-
--(void)customActionSheet:(UICustomActionSheet *)customActionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-
+    [tableView deselectRowAtIndexPath:indexPath animated:NO];
 }
 
 #pragma mark - Network
@@ -288,7 +277,6 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
 
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
 
-    __weak typeof(self) weakSelf = self;
     [manager POST:url parameters:parameters constructingBodyWithBlock:^(id<AFMultipartFormData> formData){
 
         [formData appendPartWithFileData:imageData name:@"file" fileName:filename mimeType:@"image/jpeg"];
@@ -302,7 +290,6 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
         NSLog(@"Image upload error: %@ ***** %@", operation.responseString, error);
 
         [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-        [weakSelf _removeQuickShowMedia];
 
         [RKDropdownAlert title:NSLocalizedString(kErrorTitle, nil)
                        message:error.localizedDescription

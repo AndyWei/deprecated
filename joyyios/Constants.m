@@ -13,7 +13,7 @@ const CGFloat kButtonLocateDiameter = 40;
 
 const CGFloat kIntroductionVersion = 1.0;
 
-const CGFloat kFontSizeBody = 18.0f;
+const CGFloat kFontSizeBody = 16.0f;
 const CGFloat kFontSizeDetail = 13.0f;
 
 const CGFloat kMapDashBoardHeight = 135.0f;
