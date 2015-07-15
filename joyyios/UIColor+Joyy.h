@@ -17,6 +17,7 @@
 #define JoyyGray50    [UIColor joyyGrayColor50]
 
 #define JoyyWhite     [UIColor joyyWhiteColor]
+#define JoyyWhite50   [UIColor joyyWhiteColor50]
 
 
 @interface UIColor (Joyy)
@@ -28,5 +29,6 @@
 + (UIColor *)joyyBlueColor30;
 + (UIColor *)joyyGrayColor50;
 + (UIColor *)joyyWhiteColor;
++ (UIColor *)joyyWhiteColor50;
 
 @end

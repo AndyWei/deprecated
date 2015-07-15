@@ -126,8 +126,8 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
         _cameraButton.centerY = SCREEN_HEIGHT - self.tabBarController.tabBar.height;
 
         _cameraButton.imageView.image = [UIImage imageNamed:@"CameraShot"];
-        _cameraButton.contentColor = JoyyGray50;
-        _cameraButton.contentAnimateToColor = JoyyGray;
+        _cameraButton.contentColor = JoyyWhite50;
+        _cameraButton.contentAnimateToColor = JoyyBlue;
         _cameraButton.foregroundColor = ClearColor;
         [_cameraButton addTarget:self action:@selector(_showCamera) forControlEvents:UIControlEventTouchUpInside];
     }
@@ -156,7 +156,6 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
             self.needReloadTable = NO;
             [self.tableView reloadData];
         }
-
     }
 }
 
@@ -168,9 +167,6 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
 
 - (void)_showCamera
 {
-    // fetch new media here is to prefare for the QuickShow
-    [self _fetchNewMedia];
-
     [TGCameraColor setTintColor:JoyyBlue];
     TGCameraNavigationController *camera = [TGCameraNavigationController newWithCameraDelegate:self];
     camera.title = self.title;
@@ -187,13 +183,16 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
         JYMedia *lastMedia = self.mediaList.lastObject;
         media.mediaId = lastMedia.mediaId; // Make sure the future _fetchNewMedia call get the correct last media id
     }
-    [self.mediaList insertObject:media atIndex:0];
 
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
     [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:NO];
-    [self.tableView beginUpdates];
-    [self.tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-    [self.tableView endUpdates];
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.mediaList insertObject:media atIndex:0];
+        [self.tableView beginUpdates];
+        [self.tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+        [self.tableView endUpdates];
+    });
 }
 
 #pragma mark - TGCameraDelegate Methods
@@ -368,6 +367,60 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
              [weakSelf _networkThreadEnd];
          }
      ];
+}
+
+- (void)_updateTableWithMedia:(NSArray *)mediaList toEnd:(BOOL)toEnd
+{
+    if (!mediaList.count)
+    {
+        return;
+    }
+
+    NSArray *indexPaths = [self _indexPathsOfMedia:mediaList toEnd:toEnd];
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self _addMedia:mediaList toEnd:toEnd];
+        [self.tableView beginUpdates];
+        [self.tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
+        [self.tableView endUpdates];
+    });
+}
+
+- (void)_addMedia:(NSArray *)mediaList toEnd:(BOOL)toEnd
+{
+    if (!mediaList.count)
+    {
+        return;
+    }
+
+    if (toEnd)
+    {
+        for (NSDictionary *dict in mediaList)
+        {
+            JYMedia *media = [[JYMedia alloc] initWithDictionary:dict];
+            [self.mediaList addObject:media];
+        }
+    }
+    else
+    {
+        for (NSDictionary *dict in [mediaList reverseObjectEnumerator])
+        {
+            JYMedia *media = [[JYMedia alloc] initWithDictionary:dict];
+            [self.mediaList insertObject:media atIndex:0];
+        }
+    }
+}
+
+- (NSArray *)_indexPathsOfMedia:(NSArray *)mediaList toEnd:(BOOL)toEnd
+{
+    NSMutableArray *indexPaths = [NSMutableArray new];
+    for (NSUInteger i = 0; i < mediaList.count; ++i)
+    {
+        NSUInteger row = toEnd ? self.mediaList.count + i : i;
+        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:0];
+        [indexPaths addObject:indexPath];
+    }
+    return indexPaths;
 }
 
 - (NSDictionary *)_fetchMediaHttpParameters:(BOOL)isForBttomCells
