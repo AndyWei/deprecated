@@ -5,7 +5,7 @@ var Joi = require('joi');
 var Path = require('path');
 
 
-// Declare internals
+var exports = module.exports = {};
 var internals = {};
 
 

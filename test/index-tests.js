@@ -6,7 +6,7 @@ var composer = require('../index');
 var lab = exports.lab = Lab.script();
 
 
-lab.experiment('App', function () {
+lab.experiment('index test:', function () {
 
     lab.test('it composes a server', function (done) {
 

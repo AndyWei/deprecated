@@ -2,24 +2,14 @@ var Async = require('async');
 var Bcrypt = require('bcrypt');
 var Boom = require('boom');
 var Cache = require('./cache');
-var Config = require('../config');
-var Pg = require('pg').native;
 var c = require('./constants');
 
 var exports = module.exports = {};
 
-var validateSimple = function (email, password, finish) {
+var validateSimple = function (request, email, password, finish) {
 
     Async.waterfall([
         function (callback) {
-
-            var db = Config.get('/db/connectionString');
-            Pg.connect(db, function (err, client, done) {
-
-                return callback(err, client, done);
-            });
-        },
-        function (client, done, callback) {
 
             var queryConfig = {
                 text: 'SELECT id, name, password, email FROM person WHERE email = $1 AND deleted = false',
@@ -27,21 +17,18 @@ var validateSimple = function (email, password, finish) {
                 name: 'person_by_email'
             };
 
-            client.query(queryConfig, function (err, queryResult) {
+            request.pg.client.query(queryConfig, function (err, result) {
 
                 if (err) {
-                    console.error(err);
-                    done(err);
+                    request.pg.kill = true;
                     return callback(err);
                 }
 
-                done();
-
-                if (queryResult.rowCount === 0) {
+                if (result.rowCount === 0) {
                     return callback(Boom.unauthorized(c.PERSON_NOT_FOUND, 'basic'));
                 }
 
-                return callback(null, queryResult.rows[0]);
+                return callback(null, result.rows[0]);
             });
         },
         function (person, callback) {
@@ -59,6 +46,7 @@ var validateSimple = function (email, password, finish) {
     ], function (err, isValid, person) {
 
         if (err || !isValid) {
+            console.error(err);
             return finish(err, false);
         }
 
@@ -67,7 +55,7 @@ var validateSimple = function (email, password, finish) {
 };
 
 
-var validateToken = function (token, callback) {
+var validateToken = function (request, token, callback) {
 
     Cache.validateToken(token, function (err, personInfo) {
         if (err) {

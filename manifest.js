@@ -19,9 +19,14 @@ var manifest = {
     }],
     plugins: {
         'good': {
+            opsInterval: 1000,
             reporters: [{
                 reporter: require('good-console'),
-                args:[{ log: '*', response: '*' }]
+                events: { log: '*', response: '*' }
+            }, {
+                reporter: require('good-file'),
+                events: { error: '*' },
+                config: './good.log'
             }]
         },
         'hapi-auth-basic': {},
