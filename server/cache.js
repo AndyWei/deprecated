@@ -1,7 +1,7 @@
 var Async = require('async');
 var Config = require('../config');
 var Hoek = require('hoek');
-var Redis = require('redis');
+var Redis = require('ioredis');
 var Utils = require('./utils');
 var c = require('./constants');
 var rand = require('rand-token');
@@ -16,7 +16,7 @@ internals.settings = {
     port: Config.get('/redis/port')
 };
 
-internals.client = null;
+internals.redis = null;
 
 internals.generateKey = function (dataset, key) {
 
@@ -25,35 +25,25 @@ internals.generateKey = function (dataset, key) {
 
 exports.start = function (callback) {
 
-    if (internals.client) {
+    if (internals.redis) {
         return Hoek.nextTick(callback)();
     }
 
-    var client = Redis.createClient(internals.settings.port, internals.settings.host);
-
-    if (internals.settings.password) {
-        client.auth(internals.settings.password);
-    }
-
-    if (internals.settings.database) {
-        client.select(internals.settings.database);
-    }
+    var redis = new Redis(internals.settings.port, internals.settings.host);
 
     // Listen to errors
+    redis.on('error', function (err) {
 
-    client.on('error', function (err) {
-
-        if (!internals.client) {   // Failed to connect
-            client.end();
+        if (!internals.redis) {   // Failed to connect
+            redis.end();
             return callback(err);
         }
     });
 
     // Wait for connection
+    redis.once('connect', function () {
 
-    client.once('connect', function () {
-
-        internals.client = client;
+        internals.redis = redis;
         return callback();
     });
 };
@@ -61,24 +51,24 @@ exports.start = function (callback) {
 
 exports.stop = function () {
 
-    if (internals.client) {
-        internals.client.removeAllListeners();
-        internals.client.quit();
-        internals.client = null;
+    if (internals.redis) {
+        internals.redis.removeAllListeners();
+        internals.redis.quit();
+        internals.redis = null;
     }
 };
 
 
 exports.set = internals.set = function (dataset, key, value, callback) {
 
-    if (!internals.client) {
+    if (!internals.redis) {
         return callback(new Error('Connection not started'));
     }
 
     var cacheKey = internals.generateKey(dataset, key);
     var valueString = JSON.stringify(value);
 
-    internals.client.setex(cacheKey, dataset.ttl, valueString, function (err) {
+    internals.redis.setex(cacheKey, dataset.ttl, valueString, function (err) {
 
         if (err) {
             return callback(err);
@@ -91,12 +81,12 @@ exports.set = internals.set = function (dataset, key, value, callback) {
 
 exports.get = internals.get = function (dataset, key, callback) {
 
-    if (!internals.client) {
+    if (!internals.redis) {
         return callback(new Error('Connection not started'));
     }
 
     var cacheKey = internals.generateKey(dataset, key);
-    internals.client.get(cacheKey, function (err, resultString) {
+    internals.redis.get(cacheKey, function (err, resultString) {
 
         if (err) {
             return callback(err);
@@ -114,12 +104,12 @@ exports.get = internals.get = function (dataset, key, callback) {
 
 exports.getList = internals.getList = function (dataset, key, min, callback) {
 
-    if (!internals.client) {
+    if (!internals.redis) {
         return callback(new Error('Connection not started'));
     }
 
     var cacheKey = internals.generateKey(dataset, key);
-    internals.client.lrange(cacheKey, 0, -1, function (err, result) {
+    internals.redis.lrange(cacheKey, 0, -1, function (err, result) {
 
         if (err) {
             return callback(err);
@@ -143,14 +133,14 @@ exports.getList = internals.getList = function (dataset, key, min, callback) {
 
 exports.lpush = internals.lpush = function (dataset, key, value, callback) {
 
-    if (!internals.client) {
+    if (!internals.redis) {
         return callback(new Error('Connection not started'));
     }
 
     var cacheKey = internals.generateKey(dataset, key);
     var valueString = Utils.padZero(value, 19);  // zero pad the number string to facility the filter process when getList
 
-    internals.client.lpush(cacheKey, valueString, function (err, result) {
+    internals.redis.lpush(cacheKey, valueString, function (err, result) {
 
         if (err) {
             return callback(err);
@@ -161,7 +151,7 @@ exports.lpush = internals.lpush = function (dataset, key, value, callback) {
         }
 
         // Limit the values list size to 500
-        internals.client.ltrim(cacheKey, 0, 500);
+        internals.redis.ltrim(cacheKey, 0, 500);
 
         return callback(null, result);
     });
@@ -170,11 +160,11 @@ exports.lpush = internals.lpush = function (dataset, key, value, callback) {
 
 exports.drop = function (dataset, key, callback) {
 
-    if (!internals.client) {
+    if (!internals.redis) {
         return callback(new Error('Connection not started'));
     }
 
-    internals.client.del(internals.generateKey(dataset, key), function (err) {
+    internals.redis.del(internals.generateKey(dataset, key), function (err) {
 
         return callback(err);
     });
@@ -183,11 +173,11 @@ exports.drop = function (dataset, key, callback) {
 
 exports.incr = function (dataset, key, callback) {
 
-    if (!internals.client) {
+    if (!internals.redis) {
         return callback(new Error('Connection not started'));
     }
 
-    internals.client.incr(internals.generateKey(dataset, key), function (err, result) {
+    internals.redis.incr(internals.generateKey(dataset, key), function (err, result) {
 
         if (err) {
             return callback(err);
@@ -204,7 +194,7 @@ exports.incr = function (dataset, key, callback) {
 
 exports.mget = function (dataset, keys, callback) {
 
-    if (!internals.client) {
+    if (!internals.redis) {
         return callback(new Error('Connection not started'));
     }
 
@@ -216,7 +206,7 @@ exports.mget = function (dataset, keys, callback) {
         return internals.generateKey(dataset, key);
     });
 
-    internals.client.mget(cacheKeys, function (err, results) {
+    internals.redis.mget(cacheKeys, function (err, results) {
 
         if (err) {
             return callback(err);
@@ -233,7 +223,7 @@ exports.mget = function (dataset, keys, callback) {
 
 exports.mset = function (dataset, keys, values, callback) {
 
-    if (!internals.client) {
+    if (!internals.redis) {
         return callback(new Error('Connection not started'));
     }
 
@@ -243,7 +233,7 @@ exports.mset = function (dataset, keys, values, callback) {
         return [cacheKey, values[index]];
     });
 
-    internals.client.mset(_.flatten(keyValues), function (err) {
+    internals.redis.mset(_.flatten(keyValues), function (err) {
 
         if (err) {
             return callback(err);

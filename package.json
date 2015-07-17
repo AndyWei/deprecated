@@ -26,11 +26,11 @@
     "hapi-auth-bearer-token": "^3.1.1",
     "hapi-node-postgres": "^2.1.1",
     "hoek": "^2.14.0",
+    "ioredis": "^1.6.1",
     "joi": "^6.5.0",
     "pg": "^4.4.0",
     "pg-native": "^1.8.1",
     "rand-token": "^0.2.1",
-    "redis": "^0.12.1",
     "underscore": "^1.8.3",
     "underscore.string": "^3.1.1"
   },
