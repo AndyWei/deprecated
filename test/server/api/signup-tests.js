@@ -41,7 +41,7 @@ lab.experiment('Signup: ', function () {
                 if (error) {
                     return done(error);
                 }
-                done();
+                return done();
             });
         });
     });
@@ -52,7 +52,7 @@ lab.experiment('Signup: ', function () {
         server.stop(function () {
 
             Cache.stop();
-            done();
+            return done();
         });
     });
 
@@ -72,7 +72,7 @@ lab.experiment('Signup: ', function () {
 
             Code.expect(response.statusCode).to.equal(400);
 
-            done();
+            return done();
         });
     });
 
@@ -93,7 +93,7 @@ lab.experiment('Signup: ', function () {
             Code.expect(response.statusCode).to.equal(409);
             Code.expect(response.result.message).to.equal(c.EMAIL_IN_USE);
 
-            done();
+            return done();
         });
     });
 
@@ -113,7 +113,7 @@ lab.experiment('Signup: ', function () {
 
             Code.expect(response.statusCode).to.equal(400);
 
-            done();
+            return done();
         });
     });
 
@@ -133,7 +133,7 @@ lab.experiment('Signup: ', function () {
 
             Code.expect(response.statusCode).to.equal(201);
 
-            done();
+            return done();
         });
     });
 
@@ -152,7 +152,7 @@ lab.experiment('Signup: ', function () {
 
             Code.expect(response.statusCode).to.equal(201);
 
-            done();
+            return done();
         });
     });
 });

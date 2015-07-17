@@ -6,7 +6,7 @@ exports.register = function (server, options, next) {
 
     options = Hoek.applyToDefaults({ basePath: '' }, options);
 
-    // new user signup
+    // Existing person signin
     server.route({
         method: 'GET',
         path: options.basePath + '/signin',
@@ -17,9 +17,7 @@ exports.register = function (server, options, next) {
         },
         handler: function (request, reply) {
 
-            var userId = request.auth.credentials.id;
-            var userName = request.auth.credentials.username;
-            Cache.generateBearerToken(userId, userName, function (err, token) {
+            Cache.generateBearerToken(request.auth.credentials.id, request.auth.credentials.name, function (err, token) {
 
                 if (err) {
                     console.error(err);

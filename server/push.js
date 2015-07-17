@@ -4,33 +4,26 @@ var Cache = require('./cache');
 var c = require('./constants');
 var _ = require('underscore');
 
-
+var exports = module.exports = {};
 var internals = {};
 
-var jyApnConnection = null;
-var jrApnConnection = null;
+var apnConnection = null;
 
 var rootFolder = process.cwd();
 
-var jyApnOptions = {
+var apnOptions = {
     'pfx': rootFolder + '/cert/dev.p12',
     'passphrase': ''
 };
 
-var jrApnOptions = {
-    'pfx': rootFolder + '/cert/joyyor_dev.p12',
-    'passphrase': ''
-};
-
 exports.connect = internals.connect = function () {
-    jyApnConnection = new Apn.Connection(jyApnOptions);
-    jrApnConnection = new Apn.Connection(jrApnOptions);
+    apnConnection = new Apn.Connection(apnOptions);
 };
 
 
-exports.notify = internals.notify = function (app, userId, title, body, callback) {
+exports.notify = internals.notify = function (userId, title, body, callback) {
 
-    var dataset = (app === 'joyy') ? c.JOYY_DEVICE_TOKEN_CACHE : c.JOYYOR_DEVICE_TOKEN_CACHE;
+    var dataset = c.DEVICE_TOKEN_CACHE;
     var badgeKey = 'badge' + userId;
 
     Async.waterfall([
@@ -61,7 +54,7 @@ exports.notify = internals.notify = function (app, userId, title, body, callback
 
             switch(service) {
                 case 'apn':
-                    internals.apnSend(app, token, badge, title, body);
+                    internals.apnSend(token, badge, title, body);
                     break;
                 case 'gcm':
                     internals.gcmSend();
@@ -96,7 +89,7 @@ exports.notify = internals.notify = function (app, userId, title, body, callback
 };
 
 
-exports.mnotify = function (app, userIds, title, body) {
+exports.mnotify = function (userIds, title, body) {
 
     if (!userIds || userIds.length === 0) {
         return;
@@ -108,7 +101,7 @@ exports.mnotify = function (app, userIds, title, body) {
             return;
         }
 
-        internals.notify(app, id, title, body, function (err) {
+        internals.notify(id, title, body, function (err) {
 
             if (err) {
                 console.error(err);
@@ -118,7 +111,7 @@ exports.mnotify = function (app, userIds, title, body) {
 };
 
 
-internals.apnSend = function (app, token, badge, title, body) {
+internals.apnSend = function (token, badge, title, body) {
 
     var device = new Apn.Device(token);
     var notification = new Apn.Notification();
@@ -129,7 +122,7 @@ internals.apnSend = function (app, token, badge, title, body) {
     notification.alert = title;
     notification.payload = {'message': body};
 
-    var connection = (app === 'joyy') ? jyApnConnection : jrApnConnection;
+    var connection = apnConnection;
 
     if (connection) {
         connection.pushNotification(notification, device);

@@ -4,62 +4,20 @@
 curl -i -u jack@gmail.com:password "http://localhost:8000/v1/signin"
 
 
+## person
+# GET a person's own profile
+curl -i -H "Authorization: Bearer 5dHwvDMJacb2umovRvIn" "http://localhost:8000/v1/person/profile"
 
+# GET a another person's profile
+curl -i -H "Authorization: Bearer 5dHwvDMJacb2umovRvIn" "http://localhost:8000/v1/person?id=1"
 
-## orders
-# GET all of the user placed orders
-curl -i -H "Authorization: Bearer TOKEN" "http://localhost:8000/v1/orders/placed"
-
-# GET all of the user engaged orders
-curl -i -H "Authorization: Bearer lxjHcRVX9zcGHtVrhcTk" "http://localhost:8000/v1/orders/engaged"
-
-# GET orders nearby
-curl -i "http://localhost:8000/v1/orders/nearby?lon=-122.4376&lat=37.7577"
-
-curl -i "http://localhost:8000/v1/orders/nearby?lon=-122.4176&lat=37.7577&category=1"
-curl -i "http://localhost:8000/v1/orders/nearby?lon=-122.4176&lat=37.7577&category=1&category=2&category=5"
-
-# create an order
-curl -i -H "Authorization: Bearer MI4G7T4QXpSuxDuuonpO" --data "price=1.1&currency=usd&country=us&category=1&note='cleaning all'&title='cleaning for 4 rooms'&start_time=450700000&&start_city='Fremont'&start_address='2290 good ave'&start_point_lon=-3.456&start_point_lat=75.84" "http://localhost:8000/v1/orders"
-
-# revoke an order
-curl -i -X POST -H "Authorization: Bearer TOKEN" "http://localhost:8000/v1/orders/revoke/1"
-
-# update an order
-curl -i -X POST -H "Authorization: Bearer 6SjrTCgJPqFqOwdblR4Y" "http://localhost:8000/v1/orders/3"
-curl -i -X POST -H "Authorization: Bearer 6SjrTCgJPqFqOwdblR4Y" --data "price=1.1&category=1" "http://localhost:8000/v1/orders/3"
-curl -i -X POST -H "Authorization: Bearer 6SjrTCgJPqFqOwdblR4Y" --data "price=1.1&category=1&note='what ever:)'" "http://localhost:8000/v1/orders/3"
-
-# pay an order
-curl -i -X POST -H "Authorization: Bearer 6rZY58HWsKeKzYz4vl3f" --data "order_id=1" "http://localhost:8000/v1/orders/paid"
-
-
-## bids
-# POST a bid
-curl -i -H "Authorization: Bearer TOKEN" --data "order_id=3&price=1.1&note='CHOOSE ME'" "http://localhost:8000/v1/bids"
-
-# revoke an bid
-curl -i -X POST -H "Authorization: Bearer Xf0THaxxDlgZHiLcCRMa" --data "id=4" "http://localhost:8000/v1/bids/revoke"
-
-# accept a bid
-curl -i -X POST -H "Authorization: Bearer Xf0THaxxDlgZHiLcCRMa" --data "id=4" "http://localhost:8000/v1/bids/accept"
+# Update a person's profile
+curl -i -H "Authorization: Bearer 5dHwvDMJacb2umovRvIn" --data "yob=1995&name='dodo'&gender=2&bio='sound of silence'" "http://localhost:8000/v1/person/profile"
 
 
 
 ## comments
 # POST a comment
 curl -i -X POST -H "Authorization: Bearer GiDsFzn99eaYKIFLk0QZ" --data "order_id=1&body=@andy @ping yes" "http://localhost:8000/v1/comments"
-
-
-# GET comments of orders
-curl -i "http://localhost:8000/v1/comments/of/orders?&order_id=1&order_id=2&after=0"
-
-# GET comments count of orders
-curl -i "http://localhost:8000/v1/comments/count/of/orders?&order_id=1&order_id=2"
-
-## reviews
-# POST a review
-curl -i -H "Authorization: Bearer KKkTeAz9ZxpReKuTF3cy" --data "reviewee_id=4&order_id=3&rating=5&body='I like his attitude@!!'" "http://localhost:8000/v1/reviews"
-
 
 

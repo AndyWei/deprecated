@@ -1,47 +1,31 @@
-var Enum = require('enum');
-
-
 var exports = module.exports = {};
 
 
 // cache dataset settings
-exports.API_TOKEN_CACHE = {
-    segment: 'apit',
-    ttl: 60 * 60
+exports.AUTH_TOKEN_CACHE = {
+    segment: 'attk',
+    ttl: 30 * 60
 };
 
-exports.JOYY_DEVICE_TOKEN_CACHE = {
-    segment: 'jydt'
+exports.DEVICE_TOKEN_CACHE = {
+    segment: 'dvtk'
 };
 
-exports.JOYYOR_DEVICE_TOKEN_CACHE = {
-    segment: 'jrdt'
+exports.MEDIA_COMMENT_COUNT_CACHE = {
+    segment: 'mcct',
+    ttl: 24 * 60 * 60
 };
 
-exports.ORDER_COMMENTS_COUNT_CACHE = {
-    segment: 'occt',
-    ttl: 30 * 24 * 60 * 60
-};
-
-exports.USER_NAME_ID_CACHE = {
-    segment: 'unid',
-    ttl: 30 * 24 * 60 * 60
-};
 
 // consts
-exports.AUTO_USERNAME_LENGTH = 5;
 exports.BCRYPT_ROUND = 10;
 exports.DEGREE_FACTOR = 0.0089827983;
 exports.TOKEN_LENGTH = 20;
 
-//Error strings
-exports.ACCOUNT_NOT_FOUND = 'The joyyor stripe account is not found.';
+// Error strings
+exports.AUTH_TOKEN_INVALID = 'The authentication token is invalid.';
 
-exports.BID_REVOKE_FAILED = 'The bid is not in active status, cannot be revoked.';
-
-exports.BID_UPDATE_FAILED = 'The order is either not found or not in active status, cannot be bidded.';
-
-exports.COORDINATE_INVALID = 'Lon and lat should occur together.';
+exports.COMMENT_CREATE_FAILED = 'The comment has not been created.';
 
 exports.DEVICE_TOKEN_NOT_FOUND = 'The device token of the user not found.';
 
@@ -53,34 +37,25 @@ exports.FILENAME_MISSING = 'The upload file must have a name.';
 
 exports.MEDIA_CREATE_FAILED = 'The media file has been uploaded to s3, but create media record failed.';
 
-exports.ORDER_CREATE_FAILED = 'The order has not been created.';
+exports.PERSON_CREATE_FAILED = 'The person record has not been created.';
 
-exports.ORDER_NOT_FOUND = 'The order is not found.';
+exports.PERSON_NOT_FOUND = 'The person record is not found.';
 
-exports.ORDER_REVOKE_FAILED = 'The order is either not found or not in active status, cannot be revoked.';
+exports.PERSON_UPDATE_FAILED = 'The person record update failed.';
 
-exports.ORDER_UPDATE_FAILED = 'The order is either not found or not in active status, cannot be updated.';
 
-exports.ORDER_UPDATE_WORKING_STATUS_FAILED = 'The order cannot be updated by the winner.';
+// Role
+exports.Role = {
+    USER: 0,
+    ADMIN: 1,
+    TEST: 2,
+    ROBOT: 3
+};
 
-exports.QUERY_FAILED = 'Error when running query.';
-
-exports.QUERY_INVALID = 'The query must contain at least one parameter.';
-
-exports.RECORD_NOT_FOUND = 'Query excuted but no record found.';
-
-exports.ORDER_STRIPE_TOKEN_NOT_FOUND = 'The payment token is not found, payment failed.';
-
-exports.TOKEN_INVALID = 'Token is invalid.';
-
-exports.USER_NOT_FOUND = 'User not found.';
-
-exports.USER_UPDATE_FAILED = 'User record update failed.';
-
-exports.Role = new Enum({
-    user: 0,
-    admin: 1,
-    test: 2,
-    robot: 3
-});
-
+// org type
+exports.OrgType = {
+    COM: 0,
+    EDU: 1,
+    ORG: 2,
+    OTHER: 3
+};

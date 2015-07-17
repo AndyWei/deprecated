@@ -6,6 +6,7 @@ var Config = require('../config');
 var Pg = require('pg').native;
 var c = require('./constants');
 
+var exports = module.exports = {};
 
 var validateSimple = function (email, password, finish) {
 
@@ -15,15 +16,15 @@ var validateSimple = function (email, password, finish) {
             var db = Config.get('/db/connectionString');
             Pg.connect(db, function (err, client, done) {
 
-                callback(err, client, done);
+                return callback(err, client, done);
             });
         },
         function (client, done, callback) {
 
             var queryConfig = {
-                text: 'SELECT id, username, password, email, joyyor_status FROM jyuser WHERE email = $1',
+                text: 'SELECT id, name, password, email FROM person WHERE email = $1 AND deleted = false',
                 values: [email],
-                name: 'jyuser_select_one_by_email'
+                name: 'person_by_email'
             };
 
             client.query(queryConfig, function (err, queryResult) {
@@ -37,43 +38,43 @@ var validateSimple = function (email, password, finish) {
                 done();
 
                 if (queryResult.rowCount === 0) {
-                    return callback(Boom.unauthorized(c.USER_NOT_FOUND, 'basic'));
+                    return callback(Boom.unauthorized(c.PERSON_NOT_FOUND, 'basic'));
                 }
 
-                callback(null, queryResult.rows[0]);
+                return callback(null, queryResult.rows[0]);
             });
         },
-        function (user, callback) {
+        function (person, callback) {
 
-            Bcrypt.compare(password, user.password, function (err, isValid) {
+            Bcrypt.compare(password, person.password, function (err, isValid) {
 
                 if (err) {
                     return callback(Boom.unauthorized(err, 'basic'));
                 }
 
-                user.password = password;
-                callback(null, isValid, user);
+                person.password = password;
+                return callback(null, isValid, person);
             });
         }
-    ], function (err, isValid, user) {
+    ], function (err, isValid, person) {
 
         if (err || !isValid) {
             return finish(err, false);
         }
 
-        finish(err, isValid, user);
+        return finish(err, isValid, person);
     });
 };
 
 
 var validateToken = function (token, callback) {
 
-    Cache.validateToken(token, function (err, userInfo) {
+    Cache.validateToken(token, function (err, personInfo) {
         if (err) {
-            return callback(Boom.unauthorized(c.TOKEN_INVALID, 'token'), false, null);
+            return callback(Boom.unauthorized(c.AUTH_TOKEN_INVALID, 'token'), false, null);
         }
 
-        callback(null, true, userInfo);
+        return callback(null, true, personInfo);
     });
 };
 

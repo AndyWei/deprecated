@@ -32,18 +32,13 @@ var manifest = {
             attach: 'onPreHandler'
         },
         './server/authenticate': {},
-        './server/api/account': { basePath: '/v1' },
-        './server/api/bids': { basePath: '/v1' },
-        './server/api/comments': { basePath: '/v1' },
-        './server/api/creditcard': { basePath: '/v1' },
-        './server/api/invite': { basePath: '/v1' },
+        './server/api/comment': { basePath: '/v1' },
+        './server/api/love': { basePath: '/v1' },
         './server/api/media': { basePath: '/v1' },
         './server/api/notification': { basePath: '/v1' },
-        './server/api/orders': { basePath: '/v1' },
-        './server/api/review': { basePath: '/v1' },
+        './server/api/person': { basePath: '/v1' },
         './server/api/signin': { basePath: '/v1' },
         './server/api/signup': { basePath: '/v1' },
-        './server/api/user': { basePath: '/v1' }
     }
 };
 

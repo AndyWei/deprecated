@@ -8,7 +8,7 @@ var c = require('../constants');
 
 var internals = {};
 
-var selectClause = 'SELECT id, user_id, media_type, path_version, filename, caption, created_at, updated_at, \
+var selectClause = 'SELECT id, owner_id, media_type, path_version, filename, caption, created_at, \
                     ST_X(coordinate) AS lon, ST_Y(coordinate) AS lat \
                     FROM media ';
 
@@ -44,7 +44,7 @@ exports.register = function (server, options, next) {
 
             var where = 'WHERE id > $1 AND id < $2 AND ST_DWithin(coordinate, ST_SetSRID(ST_MakePoint($3, $4), 4326), $5) AND deleted = false ';
             var order = 'ORDER BY id DESC ';
-            var limit = 'LIMIT 20';
+            var limit = 'LIMIT 10';  // 10 media/request is a blance between search pressure and photo bandwidth usage
 
             var queryValues = [q.after, q.before, q.lon, q.lat, degree];
             var queryConfig = {
@@ -61,7 +61,7 @@ exports.register = function (server, options, next) {
                     return reply(err);
                 }
 
-                reply(null, result.rows);
+                return reply(null, result.rows);
             });
         }
     });
@@ -86,7 +86,7 @@ exports.register = function (server, options, next) {
                     lat: Joi.number().min(-90).max(90).required(),
                     file: Joi.any().required(),
                     media_type: Joi.number().min(0).max(2).required(),
-                    caption: Joi.string().max(1000).required()
+                    caption: Joi.string().max(2000).required()
                 }
             }
         },
@@ -112,14 +112,14 @@ exports.register = function (server, options, next) {
 
                         console.log('uploaded file success. s3 url = ', data.Location);
 
-                        callback(null);
+                        return callback(null);
                     });
                 },
                 function (callback) {
 
                     var u = request.auth.credentials;
-                    var fields = 'INSERT INTO media (user_id, media_type, path_version, filename, caption, coordinate, created_at, updated_at) ';
-                    var values = 'VALUES ($1, $2, $3, $4, $5, ST_SetSRID(ST_MakePoint($6, $7), 4326), now(), now()) RETURNING id';
+                    var fields = 'INSERT INTO media (owner, media_type, path_version, filename, caption, coordinate, created_at) ';
+                    var values = 'VALUES ($1, $2, $3, $4, $5, ST_SetSRID(ST_MakePoint($6, $7), 4326), now() RETURNING id';
                     var queryValues = [u.id, p.media_type, 0, filename, p.caption, p.lon, p.lat];
 
                     var queryConfig = {
@@ -131,7 +131,6 @@ exports.register = function (server, options, next) {
                     request.pg.client.query(queryConfig, function (err, result) {
 
                         if (err) {
-                            console.error(err);
                             request.pg.kill = true;
                             return reply(err);
                         }
@@ -140,7 +139,7 @@ exports.register = function (server, options, next) {
                             return reply(Boom.badRequest(c.MEDIA_CREATE_FAILED));
                         }
 
-                        callback(null, result.rows[0]);
+                        return callback(null, result.rows[0]);
                     });
                 }
             ], function (err, media_id) {
@@ -150,7 +149,7 @@ exports.register = function (server, options, next) {
                     return reply(err);
                 }
 
-                reply(null, media_id);
+                return reply(null, media_id);
             });
         }
     });

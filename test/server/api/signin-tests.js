@@ -16,7 +16,7 @@ var request, server;
 
 var jack = {
     id: 1,
-    username: 'jack'
+    name: 'jack'
 };
 
 
@@ -39,7 +39,7 @@ lab.experiment('SignIn: ', function () {
                     if (error) {
                         return done(error);
                     }
-                    done();
+                    return done();
                 });
             });
         });
@@ -51,7 +51,7 @@ lab.experiment('SignIn: ', function () {
         server.stop(function () {
 
             Cache.stop();
-            done();
+            return done();
         });
     });
 
@@ -68,7 +68,7 @@ lab.experiment('SignIn: ', function () {
 
             Code.expect(response.statusCode).to.equal(200);
             Code.expect(response.result.token).to.exist().and.to.have.length(c.TOKEN_LENGTH);
-            done();
+            return done();
         });
     });
 });

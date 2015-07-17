@@ -7,7 +7,7 @@ var c = require('./constants');
 var rand = require('rand-token');
 var _ = require('underscore');
 
-
+var exports = module.exports = {};
 var internals = {};
 
 internals.settings = {
@@ -17,6 +17,11 @@ internals.settings = {
 };
 
 internals.client = null;
+
+internals.generateKey = function (dataset, key) {
+
+    return encodeURIComponent(dataset.segment) + ':' + encodeURIComponent(key);
+};
 
 exports.start = function (callback) {
 
@@ -64,6 +69,26 @@ exports.stop = function () {
 };
 
 
+exports.set = internals.set = function (dataset, key, value, callback) {
+
+    if (!internals.client) {
+        return callback(new Error('Connection not started'));
+    }
+
+    var cacheKey = internals.generateKey(dataset, key);
+    var valueString = JSON.stringify(value);
+
+    internals.client.setex(cacheKey, dataset.ttl, valueString, function (err) {
+
+        if (err) {
+            return callback(err);
+        }
+
+        return callback(null);
+    });
+};
+
+
 exports.get = internals.get = function (dataset, key, callback) {
 
     if (!internals.client) {
@@ -83,26 +108,6 @@ exports.get = internals.get = function (dataset, key, callback) {
 
         var result = JSON.parse(resultString);
         return callback(null, result);
-    });
-};
-
-
-exports.set = internals.set = function (dataset, key, value, callback) {
-
-    if (!internals.client) {
-        return callback(new Error('Connection not started'));
-    }
-
-    var cacheKey = internals.generateKey(dataset, key);
-    var valueString = JSON.stringify(value);
-
-    internals.client.setex(cacheKey, dataset.ttl, valueString, function (err) {
-
-        if (err) {
-            return callback(err);
-        }
-
-        callback(null, null);
     });
 };
 
@@ -249,93 +254,46 @@ exports.mset = function (dataset, keys, values, callback) {
 };
 
 
-internals.generateKey = function (dataset, key) {
-
-    return encodeURIComponent(dataset.segment) + ':' + encodeURIComponent(key);
-};
-
-
 // Generate a 20 character alpha-numeric token and store it in cache
-exports.generateBearerToken = function (userId, userName, callback) {
+exports.generateBearerToken = function (personId, name, callback) {
 
-    userId = userId.toString();
-    userName = userName.toString();
+    personId = personId.toString();
+    name = name.toString();
 
     Async.auto({
-        cacheUserName: function (next) {
-
-            internals.set(c.USER_NAME_ID_CACHE, userName, userId, function (err) {
-
-                if (err) {
-                    return next(err);
-                }
-
-                next(null);
-            });
-        },
-        existedToken: function (next) {
-
-            internals.get(c.API_TOKEN_CACHE, userId, function (err, value) {
-
-                if (err) {
-                    return next(err);
-                }
-
-                if (value) { // there is a token already, so fake a err here to stop generating new token
-                    return next('token_found', value);
-                }
-
-                next(null, null);
-            });
-        },
         generateToken: function (next) {
 
             var token = rand.generate(c.TOKEN_LENGTH);
-            next(null, token);
+            return next(null, token);
         },
-        cacheToken: ['existedToken', 'generateToken', function (next, results) {
+        cacheToken: ['generateToken', function (next, results) {
 
-            var userInfo = userId + ':' + userName;
+            var personInfo = personId + ':' + name;
 
-            internals.set(c.API_TOKEN_CACHE, results.generateToken, userInfo, function (err) {
-
-                if (err) {
-                    return next(err);
-                }
-
-                next(null);
-            });
-        }],
-        cacheUserId: ['existedToken', 'generateToken', function (next, results) {
-
-            internals.set(c.API_TOKEN_CACHE, userId, results.generateToken, function (err) {
+            internals.set(c.AUTH_TOKEN_CACHE, results.generateToken, personInfo, function (err) {
 
                 if (err) {
                     return next(err);
                 }
 
-                next(null);
+                return next(null);
             });
         }]
     }, function (err, results) {
-
-        if (err === 'token_found') {
-            return callback(null, results.existedToken); // just return the existedToken
-        }
 
         if (err) {
             console.error(err);
             return callback(err);
         }
 
-        callback(null, results.generateToken);
+        return callback(null, results.generateToken);
     });
 };
 
 
 exports.validateToken = function (token, callback) {
 
-    internals.get(c.API_TOKEN_CACHE, token, function (err, result) {
+    internals.get(c.AUTH_TOKEN_CACHE, token, function (err, result) {
         if (err) {
             console.error(err);
             return callback(err);
@@ -345,7 +303,28 @@ exports.validateToken = function (token, callback) {
             return callback('Token Not Found');
         }
 
-        var userInfo = _.object(['id', 'username'], result.split(':'));
-        callback(null, userInfo);
+        var personInfo = _.object(['id', 'name'], result.split(':'));
+        personInfo.token = token;
+
+        return callback(null, personInfo);
+    });
+};
+
+
+exports.updateName = function (token, personId, name, callback) {
+
+    personId = personId.toString();
+    name = name.toString();
+
+    var personInfo = personId + ':' + name;
+
+    internals.set(c.AUTH_TOKEN_CACHE, token, personInfo, function (err) {
+
+        if (err) {
+            console.error(err);
+            return callback(err);
+        }
+
+        return callback(null);
     });
 };

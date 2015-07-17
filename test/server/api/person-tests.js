@@ -1,11 +1,12 @@
 var AuthPlugin = require('../../../server/authenticate');
+var Cache = require('../../../server/cache');
 var Code = require('code');
 var Config = require('../../../config');
 var Hapi = require('hapi');
 var HapiAuthBasic = require('hapi-auth-basic');
 var HapiAuthToken = require('hapi-auth-bearer-token');
 var Lab = require('lab');
-var ReviewsPlugin = require('../../../server/api/review');
+var PersonPlugin = require('../../../server/api/person');
 
 
 var lab = exports.lab = Lab.script();
@@ -20,11 +21,13 @@ var PgPlugin = {
 };
 
 var jack = {
-    id: 1
+    id: 1,
+    token: 'abcdefg'
 };
 
 var andy = {
-    id: 2
+    id: 2,
+    token: 'qwertyu'
 };
 
 var request, server;
@@ -32,7 +35,7 @@ var request, server;
 
 lab.beforeEach(function (done) {
 
-    var plugins = [HapiAuthBasic, HapiAuthToken, AuthPlugin, PgPlugin, ReviewsPlugin];
+    var plugins = [HapiAuthBasic, HapiAuthToken, AuthPlugin, PgPlugin, PersonPlugin];
     server = new Hapi.Server();
     server.connection({ port: Config.get('/port/api') });
     server.register(plugins, function (err) {
@@ -41,24 +44,31 @@ lab.beforeEach(function (done) {
             return done(err);
         }
 
-        done();
+        Cache.start(function (error) {
+            if (error) {
+                return done(error);
+            }
+            done();
+        });
     });
 });
 
 
 lab.afterEach(function (done) {
 
+    Cache.stop();
     done();
 });
 
 
-lab.experiment('Reviews GET: ', function () {
+lab.experiment('person GET: ', function () {
 
-    lab.test('/review/1: return a record successfully', function (done) {
+    lab.test('/person: return a record successfully', function (done) {
 
         request = {
             method: 'GET',
-            url: '/review/1'
+            url: '/person?id=1',
+            credentials: jack
         };
 
         server.inject(request, function (response) {
@@ -70,28 +80,29 @@ lab.experiment('Reviews GET: ', function () {
         });
     });
 
-    lab.test('/review/from_me: found', function (done) {
+
+    lab.test('/person/nearby: found in San Francisco', function (done) {
 
         request = {
             method: 'GET',
-            url: '/review/from_me',
-            credentials: andy
+            url: '/person/nearby?lon=-122.416462&lat=37.776609&before=5000',
+            credentials: jack
         };
 
         server.inject(request, function (response) {
 
             Code.expect(response.statusCode).to.equal(200);
-            Code.expect(response.result).to.be.an.array().and.to.have.length(1);
+            Code.expect(response.result).to.be.an.array().and.to.have.length(2);
 
             done();
         });
     });
 
-    lab.test('/review/from_me: not found', function (done) {
+    lab.test('/person/nearby: not found in Stockton', function (done) {
 
         request = {
             method: 'GET',
-            url: '/review/from_me',
+            url: '/person/nearby?lon=-122.4376&lat=37.7577&before=5000',
             credentials: jack
         };
 
@@ -104,33 +115,18 @@ lab.experiment('Reviews GET: ', function () {
         });
     });
 
-    lab.test('/review/of: found', function (done) {
+    lab.test('/person/profile: found a profile', function (done) {
 
         request = {
             method: 'GET',
-            url: '/review/of/2'
+            url: '/person/profile',
+            credentials: jack
         };
 
         server.inject(request, function (response) {
 
             Code.expect(response.statusCode).to.equal(200);
-            Code.expect(response.result).to.be.an.array().and.to.have.length(2);
-
-            done();
-        });
-    });
-
-    lab.test('/review/of: not found', function (done) {
-
-        request = {
-            method: 'GET',
-            url: '/review/of/3'
-        };
-
-        server.inject(request, function (response) {
-
-            Code.expect(response.statusCode).to.equal(200);
-            Code.expect(response.result).to.be.an.array().and.to.be.empty();
+            Code.expect(response.result).to.be.an.object();
 
             done();
         });
@@ -138,18 +134,39 @@ lab.experiment('Reviews GET: ', function () {
 });
 
 
-lab.experiment('Review POST: ', function () {
+lab.experiment('person POST: ', function () {
 
-    lab.test('/review: create successfully', function (done) {
+    lab.test('/person/profile: update successfully', function (done) {
 
         request = {
             method: 'POST',
-            url: '/review',
+            url: '/person/profile',
             payload: {
-                reviewee_id: '4',
-                order_id: '3',
-                rating: 5,
-                body: 'I like his attitude@!!'
+                yob: 1995,
+                bio: 'I love this game',
+                name: 'andy',
+                gender: 1
+            },
+            credentials: andy
+        };
+
+        server.inject(request, function (response) {
+
+            Code.expect(response.statusCode).to.equal(200);
+            Code.expect(response.result).to.be.an.object();
+
+            done();
+        });
+    });
+
+    lab.test('/person/coordinate: update successfully', function (done) {
+
+        request = {
+            method: 'POST',
+            url: '/person/coordinate',
+            payload: {
+                lat: 37.555883,
+                lon: -122.0135916
             },
             credentials: jack
         };

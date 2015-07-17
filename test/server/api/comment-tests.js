@@ -6,7 +6,7 @@ var Hapi = require('hapi');
 var HapiAuthBasic = require('hapi-auth-basic');
 var HapiAuthToken = require('hapi-auth-bearer-token');
 var Lab = require('lab');
-var MediaPlugin = require('../../../server/api/media');
+var CommentPlugin = require('../../../server/api/comment');
 
 
 var lab = exports.lab = Lab.script();
@@ -20,13 +20,17 @@ var PgPlugin = {
     }
 };
 
+var jack = {
+    id: 1,
+    username: 'jack'
+};
 
 var request, server;
 
 
 lab.beforeEach(function (done) {
 
-    var plugins = [HapiAuthBasic, HapiAuthToken, AuthPlugin, PgPlugin, MediaPlugin];
+    var plugins = [HapiAuthBasic, HapiAuthToken, AuthPlugin, PgPlugin, CommentPlugin];
     server = new Hapi.Server();
     server.connection({ port: Config.get('/port/api') });
     server.register(plugins, function (err) {
@@ -39,7 +43,7 @@ lab.beforeEach(function (done) {
             if (error) {
                 return done(error);
             }
-            done();
+            return done();
         });
     });
 });
@@ -48,41 +52,30 @@ lab.beforeEach(function (done) {
 lab.afterEach(function (done) {
 
     Cache.stop();
-    done();
+    return done();
 });
 
 
-lab.experiment('media GET: ', function () {
+lab.experiment('Comment POST: ', function () {
 
-    lab.test('/media/nearby: found in Fremont', function (done) {
+    lab.test('/comment: create successfully', function (done) {
 
         request = {
-            method: 'GET',
-            url: '/media/nearby?lon=-122.062168&lat=37.5584429'
+            method: 'POST',
+            url: '/comment',
+            payload: {
+                media_id: '1',
+                content: 'yes'
+            },
+            credentials: jack
         };
 
         server.inject(request, function (response) {
 
             Code.expect(response.statusCode).to.equal(200);
-            Code.expect(response.result).to.be.an.array().and.to.have.length(7);
+            Code.expect(response.result).to.be.an.object();
 
-            done();
-        });
-    });
-
-    lab.test('/media/nearby: not found in San Francisco', function (done) {
-
-        request = {
-            method: 'GET',
-            url: '/media/nearby?lon=-122.4164623&lat=37.7766092&distance=10'
-        };
-
-        server.inject(request, function (response) {
-
-            Code.expect(response.statusCode).to.equal(200);
-            Code.expect(response.result).to.be.an.array().and.to.be.empty();
-
-            done();
+            return done();
         });
     });
 });
