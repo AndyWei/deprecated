@@ -58,22 +58,13 @@ internals.validateSimple = function (request, email, password, finish) {
 };
 
 
-internals.validateToken = function (userToken, callback) {
+internals.validateToken = function (token, callback) {
 
-    if (typeof userToken !== 'string' || userToken.length < c.TOKEN_LENGTH) {
-        return callback(Boom.unauthorized(c.AUTH_TOKEN_INVALID), false, null);
+    if (typeof token !== 'string' || token.length !== c.TOKEN_LENGTH) {
+        return callback(Boom.unauthorized(c.AUTH_TOKEN_INVALID));
     }
 
-    var pos = userToken.indexOf(':');
-
-    if (pos < 0) {
-        return callback(Boom.unauthorized(c.AUTH_TOKEN_INVALID), false, null);
-    }
-
-    var personId = userToken.substring(0, pos);
-    var token = userToken.substring(pos + 1);
-
-    Cache.get(c.AUTH_TOKEN_CACHE, personId, function (err, result) {
+    Cache.get(c.AUTH_TOKEN_CACHE, token, function (err, result) {
 
         if (err) {
             console.error(err);
@@ -81,16 +72,10 @@ internals.validateToken = function (userToken, callback) {
         }
 
         if (!result) {
-            return callback(Boom.unauthorized(c.AUTH_TOKEN_INVALID), false, null);
+            return callback(Boom.unauthorized(c.AUTH_TOKEN_INVALID));
         }
 
-        var cachedToken = result.substring(0, result.indexOf(':'));
-        if (cachedToken !== token) {
-            return callback(Boom.unauthorized(c.AUTH_TOKEN_INVALID), false, null);
-        }
-
-        var name = result.substring(result.indexOf(':') + 1);
-        var personInfo = _.object(['id', 'name'], [personId, name]);
+        var personInfo = _.object(['id', 'name'], result.split(':'));
 
         return callback(null, true, personInfo);
     });

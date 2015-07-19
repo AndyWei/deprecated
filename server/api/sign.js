@@ -25,7 +25,7 @@ exports.register = function (server, options, next) {
         },
         handler: function (request, reply) {
 
-            internals.generateAuthToken(request.auth.credentials.id, request.auth.credentials.name, function (err, token) {
+            internals.createAuthToken(request.auth.credentials.id, request.auth.credentials.name, function (err, token) {
 
                 if (err) {
                     console.error(err);
@@ -54,10 +54,10 @@ exports.register = function (server, options, next) {
             },
             pre: [{
                 assign: 'emailCheck',
-                method: internals.emailCheck
+                method: internals.emailChecker
             }]
         },
-        handler: internals.createUser
+        handler: internals.signup
     });
 
     next();
@@ -69,7 +69,7 @@ exports.register.attributes = {
 };
 
 
-internals.emailCheck = function (request, reply) {
+internals.emailChecker = function (request, reply) {
 
     var queryConfig = {
         text: 'SELECT id FROM person WHERE email = $1 AND deleted = false',
@@ -94,7 +94,7 @@ internals.emailCheck = function (request, reply) {
 };
 
 
-internals.createUser = function (request, reply) {
+internals.signup = function (request, reply) {
 
     var email = request.payload.email;
     var name = email.substring(0, 3); // auto given name is the first 3 chars of email
@@ -139,7 +139,7 @@ internals.createUser = function (request, reply) {
         }],
         token: ['personId', function (callback, results) {
 
-            internals.generateAuthToken(results.personId, name, function (err, token) {
+            internals.createAuthToken(results.personId, name, function (err, token) {
                 callback(err, token);
             });
         }]
@@ -191,30 +191,26 @@ internals.getOrgFromEmail = function (email) {
 };
 
 
-// Generate a 20 character alpha-numeric token and store it in cache together with personId
-internals.generateAuthToken = function (personId, name, callback) {
-
-    personId = personId.toString();
-    name = name.toString();
+// Create a 20 character alpha-numeric token and store it in cache as key
+internals.createAuthToken = function (personId, name, callback) {
 
     Async.auto({
         token: function (next) {
 
-            var randomString = Rand.generate(c.TOKEN_LENGTH);
-            return next(null, randomString);
+            var str = Rand.generate(c.TOKEN_LENGTH);
+            return next(null, str);
         },
-        userToken: ['token', function (next, result) {
+        cache: ['token', function (next, result) {
 
-            var personInfo = result.token + ':' + name;
-            var userToken = personId + ':' + result.token;
+            var personInfo = personId + ':' + name;
 
-            Cache.setex(c.AUTH_TOKEN_CACHE, personId, personInfo, function (err) {
+            Cache.setex(c.AUTH_TOKEN_CACHE, result.token, personInfo, function (err) {
 
                 if (err) {
                     return next(err);
                 }
 
-                return next(null, userToken);
+                return next(null);
             });
         }]
     }, function (err, result) {
@@ -224,6 +220,6 @@ internals.generateAuthToken = function (personId, name, callback) {
             return callback(err);
         }
 
-        return callback(null, result.userToken);
+        return callback(null, result.token);
     });
 };
