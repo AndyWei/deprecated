@@ -17,7 +17,6 @@
 #import "JYCameraOverlayView.h"
 #import "JYMedia.h"
 #import "JYMediaViewCell.h"
-#import "JYPhotoName.h"
 #import "JYUser.h"
 #import "TGCameraColor.h"
 #import "UICustomActionSheet.h"
@@ -200,7 +199,7 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
     // Handling and upload the photo
     UIImage *image = [UIImage imageWithImage:photo scaledToSize:CGSizeMake(kPhotoWidth, kPhotoWidth)];
     NSData *imageData = UIImageJPEGRepresentation(image, kPhotoQuality);
-    [self _uploadImageNamed:[JYPhotoName name] withData:imageData andCaption:caption];
+    [self _uploadImageNamed:[JYMedia newFilename] withData:imageData andCaption:caption];
 
     __weak typeof(self) weakSelf = self;
     [self dismissViewControllerAnimated:NO completion:^{

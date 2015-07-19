@@ -9,13 +9,11 @@
 @interface JYComment : NSObject
 
 - (instancetype)initWithDictionary:(NSDictionary *)dict;
-- (NSString *)contentString;
 
 @property(nonatomic) NSUInteger commentId;
-@property(nonatomic) NSUInteger orderId;
-@property(nonatomic) NSUInteger userId;
-
-@property(nonatomic, copy) NSString* body;
-@property(nonatomic, copy) NSString* username;
+@property(nonatomic) NSUInteger mediaId;
+@property(nonatomic) NSUInteger ownerId;
+@property(nonatomic) BOOL isHost;
+@property(nonatomic, readonly) NSString* contentString;
 
 @end

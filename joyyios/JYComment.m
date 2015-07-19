@@ -7,6 +7,11 @@
 //
 
 #import "JYComment.h"
+#import "JYUser.h"
+
+@interface JYComment ()
+@property(nonatomic) NSString* content;
+@end
 
 @implementation JYComment
 
@@ -17,11 +22,11 @@
     {
         if (dict)
         {
-            self.commentId = [[dict objectForKey:@"id"] unsignedIntegerValue];
-            self.orderId = [[dict objectForKey:@"order_id"] unsignedIntegerValue];
-            self.userId = [[dict objectForKey:@"user_id"] unsignedIntegerValue];
-            self.body = [dict objectForKey:@"body"];
-            self.username = [dict objectForKey:@"username"];
+            _commentId = [[dict objectForKey:@"id"] unsignedIntegerValue];
+            _mediaId = [[dict objectForKey:@"media_id"] unsignedIntegerValue];
+            _ownerId = [[dict objectForKey:@"owner_id"] unsignedIntegerValue];
+            _content = [dict objectForKey:@"content"];
+            _isHost = NO;
         }
     }
     return self;
@@ -29,7 +34,8 @@
 
 - (NSString *)contentString
 {
-    return [NSString stringWithFormat:@"%@: %@", self.username, self.body];
+    NSString *prefix = _isHost ? @"😎" : @"★";
+    return [NSString stringWithFormat:@"%@: %@", prefix, _content];
 }
 
 @end

@@ -43,28 +43,7 @@ static const CGFloat kFontSizeComment = 16.0f;
 
 - (void)presentComment:(JYComment *)comment
 {
-    NSString *labelText = comment.contentString;
-    NSRange range = [labelText rangeOfString:comment.username];
-
-    // Bold the username
-    [self.commentLabel setText:labelText afterInheritingLabelAttributesAndConfiguringWithBlock:^NSMutableAttributedString *(NSMutableAttributedString *mutableAttributedString) {
-
-        UIFont *boldSystemFont = [UIFont boldSystemFontOfSize:kFontSizeComment];
-        CTFontRef boldFont = CTFontCreateWithName((__bridge CFStringRef)boldSystemFont.fontName, boldSystemFont.pointSize, NULL);
-        if (boldFont)
-        {
-            [mutableAttributedString addAttribute:(NSString *)kCTFontAttributeName value:(__bridge id)boldFont range:range];
-            CFRelease(boldFont);
-        }
-        return mutableAttributedString;
-    }];
-
-    // Add link to username
-    NSString *url = [NSString stringWithFormat:@"user://%@", comment.username];
-    [self.commentLabel addLinkToURL:[NSURL URLWithString:url] withRange:range];
-
-    // Add link to the handles in body text. E.g., @mike @jack
-    [self _highlightMentions];
+    self.commentLabel.text = comment.contentString;
 }
 
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier

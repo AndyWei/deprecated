@@ -12,12 +12,11 @@
 
 @property(nonatomic) NSDictionary *credential;
 @property(nonatomic, readonly) NSString *email;
-@property(nonatomic, readonly) NSString *username;
+@property(nonatomic, readonly) NSString *name;
 @property(nonatomic, readonly) NSString *password;
 @property(nonatomic, readonly) NSString *token;
 @property(nonatomic, readonly) NSTimeInterval tokenExpireTimeInSecs;
 @property(nonatomic, readonly) NSUInteger userId;
-@property(nonatomic) NSUInteger joyyorStatus;
 
 - (BOOL)exists;
 

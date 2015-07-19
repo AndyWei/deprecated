@@ -92,40 +92,40 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 
 - (void)_autoFillMentions
 {
-    if (self.originalCommentIndex < 0)
-    {
-        return;
-    }
-
-    NSMutableString *mentions = [NSMutableString new];
-
-    JYComment *orginalComment = self.commentList[self.originalCommentIndex];
-    NSString *originalAuthor = orginalComment.username;
-    NSString *originalHandle = [NSString stringWithFormat:@"@%@", originalAuthor];
-    NSString *userHandle = [NSString stringWithFormat:@"@%@", [JYUser currentUser].username];
-
-    if (![userHandle isEqualToString:originalHandle])
-    {
-        [mentions appendString:[NSString stringWithFormat:@"%@ ", originalHandle]];
-    }
-
-    NSRegularExpression *mentionExpression = [NSRegularExpression regularExpressionWithPattern:@"(?:^|\\s)(@\\w+)" options:NO error:nil];
-
-    NSString *text = orginalComment.body;
-    NSArray *matches = [mentionExpression matchesInString:text options:0 range:NSMakeRange(0, [text length])];
-
-    for (NSTextCheckingResult *match in matches)
-    {
-        NSRange matchRange = [match rangeAtIndex:1];
-        NSString *mentionedHandle = [text substringWithRange:matchRange];
-
-        if (![userHandle isEqualToString:mentionedHandle])
-        {
-            [mentions appendString:[NSString stringWithFormat:@"%@ ", mentionedHandle]];
-        }
-    }
-
-    self.textView.text = mentions;
+//    if (self.originalCommentIndex < 0)
+//    {
+//        return;
+//    }
+//
+//    NSMutableString *mentions = [NSMutableString new];
+//
+//    JYComment *orginalComment = self.commentList[self.originalCommentIndex];
+//    NSString *originalAuthor = orginalComment.username;
+//    NSString *originalHandle = [NSString stringWithFormat:@"@%@", originalAuthor];
+//    NSString *userHandle = [NSString stringWithFormat:@"@%@", [JYUser currentUser].username];
+//
+//    if (![userHandle isEqualToString:originalHandle])
+//    {
+//        [mentions appendString:[NSString stringWithFormat:@"%@ ", originalHandle]];
+//    }
+//
+//    NSRegularExpression *mentionExpression = [NSRegularExpression regularExpressionWithPattern:@"(?:^|\\s)(@\\w+)" options:NO error:nil];
+//
+//    NSString *text = orginalComment.body;
+//    NSArray *matches = [mentionExpression matchesInString:text options:0 range:NSMakeRange(0, [text length])];
+//
+//    for (NSTextCheckingResult *match in matches)
+//    {
+//        NSRange matchRange = [match rangeAtIndex:1];
+//        NSString *mentionedHandle = [text substringWithRange:matchRange];
+//
+//        if (![userHandle isEqualToString:mentionedHandle])
+//        {
+//            [mentions appendString:[NSString stringWithFormat:@"%@ ", mentionedHandle]];
+//        }
+//    }
+//
+//    self.textView.text = mentions;
 }
 
 - (void)_scrollTableViewToBottom

@@ -97,8 +97,6 @@
 		D61D1DD51B4E336E00DE37DF /* TGCameraViewController.bundle in Resources */ = {isa = PBXBuildFile; fileRef = D61D1D9E1B4E336E00DE37DF /* TGCameraViewController.bundle */; };
 		D61D1DD61B4E336E00DE37DF /* TGCameraViewController.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D61D1D9F1B4E336E00DE37DF /* TGCameraViewController.xcassets */; };
 		D61D1DD71B4E336E00DE37DF /* TGCameraViewController.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D61D1D9F1B4E336E00DE37DF /* TGCameraViewController.xcassets */; };
-		D61D1DDA1B51DB1F00DE37DF /* JYPhotoName.m in Sources */ = {isa = PBXBuildFile; fileRef = D61D1DD91B51DB1F00DE37DF /* JYPhotoName.m */; };
-		D61D1DDB1B51DB1F00DE37DF /* JYPhotoName.m in Sources */ = {isa = PBXBuildFile; fileRef = D61D1DD91B51DB1F00DE37DF /* JYPhotoName.m */; };
 		D61D1DDE1B5342DD00DE37DF /* UIImage+Joyy.m in Sources */ = {isa = PBXBuildFile; fileRef = D61D1DDD1B5342DD00DE37DF /* UIImage+Joyy.m */; };
 		D61D1DDF1B5342DD00DE37DF /* UIImage+Joyy.m in Sources */ = {isa = PBXBuildFile; fileRef = D61D1DDD1B5342DD00DE37DF /* UIImage+Joyy.m */; };
 		D61D1DE21B5366DC00DE37DF /* JYMedia.m in Sources */ = {isa = PBXBuildFile; fileRef = D61D1DE11B5366DC00DE37DF /* JYMedia.m */; };
@@ -312,8 +310,6 @@
 		D61D1D9C1B4E336E00DE37DF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/TGPhotoViewController.xib; sourceTree = "<group>"; };
 		D61D1D9E1B4E336E00DE37DF /* TGCameraViewController.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = TGCameraViewController.bundle; sourceTree = "<group>"; };
 		D61D1D9F1B4E336E00DE37DF /* TGCameraViewController.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = TGCameraViewController.xcassets; sourceTree = "<group>"; };
-		D61D1DD81B51DB1E00DE37DF /* JYPhotoName.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYPhotoName.h; sourceTree = "<group>"; };
-		D61D1DD91B51DB1F00DE37DF /* JYPhotoName.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYPhotoName.m; sourceTree = "<group>"; };
 		D61D1DDC1B5342DD00DE37DF /* UIImage+Joyy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Joyy.h"; sourceTree = "<group>"; };
 		D61D1DDD1B5342DD00DE37DF /* UIImage+Joyy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Joyy.m"; sourceTree = "<group>"; };
 		D61D1DE01B5366DC00DE37DF /* JYMedia.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYMedia.h; sourceTree = "<group>"; };
@@ -787,8 +783,6 @@
 			children = (
 				D63F0D731AC9F6F80067C5EE /* JYDataStore.h */,
 				D63F0D741AC9F6F80067C5EE /* JYDataStore.m */,
-				D61D1DD81B51DB1E00DE37DF /* JYPhotoName.h */,
-				D61D1DD91B51DB1F00DE37DF /* JYPhotoName.m */,
 				D6348D351ADB7ABC0002BC35 /* NSMutableDictionary+Joyy.h */,
 				D6348D361ADB7ABC0002BC35 /* NSMutableDictionary+Joyy.m */,
 				D6348D2D1ADB4DD60002BC35 /* NSString+Joyy.h */,
@@ -1159,7 +1153,6 @@
 				D61D1DC61B4E336E00DE37DF /* TGCameraSlideUpView.m in Sources */,
 				D61D1DDE1B5342DD00DE37DF /* UIImage+Joyy.m in Sources */,
 				D679F0261B1C39BB004F1C37 /* JYFloatLabeledTextFieldCell.m in Sources */,
-				D61D1DDA1B51DB1F00DE37DF /* JYPhotoName.m in Sources */,
 				D61D1DC21B4E336E00DE37DF /* TGCameraGridView.m in Sources */,
 				D63F0D591AC7CFF20067C5EE /* JYButton.m in Sources */,
 				D63F0D8C1ACBBF1F0067C5EE /* JYCollectionViewCell.m in Sources */,
@@ -1277,7 +1270,6 @@
 				D63F0D761AC9F6F80067C5EE /* JYDataStore.m in Sources */,
 				D6348D2C1ADA4A650002BC35 /* JYRestrictedTextViewCell.m in Sources */,
 				D61D1D5A1B4A65F200DE37DF /* UIView+MDCSwipeToChoose.m in Sources */,
-				D61D1DDB1B51DB1F00DE37DF /* JYPhotoName.m in Sources */,
 				D679F0271B1C39BB004F1C37 /* JYFloatLabeledTextFieldCell.m in Sources */,
 				D61D1D481B4A65F200DE37DF /* MDCGeometry.m in Sources */,
 				D61C48A11B449143009E422A /* JYMenuViewCell.m in Sources */,

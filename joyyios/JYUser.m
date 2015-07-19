@@ -24,11 +24,10 @@
 - (void)_loadProperties
 {
     _email = [_credential valueForKey:@"email"];
-    _username = [_credential valueForKey:@"username"];
+    _name = [_credential valueForKey:@"name"];
     _password = [_credential valueForKey:@"password"];
     _token = [_credential valueForKey:@"token"];
     _userId = [[_credential valueForKey:@"id"] unsignedIntegerValue];
-    _joyyorStatus = [[_credential valueForKey:@"joyyor_status"] unsignedIntegerValue];
 }
 
 - (void)setCredential:(NSDictionary *)credential
