@@ -67,20 +67,21 @@ internals.createCommentHandler = function (request, reply) {
                     return next(Boom.badData(c.COMMENT_CREATE_FAILED));
                 }
 
-                next(null, result.rows[0]);
+                return next(null, result.rows[0]);
             });
         },
-        commentCount: function (next) {
+        updateCache: ['commentId', function (next) {
 
-            // increase the comment count
-            Cache.incr(c.MEDIA_COMMENT_COUNT_CACHE, p.media_id, function (error) {
+            // push this comment content to cache and increase the comment count
+            Cache.enqueue(c.COMMENT_CACHE, c.COMMENT_COUNT_CACHE, p.media_id, p.content, function (error) {
                 if (error) {
+                    // Just log the error, do not call next(error) since caching is a kind of "try our best" thing
                     console.error(error);
                 }
 
-                next(null);
+                return next(null);
             });
-        }
+        }]
     }, function (err, results) {
 
         if (err) {
@@ -88,6 +89,6 @@ internals.createCommentHandler = function (request, reply) {
             return reply(err);
         }
 
-        reply(null, results.commentId);
+        return reply(null, results.commentId);
     });
 };

@@ -1,10 +1,13 @@
 var Async = require('async');
 var AWS = require('aws-sdk');
 var Boom = require('boom');
+var Cache = require('../cache');
 var Config = require('../../config');
 var Hoek = require('hoek');
 var Joi = require('joi');
 var c = require('../constants');
+var _ = require('underscore');
+
 
 var internals = {};
 
@@ -66,6 +69,91 @@ exports.register = function (server, options, next) {
         }
     });
 
+    // For each media_id in the query, get its like count, comment count and last 3 comments. no auth.
+    server.route({
+        method: 'GET',
+        path: options.basePath + '/media/brief',
+        config: {
+            validate: {
+                query: {
+                    id: Joi.array().single(true).unique().items(Joi.string().regex(/^[0-9]+$/).max(19))
+                }
+            }
+        },
+        handler: function (request, reply) {
+
+            var mediaIds = request.query.id;
+
+            Async.auto({
+                commentLists: function (callback) {
+
+                    Cache.mgetList(c.COMMENT_CACHE, mediaIds, function (err, result) {
+                        if (err) {
+                            console.error(err);
+                        }
+                        return callback(null, result);
+                    });
+                },
+                commentCounts: function (callback) {
+
+                    Cache.mget(c.COMMENT_COUNT_CACHE, mediaIds, function (err, result) {
+                        if (err) {
+                            console.error(err);
+                        }
+                        return callback(null, result);
+                    });
+                },
+                likeCounts: function (callback) {
+
+                    Cache.mget(c.LIKE_COUNT_CACHE, mediaIds, function (err, result) {
+                        if (err) {
+                            console.error(err);
+                        }
+                        return callback(null, result);
+                    });
+                }/*,  In case of cache missed, query from DB
+                countFromDB: ['countFromCache', function (callback) {
+
+                }],
+                contentFromDB: ['contentFromCache', function (callback) {
+
+                }]*/
+            }, function (err, results) {
+
+                if (err) {
+                    return reply(err);
+                }
+
+                // mediaIds      = ['4', '3', '2', '1']
+                // likeCounts    = [null, null, null, null]
+                // commentCounts = [null, null, null, '2']
+                // commentLists  = [[], [], [], ['second comment','some comment contents']]
+
+                var itemArray = _.zip(mediaIds, results.likeCounts, results.commentCounts, results.commentLists);
+                /*
+                 *  itemArray = [
+                 *      ['4', null, null, []],
+                 *      ['3', null, null, []],
+                 *      ['2', null, null, []],
+                 *      ['1', null, '2', ['second comment','some comment contents']]
+                 *  ]
+                 */
+                var objectArray = _.map(itemArray, function (item) {
+                    return _.object(['id', 'like_count', 'comment_count', 'comment_list'], item);
+                });
+                /*
+                 *  objectArray = [
+                 *      {'id': '4', 'like_count': null, 'comment_count': null, 'comment_list': []},
+                 *      {'id': '3', 'like_count': null, 'comment_count': null, 'comment_list': []},
+                 *      {'id': '2', 'like_count': null, 'comment_count': null, 'comment_list': []},
+                 *      {'id': '1', 'like_count': null, 'comment_count':  '2', 'comment_list': ['second comment','some comment contents']}
+                 *  ]
+                */
+
+                return reply(objectArray);
+            });
+        }
+    });
 
     // upload a media. auth.
     server.route({
@@ -153,6 +241,36 @@ exports.register = function (server, options, next) {
             });
         }
     });
+
+
+    // like a media. auth.
+    server.route({
+        method: 'POST',
+        path: options.basePath + '/media/like',
+        config: {
+            auth: {
+                strategy: 'token'
+            },
+            validate: {
+                payload: {
+                    id: Joi.string().regex(/^[0-9]+$/).max(19).required()
+                }
+            }
+        },
+        handler: function (request, reply) {
+
+            // push this comment content to cache and increase the comment count
+            Cache.incr(c.LIKE_COUNT_CACHE, request.payload.id, function (err, result) {
+                if (err) {
+                    // Just log the error, do not call next(err) since caching is a kind of "try our best" thing
+                    console.error(err);
+                }
+console.log('like result = %j', result);
+                return reply(null, {'like_count': result});
+            });
+        }
+    });
+
 
     next();
 };

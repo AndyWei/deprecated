@@ -26,24 +26,23 @@ var manifest = {
             }, {
                 reporter: require('good-file'),
                 events: { error: '*' },
-                config: './good.log'
+                config: './log/good.log'
             }]
         },
-        'hapi-auth-basic': {},
-        'hapi-auth-bearer-token': {},
         'hapi-node-postgres': {
             connectionString: Config.get('/db/connectionString'),
             native: Config.get('/db/native'),
-            attach: 'onPreHandler'
+            attach: 'onPreAuth'
         },
+        'hapi-auth-basic': {},
+        'hapi-auth-bearer-token': {},
         './server/authenticate': {},
         './server/api/comment': { basePath: '/v1' },
         './server/api/love': { basePath: '/v1' },
         './server/api/media': { basePath: '/v1' },
         './server/api/notification': { basePath: '/v1' },
         './server/api/person': { basePath: '/v1' },
-        './server/api/signin': { basePath: '/v1' },
-        './server/api/signup': { basePath: '/v1' },
+        './server/api/sign': { basePath: '/v1' }
     }
 };
 

@@ -16,7 +16,7 @@ var PgPlugin = {
     options: {
         connectionString: Config.get('/db/connectionString'),
         native: Config.get('/db/native'),
-        attach: 'onPreHandler'
+        attach: 'onPreAuth'
     }
 };
 

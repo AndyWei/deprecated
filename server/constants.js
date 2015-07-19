@@ -3,17 +3,25 @@ var exports = module.exports = {};
 
 // cache dataset settings
 exports.AUTH_TOKEN_CACHE = {
-    segment: 'attk',
+    segment: 'A',
     ttl: 30 * 60
 };
 
-exports.DEVICE_TOKEN_CACHE = {
-    segment: 'dvtk'
+exports.COMMENT_CACHE = {
+    segment: 'C',
+    size: 3
 };
 
-exports.MEDIA_COMMENT_COUNT_CACHE = {
-    segment: 'mcct',
-    ttl: 24 * 60 * 60
+exports.COMMENT_COUNT_CACHE = {
+    segment: 'c'
+};
+
+exports.DEVICE_TOKEN_CACHE = {
+    segment: 'D'
+};
+
+exports.LIKE_COUNT_CACHE = {
+    segment: 'l'
 };
 
 

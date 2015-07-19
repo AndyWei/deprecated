@@ -4,6 +4,7 @@ var Boom = require('boom');
 var Cache = require('../cache');
 var Hoek = require('hoek');
 var Joi = require('joi');
+var Rand = require('rand-token');
 var c = require('../constants');
 
 
@@ -13,7 +14,34 @@ exports.register = function (server, options, next) {
 
     options = Hoek.applyToDefaults({ basePath: '' }, options);
 
-    // new user signup
+    // Existing person sign in
+    server.route({
+        method: 'GET',
+        path: options.basePath + '/signin',
+        config: {
+            auth: {
+                strategy: 'simple'
+            }
+        },
+        handler: function (request, reply) {
+
+            internals.generateAuthToken(request.auth.credentials.id, request.auth.credentials.name, function (err, token) {
+
+                if (err) {
+                    console.error(err);
+                    request.pg.kill = true;
+                    return reply(err);
+                }
+
+                var response = request.auth.credentials;
+                response.token = token;
+
+                reply(null, response);
+            });
+        }
+    });
+
+    // New person sign up
     server.route({
         method: 'POST',
         path: options.basePath + '/signup',
@@ -37,7 +65,7 @@ exports.register = function (server, options, next) {
 
 
 exports.register.attributes = {
-    name: 'signup'
+    name: 'sign'
 };
 
 
@@ -111,7 +139,7 @@ internals.createUser = function (request, reply) {
         }],
         token: ['personId', function (callback, results) {
 
-            Cache.generateBearerToken(results.personId, name, function (err, token) {
+            internals.generateAuthToken(results.personId, name, function (err, token) {
                 callback(err, token);
             });
         }]
@@ -160,4 +188,42 @@ internals.getOrgFromEmail = function (email) {
         type: orgType
     };
     return org;
+};
+
+
+// Generate a 20 character alpha-numeric token and store it in cache together with personId
+internals.generateAuthToken = function (personId, name, callback) {
+
+    personId = personId.toString();
+    name = name.toString();
+
+    Async.auto({
+        token: function (next) {
+
+            var randomString = Rand.generate(c.TOKEN_LENGTH);
+            return next(null, randomString);
+        },
+        userToken: ['token', function (next, result) {
+
+            var personInfo = result.token + ':' + name;
+            var userToken = personId + ':' + result.token;
+
+            Cache.setex(c.AUTH_TOKEN_CACHE, personId, personInfo, function (err) {
+
+                if (err) {
+                    return next(err);
+                }
+
+                return next(null, userToken);
+            });
+        }]
+    }, function (err, result) {
+
+        if (err) {
+            console.error(err);
+            return callback(err);
+        }
+
+        return callback(null, result.userToken);
+    });
 };

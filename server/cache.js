@@ -1,10 +1,6 @@
-var Async = require('async');
 var Config = require('../config');
 var Hoek = require('hoek');
 var Redis = require('ioredis');
-var Utils = require('./utils');
-var c = require('./constants');
-var rand = require('rand-token');
 var _ = require('underscore');
 
 var exports = module.exports = {};
@@ -18,10 +14,12 @@ internals.settings = {
 
 internals.redis = null;
 
+
 internals.generateKey = function (dataset, key) {
 
-    return encodeURIComponent(dataset.segment) + ':' + encodeURIComponent(key);
+    return dataset.segment + encodeURIComponent(key);
 };
+
 
 exports.start = function (callback) {
 
@@ -52,6 +50,7 @@ exports.start = function (callback) {
 exports.stop = function () {
 
     if (internals.redis) {
+
         internals.redis.removeAllListeners();
         internals.redis.quit();
         internals.redis = null;
@@ -59,16 +58,16 @@ exports.stop = function () {
 };
 
 
-exports.set = internals.set = function (dataset, key, value, callback) {
+exports.setex = internals.setex = function (dataset, key, value, callback) {
 
     if (!internals.redis) {
         return callback(new Error('Connection not started'));
     }
 
     var cacheKey = internals.generateKey(dataset, key);
-    var valueString = JSON.stringify(value);
+    value = value.toString();
 
-    internals.redis.setex(cacheKey, dataset.ttl, valueString, function (err) {
+    internals.redis.setex(cacheKey, dataset.ttl, value, function (err) {
 
         if (err) {
             return callback(err);
@@ -86,72 +85,66 @@ exports.get = internals.get = function (dataset, key, callback) {
     }
 
     var cacheKey = internals.generateKey(dataset, key);
-    internals.redis.get(cacheKey, function (err, resultString) {
+    internals.redis.get(cacheKey, function (err, result) {
 
         if (err) {
             return callback(err);
         }
 
-        if (!resultString) {
-            return callback(null, null);
-        }
-
-        var result = JSON.parse(resultString);
         return callback(null, result);
     });
 };
 
 
-exports.getList = internals.getList = function (dataset, key, min, callback) {
+exports.mgetList = internals.mgetList = function (dataset, keys, callback) {
 
     if (!internals.redis) {
         return callback(new Error('Connection not started'));
     }
 
-    var cacheKey = internals.generateKey(dataset, key);
-    internals.redis.lrange(cacheKey, 0, -1, function (err, result) {
+    var pipeline = internals.redis.pipeline();
+
+    _.each(keys, function (key) {
+        var listKey = internals.generateKey(dataset, key);
+        pipeline.lrange(listKey, 0, -1);
+    });
+
+    pipeline.exec(function (err, result) {
 
         if (err) {
             return callback(err);
         }
 
-        if (!result) {
-            return callback(null, null);
-        }
+        // Refer to https://github.com/luin/ioredis
+        // result is an array, and each element is an array in form of: [err, value]
+        var lists = _.map(result, function (element) {
+            return element[1];
+        });
 
-        // remove the small orderIds
-        var validResult = _.filter(result, function (item) { return min < item; });
-
-        if (validResult.length === 0) {
-            return callback(null, null);
-        }
-
-        return callback(null, validResult);
+        return callback(null, lists);
     });
 };
 
 
-exports.lpush = internals.lpush = function (dataset, key, value, callback) {
+exports.enqueue = internals.enqueue = function (listDataset, countDataset, key, value, callback) {
 
     if (!internals.redis) {
         return callback(new Error('Connection not started'));
     }
 
-    var cacheKey = internals.generateKey(dataset, key);
-    var valueString = Utils.padZero(value, 19);  // zero pad the number string to facility the filter process when getList
+    var listKey = internals.generateKey(listDataset, key);
+    var countKey = internals.generateKey(countDataset, key);
+    var pipeline = internals.redis.pipeline();
 
-    internals.redis.lpush(cacheKey, valueString, function (err, result) {
+    pipeline
+        .lpush(listKey, value)
+        .ltrim(listKey, 0, listDataset.size)
+        .incr(countKey)
+        .exec(function (err, result) {
 
         if (err) {
             return callback(err);
         }
-
-        if (!result) {
-            return callback(null, null);
-        }
-
-        // Limit the values list size to 500
-        internals.redis.ltrim(cacheKey, 0, 500);
 
         return callback(null, result);
     });
@@ -183,10 +176,6 @@ exports.incr = function (dataset, key, callback) {
             return callback(err);
         }
 
-        if (!result) {
-            return callback(null, null);
-        }
-
         return callback(null, result);
     });
 };
@@ -206,17 +195,17 @@ exports.mget = function (dataset, keys, callback) {
         return internals.generateKey(dataset, key);
     });
 
-    internals.redis.mget(cacheKeys, function (err, results) {
+    internals.redis.mget(cacheKeys, function (err, result) {
 
         if (err) {
             return callback(err);
         }
 
-        if (!results) {
+        if (!result) {
             return callback(null, null);
         }
 
-        return callback(null, results);
+        return callback(null, result);
     });
 };
 
@@ -236,82 +225,6 @@ exports.mset = function (dataset, keys, values, callback) {
     internals.redis.mset(_.flatten(keyValues), function (err) {
 
         if (err) {
-            return callback(err);
-        }
-
-        return callback(null);
-    });
-};
-
-
-// Generate a 20 character alpha-numeric token and store it in cache
-exports.generateBearerToken = function (personId, name, callback) {
-
-    personId = personId.toString();
-    name = name.toString();
-
-    Async.auto({
-        generateToken: function (next) {
-
-            var token = rand.generate(c.TOKEN_LENGTH);
-            return next(null, token);
-        },
-        cacheToken: ['generateToken', function (next, results) {
-
-            var personInfo = personId + ':' + name;
-
-            internals.set(c.AUTH_TOKEN_CACHE, results.generateToken, personInfo, function (err) {
-
-                if (err) {
-                    return next(err);
-                }
-
-                return next(null);
-            });
-        }]
-    }, function (err, results) {
-
-        if (err) {
-            console.error(err);
-            return callback(err);
-        }
-
-        return callback(null, results.generateToken);
-    });
-};
-
-
-exports.validateToken = function (token, callback) {
-
-    internals.get(c.AUTH_TOKEN_CACHE, token, function (err, result) {
-        if (err) {
-            console.error(err);
-            return callback(err);
-        }
-
-        if (!result) {
-            return callback('Token Not Found');
-        }
-
-        var personInfo = _.object(['id', 'name'], result.split(':'));
-        personInfo.token = token;
-
-        return callback(null, personInfo);
-    });
-};
-
-
-exports.updateName = function (token, personId, name, callback) {
-
-    personId = personId.toString();
-    name = name.toString();
-
-    var personInfo = personId + ':' + name;
-
-    internals.set(c.AUTH_TOKEN_CACHE, token, personInfo, function (err) {
-
-        if (err) {
-            console.error(err);
             return callback(err);
         }
 

@@ -1,9 +1,12 @@
+var AuthPlugin = require('../../../server/authenticate');
 var Cache = require('../../../server/cache');
 var Code = require('code');
 var Config = require('../../../config');
 var Hapi = require('hapi');
+var HapiAuthBasic = require('hapi-auth-basic');
+var HapiAuthToken = require('hapi-auth-bearer-token');
 var Lab = require('lab');
-var SignupPlugin = require('../../../server/api/signup');
+var SignPlugin = require('../../../server/api/sign');
 var c = require('../../../server/constants');
 
 
@@ -14,26 +17,22 @@ var PgPlugin = {
     options: {
         connectionString: Config.get('/db/connectionString'),
         native: Config.get('/db/native'),
-        attach: 'onPreHandler'
+        attach: 'onPreAuth'
     }
 };
 
 var request, server;
 
+lab.before(function (done) {
 
-lab.experiment('Signup: ', function () {
+    var plugins = [PgPlugin, HapiAuthBasic, HapiAuthToken, AuthPlugin, SignPlugin];
+    server = new Hapi.Server();
+    server.connection({ port: Config.get('/port/api') });
+    server.register(plugins, function (err) {
 
-    lab.before(function (done) {
-
-        var plugins = [PgPlugin, SignupPlugin];
-        server = new Hapi.Server();
-        server.connection({ port: Config.get('/port/api') });
-        server.register(plugins, function (err) {
-
-            if (err) {
-                return done(err);
-            }
-        });
+        if (err) {
+            return done(err);
+        }
 
         server.start(function () {
 
@@ -45,17 +44,40 @@ lab.experiment('Signup: ', function () {
             });
         });
     });
+});
 
 
-    lab.after(function (done) {
+lab.after(function (done) {
 
-        server.stop(function () {
+    server.stop(function () {
 
-            Cache.stop();
-            return done();
-        });
+        Cache.stop();
+        return done();
     });
+});
 
+
+// lab.experiment('SignIn: ', function () {
+
+
+//     lab.test('Sign in successfully', function (done) {
+
+//         request = {
+//             method: 'GET',
+//             url: encodeURI('/signin?email=jack@gmail.com&password=password')
+//         };
+
+//         server.inject(request, function (response) {
+
+//             Code.expect(response.statusCode).to.equal(200);
+//             Code.expect(response.result.token).to.exist();
+//             return done();
+//         });
+//     });
+// });
+
+
+lab.experiment('Signup: ', function () {
 
     lab.test('return an 400 error on password missing', function (done) {
 

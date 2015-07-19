@@ -27,7 +27,7 @@ exports.register = function (server, options, next) {
             },
             validate: {
                 query: {
-                    id: Joi.string().regex(/^[0-9]+$/).max(19)
+                    id: Joi.string().regex(/^[0-9]+$/).max(19).required()
                 }
             }
         },
@@ -192,10 +192,9 @@ exports.register = function (server, options, next) {
                 },
                 function (callback) {
 
-                    var token = request.auth.credentials.token;
-                    Cache.updateName(token, personId, p.name, function (err) {
+                    internals.updateCachedName(personId.toString(), p.name, function (err) {
                         if (err) {
-                            console.error(err);
+                            console.error(err); // Do not callback(err) since the cached name will be corrected in next sign in
                         }
                         return callback(null);
                     });
@@ -259,6 +258,51 @@ exports.register = function (server, options, next) {
     });
 
     next();
+};
+
+
+internals.updateCachedName = function (personId, name, callback) {
+
+    personId = personId.toString();
+
+    Async.waterfall([
+
+        function (next) {
+            Cache.get(c.AUTH_TOKEN_CACHE, personId, function (err, result) {
+
+                if (err) {
+                    return next(err);
+                }
+
+                if (!result) {
+                    return next(null, null);
+                }
+
+                var token = result.substring(result.indexOf(':') + 1);
+                return next(null, token);
+            });
+        },
+        function (token, next) {
+
+            var authInfo = token + ':' + name;
+            Cache.setex(c.AUTH_TOKEN_CACHE, personId, authInfo, function (err) {
+
+                if (err) {
+                    return next(err);
+                }
+
+                return next(null);
+            });
+        }
+    ], function (err) {
+
+        if (err) {
+            console.error(err);
+            return callback(err);
+        }
+
+        return callback(null);
+    });
 };
 
 

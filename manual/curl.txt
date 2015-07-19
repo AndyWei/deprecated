@@ -6,18 +6,25 @@ curl -i -u jack@gmail.com:password "http://localhost:8000/v1/signin"
 
 ## person
 # GET a person's own profile
-curl -i -H "Authorization: Bearer 5dHwvDMJacb2umovRvIn" "http://localhost:8000/v1/person/profile"
+curl -i -H "Authorization: Bearer 1:xPwi4ZHduEK7cTxLouzz" "http://localhost:8000/v1/person/profile"
 
 # GET a another person's profile
-curl -i -H "Authorization: Bearer 5dHwvDMJacb2umovRvIn" "http://localhost:8000/v1/person?id=1"
+curl -i -H "Authorization: Bearer 1:xPwi4ZHduEK7cTxLouzz" "http://localhost:8000/v1/person?id=1"
 
 # Update a person's profile
-curl -i -H "Authorization: Bearer 5dHwvDMJacb2umovRvIn" --data "yob=1995&name='dodo'&gender=2&bio='sound of silence'" "http://localhost:8000/v1/person/profile"
+curl -i -H "Authorization: Bearer 1:xPwi4ZHduEK7cTxLouzz" --data "yob=1995&name='dodo'&gender=2&bio='sound of silence'" "http://localhost:8000/v1/person/profile"
 
 
 
-## comments
+## comment
 # POST a comment
-curl -i -X POST -H "Authorization: Bearer GiDsFzn99eaYKIFLk0QZ" --data "order_id=1&body=@andy @ping yes" "http://localhost:8000/v1/comments"
+curl -i -X POST -H "Authorization: Bearer 1:XID5YykTQGYKit1Mmca9" --data "media_id=2&content=for media id 2" "http://localhost:8000/v1/comment"
 
 
+## media
+# GET media/brief
+curl -i "http://localhost:8000/v1/media/brief?id=1&id=2&id=3&id=4"
+curl -i "http://localhost:8000/v1/media/brief?id=4&id=3&id=2&id=1"
+
+# Like a media
+curl -i -X POST -H "Authorization: Bearer 1:XID5YykTQGYKit1Mmca9" --data "id=2" "http://localhost:8000/v1/media/like"

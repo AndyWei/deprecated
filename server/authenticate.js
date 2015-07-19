@@ -3,10 +3,13 @@ var Bcrypt = require('bcrypt');
 var Boom = require('boom');
 var Cache = require('./cache');
 var c = require('./constants');
+var _ = require('underscore');
+
 
 var exports = module.exports = {};
+var internals = {};
 
-var validateSimple = function (request, email, password, finish) {
+internals.validateSimple = function (request, email, password, finish) {
 
     Async.waterfall([
         function (callback) {
@@ -25,7 +28,7 @@ var validateSimple = function (request, email, password, finish) {
                 }
 
                 if (result.rowCount === 0) {
-                    return callback(Boom.unauthorized(c.PERSON_NOT_FOUND, 'basic'));
+                    return callback(Boom.unauthorized(c.PERSON_NOT_FOUND));
                 }
 
                 return callback(null, result.rows[0]);
@@ -36,7 +39,7 @@ var validateSimple = function (request, email, password, finish) {
             Bcrypt.compare(password, person.password, function (err, isValid) {
 
                 if (err) {
-                    return callback(Boom.unauthorized(err, 'basic'));
+                    return callback(Boom.unauthorized(err));
                 }
 
                 person.password = password;
@@ -55,12 +58,39 @@ var validateSimple = function (request, email, password, finish) {
 };
 
 
-var validateToken = function (request, token, callback) {
+internals.validateToken = function (userToken, callback) {
 
-    Cache.validateToken(token, function (err, personInfo) {
+    if (typeof userToken !== 'string' || userToken.length < c.TOKEN_LENGTH) {
+        return callback(Boom.unauthorized(c.AUTH_TOKEN_INVALID), false, null);
+    }
+
+    var pos = userToken.indexOf(':');
+
+    if (pos < 0) {
+        return callback(Boom.unauthorized(c.AUTH_TOKEN_INVALID), false, null);
+    }
+
+    var personId = userToken.substring(0, pos);
+    var token = userToken.substring(pos + 1);
+
+    Cache.get(c.AUTH_TOKEN_CACHE, personId, function (err, result) {
+
         if (err) {
-            return callback(Boom.unauthorized(c.AUTH_TOKEN_INVALID, 'token'), false, null);
+            console.error(err);
+            return callback(err);
         }
+
+        if (!result) {
+            return callback(Boom.unauthorized(c.AUTH_TOKEN_INVALID), false, null);
+        }
+
+        var cachedToken = result.substring(0, result.indexOf(':'));
+        if (cachedToken !== token) {
+            return callback(Boom.unauthorized(c.AUTH_TOKEN_INVALID), false, null);
+        }
+
+        var name = result.substring(result.indexOf(':') + 1);
+        var personInfo = _.object(['id', 'name'], [personId, name]);
 
         return callback(null, true, personInfo);
     });
@@ -70,11 +100,11 @@ var validateToken = function (request, token, callback) {
 exports.register = function (server, options, next) {
 
     server.auth.strategy('simple', 'basic', {
-        validateFunc: validateSimple
+        validateFunc: internals.validateSimple
     });
 
     server.auth.strategy('token', 'bearer-access-token', {
-        validateFunc: validateToken
+        validateFunc: internals.validateToken
     });
 
     next();
