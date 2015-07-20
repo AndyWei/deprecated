@@ -41,14 +41,15 @@
     {
         if (dict)
         {
-            self.localImage = nil;
-            self.mediaId = [[dict objectForKey:@"id"] unsignedIntegerValue];
-            self.pathVersion = [[dict objectForKey:@"path_version"] unsignedIntegerValue];
-            self.type = [[dict objectForKey:@"media_type"] unsignedIntegerValue];
-            self.ownerId = [[dict objectForKey:@"owner_id"] unsignedIntegerValue];
+            _localImage = nil;
+            _mediaId = [[dict objectForKey:@"id"] unsignedIntegerValue];
+            _pathVersion = [[dict objectForKey:@"path_version"] unsignedIntegerValue];
+            _type = [[dict objectForKey:@"media_type"] unsignedIntegerValue];
+            _ownerId = [[dict objectForKey:@"owner_id"] unsignedIntegerValue];
+            _isLiked = NO;
 
-            self.filename = [dict objectForKey:@"filename"];
-            self.caption = [dict objectForKey:@"caption"];
+            _filename = [dict objectForKey:@"filename"];
+            _caption = [dict objectForKey:@"caption"];
         }
     }
     return self;
@@ -59,14 +60,15 @@
     self = [super init];
     if (self)
     {
-        self.localImage = image;
-        self.mediaId = 0;
-        self.pathVersion = 0;
-        self.type = JYMediaTypeImage;
-        self.ownerId = [JYUser currentUser].userId;
+        _localImage = image;
+        _mediaId = 0;
+        _pathVersion = 0;
+        _type = JYMediaTypeImage;
+        _ownerId = [JYUser currentUser].userId;
+        _isLiked = NO;
 
-        self.filename = @"";
-        self.caption = @"local";
+        _filename = @"";
+        _caption = @"local";
     }
     return self;
 }
@@ -112,4 +114,21 @@
     }
     return str;
 }
+
+- (void)setBrief:(NSDictionary *)brief
+{
+    if (!brief)
+    {
+        return;
+    }
+
+    id value = [brief objectForKey:@"like_count"];
+    _likeCount = (value == [NSNull null]) ? 0 : [(NSString *)value unsignedIntegerValue];
+
+    value = [brief objectForKey:@"comment_count"];
+    _commentCount = (value == [NSNull null]) ? 0: [(NSString *)value unsignedIntegerValue];
+
+    _commentList = [brief objectForKey:@"comment_list"];
+}
+
 @end

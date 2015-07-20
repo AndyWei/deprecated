@@ -12,6 +12,6 @@
 
 + (CGFloat)heightForMedia:(JYMedia *)media;
 
-@property(nonatomic, weak) JYMedia *media;
+@property(nonatomic) JYMedia *media;
 
 @end

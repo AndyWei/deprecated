@@ -59,14 +59,15 @@ NSString *const kImageNamePinBlue = @"pinBlue";
 NSString *const kImageNamePinGreen = @"pinGreen";
 NSString *const kImageNamePinPink = @"pinPink";
 
-NSString *const kNotificationDidCreateAccount = @"didCreateAccount";
-NSString *const kNotificationDidCreateBid = @"didCreateBid";
-NSString *const kNotificationDidCreateComment = @"didCreateComment";
-NSString *const kNotificationDidCreateOrder = @"didCreateOrder";
-NSString *const kNotificationDidFinishOrder = @"didFinishOrder";
-NSString *const kNotificationDidReceiveBid = @"didReceiveBid";
-NSString *const kNotificationDidSignIn = @"didSignIn";
-NSString *const kNotificationDidSignUp = @"didSignUp";
+NSString *const kNotificationDidCreateAccount = @"createAccount";
+NSString *const kNotificationDidCreateBid = @"createBid";
+NSString *const kNotificationDidCreateComment = @"createComment";
+NSString *const kNotificationDidCreateOrder = @"createOrder";
+NSString *const kNotificationDidFinishOrder = @"finishOrder";
+NSString *const kNotificationDidLikeMedia = @"likeMedia";
+NSString *const kNotificationDidReceiveBid = @"receiveBid";
+NSString *const kNotificationDidSignIn = @"signIn";
+NSString *const kNotificationDidSignUp = @"signUp";
 
 NSString *const kSystemFontBold = @"AvenirNextCondensed-DemiBold";
 NSString *const kSystemFontItalic = @"AvenirNextCondensed-Italic ";

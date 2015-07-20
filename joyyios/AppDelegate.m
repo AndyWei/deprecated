@@ -334,7 +334,7 @@
     NSInteger badgeCount = [JYDataStore sharedInstance].badgeCount;
 
     NSDictionary *parameters = @{@"service": @"apn", @"token": deviceToken, @"badge": @(badgeCount)};
-    NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"notifications/devices/joyy"];
+    NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"notification/device"];
 
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYUser currentUser].token];
