@@ -55,6 +55,24 @@ lab.afterEach(function (done) {
     return done();
 });
 
+lab.experiment('Comment GET: ', function () {
+
+    lab.test('/comment: GET successfully', function (done) {
+
+        request = {
+            method: 'GET',
+            url: '/comment?media_id=1&after=1&before=4'
+        };
+
+        server.inject(request, function (response) {
+
+            Code.expect(response.statusCode).to.equal(200);
+            Code.expect(response.result).to.be.an.array().and.to.have.length(2);
+
+            return done();
+        });
+    });
+});
 
 lab.experiment('Comment POST: ', function () {
 

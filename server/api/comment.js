@@ -12,6 +12,48 @@ exports.register = function (server, options, next) {
 
     options = Hoek.applyToDefaults({ basePath: '' }, options);
 
+    // get comment of media. no auth.
+    server.route({
+        method: 'GET',
+        path: options.basePath + '/comment',
+        config: {
+            validate: {
+                query: {
+                    media_id: Joi.string().regex(/^[0-9]+$/).max(19).required(),
+                    after: Joi.string().regex(/^[0-9]+$/).max(19).default('0'),
+                    before: Joi.string().regex(/^[0-9]+$/).max(19).default('9223372036854775807')
+                }
+            }
+        },
+        handler: function (request, reply) {
+
+            var q = request.query;
+
+            var select = 'SELECT id, owner_id, content, created_at FROM comment ';
+            var where = 'WHERE id > $1 AND id < $2 AND media_id = $3 AND deleted = false ';
+            var order = 'ORDER BY id ASC ';
+            var limit = 'LIMIT 20';
+
+            var queryConfig = {
+                name: 'comments_of_media',
+                text: select + where + order + limit,
+                values: [q.after, q.before, q.media_id]
+            };
+
+            request.pg.client.query(queryConfig, function (err, result) {
+
+                if (err) {
+                    console.error(err);
+                    request.pg.kill = true;
+                    return reply(err);
+                }
+
+                return reply(null, result.rows);
+            });
+        }
+    });
+
+
     // Create an comment. auth.
     server.route({
         method: 'POST',
