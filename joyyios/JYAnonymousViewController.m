@@ -126,6 +126,14 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
         _cameraButton.contentAnimateToColor = JoyyBlue;
         _cameraButton.foregroundColor = ClearColor;
         [_cameraButton addTarget:self action:@selector(_showCamera) forControlEvents:UIControlEventTouchDown];
+
+        CABasicAnimation *theAnimation = [CABasicAnimation animationWithKeyPath:@"backgroundColor"];
+        theAnimation.duration = 5.0;
+        theAnimation.repeatCount = INFINITY;
+        theAnimation.autoreverses = YES;
+        theAnimation.fromValue = (__bridge id)([JoyyWhite CGColor]);
+        theAnimation.toValue = (__bridge id)([JoyyWhite50 CGColor]);
+        [_cameraButton.imageLayer.layer addAnimation:theAnimation forKey:@"ColorPulse"];
     }
     return _cameraButton;
 }

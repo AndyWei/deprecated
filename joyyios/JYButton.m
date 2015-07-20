@@ -86,11 +86,6 @@ static CGRect CGRectEdgeInset(CGRect rect, UIEdgeInsets insets)
 @end
 
 #pragma mark - JYButtonImageLayer
-@interface JYButtonImageLayer : UIView
-
-@property(nonatomic) UIImageView *imageView;
-
-@end
 
 @implementation JYButtonImageLayer
 
@@ -138,7 +133,6 @@ static CGRect CGRectEdgeInset(CGRect rect, UIEdgeInsets insets)
 @property(nonatomic) JYButtonTextLayer *textLayer;
 @property(nonatomic) JYButtonTextLayer *detailTextLayer;
 @property(nonatomic) JYButtonTextLayer *topTextLayer;
-@property(nonatomic) JYButtonImageLayer *imageLayer;
 
 @end
 

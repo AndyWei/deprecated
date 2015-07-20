@@ -39,6 +39,11 @@ typedef NS_ENUM(NSInteger, JYButtonStyle)
 
 extern CGFloat const JYButtonMaxValue;
 
+@interface JYButtonImageLayer : UIView
+@property(nonatomic) UIImageView *imageView;
+@end
+
+
 @interface JYButton : UIControl
 
 @property(nonatomic, readonly) JYButtonStyle buttonStyle;
@@ -52,6 +57,8 @@ extern CGFloat const JYButtonMaxValue;
 @property(nonatomic) UIColor *foregroundAnimateToColor UI_APPEARANCE_SELECTOR;
 @property(nonatomic) BOOL restoreSelectedState UI_APPEARANCE_SELECTOR;
 @property(nonatomic) BOOL shouldMaskImage;
+
+@property(nonatomic) JYButtonImageLayer *imageLayer;
 
 @property(nonatomic, weak) UILabel *textLabel;
 @property(nonatomic, weak) UILabel *detailTextLabel;
