@@ -52,7 +52,7 @@
                               CGRectGetMidX(self.view.frame),
                               kSignButtonHeight);
 
-    self.signInButton = [[JYButton alloc] initWithFrame:frame buttonStyle:JYButtonStyleDefault];
+    self.signInButton = [[JYButton alloc] initWithFrame:frame buttonStyle:JYButtonStyleTitle];
     self.signInButton.backgroundColor = ClearColor;
     self.signInButton.contentAnimateToColor = FlatBlack;
     self.signInButton.contentColor = FlatWhite;
@@ -72,7 +72,7 @@
                               CGRectGetMidX(self.view.frame),
                               kSignButtonHeight);
 
-    self.signUpButton = [[JYButton alloc] initWithFrame:frame buttonStyle:JYButtonStyleDefault];
+    self.signUpButton = [[JYButton alloc] initWithFrame:frame buttonStyle:JYButtonStyleTitle];
     self.signUpButton.backgroundColor = ClearColor;
     self.signUpButton.contentAnimateToColor = FlatBlack;
     self.signUpButton.contentColor = FlatWhite;

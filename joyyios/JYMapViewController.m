@@ -156,7 +156,7 @@ static NSString *reuseId = @"pin";
 {
     CGFloat y = CGRectGetMinY(self.pointView.frame) - 40;
     CGRect frame = CGRectMake(0, y, 220, 40);
-    JYButton *button = [JYButton buttonWithFrame:frame buttonStyle:JYButtonStyleDefault shouldMaskImage:NO];
+    JYButton *button = [JYButton buttonWithFrame:frame buttonStyle:JYButtonStyleTitle shouldMaskImage:NO];
     button.centerX = self.mapView.centerX;
 
     button.backgroundColor = JoyyWhite;

@@ -16,7 +16,8 @@ extern const CGFloat kButtonLocateDiameter;
 
 extern const CGFloat kIntroductionVersion;
 
-extern const CGFloat kFontSizeBody;
+extern const CGFloat kFontSizeCaption;
+extern const CGFloat kFontSizeComment;
 extern const CGFloat kFontSizeDetail;
 
 extern const CGFloat kMapDashBoardHeight;
@@ -48,7 +49,9 @@ extern const CGFloat kSignIntervalMax;
 extern const CGFloat kSignIntervalMin;
 extern const CGFloat kSignViewTopOffset;
 extern const CGFloat kServiceCategoryCellFontSize;
+
 extern const NSTimeInterval k15Minutes;
+extern const NSUInteger kBriefCommentsCount;
 
 extern NSString *const kAnnotationTitleEnd;
 extern NSString *const kAnnotationTitleStart;
@@ -77,6 +80,7 @@ extern NSString *const kSystemFontLight;
 extern NSString *const kSystemFontRegular;
 
 extern NSString *const kUrlAPIBase;
+
 
 #define SCREEN_WIDTH  CGRectGetWidth([[UIScreen mainScreen] applicationFrame])
 #define SCREEN_HEIGHT CGRectGetHeight([[UIScreen mainScreen] applicationFrame])

@@ -10,7 +10,7 @@
 
 static const CGFloat kMinHeight = 10;
 static const CGFloat kTopMargin = 3;
-static const CGFloat kFontSizeComment = 16.0f;
+
 
 @interface JYCommentViewCell ()
 

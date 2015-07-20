@@ -13,7 +13,8 @@ const CGFloat kButtonLocateDiameter = 40;
 
 const CGFloat kIntroductionVersion = 1.0;
 
-const CGFloat kFontSizeBody = 16.0f;
+const CGFloat kFontSizeCaption = 16.0f;
+const CGFloat kFontSizeComment = 15.0f;
 const CGFloat kFontSizeDetail = 13.0f;
 
 const CGFloat kMapDashBoardHeight = 135.0f;
@@ -47,6 +48,7 @@ const CGFloat kSignViewTopOffset = 152;
 const CGFloat kServiceCategoryCellFontSize = 18.0f;
 
 const NSTimeInterval k15Minutes = 900;
+const NSUInteger kBriefCommentsCount = 3;
 
 NSString *const kAnnotationTitleEnd = @"endPoint";
 NSString *const kAnnotationTitleStart = @"startPoint";

@@ -89,7 +89,7 @@ static const CGFloat kButtonAreaHeight = 50.0f;
 {
     CGFloat width = CGRectGetWidth([[UIScreen mainScreen] applicationFrame])  - kMarginRight;
     UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, width, kLabelHeight)];
-    label.font = [UIFont systemFontOfSize:kFontSizeBody];
+    label.font = [UIFont systemFontOfSize:kFontSizeCaption];
     label.textColor = FlatBlack;
     label.textAlignment = NSTextAlignmentRight;
     label.userInteractionEnabled = NO;
@@ -103,7 +103,7 @@ static const CGFloat kButtonAreaHeight = 50.0f;
 {
     CGFloat width = CGRectGetWidth([[UIScreen mainScreen] applicationFrame]) - kMarginLeft - kMarginRight;
     CGRect frame = CGRectMake(kMarginLeft, 0, width, 0);
-    JYButton *button = [[JYButton alloc] initWithFrame:frame buttonStyle:JYButtonStyleDefault];
+    JYButton *button = [[JYButton alloc] initWithFrame:frame buttonStyle:JYButtonStyleTitle];
 
     button.backgroundColor = ClearColor;
     button.contentAnimateToColor = FlatGreen;

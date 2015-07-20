@@ -200,14 +200,14 @@ static CGRect CGRectEdgeInset(CGRect rect, UIEdgeInsets insets)
 
 - (instancetype)initWithFrame:(CGRect)frame
 {
-    return [[JYButton alloc] initWithFrame:frame buttonStyle:JYButtonStyleDefault shouldMaskImage:YES appearanceIdentifier:nil];
+    return [[JYButton alloc] initWithFrame:frame buttonStyle:JYButtonStyleTitle shouldMaskImage:YES appearanceIdentifier:nil];
 }
 
 + (instancetype)button
 {
     CGRect frame = CGRectMake(0, 0, SCREEN_WIDTH, kButtonDefaultHeight);
 
-    JYButton *button = [[JYButton alloc] initWithFrame:frame buttonStyle:JYButtonStyleDefault];
+    JYButton *button = [[JYButton alloc] initWithFrame:frame buttonStyle:JYButtonStyleTitle];
     button.backgroundColor = FlatWhite;
     button.contentAnimateToColor = FlatGray;
     button.contentColor = FlatWhite;
@@ -258,7 +258,7 @@ static CGRect CGRectEdgeInset(CGRect rect, UIEdgeInsets insets)
     CGRect boxRect = [self boxingRect];
     switch (self.buttonStyle)
     {
-        case JYButtonStyleDefault:
+        case JYButtonStyleTitle:
             self.topTextLayer.frame = CGRectNull;
             self.imageLayer.frame = CGRectNull;
             self.detailTextLayer.frame = CGRectNull;
@@ -498,13 +498,12 @@ static CGRect CGRectEdgeInset(CGRect rect, UIEdgeInsets insets)
 #pragma mark - Touchs
 - (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event
 {
-    UIView *touchView = [super hitTest:point withEvent:event];
     if ([self pointInside:point withEvent:event])
     {
         return self;
     }
 
-    return touchView;
+    return [super hitTest:point withEvent:event];
 }
 
 - (BOOL)beginTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event
@@ -519,11 +518,7 @@ static CGRect CGRectEdgeInset(CGRect rect, UIEdgeInsets insets)
     BOOL wasTrackingInside = self.trackingInside;
     self.trackingInside = [self isTouchInside];
 
-    if (wasTrackingInside && !self.isTrackingInside)
-    {
-        self.selected = !self.selected;
-    }
-    else if (!wasTrackingInside && self.isTrackingInside)
+    if (wasTrackingInside != self.isTrackingInside)
     {
         self.selected = !self.selected;
     }

@@ -29,7 +29,7 @@
 
 typedef NS_ENUM(NSInteger, JYButtonStyle)
 {
-    JYButtonStyleDefault,
+    JYButtonStyleTitle,
     JYButtonStyleSubtitle,
     JYButtonStyleDate,
     JYButtonStyleCentralImage,

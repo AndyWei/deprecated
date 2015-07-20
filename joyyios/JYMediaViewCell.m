@@ -14,8 +14,8 @@
 
 static const CGFloat kActionBarHeight = 40;
 static const CGFloat kButtonWidth = 23;
-static const CGFloat kCaptionMinHeight = 40;
-static const CGFloat kCommentCountLabelHeight = 40;
+static const CGFloat kLikeCountLabelWidth = 100;
+static const CGFloat kCommentCountButtonWidth = 100;
 
 @interface JYMediaViewCell ()
 
@@ -23,16 +23,19 @@ static const CGFloat kCommentCountLabelHeight = 40;
 @property(nonatomic) UILabel *captionLabel;
 
 @property(nonatomic) UIView *actionBar;
-@property(nonatomic) UILabel *briefLabel;
+@property(nonatomic) UILabel *likeCountLabel;
 @property(nonatomic) JYButton *likeButton;
 @property(nonatomic) JYButton *commentButton;
+@property(nonatomic) JYButton *commentCountButton;
+
+@property(nonatomic) NSMutableArray *commentLabels;
 
 @end
 
 
 @implementation JYMediaViewCell
 
-+ (CGFloat)labelHeightForText:(NSString *)text withFontSize:(CGFloat)fontSize
++ (CGFloat)labelHeightForText:(NSString *)text withFontSize:(CGFloat)fontSize andTextAlignment:(NSTextAlignment)textAlignment
 {
     CGFloat labelWidth = SCREEN_WIDTH - kMarginLeft - kMarginRight;
     CGSize maximumSize = CGSizeMake(labelWidth, 10000);
@@ -42,13 +45,13 @@ static const CGFloat kCommentCountLabelHeight = 40;
     {
         dummyLabel = [UILabel new];
         dummyLabel.font = [UIFont systemFontOfSize:fontSize];
-        dummyLabel.textAlignment = NSTextAlignmentCenter;
+        dummyLabel.textAlignment = textAlignment;
         dummyLabel.numberOfLines = 0;
         dummyLabel.lineBreakMode = NSLineBreakByWordWrapping;
     }
     dummyLabel.text = text;
     CGSize expectSize = [dummyLabel sizeThatFits:maximumSize];
-    CGFloat labelHeight = fmax(expectSize.height, kCaptionMinHeight);
+    CGFloat labelHeight = expectSize.height;
 
     return labelHeight;
 }
@@ -56,8 +59,18 @@ static const CGFloat kCommentCountLabelHeight = 40;
 + (CGFloat)heightForMedia:(JYMedia *)media;
 {
     CGFloat imageHeight = SCREEN_WIDTH;
-    CGFloat captionHeight = [JYMediaViewCell labelHeightForText:media.caption withFontSize:kFontSizeBody];
-    return imageHeight + captionHeight + kActionBarHeight + kCommentCountLabelHeight;
+
+    CGFloat captionHeight = [JYMediaViewCell labelHeightForText:media.caption withFontSize:kFontSizeCaption andTextAlignment:NSTextAlignmentCenter];
+    captionHeight += 5;
+
+    CGFloat commentsHeight = 0;
+    for (NSString *text in media.commentList)
+    {
+        CGFloat height = [JYMediaViewCell labelHeightForText:text withFontSize:kFontSizeComment andTextAlignment:NSTextAlignmentLeft];
+        commentsHeight = height + 5;
+    }
+
+    return imageHeight + captionHeight + commentsHeight + kActionBarHeight;
 }
 
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
@@ -83,6 +96,7 @@ static const CGFloat kCommentCountLabelHeight = 40;
     [self _updateImage];
     [self _updateActionBar];
     [self _updateCaption];
+    [self _updateComments];
 }
 
 - (void)_updateImage
@@ -123,14 +137,40 @@ static const CGFloat kCommentCountLabelHeight = 40;
     }
 
     NSString *likes = NSLocalizedString(@"likes", nil);
+    self.likeCountLabel.text = [NSString stringWithFormat:@"%tu %@ · ", _media.likeCount, likes];
+
     NSString *comments = NSLocalizedString(@"comments", nil);
-    self.briefLabel.text = [NSString stringWithFormat:@"%tu %@ · %tu %@", _media.likeCount, likes,_media.commentCount, comments];
+    self.commentCountButton.textLabel.text = [NSString stringWithFormat:@"%tu %@", _media.commentCount, comments];
 }
 
 - (void)_updateCaption
 {
     self.captionLabel.text = _media.caption;
-    self.captionLabel.height = [JYMediaViewCell labelHeightForText:_media.caption withFontSize:kFontSizeBody];
+    self.captionLabel.height = [JYMediaViewCell labelHeightForText:_media.caption withFontSize:kFontSizeCaption andTextAlignment:NSTextAlignmentCenter];
+}
+
+- (void)_updateComments
+{
+    CGFloat y = CGRectGetMaxY(self.captionLabel.frame);
+
+    for (NSUInteger i = 0; i < kBriefCommentsCount; ++i)
+    {
+        UILabel *label = self.commentLabels[i];
+        if (i < _media.commentList.count)
+        {
+            NSString *text = _media.commentList[i];
+            label.text = text;
+
+            CGFloat height = [JYMediaViewCell labelHeightForText:text withFontSize:kFontSizeComment andTextAlignment:NSTextAlignmentLeft];
+            label.height = height + 5;
+            label.y = y;
+            y = CGRectGetMaxY(label.frame);
+        }
+        else
+        {
+            label.height = 0;
+        }
+    }
 }
 
 - (UIImageView *)photoView
@@ -153,10 +193,13 @@ static const CGFloat kCommentCountLabelHeight = 40;
         _actionBar.opaque = YES;
         _actionBar.backgroundColor = JoyyBlack;
 
-        [_actionBar addSubview:self.briefLabel];
+        [_actionBar addSubview:self.likeCountLabel];
+
+        [_actionBar addSubview:self.commentCountButton];
+        self.commentCountButton.x = CGRectGetMaxX(self.likeCountLabel.frame);
 
         [_actionBar addSubview:self.likeButton];
-        self.likeButton.x = CGRectGetMaxX(self.briefLabel.frame);
+        self.likeButton.x =  SCREEN_WIDTH - 4 * kButtonWidth;
 
         [_actionBar addSubview:self.commentButton];
         self.commentButton.x = CGRectGetMaxX(self.likeButton.frame) + kButtonWidth;
@@ -167,18 +210,36 @@ static const CGFloat kCommentCountLabelHeight = 40;
     return _actionBar;
 }
 
-- (UILabel *)briefLabel
+- (UILabel *)likeCountLabel
 {
-    if (!_briefLabel)
+    if (!_likeCountLabel)
     {
-        CGFloat width = SCREEN_WIDTH - kMarginLeft - 4 * kButtonWidth;
-        _briefLabel = [[UILabel alloc] initWithFrame:CGRectMake(kMarginLeft, 0, width, kActionBarHeight)];
-        _briefLabel.backgroundColor = JoyyBlack;
-        _briefLabel.font = [UIFont systemFontOfSize:kFontSizeDetail];
-        _briefLabel.textColor = JoyyGray;
-        _briefLabel.textAlignment = NSTextAlignmentLeft;
+        _likeCountLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, kLikeCountLabelWidth, kActionBarHeight)];
+        _likeCountLabel.backgroundColor = JoyyBlack;
+        _likeCountLabel.font = [UIFont systemFontOfSize:kFontSizeDetail];
+        _likeCountLabel.textColor = JoyyGray;
+        _likeCountLabel.textAlignment = NSTextAlignmentRight;
     }
-    return _briefLabel;
+    return _likeCountLabel;
+}
+
+- (JYButton *)commentCountButton
+{
+    if (!_commentCountButton)
+    {
+        CGRect frame = CGRectMake(0, 0, kCommentCountButtonWidth, kActionBarHeight);
+        _commentCountButton = [JYButton buttonWithFrame:frame buttonStyle:JYButtonStyleTitle shouldMaskImage:NO];
+        _commentCountButton.contentColor = JoyyGray;
+        _commentCountButton.contentAnimateToColor = JoyyBlue;
+        _commentCountButton.foregroundColor = JoyyBlack;
+        _commentCountButton.textLabel.font = [UIFont systemFontOfSize:kFontSizeDetail];
+        [_commentCountButton addTarget:self action:@selector(_showMoreComments) forControlEvents:UIControlEventTouchUpInside];
+    }
+    return _commentCountButton;
+}
+
+- (void)_showMoreComments
+{
 }
 
 - (JYButton *)commentButton
@@ -186,8 +247,7 @@ static const CGFloat kCommentCountLabelHeight = 40;
     if (!_commentButton)
     {
         _commentButton = [self _createButtonWithImage:[UIImage imageNamed:@"comment"]];
-        _commentButton.contentAnimateToColor = JoyyBlue;
-        [_commentButton addTarget:self action:@selector(_comment) forControlEvents:UIControlEventTouchDown];
+        [_commentButton addTarget:self action:@selector(_comment) forControlEvents:UIControlEventTouchUpInside];
     }
     return _commentButton;
 }
@@ -201,7 +261,7 @@ static const CGFloat kCommentCountLabelHeight = 40;
     if (!_likeButton)
     {
         _likeButton = [self _createButtonWithImage:[UIImage imageNamed:@"heart"]];
-        [_likeButton addTarget:self action:@selector(_like) forControlEvents:UIControlEventTouchDown];
+        [_likeButton addTarget:self action:@selector(_like) forControlEvents:UIControlEventTouchUpInside];
     }
     return _likeButton;
 }
@@ -213,8 +273,6 @@ static const CGFloat kCommentCountLabelHeight = 40;
         return;
     }
 
-    self.likeButton.imageView.image = [UIImage imageNamed:@"heart_selected"];
-    self.likeButton.contentColor = JoyyBlue;
     self.media.isLiked = YES;
 
     NSDictionary *info = [NSDictionary dictionaryWithObject:self.media forKey:@"media"];
@@ -232,13 +290,30 @@ static const CGFloat kCommentCountLabelHeight = 40;
     return _captionLabel;
 }
 
+- (NSArray *)commentLabels
+{
+    if (!_commentLabels)
+    {
+        _commentLabels = [NSMutableArray new];
+        for (NSUInteger i = 0; i < kBriefCommentsCount; i++)
+        {
+            UILabel *label = [self _createLabel];
+            label.textAlignment = NSTextAlignmentLeft;
+            label.font = [UIFont systemFontOfSize:kFontSizeComment];
+            [_commentLabels addObject:label];
+            [self addSubview:label];
+        }
+    }
+    return _commentLabels;
+}
+
 - (UILabel *)_createLabel
 {
     CGFloat width = SCREEN_WIDTH - kMarginLeft - kMarginRight;
     CGRect frame = CGRectMake(kMarginLeft, 0, width, 0);
     UILabel *label = [[UILabel alloc] initWithFrame:frame];
     label.backgroundColor = JoyyBlack;
-    label.font = [UIFont systemFontOfSize:kFontSizeBody];
+    label.font = [UIFont systemFontOfSize:kFontSizeCaption];
     label.textColor = JoyyWhite;
     label.textAlignment = NSTextAlignmentCenter;
     label.numberOfLines = 0;
@@ -254,6 +329,7 @@ static const CGFloat kCommentCountLabelHeight = 40;
 
     button.imageView.image = image;
     button.contentColor = JoyyGray;
+    button.contentAnimateToColor = JoyyBlue;
     button.foregroundColor = ClearColor;
 
     return button;

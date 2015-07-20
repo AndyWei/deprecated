@@ -129,7 +129,7 @@
     CGFloat width = CGRectGetWidth(self.view.frame) - 2 * kSignFieldMarginLeft;
     CGRect signButtonFrame = CGRectMake(kSignFieldMarginLeft, y, width, kSignButtonHeight);
 
-    _signButton = [[JYButton alloc] initWithFrame:signButtonFrame buttonStyle:JYButtonStyleDefault];
+    _signButton = [[JYButton alloc] initWithFrame:signButtonFrame buttonStyle:JYButtonStyleTitle];
     _signButton.backgroundColor = ClearColor;
     _signButton.contentAnimateToColor = FlatGreen;
     _signButton.contentColor = FlatWhite;

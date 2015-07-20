@@ -59,7 +59,7 @@ static const CGFloat kTopMargin = 8.0f;
     if (!dummyLabel)
     {
         dummyLabel = [UILabel new];
-        dummyLabel.font = [UIFont systemFontOfSize:kFontSizeBody];
+        dummyLabel.font = [UIFont systemFontOfSize:kFontSizeCaption];
         dummyLabel.numberOfLines = 0;
         dummyLabel.lineBreakMode = NSLineBreakByWordWrapping;
     }
@@ -346,7 +346,7 @@ static const CGFloat kTopMargin = 8.0f;
 - (UILabel *)_createLabel
 {
     UILabel *label = [UILabel new];
-    label.font = [UIFont systemFontOfSize:kFontSizeBody];
+    label.font = [UIFont systemFontOfSize:kFontSizeCaption];
     label.textColor = FlatBlack;
     label.textAlignment = NSTextAlignmentLeft;
     label.userInteractionEnabled = NO;
