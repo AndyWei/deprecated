@@ -181,7 +181,8 @@ exports.register = function (server, options, next) {
         handler: function (request, reply) {
 
             var p = request.payload;
-            var filename = p.file.hapi.filename + '.jpg';
+            var dbFilename = p.file.hapi.filename;
+            var s3Filename = p.file.hapi.filename + '.jpg';
 
             if (!filename) {
                 return reply(Boom.badData(c.FILENAME_MISSING));
@@ -190,7 +191,7 @@ exports.register = function (server, options, next) {
             Async.waterfall([
                 function (callback) {
 
-                    var params = {Key: filename, Body: p.file, ACL: fileACL};
+                    var params = {Key: s3Filename, Body: p.file, ACL: fileACL};
 
                     bucket.upload(params, function (err, data) {
 
@@ -208,7 +209,7 @@ exports.register = function (server, options, next) {
                     var u = request.auth.credentials;
                     var fields = 'INSERT INTO media (owner_id, media_type, path_version, filename, caption, coordinate, created_at) ';
                     var values = 'VALUES ($1, $2, $3, $4, $5, ST_SetSRID(ST_MakePoint($6, $7), 4326), now()) RETURNING id';
-                    var queryValues = [u.id, p.media_type, 0, filename, p.caption, p.lon, p.lat];
+                    var queryValues = [u.id, p.media_type, 0, dbFilename, p.caption, p.lon, p.lat];
 
                     var queryConfig = {
                         name: 'media_create',
