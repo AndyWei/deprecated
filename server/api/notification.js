@@ -10,7 +10,7 @@ exports.register = function (server, options, next) {
     // new user signup
     server.route({
         method: 'POST',
-        path: options.basePath + '/notifications/devices',
+        path: options.basePath + '/notification/device',
         config: {
             auth: {
                 strategy: 'token'

@@ -181,7 +181,7 @@ exports.register = function (server, options, next) {
         handler: function (request, reply) {
 
             var p = request.payload;
-            var filename = p.file.hapi.filename;
+            var filename = p.file.hapi.filename + '.jpg';
 
             if (!filename) {
                 return reply(Boom.badData(c.FILENAME_MISSING));
@@ -206,8 +206,8 @@ exports.register = function (server, options, next) {
                 function (callback) {
 
                     var u = request.auth.credentials;
-                    var fields = 'INSERT INTO media (owner, media_type, path_version, filename, caption, coordinate, created_at) ';
-                    var values = 'VALUES ($1, $2, $3, $4, $5, ST_SetSRID(ST_MakePoint($6, $7), 4326), now() RETURNING id';
+                    var fields = 'INSERT INTO media (owner_id, media_type, path_version, filename, caption, coordinate, created_at) ';
+                    var values = 'VALUES ($1, $2, $3, $4, $5, ST_SetSRID(ST_MakePoint($6, $7), 4326), now()) RETURNING id';
                     var queryValues = [u.id, p.media_type, 0, filename, p.caption, p.lon, p.lat];
 
                     var queryConfig = {
@@ -265,7 +265,7 @@ exports.register = function (server, options, next) {
                     // Just log the error, do not call next(err) since caching is a kind of "try our best" thing
                     console.error(err);
                 }
-console.log('like result = %j', result);
+
                 return reply(null, {'like_count': result});
             });
         }

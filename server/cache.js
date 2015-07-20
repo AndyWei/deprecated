@@ -138,7 +138,7 @@ exports.enqueue = internals.enqueue = function (listDataset, countDataset, key, 
 
     pipeline
         .lpush(listKey, value)
-        .ltrim(listKey, 0, listDataset.size)
+        .ltrim(listKey, 0, listDataset.size - 1)
         .incr(countKey)
         .exec(function (err, result) {
 
