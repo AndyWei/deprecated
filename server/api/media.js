@@ -184,7 +184,7 @@ exports.register = function (server, options, next) {
             var dbFilename = p.file.hapi.filename;
             var s3Filename = p.file.hapi.filename + '.jpg';
 
-            if (!filename) {
+            if (!dbFilename) {
                 return reply(Boom.badData(c.FILENAME_MISSING));
             }
 
