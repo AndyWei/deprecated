@@ -72,10 +72,11 @@ exports.register = function (server, options, next) {
 
                         // Filter the results
                         var records = [];
-                        for (var result in results) {
+                        for (i = 0, len = results.length; i < len; i++) {
 
-                            var media = JSON.parse(result); // [mediaId, ownerId, media_type, path_version, filename, caption, timestamp]
+                            var media = JSON.parse(results[i]); // [mediaId, ownerId, media_type, path_version, filename, caption, timestamp]
                             var mediaId = Long.fromString(media[0]);
+                            results[i] = null; // release memory
 
                             if (mediaId.lessThanOrEqual(after)) {
                                 break;
