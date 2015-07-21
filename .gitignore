@@ -1,3 +1,4 @@
 test/artifacts/*
 cert/*
 log/*
+dump.rdb
