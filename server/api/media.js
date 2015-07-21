@@ -65,7 +65,7 @@ exports.register = function (server, options, next) {
 
                         var lastResult = _.last(results);
                         var lastMedia = JSON.parse(lastResult);
-                        var lastMediaId = Long.fromString(lastMedia);
+                        var lastMediaId = Long.fromString(lastMedia[0]);
                         if (lastMediaId.greaterThanOrEqual(before)) {
                             return callback(null, null);
                         }
