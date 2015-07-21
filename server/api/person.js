@@ -68,7 +68,7 @@ exports.register = function (server, options, next) {
                     lat: Joi.number().min(-90).max(90).required(),
                     distance: Joi.number().min(1).max(1000).default(2),  // in kilometers
                     after: Joi.string().regex(/^[0-9]+$/).max(19).default('0'),
-                    before: Joi.string().regex(/^[0-9]+$/).max(19).default('9223372036854775807')
+                    before: Joi.string().regex(/^[0-9]+$/).max(19).default(c.MAX_ID)
                 }
             }
         },

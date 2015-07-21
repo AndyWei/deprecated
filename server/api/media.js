@@ -5,6 +5,7 @@ var Cache = require('../cache');
 var Config = require('../../config');
 var Hoek = require('hoek');
 var Joi = require('joi');
+var Long = require('long');
 var c = require('../constants');
 var _ = require('underscore');
 
@@ -34,10 +35,10 @@ exports.register = function (server, options, next) {
                 query: {
                     lon: Joi.number().min(-180).max(180).required(),
                     lat: Joi.number().min(-90).max(90).required(),
-                    zipcode: Joi.string().max(12).required(),
+                    cell_id: Joi.string().max(12).required(),
                     distance: Joi.number().min(1).max(100).default(2),
                     after: Joi.string().regex(/^[0-9]+$/).max(19).default('0'),
-                    before: Joi.string().regex(/^[0-9]+$/).max(19).default('9223372036854775807')
+                    before: Joi.string().regex(/^[0-9]+$/).max(19).default(c.MAX_ID)
                 }
             }
         },
@@ -47,13 +48,48 @@ exports.register = function (server, options, next) {
             Async.auto({
                 fromCache: function (callback) {
 
-                    Cache.getList(c.MEDIA_CACHE, q.zipcode, function (err, result) {
+                    Cache.getList(c.MEDIA_CACHE, q.cell_id, function (err, results) {
                         if (err) {
                             console.error(err);
                             return callback(null, null); // continue search in DB
                         }
 
-                        return callback(null, result);
+                        var after = Long.fromString(q.after);
+                        var before = Long.fromString(q.before);
+
+                        // Note: media in results are DESC by mediaId
+                        // quick check if we should search in DB
+                        if (results.length === 0) {
+                             return callback(null, null);
+                        }
+
+                        var lastResult = _.last(results);
+                        var lastMedia = JSON.parse(lastResult);
+                        var lastMediaId = Long.fromString(lastMedia);
+                        if (lastMediaId.greaterThanOrEqual(before)) {
+                            return callback(null, null);
+                        }
+
+                        // Filter the results
+                        var records = [];
+                        for (var result in results) {
+
+                            var media = JSON.parse(result); // [mediaId, ownerId, media_type, path_version, filename, caption, timestamp]
+                            var mediaId = Long.fromString(media[0]);
+
+                            if (mediaId.lessThanOrEqual(after)) {
+                                break;
+                            }
+
+                            if (mediaId.lessThan(before)) {
+                                var record = _.object(['id', 'owner_id', 'media_type', 'path_version', 'filename', 'caption', 'timestamp'], media);
+                                media = null; // release memory
+                                records.push(record);
+                            }
+                        }
+                        results = null; // release memory
+
+                        return callback('cacheHit', records);
                     });
                 },
                 fromDB: ['fromCache', function (callback) {
@@ -83,6 +119,11 @@ exports.register = function (server, options, next) {
                     });
                 }]
             }, function (err, results) {
+
+                // Check the results from cache
+                if (err === 'cacheHit') {
+                    return reply(null, results.fromCache);
+                }
 
                 if (err) {
                     console.error(err);
@@ -205,7 +246,7 @@ exports.register = function (server, options, next) {
                     file: Joi.any().required(),
                     media_type: Joi.number().min(0).max(2).required(),
                     caption: Joi.string().max(2000).required(),
-                    zipcode: Joi.string().max(12).required()
+                    cell_id: Joi.string().max(12).required()
                 }
             }
         },
@@ -266,7 +307,7 @@ exports.register = function (server, options, next) {
 
                     var mediaRecord = JSON.stringify([mediaId, ownerId, p.media_type, 0, dbFilename, p.caption, _.now()]);
                     // push the media record to cache and increase the media count
-                    Cache.enqueue(c.MEDIA_CACHE, c.MEDIA_COUNT_CACHE, p.zipcode, mediaRecord, function (error) {
+                    Cache.enqueue(c.MEDIA_CACHE, c.MEDIA_COUNT_CACHE, p.cell_id, mediaRecord, function (error) {
                         if (error) {
                             // Just log the error, do not call next(error) since caching is a kind of "try our best" thing
                             console.error(error);

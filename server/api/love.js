@@ -1,5 +1,6 @@
 var Hoek = require('hoek');
 var Joi = require('joi');
+var c = require('../constants');
 
 
 exports.register = function (server, options, next) {
@@ -17,7 +18,7 @@ exports.register = function (server, options, next) {
             validate: {
                 query: {
                     status: Joi.number().min(0).max(100).default(0),
-                    before: Joi.string().regex(/^[0-9]+$/).max(19).default('9223372036854775807')
+                    before: Joi.string().regex(/^[0-9]+$/).max(19).default(c.MAX_ID)
                 }
             }
         },

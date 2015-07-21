@@ -37,6 +37,7 @@ exports.MEDIA_COUNT_CACHE = {
 exports.BCRYPT_ROUND = 10;
 exports.DEGREE_FACTOR = 0.0089827983;
 exports.TOKEN_LENGTH = 20;
+exports.MAX_ID = '9223372036854775807';
 
 // Error strings
 exports.AUTH_TOKEN_INVALID = 'The authentication token is invalid.';

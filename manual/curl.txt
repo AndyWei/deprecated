@@ -22,6 +22,9 @@ curl -i -X POST -H "Authorization: Bearer 1:XID5YykTQGYKit1Mmca9" --data "media_
 
 
 ## media
+# GET media/nearby
+curl -i "http://localhost:8000/v1/media/nearby?lon=-122.062168&lat=37.5584429&cell_id=94103"
+
 # GET media/brief
 curl -i "http://localhost:8000/v1/media/brief?id=1&id=2&id=3&id=4"
 curl -i "http://localhost:8000/v1/media/brief?id=4&id=3&id=2&id=1"

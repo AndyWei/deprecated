@@ -21,7 +21,7 @@ exports.register = function (server, options, next) {
                 query: {
                     media_id: Joi.string().regex(/^[0-9]+$/).max(19).required(),
                     after: Joi.string().regex(/^[0-9]+$/).max(19).default('0'),
-                    before: Joi.string().regex(/^[0-9]+$/).max(19).default('9223372036854775807')
+                    before: Joi.string().regex(/^[0-9]+$/).max(19).default(c.MAX_ID)
                 }
             }
         },
