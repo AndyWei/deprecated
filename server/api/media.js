@@ -34,6 +34,7 @@ exports.register = function (server, options, next) {
                 query: {
                     lon: Joi.number().min(-180).max(180).required(),
                     lat: Joi.number().min(-90).max(90).required(),
+                    zipcode: Joi.string().max(12).required(),
                     distance: Joi.number().min(1).max(100).default(2),
                     after: Joi.string().regex(/^[0-9]+$/).max(19).default('0'),
                     before: Joi.string().regex(/^[0-9]+$/).max(19).default('9223372036854775807')
@@ -43,33 +44,57 @@ exports.register = function (server, options, next) {
         handler: function (request, reply) {
 
             var q = request.query;
-            var degree = internals.degreeFromDistance(q.distance);
+            Async.auto({
+                fromCache: function (callback) {
 
-            var where = 'WHERE id > $1 AND id < $2 AND ST_DWithin(coordinate, ST_SetSRID(ST_MakePoint($3, $4), 4326), $5) AND deleted = false ';
-            var order = 'ORDER BY id DESC ';
-            var limit = 'LIMIT 10';  // 10 media/request is a blance between search pressure and photo bandwidth usage
+                    Cache.getList(c.MEDIA_CACHE, q.zipcode, function (err, result) {
+                        if (err) {
+                            console.error(err);
+                            return callback(null, null); // continue search in DB
+                        }
 
-            var queryValues = [q.after, q.before, q.lon, q.lat, degree];
-            var queryConfig = {
-                name: 'media_nearby',
-                text: selectClause + where + order + limit,
-                values: queryValues
-            };
+                        return callback(null, result);
+                    });
+                },
+                fromDB: ['fromCache', function (callback) {
 
-            request.pg.client.query(queryConfig, function (err, result) {
+                    var degree = internals.degreeFromDistance(q.distance);
+
+                    var where = 'WHERE id > $1 AND id < $2 AND ST_DWithin(coordinate, ST_SetSRID(ST_MakePoint($3, $4), 4326), $5) AND deleted = false ';
+                    var order = 'ORDER BY id DESC ';
+                    var limit = 'LIMIT 10';  // 10 media/request is a blance between search pressure and photo bandwidth usage
+
+                    var queryValues = [q.after, q.before, q.lon, q.lat, degree];
+                    var queryConfig = {
+                        name: 'media_nearby',
+                        text: selectClause + where + order + limit,
+                        values: queryValues
+                    };
+
+                    request.pg.client.query(queryConfig, function (err, result) {
+
+                        if (err) {
+                            console.error(err);
+                            request.pg.kill = true;
+                            return callback(err);
+                        }
+
+                        return callback(null, result.rows);
+                    });
+                }]
+            }, function (err, results) {
 
                 if (err) {
                     console.error(err);
-                    request.pg.kill = true;
                     return reply(err);
                 }
 
-                return reply(null, result.rows);
+                return reply(null, results.fromDB);
             });
         }
     });
 
-    // For each media_id in the query, get its like count, comment count and last 3 comments. no auth.
+    // For each media id in the query, get its like count, comment count and last 3 comments. no auth.
     server.route({
         method: 'GET',
         path: options.basePath + '/media/brief',
@@ -179,12 +204,14 @@ exports.register = function (server, options, next) {
                     lat: Joi.number().min(-90).max(90).required(),
                     file: Joi.any().required(),
                     media_type: Joi.number().min(0).max(2).required(),
-                    caption: Joi.string().max(2000).required()
+                    caption: Joi.string().max(2000).required(),
+                    zipcode: Joi.string().max(12).required()
                 }
             }
         },
         handler: function (request, reply) {
 
+            var ownerId = request.auth.credentials.id;
             var p = request.payload;
             var dbFilename = p.file.hapi.filename;
             var s3Filename = p.file.hapi.filename + '.jpg';
@@ -211,10 +238,9 @@ exports.register = function (server, options, next) {
                 },
                 function (callback) {
 
-                    var u = request.auth.credentials;
                     var fields = 'INSERT INTO media (owner_id, media_type, path_version, filename, caption, coordinate, created_at) ';
                     var values = 'VALUES ($1, $2, $3, $4, $5, ST_SetSRID(ST_MakePoint($6, $7), 4326), now()) RETURNING id';
-                    var queryValues = [u.id, p.media_type, 0, dbFilename, p.caption, p.lon, p.lat];
+                    var queryValues = [ownerId, p.media_type, 0, dbFilename, p.caption, p.lon, p.lat];
 
                     var queryConfig = {
                         name: 'media_create',
@@ -233,17 +259,30 @@ exports.register = function (server, options, next) {
                             return reply(Boom.badRequest(c.MEDIA_CREATE_FAILED));
                         }
 
-                        return callback(null, result.rows[0]);
+                        return callback(null, result.rows[0].id);
+                    });
+                },
+                function (mediaId, callback) {
+
+                    var mediaRecord = JSON.stringify([mediaId, ownerId, p.media_type, 0, dbFilename, p.caption, _.now()]);
+                    // push the media record to cache and increase the media count
+                    Cache.enqueue(c.MEDIA_CACHE, c.MEDIA_COUNT_CACHE, p.zipcode, mediaRecord, function (error) {
+                        if (error) {
+                            // Just log the error, do not call next(error) since caching is a kind of "try our best" thing
+                            console.error(error);
+                        }
+
+                        return callback(null, mediaId);
                     });
                 }
-            ], function (err, media_id) {
+            ], function (err, mediaId) {
 
                 if (err) {
                     console.error(err);
                     return reply(err);
                 }
 
-                return reply(null, media_id);
+                return reply(null, {id: mediaId});
             });
         }
     });

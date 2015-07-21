@@ -24,6 +24,14 @@ exports.LIKE_COUNT_CACHE = {
     segment: 'l'
 };
 
+exports.MEDIA_CACHE = {
+    segment: 'M',
+    size: 100
+};
+
+exports.MEDIA_COUNT_CACHE = {
+    segment: 'm'
+};
 
 // consts
 exports.BCRYPT_ROUND = 10;

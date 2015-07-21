@@ -126,6 +126,24 @@ exports.mgetList = internals.mgetList = function (dataset, keys, callback) {
 };
 
 
+exports.getList = internals.getList = function (dataset, key, callback) {
+
+    if (!internals.redis) {
+        return callback(new Error('Connection not started'));
+    }
+
+    var listKey = internals.generateKey(dataset, key);
+    internals.redis.lrange(listKey, 0, -1, function (err, result) {
+
+        if (err) {
+            return callback(err);
+        }
+
+        return callback(null, result);
+    });
+};
+
+
 exports.enqueue = internals.enqueue = function (listDataset, countDataset, key, value, callback) {
 
     if (!internals.redis) {

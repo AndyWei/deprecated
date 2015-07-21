@@ -58,7 +58,7 @@ lab.experiment('media GET: ', function () {
 
         request = {
             method: 'GET',
-            url: '/media/nearby?lon=-122.062168&lat=37.5584429'
+            url: '/media/nearby?lon=-122.062168&lat=37.5584429&zipcode=94555'
         };
 
         server.inject(request, function (response) {
@@ -74,7 +74,7 @@ lab.experiment('media GET: ', function () {
 
         request = {
             method: 'GET',
-            url: '/media/nearby?lon=-122.4164623&lat=37.7766092&distance=10'
+            url: '/media/nearby?lon=-122.4164623&lat=37.7766092&distance=10&zipcode=94103'
         };
 
         server.inject(request, function (response) {

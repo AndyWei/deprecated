@@ -21,13 +21,11 @@ var PgPlugin = {
 };
 
 var jack = {
-    id: 1,
-    token: 'abcdefg'
+    id: 1
 };
 
 var andy = {
-    id: 2,
-    token: 'qwertyu'
+    id: 2
 };
 
 var request, server;
@@ -74,7 +72,7 @@ lab.experiment('person GET: ', function () {
         server.inject(request, function (response) {
 
             Code.expect(response.statusCode).to.equal(200);
-            Code.expect(response.result).to.be.an.object();
+            Code.expect(response.result).to.be.an.array().and.to.have.length(1);
 
             done();
         });
@@ -126,7 +124,7 @@ lab.experiment('person GET: ', function () {
         server.inject(request, function (response) {
 
             Code.expect(response.statusCode).to.equal(200);
-            Code.expect(response.result).to.be.an.object();
+            Code.expect(response.result).to.be.an.array().and.to.have.length(1);
 
             done();
         });

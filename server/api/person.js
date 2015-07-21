@@ -48,11 +48,7 @@ exports.register = function (server, options, next) {
                     return reply(err);
                 }
 
-                if (result.rows.length === 0) {
-                    return reply(Boom.notFound(c.PERSON_NOT_FOUND));
-                }
-
-                return reply(null, result.rows[0]);
+                return reply(null, result.rows);
             });
         }
     });
@@ -132,11 +128,7 @@ exports.register = function (server, options, next) {
                     return reply(err);
                 }
 
-                if (result.rows.length === 0) {
-                    return reply(Boom.notFound(c.PERSON_NOT_FOUND));
-                }
-
-                return reply(null, result.rows[0]);
+                return reply(null, result.rows);
             });
         }
     });
