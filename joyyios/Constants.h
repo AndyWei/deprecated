@@ -72,6 +72,7 @@ extern NSString *const kNotificationDidFinishOrder;
 extern NSString *const kNotificationDidReceiveBid;
 extern NSString *const kNotificationDidSignIn;
 extern NSString *const kNotificationDidSignUp;
+extern NSString *const kNotificationNeedGeoInfo;
 extern NSString *const kNotificationWillCommentMedia;
 extern NSString *const kNotificationWillLikeMedia;
 

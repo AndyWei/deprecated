@@ -16,6 +16,7 @@
 
 @property(nonatomic) CGFloat presentedIntroductionVersion;
 @property(nonatomic) CLLocationCoordinate2D lastCoordinate;
+@property(nonatomic) NSString *lastZipcode;
 @property(nonatomic) JYInvite *currentInvite;
 @property(nonatomic) NSDictionary *userCredential;
 @property(nonatomic) NSTimeInterval tokenExpireTime;

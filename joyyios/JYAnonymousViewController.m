@@ -211,6 +211,9 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
 
 - (void)_showCamera
 {
+    // Ask AppDelegate to get current zipcode
+    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationNeedGeoInfo object:nil];
+
     [TGCameraColor setTintColor:JoyyBlue];
     TGCameraNavigationController *camera = [TGCameraNavigationController newWithCameraDelegate:self];
     camera.title = self.title;
@@ -427,11 +430,12 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
 {
     NSMutableDictionary *parameters = [NSMutableDictionary new];
 
-    [parameters setObject:@(0) forKey:@"media_type"]; // TODO: define media type
+    [parameters setObject:@(JYMediaTypeImage) forKey:@"media_type"];
 
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     [parameters setObject:@(appDelegate.currentCoordinate.latitude) forKey:@"lat"];
     [parameters setObject:@(appDelegate.currentCoordinate.longitude) forKey:@"lon"];
+    [parameters setObject:appDelegate.zipcode forKey:@"cell_id"];
 
     return parameters;
 }
@@ -448,11 +452,12 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
 
 - (void)_fetchMediaToEnd:(BOOL)toEnd
 {
+    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationNeedGeoInfo object:nil];
+
     if (self.networkThreadCount > 0)
     {
         return;
     }
-
     [self _networkThreadBegin];
 
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
@@ -530,6 +535,7 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
     CLLocationCoordinate2D currentPoint = appDelegate.currentCoordinate;
     [parameters setValue:@(currentPoint.longitude) forKey:@"lon"];
     [parameters setValue:@(currentPoint.latitude) forKey:@"lat"];
+    [parameters setObject:appDelegate.zipcode forKey:@"cell_id"];
     [parameters setValue:@(2) forKey:@"distance"];
 
     if (self.mediaList.count > 0)

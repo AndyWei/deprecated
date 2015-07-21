@@ -33,12 +33,12 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    [Stripe setDefaultPublishableKey:kStripePublishableKey];
-
+    self.zipcode = [JYDataStore sharedInstance].lastZipcode ? [JYDataStore sharedInstance].lastZipcode : @"94555"; // default zipcode
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_signDidFinish) name:kNotificationDidSignIn object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_signDidFinish) name:kNotificationDidSignUp object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_updateGeoInfo) name:kNotificationNeedGeoInfo object:nil];
 
     [self _setupGlobalAppearance];
     [self _setupLocationManager];
@@ -380,6 +380,34 @@
             NSLog(@"_autoSignIn Error: %@", error);
             [weakSelf _signInAfter:kSignIntervalMin];
         }];
+}
+
+- (void)_updateGeoInfo
+{
+    CLLocation *location = [[CLLocation alloc] initWithLatitude:self.currentCoordinate.latitude longitude:self.currentCoordinate.longitude];
+    CLGeocoder *geocoder = [[CLGeocoder alloc] init];
+    __weak typeof(self) weakSelf = self;
+    [geocoder reverseGeocodeLocation:location
+                   completionHandler:^(NSArray *placemarks, NSError *error) {
+                       if (error)
+                       {
+                           NSLog(@"Geocode failed with error %@", error);
+                       }
+                       else
+                       {
+                           CLPlacemark *placemark = [placemarks lastObject];
+
+                           if ([placemark.ISOcountryCode isEqualToString:@"US"])
+                           {
+                               weakSelf.zipcode = placemark.postalCode;
+                           }
+                           else
+                           {
+                               weakSelf.zipcode = [NSString stringWithFormat:@"%@%@", placemark.ISOcountryCode, placemark.postalCode];
+                           }
+                           [JYDataStore sharedInstance].lastZipcode = weakSelf.zipcode;
+                       }
+                   }];
 }
 
 #pragma mark - CLLocationManagerDelegate

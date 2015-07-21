@@ -13,5 +13,6 @@
 @property(nonatomic) UIWindow *window;
 @property(nonatomic) CLLocationManager *locationManager;
 @property(nonatomic) CLLocationCoordinate2D currentCoordinate;
+@property(nonatomic) NSString *zipcode;
 
 @end

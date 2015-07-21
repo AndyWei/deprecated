@@ -17,6 +17,7 @@ NSString *const kKeyDefaultCustomerId = @"DefaultCustomerId";
 NSString *const kKeyDeviceToken = @"DeviceToken";
 NSString *const kKeyLastCoordinateLat = @"LastCoordinateLat";
 NSString *const kKeyLastCoordinateLon = @"LastCoordinateLon";
+NSString *const kKeyLastZipcode = @"LastZipcode";
 NSString *const kKeyPresentedIntroductionVersion = @"PresentedIntroductionVersion";
 NSString *const kKeyUserCredential = @"UserCredential";
 
@@ -147,6 +148,7 @@ NSString *const kKeyUserCredential = @"UserCredential";
     [[NSUserDefaults standardUserDefaults] setDouble:coordinate.longitude forKey:kKeyLastCoordinateLon];
 }
 
+
 - (CLLocationCoordinate2D)lastCoordinate
 {
     CLLocationDegrees lat = [[NSUserDefaults standardUserDefaults] doubleForKey:kKeyLastCoordinateLat];
@@ -160,6 +162,18 @@ NSString *const kKeyUserCredential = @"UserCredential";
     }
 
     return CLLocationCoordinate2DMake(lat, lon);
+}
+
+// lastZipcode
+- (void)setLastZipcode:(NSString *)zipcode
+{
+    [[NSUserDefaults standardUserDefaults] setObject:zipcode forKey:kKeyLastZipcode];
+}
+
+- (NSString *)lastZipcode
+{
+    return [[NSUserDefaults standardUserDefaults] stringForKey:kKeyLastZipcode];
+
 }
 
 @end
