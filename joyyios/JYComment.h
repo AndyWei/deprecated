@@ -13,7 +13,7 @@
 @property(nonatomic) NSUInteger commentId;
 @property(nonatomic) NSUInteger mediaId;
 @property(nonatomic) NSUInteger ownerId;
-@property(nonatomic) BOOL isHost;
+
 @property(nonatomic, readonly) NSString* contentString;
 
 @end

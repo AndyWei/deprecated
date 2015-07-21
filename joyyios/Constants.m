@@ -6,6 +6,10 @@
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
+
+NSString *const kUrlAPIBase = @"http://api.joyyapp.com:8000/v1/";
+//NSString *const kUrlAPIBase = @"http://192.168.1.145:8000/v1/";
+
 const CGFloat kButtonCornerRadius = 4.0f;
 const CGFloat kButtonDefaultHeight = 44.0f;
 const CGFloat kButtonDefaultFontSize = 18.0f;
@@ -66,15 +70,13 @@ NSString *const kNotificationDidCreateBid = @"createBid";
 NSString *const kNotificationDidCreateComment = @"createComment";
 NSString *const kNotificationDidCreateOrder = @"createOrder";
 NSString *const kNotificationDidFinishOrder = @"finishOrder";
-NSString *const kNotificationDidLikeMedia = @"likeMedia";
 NSString *const kNotificationDidReceiveBid = @"receiveBid";
 NSString *const kNotificationDidSignIn = @"signIn";
 NSString *const kNotificationDidSignUp = @"signUp";
+NSString *const kNotificationWillCommentMedia = @"willCommentMedia";
+NSString *const kNotificationWillLikeMedia = @"willLikeMedia";
 
 NSString *const kSystemFontBold = @"AvenirNextCondensed-DemiBold";
 NSString *const kSystemFontItalic = @"AvenirNextCondensed-Italic ";
 NSString *const kSystemFontLight = @"AvenirNextCondensed-UltraLight ";
 NSString *const kSystemFontRegular = @"AvenirNextCondensed-Regular";
-
-//NSString *const kUrlAPIBase = @"http://api.joyyapp.com:8000/v1/";
-NSString *const kUrlAPIBase = @"http://192.168.1.145:8000/v1/";

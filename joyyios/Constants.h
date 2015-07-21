@@ -69,10 +69,11 @@ extern NSString *const kNotificationDidCreateBid;
 extern NSString *const kNotificationDidCreateComment;
 extern NSString *const kNotificationDidCreateOrder;
 extern NSString *const kNotificationDidFinishOrder;
-extern NSString *const kNotificationDidLikeMedia;
 extern NSString *const kNotificationDidReceiveBid;
 extern NSString *const kNotificationDidSignIn;
 extern NSString *const kNotificationDidSignUp;
+extern NSString *const kNotificationWillCommentMedia;
+extern NSString *const kNotificationWillLikeMedia;
 
 extern NSString *const kSystemFontBold;
 extern NSString *const kSystemFontItalic;

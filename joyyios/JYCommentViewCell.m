@@ -21,7 +21,7 @@ static const CGFloat kTopMargin = 3;
 
 @implementation JYCommentViewCell
 
-+ (CGFloat)cellHeightForComment:(JYComment *)comment
++ (CGFloat)heightForComment:(JYComment *)comment
 {
     CGFloat screenWidth = CGRectGetWidth([[UIScreen mainScreen] applicationFrame]);
     CGSize maximumSize = CGSizeMake(screenWidth - kMarginLeft - kMarginRight, 10000);
@@ -41,8 +41,9 @@ static const CGFloat kTopMargin = 3;
     return height;
 }
 
-- (void)presentComment:(JYComment *)comment
+- (void)setComment:(JYComment *)comment
 {
+    _comment = comment;
     self.commentLabel.text = comment.contentString;
 }
 
@@ -52,7 +53,7 @@ static const CGFloat kTopMargin = 3;
     if (self)
     {
         self.opaque = YES;
-        self.backgroundColor = FlatWhite;
+        self.backgroundColor = JoyyWhite;
 
         [self _createCommentLabel];
     }

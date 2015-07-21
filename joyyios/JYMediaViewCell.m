@@ -13,8 +13,9 @@
 #import "JYMediaViewCell.h"
 
 static const CGFloat kActionBarHeight = 40;
-static const CGFloat kButtonWidth = 23;
-static const CGFloat kLikeCountLabelWidth = 100;
+static const CGFloat kButtonWidth = 40;
+static const CGFloat kButtonDistance = 20;
+static const CGFloat kLikeCountLabelWidth = 80;
 static const CGFloat kCommentCountButtonWidth = 100;
 
 @interface JYMediaViewCell ()
@@ -24,11 +25,13 @@ static const CGFloat kCommentCountButtonWidth = 100;
 
 @property(nonatomic) UIView *actionBar;
 @property(nonatomic) UILabel *likeCountLabel;
+
 @property(nonatomic) JYButton *likeButton;
 @property(nonatomic) JYButton *commentButton;
 @property(nonatomic) JYButton *commentCountButton;
 
 @property(nonatomic) NSMutableArray *commentLabels;
+@property(nonatomic) BOOL likeButtonPressed;
 
 @end
 
@@ -60,14 +63,14 @@ static const CGFloat kCommentCountButtonWidth = 100;
 {
     CGFloat imageHeight = SCREEN_WIDTH;
 
-    CGFloat captionHeight = [JYMediaViewCell labelHeightForText:media.caption withFontSize:kFontSizeCaption andTextAlignment:NSTextAlignmentCenter];
-    captionHeight += 5;
+    CGFloat captionHeight = [JYMediaViewCell labelHeightForText:media.caption withFontSize:kFontSizeCaption andTextAlignment:NSTextAlignmentLeft];
+    captionHeight += 10;
 
     CGFloat commentsHeight = 0;
     for (NSString *text in media.commentList)
     {
         CGFloat height = [JYMediaViewCell labelHeightForText:text withFontSize:kFontSizeComment andTextAlignment:NSTextAlignmentLeft];
-        commentsHeight = height + 5;
+        commentsHeight += (height + 5);
     }
 
     return imageHeight + captionHeight + commentsHeight + kActionBarHeight;
@@ -125,6 +128,7 @@ static const CGFloat kCommentCountButtonWidth = 100;
 
 - (void)_updateActionBar
 {
+    _likeButtonPressed = NO;
     if (_media.isLiked)
     {
         self.likeButton.imageView.image = [UIImage imageNamed:@"heart_selected"];
@@ -137,7 +141,7 @@ static const CGFloat kCommentCountButtonWidth = 100;
     }
 
     NSString *likes = NSLocalizedString(@"likes", nil);
-    self.likeCountLabel.text = [NSString stringWithFormat:@"%tu %@ · ", _media.likeCount, likes];
+    self.likeCountLabel.text = [NSString stringWithFormat:@"%tu %@   ·", _media.likeCount, likes];
 
     NSString *comments = NSLocalizedString(@"comments", nil);
     self.commentCountButton.textLabel.text = [NSString stringWithFormat:@"%tu %@", _media.commentCount, comments];
@@ -145,8 +149,9 @@ static const CGFloat kCommentCountButtonWidth = 100;
 
 - (void)_updateCaption
 {
-    self.captionLabel.text = _media.caption;
-    self.captionLabel.height = [JYMediaViewCell labelHeightForText:_media.caption withFontSize:kFontSizeCaption andTextAlignment:NSTextAlignmentCenter];
+    NSString *caption = [NSString stringWithFormat:@"😎: %@", _media.caption];
+    self.captionLabel.text = caption;
+    self.captionLabel.height = [JYMediaViewCell labelHeightForText:caption withFontSize:kFontSizeCaption andTextAlignment:NSTextAlignmentCenter] + 10;
 }
 
 - (void)_updateComments
@@ -158,7 +163,7 @@ static const CGFloat kCommentCountButtonWidth = 100;
         UILabel *label = self.commentLabels[i];
         if (i < _media.commentList.count)
         {
-            NSString *text = _media.commentList[i];
+            NSString *text = [NSString stringWithFormat:@"★: %@", _media.commentList[i]];
             label.text = text;
 
             CGFloat height = [JYMediaViewCell labelHeightForText:text withFontSize:kFontSizeComment andTextAlignment:NSTextAlignmentLeft];
@@ -168,7 +173,9 @@ static const CGFloat kCommentCountButtonWidth = 100;
         }
         else
         {
+            label.y = 0;
             label.height = 0;
+            label.text = nil;
         }
     }
 }
@@ -199,10 +206,10 @@ static const CGFloat kCommentCountButtonWidth = 100;
         self.commentCountButton.x = CGRectGetMaxX(self.likeCountLabel.frame);
 
         [_actionBar addSubview:self.likeButton];
-        self.likeButton.x =  SCREEN_WIDTH - 4 * kButtonWidth;
+        self.likeButton.x =  SCREEN_WIDTH - 2 * kButtonWidth - 2 * kButtonDistance;
 
         [_actionBar addSubview:self.commentButton];
-        self.commentButton.x = CGRectGetMaxX(self.likeButton.frame) + kButtonWidth;
+        self.commentButton.x = CGRectGetMaxX(self.likeButton.frame) + kButtonDistance;
         self.commentButton.y += 1; // The icon is a little bit higher than the like button, add some offset to adjust
 
         [self addSubview:_actionBar];
@@ -240,6 +247,8 @@ static const CGFloat kCommentCountButtonWidth = 100;
 
 - (void)_showMoreComments
 {
+    NSDictionary *info = @{@"media": self.media, @"edit":@(NO)};
+    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationWillCommentMedia object:nil userInfo:info];
 }
 
 - (JYButton *)commentButton
@@ -254,6 +263,8 @@ static const CGFloat kCommentCountButtonWidth = 100;
 
 - (void)_comment
 {
+    NSDictionary *info = @{@"media": self.media, @"edit":@(YES)};
+    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationWillCommentMedia object:nil userInfo:info];
 }
 
 - (JYButton *)likeButton
@@ -268,15 +279,15 @@ static const CGFloat kCommentCountButtonWidth = 100;
 
 - (void)_like
 {
-    if (!self.media || self.media.isLiked)
+    if (!self.media || self.media.isLiked || self.likeButtonPressed)
     {
         return;
     }
 
-    self.media.isLiked = YES;
+    self.likeButtonPressed = YES;
 
-    NSDictionary *info = [NSDictionary dictionaryWithObject:self.media forKey:@"media"];
-    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationDidLikeMedia object:nil userInfo:info];
+    NSDictionary *info = @{@"media": self.media};
+   [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationWillLikeMedia object:nil userInfo:info];
 }
 
 - (UILabel *)captionLabel
@@ -298,7 +309,6 @@ static const CGFloat kCommentCountButtonWidth = 100;
         for (NSUInteger i = 0; i < kBriefCommentsCount; i++)
         {
             UILabel *label = [self _createLabel];
-            label.textAlignment = NSTextAlignmentLeft;
             label.font = [UIFont systemFontOfSize:kFontSizeComment];
             [_commentLabels addObject:label];
             [self addSubview:label];
@@ -315,7 +325,7 @@ static const CGFloat kCommentCountButtonWidth = 100;
     label.backgroundColor = JoyyBlack;
     label.font = [UIFont systemFontOfSize:kFontSizeCaption];
     label.textColor = JoyyWhite;
-    label.textAlignment = NSTextAlignmentCenter;
+    label.textAlignment = NSTextAlignmentLeft;
     label.numberOfLines = 0;
     label.lineBreakMode = NSLineBreakByWordWrapping;
 
@@ -324,9 +334,9 @@ static const CGFloat kCommentCountButtonWidth = 100;
 
 - (JYButton *)_createButtonWithImage:(UIImage *)image
 {
-    CGRect frame = CGRectMake(0, 10, kButtonWidth, kButtonWidth);
+    CGRect frame = CGRectMake(0, 0, kButtonWidth, kButtonWidth);
     JYButton *button = [JYButton buttonWithFrame:frame buttonStyle:JYButtonStyleCentralImage shouldMaskImage:YES];
-
+    button.contentEdgeInsets = UIEdgeInsetsMake(8, 8, 8, 8);
     button.imageView.image = image;
     button.contentColor = JoyyGray;
     button.contentAnimateToColor = JoyyBlue;

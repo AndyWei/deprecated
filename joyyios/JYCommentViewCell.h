@@ -12,7 +12,8 @@
 
 @interface JYCommentViewCell : UITableViewCell <TTTAttributedLabelDelegate>
 
-+ (CGFloat)cellHeightForComment:(JYComment *)comment;
-- (void)presentComment:(JYComment *)comment;
++ (CGFloat)heightForComment:(JYComment *)comment;
+
+@property(nonatomic) JYComment *comment;
 
 @end

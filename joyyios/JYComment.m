@@ -26,7 +26,6 @@
             _mediaId = [[dict objectForKey:@"media_id"] unsignedIntegerValue];
             _ownerId = [[dict objectForKey:@"owner_id"] unsignedIntegerValue];
             _content = [dict objectForKey:@"content"];
-            _isHost = NO;
         }
     }
     return self;
@@ -34,7 +33,7 @@
 
 - (NSString *)contentString
 {
-    NSString *prefix = _isHost ? @"😎" : @"★";
+    NSString *prefix = @"★";
     return [NSString stringWithFormat:@"%@: %@", prefix, _content];
 }
 
