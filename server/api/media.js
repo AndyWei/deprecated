@@ -124,18 +124,23 @@ exports.register = function (server, options, next) {
                     return reply(err);
                 }
 
-                // mediaIds      = ['4', '3', '2', '1']
-                // likeCounts    = [null, null, null, null]
-                // commentCounts = [null, null, null, '2']
-                // commentLists  = [[], [], [], ['second comment','some comment contents']]
+                // results.mediaIds      = ['4', '3', '2', '1']
+                // results.likeCounts    = [null, null, null, null]
+                // results.commentCounts = [null, null, null, '2']
+                // results.commentLists  = [[], [], [], ['second comment','some comment contents']]
+                var commentLists = _.map(results.commentLists, function (commentList) {
+                    return commentList.reverse();
+                });
+                //commentLists  = [[], [], [], ['some comment contents', 'second comment']]
+                results.commentLists = null; // release memory
 
-                var itemArray = _.zip(mediaIds, results.likeCounts, results.commentCounts, results.commentLists);
+                var itemArray = _.zip(mediaIds, results.likeCounts, results.commentCounts, commentLists);
                 /*
                  *  itemArray = [
                  *      ['4', null, null, []],
                  *      ['3', null, null, []],
                  *      ['2', null, null, []],
-                 *      ['1', null, '2', ['second comment','some comment contents']]
+                 *      ['1', null, '2', ['some comment contents', 'second comment']]
                  *  ]
                  */
                 var objectArray = _.map(itemArray, function (item) {
@@ -146,10 +151,10 @@ exports.register = function (server, options, next) {
                  *      {'id': '4', 'like_count': null, 'comment_count': null, 'comment_list': []},
                  *      {'id': '3', 'like_count': null, 'comment_count': null, 'comment_list': []},
                  *      {'id': '2', 'like_count': null, 'comment_count': null, 'comment_list': []},
-                 *      {'id': '1', 'like_count': null, 'comment_count':  '2', 'comment_list': ['second comment','some comment contents']}
+                 *      {'id': '1', 'like_count': null, 'comment_count':  '2', 'comment_list': ['some comment contents', 'second comment']}
                  *  ]
                 */
-
+                itemArray = null; // release memory
                 return reply(objectArray);
             });
         }
