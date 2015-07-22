@@ -6,7 +6,7 @@ var Hoek = require('hoek');
 var Joi = require('joi');
 var Rand = require('rand-token');
 var c = require('../constants');
-
+var _ = require('underscore');
 
 var internals = {};
 
@@ -117,10 +117,10 @@ internals.signup = function (request, reply) {
             var org = internals.getOrgFromEmail(email);
             var queryConfig = {
                 text: 'INSERT INTO person ' +
-                          '(email, name, password, org_name, org_type, created_at, updated_at) VALUES ' +
-                          '($1, $2, $3, $4, $5, now(), now()) ' +
+                          '(email, name, password, created_at, updated_at) VALUES ' +
+                          '($1, $2, $3, $4, $5) ' +
                           'RETURNING id',
-                values: [email, name, results.password, org.name, org.type],
+                values: [email, name, results.password, _.now(), _.now()],
                 name: 'person_create'
             };
 

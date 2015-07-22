@@ -4,6 +4,7 @@ var Cache = require('../cache');
 var Hoek = require('hoek');
 var Joi = require('joi');
 var c = require('../constants');
+var _ = require('underscore');
 
 
 var internals = {};
@@ -93,9 +94,9 @@ internals.createCommentHandler = function (request, reply) {
                 name: 'comment_create',
                 text: 'INSERT INTO comment \
                            (owner_id, media_id, content, created_at) VALUES \
-                           ($1, $2, $3, now()) \
+                           ($1, $2, $3, $4) \
                            RETURNING id',
-                values: [pid, p.media_id, p.content]
+                values: [pid, p.media_id, p.content, _.now()]
             };
 
             request.pg.client.query(queryConfig, function (err, result) {

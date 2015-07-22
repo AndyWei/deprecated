@@ -6,7 +6,7 @@ CREATE TABLE media (
     path_version       SMALLINT      NOT NULL DEFAULT 0,  -- the version number of the file path. Client will map this number to the base_url. 0-Amazon CloudFront
     filename           TEXT          NOT NULL,  -- the file name without path. e.g., j0176_458354045799.jpg
     caption            TEXT          NOT NULL,
-    created_at         TIMESTAMPTZ   NOT NULL,
+    created_at         BIGINT        NOT NULL,
     deleted            BOOLEAN       NOT NULL DEFAULT false
 );
 

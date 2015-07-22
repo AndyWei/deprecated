@@ -3,8 +3,8 @@ CREATE TABLE love (
     sender_id          BIGINT        NOT NULL,  -- the person.id of sender
     receiver_id        BIGINT        NOT NULL,  -- the person.id of receiver
     status             SMALLINT      NOT NULL DEFAULT 0,  -- 0-sent, 10-accepted, 20-rejected
-    created_at         TIMESTAMPTZ   NOT NULL,
-    updated_at         TIMESTAMPTZ   NOT NULL,
+    created_at         BIGINT        NOT NULL,
+    updated_at         BIGINT        NOT NULL,
     deleted            BOOLEAN       NOT NULL DEFAULT false
 );
 

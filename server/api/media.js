@@ -83,7 +83,7 @@ exports.register = function (server, options, next) {
                             }
 
                             if (mediaId.lessThan(before)) {
-                                var record = _.object(['id', 'owner_id', 'media_type', 'path_version', 'filename', 'caption', 'timestamp'], media);
+                                var record = _.object(['id', 'owner_id', 'media_type', 'path_version', 'filename', 'caption', 'created_at'], media);
                                 media = null; // release memory
                                 records.push(record);
                             }
@@ -281,8 +281,8 @@ exports.register = function (server, options, next) {
                 function (callback) {
 
                     var fields = 'INSERT INTO media (owner_id, media_type, path_version, filename, caption, coordinate, created_at) ';
-                    var values = 'VALUES ($1, $2, $3, $4, $5, ST_SetSRID(ST_MakePoint($6, $7), 4326), now()) RETURNING id';
-                    var queryValues = [ownerId, p.media_type, 0, dbFilename, p.caption, p.lon, p.lat];
+                    var values = 'VALUES ($1, $2, $3, $4, $5, ST_SetSRID(ST_MakePoint($6, $7), 4326), $8) RETURNING id';
+                    var queryValues = [ownerId, p.media_type, 0, dbFilename, p.caption, p.lon, p.lat, _.now()];
 
                     var queryConfig = {
                         name: 'media_create',

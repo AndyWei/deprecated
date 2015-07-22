@@ -33,6 +33,11 @@ exports.MEDIA_COUNT_CACHE = {
     segment: 'm'
 };
 
+exports.PERSON_CACHE = {
+    segment: 'P',
+    size: 100
+};
+
 // consts
 exports.BCRYPT_ROUND = 10;
 exports.DEGREE_FACTOR = 0.0089827983;

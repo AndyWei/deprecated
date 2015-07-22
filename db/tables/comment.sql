@@ -3,7 +3,7 @@ CREATE TABLE comment (
     owner_id       BIGINT        NOT NULL,  -- the id of the person who submitted this comment
     media_id       BIGINT        NOT NULL,  -- the id of the media this comment is against
     content        TEXT          NOT NULL,
-    created_at     TIMESTAMPTZ   NOT NULL,
+    created_at     BIGINT        NOT NULL,
     deleted        BOOLEAN       NOT NULL DEFAULT false
 );
 

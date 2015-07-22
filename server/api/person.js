@@ -4,6 +4,8 @@ var Cache = require('../cache');
 var Hoek = require('hoek');
 var Joi = require('joi');
 var c = require('../constants');
+var _ = require('underscore');
+
 
 var internals = {};
 
@@ -162,10 +164,10 @@ exports.register = function (server, options, next) {
 
                     var queryConfig = {
                         name: 'person_update_profile',
-                        text: 'UPDATE person SET name = $1, gender = $2, yob = $3, bio = $4, updated_at = now() ' +
-                              'WHERE id = $5 AND deleted = false ' +
+                        text: 'UPDATE person SET name = $1, gender = $2, yob = $3, bio = $4, updated_at = $5 ' +
+                              'WHERE id = $6 AND deleted = false ' +
                               'RETURNING id',
-                        values: [p.name, p.gender, p.yob, p.bio, personId]
+                        values: [p.name, p.gender, p.yob, p.bio, _.now(), personId]
                     };
 
                     request.pg.client.query(queryConfig, function (err, result) {
@@ -226,10 +228,10 @@ exports.register = function (server, options, next) {
 
             var queryConfig = {
                 name: 'person_update_coordinate',
-                text: 'UPDATE person SET coordinate = ST_SetSRID(ST_MakePoint($1, $2), 4326), updated_at = now() ' +
-                      'WHERE id = $3 AND deleted = false ' +
+                text: 'UPDATE person SET coordinate = ST_SetSRID(ST_MakePoint($1, $2), 4326), updated_at = $3 ' +
+                      'WHERE id = $4 AND deleted = false ' +
                       'RETURNING id',
-                values: [p.lon, p.lat, personId]
+                values: [p.lon, p.lat, _.now(), personId]
             };
 
             request.pg.client.query(queryConfig, function (err, result) {
