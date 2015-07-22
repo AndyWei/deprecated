@@ -114,7 +114,6 @@ internals.signup = function (request, reply) {
         }],
         personId: ['password', function (callback, results) {
 
-            var org = internals.getOrgFromEmail(email);
             var queryConfig = {
                 text: 'INSERT INTO person ' +
                           '(email, name, password, created_at, updated_at) VALUES ' +
