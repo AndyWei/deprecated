@@ -5,12 +5,15 @@ CREATE TABLE person (
     name               TEXT          NOT NULL, -- person display name
     role               SMALLINT      NOT NULL DEFAULT 0, -- 0 - user,  1 - admin, 2 - test, 3 - robot.
     validated          BOOLEAN       NOT NULL DEFAULT false,
+    heart_count        INTEGER       NOT NULL DEFAULT 0,
+    friend_count       SMALLINT      NOT NULL DEFAULT 0,
     org_name           TEXT                  , -- organization name that the person belongs to. E.g., ibm, apple, twitter, stanford, etc. It's extracted from the registration email
     org_type           SMALLINT              , -- 0 - com,  1 - edu, 2 - org, 3 - other. This is from the email suffix
     gender             SMALLINT              , -- 0 - unknown,  1 - male, 2 - famale, 3 - other
     yob                NUMERIC(4)            , -- year of birth
     bio                TEXT                  ,
     url                TEXT                  , -- the url of the portrait photo
+    cell_id            TEXT                  , -- the cell where the person last reported
     coordinate         GEOMETRY(Point, 4326) , -- the point where the person last reported
     member_expire_at   BIGINT                , -- the time when this person's membership expires. Th value is the seconds from 01/01/2001 12:00am
     created_at         BIGINT        NOT NULL,
@@ -23,4 +26,3 @@ CREATE TABLE person (
 
 CREATE INDEX person_email_index      ON person (email);
 CREATE INDEX person_org_name_index   ON person (org_name);
-CREATE INDEX person_coordinate_index ON person USING gist(coordinate);

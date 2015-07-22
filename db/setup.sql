@@ -12,5 +12,5 @@ BEGIN;
 \ir  tables/person.sql
 \ir  tables/media.sql
 \ir  tables/comment.sql
-\ir  tables/love.sql
+\ir  tables/heart.sql
 COMMIT;

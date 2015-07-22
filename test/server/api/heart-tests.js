@@ -6,7 +6,7 @@ var Hapi = require('hapi');
 var HapiAuthBasic = require('hapi-auth-basic');
 var HapiAuthToken = require('hapi-auth-bearer-token');
 var Lab = require('lab');
-var LovePlugin = require('../../../server/api/love');
+var HeartPlugin = require('../../../server/api/heart');
 
 
 var lab = exports.lab = Lab.script();
@@ -33,7 +33,7 @@ var request, server;
 
 lab.beforeEach(function (done) {
 
-    var plugins = [HapiAuthBasic, HapiAuthToken, AuthPlugin, PgPlugin, LovePlugin];
+    var plugins = [HapiAuthBasic, HapiAuthToken, AuthPlugin, PgPlugin, HeartPlugin];
     server = new Hapi.Server();
     server.connection({ port: Config.get('/port/api') });
     server.register(plugins, function (err) {
@@ -59,13 +59,13 @@ lab.afterEach(function (done) {
 });
 
 
-lab.experiment('love GET: ', function () {
+lab.experiment('heart GET: ', function () {
 
-    lab.test('/love/me: found for jack', function (done) {
+    lab.test('/heart/me: found for jack', function (done) {
 
         request = {
             method: 'GET',
-            url: '/love/me?status=0&before=100',
+            url: '/heart/me?status=0&before=100',
             credentials: jack
         };
 
@@ -78,11 +78,11 @@ lab.experiment('love GET: ', function () {
         });
     });
 
-    lab.test('/love/me: not found for mike', function (done) {
+    lab.test('/heart/me: not found for mike', function (done) {
 
         request = {
             method: 'GET',
-            url: '/love/me?status=0&before=100',
+            url: '/heart/me?status=0&before=100',
             credentials: mike
         };
 
@@ -90,6 +90,47 @@ lab.experiment('love GET: ', function () {
 
             Code.expect(response.statusCode).to.equal(200);
             Code.expect(response.result).to.be.an.array().and.to.be.empty();
+
+            done();
+        });
+    });
+
+    lab.test('/heart/my: found for jack', function (done) {
+
+        request = {
+            method: 'GET',
+            url: '/heart/my?status=0&before=100',
+            credentials: jack
+        };
+
+        server.inject(request, function (response) {
+
+            Code.expect(response.statusCode).to.equal(200);
+            Code.expect(response.result).to.be.an.array().and.to.have.length(2);
+
+            done();
+        });
+    });
+});
+
+
+lab.experiment('heart POST: ', function () {
+
+    lab.test('/heart: update successfully', function (done) {
+
+        request = {
+            method: 'POST',
+            url: '/heart',
+            payload: {
+                receiver_id: '2'
+            },
+            credentials: jack
+        };
+
+        server.inject(request, function (response) {
+
+            Code.expect(response.statusCode).to.equal(200);
+            Code.expect(response.result).to.be.an.object();
 
             done();
         });

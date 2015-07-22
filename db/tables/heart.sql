@@ -1,4 +1,4 @@
-CREATE TABLE love (
+CREATE TABLE heart (
     id                 BIGSERIAL  PRIMARY KEY,
     sender_id          BIGINT        NOT NULL,  -- the person.id of sender
     receiver_id        BIGINT        NOT NULL,  -- the person.id of receiver
@@ -9,6 +9,6 @@ CREATE TABLE love (
 );
 
 
-CREATE INDEX love_sender_id_index ON love (sender_id);
-CREATE INDEX love_receiver_id_index ON love (receiver_id);
+CREATE INDEX heart_sender_id_index ON heart (sender_id);
+CREATE INDEX heart_receiver_id_index ON heart (receiver_id);
 

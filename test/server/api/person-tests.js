@@ -157,14 +157,15 @@ lab.experiment('person POST: ', function () {
         });
     });
 
-    lab.test('/person/coordinate: update successfully', function (done) {
+    lab.test('/person/location: update successfully', function (done) {
 
         request = {
             method: 'POST',
-            url: '/person/coordinate',
+            url: '/person/location',
             payload: {
                 lat: 37.555883,
-                lon: -122.0135916
+                lon: -122.0135916,
+                cell_id: '94102'
             },
             credentials: jack
         };

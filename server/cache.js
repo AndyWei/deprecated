@@ -169,6 +169,24 @@ exports.enqueue = internals.enqueue = function (listDataset, countDataset, key, 
 };
 
 
+exports.updateSortedSet = internals.updateSortedSet = function (dataset, key, score, member, callback) {
+
+    if (!internals.redis) {
+        return callback(new Error('Connection not started'));
+    }
+
+    var setKey = internals.generateKey(dataset, key);
+    internals.redis.zadd(setKey, score, member, function (err, result) {
+
+        if (err) {
+            return callback(err);
+        }
+
+        return callback(null, result);
+    });
+};
+
+
 exports.drop = function (dataset, key, callback) {
 
     if (!internals.redis) {

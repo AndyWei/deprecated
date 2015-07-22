@@ -9,11 +9,9 @@ var _ = require('underscore');
 
 var internals = {};
 
-var selectClause = 'SELECT id, name, org_name, org_type, gender, yob, bio, url, updated_at, \
-                    ST_X(coordinate) AS lon, ST_Y(coordinate) AS lat \
-                    FROM person ';
+var selectClause = 'SELECT id, name, org_name, org_type, gender, yob, bio, url, heart_count, friend_count, updated_at FROM person ';
 
-var selectProfileClause = 'SELECT id, email, name, role, org_name, org_type, gender, yob, bio, url, validated, member_expire_at FROM person ';
+var selectProfileClause = 'SELECT id, email, name, role, org_name, org_type, gender, yob, bio, url, heart_count, friend_count, validated, member_expire_at FROM person ';
 
 exports.register = function (server, options, next) {
 
@@ -178,7 +176,7 @@ exports.register = function (server, options, next) {
                         }
 
                         if (result.rows.length === 0) {
-                            return callback(Boom.badRequest(c.PERSON_UPDATE_FAILED));
+                            return callback(Boom.badRequest(c.PERSON_UPDATE_PROFILE_FAILED));
                         }
 
                         return callback(null);
@@ -206,10 +204,10 @@ exports.register = function (server, options, next) {
     });
 
 
-    // update an person's coordinate. auth.
+    // update an person's location. auth.
     server.route({
         method: 'POST',
-        path: options.basePath + '/person/coordinate',
+        path: options.basePath + '/person/location',
         config: {
             auth: {
                 strategy: 'token'
@@ -217,7 +215,8 @@ exports.register = function (server, options, next) {
             validate: {
                 payload: {
                     lon: Joi.number().min(-180).max(180).required(),
-                    lat: Joi.number().min(-90).max(90).required()
+                    lat: Joi.number().min(-90).max(90).required(),
+                    cell_id: Joi.string().max(12).required()
                 }
             }
         },
@@ -226,27 +225,50 @@ exports.register = function (server, options, next) {
             var p = request.payload;
             var personId = request.auth.credentials.id;
 
-            var queryConfig = {
-                name: 'person_update_coordinate',
-                text: 'UPDATE person SET coordinate = ST_SetSRID(ST_MakePoint($1, $2), 4326), updated_at = $3 ' +
-                      'WHERE id = $4 AND deleted = false ' +
-                      'RETURNING id',
-                values: [p.lon, p.lat, _.now(), personId]
-            };
+            Async.waterfall([
 
-            request.pg.client.query(queryConfig, function (err, result) {
+                function (callback) {
+                    var queryConfig = {
+                        name: 'person_update_location',
+                        text: 'UPDATE person SET cell_id = $1, coordinate = ST_SetSRID(ST_MakePoint($2, $3), 4326), updated_at = $4 ' +
+                              'WHERE id = $5 AND deleted = false ' +
+                              'RETURNING id, heart_count, friend_count',
+                        values: [p.cell_id, p.lon, p.lat, _.now(), personId]
+                    };
+
+                    request.pg.client.query(queryConfig, function (err, result) {
+
+                        if (err) {
+                            console.error(err);
+                            request.pg.kill = true;
+                            return callback(err);
+                        }
+
+                        if (result.rows.length === 0) {
+                            return callback(Boom.badRequest(c.PERSON_UPDATE_LOCATION_FAILED));
+                        }
+
+                        return callback(null, result.rows[0]);
+                    });
+                },
+                function (person, callback) {
+
+                    var score = (person.heart_count * 5) + (person.friend_count * 10);
+                    Cache.updateSortedSet(c.PERSON_CACHE, p.cell_id, score, personId.toString(), function (err) {
+                        if (err) {
+                            return callback(err);
+                        }
+                        return callback(null);
+                    });
+                }
+            ], function (err) {
 
                 if (err) {
                     console.error(err);
-                    request.pg.kill = true;
                     return reply(err);
                 }
 
-                if (result.rows.length === 0) {
-                    return reply(Boom.badRequest(c.PERSON_UPDATE_FAILED));
-                }
-
-                return reply(null, result.rows[0]);
+                return reply(null, { id: personId });
             });
         }
     });

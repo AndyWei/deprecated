@@ -32,7 +32,7 @@ INSERT INTO comment
     (       2,        1, 1437524632000, '@mike Just 3000 sqft, and 500 bucks is ridiculous！$499 is my bottomline!!');
 
 
-INSERT INTO love
+INSERT INTO heart
     (sender_id, receiver_id, status,    created_at,    updated_at) VALUES
     (        4,           1,     20, 1437524632000, 1437524632000),
     (        3,           1,     20, 1437524632000, 1437524632000),
