@@ -30,7 +30,7 @@ exports.notify = internals.notify = function (personId, title, body, callback) {
                     return next(err);
                 }
 
-                if (!person.token || !person.service) {
+                if (!person.device || !person.service) {
                     var error = new Error(Const.DEVICE_TOKEN_NOT_FOUND + 'personId = ' + personId);
                     return next(error);
                 }
@@ -41,13 +41,13 @@ exports.notify = internals.notify = function (personId, title, body, callback) {
         function (person, next) {
 
             switch(person.service) {
-                case 'apn':
-                    internals.apnSend(person.token, person.badge, title, body);
+                case Const.NotificationServiceType.APN:
+                    internals.apnSend(person.device, person.badge, title, body);
                     break;
-                case 'gcm':
+                case Const.NotificationServiceType.GCM:
                     internals.gcmSend();
                     break;
-                case 'mpn':
+                case Const.NotificationServiceType.MPN:
                     internals.mpnSend();
                     break;
                 default:
@@ -100,9 +100,9 @@ exports.mnotify = function (personIds, title, body) {
 };
 
 
-internals.apnSend = function (token, badge, title, body) {
+internals.apnSend = function (device, badge, title, body) {
 
-    var device = new Apn.Device(token);
+    var apnDevice = new Apn.Device(device);
     var notification = new Apn.Notification();
 
     if (_.isString(badge)) {
@@ -118,7 +118,7 @@ internals.apnSend = function (token, badge, title, body) {
     var connection = apnConnection;
 
     if (connection) {
-        connection.pushNotification(notification, device);
+        connection.pushNotification(notification, apnDevice);
     }
     else {
         console.error('No APN connection');

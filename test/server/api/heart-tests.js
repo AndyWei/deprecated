@@ -122,7 +122,7 @@ lab.experiment('heart POST: ', function () {
             method: 'POST',
             url: '/heart',
             payload: {
-                receiver_id: '2'
+                receiver: '2'
             },
             credentials: jack
         };

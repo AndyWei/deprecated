@@ -51,7 +51,7 @@ exports.register = function (server, options, next) {
                 payload: {
                     email: Joi.string().email().lowercase().min(3).max(30).required(),
                     password: Joi.string().min(4).max(30).required(),
-                    cell_id: Joi.string().max(12).required()
+                    cell: Joi.string().max(12).required()
                 }
             },
             pre: [{
@@ -118,11 +118,11 @@ internals.signup = function (request, reply) {
 
             var queryConfig = {
                 text: 'INSERT INTO person ' +
-                          '(email, name, password, cell_id, created_at, updated_at) VALUES ' +
+                          '(email, name, password, cell, ct, ut) VALUES ' +
                           '($1, $2, $3, $4, $5, $6) ' +
                           'RETURNING id',
-                values: [email, name, results.password, request.payload.cell_id, _.now(), _.now()],
-                name: 'person_create'
+                values: [email, name, results.password, request.payload.cell, _.now(), _.now()],
+                name: 'person_signup'
             };
 
             request.pg.client.query(queryConfig, function (err, queryResult) {
@@ -179,6 +179,9 @@ internals.getOrgFromEmail = function (email) {
             break;
         case 'org':
             orgType = Const.OrgType.ORG;
+            break;
+        case 'gov':
+            orgType = Const.OrgType.GOV;
             break;
         default:
             orgType = Const.OrgType.OTHER;

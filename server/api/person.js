@@ -8,8 +8,8 @@ var Utils = require('../utils');
 var _ = require('underscore');
 
 var internals = {};
-var selectClause = 'SELECT id, name, org_name, org_type, gender, yob, bio, url, heart_count, friend_count, updated_at FROM person ';
-var selectProfileClause = 'SELECT id, email, name, role, org_name, org_type, gender, yob, bio, url, heart_count, friend_count, validated, member_expire_at FROM person ';
+var selectClause = 'SELECT id, name, org, orgtype, gender, yob, bio, url, hearts, friends, ut FROM person ';
+var selectProfileClause = 'SELECT id, email, name, role, org, orgtype, gender, yob, bio, url, hearts, friends, verified, met FROM person ';
 
 
 exports.register = function (server, options, next) {
@@ -55,7 +55,7 @@ exports.register = function (server, options, next) {
     });
 
 
-    // get all the validated people nearby a point. auth.
+    // get all the verified people nearby a point. auth.
     server.route({
         method: 'GET',
         path: options.basePath + '/person/nearby',
@@ -78,7 +78,7 @@ exports.register = function (server, options, next) {
             var q = request.query;
             var degree = internals.degreeFromDistance(q.distance);
 
-            var where = 'WHERE id > $1 AND id < $2 AND ST_DWithin(coordinate, ST_SetSRID(ST_MakePoint($3, $4), 4326), $5) AND validated = true AND deleted = false ';
+            var where = 'WHERE id > $1 AND id < $2 AND ST_DWithin(coords, ST_SetSRID(ST_MakePoint($3, $4), 4326), $5) AND verified = true AND deleted = false ';
             var order = 'ORDER BY id DESC ';
             var limit = 'LIMIT 10';
 
@@ -145,8 +145,8 @@ exports.register = function (server, options, next) {
             },
             validate: {
                 payload: {
-                    service: Joi.string().allow('apn', 'gcm', 'mpn').required(),
-                    token: Joi.string().max(100).required(),
+                    service: Joi.number().min(0).max(2).required(),
+                    device: Joi.string().max(100).required(),
                     badge: Joi.number().min(0).max(1000).default(0)
                 }
             }
@@ -156,7 +156,7 @@ exports.register = function (server, options, next) {
             var personId = request.auth.credentials.id;
             var personObj = {
                 service: request.payload.service,
-                token: request.payload.token,
+                device: request.payload.device,
                 badge: request.payload.badge
             };
 
@@ -202,7 +202,7 @@ exports.register = function (server, options, next) {
 
                     var queryConfig = {
                         name: 'person_update_profile',
-                        text: 'UPDATE person SET name = $1, gender = $2, yob = $3, bio = $4, updated_at = $5 ' +
+                        text: 'UPDATE person SET name = $1, gender = $2, yob = $3, bio = $4, ut = $5 ' +
                               'WHERE id = $6 AND deleted = false ' +
                               'RETURNING id',
                         values: [p.name, p.gender, p.yob, p.bio, _.now(), personId]
@@ -256,7 +256,7 @@ exports.register = function (server, options, next) {
                 payload: {
                     lon: Joi.number().min(-180).max(180).required(),
                     lat: Joi.number().min(-90).max(90).required(),
-                    cell_id: Joi.string().max(12).required()
+                    cell: Joi.string().max(12).required()
                 }
             }
         },
@@ -270,10 +270,10 @@ exports.register = function (server, options, next) {
                 function (callback) {
                     var queryConfig = {
                         name: 'person_update_location',
-                        text: 'UPDATE person SET cell_id = $1, coordinate = ST_SetSRID(ST_MakePoint($2, $3), 4326), updated_at = $4 ' +
+                        text: 'UPDATE person SET cell = $1, coords = ST_SetSRID(ST_MakePoint($2, $3), 4326), ut = $4 ' +
                               'WHERE id = $5 AND deleted = false ' +
-                              'RETURNING id, heart_count, friend_count',
-                        values: [p.cell_id, p.lon, p.lat, _.now(), personId]
+                              'RETURNING id, hearts, friends',
+                        values: [p.cell, p.lon, p.lat, _.now(), personId]
                     };
 
                     request.pg.client.query(queryConfig, function (err, result) {
@@ -293,8 +293,8 @@ exports.register = function (server, options, next) {
                 },
                 function (person, callback) {
 
-                    var score = (person.heart_count * 5) + (person.friend_count * 10);
-                    Cache.zadd(Const.CELL_PERSON_SETS, p.cell_id, score, personId, function (err) {
+                    var score = (person.hearts * 5) + (person.friends * 10);
+                    Cache.zadd(Const.CELL_PERSON_SETS, p.cell, score, personId, function (err) {
                         if (err) {
                             return callback(err);
                         }

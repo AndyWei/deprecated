@@ -20,7 +20,7 @@ exports.register = function (server, options, next) {
         config: {
             validate: {
                 query: {
-                    media_id: Joi.string().regex(/^[0-9]+$/).max(19).required(),
+                    media: Joi.string().regex(/^[0-9]+$/).max(19).required(),
                     after: Joi.string().regex(/^[0-9]+$/).max(19).default('0'),
                     before: Joi.string().regex(/^[0-9]+$/).max(19).default(c.MAX_ID)
                 }
@@ -30,15 +30,15 @@ exports.register = function (server, options, next) {
 
             var q = request.query;
 
-            var select = 'SELECT id, owner_id, content, created_at FROM comment ';
-            var where = 'WHERE id > $1 AND id < $2 AND media_id = $3 AND deleted = false ';
+            var select = 'SELECT id, owner, content, ct FROM comment ';
+            var where = 'WHERE id > $1 AND id < $2 AND media = $3 AND deleted = false ';
             var order = 'ORDER BY id ASC ';
             var limit = 'LIMIT 20';
 
             var queryConfig = {
                 name: 'comments_of_media',
                 text: select + where + order + limit,
-                values: [q.after, q.before, q.media_id]
+                values: [q.after, q.before, q.media]
             };
 
             request.pg.client.query(queryConfig, function (err, result) {
@@ -65,7 +65,7 @@ exports.register = function (server, options, next) {
             },
             validate: {
                 payload: {
-                    media_id: Joi.string().regex(/^[0-9]+$/).max(19).required(),
+                    media: Joi.string().regex(/^[0-9]+$/).max(19).required(),
                     content: Joi.string().max(2000).required()
                 }
             }
@@ -93,10 +93,10 @@ internals.createCommentHandler = function (request, reply) {
             var queryConfig = {
                 name: 'comment_create',
                 text: 'INSERT INTO comment \
-                           (owner_id, media_id, content, created_at) VALUES \
+                           (owner, media, content, ct) VALUES \
                            ($1, $2, $3, $4) \
                            RETURNING id',
-                values: [pid, p.media_id, p.content, _.now()]
+                values: [pid, p.media, p.content, _.now()]
             };
 
             request.pg.client.query(queryConfig, function (err, result) {
@@ -116,7 +116,7 @@ internals.createCommentHandler = function (request, reply) {
         updateCache: ['commentId', function (next) {
 
             // push this comment content to the list and increase the comment count
-            Cache.enqueue(c.MEDIA_COMMENT_LISTS, c.MEDIA_COMMENT_COUNTS, p.media_id, p.content, function (error) {
+            Cache.enqueue(c.MEDIA_COMMENT_LISTS, c.MEDIA_COMMENT_COUNTS, p.media, p.content, function (error) {
                 if (error) {
                     // Just log the error, do not call next(error) since caching is a kind of "try our best" thing
                     console.error(error);

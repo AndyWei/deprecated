@@ -91,5 +91,13 @@ exports.OrgType = {
     COM: 0,
     EDU: 1,
     ORG: 2,
-    OTHER: 3
+    GOV: 3,
+    OTHER: 4
+};
+
+// push notification service type
+exports.NotificationServiceType = {
+    APN: 1,
+    GCM: 2,
+    MPN: 3
 };

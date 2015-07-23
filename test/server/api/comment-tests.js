@@ -61,7 +61,7 @@ lab.experiment('Comment GET: ', function () {
 
         request = {
             method: 'GET',
-            url: '/comment?media_id=1&after=1&before=4'
+            url: '/comment?media=1&after=1&before=4'
         };
 
         server.inject(request, function (response) {
@@ -82,7 +82,7 @@ lab.experiment('Comment POST: ', function () {
             method: 'POST',
             url: '/comment',
             payload: {
-                media_id: '1',
+                media: '1',
                 content: 'yes'
             },
             credentials: jack

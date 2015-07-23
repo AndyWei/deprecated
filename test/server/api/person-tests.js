@@ -140,8 +140,8 @@ lab.experiment('person POST: ', function () {
             method: 'POST',
             url: '/person/device',
             payload: {
-                service: 'apn',
-                token: 'FAKE1DEVICE2TOKEN',
+                service: 1,
+                device: 'FAKE_DEVICE_TOKEN',
                 badge: 1
             },
             credentials: andy
@@ -187,7 +187,7 @@ lab.experiment('person POST: ', function () {
             payload: {
                 lat: 37.555883,
                 lon: -122.0135916,
-                cell_id: '94102'
+                cell: '94102'
             },
             credentials: jack
         };

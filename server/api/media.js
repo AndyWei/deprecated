@@ -11,9 +11,7 @@ var _ = require('underscore');
 
 var internals = {};
 
-var selectClause = 'SELECT id, owner_id, media_type, path_version, filename, caption, created_at, \
-                    ST_X(coordinate) AS lon, ST_Y(coordinate) AS lat \
-                    FROM media ';
+var selectClause = 'SELECT id, owner, type, uv, filename, caption, ct FROM media ';
 
 
 exports.register = function (server, options, next) {
@@ -35,7 +33,7 @@ exports.register = function (server, options, next) {
                 query: {
                     lon: Joi.number().min(-180).max(180).required(),
                     lat: Joi.number().min(-90).max(90).required(),
-                    cell_id: Joi.string().max(12).required(),
+                    cell: Joi.string().max(12).required(),
                     distance: Joi.number().min(1).max(100).default(2),
                     after: Joi.string().regex(/^[0-9]+$/).max(19).default('0'),
                     before: Joi.string().regex(/^[0-9]+$/).max(19).default(Const.MAX_ID)
@@ -48,7 +46,7 @@ exports.register = function (server, options, next) {
             Async.auto({
                 fromCache: function (callback) {
 
-                    Cache.getList(Const.CELL_MEDIA_LISTS, q.cell_id, function (err, results) {
+                    Cache.getList(Const.CELL_MEDIA_LISTS, q.cell, function (err, results) {
                         if (err) {
                             console.error(err);
                             return callback(null, null); // continue search in DB
@@ -74,7 +72,7 @@ exports.register = function (server, options, next) {
                         var records = [];
                         for (var i = 0, len = results.length; i < len; i++) {
 
-                            var media = JSON.parse(results[i]); // [mediaId, ownerId, media_type, path_version, filename, caption, timestamp]
+                            var media = JSON.parse(results[i]); // [mediaId, ownerId, type, uv, filename, caption, timestamp]
                             var mediaId = Long.fromString(media[0]);
                             results[i] = null; // release memory
 
@@ -83,7 +81,7 @@ exports.register = function (server, options, next) {
                             }
 
                             if (mediaId.lessThan(before)) {
-                                var record = _.object(['id', 'owner_id', 'media_type', 'path_version', 'filename', 'caption', 'created_at'], media);
+                                var record = _.object(['id', 'owner', 'type', 'uv', 'filename', 'caption', 'ct'], media);
                                 media = null; // release memory
                                 records.push(record);
                             }
@@ -97,7 +95,7 @@ exports.register = function (server, options, next) {
 
                     var degree = internals.degreeFromDistance(q.distance);
 
-                    var where = 'WHERE id > $1 AND id < $2 AND ST_DWithin(coordinate, ST_SetSRID(ST_MakePoint($3, $4), 4326), $5) AND deleted = false ';
+                    var where = 'WHERE id > $1 AND id < $2 AND ST_DWithin(coords, ST_SetSRID(ST_MakePoint($3, $4), 4326), $5) AND deleted = false ';
                     var order = 'ORDER BY id DESC ';
                     var limit = 'LIMIT 10';  // 10 media/request is a blance between search pressure and photo bandwidth usage
 
@@ -211,14 +209,14 @@ exports.register = function (server, options, next) {
                  *  ]
                  */
                 var objectArray = _.map(itemArray, function (item) {
-                    return _.object(['id', 'like_count', 'comment_count', 'comment_list'], item);
+                    return _.object(['id', 'likes', 'comments', 'comment_list'], item);
                 });
                 /*
                  *  objectArray = [
-                 *      {'id': '4', 'like_count': null, 'comment_count': null, 'comment_list': []},
-                 *      {'id': '3', 'like_count': null, 'comment_count': null, 'comment_list': []},
-                 *      {'id': '2', 'like_count': null, 'comment_count': null, 'comment_list': []},
-                 *      {'id': '1', 'like_count': null, 'comment_count':  '2', 'comment_list': ['some comment contents', 'second comment']}
+                 *      {'id': '4', 'likes': null, 'comments': null, 'comment_list': []},
+                 *      {'id': '3', 'likes': null, 'comments': null, 'comment_list': []},
+                 *      {'id': '2', 'likes': null, 'comments': null, 'comment_list': []},
+                 *      {'id': '1', 'likes': null, 'comments':  '2', 'comment_list': ['some comment contents', 'second comment']}
                  *  ]
                 */
                 itemArray = null; // release memory
@@ -245,9 +243,9 @@ exports.register = function (server, options, next) {
                     lon: Joi.number().min(-180).max(180).required(),
                     lat: Joi.number().min(-90).max(90).required(),
                     file: Joi.any().required(),
-                    media_type: Joi.number().min(0).max(2).required(),
+                    type: Joi.number().min(0).max(2).required(),
                     caption: Joi.string().max(2000).required(),
-                    cell_id: Joi.string().max(12).required()
+                    cell: Joi.string().max(12).required()
                 }
             }
         },
@@ -280,9 +278,9 @@ exports.register = function (server, options, next) {
                 },
                 function (callback) {
 
-                    var fields = 'INSERT INTO media (owner_id, media_type, path_version, filename, caption, coordinate, created_at) ';
-                    var values = 'VALUES ($1, $2, $3, $4, $5, ST_SetSRID(ST_MakePoint($6, $7), 4326), $8) RETURNING id';
-                    var queryValues = [ownerId, p.media_type, 0, dbFilename, p.caption, p.lon, p.lat, _.now()];
+                    var fields = 'INSERT INTO media (owner, type, uv, filename, caption, coords, cell, ct) ';
+                    var values = 'VALUES ($1, $2, $3, $4, $5, ST_SetSRID(ST_MakePoint($6, $7), 4326), $8, $9) RETURNING id';
+                    var queryValues = [ownerId, p.type, 0, dbFilename, p.caption, p.lon, p.lat, p.cell, _.now()];
 
                     var queryConfig = {
                         name: 'media_create',
@@ -306,9 +304,9 @@ exports.register = function (server, options, next) {
                 },
                 function (mediaId, callback) {
 
-                    var mediaRecord = JSON.stringify([mediaId, ownerId, p.media_type, 0, dbFilename, p.caption, _.now()]);
+                    var mediaRecord = JSON.stringify([mediaId, ownerId, p.type, 0, dbFilename, p.caption, _.now()]);
                     // push the media record to cache and increase the media count
-                    Cache.enqueue(Const.CELL_MEDIA_LISTS, Const.CELL_MEDIA_COUNTS, p.cell_id, mediaRecord, function (error) {
+                    Cache.enqueue(Const.CELL_MEDIA_LISTS, Const.CELL_MEDIA_COUNTS, p.cell, mediaRecord, function (error) {
                         if (error) {
                             // Just log the error, do not call next(error) since caching is a kind of "try our best" thing
                             console.error(error);
@@ -353,11 +351,10 @@ exports.register = function (server, options, next) {
                     console.error(err);
                 }
 
-                return reply(null, {'like_count': result});
+                return reply(null, {'likes': result});
             });
         }
     });
-
 
     next();
 };

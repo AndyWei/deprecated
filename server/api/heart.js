@@ -30,8 +30,8 @@ exports.register = function (server, options, next) {
 
             var q = request.query;
 
-            var select = 'SELECT sender_id FROM heart ';
-            var where  = 'WHERE receiver_id = $1 AND status = $2 AND id < $3 AND deleted = false ';
+            var select = 'SELECT sender FROM heart ';
+            var where  = 'WHERE receiver = $1 AND status = $2 AND id < $3 AND deleted = false ';
             var sort   = 'ORDER BY id DESC LIMIT 10';
             var queryConfig = {
                 name: 'heart_me',
@@ -72,8 +72,8 @@ exports.register = function (server, options, next) {
 
             var q = request.query;
 
-            var select = 'SELECT receiver_id, status FROM heart ';
-            var where  = 'WHERE sender_id = $1 AND status = $2 AND id < $3 AND deleted = false ';
+            var select = 'SELECT receiver, status FROM heart ';
+            var where  = 'WHERE sender = $1 AND status = $2 AND id < $3 AND deleted = false ';
             var sort   = 'ORDER BY id DESC LIMIT 30';
             var queryConfig = {
                 name: 'heart_my',
@@ -105,7 +105,7 @@ exports.register = function (server, options, next) {
             },
             validate: {
                 payload: {
-                    receiver_id: Joi.string().regex(/^[0-9]+$/).max(19).required()
+                    receiver: Joi.string().regex(/^[0-9]+$/).max(19).required()
                 }
             }
         },
@@ -114,7 +114,7 @@ exports.register = function (server, options, next) {
             var p = request.payload;
             var personId = request.auth.credentials.id;
 
-            if (personId.toString() === p.receiver_id) {
+            if (personId.toString() === p.receiver) {
                 return reply(Boom.notAcceptable(Const.HEART_NOT_ALLOWED));
             }
 
@@ -123,10 +123,10 @@ exports.register = function (server, options, next) {
                 heart: function (callback) {
                     var queryConfig = {
                         name: 'heart_create',
-                        text: 'INSERT INTO heart (sender_id, receiver_id, created_at, updated_at)  ' +
+                        text: 'INSERT INTO heart (sender, receiver, ct, ut)  ' +
                               'VALUES ($1, $2, $3, $4) ' +
                               'RETURNING id',
-                        values: [personId, p.receiver_id, _.now(), _.now()]
+                        values: [personId, p.receiver, _.now(), _.now()]
                     };
 
                     request.pg.client.query(queryConfig, function (err, result) {
@@ -146,11 +146,11 @@ exports.register = function (server, options, next) {
                 },
                 person: ['heart', function (callback) {
                     var queryConfig = {
-                        name: 'person_increase_heart_count',
-                        text: 'UPDATE person SET heart_count = heart_count + 1, updated_at = $1 ' +
+                        name: 'person_increase_hearts',
+                        text: 'UPDATE person SET hearts = hearts + 1, ut = $1 ' +
                               'WHERE id = $2 AND deleted = false ' +
-                              'RETURNING cell_id, heart_count, friend_count',
-                        values: [_.now(), p.receiver_id]
+                              'RETURNING cell, hearts, friends',
+                        values: [_.now(), p.receiver]
                     };
 
                     request.pg.client.query(queryConfig, function (err, result) {
@@ -171,8 +171,8 @@ exports.register = function (server, options, next) {
                 cache: ['person', function (callback, results) {
 
                     var receiver = results.person;
-                    var score = (receiver.heart_count * 5) + (receiver.friend_count * 10);
-                    Cache.zadd(Const.CELL_PERSON_SETS, receiver.cell_id, score, p.receiver_id, function (err) {
+                    var score = (receiver.hearts * 5) + (receiver.friends * 10);
+                    Cache.zadd(Const.CELL_PERSON_SETS, receiver.cell, score, p.receiver, function (err) {
                         if (err) {
                             console.error(err); // since DB records is updated, do not callback(err) in case of cache failure
                         }
