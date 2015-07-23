@@ -134,6 +134,28 @@ lab.experiment('person GET: ', function () {
 
 lab.experiment('person POST: ', function () {
 
+    lab.test('/person/device: update successfully', function (done) {
+
+        request = {
+            method: 'POST',
+            url: '/person/device',
+            payload: {
+                service: 'apn',
+                token: 'FAKE1DEVICE2TOKEN',
+                badge: 1
+            },
+            credentials: andy
+        };
+
+        server.inject(request, function (response) {
+
+            Code.expect(response.statusCode).to.equal(200);
+            Code.expect(response.result).to.be.an.object();
+
+            done();
+        });
+    });
+
     lab.test('/person/profile: update successfully', function (done) {
 
         request = {

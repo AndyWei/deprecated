@@ -172,7 +172,7 @@ exports.register = function (server, options, next) {
 
                     var receiver = results.person;
                     var score = (receiver.heart_count * 5) + (receiver.friend_count * 10);
-                    Cache.updateSortedSet(Const.PERSON_CACHE, receiver.cell_id, score, p.receiver_id, function (err) {
+                    Cache.zadd(Const.CELL_PERSON_SETS, receiver.cell_id, score, p.receiver_id, function (err) {
                         if (err) {
                             console.error(err); // since DB records is updated, do not callback(err) in case of cache failure
                         }

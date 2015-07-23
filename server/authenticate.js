@@ -3,11 +3,10 @@ var Bcrypt = require('bcrypt');
 var Boom = require('boom');
 var Cache = require('./cache');
 var Const = require('./constants');
-var _ = require('underscore');
-
 
 var exports = module.exports = {};
 var internals = {};
+
 
 internals.validateSimple = function (request, email, password, finish) {
 
@@ -64,7 +63,7 @@ internals.validateToken = function (token, callback) {
         return callback(Boom.unauthorized(Const.AUTH_TOKEN_INVALID));
     }
 
-    Cache.get(Const.AUTH_TOKEN_CACHE, token, function (err, result) {
+    Cache.get(Const.AUTHTOKEN_PERSON_PAIRS, token, function (err, result) {
 
         if (err) {
             console.error(err);
@@ -75,9 +74,7 @@ internals.validateToken = function (token, callback) {
             return callback(Boom.unauthorized(Const.AUTH_TOKEN_INVALID));
         }
 
-        var personInfo = _.object(['id', 'name'], result.split(':'));
-
-        return callback(null, true, personInfo);
+        return callback(null, true, { id: result});
     });
 };
 

@@ -17,7 +17,10 @@ internals.redis = null;
 
 internals.generateKey = function (dataset, key) {
 
-    return dataset.segment + encodeURIComponent(key);
+    if (_.isString(key)) {
+        return dataset.segment + key.toString();
+    }
+    return dataset.segment + String(key);
 };
 
 
@@ -169,7 +172,8 @@ exports.enqueue = internals.enqueue = function (listDataset, countDataset, key, 
 };
 
 
-exports.updateSortedSet = internals.updateSortedSet = function (dataset, key, score, member, callback) {
+// Sorted Sets
+exports.zadd = internals.zadd = function (dataset, key, score, member, callback) {
 
     if (!internals.redis) {
         return callback(new Error('Connection not started'));
@@ -187,6 +191,80 @@ exports.updateSortedSet = internals.updateSortedSet = function (dataset, key, sc
 };
 
 
+// Hashes
+exports.hset = internals.hset = function (dataset, key, field, value, callback) {
+
+    if (!internals.redis) {
+        return callback(new Error('Connection not started'));
+    }
+
+    var hashKey = internals.generateKey(dataset, key);
+    internals.redis.hset(hashKey, field, value.toString(), function (err, result) {
+
+        if (err) {
+            return callback(err);
+        }
+
+        return callback(null, result);
+    });
+};
+
+
+exports.hmset = internals.hmset = function (dataset, key, obj, callback) {
+
+    if (!internals.redis) {
+        return callback(new Error('Connection not started'));
+    }
+
+    var hashKey = internals.generateKey(dataset, key);
+    internals.redis.hmset(hashKey, obj, function (err, result) {
+
+        if (err) {
+            return callback(err);
+        }
+
+        return callback(null, result);
+    });
+};
+
+
+exports.hincrby = internals.hincrby = function (dataset, key, field, increment, callback) {
+
+    if (!internals.redis) {
+        return callback(new Error('Connection not started'));
+    }
+
+    var hashKey = internals.generateKey(dataset, key);
+    internals.redis.hincrby(hashKey, field, increment, function (err, result) {
+
+        if (err) {
+            return callback(err);
+        }
+
+        return callback(null, result);
+    });
+};
+
+
+exports.hgetall = internals.hgetall = function (dataset, key, callback) {
+
+    if (!internals.redis) {
+        return callback(new Error('Connection not started'));
+    }
+
+    var hashKey = internals.generateKey(dataset, key);
+    internals.redis.hgetall(hashKey, function (err, result) {
+
+        if (err) {
+            return callback(err);
+        }
+
+        return callback(null, result);
+    });
+};
+
+
+// pairs
 exports.drop = function (dataset, key, callback) {
 
     if (!internals.redis) {

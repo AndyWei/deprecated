@@ -6,13 +6,13 @@ curl -i -u jack@gmail.com:password "http://localhost:8000/v1/signin"
 
 ## person
 # GET a person's own profile
-curl -i -H "Authorization: Bearer 1:xPwi4ZHduEK7cTxLouzz" "http://localhost:8000/v1/person/profile"
+curl -i -H "Authorization: Bearer XtLn28StytiaIavlMymz" "http://localhost:8000/v1/person/profile"
 
-# GET a another person's profile
-curl -i -H "Authorization: Bearer 1:xPwi4ZHduEK7cTxLouzz" "http://localhost:8000/v1/person?id=1"
+# GET a list of people's profile
+curl -i -H "Authorization: Bearer XtLn28StytiaIavlMymz" "http://localhost:8000/v1/person?id=1&id=2&id=3&id=4"
 
 # Update a person's profile
-curl -i -H "Authorization: Bearer 1:xPwi4ZHduEK7cTxLouzz" --data "yob=1995&name='dodo'&gender=2&bio='sound of silence'" "http://localhost:8000/v1/person/profile"
+curl -i -H "Authorization: Bearer XtLn28StytiaIavlMymz" --data "yob=1995&name='dodo'&gender=2&bio='sound of silence'" "http://localhost:8000/v1/person/profile"
 
 
 

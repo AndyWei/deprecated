@@ -40,7 +40,6 @@ var manifest = {
         './server/api/comment': { basePath: '/v1' },
         './server/api/heart': { basePath: '/v1' },
         './server/api/media': { basePath: '/v1' },
-        './server/api/notification': { basePath: '/v1' },
         './server/api/person': { basePath: '/v1' },
         './server/api/sign': { basePath: '/v1' }
     }

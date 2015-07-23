@@ -86,7 +86,8 @@ lab.experiment('Signup: ', function () {
             url: '/signup',
             payload: {
                 email: 'mrmud@mudmail.mud',
-                password: ''
+                password: '',
+                cell_id: '94103'
             }
         };
 
@@ -106,7 +107,8 @@ lab.experiment('Signup: ', function () {
             url: '/signup',
             payload: {
                 email: 'andy94555@gmail.com',
-                password: 'password'
+                password: 'password',
+                cell_id: '94103'
             }
         };
 
@@ -127,7 +129,8 @@ lab.experiment('Signup: ', function () {
             url: '/signup',
             payload: {
                 email: '',
-                password: 'password'
+                password: 'password',
+                cell_id: '94103'
             }
         };
 
@@ -147,7 +150,8 @@ lab.experiment('Signup: ', function () {
             url: '/signup',
             payload: {
                 email: 'good789@gmail.com',
-                password: 'password'
+                password: 'password',
+                cell_id: '94103'
             }
         };
 
@@ -166,7 +170,8 @@ lab.experiment('Signup: ', function () {
             url: '/signup',
             payload: {
                 email: 'andy@gmail.com',
-                password: 'password'
+                password: 'password',
+                cell_id: '94103'
             }
         };
 

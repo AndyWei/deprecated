@@ -2,11 +2,11 @@
 
 
 INSERT INTO person
-    (    name,                                                       password,                 email, org_name, validated,    created_at,    updated_at, coordinate) VALUES
-    (  'jack', '$2a$10$sTaFcBz.lhDXr2bVNZJZeenPJ3qiKG.NaQQ5zqiz0peku0fDvO0YG',      'jack@gmail.com', 'goooog',      true, 1437524632000, 1437524632000,   ST_SetSRID(ST_MakePoint(-122.4164623, 37.7766092), 4326)),
-    (  'andy', '$2a$10$sTaFcBz.lhDXr2bVNZJZeenPJ3qiKG.NaQQ5zqiz0peku0fDvO0YG', 'andy94555@gmail.com', 'goooog',      true, 1437524632000, 1437524632000,   ST_SetSRID(ST_MakePoint(-122.4074981, 37.7879331), 4326)),
-    (  'ping', '$2a$10$sTaFcBz.lhDXr2bVNZJZeenPJ3qiKG.NaQQ5zqiz0peku0fDvO0YG', 'ping@gmail.com',      'appple',      true, 1437524632000, 1437524632000,   ST_SetSRID(ST_MakePoint(-121.9989519, 37.5293864), 4326)),
-    (  'mike', '$2a$10$sTaFcBz.lhDXr2bVNZJZeenPJ3qiKG.NaQQ5zqiz0peku0fDvO0YG', 'mike95273@gmail.com', 'joyyyy',      true, 1437524632000, 1437524632000,   ST_SetSRID(ST_MakePoint(-121.9989519, 37.5293864), 4326));
+    (    name,                                                       password,                 email, org_name,  cell_id, validated,    created_at,    updated_at, coordinate) VALUES
+    (  'jack', '$2a$10$sTaFcBz.lhDXr2bVNZJZeenPJ3qiKG.NaQQ5zqiz0peku0fDvO0YG',      'jack@gmail.com', 'goooog',  '94555',      true, 1437524632000, 1437524632000,   ST_SetSRID(ST_MakePoint(-122.4164623, 37.7766092), 4326)),
+    (  'andy', '$2a$10$sTaFcBz.lhDXr2bVNZJZeenPJ3qiKG.NaQQ5zqiz0peku0fDvO0YG', 'andy94555@gmail.com', 'goooog',  '94555',      true, 1437524632000, 1437524632000,   ST_SetSRID(ST_MakePoint(-122.4074981, 37.7879331), 4326)),
+    (  'ping', '$2a$10$sTaFcBz.lhDXr2bVNZJZeenPJ3qiKG.NaQQ5zqiz0peku0fDvO0YG', 'ping@gmail.com',      'appple',  '94555',      true, 1437524632000, 1437524632000,   ST_SetSRID(ST_MakePoint(-121.9989519, 37.5293864), 4326)),
+    (  'mike', '$2a$10$sTaFcBz.lhDXr2bVNZJZeenPJ3qiKG.NaQQ5zqiz0peku0fDvO0YG', 'mike95273@gmail.com', 'joyyyy',  '94102',      true, 1437524632000, 1437524632000,   ST_SetSRID(ST_MakePoint(-121.9989519, 37.5293864), 4326));
 
 
 INSERT INTO media

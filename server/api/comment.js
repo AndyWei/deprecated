@@ -6,8 +6,8 @@ var Joi = require('joi');
 var c = require('../constants');
 var _ = require('underscore');
 
-
 var internals = {};
+
 
 exports.register = function (server, options, next) {
 
@@ -115,8 +115,8 @@ internals.createCommentHandler = function (request, reply) {
         },
         updateCache: ['commentId', function (next) {
 
-            // push this comment content to cache and increase the comment count
-            Cache.enqueue(c.COMMENT_CACHE, c.COMMENT_COUNT_CACHE, p.media_id, p.content, function (error) {
+            // push this comment content to the list and increase the comment count
+            Cache.enqueue(c.MEDIA_COMMENT_LISTS, c.MEDIA_COMMENT_COUNTS, p.media_id, p.content, function (error) {
                 if (error) {
                     // Just log the error, do not call next(error) since caching is a kind of "try our best" thing
                     console.error(error);

@@ -10,6 +10,7 @@ var _ = require('underscore');
 
 var internals = {};
 
+
 exports.register = function (server, options, next) {
 
     options = Hoek.applyToDefaults({ basePath: '' }, options);
@@ -25,7 +26,7 @@ exports.register = function (server, options, next) {
         },
         handler: function (request, reply) {
 
-            internals.createAuthToken(request.auth.credentials.id, request.auth.credentials.name, function (err, token) {
+            internals.createAuthToken(request.auth.credentials.id, function (err, token) {
 
                 if (err) {
                     console.error(err);
@@ -49,7 +50,8 @@ exports.register = function (server, options, next) {
             validate: {
                 payload: {
                     email: Joi.string().email().lowercase().min(3).max(30).required(),
-                    password: Joi.string().min(4).max(30).required()
+                    password: Joi.string().min(4).max(30).required(),
+                    cell_id: Joi.string().max(12).required()
                 }
             },
             pre: [{
@@ -116,10 +118,10 @@ internals.signup = function (request, reply) {
 
             var queryConfig = {
                 text: 'INSERT INTO person ' +
-                          '(email, name, password, created_at, updated_at) VALUES ' +
-                          '($1, $2, $3, $4, $5) ' +
+                          '(email, name, password, cell_id, created_at, updated_at) VALUES ' +
+                          '($1, $2, $3, $4, $5, $6) ' +
                           'RETURNING id',
-                values: [email, name, results.password, _.now(), _.now()],
+                values: [email, name, results.password, request.payload.cell_id, _.now(), _.now()],
                 name: 'person_create'
             };
 
@@ -138,7 +140,7 @@ internals.signup = function (request, reply) {
         }],
         token: ['personId', function (callback, results) {
 
-            internals.createAuthToken(results.personId, name, function (err, token) {
+            internals.createAuthToken(results.personId, function (err, token) {
                 callback(err, token);
             });
         }]
@@ -191,7 +193,7 @@ internals.getOrgFromEmail = function (email) {
 
 
 // Create a 20 character alpha-numeric token and store it in cache as key
-internals.createAuthToken = function (personId, name, callback) {
+internals.createAuthToken = function (personId, callback) {
 
     Async.auto({
         token: function (next) {
@@ -201,9 +203,7 @@ internals.createAuthToken = function (personId, name, callback) {
         },
         cache: ['token', function (next, result) {
 
-            var personInfo = personId + ':' + name;
-
-            Cache.setex(Const.AUTH_TOKEN_CACHE, result.token, personInfo, function (err) {
+            Cache.setex(Const.AUTHTOKEN_PERSON_PAIRS, result.token, personId, function (err) {
 
                 if (err) {
                     return next(err);

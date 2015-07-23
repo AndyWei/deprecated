@@ -8,52 +8,41 @@ var exports = module.exports = {};
 var internals = {};
 
 var apnConnection = null;
-
 var rootFolder = process.cwd();
-
 var apnOptions = {
     'pfx': rootFolder + '/cert/dev.p12',
     'passphrase': ''
 };
+
 
 exports.connect = internals.connect = function () {
     apnConnection = new Apn.Connection(apnOptions);
 };
 
 
-exports.notify = internals.notify = function (userId, title, body, callback) {
-
-    var badgeKey = 'badge' + userId;
+exports.notify = internals.notify = function (personId, title, body, callback) {
 
     Async.waterfall([
         function (next) {
 
-            var serviceTokenKey = userId;
-            var keys = [serviceTokenKey, badgeKey];
-
-            Cache.mget(Const.DEVICE_TOKEN_CACHE, keys, function (err, results) {
+            Cache.hgetall(Const.PERSON_HASHES, personId, function (err, person) {
                 if (err) {
                     return next(err);
                 }
 
-                var serviceToken = results[0];
-                var badge = Number(results[1] || '0');
-
-                if (!serviceToken) {
-                    return next(new Error('Device token missing. user_id = ' + userId));
+                if (!person.token || !person.service) {
+                    var error = new Error(Const.DEVICE_TOKEN_NOT_FOUND + 'personId = ' + personId);
+                    return next(error);
                 }
 
-                var fields = serviceToken.split(':');
-                var service = fields[0];
-                var token = fields[1];
-                next(null, service, token, badge);
+                next(null, person);
             });
         },
-        function (service, token, badge, next) {
+        function (person, next) {
 
-            switch(service) {
+            switch(person.service) {
                 case 'apn':
-                    internals.apnSend(token, badge, title, body);
+                    internals.apnSend(person.token, person.badge, title, body);
                     break;
                 case 'gcm':
                     internals.gcmSend();
@@ -62,13 +51,14 @@ exports.notify = internals.notify = function (userId, title, body, callback) {
                     internals.mpnSend();
                     break;
                 default:
-                    return next(Const.DEVICE_TOKEN_INVALID);
+                    var error = new Error(Const.DEVICE_TOKEN_INVALID + 'personId = ' + personId);
+                    return next(error);
             }
             next(null);
         },
         function (next) {
 
-            Cache.incr(Const.DEVICE_TOKEN_CACHE, badgeKey, function (err) {
+            Cache.hincrby(Const.PERSON_HASHES, personId, 'badge', 1, function (err) {
 
                 if (err) {
                     return next(err);
@@ -83,18 +73,18 @@ exports.notify = internals.notify = function (userId, title, body, callback) {
             return callback(err);
         }
 
-        callback(null, userId);
+        callback(null, personId);
     });
 };
 
 
-exports.mnotify = function (userIds, title, body) {
+exports.mnotify = function (personIds, title, body) {
 
-    if (!userIds || userIds.length === 0) {
+    if (!personIds || personIds.length === 0) {
         return;
     }
 
-    _.each(userIds, function (id) {
+    _.each(personIds, function (id) {
 
         if (!id) {
             return;
@@ -115,8 +105,12 @@ internals.apnSend = function (token, badge, title, body) {
     var device = new Apn.Device(token);
     var notification = new Apn.Notification();
 
+    if (_.isString(badge)) {
+        badge = parseInt(badge, 10);
+    }
+
     notification.badge = badge + 1;
-    notification.expiry = Math.floor(Date.now() / 1000) + 3600; // Expires 1 hour from now.
+    notification.expiry = Math.floor(_.now() / 1000) + 3600; // Expires 1 hour from now.
     notification.sound = 'default';
     notification.alert = title;
     notification.payload = {'message': body};

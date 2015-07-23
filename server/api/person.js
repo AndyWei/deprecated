@@ -7,12 +7,10 @@ var Joi = require('joi');
 var Utils = require('../utils');
 var _ = require('underscore');
 
-
 var internals = {};
-
 var selectClause = 'SELECT id, name, org_name, org_type, gender, yob, bio, url, heart_count, friend_count, updated_at FROM person ';
-
 var selectProfileClause = 'SELECT id, email, name, role, org_name, org_type, gender, yob, bio, url, heart_count, friend_count, validated, member_expire_at FROM person ';
+
 
 exports.register = function (server, options, next) {
 
@@ -137,7 +135,46 @@ exports.register = function (server, options, next) {
     });
 
 
-    // update an person profile. auth.
+    // update a person's device information
+    server.route({
+        method: 'POST',
+        path: options.basePath + '/person/device',
+        config: {
+            auth: {
+                strategy: 'token'
+            },
+            validate: {
+                payload: {
+                    service: Joi.string().allow('apn', 'gcm', 'mpn').required(),
+                    token: Joi.string().max(100).required(),
+                    badge: Joi.number().min(0).max(1000).default(0)
+                }
+            }
+        },
+        handler: function (request, reply) {
+
+            var personId = request.auth.credentials.id;
+            var personObj = {
+                service: request.payload.service,
+                token: request.payload.token,
+                badge: request.payload.badge
+            };
+
+            Cache.hmset(Const.PERSON_HASHES, personId, personObj, function (err) {
+
+                if (err) {
+                    console.error(err);
+                    return reply(err);
+                }
+
+                console.log('Received device token %s for personId %s', request.payload.token, personId);
+                reply(null, {id: personId});
+            });
+        }
+    });
+
+
+    // update a person's profile. auth.
     server.route({
         method: 'POST',
         path: options.basePath + '/person/profile',
@@ -187,9 +224,9 @@ exports.register = function (server, options, next) {
                 },
                 function (callback) {
 
-                    internals.updateCachedName(personId.toString(), p.name, function (err) {
+                    Cache.hset(Const.PERSON_HASHES, personId, 'name', p.name, function (err) {
                         if (err) {
-                            console.error(err); // Do not callback(err) since the cached name will be corrected in next sign in
+                            return callback(err);
                         }
                         return callback(null);
                     });
@@ -257,7 +294,7 @@ exports.register = function (server, options, next) {
                 function (person, callback) {
 
                     var score = (person.heart_count * 5) + (person.friend_count * 10);
-                    Cache.updateSortedSet(Const.PERSON_CACHE, p.cell_id, score, personId.toString(), function (err) {
+                    Cache.zadd(Const.CELL_PERSON_SETS, p.cell_id, score, personId, function (err) {
                         if (err) {
                             return callback(err);
                         }
@@ -277,51 +314,6 @@ exports.register = function (server, options, next) {
     });
 
     next();
-};
-
-
-internals.updateCachedName = function (personId, name, callback) {
-
-    personId = personId.toString();
-
-    Async.waterfall([
-
-        function (next) {
-            Cache.get(Const.AUTH_TOKEN_CACHE, personId, function (err, result) {
-
-                if (err) {
-                    return next(err);
-                }
-
-                if (!result) {
-                    return next(null, null);
-                }
-
-                var token = result.substring(result.indexOf(':') + 1);
-                return next(null, token);
-            });
-        },
-        function (token, next) {
-
-            var authInfo = token + ':' + name;
-            Cache.setex(Const.AUTH_TOKEN_CACHE, personId, authInfo, function (err) {
-
-                if (err) {
-                    return next(err);
-                }
-
-                return next(null);
-            });
-        }
-    ], function (err) {
-
-        if (err) {
-            console.error(err);
-            return callback(err);
-        }
-
-        return callback(null);
-    });
 };
 
 

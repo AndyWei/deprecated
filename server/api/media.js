@@ -9,12 +9,12 @@ var Joi = require('joi');
 var Long = require('long');
 var _ = require('underscore');
 
-
 var internals = {};
 
 var selectClause = 'SELECT id, owner_id, media_type, path_version, filename, caption, created_at, \
                     ST_X(coordinate) AS lon, ST_Y(coordinate) AS lat \
                     FROM media ';
+
 
 exports.register = function (server, options, next) {
 
@@ -48,7 +48,7 @@ exports.register = function (server, options, next) {
             Async.auto({
                 fromCache: function (callback) {
 
-                    Cache.getList(Const.MEDIA_CACHE, q.cell_id, function (err, results) {
+                    Cache.getList(Const.CELL_MEDIA_LISTS, q.cell_id, function (err, results) {
                         if (err) {
                             console.error(err);
                             return callback(null, null); // continue search in DB
@@ -154,7 +154,7 @@ exports.register = function (server, options, next) {
             Async.auto({
                 commentLists: function (callback) {
 
-                    Cache.mgetList(Const.COMMENT_CACHE, mediaIds, function (err, result) {
+                    Cache.mgetList(Const.MEDIA_COMMENT_LISTS, mediaIds, function (err, result) {
                         if (err) {
                             console.error(err);
                         }
@@ -163,7 +163,7 @@ exports.register = function (server, options, next) {
                 },
                 commentCounts: function (callback) {
 
-                    Cache.mget(Const.COMMENT_COUNT_CACHE, mediaIds, function (err, result) {
+                    Cache.mget(Const.MEDIA_COMMENT_COUNTS, mediaIds, function (err, result) {
                         if (err) {
                             console.error(err);
                         }
@@ -172,7 +172,7 @@ exports.register = function (server, options, next) {
                 },
                 likeCounts: function (callback) {
 
-                    Cache.mget(Const.LIKE_COUNT_CACHE, mediaIds, function (err, result) {
+                    Cache.mget(Const.MEDIA_LIKE_COUNTS, mediaIds, function (err, result) {
                         if (err) {
                             console.error(err);
                         }
@@ -308,7 +308,7 @@ exports.register = function (server, options, next) {
 
                     var mediaRecord = JSON.stringify([mediaId, ownerId, p.media_type, 0, dbFilename, p.caption, _.now()]);
                     // push the media record to cache and increase the media count
-                    Cache.enqueue(Const.MEDIA_CACHE, Const.MEDIA_COUNT_CACHE, p.cell_id, mediaRecord, function (error) {
+                    Cache.enqueue(Const.CELL_MEDIA_LISTS, Const.CELL_MEDIA_COUNTS, p.cell_id, mediaRecord, function (error) {
                         if (error) {
                             // Just log the error, do not call next(error) since caching is a kind of "try our best" thing
                             console.error(error);
@@ -347,7 +347,7 @@ exports.register = function (server, options, next) {
         handler: function (request, reply) {
 
             // push this comment content to cache and increase the comment count
-            Cache.incr(Const.LIKE_COUNT_CACHE, request.payload.id, function (err, result) {
+            Cache.incr(Const.MEDIA_LIKE_COUNTS, request.payload.id, function (err, result) {
                 if (err) {
                     // Just log the error, do not call next(err) since caching is a kind of "try our best" thing
                     console.error(err);
