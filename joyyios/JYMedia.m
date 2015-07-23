@@ -43,9 +43,9 @@
         {
             _localImage = nil;
             _mediaId = [[dict objectForKey:@"id"] unsignedIntegerValue];
-            _pathVersion = [[dict objectForKey:@"path_version"] unsignedIntegerValue];
-            _type = [[dict objectForKey:@"media_type"] unsignedIntegerValue];
-            _ownerId = [[dict objectForKey:@"owner_id"] unsignedIntegerValue];
+            _urlVersion = [[dict objectForKey:@"uv"] unsignedIntegerValue];
+            _type = [[dict objectForKey:@"type"] unsignedIntegerValue];
+            _ownerId = [[dict objectForKey:@"owner"] unsignedIntegerValue];
             _isLiked = NO;
 
             _filename = [dict objectForKey:@"filename"];
@@ -62,7 +62,7 @@
     {
         _localImage = image;
         _mediaId = 0;
-        _pathVersion = 0;
+        _urlVersion = 0;
         _type = JYMediaTypeImage;
         _ownerId = [JYUser currentUser].userId;
         _isLiked = NO;
@@ -86,7 +86,7 @@
 - (NSString *)baseURL
 {
     NSString *url = @"https://joyydev.s3.amazonaws.com/";
-    switch (self.pathVersion)
+    switch (self.urlVersion)
     {
         case 0:
             break;
@@ -122,10 +122,10 @@
         return;
     }
 
-    id value = [brief objectForKey:@"like_count"];
+    id value = [brief objectForKey:@"likes"];
     _likeCount = (value == [NSNull null]) ? 0 : [(NSString *)value unsignedIntegerValue];
 
-    value = [brief objectForKey:@"comment_count"];
+    value = [brief objectForKey:@"comments"];
     _commentCount = (value == [NSNull null]) ? 0: [(NSString *)value unsignedIntegerValue];
 
     _commentList = [brief objectForKey:@"comment_list"];

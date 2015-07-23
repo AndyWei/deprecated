@@ -53,6 +53,7 @@ const CGFloat kServiceCategoryCellFontSize = 18.0f;
 
 const NSTimeInterval k15Minutes = 900;
 const NSUInteger kBriefCommentsCount = 3;
+const NSUInteger kAPN = 1;;
 
 NSString *const kAnnotationTitleEnd = @"endPoint";
 NSString *const kAnnotationTitleStart = @"startPoint";

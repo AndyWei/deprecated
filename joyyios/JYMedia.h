@@ -24,7 +24,7 @@ typedef NS_ENUM(NSUInteger, JYMediaType)
 @property(nonatomic) JYMediaType type;
 @property(nonatomic) NSUInteger mediaId;
 @property(nonatomic) NSUInteger ownerId;
-@property(nonatomic) NSUInteger pathVersion;
+@property(nonatomic) NSUInteger urlVersion;
 @property(nonatomic) UIImage *localImage;
 @property(nonatomic, copy) NSString *filename;
 @property(nonatomic, copy) NSString *caption;

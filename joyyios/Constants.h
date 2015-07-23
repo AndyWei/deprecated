@@ -52,6 +52,7 @@ extern const CGFloat kServiceCategoryCellFontSize;
 
 extern const NSTimeInterval k15Minutes;
 extern const NSUInteger kBriefCommentsCount;
+extern const NSUInteger kAPN;
 
 extern NSString *const kAnnotationTitleEnd;
 extern NSString *const kAnnotationTitleStart;
