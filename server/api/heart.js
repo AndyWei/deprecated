@@ -1,9 +1,9 @@
 var Async = require('async');
 var Boom = require('boom');
 var Cache = require('../cache');
+var Const = require('../constants');
 var Hoek = require('hoek');
 var Joi = require('joi');
-var c = require('../constants');
 var _ = require('underscore');
 
 
@@ -22,7 +22,7 @@ exports.register = function (server, options, next) {
             validate: {
                 query: {
                     status: Joi.number().min(0).max(100).default(0),
-                    before: Joi.string().regex(/^[0-9]+$/).max(19).default(c.MAX_ID)
+                    before: Joi.string().regex(/^[0-9]+$/).max(19).default(Const.MAX_ID)
                 }
             }
         },
@@ -64,7 +64,7 @@ exports.register = function (server, options, next) {
             validate: {
                 query: {
                     status: Joi.number().min(0).max(100).default(0),
-                    before: Joi.string().regex(/^[0-9]+$/).max(19).default(c.MAX_ID)
+                    before: Joi.string().regex(/^[0-9]+$/).max(19).default(Const.MAX_ID)
                 }
             }
         },
@@ -115,7 +115,7 @@ exports.register = function (server, options, next) {
             var personId = request.auth.credentials.id;
 
             if (personId.toString() === p.receiver_id) {
-                return reply(Boom.notAcceptable(c.HEART_NOT_ALLOWED));
+                return reply(Boom.notAcceptable(Const.HEART_NOT_ALLOWED));
             }
 
             Async.auto({
@@ -138,7 +138,7 @@ exports.register = function (server, options, next) {
                         }
 
                         if (result.rows.length === 0) {
-                            return callback(Boom.badRequest(c.HEART_CREATE_FAILED));
+                            return callback(Boom.badRequest(Const.HEART_CREATE_FAILED));
                         }
 
                         return callback(null, result.rows[0]);
@@ -162,7 +162,7 @@ exports.register = function (server, options, next) {
                         }
 
                         if (result.rows.length === 0) {
-                            return callback(Boom.badRequest(c.PERSON_INCREASE_HEART_COUNT_FAILED));
+                            return callback(Boom.badRequest(Const.PERSON_INCREASE_HEART_COUNT_FAILED));
                         }
 
                         return callback(null, result.rows[0]);
@@ -172,9 +172,9 @@ exports.register = function (server, options, next) {
 
                     var receiver = results.person;
                     var score = (receiver.heart_count * 5) + (receiver.friend_count * 10);
-                    Cache.updateSortedSet(c.PERSON_CACHE, receiver.cell_id, score, p.receiver_id, function (err) {
+                    Cache.updateSortedSet(Const.PERSON_CACHE, receiver.cell_id, score, p.receiver_id, function (err) {
                         if (err) {
-                            console.error(err); // since DB records is updated, do not callback(err) in cache failure
+                            console.error(err); // since DB records is updated, do not callback(err) in case of cache failure
                         }
                         return callback(null);
                     });

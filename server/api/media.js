@@ -3,10 +3,10 @@ var AWS = require('aws-sdk');
 var Boom = require('boom');
 var Cache = require('../cache');
 var Config = require('../../config');
+var Const = require('../constants');
 var Hoek = require('hoek');
 var Joi = require('joi');
 var Long = require('long');
-var c = require('../constants');
 var _ = require('underscore');
 
 
@@ -38,7 +38,7 @@ exports.register = function (server, options, next) {
                     cell_id: Joi.string().max(12).required(),
                     distance: Joi.number().min(1).max(100).default(2),
                     after: Joi.string().regex(/^[0-9]+$/).max(19).default('0'),
-                    before: Joi.string().regex(/^[0-9]+$/).max(19).default(c.MAX_ID)
+                    before: Joi.string().regex(/^[0-9]+$/).max(19).default(Const.MAX_ID)
                 }
             }
         },
@@ -48,7 +48,7 @@ exports.register = function (server, options, next) {
             Async.auto({
                 fromCache: function (callback) {
 
-                    Cache.getList(c.MEDIA_CACHE, q.cell_id, function (err, results) {
+                    Cache.getList(Const.MEDIA_CACHE, q.cell_id, function (err, results) {
                         if (err) {
                             console.error(err);
                             return callback(null, null); // continue search in DB
@@ -154,7 +154,7 @@ exports.register = function (server, options, next) {
             Async.auto({
                 commentLists: function (callback) {
 
-                    Cache.mgetList(c.COMMENT_CACHE, mediaIds, function (err, result) {
+                    Cache.mgetList(Const.COMMENT_CACHE, mediaIds, function (err, result) {
                         if (err) {
                             console.error(err);
                         }
@@ -163,7 +163,7 @@ exports.register = function (server, options, next) {
                 },
                 commentCounts: function (callback) {
 
-                    Cache.mget(c.COMMENT_COUNT_CACHE, mediaIds, function (err, result) {
+                    Cache.mget(Const.COMMENT_COUNT_CACHE, mediaIds, function (err, result) {
                         if (err) {
                             console.error(err);
                         }
@@ -172,7 +172,7 @@ exports.register = function (server, options, next) {
                 },
                 likeCounts: function (callback) {
 
-                    Cache.mget(c.LIKE_COUNT_CACHE, mediaIds, function (err, result) {
+                    Cache.mget(Const.LIKE_COUNT_CACHE, mediaIds, function (err, result) {
                         if (err) {
                             console.error(err);
                         }
@@ -259,7 +259,7 @@ exports.register = function (server, options, next) {
             var s3Filename = p.file.hapi.filename + '.jpg';
 
             if (!dbFilename) {
-                return reply(Boom.badData(c.FILENAME_MISSING));
+                return reply(Boom.badData(Const.FILENAME_MISSING));
             }
 
             Async.waterfall([
@@ -298,7 +298,7 @@ exports.register = function (server, options, next) {
                         }
 
                         if (result.rows.length === 0) {
-                            return reply(Boom.badRequest(c.MEDIA_CREATE_FAILED));
+                            return reply(Boom.badRequest(Const.MEDIA_CREATE_FAILED));
                         }
 
                         return callback(null, result.rows[0].id);
@@ -308,7 +308,7 @@ exports.register = function (server, options, next) {
 
                     var mediaRecord = JSON.stringify([mediaId, ownerId, p.media_type, 0, dbFilename, p.caption, _.now()]);
                     // push the media record to cache and increase the media count
-                    Cache.enqueue(c.MEDIA_CACHE, c.MEDIA_COUNT_CACHE, p.cell_id, mediaRecord, function (error) {
+                    Cache.enqueue(Const.MEDIA_CACHE, Const.MEDIA_COUNT_CACHE, p.cell_id, mediaRecord, function (error) {
                         if (error) {
                             // Just log the error, do not call next(error) since caching is a kind of "try our best" thing
                             console.error(error);
@@ -347,7 +347,7 @@ exports.register = function (server, options, next) {
         handler: function (request, reply) {
 
             // push this comment content to cache and increase the comment count
-            Cache.incr(c.LIKE_COUNT_CACHE, request.payload.id, function (err, result) {
+            Cache.incr(Const.LIKE_COUNT_CACHE, request.payload.id, function (err, result) {
                 if (err) {
                     // Just log the error, do not call next(err) since caching is a kind of "try our best" thing
                     console.error(err);
@@ -368,7 +368,7 @@ exports.register = function (server, options, next) {
  */
 internals.degreeFromDistance = function(distance) {
 
-    return distance * c.DEGREE_FACTOR;
+    return distance * Const.DEGREE_FACTOR;
 };
 
 

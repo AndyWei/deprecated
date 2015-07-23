@@ -61,18 +61,18 @@ lab.afterEach(function (done) {
 
 lab.experiment('person GET: ', function () {
 
-    lab.test('/person: return a record successfully', function (done) {
+    lab.test('/person: return multi records successfully', function (done) {
 
         request = {
             method: 'GET',
-            url: '/person?id=1',
+            url: '/person?id=1&id=2&id=3',
             credentials: jack
         };
 
         server.inject(request, function (response) {
 
             Code.expect(response.statusCode).to.equal(200);
-            Code.expect(response.result).to.be.an.array().and.to.have.length(1);
+            Code.expect(response.result).to.be.an.array().and.to.have.length(3);
 
             done();
         });

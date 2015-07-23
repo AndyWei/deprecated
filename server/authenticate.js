@@ -2,7 +2,7 @@ var Async = require('async');
 var Bcrypt = require('bcrypt');
 var Boom = require('boom');
 var Cache = require('./cache');
-var c = require('./constants');
+var Const = require('./constants');
 var _ = require('underscore');
 
 
@@ -28,7 +28,7 @@ internals.validateSimple = function (request, email, password, finish) {
                 }
 
                 if (result.rowCount === 0) {
-                    return callback(Boom.unauthorized(c.PERSON_NOT_FOUND));
+                    return callback(Boom.unauthorized(Const.PERSON_NOT_FOUND));
                 }
 
                 return callback(null, result.rows[0]);
@@ -60,11 +60,11 @@ internals.validateSimple = function (request, email, password, finish) {
 
 internals.validateToken = function (token, callback) {
 
-    if (typeof token !== 'string' || token.length !== c.TOKEN_LENGTH) {
-        return callback(Boom.unauthorized(c.AUTH_TOKEN_INVALID));
+    if (typeof token !== 'string' || token.length !== Const.TOKEN_LENGTH) {
+        return callback(Boom.unauthorized(Const.AUTH_TOKEN_INVALID));
     }
 
-    Cache.get(c.AUTH_TOKEN_CACHE, token, function (err, result) {
+    Cache.get(Const.AUTH_TOKEN_CACHE, token, function (err, result) {
 
         if (err) {
             console.error(err);
@@ -72,7 +72,7 @@ internals.validateToken = function (token, callback) {
         }
 
         if (!result) {
-            return callback(Boom.unauthorized(c.AUTH_TOKEN_INVALID));
+            return callback(Boom.unauthorized(Const.AUTH_TOKEN_INVALID));
         }
 
         var personInfo = _.object(['id', 'name'], result.split(':'));

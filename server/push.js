@@ -1,7 +1,7 @@
 var Apn = require('apn');
 var Async = require('async');
 var Cache = require('./cache');
-var c = require('./constants');
+var Const = require('./constants');
 var _ = require('underscore');
 
 var exports = module.exports = {};
@@ -23,7 +23,6 @@ exports.connect = internals.connect = function () {
 
 exports.notify = internals.notify = function (userId, title, body, callback) {
 
-    var dataset = c.DEVICE_TOKEN_CACHE;
     var badgeKey = 'badge' + userId;
 
     Async.waterfall([
@@ -32,7 +31,7 @@ exports.notify = internals.notify = function (userId, title, body, callback) {
             var serviceTokenKey = userId;
             var keys = [serviceTokenKey, badgeKey];
 
-            Cache.mget(dataset, keys, function (err, results) {
+            Cache.mget(Const.DEVICE_TOKEN_CACHE, keys, function (err, results) {
                 if (err) {
                     return next(err);
                 }
@@ -63,13 +62,13 @@ exports.notify = internals.notify = function (userId, title, body, callback) {
                     internals.mpnSend();
                     break;
                 default:
-                    return next(c.DEVICE_TOKEN_INVALID);
+                    return next(Const.DEVICE_TOKEN_INVALID);
             }
             next(null);
         },
         function (next) {
 
-            Cache.incr(dataset, badgeKey, function (err) {
+            Cache.incr(Const.DEVICE_TOKEN_CACHE, badgeKey, function (err) {
 
                 if (err) {
                     return next(err);

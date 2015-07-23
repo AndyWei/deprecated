@@ -2,10 +2,10 @@ var Async = require('async');
 var Bcrypt = require('bcrypt');
 var Boom = require('boom');
 var Cache = require('../cache');
+var Const = require('../constants');
 var Hoek = require('hoek');
 var Joi = require('joi');
 var Rand = require('rand-token');
-var c = require('../constants');
 var _ = require('underscore');
 
 var internals = {};
@@ -86,7 +86,7 @@ internals.emailChecker = function (request, reply) {
         }
 
         if (result.rows.length > 0) {
-            return reply(Boom.conflict(c.EMAIL_IN_USE));
+            return reply(Boom.conflict(Const.EMAIL_IN_USE));
         }
 
         reply(true);
@@ -102,7 +102,7 @@ internals.signup = function (request, reply) {
     Async.auto({
         salt: function (callback) {
 
-            Bcrypt.genSalt(c.BCRYPT_ROUND, function(err, salt) {
+            Bcrypt.genSalt(Const.BCRYPT_ROUND, function(err, salt) {
                 callback(err, salt);
             });
         },
@@ -130,7 +130,7 @@ internals.signup = function (request, reply) {
                 }
 
                 if (queryResult.rowCount === 0) {
-                    return callback(Boom.badImplementation(c.USER_CREATE_FAILED));
+                    return callback(Boom.badImplementation(Const.USER_CREATE_FAILED));
                 }
 
                 callback(err, queryResult.rows[0].id);
@@ -170,16 +170,16 @@ internals.getOrgFromEmail = function (email) {
     var orgType;
     switch (fields[1]) {
         case 'com':
-            orgType = c.OrgType.COM;
+            orgType = Const.OrgType.COM;
             break;
         case 'edu':
-            orgType = c.OrgType.EDU;
+            orgType = Const.OrgType.EDU;
             break;
         case 'org':
-            orgType = c.OrgType.ORG;
+            orgType = Const.OrgType.ORG;
             break;
         default:
-            orgType = c.OrgType.OTHER;
+            orgType = Const.OrgType.OTHER;
     }
 
     var org = {
@@ -196,14 +196,14 @@ internals.createAuthToken = function (personId, name, callback) {
     Async.auto({
         token: function (next) {
 
-            var str = Rand.generate(c.TOKEN_LENGTH);
+            var str = Rand.generate(Const.TOKEN_LENGTH);
             return next(null, str);
         },
         cache: ['token', function (next, result) {
 
             var personInfo = personId + ':' + name;
 
-            Cache.setex(c.AUTH_TOKEN_CACHE, result.token, personInfo, function (err) {
+            Cache.setex(Const.AUTH_TOKEN_CACHE, result.token, personInfo, function (err) {
 
                 if (err) {
                     return next(err);

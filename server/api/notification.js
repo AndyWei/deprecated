@@ -1,7 +1,8 @@
 var Cache = require('../cache');
+var Const = require('../constants');
 var Hoek = require('hoek');
 var Joi = require('joi');
-var c = require('../constants');
+
 
 exports.register = function (server, options, next) {
 
@@ -33,7 +34,7 @@ exports.register = function (server, options, next) {
             var serviceToken = request.payload.service + ':' + request.payload.token;
             var values = [serviceToken, request.payload.badge];
 
-            Cache.mset(c.DEVICE_TOKEN_CACHE, keys, values, function (err) {
+            Cache.mset(Const.DEVICE_TOKEN_CACHE, keys, values, function (err) {
 
                 if (err) {
                     console.error(err);

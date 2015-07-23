@@ -1,9 +1,10 @@
 var Async = require('async');
 var Boom = require('boom');
 var Cache = require('../cache');
+var Const = require('../constants');
 var Hoek = require('hoek');
 var Joi = require('joi');
-var c = require('../constants');
+var Utils = require('../utils');
 var _ = require('underscore');
 
 
@@ -17,7 +18,7 @@ exports.register = function (server, options, next) {
 
     options = Hoek.applyToDefaults({ basePath: '' }, options);
 
-    // get a person record by id. auth.
+    // get person records by ids. auth.
     server.route({
         method: 'GET',
         path: options.basePath + '/person',
@@ -27,17 +28,19 @@ exports.register = function (server, options, next) {
             },
             validate: {
                 query: {
-                    id: Joi.string().regex(/^[0-9]+$/).max(19).required()
+                    id: Joi.array().single(true).unique().items(Joi.string().regex(/^[0-9]+$/).max(19))
                 }
             }
         },
         handler: function (request, reply) {
 
+            var personIds = request.query.id;
+            var parameterList = Utils.parametersString(1, personIds.length);
             var queryConfig = {
-                name: 'person_by_id',
+                // Warning: DO NOT give a name to this query since it has variable parameters
                 text: selectClause +
-                      'WHERE id = $1 AND deleted = false',
-                values: [request.query.id]
+                      'WHERE id in ' + parameterList + ' AND deleted = false',
+                values: personIds
             };
 
             request.pg.client.query(queryConfig, function (err, result) {
@@ -68,7 +71,7 @@ exports.register = function (server, options, next) {
                     lat: Joi.number().min(-90).max(90).required(),
                     distance: Joi.number().min(1).max(1000).default(2),  // in kilometers
                     after: Joi.string().regex(/^[0-9]+$/).max(19).default('0'),
-                    before: Joi.string().regex(/^[0-9]+$/).max(19).default(c.MAX_ID)
+                    before: Joi.string().regex(/^[0-9]+$/).max(19).default(Const.MAX_ID)
                 }
             }
         },
@@ -176,7 +179,7 @@ exports.register = function (server, options, next) {
                         }
 
                         if (result.rows.length === 0) {
-                            return callback(Boom.badRequest(c.PERSON_UPDATE_PROFILE_FAILED));
+                            return callback(Boom.badRequest(Const.PERSON_UPDATE_PROFILE_FAILED));
                         }
 
                         return callback(null);
@@ -245,7 +248,7 @@ exports.register = function (server, options, next) {
                         }
 
                         if (result.rows.length === 0) {
-                            return callback(Boom.badRequest(c.PERSON_UPDATE_LOCATION_FAILED));
+                            return callback(Boom.badRequest(Const.PERSON_UPDATE_LOCATION_FAILED));
                         }
 
                         return callback(null, result.rows[0]);
@@ -254,7 +257,7 @@ exports.register = function (server, options, next) {
                 function (person, callback) {
 
                     var score = (person.heart_count * 5) + (person.friend_count * 10);
-                    Cache.updateSortedSet(c.PERSON_CACHE, p.cell_id, score, personId.toString(), function (err) {
+                    Cache.updateSortedSet(Const.PERSON_CACHE, p.cell_id, score, personId.toString(), function (err) {
                         if (err) {
                             return callback(err);
                         }
@@ -284,7 +287,7 @@ internals.updateCachedName = function (personId, name, callback) {
     Async.waterfall([
 
         function (next) {
-            Cache.get(c.AUTH_TOKEN_CACHE, personId, function (err, result) {
+            Cache.get(Const.AUTH_TOKEN_CACHE, personId, function (err, result) {
 
                 if (err) {
                     return next(err);
@@ -301,7 +304,7 @@ internals.updateCachedName = function (personId, name, callback) {
         function (token, next) {
 
             var authInfo = token + ':' + name;
-            Cache.setex(c.AUTH_TOKEN_CACHE, personId, authInfo, function (err) {
+            Cache.setex(Const.AUTH_TOKEN_CACHE, personId, authInfo, function (err) {
 
                 if (err) {
                     return next(err);
@@ -327,7 +330,7 @@ internals.updateCachedName = function (personId, name, callback) {
  */
 internals.degreeFromDistance = function(distance) {
 
-    return distance * c.DEGREE_FACTOR;
+    return distance * Const.DEGREE_FACTOR;
 };
 
 exports.register.attributes = {
