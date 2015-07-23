@@ -7,6 +7,8 @@ CREATE TABLE media (
     caption            TEXT          NOT NULL,
     cell               TEXT          NOT NULL, -- the cell where the media belongs to
     coords             GEOMETRY(Point, 4326) NOT NULL,  -- the coordinate of the place where the media was uploaded. It's used for searching
+    likes              INTEGER       NOT NULL DEFAULT 0, -- the number of likes
+    comments           INTEGER       NOT NULL DEFAULT 0, -- the number of comments
     ct                 BIGINT        NOT NULL,
     deleted            BOOLEAN       NOT NULL DEFAULT false
 );

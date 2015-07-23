@@ -51,7 +51,7 @@ exports.register = function (server, options, next) {
                 payload: {
                     email: Joi.string().email().lowercase().min(3).max(30).required(),
                     password: Joi.string().min(4).max(30).required(),
-                    cell: Joi.string().max(12).required()
+                    cell: Joi.string().max(12).default('0')
                 }
             },
             pre: [{
