@@ -25,7 +25,7 @@ exports.padZero = function (num, len, pad) {
 /*
  * Generate node-postgres variable length parameters string
  * E.g., input:  begin = 2, length = 3
- *       output: '($2, $3, $4)'
+ *       output: '($2, $3, $4) '
  */
 exports.parametersString = function (begin, length) {
 

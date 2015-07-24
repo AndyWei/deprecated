@@ -58,13 +58,13 @@ lab.experiment('media GET: ', function () {
 
         request = {
             method: 'GET',
-            url: '/media/nearby?lon=-122.062168&lat=37.5584429&cell=94555'
+            url: '/media/nearby?cell=94555'
         };
 
         server.inject(request, function (response) {
 
             Code.expect(response.statusCode).to.equal(200);
-            Code.expect(response.result).to.be.an.array().and.to.have.length(7);
+            Code.expect(response.result).to.be.an.array().and.to.have.length(5);
 
             done();
         });
@@ -74,7 +74,7 @@ lab.experiment('media GET: ', function () {
 
         request = {
             method: 'GET',
-            url: '/media/nearby?lon=-122.4164623&lat=37.7766092&distance=10&cell=94103'
+            url: '/media/nearby?cell=94103'
         };
 
         server.inject(request, function (response) {

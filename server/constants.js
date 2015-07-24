@@ -17,35 +17,27 @@ exports.MEDIA_COMMENT_LISTS = {
     size: 3
 };
 
-// Simple pairs. key = mediaId, value = comments counts
-exports.MEDIA_COMMENT_COUNTS = {
-    segment: 'c'
-};
-
-// Simple pairs. key = mediaId, value = likes counts
-exports.MEDIA_LIKE_COUNTS = {
-    segment: 'l'
-};
-
-// Lists. key = cellId, values = last 100 medias
-exports.CELL_MEDIA_LISTS = {
-    segment: 'M',
-    size: 100
-};
-
-// Simple pairs. key = cellId, value = media counts
-exports.CELL_MEDIA_COUNTS = {
+//// Media
+// Hash. key = personId, fields = {name, token, badge, invite_count, friend_count, ...}
+exports.MEDIA_HASHES = {
     segment: 'm'
 };
 
+// SortedSet. key = cellId, value = mediaId, score = media.ct
+exports.CELL_MEDIA_SETS = {
+    segment: 'M',
+    size: 1000
+};
+
+//// Person
 // Hash. key = personId, fields = {name, token, badge, invite_count, friend_count, ...}
 exports.PERSON_HASHES = {
-    segment: 'P'
+    segment: 'p'
 };
 
 // SortedSet. key = cellId, value = personId, score = personScore
 exports.CELL_PERSON_SETS = {
-    segment: 'S'
+    segment: 'P'
 };
 
 // consts
@@ -53,6 +45,9 @@ exports.BCRYPT_ROUND = 10;
 exports.DEGREE_FACTOR = 0.0089827983;
 exports.TOKEN_LENGTH = 20;
 exports.MAX_ID = '9223372036854775807';
+
+exports.MEDIA_LIMIT = 20;  // the max number of media records returned per query
+exports.PERSON_LIMIT = 20; // the max number of person records returned per query
 
 // Error strings
 exports.AUTH_TOKEN_INVALID = 'The authentication token is invalid.';
@@ -70,6 +65,7 @@ exports.HEART_CREATE_FAILED = 'Failed to create heart record.';
 exports.HEART_NOT_ALLOWED = 'Cannot heart yourself.';
 
 exports.MEDIA_CREATE_FAILED = 'The media file has been uploaded to s3, but failed to create media record.';
+exports.MEDIA_LIKE_FAILED = 'Failed to like the media record.';
 
 exports.PERSON_CREATE_FAILED = 'Failed to create person record.';
 exports.PERSON_INCREASE_HEART_COUNT_FAILED = 'Failed to update the heart count of the person.';

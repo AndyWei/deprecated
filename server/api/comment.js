@@ -3,7 +3,7 @@ var Boom = require('boom');
 var Cache = require('../cache');
 var Hoek = require('hoek');
 var Joi = require('joi');
-var c = require('../constants');
+var Const = require('../constants');
 var _ = require('underscore');
 
 var internals = {};
@@ -22,7 +22,7 @@ exports.register = function (server, options, next) {
                 query: {
                     media: Joi.string().regex(/^[0-9]+$/).max(19).required(),
                     after: Joi.string().regex(/^[0-9]+$/).max(19).default('0'),
-                    before: Joi.string().regex(/^[0-9]+$/).max(19).default(c.MAX_ID)
+                    before: Joi.string().regex(/^[0-9]+$/).max(19).default(Const.MAX_ID)
                 }
             }
         },
@@ -107,7 +107,7 @@ internals.createCommentHandler = function (request, reply) {
                 }
 
                 if (result.rows.length === 0) {
-                    return next(Boom.badData(c.COMMENT_CREATE_FAILED));
+                    return next(Boom.badData(Const.COMMENT_CREATE_FAILED));
                 }
 
                 return next(null, result.rows[0]);
@@ -115,15 +115,9 @@ internals.createCommentHandler = function (request, reply) {
         },
         updateCache: ['commentId', function (next) {
 
-            // push this comment content to the list and increase the comment count
-            Cache.enqueue(c.MEDIA_COMMENT_LISTS, c.MEDIA_COMMENT_COUNTS, p.media, p.content, function (error) {
-                if (error) {
-                    // Just log the error, do not call next(error) since caching is a kind of "try our best" thing
-                    console.error(error);
-                }
-
-                return next(null);
-            });
+            Cache.enqueue(Const.MEDIA_COMMENT_LISTS, p.media, p.content);
+            Cache.hincrby(Const.MEDIA_HASHES, p.media, 'comments', 1);
+            return next(null);
         }]
     }, function (err, results) {
 

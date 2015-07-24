@@ -6,12 +6,12 @@ var Config = require('../../config');
 var Const = require('../constants');
 var Hoek = require('hoek');
 var Joi = require('joi');
-var Long = require('long');
+var Utils = require('../utils');
 var _ = require('underscore');
 
 var internals = {};
 
-var selectClause = 'SELECT id, owner, type, uv, filename, caption, ct FROM media ';
+var selectClause = 'SELECT id, owner, type, uv, filename, caption, likes, comments, ct FROM media ';
 
 
 exports.register = function (server, options, next) {
@@ -31,108 +31,108 @@ exports.register = function (server, options, next) {
         config: {
             validate: {
                 query: {
-                    lon: Joi.number().min(-180).max(180).required(),
-                    lat: Joi.number().min(-90).max(90).required(),
                     cell: Joi.string().max(12).required(),
-                    distance: Joi.number().min(1).max(100).default(2),
-                    after: Joi.string().regex(/^[0-9]+$/).max(19).default('0'),
-                    before: Joi.string().regex(/^[0-9]+$/).max(19).default(Const.MAX_ID)
+                    after: Joi.number().positive().default(0),
+                    before: Joi.number().positive().default(Number.MAX_SAFE_INTEGER)
                 }
             }
         },
         handler: function (request, reply) {
 
             var q = request.query;
-            Async.auto({
-                fromCache: function (callback) {
-
-                    Cache.getList(Const.CELL_MEDIA_LISTS, q.cell, function (err, results) {
+            Async.waterfall([
+                function (callback) {
+                    Cache.zcard(Const.CELL_MEDIA_SETS, q.cell, function (err, result) {
                         if (err) {
                             console.error(err);
-                            return callback(null, null); // continue search in DB
+                            return callback(null, 0); // continue search in DB
                         }
 
-                        var after = Long.fromString(q.after);
-                        var before = Long.fromString(q.before);
-
-                        // Note: media in results are DESC by mediaId
-                        // quick check if we should search in DB
-                        if (results.length === 0) {
-                             return callback(null, null);
-                        }
-
-                        var lastResult = _.last(results);
-                        var lastMedia = JSON.parse(lastResult);
-                        var lastMediaId = Long.fromString(lastMedia[0]);
-                        if (lastMediaId.greaterThanOrEqual(before)) {
-                            return callback(null, null);
-                        }
-
-                        // Filter the results
-                        var records = [];
-                        for (var i = 0, len = results.length; i < len; i++) {
-
-                            var media = JSON.parse(results[i]); // [mediaId, ownerId, type, uv, filename, caption, timestamp]
-                            var mediaId = Long.fromString(media[0]);
-                            results[i] = null; // release memory
-
-                            if (mediaId.lessThanOrEqual(after)) {
-                                break;
-                            }
-
-                            if (mediaId.lessThan(before)) {
-                                var record = _.object(['id', 'owner', 'type', 'uv', 'filename', 'caption', 'ct'], media);
-                                media = null; // release memory
-                                records.push(record);
-                            }
-                        }
-                        results = null; // release memory
-
-                        return callback('cacheHit', records);
+                        return callback(null, result);
                     });
                 },
-                fromDB: ['fromCache', function (callback) {
+                function (setSize, callback) {
+                    if (setSize === 0) {
+                         return callback(null, 0, null);
+                    }
 
-                    var degree = internals.degreeFromDistance(q.distance);
-
-                    var where = 'WHERE id > $1 AND id < $2 AND ST_DWithin(coords, ST_SetSRID(ST_MakePoint($3, $4), 4326), $5) AND deleted = false ';
-                    var order = 'ORDER BY id DESC ';
-                    var limit = 'LIMIT 10';  // 10 media/request is a blance between search pressure and photo bandwidth usage
-
-                    var queryValues = [q.after, q.before, q.lon, q.lat, degree];
-                    var queryConfig = {
-                        name: 'media_nearby',
-                        text: selectClause + where + order + limit,
-                        values: queryValues
-                    };
-
-                    request.pg.client.query(queryConfig, function (err, result) {
-
+                    var min = '(' + q.after.toString();
+                    var max = '(' + q.before.toString();
+                    Cache.zrevrangebyscore(Const.CELL_MEDIA_SETS, q.cell, max, min, Const.MEDIA_LIMIT, function (err, result) {
                         if (err) {
                             console.error(err);
-                            request.pg.kill = true;
-                            return callback(err);
+                            return callback(null, 0, null); // continue search in DB
                         }
 
-                        return callback(null, result.rows);
+                        return callback(null, setSize, result);
                     });
-                }]
-            }, function (err, results) {
+                },
+                function (setSize, mediaIds, callback) {
+                    if (setSize === 0) {
+                         return callback(null, 0, null, null); // continue search in DB
+                    }
 
-                // Check the results from cache
-                if (err === 'cacheHit') {
-                    return reply(null, results.fromCache);
+                    if (_.isEmpty(mediaIds)) {
+                        if (q.after !== 0 && q.before === Number.MAX_SAFE_INTEGER) { // try to fetch new but no more fresh media
+                            return callback(null, setSize, null, []);                // just return empty result
+                        }
+                        else {                                                       // try to fetch old
+                            return callback(null, 0, null, null);                    // search in DB
+                        }
+                    }
+
+                    Cache.mhgetall(Const.MEDIA_HASHES, mediaIds, function (err, result) {
+                        if (err) {
+                            console.error(err);
+                        }
+
+                        var missedMediaIds = [];
+                        var foundMedia = [];
+                        for (var i = 0; i < mediaIds.length; i++) {
+                            // result is an array, and each element is an array in form of [err, mediaObj]
+                            if (result[i][0]) {  // found err
+                                missedMediaIds.push(mediaIds[i]);
+                            }
+                            else {
+                                foundMedia.push(result[i][1]);
+                            }
+                        }
+
+                        return callback(null, setSize, missedMediaIds, foundMedia);
+                    });
+                },
+                function (setSize, missedMediaIds, foundMedia, callback) {
+                    if (setSize === 0) {
+                        internals.searchMediaByCellFromDB(request, function (err, result) {
+                            return callback(null, result);
+                        });
+                    }
+                    else if (_.isNull(missedMediaIds) || _.isEmpty(missedMediaIds)) {
+                        return callback(null, foundMedia);
+                    }
+                    else {
+                        internals.searchMediaByIdsFromDB(request, missedMediaIds, function (err, result) {
+
+                            var merged = foundMedia.concat(result);
+                            var sorted = _.sortBy(merged, function(media) {
+                                return media.ct * -1;  // Sort records in DESC order by ct
+                            });
+                            return callback(null, sorted);
+                        });
+                    }
                 }
+            ], function (err, results) {
 
                 if (err) {
                     console.error(err);
                     return reply(err);
                 }
 
-                return reply(null, results.fromDB);
+                return reply(null, results);
             });
         }
     });
+
 
     // For each media id in the query, get its like count, comment count and last 3 comments. no auth.
     server.route({
@@ -150,37 +150,20 @@ exports.register = function (server, options, next) {
             var mediaIds = request.query.id;
 
             Async.auto({
-                commentLists: function (callback) {
+                commentListsfromCache: function (callback) {
 
                     Cache.mgetList(Const.MEDIA_COMMENT_LISTS, mediaIds, function (err, result) {
                         if (err) {
                             console.error(err);
                         }
-                        return callback(null, result);
-                    });
-                },
-                commentCounts: function (callback) {
 
-                    Cache.mget(Const.MEDIA_COMMENT_COUNTS, mediaIds, function (err, result) {
-                        if (err) {
-                            console.error(err);
-                        }
-                        return callback(null, result);
-                    });
-                },
-                likeCounts: function (callback) {
-
-                    Cache.mget(Const.MEDIA_LIKE_COUNTS, mediaIds, function (err, result) {
-                        if (err) {
-                            console.error(err);
-                        }
-                        return callback(null, result);
+                        var commentLists = _.map(result, function (commentList) {
+                            return commentList.reverse();
+                        });
+                        return callback(null, commentLists);
                     });
                 }/*,  In case of cache missed, query from DB
-                countFromDB: ['countFromCache', function (callback) {
-
-                }],
-                contentFromDB: ['contentFromCache', function (callback) {
+                commentListsfromDB: ['commentListsfromCache', function (callback) {
 
                 }]*/
             }, function (err, results) {
@@ -189,41 +172,11 @@ exports.register = function (server, options, next) {
                     return reply(err);
                 }
 
-                // results.mediaIds      = ['4', '3', '2', '1']
-                // results.likeCounts    = [null, null, null, null]
-                // results.commentCounts = [null, null, null, '2']
-                // results.commentLists  = [[], [], [], ['second comment','some comment contents']]
-                var commentLists = _.map(results.commentLists, function (commentList) {
-                    return commentList.reverse();
-                });
-                //commentLists  = [[], [], [], ['some comment contents', 'second comment']]
-                results.commentLists = null; // release memory
-
-                var itemArray = _.zip(mediaIds, results.likeCounts, results.commentCounts, commentLists);
-                /*
-                 *  itemArray = [
-                 *      ['4', null, null, []],
-                 *      ['3', null, null, []],
-                 *      ['2', null, null, []],
-                 *      ['1', null, '2', ['some comment contents', 'second comment']]
-                 *  ]
-                 */
-                var objectArray = _.map(itemArray, function (item) {
-                    return _.object(['id', 'likes', 'comments', 'comment_list'], item);
-                });
-                /*
-                 *  objectArray = [
-                 *      {'id': '4', 'likes': null, 'comments': null, 'comment_list': []},
-                 *      {'id': '3', 'likes': null, 'comments': null, 'comment_list': []},
-                 *      {'id': '2', 'likes': null, 'comments': null, 'comment_list': []},
-                 *      {'id': '1', 'likes': null, 'comments':  '2', 'comment_list': ['some comment contents', 'second comment']}
-                 *  ]
-                */
-                itemArray = null; // release memory
-                return reply(objectArray);
+                return reply(results.commentListsfromCache);
             });
         }
     });
+
 
     // upload a media. auth.
     server.route({
@@ -280,7 +233,8 @@ exports.register = function (server, options, next) {
 
                     var fields = 'INSERT INTO media (owner, type, uv, filename, caption, coords, cell, ct) ';
                     var values = 'VALUES ($1, $2, $3, $4, $5, ST_SetSRID(ST_MakePoint($6, $7), 4326), $8, $9) RETURNING id';
-                    var queryValues = [ownerId, p.type, 0, dbFilename, p.caption, p.lon, p.lat, p.cell, _.now()];
+                    var createdAt = _.now();
+                    var queryValues = [ownerId, p.type, 0, dbFilename, p.caption, p.lon, p.lat, p.cell, createdAt];
 
                     var queryConfig = {
                         name: 'media_create',
@@ -299,30 +253,35 @@ exports.register = function (server, options, next) {
                             return reply(Boom.badRequest(Const.MEDIA_CREATE_FAILED));
                         }
 
-                        return callback(null, result.rows[0].id);
+                        return callback(null, result.rows[0].id, createdAt);
                     });
                 },
-                function (mediaId, callback) {
+                function (mediaId, createdAt, callback) {
 
-                    var mediaRecord = JSON.stringify([mediaId, ownerId, p.type, 0, dbFilename, p.caption, _.now()]);
-                    // push the media record to cache and increase the media count
-                    Cache.enqueue(Const.CELL_MEDIA_LISTS, Const.CELL_MEDIA_COUNTS, p.cell, mediaRecord, function (error) {
-                        if (error) {
-                            // Just log the error, do not call next(error) since caching is a kind of "try our best" thing
-                            console.error(error);
-                        }
+                    var mediaObj = {
+                        id: mediaId,
+                        owner: ownerId,
+                        type: p.type,
+                        uv: 0,
+                        filename: dbFilename,
+                        caption: p.caption,
+                        likes: 0,
+                        comments: 0,
+                        ct: createdAt
+                    };
 
-                        return callback(null, mediaId);
-                    });
+                    Cache.hmset(Const.MEDIA_HASHES, mediaId, mediaObj);
+                    Cache.zaddtrim(Const.CELL_MEDIA_SETS, p.cell, createdAt, mediaId);
+                    callback(null, mediaObj);
                 }
-            ], function (err, mediaId) {
+            ], function (err, mediaObj) {
 
                 if (err) {
                     console.error(err);
                     return reply(err);
                 }
 
-                return reply(null, {id: mediaId});
+                return reply(null, mediaObj);
             });
         }
     });
@@ -344,14 +303,29 @@ exports.register = function (server, options, next) {
         },
         handler: function (request, reply) {
 
-            // push this comment content to cache and increase the comment count
-            Cache.incr(Const.MEDIA_LIKE_COUNTS, request.payload.id, function (err, result) {
+            var mediaId = request.payload.id;
+            var queryConfig = {
+                name: 'media_like',
+                text: 'UPDATE media SET likes = likes + 1 ' +
+                      'WHERE id = $1 AND deleted = false ' +
+                      'RETURNING likes',
+                values: [mediaId]
+            };
+
+            request.pg.client.query(queryConfig, function (err, result) {
+
                 if (err) {
-                    // Just log the error, do not call next(err) since caching is a kind of "try our best" thing
-                    console.error(err);
+                    request.pg.kill = true;
+                    return reply(err);
                 }
 
-                return reply(null, {'likes': result});
+                if (result.rows.length === 0) {
+                    return reply(Boom.badRequest(Const.MEDIA_LIKE_FAILED));
+                }
+
+                Cache.hincrby(Const.MEDIA_HASHES, request.payload.id, 'likes', 1);
+
+                return reply(null, result.rows[0]);
             });
         }
     });
@@ -360,12 +334,56 @@ exports.register = function (server, options, next) {
 };
 
 
-/*
- *  convert distance in km to GPS degree
- */
-internals.degreeFromDistance = function(distance) {
+internals.searchMediaByCellFromDB = function (request, callback) {
 
-    return distance * Const.DEGREE_FACTOR;
+    var where = 'WHERE ct > $1 AND ct < $2 AND cell = $3 AND deleted = false ';
+    var order = 'ORDER BY ct DESC ';
+    var limit = 'LIMIT 20';
+
+    var queryValues = [request.query.after, request.query.before, request.query.cell];
+    var queryConfig = {
+        name: 'media_by_cell',
+        text: selectClause + where + order + limit,
+        values: queryValues
+    };
+
+    request.pg.client.query(queryConfig, function (err, result) {
+
+        if (err) {
+            console.error(err);
+            request.pg.kill = true;
+            return callback(err);
+        }
+
+        return callback(null, result.rows);
+    });
+};
+
+
+internals.searchMediaByIdsFromDB = function (request, mediaIds, callback) {
+
+    var parameterList = Utils.parametersString(3, mediaIds.length);
+    var where = 'WHERE ct > $1 AND ct < $2 AND deleted = false AND id in ' + parameterList; // Adding the min and max id is to speed up the where-in search
+    var order = 'ORDER BY ct DESC ';
+    var limit = 'LIMIT 20';
+
+    var queryValues = [request.query.after, request.query.before];
+    var queryConfig = {
+        name: 'media_by_ids',
+        text: selectClause + where + order + limit,
+        values: queryValues.concat(mediaIds)
+    };
+
+    request.pg.client.query(queryConfig, function (err, result) {
+
+        if (err) {
+            console.error(err);
+            request.pg.kill = true;
+            return callback(err);
+        }
+
+        return callback(null, result.rows);
+    });
 };
 
 

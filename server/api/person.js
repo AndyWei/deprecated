@@ -167,7 +167,7 @@ exports.register = function (server, options, next) {
                     return reply(err);
                 }
 
-                console.log('Received device token %s for personId %s', request.payload.token, personId);
+                console.log('Received device token %s for personId %s', request.payload.device, personId);
                 reply(null, {id: personId});
             });
         }
