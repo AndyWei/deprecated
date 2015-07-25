@@ -65,7 +65,7 @@ lab.experiment('person GET: ', function () {
 
         request = {
             method: 'GET',
-            url: '/person?id=1&id=2&id=3',
+            url: '/person?cell=94555&id=1&id=2&id=3',
             credentials: jack
         };
 
@@ -83,14 +83,14 @@ lab.experiment('person GET: ', function () {
 
         request = {
             method: 'GET',
-            url: '/person/nearby?lon=-122.416462&lat=37.776609&before=5000',
+            url: '/person/nearby?cell=94102&max=5000',
             credentials: jack
         };
 
         server.inject(request, function (response) {
 
             Code.expect(response.statusCode).to.equal(200);
-            Code.expect(response.result).to.be.an.array().and.to.have.length(2);
+            Code.expect(response.result).to.be.an.array().and.to.have.length(1);
 
             done();
         });
@@ -100,7 +100,7 @@ lab.experiment('person GET: ', function () {
 
         request = {
             method: 'GET',
-            url: '/person/nearby?lon=-122.4376&lat=37.7577&before=5000',
+            url: '/person/nearby?cell=91000&max=5000',
             credentials: jack
         };
 

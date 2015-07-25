@@ -179,7 +179,7 @@ exports.get = internals.get = function (dataset, key, callback) {
 
 //// Lists
 // Get all the elements from multi lists
-exports.mgetList = internals.mgetList = function (dataset, keys, callback) {
+exports.mgetlist = internals.mgetlist = function (dataset, keys, callback) {
 
     Hoek.assert(typeof callback === 'function', 'Invalid callback');
     Hoek.assert(internals.redis, 'Connection not started');
@@ -209,7 +209,7 @@ exports.mgetList = internals.mgetList = function (dataset, keys, callback) {
 
 
 // Get all the elements from a lists
-exports.getList = internals.getList = function (dataset, key, callback) {
+exports.getlist = internals.getlist = function (dataset, key, callback) {
 
     Hoek.assert(typeof callback === 'function', 'Invalid callback');
     Hoek.assert(internals.redis, 'Connection not started');
@@ -226,7 +226,7 @@ exports.getList = internals.getList = function (dataset, key, callback) {
 };
 
 
-exports.enqueue = internals.enqueue = function (dataset, key, value, callback) {
+exports.pushlist = internals.pushlist = function (dataset, key, value, callback) {
 
     Hoek.assert(internals.redis, 'Connection not started');
 
@@ -250,6 +250,7 @@ exports.enqueue = internals.enqueue = function (dataset, key, value, callback) {
 
 
 //// Sorted Sets
+// add a member to the SortedSet
 exports.zadd = internals.zadd = function (dataset, key, score, member, callback) {
 
     Hoek.assert(internals.redis, 'Connection not started');
@@ -258,8 +259,6 @@ exports.zadd = internals.zadd = function (dataset, key, score, member, callback)
 
     internals.redis.zadd(setKey, score, member, function (err, result) {
 
-        console.info('zadd input: setKey = %j, score = %j, member = %j', setKey, score, member);
-        console.info('zadd result = %j', result);
         if (err) {
             console.error(err);
         }
@@ -275,20 +274,49 @@ exports.zadd = internals.zadd = function (dataset, key, score, member, callback)
 };
 
 
+// add a member to the SortedSet and trim the size
 exports.zaddtrim = internals.zaddtrim = function (dataset, key, score, member, callback) {
 
     Hoek.assert(internals.redis, 'Connection not started');
 
     var setKey = internals.generateKey(dataset, key);
-    var pipeline = internals.redis.pipeline();
 
-    pipeline
+    internals.redis
+        .multi()
         .zadd(setKey, score, member)
         .zremrangebyrank(setKey, 0, dataset.size * -1)
         .exec(function (err, result) {
 
-        console.info('pipeline zaddtrim input: setKey = %j, score = %j, member = %j', setKey, score, member);
-        console.info('zaddtrim result = %j', result);
+        if (typeof callback === 'function') {
+            if (err) {
+                return callback(err);
+            }
+
+            return callback(null, result);
+        }
+    });
+};
+
+
+// change the key of the member
+exports.zchangekey = internals.zchangekey = function (dataset, oldkey, newKey, score, member, callback) {
+
+    Hoek.assert(internals.redis, 'Connection not started');
+
+    if (oldkey === newKey) {
+        return callback(null, null);
+    }
+
+    oldkey = internals.generateKey(dataset, oldkey);
+    newKey = internals.generateKey(dataset, newKey);
+
+    internals.redis
+        .multi()
+        .zadd(newKey, score, member)
+        .zremrangebyrank(newKey, 0, dataset.size * -1)
+        .zrem(oldkey, member)
+        .exec(function (err, result) {
+
         if (typeof callback === 'function') {
             if (err) {
                 return callback(err);

@@ -10,7 +10,6 @@ var Utils = require('../utils');
 var _ = require('underscore');
 
 var internals = {};
-
 var selectClause = 'SELECT id, owner, type, uv, filename, caption, likes, comments, ct FROM media ';
 
 
@@ -24,7 +23,7 @@ exports.register = function (server, options, next) {
     var bucket = new AWS.S3({params: {Bucket: bucketName}});
     var fileACL = Config.get('/s3/accessControlLevel');
 
-    // get all media nearby. no auth.
+    // get media in the cell. no auth.
     server.route({
         method: 'GET',
         path: options.basePath + '/media/nearby',
@@ -32,7 +31,7 @@ exports.register = function (server, options, next) {
             validate: {
                 query: {
                     cell: Joi.string().max(12).required(),
-                    after: Joi.number().positive().default(0),
+                    after: Joi.number().default(0),
                     before: Joi.number().positive().default(Number.MAX_SAFE_INTEGER)
                 }
             }
@@ -152,7 +151,7 @@ exports.register = function (server, options, next) {
             Async.auto({
                 commentListsfromCache: function (callback) {
 
-                    Cache.mgetList(Const.MEDIA_COMMENT_LISTS, mediaIds, function (err, result) {
+                    Cache.mgetlist(Const.MEDIA_COMMENT_LISTS, mediaIds, function (err, result) {
                         if (err) {
                             console.error(err);
                         }
@@ -360,6 +359,11 @@ internals.searchMediaByCellFromDB = function (request, callback) {
 };
 
 
+exports.register.attributes = {
+    name: 'media'
+};
+
+
 internals.searchMediaByIdsFromDB = function (request, mediaIds, callback) {
 
     var parameterList = Utils.parametersString(3, mediaIds.length);
@@ -384,9 +388,4 @@ internals.searchMediaByIdsFromDB = function (request, mediaIds, callback) {
 
         return callback(null, result.rows);
     });
-};
-
-
-exports.register.attributes = {
-    name: 'media'
 };

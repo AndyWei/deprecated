@@ -32,7 +32,7 @@ exports.register = function (server, options, next) {
 
             var select = 'SELECT sender FROM heart ';
             var where  = 'WHERE receiver = $1 AND status = $2 AND id < $3 AND deleted = false ';
-            var sort   = 'ORDER BY id DESC LIMIT 10';
+            var sort   = 'ORDER BY id DESC LIMIT 30';
             var queryConfig = {
                 name: 'heart_me',
                 text: select + where + sort,
@@ -147,9 +147,9 @@ exports.register = function (server, options, next) {
                 person: ['heart', function (callback) {
                     var queryConfig = {
                         name: 'person_increase_hearts',
-                        text: 'UPDATE person SET hearts = hearts + 1, ut = $1 ' +
+                        text: 'UPDATE person SET hearts = hearts + 1, score = score + 5, ut = $1 ' +
                               'WHERE id = $2 AND deleted = false ' +
-                              'RETURNING cell, hearts, friends',
+                              'RETURNING id, cell, score, hearts',
                         values: [_.now(), p.receiver]
                     };
 
@@ -171,13 +171,9 @@ exports.register = function (server, options, next) {
                 cache: ['person', function (callback, results) {
 
                     var receiver = results.person;
-                    var score = (receiver.hearts * 5) + (receiver.friends * 10);
-                    Cache.zadd(Const.CELL_PERSON_SETS, receiver.cell, score, p.receiver, function (err) {
-                        if (err) {
-                            console.error(err); // since DB records is updated, do not callback(err) in case of cache failure
-                        }
-                        return callback(null);
-                    });
+                    Cache.zadd(Const.CELL_PERSON_SETS, receiver.cell, receiver.score, p.receiver);
+                    Cache.hincrby(Const.PERSON_HASHES, p.receiver, 'hearts', 1);
+                    callback(null);
                 }]
             }, function (err, results) {
 
@@ -186,7 +182,7 @@ exports.register = function (server, options, next) {
                     return reply(err);
                 }
 
-                return reply(null, results.heart);
+                return reply(null, results.person);
             });
         }
     });

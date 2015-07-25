@@ -115,7 +115,7 @@ internals.createCommentHandler = function (request, reply) {
         },
         updateCache: ['commentId', function (next) {
 
-            Cache.enqueue(Const.MEDIA_COMMENT_LISTS, p.media, p.content);
+            Cache.pushlist(Const.MEDIA_COMMENT_LISTS, p.media, p.content);
             Cache.hincrby(Const.MEDIA_HASHES, p.media, 'comments', 1);
             return next(null);
         }]

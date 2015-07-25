@@ -7,7 +7,8 @@ CREATE TABLE person (
     verified           BOOLEAN       NOT NULL DEFAULT false,
     hearts             INTEGER       NOT NULL DEFAULT 0, -- the number of hearts
     friends            SMALLINT      NOT NULL DEFAULT 0, -- the number of friends
-    cell               TEXT          NOT NULL, -- the cell where the person last reported
+    score              INTEGER       NOT NULL DEFAULT 0, -- score will be used to sort person in a cell. score = 5 * hearts + 10 * friends. In the future, more factors will contribute to score 
+    cell               TEXT          NOT NULL DEFAULT '0', -- the cell where the person last reported
     org                TEXT                  , -- organization name that the person belongs to. E.g., ibm, apple, twitter, stanford, etc.
     orgtype            SMALLINT              , -- organization type. 0 - com,  1 - edu, 2 - org, 3 - gov, 4 - other.
     gender             SMALLINT              , -- 0 - unknown,  1 - male, 2 - famale, 3 - other
@@ -15,9 +16,9 @@ CREATE TABLE person (
     bio                TEXT                  ,
     url                TEXT                  , -- the url of the portrait photo
     coords             GEOMETRY(Point, 4326) , -- the point where the person last reported
-    met                BIGINT                , -- the time when this person's membership expires. Th value is the seconds from 01/01/2001 12:00am
-    ct                 BIGINT        NOT NULL, -- the creat timestamp
-    ut                 BIGINT        NOT NULL, -- the update timestamp
+    met                BIGINT                , -- membership expiry timestamp.
+    ct                 BIGINT        NOT NULL, -- created_at timestamp
+    ut                 BIGINT        NOT NULL, -- updated_at timestamp
     deleted            BOOLEAN       NOT NULL DEFAULT false,
 
     UNIQUE (email)
@@ -25,4 +26,6 @@ CREATE TABLE person (
 
 
 CREATE INDEX person_email_index  ON person (email);
+CREATE INDEX person_score_index  ON person (score);
+CREATE INDEX person_cell_index   ON person (cell);
 CREATE INDEX person_org_index    ON person (org);

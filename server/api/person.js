@@ -8,8 +8,8 @@ var Utils = require('../utils');
 var _ = require('underscore');
 
 var internals = {};
-var selectClause = 'SELECT id, name, org, orgtype, gender, yob, bio, url, hearts, friends, ut FROM person ';
-var selectProfileClause = 'SELECT id, email, name, role, org, orgtype, gender, yob, bio, url, hearts, friends, verified, met FROM person ';
+var selectClause = 'SELECT id, name, org, orgtype, gender, yob, bio, url, hearts, friends, score, ut FROM person ';
+var selectProfileClause = 'SELECT id, email, name, role, org, orgtype, gender, yob, bio, url, hearts, friends, score, verified, met FROM person ';
 
 
 exports.register = function (server, options, next) {
@@ -26,6 +26,7 @@ exports.register = function (server, options, next) {
             },
             validate: {
                 query: {
+                    cell: Joi.string().max(12).required(),
                     id: Joi.array().single(true).unique().items(Joi.string().regex(/^[0-9]+$/).max(19))
                 }
             }
@@ -33,12 +34,13 @@ exports.register = function (server, options, next) {
         handler: function (request, reply) {
 
             var personIds = request.query.id;
-            var parameterList = Utils.parametersString(1, personIds.length);
+            var queryValues = [request.query.cell];
+            var parameterList = Utils.parametersString(2, personIds.length);
             var queryConfig = {
                 // Warning: DO NOT give a name to this query since it has variable parameters
                 text: selectClause +
-                      'WHERE id in ' + parameterList + ' AND deleted = false',
-                values: personIds
+                      'WHERE deleted = false AND cell = $1 AND id in ' + parameterList,
+                values: queryValues.concat(personIds)
             };
 
             request.pg.client.query(queryConfig, function (err, result) {
@@ -55,7 +57,7 @@ exports.register = function (server, options, next) {
     });
 
 
-    // get all the verified people nearby a point. auth.
+    // get person id list in the cell. auth.
     server.route({
         method: 'GET',
         path: options.basePath + '/person/nearby',
@@ -65,39 +67,67 @@ exports.register = function (server, options, next) {
             },
             validate: {
                 query: {
-                    lon: Joi.number().min(-180).max(180).required(),
-                    lat: Joi.number().min(-90).max(90).required(),
-                    distance: Joi.number().min(1).max(1000).default(2),  // in kilometers
-                    after: Joi.string().regex(/^[0-9]+$/).max(19).default('0'),
-                    before: Joi.string().regex(/^[0-9]+$/).max(19).default(Const.MAX_ID)
+                    cell: Joi.string().max(12).required(),
+                    min: Joi.number().integer().default(0), // the minimum score, the search will include this value
+                    max: Joi.number().positive().integer().default(Const.MAX_SCORE) // the maximum score, the search will include this value
                 }
             }
         },
         handler: function (request, reply) {
 
             var q = request.query;
-            var degree = internals.degreeFromDistance(q.distance);
+            Async.waterfall([
+                function (callback) {
+                    Cache.zcard(Const.CELL_PERSON_SETS, q.cell, function (err, result) {
+                        if (err) {
+                            console.error(err);
+                            return callback(null, 0); // continue search in DB
+                        }
 
-            var where = 'WHERE id > $1 AND id < $2 AND ST_DWithin(coords, ST_SetSRID(ST_MakePoint($3, $4), 4326), $5) AND verified = true AND deleted = false ';
-            var order = 'ORDER BY id DESC ';
-            var limit = 'LIMIT 10';
+                        return callback(null, result);
+                    });
+                },
+                function (setSize, callback) {
+                    if (setSize === 0) {
+                         return callback(null, 0, null);
+                    }
 
-            var queryValues = [q.after, q.before, q.lon, q.lat, degree];
-            var queryConfig = {
-                name: 'person_nearby',
-                text: selectClause + where + order + limit,
-                values: queryValues
-            };
+                    Cache.zrevrangebyscore(Const.CELL_PERSON_SETS, q.cell, q.max, q.min, Const.PERSON_LIMIT, function (err, result) {
+                        if (err) {
+                            console.error(err);
+                            return callback(null, 0, null); // continue search in DB
+                        }
 
-            request.pg.client.query(queryConfig, function (err, result) {
+                        if (result.length === 0) {                          // found nothing in cache
+                            if (q.min !== 0 && q.max === Const.MAX_SCORE) { // fetch higher score ones
+                                return callback(null, setSize, []);         // just return empty result
+                            }
+                            else {                                          // fetch lower score ones
+                                return callback(null, 0, null);             // search in DB
+                            }
+                        }
+
+                        return callback(null, setSize, result);
+                    });
+                },
+                function (setSize, personIds, callback) {
+                    if (setSize === 0) {
+                        internals.searchPersonByCellFromDB(request, function (err, result) {
+                            return callback(null, result);
+                        });
+                    }
+                    else {
+                        return callback(null, personIds);
+                    }
+                }
+            ], function (err, results) {
 
                 if (err) {
                     console.error(err);
-                    request.pg.kill = true;
                     return reply(err);
                 }
 
-                return reply(null, result.rows);
+                return reply(null, results);
             });
         }
     });
@@ -185,9 +215,9 @@ exports.register = function (server, options, next) {
             validate: {
                 payload: {
                     name: Joi.string().max(30).required(),
-                    gender: Joi.number().min(0).max(3).required().default(0),
-                    yob: Joi.number().min(1900).max(2010).required().default(0),
-                    bio: Joi.string().max(2000).required().default('.')
+                    gender: Joi.number().min(0).max(3).default(0),
+                    yob: Joi.number().min(1900).max(2010).default(0),
+                    bio: Joi.string().max(2000).default('.')
                 }
             }
         },
@@ -224,12 +254,8 @@ exports.register = function (server, options, next) {
                 },
                 function (callback) {
 
-                    Cache.hset(Const.PERSON_HASHES, personId, 'name', p.name, function (err) {
-                        if (err) {
-                            return callback(err);
-                        }
-                        return callback(null);
-                    });
+                    Cache.hmset(Const.PERSON_HASHES, personId, p);
+                    callback(null);
                 }
             ], function (err) {
 
@@ -269,17 +295,48 @@ exports.register = function (server, options, next) {
 
                 function (callback) {
                     var queryConfig = {
+                        name: 'person_by_id',
+                        text: 'SELECT cell, score FROM person WHERE id = $1 AND deleted = false',
+                        values: [personId]
+                    };
+
+                    request.pg.client.query(queryConfig, function (err, result) {
+
+                        if (err) {
+                            request.pg.kill = true;
+                            return callback(err);
+                        }
+
+                        if (result.rows.length === 0) {
+                            return callback(Boom.badRequest(Const.PERSON_NOT_FOUND));
+                        }
+
+                        return callback(null, result.rows[0]);
+                    });
+                },
+                function (person, callback) {
+
+                    var oldCell = person.cell;
+                    var newCell = p.cell;
+                    Cache.zchangekey(Const.CELL_PERSON_SETS, oldCell, newCell, person.score, personId, function (err) {
+                        if (err) {
+                            return callback(err);
+                        }
+                        return callback(null);
+                    });
+                },
+                function (callback) {
+                    var queryConfig = {
                         name: 'person_update_location',
                         text: 'UPDATE person SET cell = $1, coords = ST_SetSRID(ST_MakePoint($2, $3), 4326), ut = $4 ' +
                               'WHERE id = $5 AND deleted = false ' +
-                              'RETURNING id, hearts, friends',
+                              'RETURNING id',
                         values: [p.cell, p.lon, p.lat, _.now(), personId]
                     };
 
                     request.pg.client.query(queryConfig, function (err, result) {
 
                         if (err) {
-                            console.error(err);
                             request.pg.kill = true;
                             return callback(err);
                         }
@@ -288,27 +345,17 @@ exports.register = function (server, options, next) {
                             return callback(Boom.badRequest(Const.PERSON_UPDATE_LOCATION_FAILED));
                         }
 
-                        return callback(null, result.rows[0]);
-                    });
-                },
-                function (person, callback) {
-
-                    var score = (person.hearts * 5) + (person.friends * 10);
-                    Cache.zadd(Const.CELL_PERSON_SETS, p.cell, score, personId, function (err) {
-                        if (err) {
-                            return callback(err);
-                        }
-                        return callback(null);
+                        return callback(null, result);
                     });
                 }
-            ], function (err) {
+            ], function (err, results) {
 
                 if (err) {
                     console.error(err);
                     return reply(err);
                 }
 
-                return reply(null, { id: personId });
+                return reply(null, results.rows[0]);
             });
         }
     });
@@ -317,14 +364,32 @@ exports.register = function (server, options, next) {
 };
 
 
-/*
- *  convert distance in km to GPS degree
- */
-internals.degreeFromDistance = function(distance) {
-
-    return distance * Const.DEGREE_FACTOR;
-};
-
 exports.register.attributes = {
     name: 'person'
+};
+
+
+internals.searchPersonByCellFromDB = function (request, callback) {
+
+    var where = 'WHERE score >= $1 AND score <= $2 AND cell = $3 AND deleted = false ';
+    var order = 'ORDER BY score DESC ';
+    var limit = 'LIMIT 50';
+
+    var queryValues = [request.query.min, request.query.max, request.query.cell];
+    var queryConfig = {
+        name: 'person_by_cell',
+        text: selectClause + where + order + limit,
+        values: queryValues
+    };
+
+    request.pg.client.query(queryConfig, function (err, result) {
+
+        if (err) {
+            console.error(err);
+            request.pg.kill = true;
+            return callback(err);
+        }
+
+        return callback(null, result.rows);
+    });
 };

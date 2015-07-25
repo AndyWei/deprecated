@@ -50,8 +50,7 @@ exports.register = function (server, options, next) {
             validate: {
                 payload: {
                     email: Joi.string().email().lowercase().min(3).max(30).required(),
-                    password: Joi.string().min(4).max(30).required(),
-                    cell: Joi.string().max(12).default('0')
+                    password: Joi.string().min(4).max(30).required()
                 }
             },
             pre: [{
@@ -118,10 +117,10 @@ internals.signup = function (request, reply) {
 
             var queryConfig = {
                 text: 'INSERT INTO person ' +
-                          '(email, name, password, cell, ct, ut) VALUES ' +
-                          '($1, $2, $3, $4, $5, $6) ' +
+                          '(email, name, password, ct, ut) VALUES ' +
+                          '($1, $2, $3, $4, $5) ' +
                           'RETURNING id',
-                values: [email, name, results.password, request.payload.cell, _.now(), _.now()],
+                values: [email, name, results.password, _.now(), _.now()],
                 name: 'person_signup'
             };
 

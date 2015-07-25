@@ -18,7 +18,7 @@ exports.MEDIA_COMMENT_LISTS = {
 };
 
 //// Media
-// Hash. key = personId, fields = {name, token, badge, invite_count, friend_count, ...}
+// Hash. key = personId, fields = {filname, uv, badge, likes, comments, ...}
 exports.MEDIA_HASHES = {
     segment: 'm'
 };
@@ -30,14 +30,15 @@ exports.CELL_MEDIA_SETS = {
 };
 
 //// Person
-// Hash. key = personId, fields = {name, token, badge, invite_count, friend_count, ...}
+// Hash. key = personId, fields = {name, device, badge, hearts, friends, ...}
 exports.PERSON_HASHES = {
     segment: 'p'
 };
 
 // SortedSet. key = cellId, value = personId, score = personScore
 exports.CELL_PERSON_SETS = {
-    segment: 'P'
+    segment: 'P',
+    size: 1000
 };
 
 // consts
@@ -45,9 +46,10 @@ exports.BCRYPT_ROUND = 10;
 exports.DEGREE_FACTOR = 0.0089827983;
 exports.TOKEN_LENGTH = 20;
 exports.MAX_ID = '9223372036854775807';
+exports.MAX_SCORE = 2147483647; // the max value of postgres integer
 
 exports.MEDIA_LIMIT = 20;  // the max number of media records returned per query
-exports.PERSON_LIMIT = 20; // the max number of person records returned per query
+exports.PERSON_LIMIT = 50; // the max number of person records returned per query
 
 // Error strings
 exports.AUTH_TOKEN_INVALID = 'The authentication token is invalid.';
