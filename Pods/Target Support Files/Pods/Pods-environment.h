@@ -126,6 +126,12 @@
 #define COCOAPODS_VERSION_MINOR_MMDrawerController_Subclass 6
 #define COCOAPODS_VERSION_PATCH_MMDrawerController_Subclass 0
 
+// MSWeakTimer
+#define COCOAPODS_POD_AVAILABLE_MSWeakTimer
+#define COCOAPODS_VERSION_MAJOR_MSWeakTimer 1
+#define COCOAPODS_VERSION_MINOR_MSWeakTimer 1
+#define COCOAPODS_VERSION_PATCH_MSWeakTimer 0
+
 // Onboard
 #define COCOAPODS_POD_AVAILABLE_Onboard
 #define COCOAPODS_VERSION_MAJOR_Onboard 2

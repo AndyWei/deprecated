@@ -40,6 +40,7 @@ PODS:
     - MMDrawerController/Core
   - MMDrawerController/Subclass (0.6.0):
     - MMDrawerController/Core
+  - MSWeakTimer (1.1.0)
   - Onboard (2.1.5)
   - RKDropdownAlert (0.3.0)
   - SlackTextViewController (1.5.2)
@@ -66,6 +67,7 @@ DEPENDENCIES:
   - MCSwipeTableViewCell
   - MJRefresh
   - MMDrawerController
+  - MSWeakTimer
   - Onboard
   - RKDropdownAlert
   - SlackTextViewController
@@ -86,6 +88,7 @@ SPEC CHECKSUMS:
   MCSwipeTableViewCell: 0fc22bd3635b9b5f4ce08675218b0a7278b6440f
   MJRefresh: 65a2bf14abb6feeaed8696aa1551f70e15ab0a08
   MMDrawerController: e3a54a5570388463ad3b36975251575b50c4e1a0
+  MSWeakTimer: 9426150f933b80ed3acf3f6d228e4b61f0e303c8
   Onboard: c58adaef5a377b0c45b4754c5cbe17d4627898c7
   RKDropdownAlert: f4b3364c251829ad439dc666836a1f2dad26f4c7
   SlackTextViewController: ab240cda4c7fe1f70f6c6cf64578f3fea495ce99
