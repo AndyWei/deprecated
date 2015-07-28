@@ -9,6 +9,13 @@
 #ifndef joyy_Constants_h
 #define joyy_Constants_h
 
+extern NSString *const kUrlAPIBase;
+
+
+extern const NSTimeInterval k1Minutes;
+extern const NSTimeInterval k15Minutes;
+extern const NSTimeInterval k30Minutes;
+
 extern const CGFloat kButtonCornerRadius;
 extern const CGFloat kButtonDefaultHeight;
 extern const CGFloat kButtonDefaultFontSize;
@@ -36,7 +43,6 @@ extern const CGFloat kPhotoQuality;
 extern const CGFloat kPhotoWidth;  // exact pixel size
 
 extern const CGFloat kTabBarTitleFontSize;
-extern const CGFloat kTokenValidInSecs;
 
 extern const CGFloat kSignButtonHeight;
 extern const CGFloat kSignButtonWidth;
@@ -45,12 +51,10 @@ extern const CGFloat kSignFieldFloatingLabelFontSize;
 extern const CGFloat kSignFieldFontSize;
 extern const CGFloat kSignFieldHeight;
 extern const CGFloat kSignFieldMarginLeft;
-extern const CGFloat kSignIntervalMax;
-extern const CGFloat kSignIntervalMin;
+
 extern const CGFloat kSignViewTopOffset;
 extern const CGFloat kServiceCategoryCellFontSize;
 
-extern const NSTimeInterval k15Minutes;
 extern const NSUInteger kBriefCommentsCount;
 extern const NSUInteger kAPN;
 
@@ -81,9 +85,6 @@ extern NSString *const kSystemFontBold;
 extern NSString *const kSystemFontItalic;
 extern NSString *const kSystemFontLight;
 extern NSString *const kSystemFontRegular;
-
-extern NSString *const kUrlAPIBase;
-
 
 #define SCREEN_WIDTH  CGRectGetWidth([[UIScreen mainScreen] applicationFrame])
 #define SCREEN_HEIGHT CGRectGetHeight([[UIScreen mainScreen] applicationFrame])

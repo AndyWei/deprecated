@@ -42,14 +42,18 @@
         if (dict)
         {
             _localImage = nil;
-            _mediaId = [[dict objectForKey:@"id"] unsignedIntegerValue];
-            _urlVersion = [[dict objectForKey:@"uv"] unsignedIntegerValue];
-            _type = [[dict objectForKey:@"type"] unsignedIntegerValue];
-            _ownerId = [[dict objectForKey:@"owner"] unsignedIntegerValue];
             _isLiked = NO;
 
             _filename = [dict objectForKey:@"filename"];
             _caption = [dict objectForKey:@"caption"];
+
+            _mediaId = [dict unsignedIntegerValueForKey:@"id"];
+            _urlVersion = [dict unsignedIntegerValueForKey:@"uv"];
+            _type = [dict unsignedIntegerValueForKey:@"type"];
+            _ownerId = [dict unsignedIntegerValueForKey:@"owner"];
+            _likeCount = [dict unsignedIntegerValueForKey:@"likes"];
+            _commentCount = [dict unsignedIntegerValueForKey:@"comments"];
+            _timestamp = [dict unsignedIntegerValueForKey:@"ct"];
         }
     }
     return self;
@@ -61,14 +65,17 @@
     if (self)
     {
         _localImage = image;
-        _mediaId = 0;
-        _urlVersion = 0;
-        _type = JYMediaTypeImage;
-        _ownerId = [JYUser currentUser].userId;
         _isLiked = NO;
 
         _filename = @"";
         _caption = @"local";
+
+        _mediaId = 0;
+        _urlVersion = 0;
+        _type = JYMediaTypeImage;
+        _ownerId = [JYUser currentUser].userId;
+        _likeCount = 0;
+        _commentCount = 0;
     }
     return self;
 }
@@ -121,12 +128,6 @@
     {
         return;
     }
-
-    id value = [brief objectForKey:@"likes"];
-    _likeCount = (value == [NSNull null]) ? 0 : [(NSString *)value unsignedIntegerValue];
-
-    value = [brief objectForKey:@"comments"];
-    _commentCount = (value == [NSNull null]) ? 0: [(NSString *)value unsignedIntegerValue];
 
     _commentList = [brief objectForKey:@"comment_list"];
 }

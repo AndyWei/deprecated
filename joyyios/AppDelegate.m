@@ -8,8 +8,7 @@
 
 #import <AFNetworking/AFNetworking.h>
 #import <KVNProgress/KVNProgress.h>
-#import <MMDrawerController/MMDrawerController.h>
-#import <MMDrawerController/MMDrawerVisualState.h>
+
 #import <RKDropdownAlert/RKDropdownAlert.h>
 #import <Stripe/Stripe.h>
 
@@ -26,13 +25,15 @@
 @interface AppDelegate ()
 
 @property(nonatomic) NSTimer *signInTimer;
-@property(nonatomic, weak) MMDrawerController *drawerController;
+
 @end
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    NSLog(@"didFinishLaunchingWithOptions");
+
     self.zipcode = [JYDataStore sharedInstance].lastZipcode ? [JYDataStore sharedInstance].lastZipcode : @"94555"; // default zipcode
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 
@@ -54,8 +55,7 @@
     // an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
     // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the
     // game.
-    [self.signInTimer invalidate];
-    self.signInTimer = nil;
+    NSLog(@"applicationWillResignActive");
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
@@ -65,22 +65,48 @@
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
     [self.signInTimer invalidate];
     self.signInTimer = nil;
+    NSLog(@"applicationDidEnterBackground");
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
 {
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the
     // background.
+    NSLog(@"applicationWillEnterForeground");
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the
     // background, optionally refresh the user interface.
+
+    NSLog(@"applicationDidBecomeActive");
+    JYUser *user = [JYUser currentUser];
+    if(![user exists])
+    {
+        return;
+    }
+
+    NSTimeInterval now = [NSDate timeIntervalSinceReferenceDate];
+    NSLog(@"user.tokenExpireTimeInSecs = %f", user.tokenExpireTimeInSecs);
+    NSLog(@"now = %f", now);
+    if (user.tokenExpireTimeInSecs < now)
+    {
+        NSLog(@"will start auto sign now");
+        [self.signInTimer invalidate];
+        self.signInTimer = nil;
+        [self _autoSignIn];
+    }
+    else
+    {
+        NSLog(@"will start auto sign in %f seconds", user.tokenExpireTimeInSecs - now);
+        [self _signInAfter:(user.tokenExpireTimeInSecs - now)];
+    }
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application
 {
+    NSLog(@"applicationWillTerminate");
     [self.signInTimer invalidate];
     self.signInTimer = nil;
     [[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -227,23 +253,6 @@
     [self _launchViewController];
 }
 
-- (void)_signDidFinish
-{
-    [self _registerPushNotifications];
-    [self _signInAfter:kSignIntervalMax];
-    [self _launchMainViewController];
-}
-
-- (void)_signInAfter:(NSTimeInterval)interval
-{
-    if (self.signInTimer)
-    {
-        [self.signInTimer invalidate];
-    }
-
-    self.signInTimer = [NSTimer timerWithTimeInterval:interval target:self selector:@selector(_autoSignIn:) userInfo:nil repeats:NO];
-}
-
 - (void)_launchSignViewController
 {
     UIViewController *viewController = [JYSignViewController new];
@@ -257,30 +266,6 @@
 }
 
 - (void)_launchMainViewController
-{
-    JYUser *user = [JYUser currentUser];
-    NSTimeInterval now = [NSDate timeIntervalSinceReferenceDate];
-
-    NSAssert([user exists], @"The user credential should be there when _launchMainViewController is called");
-
-    if (user.tokenExpireTimeInSecs < now)
-    {
-        if (self.signInTimer)
-        {
-            [self.signInTimer invalidate];
-            self.signInTimer = nil;
-        }
-        [self _autoSignIn:nil];
-    }
-    else
-    {
-        [self _signInAfter:(user.tokenExpireTimeInSecs - now)];
-    }
-
-    [self _launchTabViewController];
-}
-
-- (void)_launchTabViewController
 {
     UIViewController *vc1 = [JYAnonymousViewController new];
     UINavigationController *nc1 = [[UINavigationController alloc] initWithRootViewController:vc1];
@@ -322,7 +307,62 @@
     self.window.rootViewController = tabBarController;
 }
 
+- (void)_signDidFinish
+{
+    [self _registerPushNotifications];
+    [self _signInAfter:k30Minutes];
+    [self _launchMainViewController];
+}
+
+- (void)_signInAfter:(NSTimeInterval)interval
+{
+    if (self.signInTimer)
+    {
+        [self.signInTimer invalidate];
+    }
+
+    self.signInTimer = [NSTimer timerWithTimeInterval:interval target:self selector:@selector(_autoSignIn) userInfo:nil repeats:NO];
+}
+
 #pragma mark - Network
+
+- (void)_autoSignIn
+{
+    NSString *email = [JYUser currentUser].email;
+    NSString *password = [JYUser currentUser].password;
+    if (!email || !password)
+    {
+        return;
+    }
+
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+
+    manager.requestSerializer = [AFHTTPRequestSerializer serializer];
+    [manager.requestSerializer setAuthorizationHeaderFieldWithUsername:email password:password];
+
+    NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"signin"];
+
+    NSLog(@"_autoSignIn start");
+    NSLog(@"email = %@", email);
+    NSLog(@"password = %@", password);
+
+    __weak typeof(self) weakSelf = self;
+    [manager GET:url
+        parameters:nil
+        success:^(AFHTTPRequestOperation *operation, id responseObject) {
+            NSLog(@"_autoSignIn Success");
+            [JYUser currentUser].credential = responseObject;
+            [weakSelf _signInAfter:k30Minutes];
+
+            // Register push notification now to trigger device token uploading, which is to avoid server side device token lost unexpectedly
+            [weakSelf _registerPushNotifications];
+        }
+        failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+            NSLog(@"_autoSignIn Error: %@", error);
+            [weakSelf _signInAfter:k1Minutes];
+        }];
+}
+
 - (void)_uploadDeviceToken
 {
     NSString *deviceToken = [JYDataStore sharedInstance].deviceToken;
@@ -348,39 +388,9 @@
           failure:^(AFHTTPRequestOperation *operation, NSError *error) {
               NSLog(@"DeviceToken Upload Error: %@", error);
           }];
-
+    
 }
 
-
-- (void)_autoSignIn:(NSTimer *)timer
-{
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-
-    manager.requestSerializer = [AFHTTPRequestSerializer serializer];
-    [manager.requestSerializer setAuthorizationHeaderFieldWithUsername:[JYUser currentUser].email password:[JYUser currentUser].password];
-
-    NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"signin"];
-
-    NSLog(@"_autoSignIn start");
-    NSLog(@"email = %@", [JYUser currentUser].email);
-    NSLog(@"password = %@", [JYUser currentUser].password);
-
-    __weak typeof(self) weakSelf = self;
-    [manager GET:url
-        parameters:nil
-        success:^(AFHTTPRequestOperation *operation, id responseObject) {
-            NSLog(@"_autoSignIn Success");
-            [JYUser currentUser].credential = responseObject;
-            [weakSelf _signInAfter:kSignIntervalMax];
-
-            // Register push notification now to trigger device token uploading, which is to avoid server side device token lost unexpectedly
-            [weakSelf _registerPushNotifications];
-        }
-        failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-            NSLog(@"_autoSignIn Error: %@", error);
-            [weakSelf _signInAfter:kSignIntervalMin];
-        }];
-}
 
 - (void)_updateGeoInfo
 {

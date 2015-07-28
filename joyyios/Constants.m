@@ -7,8 +7,12 @@
 //
 
 
-NSString *const kUrlAPIBase = @"http://api.joyyapp.com:8000/v1/";
-//NSString *const kUrlAPIBase = @"http://192.168.1.145:8000/v1/";
+//NSString *const kUrlAPIBase = @"http://api.joyyapp.com:8000/v1/";
+NSString *const kUrlAPIBase = @"http://192.168.1.145:8000/v1/";
+
+const NSTimeInterval k1Minutes = 60;
+const NSTimeInterval k15Minutes = 900;
+const NSTimeInterval k30Minutes = 90;
 
 const CGFloat kButtonCornerRadius = 4.0f;
 const CGFloat kButtonDefaultHeight = 44.0f;
@@ -37,7 +41,6 @@ const CGFloat kPhotoQuality = 0.7;
 const CGFloat kPhotoWidth = 375.0;
 
 const CGFloat kTabBarTitleFontSize = 20.0f;
-const CGFloat kTokenValidInSecs = 3600.0;
 
 const CGFloat kSignButtonHeight = 60.0f;
 const CGFloat kSignButtonWidth = 120;
@@ -46,12 +49,9 @@ const CGFloat kSignFieldFloatingLabelFontSize = 11.0f;
 const CGFloat kSignFieldFontSize = 18.0f;
 const CGFloat kSignFieldHeight = 70.0f;
 const CGFloat kSignFieldMarginLeft = 50.0f;
-const CGFloat kSignIntervalMax = 1800.0f;
-const CGFloat kSignIntervalMin = 60.0f;
 const CGFloat kSignViewTopOffset = 152;
 const CGFloat kServiceCategoryCellFontSize = 18.0f;
 
-const NSTimeInterval k15Minutes = 900;
 const NSUInteger kBriefCommentsCount = 3;
 const NSUInteger kAPN = 1;;
 

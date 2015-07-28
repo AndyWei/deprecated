@@ -228,7 +228,7 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
     if (self.mediaList.count > 0)
     {
         JYMedia *firstMedia = self.mediaList.firstObject;
-        media.mediaId = firstMedia.mediaId; // Make sure the future _fetchNewMedia call get the correct last media id
+        media.timestamp = firstMedia.timestamp; // Make sure the future _fetchNewMedia call get the correct last timestamp
     }
 
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
@@ -532,23 +532,19 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
     NSMutableDictionary *parameters = [NSMutableDictionary new];
 
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    CLLocationCoordinate2D currentPoint = appDelegate.currentCoordinate;
-    [parameters setValue:@(currentPoint.longitude) forKey:@"lon"];
-    [parameters setValue:@(currentPoint.latitude) forKey:@"lat"];
-    [parameters setObject:appDelegate.zipcode forKey:@"cell_id"];
-    [parameters setValue:@(2) forKey:@"distance"];
+    [parameters setObject:appDelegate.zipcode forKey:@"cell"];
 
     if (self.mediaList.count > 0)
     {
         if (toEnd)
         {
             JYMedia *media = self.mediaList.lastObject;
-            [parameters setValue:@(media.mediaId) forKey:@"before"];
+            [parameters setValue:@(media.timestamp) forKey:@"before"];
         }
         else
         {
             JYMedia *media = self.mediaList.firstObject;
-            [parameters setValue:@(media.mediaId) forKey:@"after"];
+            [parameters setValue:@(media.timestamp) forKey:@"after"];
         }
     }
 
