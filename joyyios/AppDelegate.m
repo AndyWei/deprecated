@@ -35,12 +35,11 @@
 {
     NSLog(@"didFinishLaunchingWithOptions");
 
-    self.zipcode = [JYDataStore sharedInstance].lastZipcode ? [JYDataStore sharedInstance].lastZipcode : @"94555"; // default zipcode
+    self.cellId = [JYDataStore sharedInstance].lastCellId ? [JYDataStore sharedInstance].lastCellId : @"94555"; // default zipcode
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_signDidFinish) name:kNotificationDidSignIn object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_signDidFinish) name:kNotificationDidSignUp object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_updateGeoInfo) name:kNotificationNeedGeoInfo object:nil];
 
     [self _setupGlobalAppearance];
     [self _setupLocationManager];
@@ -414,7 +413,6 @@
     
 }
 
-
 - (void)_updateGeoInfo
 {
     CLLocation *location = [[CLLocation alloc] initWithLatitude:self.currentCoordinate.latitude longitude:self.currentCoordinate.longitude];
@@ -429,18 +427,50 @@
                        else
                        {
                            CLPlacemark *placemark = [placemarks lastObject];
-
-                           if ([placemark.ISOcountryCode isEqualToString:@"US"])
-                           {
-                               weakSelf.zipcode = placemark.postalCode;
-                           }
-                           else
-                           {
-                               weakSelf.zipcode = [NSString stringWithFormat:@"%@%@", placemark.ISOcountryCode, placemark.postalCode];
-                           }
-                           [JYDataStore sharedInstance].lastZipcode = weakSelf.zipcode;
+                           [weakSelf _updateCellIdWithPlacemark:placemark];
                        }
                    }];
+}
+
+- (void)_updateCellIdWithPlacemark:(CLPlacemark *)placemark
+{
+    NSString *newCellId = nil;
+    if ([placemark.ISOcountryCode isEqualToString:@"US"])
+    {
+        newCellId = placemark.postalCode;
+    }
+    else
+    {
+        newCellId = [NSString stringWithFormat:@"%@%@", placemark.ISOcountryCode, placemark.postalCode];
+    }
+
+    if (![newCellId isEqualToString:self.cellId])
+    {
+        self.cellId = newCellId;
+        [JYDataStore sharedInstance].lastCellId = newCellId;
+        [self _uploadLocation];
+    }
+}
+
+- (void)_uploadLocation
+{
+    CLLocationCoordinate2D coods = self.currentCoordinate;
+    NSDictionary *parameters = @{@"lon": @(coods.longitude), @"lat": @(coods.latitude), @"cell": self.cellId};
+    NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"person/location"];
+
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYUser currentUser].token];
+    [manager.requestSerializer setValue:token forHTTPHeaderField:@"Authorization"];
+
+    [manager POST:url
+       parameters:parameters
+          success:^(AFHTTPRequestOperation *operation, id responseObject) {
+              NSLog(@"Location upload Success responseObject: %@", responseObject);
+          }
+          failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+              NSLog(@"Location Upload Error: %@", error);
+          }];
+    
 }
 
 #pragma mark - CLLocationManagerDelegate
@@ -450,6 +480,7 @@
     CLLocation *currentLocation = [locations lastObject];
     self.currentCoordinate = currentLocation.coordinate;
     [JYDataStore sharedInstance].lastCoordinate = self.currentCoordinate;
+    [self _updateGeoInfo];
 }
 
 - (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status

@@ -20,12 +20,7 @@ static JYInvite *_currentInvite;
 {
     if (!_currentInvite)
     {
-        _currentInvite = [JYDataStore sharedInstance].currentInvite;
-
-        if (!_currentInvite)
-        {
-            _currentInvite = [[JYInvite alloc] init];
-        }
+        _currentInvite = [[JYInvite alloc] init];
     }
 
     return _currentInvite;

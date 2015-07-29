@@ -120,8 +120,7 @@ static const CGFloat kButtonAreaHeight = 50.0f;
 
 - (void)_pay
 {
-    NSDictionary *userInfo = [NSDictionary dictionaryWithObject:self.order forKey:@"order"];
-    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationDidPressPayButton object:nil userInfo:userInfo];
+
 }
 
 - (void)setColor:(UIColor *)color

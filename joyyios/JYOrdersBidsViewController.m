@@ -188,36 +188,6 @@ static NSString *const kBidCellIdentifier = @"bidCell";
 {
     self.stripeToken = nil;
 
-    PKPaymentRequest *request = [Stripe paymentRequestWithMerchantIdentifier:kAppleMerchantId];
-
-    // Configure request
-    NSAssert(self.selectedIndexPath != nil, @"selectedIndexPath should not be nil");
-    JYInvite *order = self.orderList[self.selectedIndexPath.section];
-    JYBid *bid = order.bids[self.selectedIndexPath.row];
-
-    NSNumber *price = [NSNumber numberWithUnsignedInteger:bid.price];
-    NSDecimalNumber *amountInCents = [NSDecimalNumber decimalNumberWithDecimal:[price decimalValue]];
-    NSDecimalNumber *divisor = [[NSDecimalNumber alloc] initWithInt:100];
-    NSDecimalNumber *amountInDollars = [amountInCents decimalNumberByDividingBy:divisor];
-
-    NSString *paymentLineItem = [NSString stringWithFormat:@"Joyy %@ @%@", order.title, bid.username];
-    request.paymentSummaryItems = @[[PKPaymentSummaryItem summaryItemWithLabel:paymentLineItem amount:amountInDollars]];
-
-    if ([Stripe canSubmitPaymentRequest:request])
-    {
-        // show Apple Pay view
-        PKPaymentAuthorizationViewController *paymentController = [[PKPaymentAuthorizationViewController alloc] initWithPaymentRequest:request];
-        paymentController.delegate = self;
-        [self presentViewController:paymentController animated:YES completion:nil];
-    }
-//    else if (self.creditCardList)
-//    {
-//        [self _doPresentPaymentViewController];
-//    }
-//    else
-//    {
-//        [self _fetchCreditCards];
-//    }
 }
 
 - (void)_doPresentPaymentViewController

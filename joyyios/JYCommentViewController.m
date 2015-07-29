@@ -270,7 +270,13 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
               NSLog(@"Comment POST Success responseObject: %@", responseObject);
 
               [weakSelf _networkThreadEnd];
-              [weakSelf _fetchNewComments];
+              NSUInteger commentCount = [responseObject unsignedIntegerValueForKey:@"comments"];
+
+              if (commentCount - weakSelf.media.commentCount > 1)
+              {
+                  [weakSelf _fetchNewComments];
+              }
+              weakSelf.media.commentCount = commentCount;
           }
           failure:^(AFHTTPRequestOperation *operation, NSError *error) {
 
@@ -319,7 +325,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 {
     NSMutableDictionary *parameters = [NSMutableDictionary new];
 
-    [parameters setObject:@(self.media.mediaId) forKey:@"media_id"];
+    [parameters setObject:@(self.media.mediaId) forKey:@"media"];
     [parameters setValue:self.textView.text forKey:@"content"];
 
     return parameters;
@@ -329,7 +335,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 {
     NSMutableDictionary *parameters = [NSMutableDictionary new];
 
-    [parameters setObject:@(self.media.mediaId) forKey:@"media_id"];
+    [parameters setObject:@(self.media.mediaId) forKey:@"media"];
 
     if (self.commentList.count > 0)
     {

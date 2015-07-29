@@ -211,9 +211,6 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
 
 - (void)_showCamera
 {
-    // Ask AppDelegate to get current zipcode
-    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationNeedGeoInfo object:nil];
-
     [TGCameraColor setTintColor:JoyyBlue];
     TGCameraNavigationController *camera = [TGCameraNavigationController newWithCameraDelegate:self];
     camera.title = self.title;
@@ -379,7 +376,7 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
              NSLog(@"media/like POST success responseObject: %@", responseObject);
 
              NSDictionary *dict = (NSDictionary *)responseObject;
-             media.likeCount = [[dict objectForKey:@"like_count"] unsignedIntegerValue];
+             media.likeCount = [[dict objectForKey:@"likes"] unsignedIntegerValue];
              media.isLiked = YES;
              [weakSelf.tableView reloadData];
              [weakSelf _networkThreadEnd];
@@ -400,7 +397,6 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
 
     NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"media"];
     NSMutableDictionary *parameters = [self _uploadImageParameters];
-
     [parameters setObject:caption forKey:@"caption"];
 
     __weak typeof(self) weakSelf = self;
@@ -430,12 +426,12 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
 {
     NSMutableDictionary *parameters = [NSMutableDictionary new];
 
-    [parameters setObject:@(JYMediaTypeImage) forKey:@"media_type"];
+    [parameters setObject:@(JYMediaTypeImage) forKey:@"type"];
 
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     [parameters setObject:@(appDelegate.currentCoordinate.latitude) forKey:@"lat"];
     [parameters setObject:@(appDelegate.currentCoordinate.longitude) forKey:@"lon"];
-    [parameters setObject:appDelegate.zipcode forKey:@"cell_id"];
+    [parameters setObject:appDelegate.cellId forKey:@"cell"];
 
     return parameters;
 }
@@ -452,8 +448,6 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
 
 - (void)_fetchMediaToEnd:(BOOL)toEnd
 {
-    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationNeedGeoInfo object:nil];
-
     if (self.networkThreadCount > 0)
     {
         return;
@@ -532,7 +526,7 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
     NSMutableDictionary *parameters = [NSMutableDictionary new];
 
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [parameters setObject:appDelegate.zipcode forKey:@"cell"];
+    [parameters setObject:appDelegate.cellId forKey:@"cell"];
 
     if (self.mediaList.count > 0)
     {

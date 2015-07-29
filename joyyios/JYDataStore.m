@@ -11,13 +11,12 @@
 
 NSString *const kKeyAPITokenExpireTime = @"APITokenExpireTime";
 NSString *const kKeyBadgeCount = @"BadgeCount";
-NSString *const kKeyCurrentInvite = @"CurrentInvite";
 NSString *const kKeyDefaultCardNumber = @"DefaultCardNumber";
 NSString *const kKeyDefaultCustomerId = @"DefaultCustomerId";
 NSString *const kKeyDeviceToken = @"DeviceToken";
 NSString *const kKeyLastCoordinateLat = @"LastCoordinateLat";
 NSString *const kKeyLastCoordinateLon = @"LastCoordinateLon";
-NSString *const kKeyLastZipcode = @"LastZipcode";
+NSString *const kKeyLastCellId = @"LastCellId";
 NSString *const kKeyPresentedIntroductionVersion = @"PresentedIntroductionVersion";
 NSString *const kKeyUserCredential = @"UserCredential";
 
@@ -66,22 +65,6 @@ NSString *const kKeyUserCredential = @"UserCredential";
         expireTime = [[NSUserDefaults standardUserDefaults] doubleForKey:kKeyAPITokenExpireTime];
     }
     return expireTime;
-}
-
-// CurrentInvite
-- (void)setCurrentInvite:(JYInvite *)order
-{
-    [[NSUserDefaults standardUserDefaults] setObject:order forKey:kKeyCurrentInvite];
-}
-
-- (JYInvite *)currentInvite
-{
-    JYInvite *order = nil;
-    if ([[NSUserDefaults standardUserDefaults] objectForKey:kKeyCurrentInvite])
-    {
-        order = [[NSUserDefaults standardUserDefaults] objectForKey:kKeyCurrentInvite];
-    }
-    return order;
 }
 
 // DeviceToken
@@ -164,15 +147,15 @@ NSString *const kKeyUserCredential = @"UserCredential";
     return CLLocationCoordinate2DMake(lat, lon);
 }
 
-// lastZipcode
-- (void)setLastZipcode:(NSString *)zipcode
+// lastCellId
+- (void)setLastCellId:(NSString *)cellId
 {
-    [[NSUserDefaults standardUserDefaults] setObject:zipcode forKey:kKeyLastZipcode];
+    [[NSUserDefaults standardUserDefaults] setObject:cellId forKey:kKeyLastCellId];
 }
 
-- (NSString *)lastZipcode
+- (NSString *)lastCellId
 {
-    return [[NSUserDefaults standardUserDefaults] stringForKey:kKeyLastZipcode];
+    return [[NSUserDefaults standardUserDefaults] stringForKey:kKeyLastCellId];
 
 }
 
