@@ -84,6 +84,12 @@
 #define COCOAPODS_VERSION_MINOR_KVNProgress 2
 #define COCOAPODS_VERSION_PATCH_KVNProgress 1
 
+// KVOController
+#define COCOAPODS_POD_AVAILABLE_KVOController
+#define COCOAPODS_VERSION_MAJOR_KVOController 1
+#define COCOAPODS_VERSION_MINOR_KVOController 0
+#define COCOAPODS_VERSION_PATCH_KVOController 3
+
 // MCSwipeTableViewCell
 #define COCOAPODS_POD_AVAILABLE_MCSwipeTableViewCell
 #define COCOAPODS_VERSION_MAJOR_MCSwipeTableViewCell 2

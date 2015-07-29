@@ -26,6 +26,7 @@ PODS:
   - HMSegmentedControl (1.5.2)
   - JVFloatLabeledTextField (1.0.4)
   - KVNProgress (2.2.1)
+  - KVOController (1.0.3)
   - MCSwipeTableViewCell (2.1.2)
   - MJRefresh (2.2.0)
   - MMDrawerController (0.6.0):
@@ -64,6 +65,7 @@ DEPENDENCIES:
   - HMSegmentedControl
   - JVFloatLabeledTextField
   - KVNProgress
+  - KVOController
   - MCSwipeTableViewCell
   - MJRefresh
   - MMDrawerController
@@ -85,6 +87,7 @@ SPEC CHECKSUMS:
   HMSegmentedControl: 83b9686022d2176fb6457d2bdb61e5d6393fed7d
   JVFloatLabeledTextField: 18b05449d479733841b2c451c87e201a45de26e2
   KVNProgress: 7001d2d16a2755cee5599e8e485befe056f2197b
+  KVOController: 9fd8f0343670994e4b6f9f0b31f5a45663f3e1cf
   MCSwipeTableViewCell: 0fc22bd3635b9b5f4ce08675218b0a7278b6440f
   MJRefresh: 65a2bf14abb6feeaed8696aa1551f70e15ab0a08
   MMDrawerController: e3a54a5570388463ad3b36975251575b50c4e1a0
