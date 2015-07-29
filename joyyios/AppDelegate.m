@@ -8,7 +8,7 @@
 
 #import <AFNetworking/AFNetworking.h>
 #import <KVNProgress/KVNProgress.h>
-
+#import <MSWeakTimer/MSWeakTimer.h>
 #import <RKDropdownAlert/RKDropdownAlert.h>
 #import <Stripe/Stripe.h>
 
@@ -24,7 +24,8 @@
 
 @interface AppDelegate ()
 
-@property(nonatomic) NSTimer *signInTimer;
+@property(nonatomic) MSWeakTimer *signInTimer;
+@property (nonatomic) dispatch_queue_t backgroundQueue;
 
 @end
 
@@ -63,9 +64,12 @@
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your
     // application to its current state in case it is terminated later.
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
-    [self.signInTimer invalidate];
-    self.signInTimer = nil;
     NSLog(@"applicationDidEnterBackground");
+    if (self.signInTimer)
+    {
+        [self.signInTimer invalidate];
+        self.signInTimer = nil;
+    }
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
@@ -88,18 +92,18 @@
     }
 
     NSTimeInterval now = [NSDate timeIntervalSinceReferenceDate];
-    NSLog(@"user.tokenExpireTimeInSecs = %f", user.tokenExpireTimeInSecs);
-    NSLog(@"now = %f", now);
     if (user.tokenExpireTimeInSecs < now)
     {
-        NSLog(@"will start auto sign now");
-        [self.signInTimer invalidate];
-        self.signInTimer = nil;
+        if (self.signInTimer)
+        {
+            [self.signInTimer invalidate];
+            self.signInTimer = nil;
+        }
+
         [self _autoSignIn];
     }
     else
     {
-        NSLog(@"will start auto sign in %f seconds", user.tokenExpireTimeInSecs - now);
         [self _signInAfter:(user.tokenExpireTimeInSecs - now)];
     }
 }
@@ -107,9 +111,23 @@
 - (void)applicationWillTerminate:(UIApplication *)application
 {
     NSLog(@"applicationWillTerminate");
-    [self.signInTimer invalidate];
-    self.signInTimer = nil;
+    if (self.signInTimer)
+    {
+        [self.signInTimer invalidate];
+        self.signInTimer = nil;
+    }
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+#pragma mark - Properties
+
+- (dispatch_queue_t)backgroundQueue
+{
+    if (!_backgroundQueue)
+    {
+        _backgroundQueue = dispatch_queue_create("com.joyyapp.background_queue", DISPATCH_QUEUE_CONCURRENT);
+    }
+    return _backgroundQueue;
 }
 
 #pragma mark - Notifications
@@ -321,7 +339,12 @@
         [self.signInTimer invalidate];
     }
 
-    self.signInTimer = [NSTimer timerWithTimeInterval:interval target:self selector:@selector(_autoSignIn) userInfo:nil repeats:NO];
+    self.signInTimer = [MSWeakTimer scheduledTimerWithTimeInterval:interval
+                                                            target:self
+                                                          selector:@selector(_autoSignIn)
+                                                          userInfo:nil
+                                                           repeats:NO
+                                                     dispatchQueue:self.backgroundQueue];
 }
 
 #pragma mark - Network

@@ -12,7 +12,7 @@ NSString *const kUrlAPIBase = @"http://192.168.1.145:8000/v1/";
 
 const NSTimeInterval k1Minutes = 60;
 const NSTimeInterval k15Minutes = 900;
-const NSTimeInterval k30Minutes = 90;
+const NSTimeInterval k30Minutes = 1800;
 
 const CGFloat kButtonCornerRadius = 4.0f;
 const CGFloat kButtonDefaultHeight = 44.0f;
