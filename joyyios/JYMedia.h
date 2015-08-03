@@ -30,6 +30,7 @@ typedef NS_ENUM(NSUInteger, JYMediaType)
 @property(nonatomic, copy) NSString *filename;
 @property(nonatomic, copy) NSString *caption;
 @property(nonatomic, readonly) NSString *url;
+@property(nonatomic, readonly) NSString *idString;
 
 // Brief related
 - (void)setBrief:(NSDictionary *)brief;

@@ -6,6 +6,8 @@
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
+#import <YTKKeyValueStore/YTKKeyValueStore.h>
+
 #import "JYMedia.h"
 #import "JYUser.h"
 
@@ -13,8 +15,22 @@
 
 @end
 
+static NSString *const kLikedMediaTable = @"liked_media";
 
 @implementation JYMedia
+
++ (YTKKeyValueStore *)sharedKVStore;
+{
+    static YTKKeyValueStore *_sharedKVStore = nil;
+    static dispatch_once_t done;
+
+    dispatch_once(&done, ^{
+        _sharedKVStore = [[YTKKeyValueStore alloc] initDBWithName:@"joyy_kv.db"];
+        [_sharedKVStore createTableWithName:kLikedMediaTable];
+    });
+
+    return _sharedKVStore;
+}
 
 + (NSString *)newFilename
 {
@@ -42,7 +58,6 @@
         if (dict)
         {
             _localImage = nil;
-            _isLiked = NO;
 
             _filename = [dict objectForKey:@"filename"];
             _caption = [dict objectForKey:@"caption"];
@@ -54,6 +69,7 @@
             _likeCount = [dict unsignedIntegerValueForKey:@"likes"];
             _commentCount = [dict unsignedIntegerValueForKey:@"comments"];
             _timestamp = [dict unsignedIntegerValueForKey:@"ct"];
+            _isLiked = [self _isInLikedStore];
         }
     }
     return self;
@@ -78,6 +94,35 @@
         _commentCount = 0;
     }
     return self;
+}
+
+- (void)setIsLiked:(BOOL)isLiked
+{
+    if (isLiked)
+    {
+        NSUInteger personId = [JYUser currentUser].userId;
+        NSDictionary *value = @{ @"personId": @(personId)};
+        [[JYMedia sharedKVStore] putObject:value withId:self.idString intoTable:kLikedMediaTable];
+    }
+
+    _isLiked = isLiked;
+}
+
+- (BOOL)_isInLikedStore
+{
+    NSDictionary *liked = [[JYMedia sharedKVStore] getObjectById:self.idString fromTable:kLikedMediaTable];
+    if (!liked)
+    {
+        return NO;
+    }
+
+    NSUInteger likedByPerson = [liked unsignedIntegerValueForKey:@"personId"];
+    return (likedByPerson == [JYUser currentUser].userId);
+}
+
+- (NSString *)idString
+{
+    return [NSString stringWithFormat:@"%tu", self.mediaId];
 }
 
 - (NSString *)url

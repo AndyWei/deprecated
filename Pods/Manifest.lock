@@ -23,6 +23,11 @@ PODS:
   - AXRatingView (1.0.3)
   - CardIO (5.0.6)
   - ChameleonFramework (1.2.0)
+  - FMDB (2.5):
+    - FMDB/standard (= 2.5)
+  - FMDB/common (2.5)
+  - FMDB/standard (2.5):
+    - FMDB/common
   - HMSegmentedControl (1.5.2)
   - JVFloatLabeledTextField (1.0.4)
   - KVNProgress (2.2.1)
@@ -56,6 +61,8 @@ PODS:
   - TTTAttributedLabel (1.13.4)
   - UIView+Positioning (1.1)
   - XLForm (2.2.0)
+  - YTKKeyValueStore (0.1.2):
+    - FMDB (~> 2.0)
 
 DEPENDENCIES:
   - AFNetworking (~> 2.5)
@@ -78,12 +85,14 @@ DEPENDENCIES:
   - TTTAttributedLabel
   - UIView+Positioning
   - XLForm
+  - YTKKeyValueStore
 
 SPEC CHECKSUMS:
   AFNetworking: 05edc0ac4c4c8cf57bcf4b84be5b0744b6d8e71e
   AXRatingView: ccaadc1bbda99a4b7e1d556059482d2b933a9f4e
   CardIO: 3fb62d56651d80e8f98e9572bfbe589ebf13d706
   ChameleonFramework: 4d6bf87fcaee176f487176cdccc4229637ec97f0
+  FMDB: 96e8f1bcc1329e269330f99770ad4285d9003e52
   HMSegmentedControl: 83b9686022d2176fb6457d2bdb61e5d6393fed7d
   JVFloatLabeledTextField: 18b05449d479733841b2c451c87e201a45de26e2
   KVNProgress: 7001d2d16a2755cee5599e8e485befe056f2197b
@@ -99,5 +108,6 @@ SPEC CHECKSUMS:
   TTTAttributedLabel: 0a2ac7b2dd726d32a070dafb01446026b11e624f
   UIView+Positioning: e93fe9e3186d1ed7d60e344aa12787911e902056
   XLForm: 799e61ef230f519914e722bf032b19a597223c19
+  YTKKeyValueStore: 4d002941540dd5108fa23009b71e0f2f937f7a0f
 
 COCOAPODS: 0.37.1
