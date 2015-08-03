@@ -14,7 +14,7 @@ static const CGFloat kTopMargin = 3;
 
 @interface JYCommentViewCell ()
 
-@property(nonatomic, weak) TTTAttributedLabel *commentLabel;
+@property(nonatomic) TTTAttributedLabel *commentLabel;
 
 @end
 
@@ -54,8 +54,6 @@ static const CGFloat kTopMargin = 3;
     {
         self.opaque = YES;
         self.backgroundColor = JoyyWhite;
-
-        [self _createCommentLabel];
     }
     return self;
 }
@@ -85,25 +83,26 @@ static const CGFloat kTopMargin = 3;
     }
 }
 
-- (void)_createCommentLabel
+- (TTTAttributedLabel *)commentLabel
 {
-    CGFloat screenWidth = CGRectGetWidth([[UIScreen mainScreen] applicationFrame]);
-    CGRect frame = CGRectMake(kMarginLeft, kTopMargin, screenWidth- kMarginLeft - kMarginRight, kMinHeight);
+    if (!_commentLabel)
+    {
+        CGRect frame = CGRectMake(kMarginLeft, kTopMargin, SCREEN_WIDTH - kMarginLeft - kMarginRight, kMinHeight);
 
-    TTTAttributedLabel *commentLabel = [[TTTAttributedLabel alloc] initWithFrame:frame];;
-    commentLabel.delegate = self;
-    commentLabel.enabledTextCheckingTypes = NSTextCheckingTypeLink;
-    commentLabel.backgroundColor = FlatWhite;
-    commentLabel.font = [UIFont systemFontOfSize:kFontSizeComment];
-    commentLabel.lineBreakMode = NSLineBreakByWordWrapping;
-    commentLabel.numberOfLines = 0;
-    commentLabel.textColor = FlatBlack;
-    commentLabel.textAlignment = NSTextAlignmentLeft;
-    commentLabel.linkAttributes =  @{ (id)kCTForegroundColorAttributeName: FlatSkyBlueDark,
-                                           (id)kCTUnderlineStyleAttributeName : [NSNumber numberWithInt:NSUnderlineStyleNone] };
-
-    self.commentLabel = commentLabel;
-    [self addSubview:self.commentLabel];
+        _commentLabel = [[TTTAttributedLabel alloc] initWithFrame:frame];;
+        _commentLabel.delegate = self;
+        _commentLabel.enabledTextCheckingTypes = NSTextCheckingTypeLink;
+        _commentLabel.backgroundColor = FlatWhite;
+        _commentLabel.font = [UIFont systemFontOfSize:kFontSizeComment];
+        _commentLabel.lineBreakMode = NSLineBreakByWordWrapping;
+        _commentLabel.numberOfLines = 0;
+        _commentLabel.textColor = FlatBlack;
+        _commentLabel.textAlignment = NSTextAlignmentLeft;
+        _commentLabel.linkAttributes =  @{ (id)kCTForegroundColorAttributeName: FlatSkyBlueDark,
+                                               (id)kCTUnderlineStyleAttributeName : [NSNumber numberWithInt:NSUnderlineStyleNone] };
+        [self addSubview:_commentLabel];
+    }
+    return _commentLabel;
 }
 
 # pragma -mark TTTAttributedLabelDelegate

@@ -7,6 +7,7 @@
 //
 
 #import <AFNetworking/UIImageView+AFNetworking.h>
+#import <KVOController/FBKVOController.h>
 
 #import "JYButton.h"
 #import "JYMedia.h"
@@ -32,6 +33,8 @@ static const CGFloat kCommentCountButtonWidth = 100;
 
 @property(nonatomic) NSMutableArray *commentLabels;
 @property(nonatomic) BOOL likeButtonPressed;
+
+@property(nonatomic) FBKVOController *observer;
 
 @end
 
@@ -59,6 +62,7 @@ static const CGFloat kCommentCountButtonWidth = 100;
     return labelHeight;
 }
 
+
 + (CGFloat)heightForMedia:(JYMedia *)media;
 {
     CGFloat imageHeight = SCREEN_WIDTH;
@@ -76,6 +80,7 @@ static const CGFloat kCommentCountButtonWidth = 100;
     return imageHeight + captionHeight + commentsHeight + kActionBarHeight;
 }
 
+
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
@@ -87,6 +92,7 @@ static const CGFloat kCommentCountButtonWidth = 100;
     }
     return self;
 }
+
 
 - (void)setMedia:(JYMedia *)media
 {
@@ -100,7 +106,27 @@ static const CGFloat kCommentCountButtonWidth = 100;
     [self _updateActionBar];
     [self _updateCaption];
     [self _updateComments];
+
+    __weak typeof(self) weakSelf = self;
+    [self.observer observe:media keyPath:@"isLiked" options:NSKeyValueObservingOptionNew block:^(JYMediaViewCell *cell, JYMedia *media, NSDictionary *change) {
+
+        BOOL isLiked = [[change objectForKey:NSKeyValueChangeNewKey] boolValue];
+        [weakSelf _updateLikeButtonImage:isLiked];
+    }];
+
+    [self.observer observe:media keyPath:@"likeCount" options:NSKeyValueObservingOptionNew block:^(JYMediaViewCell *cell, JYMedia *media, NSDictionary *change) {
+
+        NSUInteger likeCount = [change unsignedIntegerValueForKey:NSKeyValueChangeNewKey];
+        [weakSelf _updateLikeCount:likeCount];
+    }];
+
+    [self.observer observe:media keyPath:@"commentCount" options:NSKeyValueObservingOptionNew block:^(JYMediaViewCell *cell, JYMedia *media, NSDictionary *change) {
+
+        NSUInteger commentCount = [change unsignedIntegerValueForKey:NSKeyValueChangeNewKey];
+        [weakSelf _updateCommentCount:commentCount];
+    }];
 }
+
 
 - (void)_updateImage
 {
@@ -126,10 +152,20 @@ static const CGFloat kCommentCountButtonWidth = 100;
                                    } failure:nil];
 }
 
+
 - (void)_updateActionBar
 {
     _likeButtonPressed = NO;
-    if (_media.isLiked)
+
+    [self _updateLikeButtonImage:_media.isLiked];
+    [self _updateLikeCount:_media.likeCount];
+    [self _updateCommentCount:_media.commentCount];
+}
+
+
+- (void)_updateLikeButtonImage:(BOOL)isLiked
+{
+    if (isLiked)
     {
         self.likeButton.imageView.image = [UIImage imageNamed:@"heart_selected"];
         self.likeButton.contentColor = JoyyBlue;
@@ -139,13 +175,22 @@ static const CGFloat kCommentCountButtonWidth = 100;
         self.likeButton.imageView.image = [UIImage imageNamed:@"heart"];
         self.likeButton.contentColor = JoyyGray;
     }
-
-    NSString *likes = NSLocalizedString(@"likes", nil);
-    self.likeCountLabel.text = [NSString stringWithFormat:@"%tu %@   ·", _media.likeCount, likes];
-
-    NSString *comments = NSLocalizedString(@"comments", nil);
-    self.commentCountButton.textLabel.text = [NSString stringWithFormat:@"%tu %@", _media.commentCount, comments];
 }
+
+
+- (void)_updateLikeCount:(NSUInteger)count
+{
+    NSString *likes = NSLocalizedString(@"likes", nil);
+    self.likeCountLabel.text = [NSString stringWithFormat:@"%tu %@   ·", count, likes];
+}
+
+
+- (void)_updateCommentCount:(NSUInteger)count
+{
+    NSString *comments = NSLocalizedString(@"comments", nil);
+    self.commentCountButton.textLabel.text = [NSString stringWithFormat:@"%tu %@", count, comments];
+}
+
 
 - (void)_updateCaption
 {
@@ -153,6 +198,7 @@ static const CGFloat kCommentCountButtonWidth = 100;
     self.captionLabel.text = caption;
     self.captionLabel.height = [JYMediaViewCell labelHeightForText:caption withFontSize:kFontSizeCaption andTextAlignment:NSTextAlignmentCenter] + 10;
 }
+
 
 - (void)_updateComments
 {
@@ -180,6 +226,17 @@ static const CGFloat kCommentCountButtonWidth = 100;
     }
 }
 
+
+- (FBKVOController *)observer
+{
+    if (!_observer)
+    {
+        _observer = [FBKVOController controllerWithObserver:self];
+    }
+    return _observer;
+}
+
+
 - (UIImageView *)photoView
 {
     if (!_photoView)
@@ -190,6 +247,7 @@ static const CGFloat kCommentCountButtonWidth = 100;
     }
     return _photoView;
 }
+
 
 - (UIView *)actionBar
 {
@@ -217,6 +275,7 @@ static const CGFloat kCommentCountButtonWidth = 100;
     return _actionBar;
 }
 
+
 - (UILabel *)likeCountLabel
 {
     if (!_likeCountLabel)
@@ -229,6 +288,7 @@ static const CGFloat kCommentCountButtonWidth = 100;
     }
     return _likeCountLabel;
 }
+
 
 - (JYButton *)commentCountButton
 {
@@ -245,11 +305,13 @@ static const CGFloat kCommentCountButtonWidth = 100;
     return _commentCountButton;
 }
 
+
 - (void)_showMoreComments
 {
     NSDictionary *info = @{@"media": self.media, @"edit":@(NO)};
     [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationWillCommentMedia object:nil userInfo:info];
 }
+
 
 - (JYButton *)commentButton
 {
@@ -261,11 +323,13 @@ static const CGFloat kCommentCountButtonWidth = 100;
     return _commentButton;
 }
 
+
 - (void)_comment
 {
     NSDictionary *info = @{@"media": self.media, @"edit":@(YES)};
     [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationWillCommentMedia object:nil userInfo:info];
 }
+
 
 - (JYButton *)likeButton
 {
@@ -276,6 +340,7 @@ static const CGFloat kCommentCountButtonWidth = 100;
     }
     return _likeButton;
 }
+
 
 - (void)_like
 {
@@ -290,6 +355,7 @@ static const CGFloat kCommentCountButtonWidth = 100;
    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationWillLikeMedia object:nil userInfo:info];
 }
 
+
 - (UILabel *)captionLabel
 {
     if (!_captionLabel)
@@ -300,6 +366,7 @@ static const CGFloat kCommentCountButtonWidth = 100;
     }
     return _captionLabel;
 }
+
 
 - (NSArray *)commentLabels
 {
@@ -317,6 +384,7 @@ static const CGFloat kCommentCountButtonWidth = 100;
     return _commentLabels;
 }
 
+
 - (UILabel *)_createLabel
 {
     CGFloat width = SCREEN_WIDTH - kMarginLeft - kMarginRight;
@@ -331,6 +399,7 @@ static const CGFloat kCommentCountButtonWidth = 100;
 
     return label;
 }
+
 
 - (JYButton *)_createButtonWithImage:(UIImage *)image
 {

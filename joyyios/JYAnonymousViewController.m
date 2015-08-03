@@ -42,7 +42,7 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
 {
     [super viewDidLoad];
 
-    self.title = NSLocalizedString(@"Anonymous", nil);
+    self.title = NSLocalizedString(@"Masquerade", nil);
 
     // Do not use UIBarStyleBlack in the next line, because it will make the status bar text white, which is not what we want
     // self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
@@ -378,7 +378,6 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
              NSDictionary *dict = (NSDictionary *)responseObject;
              media.likeCount = [[dict objectForKey:@"likes"] unsignedIntegerValue];
              media.isLiked = YES;
-             [weakSelf.tableView reloadData];
              [weakSelf _networkThreadEnd];
          }
          failure:^(AFHTTPRequestOperation *operation, NSError *error) {
