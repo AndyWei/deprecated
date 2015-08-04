@@ -19,6 +19,8 @@ const CGFloat kButtonDefaultHeight = 44.0f;
 const CGFloat kButtonDefaultFontSize = 18.0f;
 const CGFloat kButtonLocateDiameter = 40;
 
+const CGFloat kCaptionLabelHeightMin = 30;
+
 const CGFloat kIntroductionVersion = 1.0;
 
 const CGFloat kFontSizeCaption = 16.0f;

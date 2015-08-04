@@ -21,6 +21,8 @@ extern const CGFloat kButtonDefaultHeight;
 extern const CGFloat kButtonDefaultFontSize;
 extern const CGFloat kButtonLocateDiameter;
 
+extern const CGFloat kCaptionLabelHeightMin;
+
 extern const CGFloat kIntroductionVersion;
 
 extern const CGFloat kFontSizeCaption;

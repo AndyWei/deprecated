@@ -6,28 +6,19 @@
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
-#import "JYButton.h"
 #import "JYPhotoCaptionViewController.h"
 #import "TGAssetsLibrary.h"
 
 @import AssetsLibrary;
 
-@interface JYPhotoCaptionViewController ()
-
+@interface JYPhotoCaptionViewController () <UITextViewDelegate>
 @property (nonatomic) UIImage *photo;
 @property (nonatomic) UIImageView *imageView;
-@property (nonatomic) UIView *inputView;
 @property (nonatomic) UITextView *textView;
-@property (nonatomic) JYButton *sendButton;
-
 @property (nonatomic, weak) id<TGCameraDelegate> delegate;
-
 @end
 
 static NSString *const kImageCellIdentifier = @"imageCell";
-
-const CGFloat kInputViewHeight = 60;
-const CGFloat kSendButtonWidth = 60;
 
 @implementation JYPhotoCaptionViewController
 
@@ -56,6 +47,8 @@ const CGFloat kSendButtonWidth = 60;
     self.title = NSLocalizedString(@"Caption", nil);
 
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"CameraBack"] style:UIBarButtonItemStylePlain target:self action:@selector(_back)];
+
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"send"] style:UIBarButtonItemStylePlain target:self action:@selector(_send)];
 
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:kImageCellIdentifier];
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
@@ -147,45 +140,17 @@ const CGFloat kSendButtonWidth = 60;
 {
     if (!_textView)
     {
-        _textView = [[UITextView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH - kSendButtonWidth, kInputViewHeight)];
-        _textView.font = [UIFont systemFontOfSize:14];
-        _textView.backgroundColor = FlatBlack;
-        _textView.textColor = FlatWhite;
+        _textView = [[UITextView alloc] initWithFrame:CGRectMake(0, SCREEN_WIDTH - kCaptionLabelHeightMin, SCREEN_WIDTH, kCaptionLabelHeightMin)];
+        _textView.delegate = self;
+        _textView.font = [UIFont systemFontOfSize:kFontSizeCaption];
+        _textView.backgroundColor = JoyyBlack50;
+        _textView.textColor = JoyyWhite;
+        _textView.tintColor = JoyyWhite;
+        _textView.textAlignment = NSTextAlignmentCenter;
+        _textView.scrollEnabled = NO; // Disable scroll is to fix the top padding automatically change to zero issue.
+        [_textView becomeFirstResponder];
     }
     return _textView;
-}
-
-- (JYButton *)sendButton
-{
-    if (!_sendButton)
-    {
-        CGRect frame = CGRectMake(0, 0, kSendButtonWidth, kSendButtonWidth);
-        _sendButton = [JYButton buttonWithFrame:frame buttonStyle:JYButtonStyleCentralImage shouldMaskImage:YES];
-
-        _sendButton.imageView.image = [UIImage imageNamed:@"CameraShot"];
-        _sendButton.contentColor = JoyyBlue;
-        _sendButton.contentAnimateToColor = JoyyGray;
-        _sendButton.foregroundColor = ClearColor;
-        [_sendButton addTarget:self action:@selector(_send) forControlEvents:UIControlEventTouchUpInside];
-
-        _sendButton.contentEdgeInsets = UIEdgeInsetsMake(5, 5, 5, 5);
-    }
-    return _sendButton;
-}
-
-- (UIView *)inputView
-{
-    if (!_inputView)
-    {
-        _inputView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, kInputViewHeight)];
-        self.textView.x = 0;
-        self.sendButton.x = CGRectGetMaxX(self.textView.frame);
-        [_inputView addSubview:self.textView];
-        [_inputView addSubview:self.sendButton];
-
-        [self.textView becomeFirstResponder];
-    }
-    return _inputView;
 }
 
 #pragma mark - UITableViewDataSource
@@ -197,22 +162,16 @@ const CGFloat kSendButtonWidth = 60;
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 2;
+    return 1;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kImageCellIdentifier forIndexPath:indexPath];
-    cell.backgroundColor = FlatBlack;
+    cell.backgroundColor = JoyyBlack;
 
-    if (indexPath.row == 0)
-    {
-        [cell addSubview:self.imageView];
-    }
-    else
-    {
-        [cell addSubview:self.inputView];
-    }
+    [cell addSubview:self.imageView];
+    [cell addSubview:self.textView];
 
     return cell;
 }
@@ -221,7 +180,7 @@ const CGFloat kSendButtonWidth = 60;
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return (indexPath.row == 0) ? SCREEN_WIDTH : kInputViewHeight;
+    return SCREEN_WIDTH;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
@@ -229,7 +188,18 @@ const CGFloat kSendButtonWidth = 60;
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
-#pragma mark - Overriden Method
+#pragma mark - UITextView Delegate
 
+- (void)textViewDidChange:(UITextView *)textView
+{
+    CGSize newSize = [textView sizeThatFits:CGSizeMake(SCREEN_WIDTH, MAXFLOAT)];
+    textView.height = fmin(SCREEN_WIDTH, newSize.height);
+    textView.y = SCREEN_WIDTH - textView.height;
+}
+
+- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text
+{
+    return textView.text.length + (text.length - range.length) <= 900;
+}
 
 @end

@@ -13,7 +13,6 @@
 #import "JYMedia.h"
 #import "JYMediaViewCell.h"
 
-static const CGFloat kActionBarHeight = 40;
 static const CGFloat kButtonWidth = 40;
 static const CGFloat kButtonDistance = 20;
 static const CGFloat kLikeCountLabelWidth = 80;
@@ -67,9 +66,6 @@ static const CGFloat kCommentCountButtonWidth = 100;
 {
     CGFloat imageHeight = SCREEN_WIDTH;
 
-    CGFloat captionHeight = [JYMediaViewCell labelHeightForText:media.caption withFontSize:kFontSizeCaption andTextAlignment:NSTextAlignmentLeft];
-    captionHeight += 10;
-
     CGFloat commentsHeight = 0;
     for (NSString *text in media.commentList)
     {
@@ -77,7 +73,7 @@ static const CGFloat kCommentCountButtonWidth = 100;
         commentsHeight += (height + 5);
     }
 
-    return imageHeight + captionHeight + commentsHeight + kActionBarHeight;
+    return imageHeight + commentsHeight + kButtonWidth;
 }
 
 
@@ -194,15 +190,17 @@ static const CGFloat kCommentCountButtonWidth = 100;
 
 - (void)_updateCaption
 {
-    NSString *caption = [NSString stringWithFormat:@"😎: %@", _media.caption];
-    self.captionLabel.text = caption;
-    self.captionLabel.height = [JYMediaViewCell labelHeightForText:caption withFontSize:kFontSizeCaption andTextAlignment:NSTextAlignmentCenter] + 10;
+    self.captionLabel.text = self.media.caption;
+    CGFloat height = [JYMediaViewCell labelHeightForText:self.media.caption withFontSize:kFontSizeCaption andTextAlignment:NSTextAlignmentCenter];
+    self.captionLabel.height = fmax(kCaptionLabelHeightMin, height);
+
+    self.captionLabel.y = SCREEN_WIDTH - self.captionLabel.height;
 }
 
 
 - (void)_updateComments
 {
-    CGFloat y = CGRectGetMaxY(self.captionLabel.frame);
+    CGFloat y = CGRectGetMaxY(self.actionBar.frame);
 
     for (NSUInteger i = 0; i < kBriefCommentsCount; ++i)
     {
@@ -254,7 +252,7 @@ static const CGFloat kCommentCountButtonWidth = 100;
     if (!_actionBar)
     {
         CGFloat y = CGRectGetMaxY(self.photoView.frame);
-        _actionBar = [[UIView alloc] initWithFrame:CGRectMake(0, y, SCREEN_WIDTH, kActionBarHeight)];
+        _actionBar = [[UIView alloc] initWithFrame:CGRectMake(0, y, SCREEN_WIDTH, kButtonWidth)];
         _actionBar.opaque = YES;
         _actionBar.backgroundColor = JoyyBlack;
 
@@ -280,7 +278,7 @@ static const CGFloat kCommentCountButtonWidth = 100;
 {
     if (!_likeCountLabel)
     {
-        _likeCountLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, kLikeCountLabelWidth, kActionBarHeight)];
+        _likeCountLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, kLikeCountLabelWidth, kButtonWidth)];
         _likeCountLabel.backgroundColor = JoyyBlack;
         _likeCountLabel.font = [UIFont systemFontOfSize:kFontSizeDetail];
         _likeCountLabel.textColor = JoyyGray;
@@ -294,7 +292,7 @@ static const CGFloat kCommentCountButtonWidth = 100;
 {
     if (!_commentCountButton)
     {
-        CGRect frame = CGRectMake(0, 0, kCommentCountButtonWidth, kActionBarHeight);
+        CGRect frame = CGRectMake(0, 0, kCommentCountButtonWidth, kButtonWidth);
         _commentCountButton = [JYButton buttonWithFrame:frame buttonStyle:JYButtonStyleTitle shouldMaskImage:NO];
         _commentCountButton.contentColor = JoyyGray;
         _commentCountButton.contentAnimateToColor = JoyyBlue;
@@ -360,8 +358,14 @@ static const CGFloat kCommentCountButtonWidth = 100;
 {
     if (!_captionLabel)
     {
-        _captionLabel = [self _createLabel];
-        _captionLabel.y = CGRectGetMaxY(self.actionBar.frame);
+        CGRect frame = CGRectMake(0, 0, SCREEN_WIDTH, 0);
+        _captionLabel = [[UILabel alloc] initWithFrame:frame];
+        _captionLabel.backgroundColor = JoyyBlack50;
+        _captionLabel.font = [UIFont systemFontOfSize:kFontSizeCaption];
+        _captionLabel.textColor = JoyyWhite;
+        _captionLabel.textAlignment = NSTextAlignmentCenter;
+        _captionLabel.numberOfLines = 0;
+        _captionLabel.lineBreakMode = NSLineBreakByWordWrapping;
         [self addSubview:_captionLabel];
     }
     return _captionLabel;
@@ -376,7 +380,6 @@ static const CGFloat kCommentCountButtonWidth = 100;
         for (NSUInteger i = 0; i < kBriefCommentsCount; i++)
         {
             UILabel *label = [self _createLabel];
-            label.font = [UIFont systemFontOfSize:kFontSizeComment];
             [_commentLabels addObject:label];
             [self addSubview:label];
         }
@@ -391,7 +394,7 @@ static const CGFloat kCommentCountButtonWidth = 100;
     CGRect frame = CGRectMake(kMarginLeft, 0, width, 0);
     UILabel *label = [[UILabel alloc] initWithFrame:frame];
     label.backgroundColor = JoyyBlack;
-    label.font = [UIFont systemFontOfSize:kFontSizeCaption];
+    label.font = [UIFont systemFontOfSize:kFontSizeComment];
     label.textColor = JoyyWhite;
     label.textAlignment = NSTextAlignmentLeft;
     label.numberOfLines = 0;
