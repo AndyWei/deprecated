@@ -6,11 +6,11 @@
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
-#import "JYMedia.h"
+#import "JYPost.h"
 #import "SLKTextViewController.h"
 
 @interface JYCommentViewController : SLKTextViewController
 
-- (instancetype)initWithMedia:(JYMedia *)media withKeyboard:(BOOL)showKeyBoard;
+- (instancetype)initWithPost:(JYPost *)post withKeyboard:(BOOL)showKeyBoard;
 
 @end

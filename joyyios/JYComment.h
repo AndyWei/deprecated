@@ -11,7 +11,7 @@
 - (instancetype)initWithDictionary:(NSDictionary *)dict;
 
 @property(nonatomic) NSUInteger commentId;
-@property(nonatomic) NSUInteger mediaId;
+@property(nonatomic) NSUInteger postId;
 @property(nonatomic) NSUInteger ownerId;
 
 @property(nonatomic, readonly) NSString* contentString;

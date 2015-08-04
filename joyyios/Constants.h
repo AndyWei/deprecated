@@ -80,8 +80,8 @@ extern NSString *const kNotificationDidReceiveBid;
 extern NSString *const kNotificationDidSignIn;
 extern NSString *const kNotificationDidSignUp;
 extern NSString *const kNotificationNeedGeoInfo;
-extern NSString *const kNotificationWillCommentMedia;
-extern NSString *const kNotificationWillLikeMedia;
+extern NSString *const kNotificationWillCommentPost;
+extern NSString *const kNotificationWillLikePost;
 
 extern NSString *const kSystemFontBold;
 extern NSString *const kSystemFontItalic;

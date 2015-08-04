@@ -77,8 +77,8 @@ NSString *const kNotificationDidReceiveBid = @"receiveBid";
 NSString *const kNotificationDidSignIn = @"signIn";
 NSString *const kNotificationDidSignUp = @"signUp";
 NSString *const kNotificationNeedGeoInfo = @"needGeoInfo";
-NSString *const kNotificationWillCommentMedia = @"willCommentMedia";
-NSString *const kNotificationWillLikeMedia = @"willLikeMedia";
+NSString *const kNotificationWillCommentPost = @"willCommentPost";
+NSString *const kNotificationWillLikePost = @"willLikePost";
 
 NSString *const kSystemFontBold = @"AvenirNextCondensed-DemiBold";
 NSString *const kSystemFontItalic = @"AvenirNextCondensed-Italic ";

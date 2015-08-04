@@ -1,5 +1,5 @@
 //
-//  JYMediaViewCell.m
+//  JYPostViewCell.m
 //  joyyios
 //
 //  Created by Ping Yang on 7/12/15.
@@ -10,15 +10,15 @@
 #import <KVOController/FBKVOController.h>
 
 #import "JYButton.h"
-#import "JYMedia.h"
-#import "JYMediaViewCell.h"
+#import "JYPost.h"
+#import "JYPostViewCell.h"
 
 static const CGFloat kButtonWidth = 40;
 static const CGFloat kButtonDistance = 20;
 static const CGFloat kLikeCountLabelWidth = 80;
 static const CGFloat kCommentCountButtonWidth = 100;
 
-@interface JYMediaViewCell ()
+@interface JYPostViewCell ()
 
 @property(nonatomic) UIImageView *photoView;
 @property(nonatomic) UILabel *captionLabel;
@@ -38,7 +38,7 @@ static const CGFloat kCommentCountButtonWidth = 100;
 @end
 
 
-@implementation JYMediaViewCell
+@implementation JYPostViewCell
 
 + (CGFloat)labelHeightForText:(NSString *)text withFontSize:(CGFloat)fontSize andTextAlignment:(NSTextAlignment)textAlignment
 {
@@ -62,14 +62,14 @@ static const CGFloat kCommentCountButtonWidth = 100;
 }
 
 
-+ (CGFloat)heightForMedia:(JYMedia *)media;
++ (CGFloat)heightForPost:(JYPost *)post;
 {
     CGFloat imageHeight = SCREEN_WIDTH;
 
     CGFloat commentsHeight = 0;
-    for (NSString *text in media.commentList)
+    for (NSString *text in post.commentList)
     {
-        CGFloat height = [JYMediaViewCell labelHeightForText:text withFontSize:kFontSizeComment andTextAlignment:NSTextAlignmentLeft];
+        CGFloat height = [JYPostViewCell labelHeightForText:text withFontSize:kFontSizeComment andTextAlignment:NSTextAlignmentLeft];
         commentsHeight += (height + 5);
     }
 
@@ -90,33 +90,33 @@ static const CGFloat kCommentCountButtonWidth = 100;
 }
 
 
-- (void)setMedia:(JYMedia *)media
+- (void)setPost:(JYPost *)post
 {
-    if (!media)
+    if (!post)
     {
         return;
     }
 
-    _media = media;
+    _post = post;
     [self _updateImage];
     [self _updateActionBar];
     [self _updateCaption];
     [self _updateComments];
 
     __weak typeof(self) weakSelf = self;
-    [self.observer observe:media keyPath:@"isLiked" options:NSKeyValueObservingOptionNew block:^(JYMediaViewCell *cell, JYMedia *media, NSDictionary *change) {
+    [self.observer observe:post keyPath:@"isLiked" options:NSKeyValueObservingOptionNew block:^(JYPostViewCell *cell, JYPost *post, NSDictionary *change) {
 
         BOOL isLiked = [[change objectForKey:NSKeyValueChangeNewKey] boolValue];
         [weakSelf _updateLikeButtonImage:isLiked];
     }];
 
-    [self.observer observe:media keyPath:@"likeCount" options:NSKeyValueObservingOptionNew block:^(JYMediaViewCell *cell, JYMedia *media, NSDictionary *change) {
+    [self.observer observe:post keyPath:@"likeCount" options:NSKeyValueObservingOptionNew block:^(JYPostViewCell *cell, JYPost *post, NSDictionary *change) {
 
         NSUInteger likeCount = [change unsignedIntegerValueForKey:NSKeyValueChangeNewKey];
         [weakSelf _updateLikeCount:likeCount];
     }];
 
-    [self.observer observe:media keyPath:@"commentCount" options:NSKeyValueObservingOptionNew block:^(JYMediaViewCell *cell, JYMedia *media, NSDictionary *change) {
+    [self.observer observe:post keyPath:@"commentCount" options:NSKeyValueObservingOptionNew block:^(JYPostViewCell *cell, JYPost *post, NSDictionary *change) {
 
         NSUInteger commentCount = [change unsignedIntegerValueForKey:NSKeyValueChangeNewKey];
         [weakSelf _updateCommentCount:commentCount];
@@ -127,14 +127,14 @@ static const CGFloat kCommentCountButtonWidth = 100;
 - (void)_updateImage
 {
     // Use local image
-    if (_media.localImage)
+    if (_post.localImage)
     {
-        self.photoView.image = _media.localImage;
+        self.photoView.image = _post.localImage;
         return;
     }
 
     // Fetch network image
-    NSURL *url = [NSURL URLWithString:_media.url];
+    NSURL *url = [NSURL URLWithString:_post.url];
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
 
     __weak typeof(self) weakSelf = self;
@@ -153,9 +153,9 @@ static const CGFloat kCommentCountButtonWidth = 100;
 {
     _likeButtonPressed = NO;
 
-    [self _updateLikeButtonImage:_media.isLiked];
-    [self _updateLikeCount:_media.likeCount];
-    [self _updateCommentCount:_media.commentCount];
+    [self _updateLikeButtonImage:_post.isLiked];
+    [self _updateLikeCount:_post.likeCount];
+    [self _updateCommentCount:_post.commentCount];
 }
 
 
@@ -190,8 +190,8 @@ static const CGFloat kCommentCountButtonWidth = 100;
 
 - (void)_updateCaption
 {
-    self.captionLabel.text = self.media.caption;
-    CGFloat height = [JYMediaViewCell labelHeightForText:self.media.caption withFontSize:kFontSizeCaption andTextAlignment:NSTextAlignmentCenter];
+    self.captionLabel.text = self.post.caption;
+    CGFloat height = [JYPostViewCell labelHeightForText:self.post.caption withFontSize:kFontSizeCaption andTextAlignment:NSTextAlignmentCenter];
     self.captionLabel.height = fmax(kCaptionLabelHeightMin, height);
 
     self.captionLabel.y = SCREEN_WIDTH - self.captionLabel.height;
@@ -205,12 +205,12 @@ static const CGFloat kCommentCountButtonWidth = 100;
     for (NSUInteger i = 0; i < kBriefCommentsCount; ++i)
     {
         UILabel *label = self.commentLabels[i];
-        if (i < _media.commentList.count)
+        if (i < _post.commentList.count)
         {
-            NSString *text = [NSString stringWithFormat:@"★: %@", _media.commentList[i]];
+            NSString *text = [NSString stringWithFormat:@"★: %@", _post.commentList[i]];
             label.text = text;
 
-            CGFloat height = [JYMediaViewCell labelHeightForText:text withFontSize:kFontSizeComment andTextAlignment:NSTextAlignmentLeft];
+            CGFloat height = [JYPostViewCell labelHeightForText:text withFontSize:kFontSizeComment andTextAlignment:NSTextAlignmentLeft];
             label.height = height + 5;
             label.y = y;
             y = CGRectGetMaxY(label.frame);
@@ -306,8 +306,8 @@ static const CGFloat kCommentCountButtonWidth = 100;
 
 - (void)_showMoreComments
 {
-    NSDictionary *info = @{@"media": self.media, @"edit":@(NO)};
-    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationWillCommentMedia object:nil userInfo:info];
+    NSDictionary *info = @{@"post": self.post, @"edit":@(NO)};
+    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationWillCommentPost object:nil userInfo:info];
 }
 
 
@@ -324,8 +324,8 @@ static const CGFloat kCommentCountButtonWidth = 100;
 
 - (void)_comment
 {
-    NSDictionary *info = @{@"media": self.media, @"edit":@(YES)};
-    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationWillCommentMedia object:nil userInfo:info];
+    NSDictionary *info = @{@"post": self.post, @"edit":@(YES)};
+    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationWillCommentPost object:nil userInfo:info];
 }
 
 
@@ -342,15 +342,15 @@ static const CGFloat kCommentCountButtonWidth = 100;
 
 - (void)_like
 {
-    if (!self.media || self.media.isLiked || self.likeButtonPressed)
+    if (!self.post || self.post.isLiked || self.likeButtonPressed)
     {
         return;
     }
 
     self.likeButtonPressed = YES;
 
-    NSDictionary *info = @{@"media": self.media};
-   [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationWillLikeMedia object:nil userInfo:info];
+    NSDictionary *info = @{@"post": self.post};
+   [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationWillLikePost object:nil userInfo:info];
 }
 
 

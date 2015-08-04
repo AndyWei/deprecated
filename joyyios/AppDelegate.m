@@ -14,7 +14,7 @@
 
 #import "AppDelegate.h"
 #import "JYDataStore.h"
-#import "JYAnonymousViewController.h"
+#import "JYMasqueradeViewController.h"
 #import "JYMenuViewController.h"
 #import "JYMapViewController.h"
 #import "JYSignViewController.h"
@@ -284,7 +284,7 @@
 
 - (void)_launchMainViewController
 {
-    UIViewController *vc1 = [JYAnonymousViewController new];
+    UIViewController *vc1 = [JYMasqueradeViewController new];
     UINavigationController *nc1 = [[UINavigationController alloc] initWithRootViewController:vc1];
 
     UIViewController *vc2 = [JYMenuViewController new];

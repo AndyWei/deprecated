@@ -1,19 +1,19 @@
 //
-//  JYMedia.h
+//  JYPost.h
 //  joyyios
 //
 //  Created by Ping Yang on 7/12/15.
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
-typedef NS_ENUM(NSUInteger, JYMediaType)
+typedef NS_ENUM(NSUInteger, JYPostType)
 {
-    JYMediaTypeImage = 0,
-    JYMediaTypeVideo = 1,
-    JYMediaTypeAudio = 2
+    JYPostTypeImage = 0,
+    JYPostTypeVideo = 1,
+    JYPostTypeAudio = 2
 };
 
-@interface JYMedia : NSObject
+@interface JYPost : NSObject
 
 + (NSString *)newFilename;
 
@@ -21,8 +21,8 @@ typedef NS_ENUM(NSUInteger, JYMediaType)
 - (instancetype)initWithLocalImage:(UIImage *)image;
 
 @property(nonatomic) BOOL isLiked;
-@property(nonatomic) JYMediaType type;
-@property(nonatomic) NSUInteger mediaId;
+@property(nonatomic) JYPostType type;
+@property(nonatomic) NSUInteger postId;
 @property(nonatomic) NSUInteger ownerId;
 @property(nonatomic) NSUInteger urlVersion;
 @property(nonatomic) NSUInteger timestamp;

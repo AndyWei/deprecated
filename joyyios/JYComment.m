@@ -23,7 +23,7 @@
         if (dict)
         {
             _commentId = [[dict objectForKey:@"id"] unsignedIntegerValue];
-            _mediaId = [[dict objectForKey:@"media"] unsignedIntegerValue];
+            _postId = [[dict objectForKey:@"post"] unsignedIntegerValue];
             _ownerId = [[dict objectForKey:@"owner"] unsignedIntegerValue];
             _content = [dict objectForKey:@"content"];
         }

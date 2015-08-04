@@ -1,5 +1,5 @@
 //
-//  JYAnonymousViewController.m
+//  JYMasqueradeViewController.m
 //  joyyios
 //
 //  Created by Ping Yang on 4/25/15.
@@ -12,21 +12,21 @@
 #import <RKDropdownAlert/RKDropdownAlert.h>
 
 #import "AppDelegate.h"
-#import "JYAnonymousViewController.h"
 #import "JYButton.h"
 #import "JYCameraOverlayView.h"
 #import "JYCommentViewController.h"
-#import "JYMedia.h"
-#import "JYMediaViewCell.h"
+#import "JYMasqueradeViewController.h"
+#import "JYPost.h"
+#import "JYPostViewCell.h"
 #import "JYUser.h"
 #import "TGCameraColor.h"
 #import "UICustomActionSheet.h"
 #import "UIImage+Joyy.h"
 
-@interface JYAnonymousViewController ()
+@interface JYMasqueradeViewController ()
 
 @property(nonatomic) NSInteger networkThreadCount;
-@property(nonatomic) NSMutableArray *mediaList;
+@property(nonatomic) NSMutableArray *postList;
 @property(nonatomic) UIColor *originalTabBarTintColor;
 @property(nonatomic) JYButton *cameraButton;
 @property(nonatomic) UITableView *tableView;
@@ -34,9 +34,9 @@
 @end
 
 const CGFloat kCamerButtonWidth = 50;
-static NSString *const kMediaCellIdentifier = @"mediaCell";
+static NSString *const kPostCellIdentifier = @"postCell";
 
-@implementation JYAnonymousViewController
+@implementation JYMasqueradeViewController
 
 - (void)viewDidLoad
 {
@@ -53,16 +53,16 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
     [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName: JoyyGray}];
 
     self.networkThreadCount = 0;
-    self.mediaList = [NSMutableArray new];
+    self.postList = [NSMutableArray new];
 
     [self.view addSubview:self.tableView];
     [self.view addSubview:self.cameraButton];
-    [self _fetchNewMedia];
+    [self _fetchNewPost];
 
     self.originalTabBarTintColor = self.tabBarController.tabBar.barTintColor;
 
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_like:) name:kNotificationWillLikeMedia object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_comment:) name:kNotificationWillCommentMedia object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_like:) name:kNotificationWillLikePost object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_comment:) name:kNotificationWillCommentPost object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_brief:) name:kNotificationDidCreateComment object:nil];
 }
 
@@ -99,16 +99,16 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
         _tableView.separatorColor = ClearColor;
         _tableView.showsHorizontalScrollIndicator = NO;
         _tableView.showsVerticalScrollIndicator = NO;
-        [_tableView registerClass:[JYMediaViewCell class] forCellReuseIdentifier:kMediaCellIdentifier];
+        [_tableView registerClass:[JYPostViewCell class] forCellReuseIdentifier:kPostCellIdentifier];
 
         // Setup the pull-down-to-refresh header
-        MJRefreshNormalHeader *header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(_fetchNewMedia)];
+        MJRefreshNormalHeader *header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(_fetchNewPost)];
         header.lastUpdatedTimeLabel.hidden = YES;
         header.stateLabel.hidden = YES;
         _tableView.header = header;
 
         // Setup the pull-up-to-refresh footer
-        MJRefreshAutoNormalFooter *footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(_fetchOldMedia)];
+        MJRefreshAutoNormalFooter *footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(_fetchOldPost)];
         footer.refreshingTitleHidden = YES;
         footer.stateLabel.hidden = YES;
         _tableView.footer = footer;
@@ -167,11 +167,11 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
     NSDictionary *info = [notification userInfo];
     if (info)
     {
-        id value = [info objectForKey:@"media"];
+        id value = [info objectForKey:@"post"];
         if (value != [NSNull null])
         {
-            JYMedia *media = (JYMedia *)value;
-            [self _likeMedia:media];
+            JYPost *post = (JYPost *)value;
+            [self _likePost:post];
         }
     }
 }
@@ -181,13 +181,13 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
     NSDictionary *info = [notification userInfo];
     if (info)
     {
-        id mediaString = [info objectForKey:@"media"];
+        id postString = [info objectForKey:@"post"];
         id editString = [info objectForKey:@"edit"];
-        if (mediaString != [NSNull null] && editString != [NSNull null])
+        if (postString != [NSNull null] && editString != [NSNull null])
         {
-            JYMedia *media = (JYMedia *)mediaString;
+            JYPost *post = (JYPost *)postString;
             BOOL edit = [editString boolValue];
-            [self _presentCommentViewForMedia:media showKeyBoard:edit];
+            [self _presentCommentViewForPost:post showKeyBoard:edit];
         }
     }
 }
@@ -197,16 +197,16 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
     [self _fetchBrief];
 }
 
-- (void) _presentCommentViewForMedia:(JYMedia *)media showKeyBoard:(BOOL)edit
+- (void) _presentCommentViewForPost:(JYPost *)post showKeyBoard:(BOOL)edit
 {
-    JYCommentViewController *viewController = [[JYCommentViewController alloc] initWithMedia:media withKeyboard:edit];
+    JYCommentViewController *viewController = [[JYCommentViewController alloc] initWithPost:post withKeyboard:edit];
     [self.navigationController pushViewController:viewController animated:YES];
 }
 
-- (JYMedia *)_meidaAt:(NSIndexPath *)indexPath
+- (JYPost *)_meidaAt:(NSIndexPath *)indexPath
 {
     NSInteger index = indexPath.row;
-    return self.mediaList[index];
+    return self.postList[index];
 }
 
 - (void)_showCamera
@@ -220,22 +220,22 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
 
 - (void)_quickShow:(UIImage *)image withCaption:(NSString *)caption
 {
-    JYMedia *media = [[JYMedia alloc] initWithLocalImage:image];
-    media.caption = caption;
-    if (self.mediaList.count > 0)
+    JYPost *post = [[JYPost alloc] initWithLocalImage:image];
+    post.caption = caption;
+    if (self.postList.count > 0)
     {
-        JYMedia *firstMedia = self.mediaList.firstObject;
-        media.timestamp = firstMedia.timestamp; // Make sure the future _fetchNewMedia call get the correct last timestamp
+        JYPost *firstPost = self.postList.firstObject;
+        post.timestamp = firstPost.timestamp; // Make sure the future _fetchNewPost call get the correct last timestamp
     }
 
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
-    if (self.mediaList.count > 0)
+    if (self.postList.count > 0)
     {
         [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:NO];
     }
 
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self.mediaList insertObject:media atIndex:0];
+        [self.postList insertObject:post atIndex:0];
         [self.tableView beginUpdates];
         [self.tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
         [self.tableView endUpdates];
@@ -257,7 +257,7 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
     // Handling and upload the photo
     UIImage *image = [UIImage imageWithImage:photo scaledToSize:CGSizeMake(kPhotoWidth, kPhotoWidth)];
     NSData *imageData = UIImageJPEGRepresentation(image, kPhotoQuality);
-    [self _uploadImageNamed:[JYMedia newFilename] withData:imageData andCaption:caption];
+    [self _uploadImageNamed:[JYPost newFilename] withData:imageData andCaption:caption];
 
     __weak typeof(self) weakSelf = self;
     [self dismissViewControllerAnimated:YES completion:^{
@@ -280,16 +280,16 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return self.mediaList.count;
+    return self.postList.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    JYMediaViewCell *cell =
-    (JYMediaViewCell *)[tableView dequeueReusableCellWithIdentifier:kMediaCellIdentifier forIndexPath:indexPath];
+    JYPostViewCell *cell =
+    (JYPostViewCell *)[tableView dequeueReusableCellWithIdentifier:kPostCellIdentifier forIndexPath:indexPath];
 
-    JYMedia *media = [self _meidaAt:indexPath];
-    cell.media = media;
+    JYPost *post = [self _meidaAt:indexPath];
+    cell.post = post;
 
     return cell;
 }
@@ -298,8 +298,8 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    JYMedia *media = [self _meidaAt:indexPath];
-    return [JYMediaViewCell heightForMedia:media];
+    JYPost *post = [self _meidaAt:indexPath];
+    return [JYPostViewCell heightForPost:post];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
@@ -309,7 +309,7 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
 
 #pragma mark - Maintain table
 
-- (void)_updateTableWithMediaList:(NSArray *)list toEnd:(BOOL)toEnd
+- (void)_updateTableWithPostList:(NSArray *)list toEnd:(BOOL)toEnd
 {
     if (!list.count)
     {
@@ -317,40 +317,40 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
     }
 
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self _addMediaFromList:list toEnd:toEnd];
+        [self _addPostFromList:list toEnd:toEnd];
         [self.tableView reloadData];
     });
 }
 
-- (void)_addMediaFromList:(NSArray *)list toEnd:(BOOL)toEnd
+- (void)_addPostFromList:(NSArray *)list toEnd:(BOOL)toEnd
 {
-    if (!list.count || list == self.mediaList)
+    if (!list.count || list == self.postList)
     {
         return;
     }
 
-    // The items in mediaList are DESC sorted by media_id
+    // The items in postList are DESC sorted by post_id
     if (toEnd)
     {
-        [self.mediaList addObjectsFromArray:list];
+        [self.postList addObjectsFromArray:list];
     }
     else
     {
-        [self _removeQuickShowMedia];
-        for (JYMedia *media in [list reverseObjectEnumerator])
+        [self _removeQuickShowPost];
+        for (JYPost *post in [list reverseObjectEnumerator])
         {
-            [self.mediaList insertObject:media atIndex:0];
+            [self.postList insertObject:post atIndex:0];
         }
     }
 }
 
-- (void)_removeQuickShowMedia
+- (void)_removeQuickShowPost
 {
-    for (JYMedia *media in self.mediaList)
+    for (JYPost *post in self.postList)
     {
-        if (media.localImage)
+        if (post.localImage)
         {
-            [self.mediaList removeObject:media];
+            [self.postList removeObject:post];
             return;
         }
     }
@@ -358,7 +358,7 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
 
 #pragma mark - Network
 
-- (void)_likeMedia:(JYMedia *)media
+- (void)_likePost:(JYPost *)post
 {
     [self _networkThreadBegin];
 
@@ -366,18 +366,18 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
     NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYUser currentUser].token];
     [manager.requestSerializer setValue:token forHTTPHeaderField:@"Authorization"];
 
-    NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"media/like"];
-    NSDictionary *parameters = @{@"id": @(media.mediaId)};
+    NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"post/like"];
+    NSDictionary *parameters = @{@"id": @(post.postId)};
 
     __weak typeof(self) weakSelf = self;
     [manager POST:url
       parameters:parameters
          success:^(AFHTTPRequestOperation *operation, id responseObject) {
-             NSLog(@"media/like POST success responseObject: %@", responseObject);
+             NSLog(@"post/like POST success responseObject: %@", responseObject);
 
              NSDictionary *dict = (NSDictionary *)responseObject;
-             media.likeCount = [[dict objectForKey:@"likes"] unsignedIntegerValue];
-             media.isLiked = YES;
+             post.likeCount = [[dict objectForKey:@"likes"] unsignedIntegerValue];
+             post.isLiked = YES;
              [weakSelf _networkThreadEnd];
          }
          failure:^(AFHTTPRequestOperation *operation, NSError *error) {
@@ -394,7 +394,7 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
     NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYUser currentUser].token];
     [manager.requestSerializer setValue:token forHTTPHeaderField:@"Authorization"];
 
-    NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"media"];
+    NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"post"];
     NSMutableDictionary *parameters = [self _uploadImageParameters];
     [parameters setObject:caption forKey:@"caption"];
 
@@ -425,7 +425,7 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
 {
     NSMutableDictionary *parameters = [NSMutableDictionary new];
 
-    [parameters setObject:@(JYMediaTypeImage) forKey:@"type"];
+    [parameters setObject:@(JYPostTypeImage) forKey:@"type"];
 
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     [parameters setObject:@(appDelegate.currentCoordinate.latitude) forKey:@"lat"];
@@ -435,17 +435,17 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
     return parameters;
 }
 
-- (void)_fetchNewMedia
+- (void)_fetchNewPost
 {
-    [self _fetchMediaToEnd:NO];
+    [self _fetchPostToEnd:NO];
 }
 
-- (void)_fetchOldMedia
+- (void)_fetchOldPost
 {
-    [self _fetchMediaToEnd:YES];
+    [self _fetchPostToEnd:YES];
 }
 
-- (void)_fetchMediaToEnd:(BOOL)toEnd
+- (void)_fetchPostToEnd:(BOOL)toEnd
 {
     if (self.networkThreadCount > 0)
     {
@@ -455,22 +455,22 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
 
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
 
-    NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"media/nearby"];
-    NSDictionary *parameters = [self _fetchMediaHttpParameters:toEnd];
+    NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"post/nearby"];
+    NSDictionary *parameters = [self _fetchPostHttpParameters:toEnd];
 
     __weak typeof(self) weakSelf = self;
     [manager GET:url
       parameters:parameters
          success:^(AFHTTPRequestOperation *operation, id responseObject) {
-             NSLog(@"media/nearby fetch success responseObject: %@", responseObject);
+             NSLog(@"post/nearby fetch success responseObject: %@", responseObject);
 
-             NSMutableArray *mediaList = [NSMutableArray new];
+             NSMutableArray *postList = [NSMutableArray new];
              for (NSDictionary *dict in responseObject)
              {
-                 JYMedia *media = [[JYMedia alloc] initWithDictionary:dict];
-                 [mediaList addObject:media];
+                 JYPost *post = [[JYPost alloc] initWithDictionary:dict];
+                 [postList addObject:post];
              }
-             [weakSelf _fetchBriefForMediaList:mediaList toEnd:toEnd];
+             [weakSelf _fetchBriefForPostList:postList toEnd:toEnd];
              [weakSelf _networkThreadEnd];
          }
          failure:^(AFHTTPRequestOperation *operation, NSError *error) {
@@ -481,37 +481,37 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
 
 - (void)_fetchBrief
 {
-    [self _fetchBriefForMediaList:self.mediaList toEnd:YES];
+    [self _fetchBriefForPostList:self.postList toEnd:YES];
 }
 
-- (void)_fetchBriefForMediaList:(NSArray *)list toEnd:(BOOL)toEnd
+- (void)_fetchBriefForPostList:(NSArray *)list toEnd:(BOOL)toEnd
 {
     if (!list.count)
     {
-        list = self.mediaList; // in case no new media, we get new brief for the existing media
+        list = self.postList; // in case no new post, we get new brief for the existing post
     }
 
     [self _networkThreadBegin];
 
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
 
-    NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"media/brief"];
+    NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"post/brief"];
     NSDictionary *parameters = [self _fetchBriefHttpParameters:list];
 
     __weak typeof(self) weakSelf = self;
     [manager GET:url
       parameters:parameters
          success:^(AFHTTPRequestOperation *operation, id responseObject) {
-//             NSLog(@"media/brief fetch success responseObject: %@", responseObject);
+//             NSLog(@"post/brief fetch success responseObject: %@", responseObject);
 
              NSUInteger count = list.count;
              for (NSUInteger i = 0; i < count; i++)
              {
-                 JYMedia *media = (JYMedia *)list[i];
+                 JYPost *post = (JYPost *)list[i];
                  NSDictionary *brief = (NSDictionary *)responseObject[i];
-                 [media setBrief:brief];
+                 [post setBrief:brief];
              }
-             [weakSelf _updateTableWithMediaList:list toEnd:toEnd];
+             [weakSelf _updateTableWithPostList:list toEnd:toEnd];
              [weakSelf _networkThreadEnd];
          }
          failure:^(AFHTTPRequestOperation *operation, NSError *error) {
@@ -520,42 +520,42 @@ static NSString *const kMediaCellIdentifier = @"mediaCell";
      ];
 }
 
-- (NSDictionary *)_fetchMediaHttpParameters:(BOOL)toEnd
+- (NSDictionary *)_fetchPostHttpParameters:(BOOL)toEnd
 {
     NSMutableDictionary *parameters = [NSMutableDictionary new];
 
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     [parameters setObject:appDelegate.cellId forKey:@"cell"];
 
-    if (self.mediaList.count > 0)
+    if (self.postList.count > 0)
     {
         if (toEnd)
         {
-            JYMedia *media = self.mediaList.lastObject;
-            [parameters setValue:@(media.timestamp) forKey:@"before"];
+            JYPost *post = self.postList.lastObject;
+            [parameters setValue:@(post.timestamp) forKey:@"before"];
         }
         else
         {
-            JYMedia *media = self.mediaList.firstObject;
-            [parameters setValue:@(media.timestamp) forKey:@"after"];
+            JYPost *post = self.postList.firstObject;
+            [parameters setValue:@(post.timestamp) forKey:@"after"];
         }
     }
 
-    NSLog(@"fetchMedia parameters: %@", parameters);
+    NSLog(@"fetchPost parameters: %@", parameters);
     return parameters;
 }
 
 - (NSDictionary *)_fetchBriefHttpParameters:(NSArray *)list
 {
-    NSMutableArray *mediaIds = [NSMutableArray new];
-    for (JYMedia *media in list)
+    NSMutableArray *postIds = [NSMutableArray new];
+    for (JYPost *post in list)
     {
-        [mediaIds addObject:@(media.mediaId)];
+        [postIds addObject:@(post.postId)];
     }
 
     NSMutableDictionary *parameters = [NSMutableDictionary new];
 
-    [parameters setValue:mediaIds forKey:@"id"];
+    [parameters setValue:postIds forKey:@"id"];
 
     return parameters;
 }

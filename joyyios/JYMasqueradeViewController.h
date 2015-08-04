@@ -1,5 +1,5 @@
 //
-//  JYAnonymousViewController.h
+//  JYMasqueradeViewController.h
 //  joyyios
 //
 //  Created by Ping Yang on 4/25/15.
@@ -8,6 +8,6 @@
 
 #import "TGCameraViewController.h"
 
-@interface JYAnonymousViewController : UIViewController <TGCameraDelegate, UITableViewDataSource, UITableViewDelegate>
+@interface JYMasqueradeViewController : UIViewController <TGCameraDelegate, UITableViewDataSource, UITableViewDelegate>
 
 @end

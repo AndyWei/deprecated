@@ -1,5 +1,5 @@
 //
-//  JYMedia.m
+//  JYPost.m
 //  joyyios
 //
 //  Created by Ping Yang on 7/12/15.
@@ -8,16 +8,16 @@
 
 #import <YTKKeyValueStore/YTKKeyValueStore.h>
 
-#import "JYMedia.h"
+#import "JYPost.h"
 #import "JYUser.h"
 
-@interface JYMedia ()
+@interface JYPost ()
 
 @end
 
-static NSString *const kLikedMediaTable = @"liked_media";
+static NSString *const kLikedPostTable = @"liked_post";
 
-@implementation JYMedia
+@implementation JYPost
 
 + (YTKKeyValueStore *)sharedKVStore;
 {
@@ -26,7 +26,7 @@ static NSString *const kLikedMediaTable = @"liked_media";
 
     dispatch_once(&done, ^{
         _sharedKVStore = [[YTKKeyValueStore alloc] initDBWithName:@"joyy_kv.db"];
-        [_sharedKVStore createTableWithName:kLikedMediaTable];
+        [_sharedKVStore createTableWithName:kLikedPostTable];
     });
 
     return _sharedKVStore;
@@ -39,7 +39,7 @@ static NSString *const kLikedMediaTable = @"liked_media";
     u_int32_t rand = arc4random_uniform(10000);                        // 176
     NSString *randString = [NSString stringWithFormat:@"%04d", rand];  // "0176"
 
-    NSString *timestamp = [JYMedia _timeInMiliSeconds];                // 458354045799
+    NSString *timestamp = [JYPost _timeInMiliSeconds];                // 458354045799
 
     return [NSString stringWithFormat:@"%@%@_%@", first, randString, timestamp]; // "j0176_458354045799"
 }
@@ -62,7 +62,7 @@ static NSString *const kLikedMediaTable = @"liked_media";
             _filename = [dict objectForKey:@"filename"];
             _caption = [dict objectForKey:@"caption"];
 
-            _mediaId = [dict unsignedIntegerValueForKey:@"id"];
+            _postId = [dict unsignedIntegerValueForKey:@"id"];
             _urlVersion = [dict unsignedIntegerValueForKey:@"uv"];
             _type = [dict unsignedIntegerValueForKey:@"type"];
             _ownerId = [dict unsignedIntegerValueForKey:@"owner"];
@@ -86,9 +86,9 @@ static NSString *const kLikedMediaTable = @"liked_media";
         _filename = @"";
         _caption = @"local";
 
-        _mediaId = 0;
+        _postId = 0;
         _urlVersion = 0;
-        _type = JYMediaTypeImage;
+        _type = JYPostTypeImage;
         _ownerId = [JYUser currentUser].userId;
         _likeCount = 0;
         _commentCount = 0;
@@ -102,7 +102,7 @@ static NSString *const kLikedMediaTable = @"liked_media";
     {
         NSUInteger personId = [JYUser currentUser].userId;
         NSDictionary *value = @{ @"personId": @(personId)};
-        [[JYMedia sharedKVStore] putObject:value withId:self.idString intoTable:kLikedMediaTable];
+        [[JYPost sharedKVStore] putObject:value withId:self.idString intoTable:kLikedPostTable];
     }
 
     _isLiked = isLiked;
@@ -110,7 +110,7 @@ static NSString *const kLikedMediaTable = @"liked_media";
 
 - (BOOL)_isInLikedStore
 {
-    NSDictionary *liked = [[JYMedia sharedKVStore] getObjectById:self.idString fromTable:kLikedMediaTable];
+    NSDictionary *liked = [[JYPost sharedKVStore] getObjectById:self.idString fromTable:kLikedPostTable];
     if (!liked)
     {
         return NO;
@@ -122,7 +122,7 @@ static NSString *const kLikedMediaTable = @"liked_media";
 
 - (NSString *)idString
 {
-    return [NSString stringWithFormat:@"%tu", self.mediaId];
+    return [NSString stringWithFormat:@"%tu", self.postId];
 }
 
 - (NSString *)url
@@ -156,9 +156,9 @@ static NSString *const kLikedMediaTable = @"liked_media";
     NSString *str = @".jpg";
     switch (self.type)
     {
-        case JYMediaTypeImage:
+        case JYPostTypeImage:
             break;
-        case JYMediaTypeVideo:
+        case JYPostTypeVideo:
             // str = @".mp4"
             break;
         default:

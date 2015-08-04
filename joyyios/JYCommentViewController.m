@@ -20,7 +20,7 @@
 @interface JYCommentViewController ()
 
 @property(nonatomic) NSInteger networkThreadCount;
-@property(nonatomic) JYMedia *media;
+@property(nonatomic) JYPost *post;
 @property(nonatomic) NSMutableArray *commentList;
 @property(nonatomic) BOOL autoShowKeyboard;
 
@@ -30,13 +30,13 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 
 @implementation JYCommentViewController
 
-- (instancetype)initWithMedia:(JYMedia *)media withKeyboard:(BOOL)autoShowKeyBoard
+- (instancetype)initWithPost:(JYPost *)post withKeyboard:(BOOL)autoShowKeyBoard
 {
     self = [super initWithTableViewStyle:UITableViewStylePlain];
     if (self)
     {
         [self registerClassForTextView:[JYCommentTextView class]];
-        _media = media;
+        _post = post;
         _autoShowKeyboard = autoShowKeyBoard;
         _networkThreadCount = 0;
         _commentList = [NSMutableArray new];
@@ -64,9 +64,6 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     [self.tableView registerClass:[JYCommentViewCell class] forCellReuseIdentifier:kCommentCellIdentifier];
 
-
-//    UIImage *image = [UIImage imageNamed:@"CameraShot"];
-//    [self.rightButton setImage:image forState:UIControlStateNormal];
     [self.rightButton setTitle:NSLocalizedString(@"Send", nil) forState:UIControlStateNormal];
 
     [self.textInputbar.editorTitle setTextColor:[UIColor darkGrayColor]];
@@ -272,11 +269,11 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
               [weakSelf _networkThreadEnd];
               NSUInteger commentCount = [responseObject unsignedIntegerValueForKey:@"comments"];
 
-              if (commentCount - weakSelf.media.commentCount > 1)
+              if (commentCount - weakSelf.post.commentCount > 1)
               {
                   [weakSelf _fetchNewComments];
               }
-              weakSelf.media.commentCount = commentCount;
+              weakSelf.post.commentCount = commentCount;
           }
           failure:^(AFHTTPRequestOperation *operation, NSError *error) {
 
@@ -310,7 +307,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 //             NSLog(@"comment GET success responseObject: %@", responseObject);
              [weakSelf _updateTableWithComments:responseObject toEnd:toEnd];
 
-             NSDictionary *info = @{@"media": self.media};
+             NSDictionary *info = @{@"post": self.post};
              [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationDidCreateComment object:nil userInfo:info];
 
              [weakSelf _networkThreadEnd];
@@ -325,7 +322,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 {
     NSMutableDictionary *parameters = [NSMutableDictionary new];
 
-    [parameters setObject:@(self.media.mediaId) forKey:@"media"];
+    [parameters setObject:@(self.post.postId) forKey:@"post"];
     [parameters setValue:self.textView.text forKey:@"content"];
 
     return parameters;
@@ -335,7 +332,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 {
     NSMutableDictionary *parameters = [NSMutableDictionary new];
 
-    [parameters setObject:@(self.media.mediaId) forKey:@"media"];
+    [parameters setObject:@(self.post.postId) forKey:@"post"];
 
     if (self.commentList.count > 0)
     {
