@@ -6,7 +6,7 @@ var Hapi = require('hapi');
 var HapiAuthBasic = require('hapi-auth-basic');
 var HapiAuthToken = require('hapi-auth-bearer-token');
 var Lab = require('lab');
-var MediaPlugin = require('../../../server/api/media');
+var PostPlugin = require('../../../server/api/post');
 
 
 var lab = exports.lab = Lab.script();
@@ -26,7 +26,7 @@ var request, server;
 
 lab.beforeEach(function (done) {
 
-    var plugins = [HapiAuthBasic, HapiAuthToken, AuthPlugin, PgPlugin, MediaPlugin];
+    var plugins = [HapiAuthBasic, HapiAuthToken, AuthPlugin, PgPlugin, PostPlugin];
     server = new Hapi.Server();
     server.connection({ port: Config.get('/port/api') });
     server.register(plugins, function (err) {
@@ -52,13 +52,13 @@ lab.afterEach(function (done) {
 });
 
 
-lab.experiment('media GET: ', function () {
+lab.experiment('post GET: ', function () {
 
-    lab.test('/media/nearby: found in Fremont', function (done) {
+    lab.test('/post/nearby: found in Fremont', function (done) {
 
         request = {
             method: 'GET',
-            url: '/media/nearby?cell=94555'
+            url: '/post/nearby?cell=94555'
         };
 
         server.inject(request, function (response) {
@@ -70,11 +70,11 @@ lab.experiment('media GET: ', function () {
         });
     });
 
-    lab.test('/media/nearby: not found in San Francisco', function (done) {
+    lab.test('/post/nearby: not found in San Francisco', function (done) {
 
         request = {
             method: 'GET',
-            url: '/media/nearby?cell=94103'
+            url: '/post/nearby?cell=94103'
         };
 
         server.inject(request, function (response) {

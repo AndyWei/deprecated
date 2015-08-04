@@ -13,14 +13,14 @@ exports.register = function (server, options, next) {
 
     options = Hoek.applyToDefaults({ basePath: '' }, options);
 
-    // get comment of media. no auth.
+    // get comment of post. no auth.
     server.route({
         method: 'GET',
         path: options.basePath + '/comment',
         config: {
             validate: {
                 query: {
-                    media: Joi.string().regex(/^[0-9]+$/).max(19).required(),
+                    post: Joi.string().regex(/^[0-9]+$/).max(19).required(),
                     after: Joi.string().regex(/^[0-9]+$/).max(19).default('0'),
                     before: Joi.string().regex(/^[0-9]+$/).max(19).default(Const.MAX_ID)
                 }
@@ -31,14 +31,14 @@ exports.register = function (server, options, next) {
             var q = request.query;
 
             var select = 'SELECT id, owner, content, ct FROM comment ';
-            var where = 'WHERE id > $1 AND id < $2 AND media = $3 AND deleted = false ';
+            var where = 'WHERE id > $1 AND id < $2 AND post = $3 AND deleted = false ';
             var order = 'ORDER BY id ASC ';
             var limit = 'LIMIT 20';
 
             var queryConfig = {
-                name: 'comments_of_media',
+                name: 'comments_of_post',
                 text: select + where + order + limit,
-                values: [q.after, q.before, q.media]
+                values: [q.after, q.before, q.post]
             };
 
             request.pg.client.query(queryConfig, function (err, result) {
@@ -65,7 +65,7 @@ exports.register = function (server, options, next) {
             },
             validate: {
                 payload: {
-                    media: Joi.string().regex(/^[0-9]+$/).max(19).required(),
+                    post: Joi.string().regex(/^[0-9]+$/).max(19).required(),
                     content: Joi.string().max(2000).required()
                 }
             }
@@ -93,10 +93,10 @@ internals.createCommentHandler = function (request, reply) {
             var queryConfig = {
                 name: 'comment_create',
                 text: 'INSERT INTO comment \
-                           (owner, media, content, ct) VALUES \
+                           (owner, post, content, ct) VALUES \
                            ($1, $2, $3, $4) \
                            RETURNING id',
-                values: [pid, p.media, p.content, _.now()]
+                values: [pid, p.post, p.content, _.now()]
             };
 
             request.pg.client.query(queryConfig, function (err, result) {
@@ -115,9 +115,14 @@ internals.createCommentHandler = function (request, reply) {
         },
         updateCache: ['commentId', function (next) {
 
-            Cache.pushlist(Const.MEDIA_COMMENT_LISTS, p.media, p.content);
-            Cache.hincrby(Const.MEDIA_HASHES, p.media, 'comments', 1);
-            return next(null);
+            Cache.pushlist(Const.POST_COMMENT_LISTS, p.post, p.content);
+            Cache.hincrby(Const.POST_HASHES, p.post, 'comments', 1, function (err, result) {
+                if (err) {
+                    return next(err);
+                }
+
+                return next(null, result);
+            });
         }]
     }, function (err, results) {
 
@@ -126,6 +131,6 @@ internals.createCommentHandler = function (request, reply) {
             return reply(err);
         }
 
-        return reply(null, results.commentId);
+        return reply(null, { comments: results.updateCache });
     });
 };

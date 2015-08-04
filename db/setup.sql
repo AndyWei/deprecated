@@ -10,7 +10,7 @@ CREATE EXTENSION postgis;
 
 BEGIN;
 \ir  tables/person.sql
-\ir  tables/media.sql
+\ir  tables/post.sql
 \ir  tables/comment.sql
 \ir  tables/heart.sql
 COMMIT;
