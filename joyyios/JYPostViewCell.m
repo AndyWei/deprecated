@@ -40,21 +40,21 @@ static const CGFloat kCommentCountButtonWidth = 100;
 
 @implementation JYPostViewCell
 
-+ (CGFloat)labelHeightForText:(NSString *)text withFontSize:(CGFloat)fontSize andTextAlignment:(NSTextAlignment)textAlignment
++ (CGFloat)labelHeightForText:(NSString *)text withFontSize:(CGFloat)fontSize textAlignment:(NSTextAlignment)textAlignment andWidth:(CGFloat)width
 {
-    CGFloat labelWidth = SCREEN_WIDTH - kMarginLeft - kMarginRight;
-    CGSize maximumSize = CGSizeMake(labelWidth, 10000);
+    CGSize maximumSize = CGSizeMake(width, MAXFLOAT);
 
     static UILabel *dummyLabel = nil;
     if (!dummyLabel)
     {
         dummyLabel = [UILabel new];
-        dummyLabel.font = [UIFont systemFontOfSize:fontSize];
-        dummyLabel.textAlignment = textAlignment;
         dummyLabel.numberOfLines = 0;
         dummyLabel.lineBreakMode = NSLineBreakByWordWrapping;
     }
+    dummyLabel.font = [UIFont systemFontOfSize:fontSize];
+    dummyLabel.textAlignment = textAlignment;
     dummyLabel.text = text;
+
     CGSize expectSize = [dummyLabel sizeThatFits:maximumSize];
     CGFloat labelHeight = expectSize.height;
 
@@ -67,9 +67,10 @@ static const CGFloat kCommentCountButtonWidth = 100;
     CGFloat imageHeight = SCREEN_WIDTH;
 
     CGFloat commentsHeight = 0;
+    CGFloat labelWidth = SCREEN_WIDTH - kMarginLeft - kMarginRight;
     for (NSString *text in post.commentList)
     {
-        CGFloat height = [JYPostViewCell labelHeightForText:text withFontSize:kFontSizeComment andTextAlignment:NSTextAlignmentLeft];
+        CGFloat height = [JYPostViewCell labelHeightForText:text withFontSize:kFontSizeComment textAlignment:NSTextAlignmentLeft andWidth:labelWidth];
         commentsHeight += (height + 5);
     }
 
@@ -89,12 +90,28 @@ static const CGFloat kCommentCountButtonWidth = 100;
     return self;
 }
 
+- (void)dealloc
+{
+    [self.observer unobserveAll];
+    self.observer = nil;
+}
 
 - (void)setPost:(JYPost *)post
 {
     if (!post)
     {
+        NSAssert(NO, @"post should not be nil");
         return;
+    }
+
+    if (_post)
+    {
+        if (_post == post)
+        {
+            return;
+        }
+
+        [self _stopObserve:_post];
     }
 
     _post = post;
@@ -102,7 +119,11 @@ static const CGFloat kCommentCountButtonWidth = 100;
     [self _updateActionBar];
     [self _updateCaption];
     [self _updateComments];
+    [self _startObserve:_post];
+}
 
+- (void)_startObserve:(JYPost *)post
+{
     __weak typeof(self) weakSelf = self;
     [self.observer observe:post keyPath:@"isLiked" options:NSKeyValueObservingOptionNew block:^(JYPostViewCell *cell, JYPost *post, NSDictionary *change) {
 
@@ -123,6 +144,10 @@ static const CGFloat kCommentCountButtonWidth = 100;
     }];
 }
 
+- (void)_stopObserve:(JYPost *)post
+{
+    [self.observer unobserve:post];
+}
 
 - (void)_updateImage
 {
@@ -191,7 +216,7 @@ static const CGFloat kCommentCountButtonWidth = 100;
 - (void)_updateCaption
 {
     self.captionLabel.text = self.post.caption;
-    CGFloat height = [JYPostViewCell labelHeightForText:self.post.caption withFontSize:kFontSizeCaption andTextAlignment:NSTextAlignmentCenter];
+    CGFloat height = [JYPostViewCell labelHeightForText:self.post.caption withFontSize:kFontSizeCaption textAlignment:NSTextAlignmentCenter andWidth:SCREEN_WIDTH];
     self.captionLabel.height = fmax(kCaptionLabelHeightMin, height);
 
     self.captionLabel.y = SCREEN_WIDTH - self.captionLabel.height;
@@ -210,7 +235,7 @@ static const CGFloat kCommentCountButtonWidth = 100;
             NSString *text = [NSString stringWithFormat:@"★: %@", _post.commentList[i]];
             label.text = text;
 
-            CGFloat height = [JYPostViewCell labelHeightForText:text withFontSize:kFontSizeComment andTextAlignment:NSTextAlignmentLeft];
+            CGFloat height = [JYPostViewCell labelHeightForText:text withFontSize:kFontSizeComment textAlignment:NSTextAlignmentLeft andWidth:label.width];
             label.height = height + 5;
             label.y = y;
             y = CGRectGetMaxY(label.frame);
