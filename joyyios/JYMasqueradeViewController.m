@@ -30,6 +30,7 @@
 @property(nonatomic) UIColor *originalTabBarTintColor;
 @property(nonatomic) JYButton *cameraButton;
 @property(nonatomic) UITableView *tableView;
+@property(nonatomic) CABasicAnimation *colorPulse;
 
 @end
 
@@ -70,6 +71,9 @@ static NSString *const kPostCellIdentifier = @"postCell";
 {
     [super viewWillAppear:animated];
     self.tabBarController.tabBar.barTintColor = JoyyBlack;
+
+    [self.cameraButton.imageLayer.layer removeAllAnimations];
+    [self.cameraButton.imageLayer.layer addAnimation:self.colorPulse forKey:@"ColorPulse"];
 }
 
 - (void)viewDidDisappear:(BOOL)animated
@@ -130,16 +134,20 @@ static NSString *const kPostCellIdentifier = @"postCell";
         _cameraButton.contentAnimateToColor = JoyyWhite;
         _cameraButton.foregroundColor = ClearColor;
         [_cameraButton addTarget:self action:@selector(_showCamera) forControlEvents:UIControlEventTouchDown];
-
-        CABasicAnimation *theAnimation = [CABasicAnimation animationWithKeyPath:@"backgroundColor"];
-        theAnimation.duration = 5.0;
-        theAnimation.repeatCount = INFINITY;
-        theAnimation.autoreverses = YES;
-        theAnimation.fromValue = (__bridge id)([JoyyWhite80 CGColor]);
-        theAnimation.toValue = (__bridge id)([JoyyGray CGColor]);
-        [_cameraButton.imageLayer.layer addAnimation:theAnimation forKey:@"ColorPulse"];
     }
     return _cameraButton;
+}
+
+- (CABasicAnimation *)colorPulse
+{
+    CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"backgroundColor"];
+    animation.duration = 5.0;
+    animation.repeatCount = INFINITY;
+    animation.autoreverses = YES;
+    animation.fromValue = (__bridge id)([JoyyWhite80 CGColor]);
+    animation.toValue = (__bridge id)([JoyyGray CGColor]);
+
+    return animation;
 }
 
 - (void)_networkThreadBegin
@@ -336,7 +344,6 @@ static NSString *const kPostCellIdentifier = @"postCell";
     }
     else
     {
-        [self _removeQuickShowPost];
         for (JYPost *post in [list reverseObjectEnumerator])
         {
             [self.postList insertObject:post atIndex:0];
@@ -344,16 +351,20 @@ static NSString *const kPostCellIdentifier = @"postCell";
     }
 }
 
-- (void)_removeQuickShowPost
+- (void)_replaceQuickShowWithReal:(JYPost *)post
 {
-    for (JYPost *post in self.postList)
+    // remove quick show
+    JYPost *quickShow = self.postList[0];
+    if (quickShow.localImage)
     {
-        if (post.localImage)
-        {
-            [self.postList removeObject:post];
-            return;
-        }
+        [self.postList removeObject:quickShow];
     }
+
+    // insert the real one
+    [self.postList insertObject:post atIndex:0];
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
+    JYPostViewCell *cell = (JYPostViewCell *)[self.tableView cellForRowAtIndexPath:indexPath];
+    cell.post = self.postList[0];
 }
 
 #pragma mark - Network
@@ -405,7 +416,8 @@ static NSString *const kPostCellIdentifier = @"postCell";
     } success:^(AFHTTPRequestOperation *operation, id responseObject) {
 
         NSLog(@"Image upload success: %@", responseObject);
-
+        JYPost *post = [[JYPost alloc] initWithDictionary:responseObject];
+        [weakSelf _replaceQuickShowWithReal:post];
         [weakSelf _networkThreadEnd];
 
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {

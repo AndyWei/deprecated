@@ -36,6 +36,6 @@ typedef NS_ENUM(NSUInteger, JYPostType)
 - (void)setBrief:(NSDictionary *)brief;
 @property(nonatomic) NSUInteger likeCount;
 @property(nonatomic) NSUInteger commentCount;
-@property(nonatomic) NSArray *commentList;
+@property(nonatomic) NSMutableArray *commentTextList;
 
 @end

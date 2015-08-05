@@ -174,7 +174,7 @@ static NSString *const kLikedPostTable = @"liked_post";
         return;
     }
 
-    _commentList = [brief objectForKey:@"comment_list"];
+    _commentTextList = [brief objectForKey:@"comment_list"];
 }
 
 @end

@@ -33,8 +33,7 @@
 
 - (NSString *)contentString
 {
-    NSString *prefix = @"★";
-    return [NSString stringWithFormat:@"%@: %@", prefix, _content];
+    return _content;
 }
 
 @end

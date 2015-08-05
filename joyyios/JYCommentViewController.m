@@ -61,17 +61,13 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
     self.shouldScrollToBottomAfterKeyboardShows = NO;
     self.inverted = NO;
 
+    [self.rightButton setTitle:NSLocalizedString(@"Send", nil) forState:UIControlStateNormal];
+    self.rightButton.tintColor = JoyyBlue;
+    self.textInputbar.autoHideRightButton = NO;
+    self.typingIndicatorView.canResignByTouch = YES;
+
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     [self.tableView registerClass:[JYCommentViewCell class] forCellReuseIdentifier:kCommentCellIdentifier];
-
-    [self.rightButton setTitle:NSLocalizedString(@"Send", nil) forState:UIControlStateNormal];
-
-    [self.textInputbar.editorTitle setTextColor:[UIColor darkGrayColor]];
-    [self.textInputbar.editortRightButton setTintColor:FlatGreen];
-
-    self.textInputbar.autoHideRightButton = NO;
-    self.textInputbar.maxCharCount = 1000;
-    self.typingIndicatorView.canResignByTouch = YES;
 
     // Setup the pull-down-to-refresh header
     MJRefreshNormalHeader *header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(_fetchOldComments)];
@@ -92,6 +88,12 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
     }
 
     [self _fetchNewComments];
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    [self _updatePostBrief];
 }
 
 - (void)didReceiveMemoryWarning
@@ -131,6 +133,19 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
         NSIndexPath *lastIndex = [NSIndexPath indexPathForRow:self.commentList.count-1 inSection:0];
         [self.tableView scrollToRowAtIndexPath:lastIndex atScrollPosition:UITableViewScrollPositionBottom animated:YES];
     }
+}
+
+- (void)_updatePostBrief
+{
+    NSInteger totalComment = self.commentList.count;
+    NSInteger start = MAX(0, totalComment - 3);
+    NSMutableArray *commentTextList = [NSMutableArray new];
+    for (NSInteger i = start; i < totalComment; ++i)
+    {
+        JYComment *comment = self.commentList[i];
+        [commentTextList addObject:comment.contentString];
+    }
+    self.post.commentTextList = commentTextList;
 }
 
 #pragma mark - UITableViewDataSource
@@ -268,12 +283,9 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 
               [weakSelf _networkThreadEnd];
               NSUInteger commentCount = [responseObject unsignedIntegerValueForKey:@"comments"];
-
-              if (commentCount - weakSelf.post.commentCount > 1)
-              {
-                  [weakSelf _fetchNewComments];
-              }
               weakSelf.post.commentCount = commentCount;
+
+              [weakSelf _fetchNewComments];
           }
           failure:^(AFHTTPRequestOperation *operation, NSError *error) {
 

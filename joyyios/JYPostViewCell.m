@@ -68,7 +68,7 @@ static const CGFloat kCommentCountButtonWidth = 100;
 
     CGFloat commentsHeight = 0;
     CGFloat labelWidth = SCREEN_WIDTH - kMarginLeft - kMarginRight;
-    for (NSString *text in post.commentList)
+    for (NSString *text in post.commentTextList)
     {
         CGFloat height = [JYPostViewCell labelHeightForText:text withFontSize:kFontSizeComment textAlignment:NSTextAlignmentLeft andWidth:labelWidth];
         commentsHeight += (height + 5);
@@ -127,20 +127,22 @@ static const CGFloat kCommentCountButtonWidth = 100;
     __weak typeof(self) weakSelf = self;
     [self.observer observe:post keyPath:@"isLiked" options:NSKeyValueObservingOptionNew block:^(JYPostViewCell *cell, JYPost *post, NSDictionary *change) {
 
-        BOOL isLiked = [[change objectForKey:NSKeyValueChangeNewKey] boolValue];
-        [weakSelf _updateLikeButtonImage:isLiked];
+        [weakSelf _updateLikeButtonImage];
     }];
 
     [self.observer observe:post keyPath:@"likeCount" options:NSKeyValueObservingOptionNew block:^(JYPostViewCell *cell, JYPost *post, NSDictionary *change) {
 
-        NSUInteger likeCount = [change unsignedIntegerValueForKey:NSKeyValueChangeNewKey];
-        [weakSelf _updateLikeCount:likeCount];
+        [weakSelf _updateLikeCount];
     }];
 
     [self.observer observe:post keyPath:@"commentCount" options:NSKeyValueObservingOptionNew block:^(JYPostViewCell *cell, JYPost *post, NSDictionary *change) {
 
-        NSUInteger commentCount = [change unsignedIntegerValueForKey:NSKeyValueChangeNewKey];
-        [weakSelf _updateCommentCount:commentCount];
+        [weakSelf _updateCommentCount];
+    }];
+
+    [self.observer observe:post keyPath:@"commentTextList" options:NSKeyValueObservingOptionNew block:^(JYPostViewCell *cell, JYPost *post, NSDictionary *change) {
+
+        [weakSelf _updateComments];
     }];
 }
 
@@ -178,15 +180,15 @@ static const CGFloat kCommentCountButtonWidth = 100;
 {
     _likeButtonPressed = NO;
 
-    [self _updateLikeButtonImage:_post.isLiked];
-    [self _updateLikeCount:_post.likeCount];
-    [self _updateCommentCount:_post.commentCount];
+    [self _updateLikeButtonImage];
+    [self _updateLikeCount];
+    [self _updateCommentCount];
 }
 
 
-- (void)_updateLikeButtonImage:(BOOL)isLiked
+- (void)_updateLikeButtonImage
 {
-    if (isLiked)
+    if (self.post.isLiked)
     {
         self.likeButton.imageView.image = [UIImage imageNamed:@"heart_selected"];
         self.likeButton.contentColor = JoyyBlue;
@@ -199,17 +201,17 @@ static const CGFloat kCommentCountButtonWidth = 100;
 }
 
 
-- (void)_updateLikeCount:(NSUInteger)count
+- (void)_updateLikeCount
 {
     NSString *likes = NSLocalizedString(@"likes", nil);
-    self.likeCountLabel.text = [NSString stringWithFormat:@"%tu %@   ·", count, likes];
+    self.likeCountLabel.text = [NSString stringWithFormat:@"%tu %@   ·", self.post.likeCount, likes];
 }
 
 
-- (void)_updateCommentCount:(NSUInteger)count
+- (void)_updateCommentCount
 {
     NSString *comments = NSLocalizedString(@"comments", nil);
-    self.commentCountButton.textLabel.text = [NSString stringWithFormat:@"%tu %@", count, comments];
+    self.commentCountButton.textLabel.text = [NSString stringWithFormat:@"%tu %@", self.post.commentCount, comments];
 }
 
 
@@ -230,9 +232,9 @@ static const CGFloat kCommentCountButtonWidth = 100;
     for (NSUInteger i = 0; i < kBriefCommentsCount; ++i)
     {
         UILabel *label = self.commentLabels[i];
-        if (i < _post.commentList.count)
+        if (i < _post.commentTextList.count)
         {
-            NSString *text = [NSString stringWithFormat:@"★: %@", _post.commentList[i]];
+            NSString *text = [NSString stringWithFormat:@"★: %@", _post.commentTextList[i]];
             label.text = text;
 
             CGFloat height = [JYPostViewCell labelHeightForText:text withFontSize:kFontSizeComment textAlignment:NSTextAlignmentLeft andWidth:label.width];
