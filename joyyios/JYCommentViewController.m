@@ -53,7 +53,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 {
     [super viewDidLoad];
     self.title = NSLocalizedString(@"COMMENTS", nil);
-    self.view.backgroundColor = JoyyGrayDark;
+    self.view.backgroundColor = JoyyBlack;
     //
     self.bounces = YES;
     self.shakeToClearEnabled = NO;
@@ -169,6 +169,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
     JYCommentViewCell *cell =
     (JYCommentViewCell *)[tableView dequeueReusableCellWithIdentifier:kCommentCellIdentifier forIndexPath:indexPath];
 
+    cell.postId = self.post.postId;
     cell.comment = self.commentList[indexPath.row];
 
     return cell;
@@ -183,7 +184,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    [tableView deselectRowAtIndexPath:indexPath animated:NO];
 }
 
 //- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
@@ -321,7 +322,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
       parameters:[self _httpGetCommentsParameters:toEnd]
          success:^(AFHTTPRequestOperation *operation, id responseObject) {
 
-//             NSLog(@"comment GET success responseObject: %@", responseObject);
+             NSLog(@"comment GET success responseObject: %@", responseObject);
              [weakSelf _updateTableWithComments:responseObject toEnd:toEnd];
 
              NSDictionary *info = @{@"post": self.post};

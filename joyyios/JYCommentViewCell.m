@@ -6,12 +6,10 @@
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
+#import <CommonCrypto/CommonDigest.h>
 #import <TTTAttributedLabel/TTTAttributedLabel.h>
 
 #import "JYCommentViewCell.h"
-
-static const CGFloat kAvatarWidth = 40;
-static const CGFloat kCommentLabelHeightMin = 80;
 
 @interface JYCommentViewCell ()
 
@@ -20,6 +18,10 @@ static const CGFloat kCommentLabelHeightMin = 80;
 
 @end
 
+
+static const CGFloat kAvatarWidth = 40;
+static const CGFloat kCommentLabelHeightMin = 80;
+static const CGFloat kMargin = (kCommentLabelHeightMin - kAvatarWidth) / 2;
 
 @implementation JYCommentViewCell
 
@@ -55,16 +57,19 @@ static const CGFloat kCommentLabelHeightMin = 80;
 
 + (CGFloat)labelWidth
 {
-    CGFloat margin = (kCommentLabelHeightMin - kAvatarWidth) / 2;
-    CGFloat labelWidth = SCREEN_WIDTH - kAvatarWidth - 2 * margin;
+    CGFloat labelWidth = SCREEN_WIDTH - kAvatarWidth - 2 * kMargin;
     return labelWidth;
 }
 
-- (void)setComment:(JYComment *)comment
++ (UIColor *)colorForIndex:(uint)index
 {
-    _comment = comment;
-    self.commentLabel.text = comment.contentString;
-    self.commentLabel.height = [JYCommentViewCell heightForComment:self.comment] - 1;
+    static NSArray *colorMap = nil;
+    if (!colorMap)
+    {
+        colorMap = @[FlatBlue, FlatCoffee, FlatLime, FlatMagenta, FlatMaroon, FlatMint, FlatOrange, FlatPink];
+    }
+
+    return colorMap[index];
 }
 
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
@@ -78,25 +83,62 @@ static const CGFloat kCommentLabelHeightMin = 80;
     return self;
 }
 
+- (void)setComment:(JYComment *)comment
+{
+    if (!comment)
+    {
+        NSAssert(NO, @"comment should not be nil");
+        return;
+    }
+
+    if (_comment == comment)
+    {
+        return;
+    }
+
+    _comment = comment;
+    self.commentLabel.text = comment.contentString;
+    self.commentLabel.height = self.height - 1;
+
+    [self _updateAvatar];
+}
+
+- (void)_updateAvatar
+{
+    // calculate image and backgorund color
+    NSAssert(self.postId != 0, @"post id should be set prior to set comment");
+    NSUInteger seed = self.comment.ownerId + self.postId;
+
+    // md5 hash
+    NSString *str = [NSString stringWithFormat:@"%020tu", seed];
+    const char *cstr = [str UTF8String];
+    unsigned char md5[CC_MD5_DIGEST_LENGTH];
+    CC_MD5(cstr, (CC_LONG)strlen(cstr), md5);
+
+    uint avatarIndex = 0;
+    for (uint i = 0; i < CC_MD5_DIGEST_LENGTH; ++i)
+    {
+        avatarIndex += md5[i];
+    }
+
+    uint colorIndex = avatarIndex % 8;
+    uint imageIndex = (avatarIndex / 8) % 20;
+
+    NSString *imageName = [NSString stringWithFormat:@"avt%02d", imageIndex];
+    self.avatar.image = [UIImage imageNamed:imageName];
+    self.avatar.backgroundColor = [JYCommentViewCell colorForIndex:colorIndex];
+}
+
 - (UIImageView *)avatar
 {
     if (!_avatar)
     {
         // Circle shape UIImageView
-        CGFloat margin = (kCommentLabelHeightMin - kAvatarWidth) / 2;
-        _avatar = [[UIImageView alloc] initWithFrame:CGRectMake(margin, margin, kAvatarWidth, kAvatarWidth)];
-        _avatar.layer.cornerRadius = kAvatarWidth / 2;
-        _avatar.clipsToBounds = YES;
+        _avatar = [[UIImageView alloc] initWithFrame:CGRectMake(kMargin, kMargin, kAvatarWidth, kAvatarWidth)];
+        _avatar.layer.cornerRadius = kAvatarWidth/2;
+        _avatar.layer.masksToBounds = YES;
+        _avatar.layer.borderWidth = 0;
         _avatar.contentMode = UIViewContentModeCenter;
-
-        // Border and Border color
-        _avatar.layer.borderWidth = 1.0f;
-        _avatar.layer.borderColor = JoyyWhite.CGColor;
-
-        // TODO: hashed image and backgorund color
-        _avatar.image = [UIImage imageNamed:@"mask"];
-        _avatar.backgroundColor = FlatWatermelonDark;
-
 
         [self addSubview:_avatar];
     }
@@ -108,8 +150,7 @@ static const CGFloat kCommentLabelHeightMin = 80;
     if (!_commentLabel)
     {
         _commentLabel = [JYCommentViewCell _createCommentLabel];
-        CGFloat margin = (kCommentLabelHeightMin - kAvatarWidth) / 2;
-        _commentLabel.x = CGRectGetMaxX(self.avatar.frame) + margin;
+        _commentLabel.x = kAvatarWidth + 2 * kMargin;
         [self addSubview:_commentLabel];
     }
     return _commentLabel;

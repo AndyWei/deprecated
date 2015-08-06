@@ -386,7 +386,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
     [manager POST:url
       parameters:parameters
          success:^(AFHTTPRequestOperation *operation, id responseObject) {
-             NSLog(@"post/like POST success responseObject: %@", responseObject);
+//             NSLog(@"post/like POST success responseObject: %@", responseObject);
 
              NSDictionary *dict = (NSDictionary *)responseObject;
              post.likeCount = [[dict objectForKey:@"likes"] unsignedIntegerValue];
@@ -476,7 +476,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
     [manager GET:url
       parameters:parameters
          success:^(AFHTTPRequestOperation *operation, id responseObject) {
-             NSLog(@"post/nearby fetch success responseObject: %@", responseObject);
+//             NSLog(@"post/nearby fetch success responseObject: %@", responseObject);
 
              NSMutableArray *postList = [NSMutableArray new];
              for (NSDictionary *dict in responseObject)
@@ -555,7 +555,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
         }
     }
 
-    NSLog(@"fetchPost parameters: %@", parameters);
+//    NSLog(@"fetchPost parameters: %@", parameters);
     return parameters;
 }
 

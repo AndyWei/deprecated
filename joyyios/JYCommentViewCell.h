@@ -14,5 +14,6 @@
 + (CGFloat)heightForComment:(JYComment *)comment;
 
 @property(nonatomic) JYComment *comment;
+@property(nonatomic) NSUInteger postId;
 
 @end
