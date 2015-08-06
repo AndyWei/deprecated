@@ -147,6 +147,7 @@ static NSString *const kImageCellIdentifier = @"imageCell";
         _textView.textColor = JoyyWhite;
         _textView.tintColor = JoyyWhite;
         _textView.textAlignment = NSTextAlignmentCenter;
+        _textView.keyboardAppearance = UIKeyboardAppearanceDark;
         _textView.scrollEnabled = NO; // Disable scroll is to fix the top padding automatically change to zero issue.
         [_textView becomeFirstResponder];
     }

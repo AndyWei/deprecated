@@ -7,6 +7,7 @@
 //
 
 #import <AFNetworking/AFNetworking.h>
+#import <AFNetworking/UIImageView+AFNetworking.h>
 #import <KVNProgress/KVNProgress.h>
 #import <MJRefresh/MJRefresh.h>
 #import <RKDropdownAlert/RKDropdownAlert.h>
@@ -18,12 +19,13 @@
 #import "JYUser.h"
 
 @interface JYCommentViewController ()
-
-@property(nonatomic) NSInteger networkThreadCount;
-@property(nonatomic) JYPost *post;
-@property(nonatomic) NSMutableArray *commentList;
 @property(nonatomic) BOOL autoShowKeyboard;
-
+@property(nonatomic) JYPost *post;
+@property(nonatomic) MJRefreshNormalHeader *header;
+@property(nonatomic) MJRefreshAutoNormalFooter *footer;
+@property(nonatomic) NSInteger networkThreadCount;
+@property(nonatomic) NSMutableArray *commentList;
+@property(nonatomic) UIImageView *photoView;
 @end
 
 static NSString *const kCommentCellIdentifier = @"commentCell";
@@ -53,8 +55,8 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 {
     [super viewDidLoad];
     self.title = NSLocalizedString(@"COMMENTS", nil);
-    self.view.backgroundColor = JoyyBlack;
-    //
+
+    // textInput view
     self.bounces = YES;
     self.shakeToClearEnabled = NO;
     self.keyboardPanningEnabled = YES;
@@ -67,24 +69,17 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
     self.textInputbar.autoHideRightButton = NO;
     self.typingIndicatorView.canResignByTouch = YES;
 
-    self.tableView.backgroundColor = JoyyGrayDark;
+    // tableView
+    self.tableView.allowsSelection = NO;
+    self.tableView.backgroundColor = JoyyBlack;
+    self.tableView.backgroundView = self.photoView;
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
-    self.tableView.separatorColor = JoyyGray;
+    self.tableView.separatorColor = ClearColor;
     [self.tableView registerClass:[JYCommentViewCell class] forCellReuseIdentifier:kCommentCellIdentifier];
+    [self _showBackgroundImage];
 
-    // Setup the pull-down-to-refresh header
-    MJRefreshNormalHeader *header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(_fetchOldComments)];
-    header.lastUpdatedTimeLabel.hidden = YES;
-    header.stateLabel.hidden = YES;
-    header.backgroundColor = JoyyGrayDark;
-    self.tableView.header = header;
-
-    // Setup the pull-up-to-refresh footer
-    MJRefreshAutoNormalFooter *footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(_fetchNewComments)];
-    footer.refreshingTitleHidden = YES;
-    footer.stateLabel.hidden = YES;
-    footer.backgroundColor = JoyyGrayDark;
-    self.tableView.footer = footer;
+    self.tableView.header = self.header;
+    self.tableView.footer = self.footer;
 
     if (self.autoShowKeyboard)
     {
@@ -108,6 +103,59 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 - (void)dealloc
 {
 
+}
+
+// pull-down-to-refresh header
+- (MJRefreshNormalHeader *)header
+{
+    if (!_header)
+    {
+
+        _header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(_fetchOldComments)];
+        _header.lastUpdatedTimeLabel.hidden = YES;
+        _header.stateLabel.hidden = YES;
+        _header.backgroundColor = JoyyBlack50;
+    }
+    return _header;
+}
+
+// pull-up-to-refresh footer
+- (MJRefreshAutoNormalFooter *)footer
+{
+    if (!_footer)
+    {
+        _footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(_fetchNewComments)];
+        _footer.refreshingTitleHidden = YES;
+        _footer.stateLabel.hidden = YES;
+        _footer.backgroundColor = JoyyBlack50;
+    }
+    return _footer;
+}
+
+- (UIImageView *)photoView
+{
+    if (!_photoView)
+    {
+        _photoView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_WIDTH)];
+        _photoView.contentMode = UIViewContentModeScaleAspectFit;
+    }
+    return _photoView;
+}
+
+- (void)_showBackgroundImage
+{
+    // Fetch network image
+    NSURL *url = [NSURL URLWithString:_post.url];
+    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+
+    __weak typeof(self) weakSelf = self;
+    [self.photoView setImageWithURLRequest:request
+                          placeholderImage:nil
+                                   success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image)
+     {
+         weakSelf.photoView.image = image;
+
+     } failure:nil];
 }
 
 - (void)_networkThreadBegin
@@ -169,9 +217,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
     JYCommentViewCell *cell =
     (JYCommentViewCell *)[tableView dequeueReusableCellWithIdentifier:kCommentCellIdentifier forIndexPath:indexPath];
 
-    cell.postId = self.post.postId;
     cell.comment = self.commentList[indexPath.row];
-
     return cell;
 }
 
@@ -180,11 +226,6 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return [JYCommentViewCell heightForComment:self.commentList[indexPath.row]];
-}
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    [tableView deselectRowAtIndexPath:indexPath animated:NO];
 }
 
 //- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section

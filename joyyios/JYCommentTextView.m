@@ -34,6 +34,7 @@
     self.layer.rasterizationScale = [UIScreen mainScreen].scale;
 
     self.textColor = JoyyWhite;
+    self.keyboardAppearance = UIKeyboardAppearanceDark;
 }
 
 @end

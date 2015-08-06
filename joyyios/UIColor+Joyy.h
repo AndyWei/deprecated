@@ -8,6 +8,7 @@
 
 #define JoyyBlack     [UIColor joyyBlackColor]
 #define JoyyBlack50   [UIColor joyyBlackColor50]
+#define JoyyBlack80   [UIColor joyyBlackColor80]
 
 #define JoyyBlue      [UIColor joyyBlueColor]
 #define JoyyBlue50    [UIColor joyyBlueColor50]
@@ -19,6 +20,8 @@
 #define JoyyGrayDark   [UIColor darkGrayColor]
 #define JoyyGrayDark50 [UIColor joyyGrayDarkColor50]
 
+#define JoyyGrayDarker [UIColor joyyGrayDarkerColor]
+
 #define JoyyWhite     [UIColor joyyWhiteColor]
 #define JoyyWhite80   [UIColor joyyWhiteColor80]
 #define JoyyWhite50   [UIColor joyyWhiteColor50]
@@ -28,11 +31,13 @@
 
 + (UIColor *)joyyBlackColor;
 + (UIColor *)joyyBlackColor50;
++ (UIColor *)joyyBlackColor80;
 + (UIColor *)joyyBlueColor;
 + (UIColor *)joyyBlueColor50;
 + (UIColor *)joyyBlueColor30;
 + (UIColor *)joyyGrayColor50;
 + (UIColor *)joyyGrayDarkColor50;
++ (UIColor *)joyyGrayDarkerColor;
 + (UIColor *)joyyWhiteColor;
 + (UIColor *)joyyWhiteColor80;
 + (UIColor *)joyyWhiteColor50;

@@ -46,7 +46,7 @@ static const CGFloat kMargin = (kCommentLabelHeightMin - kAvatarWidth) / 2;
     CGRect frame = CGRectMake(0, 0, [JYCommentViewCell labelWidth], kCommentLabelHeightMin);
     TTTAttributedLabel *label = [[TTTAttributedLabel alloc] initWithFrame:frame];
     label.textInsets = UIEdgeInsetsMake(3, 0, 3, kMarginRight);
-    label.backgroundColor = JoyyGrayDark;
+    label.backgroundColor = ClearColor;
     label.font = [UIFont systemFontOfSize:kFontSizeComment];
     label.lineBreakMode = NSLineBreakByWordWrapping;
     label.numberOfLines = 0;
@@ -77,8 +77,7 @@ static const CGFloat kMargin = (kCommentLabelHeightMin - kAvatarWidth) / 2;
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self)
     {
-        self.opaque = YES;
-        self.backgroundColor = JoyyGrayDark;
+        self.backgroundColor = JoyyBlack50;
     }
     return self;
 }
@@ -106,8 +105,7 @@ static const CGFloat kMargin = (kCommentLabelHeightMin - kAvatarWidth) / 2;
 - (void)_updateAvatar
 {
     // calculate image and backgorund color
-    NSAssert(self.postId != 0, @"post id should be set prior to set comment");
-    NSUInteger seed = self.comment.ownerId + self.postId;
+    NSUInteger seed = self.comment.ownerId + self.comment.postId;
 
     // md5 hash
     NSString *str = [NSString stringWithFormat:@"%020tu", seed];

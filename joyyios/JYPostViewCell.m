@@ -234,7 +234,7 @@ static const CGFloat kCommentCountButtonWidth = 100;
         UILabel *label = self.commentLabels[i];
         if (i < _post.commentTextList.count)
         {
-            NSString *text = [NSString stringWithFormat:@"👿: %@", _post.commentTextList[i]];
+            NSString *text = [NSString stringWithFormat:@"🐨: %@", _post.commentTextList[i]];
             label.text = text;
 
             CGFloat height = [JYPostViewCell labelHeightForText:text withFontSize:kFontSizeComment textAlignment:NSTextAlignmentLeft andWidth:label.width];
