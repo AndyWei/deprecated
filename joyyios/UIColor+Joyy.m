@@ -40,6 +40,11 @@
     return rgba(128, 128, 128, 0.5);
 }
 
++ (UIColor *)joyyGrayDarkColor50
+{
+    return rgba(88, 88, 88, 0.5);
+}
+
 + (UIColor *)joyyWhiteColor
 {
     return rgb(215, 215, 215);

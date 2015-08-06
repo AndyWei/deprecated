@@ -53,7 +53,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 {
     [super viewDidLoad];
     self.title = NSLocalizedString(@"COMMENTS", nil);
-    self.view.backgroundColor = JoyyWhite;
+    self.view.backgroundColor = JoyyGrayDark;
     //
     self.bounces = YES;
     self.shakeToClearEnabled = NO;
@@ -63,25 +63,29 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 
     [self.rightButton setTitle:NSLocalizedString(@"Send", nil) forState:UIControlStateNormal];
     self.rightButton.tintColor = JoyyBlue;
+    self.textInputbar.backgroundColor = JoyyBlack;
     self.textInputbar.autoHideRightButton = NO;
     self.typingIndicatorView.canResignByTouch = YES;
 
-    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    self.tableView.backgroundColor = JoyyGrayDark;
+    self.tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
+    self.tableView.separatorColor = JoyyGray;
     [self.tableView registerClass:[JYCommentViewCell class] forCellReuseIdentifier:kCommentCellIdentifier];
 
     // Setup the pull-down-to-refresh header
     MJRefreshNormalHeader *header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(_fetchOldComments)];
     header.lastUpdatedTimeLabel.hidden = YES;
     header.stateLabel.hidden = YES;
+    header.backgroundColor = JoyyGrayDark;
     self.tableView.header = header;
 
     // Setup the pull-up-to-refresh footer
     MJRefreshAutoNormalFooter *footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(_fetchNewComments)];
     footer.refreshingTitleHidden = YES;
     footer.stateLabel.hidden = YES;
+    footer.backgroundColor = JoyyGrayDark;
     self.tableView.footer = footer;
 
-    [self _scrollTableViewToBottom];
     if (self.autoShowKeyboard)
     {
         [self.textView becomeFirstResponder];
@@ -210,6 +214,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
     dispatch_async(dispatch_get_main_queue(), ^{
         [self _addCommentsFromList:list toEnd:toEnd];
         [self.tableView reloadData];
+        [self _scrollTableViewToBottom];
     });
 }
 

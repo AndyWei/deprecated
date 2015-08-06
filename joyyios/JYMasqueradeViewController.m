@@ -140,14 +140,16 @@ static NSString *const kPostCellIdentifier = @"postCell";
 
 - (CABasicAnimation *)colorPulse
 {
-    CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"backgroundColor"];
-    animation.duration = 5.0;
-    animation.repeatCount = INFINITY;
-    animation.autoreverses = YES;
-    animation.fromValue = (__bridge id)([JoyyWhite80 CGColor]);
-    animation.toValue = (__bridge id)([JoyyGray CGColor]);
-
-    return animation;
+    if (!_colorPulse)
+    {
+        _colorPulse = [CABasicAnimation animationWithKeyPath:@"backgroundColor"];
+        _colorPulse.duration = 5.0;
+        _colorPulse.repeatCount = INFINITY;
+        _colorPulse.autoreverses = YES;
+        _colorPulse.fromValue = (__bridge id)([JoyyWhite80 CGColor]);
+        _colorPulse.toValue = (__bridge id)([JoyyGray CGColor]);
+    }
+    return _colorPulse;
 }
 
 - (void)_networkThreadBegin
