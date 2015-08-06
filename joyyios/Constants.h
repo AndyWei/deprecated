@@ -88,7 +88,10 @@ extern NSString *const kSystemFontItalic;
 extern NSString *const kSystemFontLight;
 extern NSString *const kSystemFontRegular;
 
-#define SCREEN_WIDTH  CGRectGetWidth([[UIScreen mainScreen] applicationFrame])
-#define SCREEN_HEIGHT CGRectGetHeight([[UIScreen mainScreen] applicationFrame])
+#define NAVIGATION_BAR_HEIGHT       (self.navigationController.navigationBar.frame.size.height)    // 44
+#define STATUS_BAR_HEIGHT           ([UIApplication sharedApplication].statusBarFrame.size.height) // 20
+#define SCREEN_WIDTH                CGRectGetWidth([[UIScreen mainScreen] applicationFrame])
+#define SCREEN_HEIGHT               CGRectGetHeight([[UIScreen mainScreen] applicationFrame])
+#define TRANSLUCENT_TOP_BAR_HEIGHT  (self.topLayoutGuide.length)                                   // 64
 
 #endif

@@ -20,13 +20,19 @@
 
 
 static const CGFloat kAvatarWidth = 40;
-static const CGFloat kCommentLabelHeightMin = 80;
-static const CGFloat kMargin = (kCommentLabelHeightMin - kAvatarWidth) / 2;
+static const CGFloat kCommentLabelHeightMin = 60;
+static const CGFloat kSpaceH = (kCommentLabelHeightMin - kAvatarWidth);
+static const CGFloat kSpaceV = kSpaceH / 2;
 
 @implementation JYCommentViewCell
 
 + (CGFloat)heightForComment:(JYComment *)comment
 {
+    if (!comment)
+    {
+        return kCommentLabelHeightMin;
+    }
+
     CGSize maximumSize = CGSizeMake([JYCommentViewCell labelWidth], MAXFLOAT);
 
     static TTTAttributedLabel *dummyLabel = nil;
@@ -36,7 +42,7 @@ static const CGFloat kMargin = (kCommentLabelHeightMin - kAvatarWidth) / 2;
     }
     dummyLabel.text = comment.contentString;
     CGSize expectSize = [dummyLabel sizeThatFits:maximumSize];
-    CGFloat height = fmax(kCommentLabelHeightMin, expectSize.height) + 1;
+    CGFloat height = fmax(kCommentLabelHeightMin, expectSize.height);
 
     return height;
 }
@@ -57,7 +63,7 @@ static const CGFloat kMargin = (kCommentLabelHeightMin - kAvatarWidth) / 2;
 
 + (CGFloat)labelWidth
 {
-    CGFloat labelWidth = SCREEN_WIDTH - kAvatarWidth - 2 * kMargin;
+    CGFloat labelWidth = SCREEN_WIDTH - kAvatarWidth - 2 * kSpaceH;
     return labelWidth;
 }
 
@@ -86,7 +92,8 @@ static const CGFloat kMargin = (kCommentLabelHeightMin - kAvatarWidth) / 2;
 {
     if (!comment)
     {
-        NSAssert(NO, @"comment should not be nil");
+        self.avatar.image = nil;
+        self.commentLabel.text = nil;
         return;
     }
 
@@ -97,7 +104,7 @@ static const CGFloat kMargin = (kCommentLabelHeightMin - kAvatarWidth) / 2;
 
     _comment = comment;
     self.commentLabel.text = comment.contentString;
-    self.commentLabel.height = self.height - 1;
+    self.commentLabel.height = self.height;
 
     [self _updateAvatar];
 }
@@ -132,7 +139,7 @@ static const CGFloat kMargin = (kCommentLabelHeightMin - kAvatarWidth) / 2;
     if (!_avatar)
     {
         // Circle shape UIImageView
-        _avatar = [[UIImageView alloc] initWithFrame:CGRectMake(kMargin, kMargin, kAvatarWidth, kAvatarWidth)];
+        _avatar = [[UIImageView alloc] initWithFrame:CGRectMake(kSpaceH, kSpaceV, kAvatarWidth, kAvatarWidth)];
         _avatar.layer.cornerRadius = kAvatarWidth/2;
         _avatar.layer.masksToBounds = YES;
         _avatar.layer.borderWidth = 0;
@@ -148,7 +155,7 @@ static const CGFloat kMargin = (kCommentLabelHeightMin - kAvatarWidth) / 2;
     if (!_commentLabel)
     {
         _commentLabel = [JYCommentViewCell _createCommentLabel];
-        _commentLabel.x = kAvatarWidth + 2 * kMargin;
+        _commentLabel.x = kAvatarWidth + 2 * kSpaceH;
         [self addSubview:_commentLabel];
     }
     return _commentLabel;

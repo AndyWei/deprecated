@@ -26,6 +26,7 @@
 @property(nonatomic) NSInteger networkThreadCount;
 @property(nonatomic) NSMutableArray *commentList;
 @property(nonatomic) UIImageView *photoView;
+@property(nonatomic) UIView *backgroundView;
 @end
 
 static NSString *const kCommentCellIdentifier = @"commentCell";
@@ -72,7 +73,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
     // tableView
     self.tableView.allowsSelection = NO;
     self.tableView.backgroundColor = JoyyBlack;
-    self.tableView.backgroundView = self.photoView;
+    self.tableView.backgroundView = self.backgroundView;
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
     self.tableView.separatorColor = ClearColor;
     [self.tableView registerClass:[JYCommentViewCell class] forCellReuseIdentifier:kCommentCellIdentifier];
@@ -132,11 +133,22 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
     return _footer;
 }
 
+- (UIView *)backgroundView
+{
+    if (!_backgroundView)
+    {
+        _backgroundView = [[UIView alloc] initWithFrame:self.tableView.frame];
+        [_backgroundView addSubview:self.photoView];
+    }
+    return _backgroundView;
+}
+
 - (UIImageView *)photoView
 {
     if (!_photoView)
     {
-        _photoView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_WIDTH)];
+        CGFloat y = STATUS_BAR_HEIGHT + NAVIGATION_BAR_HEIGHT;
+        _photoView = [[UIImageView alloc] initWithFrame:CGRectMake(0, y, SCREEN_WIDTH, SCREEN_WIDTH)];
         _photoView.contentMode = UIViewContentModeScaleAspectFit;
     }
     return _photoView;
@@ -209,7 +221,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return self.commentList.count;
+    return MAX(6, self.commentList.count);
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -217,7 +229,15 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
     JYCommentViewCell *cell =
     (JYCommentViewCell *)[tableView dequeueReusableCellWithIdentifier:kCommentCellIdentifier forIndexPath:indexPath];
 
-    cell.comment = self.commentList[indexPath.row];
+    if (indexPath.row < self.commentList.count)
+    {
+        cell.comment = self.commentList[indexPath.row];
+    }
+    else
+    {
+        cell.comment = nil;
+    }
+
     return cell;
 }
 
@@ -225,7 +245,12 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return [JYCommentViewCell heightForComment:self.commentList[indexPath.row]];
+    JYComment *comment = nil;
+    if (indexPath.row < self.commentList.count)
+    {
+        comment = self.commentList[indexPath.row];
+    }
+    return [JYCommentViewCell heightForComment:comment];
 }
 
 //- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
