@@ -27,22 +27,12 @@ const CGFloat kFontSizeCaption = 16.0f;
 const CGFloat kFontSizeComment = 15.0f;
 const CGFloat kFontSizeDetail = 13.0f;
 
-const CGFloat kMapDashBoardHeight = 135.0f;
-const CGFloat kMapDefaultAltitude = 2000.0f;
-const CGFloat kMapDefaultSpanDistance = 3000.0f;
-
 const CGFloat kMarginLeft = 8.0f;
 const CGFloat kMarginRight = 8.0f;
 const CGFloat kMarginTop = 8.0f;
 
-const CGFloat kNavBarTitleFontSize = 20.0f;
-
-const CGFloat kPinAnnotationHeight = 55.0f;
-const CGFloat kPinAnnotationWidth = 55.0f;
 const CGFloat kPhotoQuality = 0.7;
 const CGFloat kPhotoWidth = 375.0;
-
-const CGFloat kTabBarTitleFontSize = 20.0f;
 
 const CGFloat kSignButtonHeight = 60.0f;
 const CGFloat kSignButtonWidth = 120;
@@ -52,28 +42,13 @@ const CGFloat kSignFieldFontSize = 18.0f;
 const CGFloat kSignFieldHeight = 70.0f;
 const CGFloat kSignFieldMarginLeft = 50.0f;
 const CGFloat kSignViewTopOffset = 152;
-const CGFloat kServiceCategoryCellFontSize = 18.0f;
 
 const NSUInteger kBriefCommentsCount = 3;
 const NSUInteger kAPN = 1;;
 
-NSString *const kAnnotationTitleEnd = @"endPoint";
-NSString *const kAnnotationTitleStart = @"startPoint";
-
 NSString *const kErrorAuthenticationFailed = @"Incorrect Email or password";
 NSString *const kErrorTitle = @"(ᵔᴥᵔ) something wrong";
 
-NSString *const kImageNameLocationArrow = @"locationArrow";
-NSString *const kImageNamePinBlue = @"pinBlue";
-NSString *const kImageNamePinGreen = @"pinGreen";
-NSString *const kImageNamePinPink = @"pinPink";
-
-NSString *const kNotificationDidCreateAccount = @"createAccount";
-NSString *const kNotificationDidCreateBid = @"createBid";
-NSString *const kNotificationDidCreateComment = @"createComment";
-NSString *const kNotificationDidCreateOrder = @"createOrder";
-NSString *const kNotificationDidFinishOrder = @"finishOrder";
-NSString *const kNotificationDidReceiveBid = @"receiveBid";
 NSString *const kNotificationDidSignIn = @"signIn";
 NSString *const kNotificationDidSignUp = @"signUp";
 NSString *const kNotificationNeedGeoInfo = @"needGeoInfo";

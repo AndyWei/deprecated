@@ -9,16 +9,6 @@
 /* Begin PBXBuildFile section */
 		665FCD8CB532AA82E3F40351 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8E034C4F8FC61E210B60EDCC /* libPods.a */; };
 		743498E564A05714440866C9 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8E034C4F8FC61E210B60EDCC /* libPods.a */; };
-		D61C489C1B4483B4009E422A /* JYMenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D61C489B1B4483B4009E422A /* JYMenuViewController.m */; };
-		D61C489D1B4483B4009E422A /* JYMenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D61C489B1B4483B4009E422A /* JYMenuViewController.m */; };
-		D61C48A01B449143009E422A /* JYMenuViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D61C489F1B449143009E422A /* JYMenuViewCell.m */; };
-		D61C48A11B449143009E422A /* JYMenuViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D61C489F1B449143009E422A /* JYMenuViewCell.m */; };
-		D61C48A41B44A8A5009E422A /* JYBaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D61C48A31B44A8A5009E422A /* JYBaseViewController.m */; };
-		D61C48A51B44A8A5009E422A /* JYBaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D61C48A31B44A8A5009E422A /* JYBaseViewController.m */; };
-		D61C48A81B45085C009E422A /* JYOrdersHistoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D61C48A71B45085C009E422A /* JYOrdersHistoryViewController.m */; };
-		D61C48A91B45085C009E422A /* JYOrdersHistoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D61C48A71B45085C009E422A /* JYOrdersHistoryViewController.m */; };
-		D61C48AF1B451877009E422A /* JYOrdersBidsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D61C48AE1B451877009E422A /* JYOrdersBidsViewController.m */; };
-		D61C48B01B451877009E422A /* JYOrdersBidsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D61C48AE1B451877009E422A /* JYOrdersBidsViewController.m */; };
 		D61D1D471B4A65F200DE37DF /* MDCGeometry.m in Sources */ = {isa = PBXBuildFile; fileRef = D61D1D2B1B4A65F200DE37DF /* MDCGeometry.m */; };
 		D61D1D481B4A65F200DE37DF /* MDCGeometry.m in Sources */ = {isa = PBXBuildFile; fileRef = D61D1D2B1B4A65F200DE37DF /* MDCGeometry.m */; };
 		D61D1D491B4A65F200DE37DF /* MDCViewState.m in Sources */ = {isa = PBXBuildFile; fileRef = D61D1D2E1B4A65F200DE37DF /* MDCViewState.m */; };
@@ -39,8 +29,6 @@
 		D61D1D581B4A65F200DE37DF /* MDCSwipeToChooseView.m in Sources */ = {isa = PBXBuildFile; fileRef = D61D1D441B4A65F200DE37DF /* MDCSwipeToChooseView.m */; };
 		D61D1D591B4A65F200DE37DF /* UIView+MDCSwipeToChoose.m in Sources */ = {isa = PBXBuildFile; fileRef = D61D1D461B4A65F200DE37DF /* UIView+MDCSwipeToChoose.m */; };
 		D61D1D5A1B4A65F200DE37DF /* UIView+MDCSwipeToChoose.m in Sources */ = {isa = PBXBuildFile; fileRef = D61D1D461B4A65F200DE37DF /* UIView+MDCSwipeToChoose.m */; };
-		D61D1D5E1B4DDCB200DE37DF /* JYCameraOverlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = D61D1D5D1B4DDCB200DE37DF /* JYCameraOverlayView.m */; };
-		D61D1D5F1B4DDCB200DE37DF /* JYCameraOverlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = D61D1D5D1B4DDCB200DE37DF /* JYCameraOverlayView.m */; };
 		D61D1DA01B4E336E00DE37DF /* UIImage+CameraFilters.m in Sources */ = {isa = PBXBuildFile; fileRef = D61D1D641B4E336E00DE37DF /* UIImage+CameraFilters.m */; };
 		D61D1DA11B4E336E00DE37DF /* UIImage+CameraFilters.m in Sources */ = {isa = PBXBuildFile; fileRef = D61D1D641B4E336E00DE37DF /* UIImage+CameraFilters.m */; };
 		D61D1DA21B4E336E00DE37DF /* TGCameraAuthorizationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D61D1D671B4E336E00DE37DF /* TGCameraAuthorizationViewController.m */; };
@@ -103,10 +91,6 @@
 		D61D1DE31B5366DC00DE37DF /* JYPost.m in Sources */ = {isa = PBXBuildFile; fileRef = D61D1DE11B5366DC00DE37DF /* JYPost.m */; };
 		D61D1DE61B536B2700DE37DF /* JYPostViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D61D1DE51B536B2700DE37DF /* JYPostViewCell.m */; };
 		D61D1DE71B536B2700DE37DF /* JYPostViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D61D1DE51B536B2700DE37DF /* JYPostViewCell.m */; };
-		D6348D271ADA3BC90002BC35 /* JYPriceTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D6348D261ADA3BC90002BC35 /* JYPriceTextFieldCell.m */; };
-		D6348D281ADA3BC90002BC35 /* JYPriceTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D6348D261ADA3BC90002BC35 /* JYPriceTextFieldCell.m */; };
-		D6348D2B1ADA4A650002BC35 /* JYRestrictedTextViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D6348D2A1ADA4A650002BC35 /* JYRestrictedTextViewCell.m */; };
-		D6348D2C1ADA4A650002BC35 /* JYRestrictedTextViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D6348D2A1ADA4A650002BC35 /* JYRestrictedTextViewCell.m */; };
 		D6348D2F1ADB4DD60002BC35 /* NSString+Joyy.m in Sources */ = {isa = PBXBuildFile; fileRef = D6348D2E1ADB4DD60002BC35 /* NSString+Joyy.m */; };
 		D6348D301ADB4DD60002BC35 /* NSString+Joyy.m in Sources */ = {isa = PBXBuildFile; fileRef = D6348D2E1ADB4DD60002BC35 /* NSString+Joyy.m */; };
 		D6348D371ADB7ABC0002BC35 /* NSMutableDictionary+Joyy.m in Sources */ = {isa = PBXBuildFile; fileRef = D6348D361ADB7ABC0002BC35 /* NSMutableDictionary+Joyy.m */; };
@@ -129,38 +113,24 @@
 		D63F0D761AC9F6F80067C5EE /* JYDataStore.m in Sources */ = {isa = PBXBuildFile; fileRef = D63F0D741AC9F6F80067C5EE /* JYDataStore.m */; };
 		D63F0D7D1ACA5E260067C5EE /* JYSignViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D63F0D7C1ACA5E260067C5EE /* JYSignViewController.m */; };
 		D63F0D7E1ACA5E260067C5EE /* JYSignViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D63F0D7C1ACA5E260067C5EE /* JYSignViewController.m */; };
-		D63F0D8C1ACBBF1F0067C5EE /* JYCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D63F0D8B1ACBBF1F0067C5EE /* JYCollectionViewCell.m */; };
-		D63F0D8D1ACBBF1F0067C5EE /* JYCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D63F0D8B1ACBBF1F0067C5EE /* JYCollectionViewCell.m */; };
-		D63F0D971ACC95B00067C5EE /* JYMapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D63F0D961ACC95B00067C5EE /* JYMapViewController.m */; };
-		D63F0D981ACC95B00067C5EE /* JYMapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D63F0D961ACC95B00067C5EE /* JYMapViewController.m */; };
 		D63F0D9A1ACC96230067C5EE /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D63F0D991ACC96230067C5EE /* MapKit.framework */; };
 		D63F0DA21ACD08260067C5EE /* UIColor+Joyy.m in Sources */ = {isa = PBXBuildFile; fileRef = D63F0DA11ACD08260067C5EE /* UIColor+Joyy.m */; };
 		D63F0DA31ACD08260067C5EE /* UIColor+Joyy.m in Sources */ = {isa = PBXBuildFile; fileRef = D63F0DA11ACD08260067C5EE /* UIColor+Joyy.m */; };
 		D63F0DA51ACD16190067C5EE /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D63F0DA41ACD16190067C5EE /* CoreLocation.framework */; };
-		D63F0DA81ACDFD1D0067C5EE /* JYPinAnnotationView.m in Sources */ = {isa = PBXBuildFile; fileRef = D63F0DA71ACDFD1D0067C5EE /* JYPinAnnotationView.m */; };
-		D63F0DA91ACDFD1D0067C5EE /* JYPinAnnotationView.m in Sources */ = {isa = PBXBuildFile; fileRef = D63F0DA71ACDFD1D0067C5EE /* JYPinAnnotationView.m */; };
-		D64C27EA1B41D00600C85E55 /* JYOrderControl.m in Sources */ = {isa = PBXBuildFile; fileRef = D64C27E91B41D00600C85E55 /* JYOrderControl.m */; };
-		D64C27EB1B41D00600C85E55 /* JYOrderControl.m in Sources */ = {isa = PBXBuildFile; fileRef = D64C27E91B41D00600C85E55 /* JYOrderControl.m */; };
 		D65AFA5E1AEC715D007867D0 /* JYMasqueradeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D65AFA5D1AEC715D007867D0 /* JYMasqueradeViewController.m */; };
 		D65AFA5F1AEC715D007867D0 /* JYMasqueradeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D65AFA5D1AEC715D007867D0 /* JYMasqueradeViewController.m */; };
-		D65AFA621AEC791D007867D0 /* JYBidViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D65AFA611AEC791D007867D0 /* JYBidViewCell.m */; };
-		D65AFA631AEC791D007867D0 /* JYBidViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D65AFA611AEC791D007867D0 /* JYBidViewCell.m */; };
-		D65AFA661AEDEF3D007867D0 /* JYOrderCard.m in Sources */ = {isa = PBXBuildFile; fileRef = D65AFA651AEDEF3D007867D0 /* JYOrderCard.m */; };
-		D65AFA671AEDEF3D007867D0 /* JYOrderCard.m in Sources */ = {isa = PBXBuildFile; fileRef = D65AFA651AEDEF3D007867D0 /* JYOrderCard.m */; };
-		D65AFA731AEF5F3A007867D0 /* UICustomActionSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = D65AFA701AEF5F3A007867D0 /* UICustomActionSheet.m */; };
-		D65AFA741AEF5F3A007867D0 /* UICustomActionSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = D65AFA701AEF5F3A007867D0 /* UICustomActionSheet.m */; };
-		D65AFA751AEF5F3A007867D0 /* UIImageEffects.m in Sources */ = {isa = PBXBuildFile; fileRef = D65AFA721AEF5F3A007867D0 /* UIImageEffects.m */; };
-		D65AFA761AEF5F3A007867D0 /* UIImageEffects.m in Sources */ = {isa = PBXBuildFile; fileRef = D65AFA721AEF5F3A007867D0 /* UIImageEffects.m */; };
 		D65F37461B04807D007B534C /* JYCommentViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D65F37451B04807D007B534C /* JYCommentViewCell.m */; };
 		D65F37471B04807D007B534C /* JYCommentViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D65F37451B04807D007B534C /* JYCommentViewCell.m */; };
-		D679F0261B1C39BB004F1C37 /* JYFloatLabeledTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D679F0251B1C39BB004F1C37 /* JYFloatLabeledTextFieldCell.m */; };
-		D679F0271B1C39BB004F1C37 /* JYFloatLabeledTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D679F0251B1C39BB004F1C37 /* JYFloatLabeledTextFieldCell.m */; };
-		D679F0301B2951D5004F1C37 /* JYFixedLengthRowValidator.m in Sources */ = {isa = PBXBuildFile; fileRef = D679F02F1B2951D5004F1C37 /* JYFixedLengthRowValidator.m */; };
-		D679F0311B2951D5004F1C37 /* JYFixedLengthRowValidator.m in Sources */ = {isa = PBXBuildFile; fileRef = D679F02F1B2951D5004F1C37 /* JYFixedLengthRowValidator.m */; };
 		D67DD0E01B744D1C00333626 /* JYCommentView.m in Sources */ = {isa = PBXBuildFile; fileRef = D67DD0DF1B744D1C00333626 /* JYCommentView.m */; };
 		D67DD0E11B744D1C00333626 /* JYCommentView.m in Sources */ = {isa = PBXBuildFile; fileRef = D67DD0DF1B744D1C00333626 /* JYCommentView.m */; };
-		D689ED621AE01F9C00CB4D2B /* JYDateView.m in Sources */ = {isa = PBXBuildFile; fileRef = D689ED611AE01F9C00CB4D2B /* JYDateView.m */; };
-		D689ED631AE01F9C00CB4D2B /* JYDateView.m in Sources */ = {isa = PBXBuildFile; fileRef = D689ED611AE01F9C00CB4D2B /* JYDateView.m */; };
+		D67DD0E41B75302800333626 /* JYPeopleViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D67DD0E31B75302800333626 /* JYPeopleViewController.m */; };
+		D67DD0E51B75302800333626 /* JYPeopleViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D67DD0E31B75302800333626 /* JYPeopleViewController.m */; };
+		D67DD0E81B7530AF00333626 /* JYPersonCard.m in Sources */ = {isa = PBXBuildFile; fileRef = D67DD0E71B7530AF00333626 /* JYPersonCard.m */; };
+		D67DD0E91B7530AF00333626 /* JYPersonCard.m in Sources */ = {isa = PBXBuildFile; fileRef = D67DD0E71B7530AF00333626 /* JYPersonCard.m */; };
+		D67DD0EC1B75321A00333626 /* JYPerson.m in Sources */ = {isa = PBXBuildFile; fileRef = D67DD0EB1B75321A00333626 /* JYPerson.m */; };
+		D67DD0ED1B75321A00333626 /* JYPerson.m in Sources */ = {isa = PBXBuildFile; fileRef = D67DD0EB1B75321A00333626 /* JYPerson.m */; };
+		D67DD0F01B75337400333626 /* JYImageLabelView.m in Sources */ = {isa = PBXBuildFile; fileRef = D67DD0EF1B75337400333626 /* JYImageLabelView.m */; };
+		D67DD0F11B75337400333626 /* JYImageLabelView.m in Sources */ = {isa = PBXBuildFile; fileRef = D67DD0EF1B75337400333626 /* JYImageLabelView.m */; };
 		D689ED6A1AE42C8300CB4D2B /* UIView+Joyy.m in Sources */ = {isa = PBXBuildFile; fileRef = D689ED691AE42C8300CB4D2B /* UIView+Joyy.m */; };
 		D689ED6B1AE42C8300CB4D2B /* UIView+Joyy.m in Sources */ = {isa = PBXBuildFile; fileRef = D689ED691AE42C8300CB4D2B /* UIView+Joyy.m */; };
 		D68DAF961AC4CACD00838E7E /* Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = D68DAF931AC4CACD00838E7E /* Constants.m */; };
@@ -172,44 +142,16 @@
 		D69202CF1AC4C7C1001C1C3D /* joyyiosTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D69202CE1AC4C7C1001C1C3D /* joyyiosTests.m */; };
 		D693798D1B54E8BC00E64F3A /* JYPhotoCaptionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D693798C1B54E8BC00E64F3A /* JYPhotoCaptionViewController.m */; };
 		D693798E1B54E8BC00E64F3A /* JYPhotoCaptionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D693798C1B54E8BC00E64F3A /* JYPhotoCaptionViewController.m */; };
-		D6A507E71B49C00B005D9FC3 /* JYSelectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6A507E61B49C00B005D9FC3 /* JYSelectionViewController.m */; };
-		D6A507E81B49C00B005D9FC3 /* JYSelectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6A507E61B49C00B005D9FC3 /* JYSelectionViewController.m */; };
-		D6A507EC1B49E32F005D9FC3 /* Joyyor.m in Sources */ = {isa = PBXBuildFile; fileRef = D6A507EB1B49E32F005D9FC3 /* Joyyor.m */; };
-		D6A507ED1B49E32F005D9FC3 /* Joyyor.m in Sources */ = {isa = PBXBuildFile; fileRef = D6A507EB1B49E32F005D9FC3 /* Joyyor.m */; };
-		D6A507F01B49E5AA005D9FC3 /* JYImageLabelView.m in Sources */ = {isa = PBXBuildFile; fileRef = D6A507EF1B49E5AA005D9FC3 /* JYImageLabelView.m */; };
-		D6A507F11B49E5AA005D9FC3 /* JYImageLabelView.m in Sources */ = {isa = PBXBuildFile; fileRef = D6A507EF1B49E5AA005D9FC3 /* JYImageLabelView.m */; };
-		D6A507F41B49E61C005D9FC3 /* JoyyorCard.m in Sources */ = {isa = PBXBuildFile; fileRef = D6A507F31B49E61C005D9FC3 /* JoyyorCard.m */; };
-		D6A507F51B49E61C005D9FC3 /* JoyyorCard.m in Sources */ = {isa = PBXBuildFile; fileRef = D6A507F31B49E61C005D9FC3 /* JoyyorCard.m */; };
 		D6B2F05B1ACE630F009601B0 /* JYAutoCompleteTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B2F05A1ACE630F009601B0 /* JYAutoCompleteTextField.m */; };
 		D6B2F05C1ACE630F009601B0 /* JYAutoCompleteTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B2F05A1ACE630F009601B0 /* JYAutoCompleteTextField.m */; };
-		D6B2F0631ACF4755009601B0 /* JYOrderDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B2F0621ACF4755009601B0 /* JYOrderDetailsViewController.m */; };
-		D6B2F0641ACF4755009601B0 /* JYOrderDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B2F0621ACF4755009601B0 /* JYOrderDetailsViewController.m */; };
-		D6B2F0671AD1B5EC009601B0 /* JYMapDashBoardView.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B2F0661AD1B5EC009601B0 /* JYMapDashBoardView.m */; };
-		D6B2F0681AD1B5EC009601B0 /* JYMapDashBoardView.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B2F0661AD1B5EC009601B0 /* JYMapDashBoardView.m */; };
-		D6B2F0811AD5A679009601B0 /* JYPlacesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B2F0801AD5A679009601B0 /* JYPlacesViewController.m */; };
-		D6B2F0821AD5A679009601B0 /* JYPlacesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B2F0801AD5A679009601B0 /* JYPlacesViewController.m */; };
-		D6B2F0851AD5E165009601B0 /* JYPlacesViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B2F0841AD5E165009601B0 /* JYPlacesViewCell.m */; };
-		D6B2F0861AD5E165009601B0 /* JYPlacesViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B2F0841AD5E165009601B0 /* JYPlacesViewCell.m */; };
-		D6B2F08D1AD714DA009601B0 /* JYInvite.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B2F08C1AD714DA009601B0 /* JYInvite.m */; };
-		D6B2F08E1AD714DA009601B0 /* JYInvite.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B2F08C1AD714DA009601B0 /* JYInvite.m */; };
 		D6C6BBAC1B62DF6B00FFFAC7 /* NSDictionary+Joyy.m in Sources */ = {isa = PBXBuildFile; fileRef = D6C6BBAB1B62DF6B00FFFAC7 /* NSDictionary+Joyy.m */; };
 		D6C6BBAD1B62DF6B00FFFAC7 /* NSDictionary+Joyy.m in Sources */ = {isa = PBXBuildFile; fileRef = D6C6BBAB1B62DF6B00FFFAC7 /* NSDictionary+Joyy.m */; };
 		D6C82B551B0D9FAE00876F57 /* JYCommentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6C82B541B0D9FAE00876F57 /* JYCommentViewController.m */; };
 		D6C82B561B0D9FAE00876F57 /* JYCommentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6C82B541B0D9FAE00876F57 /* JYCommentViewController.m */; };
 		D6C82B5C1B0EFDEA00876F57 /* JYCommentTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = D6C82B5B1B0EFDEA00876F57 /* JYCommentTextView.m */; };
 		D6C82B5D1B0EFDEA00876F57 /* JYCommentTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = D6C82B5B1B0EFDEA00876F57 /* JYCommentTextView.m */; };
-		D6C82B651B12551500876F57 /* JYBid.m in Sources */ = {isa = PBXBuildFile; fileRef = D6C82B641B12551500876F57 /* JYBid.m */; };
-		D6C82B661B12551500876F57 /* JYBid.m in Sources */ = {isa = PBXBuildFile; fileRef = D6C82B641B12551500876F57 /* JYBid.m */; };
 		D6C82B691B12553D00876F57 /* JYComment.m in Sources */ = {isa = PBXBuildFile; fileRef = D6C82B681B12553D00876F57 /* JYComment.m */; };
 		D6C82B6A1B12553D00876F57 /* JYComment.m in Sources */ = {isa = PBXBuildFile; fileRef = D6C82B681B12553D00876F57 /* JYComment.m */; };
-		D6FA6A7B1B33752C007CB30E /* JYPaymentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6FA6A7A1B33752C007CB30E /* JYPaymentViewController.m */; };
-		D6FA6A7C1B33752C007CB30E /* JYPaymentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6FA6A7A1B33752C007CB30E /* JYPaymentViewController.m */; };
-		D6FA6A7F1B33E3DD007CB30E /* JYCreditCardViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D6FA6A7E1B33E3DD007CB30E /* JYCreditCardViewCell.m */; };
-		D6FA6A801B33E3DD007CB30E /* JYCreditCardViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D6FA6A7E1B33E3DD007CB30E /* JYCreditCardViewCell.m */; };
-		D6FA6A831B33E466007CB30E /* JYCreditCard.m in Sources */ = {isa = PBXBuildFile; fileRef = D6FA6A821B33E466007CB30E /* JYCreditCard.m */; };
-		D6FA6A841B33E466007CB30E /* JYCreditCard.m in Sources */ = {isa = PBXBuildFile; fileRef = D6FA6A821B33E466007CB30E /* JYCreditCard.m */; };
-		D6FA6A8B1B37CDB3007CB30E /* JYOrderViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D6FA6A8A1B37CDB3007CB30E /* JYOrderViewCell.m */; };
-		D6FA6A8C1B37CDB3007CB30E /* JYOrderViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D6FA6A8A1B37CDB3007CB30E /* JYOrderViewCell.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -225,16 +167,6 @@
 /* Begin PBXFileReference section */
 		47240DA3592328D7C382C992 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		8E034C4F8FC61E210B60EDCC /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		D61C489A1B4483B4009E422A /* JYMenuViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYMenuViewController.h; sourceTree = "<group>"; };
-		D61C489B1B4483B4009E422A /* JYMenuViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYMenuViewController.m; sourceTree = "<group>"; };
-		D61C489E1B449143009E422A /* JYMenuViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYMenuViewCell.h; sourceTree = "<group>"; };
-		D61C489F1B449143009E422A /* JYMenuViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYMenuViewCell.m; sourceTree = "<group>"; };
-		D61C48A21B44A8A5009E422A /* JYBaseViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYBaseViewController.h; sourceTree = "<group>"; };
-		D61C48A31B44A8A5009E422A /* JYBaseViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYBaseViewController.m; sourceTree = "<group>"; };
-		D61C48A61B45085C009E422A /* JYOrdersHistoryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYOrdersHistoryViewController.h; sourceTree = "<group>"; };
-		D61C48A71B45085C009E422A /* JYOrdersHistoryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYOrdersHistoryViewController.m; sourceTree = "<group>"; };
-		D61C48AD1B451877009E422A /* JYOrdersBidsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYOrdersBidsViewController.h; sourceTree = "<group>"; };
-		D61C48AE1B451877009E422A /* JYOrdersBidsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYOrdersBidsViewController.m; sourceTree = "<group>"; };
 		D61D1D2A1B4A65F200DE37DF /* MDCGeometry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDCGeometry.h; sourceTree = "<group>"; };
 		D61D1D2B1B4A65F200DE37DF /* MDCGeometry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDCGeometry.m; sourceTree = "<group>"; };
 		D61D1D2D1B4A65F200DE37DF /* MDCViewState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDCViewState.h; sourceTree = "<group>"; };
@@ -258,8 +190,6 @@
 		D61D1D441B4A65F200DE37DF /* MDCSwipeToChooseView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDCSwipeToChooseView.m; sourceTree = "<group>"; };
 		D61D1D451B4A65F200DE37DF /* UIView+MDCSwipeToChoose.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+MDCSwipeToChoose.h"; sourceTree = "<group>"; };
 		D61D1D461B4A65F200DE37DF /* UIView+MDCSwipeToChoose.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+MDCSwipeToChoose.m"; sourceTree = "<group>"; };
-		D61D1D5C1B4DDCB200DE37DF /* JYCameraOverlayView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYCameraOverlayView.h; sourceTree = "<group>"; };
-		D61D1D5D1B4DDCB200DE37DF /* JYCameraOverlayView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYCameraOverlayView.m; sourceTree = "<group>"; };
 		D61D1D631B4E336E00DE37DF /* UIImage+CameraFilters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+CameraFilters.h"; sourceTree = "<group>"; };
 		D61D1D641B4E336E00DE37DF /* UIImage+CameraFilters.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+CameraFilters.m"; sourceTree = "<group>"; };
 		D61D1D661B4E336E00DE37DF /* TGCameraAuthorizationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TGCameraAuthorizationViewController.h; sourceTree = "<group>"; };
@@ -318,10 +248,6 @@
 		D61D1DE11B5366DC00DE37DF /* JYPost.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYPost.m; sourceTree = "<group>"; };
 		D61D1DE41B536B2700DE37DF /* JYPostViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYPostViewCell.h; sourceTree = "<group>"; };
 		D61D1DE51B536B2700DE37DF /* JYPostViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYPostViewCell.m; sourceTree = "<group>"; };
-		D6348D251ADA3BC90002BC35 /* JYPriceTextFieldCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYPriceTextFieldCell.h; sourceTree = "<group>"; };
-		D6348D261ADA3BC90002BC35 /* JYPriceTextFieldCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYPriceTextFieldCell.m; sourceTree = "<group>"; };
-		D6348D291ADA4A180002BC35 /* JYRestrictedTextViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYRestrictedTextViewCell.h; sourceTree = "<group>"; };
-		D6348D2A1ADA4A650002BC35 /* JYRestrictedTextViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYRestrictedTextViewCell.m; sourceTree = "<group>"; };
 		D6348D2D1ADB4DD60002BC35 /* NSString+Joyy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Joyy.h"; sourceTree = "<group>"; };
 		D6348D2E1ADB4DD60002BC35 /* NSString+Joyy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Joyy.m"; sourceTree = "<group>"; };
 		D6348D351ADB7ABC0002BC35 /* NSMutableDictionary+Joyy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableDictionary+Joyy.h"; sourceTree = "<group>"; };
@@ -344,39 +270,25 @@
 		D63F0D741AC9F6F80067C5EE /* JYDataStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYDataStore.m; sourceTree = "<group>"; };
 		D63F0D7B1ACA5E260067C5EE /* JYSignViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYSignViewController.h; sourceTree = "<group>"; };
 		D63F0D7C1ACA5E260067C5EE /* JYSignViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYSignViewController.m; sourceTree = "<group>"; };
-		D63F0D8A1ACBBF1F0067C5EE /* JYCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYCollectionViewCell.h; sourceTree = "<group>"; };
-		D63F0D8B1ACBBF1F0067C5EE /* JYCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYCollectionViewCell.m; sourceTree = "<group>"; };
-		D63F0D951ACC95B00067C5EE /* JYMapViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYMapViewController.h; sourceTree = "<group>"; };
-		D63F0D961ACC95B00067C5EE /* JYMapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYMapViewController.m; sourceTree = "<group>"; };
 		D63F0D991ACC96230067C5EE /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		D63F0DA01ACD08260067C5EE /* UIColor+Joyy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+Joyy.h"; sourceTree = "<group>"; };
 		D63F0DA11ACD08260067C5EE /* UIColor+Joyy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Joyy.m"; sourceTree = "<group>"; };
 		D63F0DA41ACD16190067C5EE /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
-		D63F0DA61ACDFD1D0067C5EE /* JYPinAnnotationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYPinAnnotationView.h; sourceTree = "<group>"; };
-		D63F0DA71ACDFD1D0067C5EE /* JYPinAnnotationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYPinAnnotationView.m; sourceTree = "<group>"; };
-		D64C27E81B41D00600C85E55 /* JYOrderControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYOrderControl.h; sourceTree = "<group>"; };
-		D64C27E91B41D00600C85E55 /* JYOrderControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYOrderControl.m; sourceTree = "<group>"; };
 		D65AFA5C1AEC715D007867D0 /* JYMasqueradeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYMasqueradeViewController.h; sourceTree = "<group>"; };
 		D65AFA5D1AEC715D007867D0 /* JYMasqueradeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYMasqueradeViewController.m; sourceTree = "<group>"; };
-		D65AFA601AEC791D007867D0 /* JYBidViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYBidViewCell.h; sourceTree = "<group>"; };
-		D65AFA611AEC791D007867D0 /* JYBidViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYBidViewCell.m; sourceTree = "<group>"; };
-		D65AFA641AEDEF3D007867D0 /* JYOrderCard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYOrderCard.h; sourceTree = "<group>"; };
-		D65AFA651AEDEF3D007867D0 /* JYOrderCard.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYOrderCard.m; sourceTree = "<group>"; };
-		D65AFA6F1AEF5F3A007867D0 /* UICustomActionSheet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UICustomActionSheet.h; sourceTree = "<group>"; };
-		D65AFA701AEF5F3A007867D0 /* UICustomActionSheet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UICustomActionSheet.m; sourceTree = "<group>"; };
-		D65AFA711AEF5F3A007867D0 /* UIImageEffects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIImageEffects.h; sourceTree = "<group>"; };
-		D65AFA721AEF5F3A007867D0 /* UIImageEffects.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIImageEffects.m; sourceTree = "<group>"; };
 		D65F37441B04807D007B534C /* JYCommentViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYCommentViewCell.h; sourceTree = "<group>"; };
 		D65F37451B04807D007B534C /* JYCommentViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYCommentViewCell.m; sourceTree = "<group>"; };
-		D679F0241B1C39BB004F1C37 /* JYFloatLabeledTextFieldCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYFloatLabeledTextFieldCell.h; sourceTree = "<group>"; };
-		D679F0251B1C39BB004F1C37 /* JYFloatLabeledTextFieldCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYFloatLabeledTextFieldCell.m; sourceTree = "<group>"; };
-		D679F02E1B2951D5004F1C37 /* JYFixedLengthRowValidator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYFixedLengthRowValidator.h; sourceTree = "<group>"; };
-		D679F02F1B2951D5004F1C37 /* JYFixedLengthRowValidator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYFixedLengthRowValidator.m; sourceTree = "<group>"; };
 		D679F03F1B320EEA004F1C37 /* joyyios.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = joyyios.entitlements; sourceTree = "<group>"; };
 		D67DD0DE1B744D1C00333626 /* JYCommentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYCommentView.h; sourceTree = "<group>"; };
 		D67DD0DF1B744D1C00333626 /* JYCommentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYCommentView.m; sourceTree = "<group>"; };
-		D689ED601AE01F9C00CB4D2B /* JYDateView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYDateView.h; sourceTree = "<group>"; };
-		D689ED611AE01F9C00CB4D2B /* JYDateView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYDateView.m; sourceTree = "<group>"; };
+		D67DD0E21B75302800333626 /* JYPeopleViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYPeopleViewController.h; sourceTree = "<group>"; };
+		D67DD0E31B75302800333626 /* JYPeopleViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYPeopleViewController.m; sourceTree = "<group>"; };
+		D67DD0E61B7530AF00333626 /* JYPersonCard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYPersonCard.h; sourceTree = "<group>"; };
+		D67DD0E71B7530AF00333626 /* JYPersonCard.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYPersonCard.m; sourceTree = "<group>"; };
+		D67DD0EA1B75321A00333626 /* JYPerson.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYPerson.h; sourceTree = "<group>"; };
+		D67DD0EB1B75321A00333626 /* JYPerson.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYPerson.m; sourceTree = "<group>"; };
+		D67DD0EE1B75337400333626 /* JYImageLabelView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYImageLabelView.h; sourceTree = "<group>"; };
+		D67DD0EF1B75337400333626 /* JYImageLabelView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYImageLabelView.m; sourceTree = "<group>"; };
 		D689ED681AE42C8300CB4D2B /* UIView+Joyy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Joyy.h"; sourceTree = "<group>"; };
 		D689ED691AE42C8300CB4D2B /* UIView+Joyy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Joyy.m"; sourceTree = "<group>"; };
 		D68DAF921AC4CACD00838E7E /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
@@ -396,44 +308,16 @@
 		D69202CE1AC4C7C1001C1C3D /* joyyiosTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = joyyiosTests.m; sourceTree = "<group>"; };
 		D693798B1B54E8BC00E64F3A /* JYPhotoCaptionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYPhotoCaptionViewController.h; sourceTree = "<group>"; };
 		D693798C1B54E8BC00E64F3A /* JYPhotoCaptionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYPhotoCaptionViewController.m; sourceTree = "<group>"; };
-		D6A507E51B49C00B005D9FC3 /* JYSelectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYSelectionViewController.h; sourceTree = "<group>"; };
-		D6A507E61B49C00B005D9FC3 /* JYSelectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYSelectionViewController.m; sourceTree = "<group>"; };
-		D6A507EA1B49E32F005D9FC3 /* Joyyor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Joyyor.h; sourceTree = "<group>"; };
-		D6A507EB1B49E32F005D9FC3 /* Joyyor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Joyyor.m; sourceTree = "<group>"; };
-		D6A507EE1B49E5AA005D9FC3 /* JYImageLabelView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYImageLabelView.h; sourceTree = "<group>"; };
-		D6A507EF1B49E5AA005D9FC3 /* JYImageLabelView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYImageLabelView.m; sourceTree = "<group>"; };
-		D6A507F21B49E61C005D9FC3 /* JoyyorCard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JoyyorCard.h; sourceTree = "<group>"; };
-		D6A507F31B49E61C005D9FC3 /* JoyyorCard.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JoyyorCard.m; sourceTree = "<group>"; };
 		D6B2F0591ACE630F009601B0 /* JYAutoCompleteTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYAutoCompleteTextField.h; sourceTree = "<group>"; };
 		D6B2F05A1ACE630F009601B0 /* JYAutoCompleteTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYAutoCompleteTextField.m; sourceTree = "<group>"; };
-		D6B2F0611ACF4755009601B0 /* JYOrderDetailsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYOrderDetailsViewController.h; sourceTree = "<group>"; };
-		D6B2F0621ACF4755009601B0 /* JYOrderDetailsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYOrderDetailsViewController.m; sourceTree = "<group>"; };
-		D6B2F0651AD1B5EC009601B0 /* JYMapDashBoardView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYMapDashBoardView.h; sourceTree = "<group>"; };
-		D6B2F0661AD1B5EC009601B0 /* JYMapDashBoardView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYMapDashBoardView.m; sourceTree = "<group>"; };
-		D6B2F07F1AD5A679009601B0 /* JYPlacesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYPlacesViewController.h; sourceTree = "<group>"; };
-		D6B2F0801AD5A679009601B0 /* JYPlacesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYPlacesViewController.m; sourceTree = "<group>"; };
-		D6B2F0831AD5E165009601B0 /* JYPlacesViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYPlacesViewCell.h; sourceTree = "<group>"; };
-		D6B2F0841AD5E165009601B0 /* JYPlacesViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYPlacesViewCell.m; sourceTree = "<group>"; };
-		D6B2F08B1AD714DA009601B0 /* JYInvite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYInvite.h; sourceTree = "<group>"; };
-		D6B2F08C1AD714DA009601B0 /* JYInvite.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYInvite.m; sourceTree = "<group>"; };
 		D6C6BBAA1B62DF6B00FFFAC7 /* NSDictionary+Joyy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+Joyy.h"; sourceTree = "<group>"; };
 		D6C6BBAB1B62DF6B00FFFAC7 /* NSDictionary+Joyy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+Joyy.m"; sourceTree = "<group>"; };
 		D6C82B531B0D9FAE00876F57 /* JYCommentViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYCommentViewController.h; sourceTree = "<group>"; };
 		D6C82B541B0D9FAE00876F57 /* JYCommentViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYCommentViewController.m; sourceTree = "<group>"; };
 		D6C82B5A1B0EFDEA00876F57 /* JYCommentTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYCommentTextView.h; sourceTree = "<group>"; };
 		D6C82B5B1B0EFDEA00876F57 /* JYCommentTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYCommentTextView.m; sourceTree = "<group>"; };
-		D6C82B631B12551500876F57 /* JYBid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYBid.h; sourceTree = "<group>"; };
-		D6C82B641B12551500876F57 /* JYBid.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYBid.m; sourceTree = "<group>"; };
 		D6C82B671B12553D00876F57 /* JYComment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYComment.h; sourceTree = "<group>"; };
 		D6C82B681B12553D00876F57 /* JYComment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYComment.m; sourceTree = "<group>"; };
-		D6FA6A791B33752C007CB30E /* JYPaymentViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYPaymentViewController.h; sourceTree = "<group>"; };
-		D6FA6A7A1B33752C007CB30E /* JYPaymentViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYPaymentViewController.m; sourceTree = "<group>"; };
-		D6FA6A7D1B33E3DD007CB30E /* JYCreditCardViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYCreditCardViewCell.h; sourceTree = "<group>"; };
-		D6FA6A7E1B33E3DD007CB30E /* JYCreditCardViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYCreditCardViewCell.m; sourceTree = "<group>"; };
-		D6FA6A811B33E466007CB30E /* JYCreditCard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYCreditCard.h; sourceTree = "<group>"; };
-		D6FA6A821B33E466007CB30E /* JYCreditCard.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYCreditCard.m; sourceTree = "<group>"; };
-		D6FA6A891B37CDB3007CB30E /* JYOrderViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYOrderViewCell.h; sourceTree = "<group>"; };
-		D6FA6A8A1B37CDB3007CB30E /* JYOrderViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYOrderViewCell.m; sourceTree = "<group>"; };
 		F67CA15F6F0CAF970CBFB660 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -466,17 +350,6 @@
 				F67CA15F6F0CAF970CBFB660 /* Pods.release.xcconfig */,
 			);
 			name = Pods;
-			sourceTree = "<group>";
-		};
-		D61C48991B44838A009E422A /* Menu */ = {
-			isa = PBXGroup;
-			children = (
-				D61C489A1B4483B4009E422A /* JYMenuViewController.h */,
-				D61C489B1B4483B4009E422A /* JYMenuViewController.m */,
-				D61C489E1B449143009E422A /* JYMenuViewCell.h */,
-				D61C489F1B449143009E422A /* JYMenuViewCell.m */,
-			);
-			name = Menu;
 			sourceTree = "<group>";
 		};
 		D61D1D281B4A65F200DE37DF /* MDCSwipeToChoose */ = {
@@ -709,79 +582,17 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
-		D63B69AB1AC5184D005600A9 /* Shared */ = {
+		D63B69AB1AC5184D005600A9 /* People */ = {
 			isa = PBXGroup;
 			children = (
-				D65AFA6F1AEF5F3A007867D0 /* UICustomActionSheet.h */,
-				D65AFA701AEF5F3A007867D0 /* UICustomActionSheet.m */,
-				D65AFA711AEF5F3A007867D0 /* UIImageEffects.h */,
-				D65AFA721AEF5F3A007867D0 /* UIImageEffects.m */,
-				D63B69B81AC624F8005600A9 /* JYAutoCompleteDataSource.h */,
-				D63B69B91AC624F8005600A9 /* JYAutoCompleteDataSource.m */,
-				D6B2F0591ACE630F009601B0 /* JYAutoCompleteTextField.h */,
-				D6B2F05A1ACE630F009601B0 /* JYAutoCompleteTextField.m */,
-				D65AFA601AEC791D007867D0 /* JYBidViewCell.h */,
-				D65AFA611AEC791D007867D0 /* JYBidViewCell.m */,
-				D63F0D571AC7CFF20067C5EE /* JYButton.h */,
-				D63F0D581AC7CFF20067C5EE /* JYButton.m */,
-				D63F0D8A1ACBBF1F0067C5EE /* JYCollectionViewCell.h */,
-				D63F0D8B1ACBBF1F0067C5EE /* JYCollectionViewCell.m */,
-				D689ED601AE01F9C00CB4D2B /* JYDateView.h */,
-				D689ED611AE01F9C00CB4D2B /* JYDateView.m */,
-				D679F02E1B2951D5004F1C37 /* JYFixedLengthRowValidator.h */,
-				D679F02F1B2951D5004F1C37 /* JYFixedLengthRowValidator.m */,
-				D63B69B41AC53BB4005600A9 /* JYFloatLabeledTextField.h */,
-				D63B69B51AC53BB4005600A9 /* JYFloatLabeledTextField.m */,
-				D679F0241B1C39BB004F1C37 /* JYFloatLabeledTextFieldCell.h */,
-				D679F0251B1C39BB004F1C37 /* JYFloatLabeledTextFieldCell.m */,
-				D61C48A21B44A8A5009E422A /* JYBaseViewController.h */,
-				D61C48A31B44A8A5009E422A /* JYBaseViewController.m */,
-				D65AFA641AEDEF3D007867D0 /* JYOrderCard.h */,
-				D65AFA651AEDEF3D007867D0 /* JYOrderCard.m */,
-				D63F0DA61ACDFD1D0067C5EE /* JYPinAnnotationView.h */,
-				D63F0DA71ACDFD1D0067C5EE /* JYPinAnnotationView.m */,
-				D6B2F0831AD5E165009601B0 /* JYPlacesViewCell.h */,
-				D6B2F0841AD5E165009601B0 /* JYPlacesViewCell.m */,
-				D6B2F07F1AD5A679009601B0 /* JYPlacesViewController.h */,
-				D6B2F0801AD5A679009601B0 /* JYPlacesViewController.m */,
-				D6348D251ADA3BC90002BC35 /* JYPriceTextFieldCell.h */,
-				D6348D261ADA3BC90002BC35 /* JYPriceTextFieldCell.m */,
-				D6348D291ADA4A180002BC35 /* JYRestrictedTextViewCell.h */,
-				D6348D2A1ADA4A650002BC35 /* JYRestrictedTextViewCell.m */,
-				D61D1D5C1B4DDCB200DE37DF /* JYCameraOverlayView.h */,
-				D61D1D5D1B4DDCB200DE37DF /* JYCameraOverlayView.m */,
-				D61D1D601B4E336E00DE37DF /* TGCameraViewController */,
-				D61D1D281B4A65F200DE37DF /* MDCSwipeToChoose */,
+				D67DD0EE1B75337400333626 /* JYImageLabelView.h */,
+				D67DD0EF1B75337400333626 /* JYImageLabelView.m */,
+				D67DD0E61B7530AF00333626 /* JYPersonCard.h */,
+				D67DD0E71B7530AF00333626 /* JYPersonCard.m */,
+				D67DD0E21B75302800333626 /* JYPeopleViewController.h */,
+				D67DD0E31B75302800333626 /* JYPeopleViewController.m */,
 			);
-			name = Shared;
-			sourceTree = "<group>";
-		};
-		D63F0D871ACBBDF30067C5EE /* Orders */ = {
-			isa = PBXGroup;
-			children = (
-				D61C48AD1B451877009E422A /* JYOrdersBidsViewController.h */,
-				D61C48AE1B451877009E422A /* JYOrdersBidsViewController.m */,
-				D61C48A61B45085C009E422A /* JYOrdersHistoryViewController.h */,
-				D61C48A71B45085C009E422A /* JYOrdersHistoryViewController.m */,
-				D64C27E81B41D00600C85E55 /* JYOrderControl.h */,
-				D64C27E91B41D00600C85E55 /* JYOrderControl.m */,
-				D6FA6A891B37CDB3007CB30E /* JYOrderViewCell.h */,
-				D6FA6A8A1B37CDB3007CB30E /* JYOrderViewCell.m */,
-			);
-			name = Orders;
-			sourceTree = "<group>";
-		};
-		D63F0D881ACBBE280067C5EE /* Map */ = {
-			isa = PBXGroup;
-			children = (
-				D6B2F0651AD1B5EC009601B0 /* JYMapDashBoardView.h */,
-				D6B2F0661AD1B5EC009601B0 /* JYMapDashBoardView.m */,
-				D63F0D951ACC95B00067C5EE /* JYMapViewController.h */,
-				D63F0D961ACC95B00067C5EE /* JYMapViewController.m */,
-				D6B2F0611ACF4755009601B0 /* JYOrderDetailsViewController.h */,
-				D6B2F0621ACF4755009601B0 /* JYOrderDetailsViewController.m */,
-			);
-			name = Map;
+			name = People;
 			sourceTree = "<group>";
 		};
 		D68DAF991AC4CD0800838E7E /* Common */ = {
@@ -803,6 +614,16 @@
 				D689ED691AE42C8300CB4D2B /* UIView+Joyy.m */,
 				D61D1DDC1B5342DD00DE37DF /* UIImage+Joyy.h */,
 				D61D1DDD1B5342DD00DE37DF /* UIImage+Joyy.m */,
+				D63B69B81AC624F8005600A9 /* JYAutoCompleteDataSource.h */,
+				D63B69B91AC624F8005600A9 /* JYAutoCompleteDataSource.m */,
+				D6B2F0591ACE630F009601B0 /* JYAutoCompleteTextField.h */,
+				D6B2F05A1ACE630F009601B0 /* JYAutoCompleteTextField.m */,
+				D63F0D571AC7CFF20067C5EE /* JYButton.h */,
+				D63F0D581AC7CFF20067C5EE /* JYButton.m */,
+				D63B69B41AC53BB4005600A9 /* JYFloatLabeledTextField.h */,
+				D63B69B51AC53BB4005600A9 /* JYFloatLabeledTextField.m */,
+				D61D1D601B4E336E00DE37DF /* TGCameraViewController */,
+				D61D1D281B4A65F200DE37DF /* MDCSwipeToChoose */,
 			);
 			name = Common;
 			sourceTree = "<group>";
@@ -851,14 +672,9 @@
 				D68DAF921AC4CACD00838E7E /* Constants.h */,
 				D68DAF931AC4CACD00838E7E /* Constants.m */,
 				D68DAF991AC4CD0800838E7E /* Common */,
-				D63B69AB1AC5184D005600A9 /* Shared */,
 				D61D1D5B1B4DBA5D00DE37DF /* Masquerade */,
-				D63F0D881ACBBE280067C5EE /* Map */,
-				D61C48991B44838A009E422A /* Menu */,
+				D63B69AB1AC5184D005600A9 /* People */,
 				D6C82B611B1252FE00876F57 /* Model */,
-				D6A507E91B49E2DF005D9FC3 /* Selection */,
-				D63F0D871ACBBDF30067C5EE /* Orders */,
-				D6FA6A781B3374FB007CB30E /* Payment */,
 				D68DAF9A1AC4CD1800838E7E /* User */,
 				D69202BF1AC4C7C0001C1C3D /* Images.xcassets */,
 				D69202C11AC4C7C0001C1C3D /* LaunchScreen.xib */,
@@ -894,49 +710,19 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		D6A507E91B49E2DF005D9FC3 /* Selection */ = {
-			isa = PBXGroup;
-			children = (
-				D6A507EE1B49E5AA005D9FC3 /* JYImageLabelView.h */,
-				D6A507EF1B49E5AA005D9FC3 /* JYImageLabelView.m */,
-				D6A507F21B49E61C005D9FC3 /* JoyyorCard.h */,
-				D6A507F31B49E61C005D9FC3 /* JoyyorCard.m */,
-				D6A507E51B49C00B005D9FC3 /* JYSelectionViewController.h */,
-				D6A507E61B49C00B005D9FC3 /* JYSelectionViewController.m */,
-			);
-			name = Selection;
-			sourceTree = "<group>";
-		};
 		D6C82B611B1252FE00876F57 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				D6A507EA1B49E32F005D9FC3 /* Joyyor.h */,
-				D6A507EB1B49E32F005D9FC3 /* Joyyor.m */,
-				D6C82B631B12551500876F57 /* JYBid.h */,
-				D6C82B641B12551500876F57 /* JYBid.m */,
+				D67DD0EA1B75321A00333626 /* JYPerson.h */,
+				D67DD0EB1B75321A00333626 /* JYPerson.m */,
 				D6C82B671B12553D00876F57 /* JYComment.h */,
 				D6C82B681B12553D00876F57 /* JYComment.m */,
-				D6B2F08B1AD714DA009601B0 /* JYInvite.h */,
-				D6B2F08C1AD714DA009601B0 /* JYInvite.m */,
 				D61D1DE01B5366DC00DE37DF /* JYPost.h */,
 				D61D1DE11B5366DC00DE37DF /* JYPost.m */,
 				D63F0D6F1AC9EC060067C5EE /* JYUser.h */,
 				D63F0D701AC9EC060067C5EE /* JYUser.m */,
 			);
 			name = Model;
-			sourceTree = "<group>";
-		};
-		D6FA6A781B3374FB007CB30E /* Payment */ = {
-			isa = PBXGroup;
-			children = (
-				D6FA6A811B33E466007CB30E /* JYCreditCard.h */,
-				D6FA6A821B33E466007CB30E /* JYCreditCard.m */,
-				D6FA6A7D1B33E3DD007CB30E /* JYCreditCardViewCell.h */,
-				D6FA6A7E1B33E3DD007CB30E /* JYCreditCardViewCell.m */,
-				D6FA6A791B33752C007CB30E /* JYPaymentViewController.h */,
-				D6FA6A7A1B33752C007CB30E /* JYPaymentViewController.m */,
-			);
-			name = Payment;
 			sourceTree = "<group>";
 		};
 		E8953528E7D4E03D9881458B /* Frameworks */ = {
@@ -1135,36 +921,23 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D6A507F41B49E61C005D9FC3 /* JoyyorCard.m in Sources */,
-				D6FA6A7F1B33E3DD007CB30E /* JYCreditCardViewCell.m in Sources */,
 				D61D1DE61B536B2700DE37DF /* JYPostViewCell.m in Sources */,
 				D693798D1B54E8BC00E64F3A /* JYPhotoCaptionViewController.m in Sources */,
-				D61D1D5E1B4DDCB200DE37DF /* JYCameraOverlayView.m in Sources */,
 				D68DAF961AC4CACD00838E7E /* Constants.m in Sources */,
-				D61C48A41B44A8A5009E422A /* JYBaseViewController.m in Sources */,
-				D689ED621AE01F9C00CB4D2B /* JYDateView.m in Sources */,
 				D61D1D551B4A65F200DE37DF /* MDCSwipeResult.m in Sources */,
-				D65AFA621AEC791D007867D0 /* JYBidViewCell.m in Sources */,
 				D61D1D4D1B4A65F200DE37DF /* UIView+MDCBorderedLabel.m in Sources */,
 				D689ED6A1AE42C8300CB4D2B /* UIView+Joyy.m in Sources */,
-				D65AFA661AEDEF3D007867D0 /* JYOrderCard.m in Sources */,
-				D65AFA731AEF5F3A007867D0 /* UICustomActionSheet.m in Sources */,
 				D61D1D591B4A65F200DE37DF /* UIView+MDCSwipeToChoose.m in Sources */,
 				D61D1D511B4A65F200DE37DF /* MDCSwipeToChooseViewOptions.m in Sources */,
-				D61C48AF1B451877009E422A /* JYOrdersBidsViewController.m in Sources */,
 				D61D1D471B4A65F200DE37DF /* MDCGeometry.m in Sources */,
-				D6348D271ADA3BC90002BC35 /* JYPriceTextFieldCell.m in Sources */,
-				D679F0301B2951D5004F1C37 /* JYFixedLengthRowValidator.m in Sources */,
 				D61D1DC61B4E336E00DE37DF /* TGCameraSlideUpView.m in Sources */,
 				D61D1DDE1B5342DD00DE37DF /* UIImage+Joyy.m in Sources */,
-				D679F0261B1C39BB004F1C37 /* JYFloatLabeledTextFieldCell.m in Sources */,
 				D61D1DC21B4E336E00DE37DF /* TGCameraGridView.m in Sources */,
 				D63F0D591AC7CFF20067C5EE /* JYButton.m in Sources */,
-				D63F0D8C1ACBBF1F0067C5EE /* JYCollectionViewCell.m in Sources */,
-				D64C27EA1B41D00600C85E55 /* JYOrderControl.m in Sources */,
 				D63B69BA1AC624F8005600A9 /* JYAutoCompleteDataSource.m in Sources */,
 				D63B69B21AC51D61005600A9 /* JYSignBaseViewController.m in Sources */,
 				D61D1DC41B4E336E00DE37DF /* TGCameraSlideDownView.m in Sources */,
+				D67DD0E41B75302800333626 /* JYPeopleViewController.m in Sources */,
 				D65F37461B04807D007B534C /* JYCommentViewCell.m in Sources */,
 				D61D1DAE1B4E336E00DE37DF /* TGCamera.m in Sources */,
 				D63F0D751AC9F6F80067C5EE /* JYDataStore.m in Sources */,
@@ -1172,43 +945,30 @@
 				D69202B51AC4C7C0001C1C3D /* AppDelegate.m in Sources */,
 				D63F0DA21ACD08260067C5EE /* UIColor+Joyy.m in Sources */,
 				D61D1D491B4A65F200DE37DF /* MDCViewState.m in Sources */,
-				D6FA6A8B1B37CDB3007CB30E /* JYOrderViewCell.m in Sources */,
 				D6C82B551B0D9FAE00876F57 /* JYCommentViewController.m in Sources */,
 				D6B2F05B1ACE630F009601B0 /* JYAutoCompleteTextField.m in Sources */,
-				D61C48A01B449143009E422A /* JYMenuViewCell.m in Sources */,
 				D61D1D4F1B4A65F200DE37DF /* MDCSwipeOptions.m in Sources */,
 				D61D1DBE1B4E336E00DE37DF /* TGCameraFilterView.m in Sources */,
 				D61D1DB01B4E336E00DE37DF /* TGCameraColor.m in Sources */,
 				D61D1DB61B4E336E00DE37DF /* TGCameraGrid.m in Sources */,
 				D63F0D711AC9EC060067C5EE /* JYUser.m in Sources */,
-				D6FA6A7B1B33752C007CB30E /* JYPaymentViewController.m in Sources */,
 				D67DD0E01B744D1C00333626 /* JYCommentView.m in Sources */,
 				D61D1DE21B5366DC00DE37DF /* JYPost.m in Sources */,
-				D6B2F0631ACF4755009601B0 /* JYOrderDetailsViewController.m in Sources */,
-				D6A507F01B49E5AA005D9FC3 /* JYImageLabelView.m in Sources */,
 				D61D1DA21B4E336E00DE37DF /* TGCameraAuthorizationViewController.m in Sources */,
+				D67DD0F01B75337400333626 /* JYImageLabelView.m in Sources */,
 				D61D1D4B1B4A65F200DE37DF /* UIColor+MDCRGB8Bit.m in Sources */,
-				D6C82B651B12551500876F57 /* JYBid.m in Sources */,
-				D6348D2B1ADA4A650002BC35 /* JYRestrictedTextViewCell.m in Sources */,
 				D6C6BBAC1B62DF6B00FFFAC7 /* NSDictionary+Joyy.m in Sources */,
 				D63F0D7D1ACA5E260067C5EE /* JYSignViewController.m in Sources */,
 				D63B69B61AC53BB4005600A9 /* JYFloatLabeledTextField.m in Sources */,
-				D6B2F0671AD1B5EC009601B0 /* JYMapDashBoardView.m in Sources */,
 				D65AFA5E1AEC715D007867D0 /* JYMasqueradeViewController.m in Sources */,
-				D61C489C1B4483B4009E422A /* JYMenuViewController.m in Sources */,
-				D6B2F0851AD5E165009601B0 /* JYPlacesViewCell.m in Sources */,
 				D61D1DB21B4E336E00DE37DF /* TGCameraFlash.m in Sources */,
-				D65AFA751AEF5F3A007867D0 /* UIImageEffects.m in Sources */,
 				D61D1DA61B4E336E00DE37DF /* TGCameraViewController.m in Sources */,
 				D61D1DC01B4E336E00DE37DF /* TGCameraFocusView.m in Sources */,
 				D69202B21AC4C7C0001C1C3D /* main.m in Sources */,
 				D6C82B691B12553D00876F57 /* JYComment.m in Sources */,
-				D63F0DA81ACDFD1D0067C5EE /* JYPinAnnotationView.m in Sources */,
-				D61C48A81B45085C009E422A /* JYOrdersHistoryViewController.m in Sources */,
 				D61D1DCA1B4E336E00DE37DF /* TGTintedButton.m in Sources */,
 				D6C82B5C1B0EFDEA00876F57 /* JYCommentTextView.m in Sources */,
 				D6348D2F1ADB4DD60002BC35 /* NSString+Joyy.m in Sources */,
-				D6A507E71B49C00B005D9FC3 /* JYSelectionViewController.m in Sources */,
 				D61D1D531B4A65F200DE37DF /* MDCPanState.m in Sources */,
 				D61D1DBA1B4E336E00DE37DF /* TGCameraToggle.m in Sources */,
 				D61D1DA41B4E336E00DE37DF /* TGCameraNavigationController.m in Sources */,
@@ -1216,20 +976,17 @@
 				D61D1DA81B4E336E00DE37DF /* TGPhotoViewController.m in Sources */,
 				D61D1DB41B4E336E00DE37DF /* TGCameraFocus.m in Sources */,
 				D61D1DCC1B4E336E00DE37DF /* TGTintedLabel.m in Sources */,
-				D6A507EC1B49E32F005D9FC3 /* Joyyor.m in Sources */,
 				D61D1DAA1B4E336E00DE37DF /* TGAlbum.m in Sources */,
 				D61D1DAC1B4E336E00DE37DF /* TGAssetsLibrary.m in Sources */,
 				D63B69A91AC51302005600A9 /* UIFont+Joyy.m in Sources */,
 				D61D1DBC1B4E336E00DE37DF /* TGAssetImageFile.m in Sources */,
-				D63F0D971ACC95B00067C5EE /* JYMapViewController.m in Sources */,
+				D67DD0EC1B75321A00333626 /* JYPerson.m in Sources */,
 				D68DAF971AC4CACD00838E7E /* JYSignInViewController.m in Sources */,
-				D6FA6A831B33E466007CB30E /* JYCreditCard.m in Sources */,
 				D61D1DB81B4E336E00DE37DF /* TGCameraShot.m in Sources */,
 				D61D1DA01B4E336E00DE37DF /* UIImage+CameraFilters.m in Sources */,
+				D67DD0E81B7530AF00333626 /* JYPersonCard.m in Sources */,
 				D61D1D571B4A65F200DE37DF /* MDCSwipeToChooseView.m in Sources */,
-				D6B2F08D1AD714DA009601B0 /* JYInvite.m in Sources */,
 				D61D1DC81B4E336E00DE37DF /* TGCameraSlideView.m in Sources */,
-				D6B2F0811AD5A679009601B0 /* JYPlacesViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1239,95 +996,66 @@
 			files = (
 				D61D1DAB1B4E336E00DE37DF /* TGAlbum.m in Sources */,
 				D63B69AA1AC51302005600A9 /* UIFont+Joyy.m in Sources */,
-				D64C27EB1B41D00600C85E55 /* JYOrderControl.m in Sources */,
 				D61D1DCD1B4E336E00DE37DF /* TGTintedLabel.m in Sources */,
 				D63F0D721AC9EC060067C5EE /* JYUser.m in Sources */,
 				D61D1DDF1B5342DD00DE37DF /* UIImage+Joyy.m in Sources */,
 				D61D1DE71B536B2700DE37DF /* JYPostViewCell.m in Sources */,
 				D689ED6B1AE42C8300CB4D2B /* UIView+Joyy.m in Sources */,
 				D61D1DA31B4E336E00DE37DF /* TGCameraAuthorizationViewController.m in Sources */,
-				D6FA6A841B33E466007CB30E /* JYCreditCard.m in Sources */,
 				D61D1D4C1B4A65F200DE37DF /* UIColor+MDCRGB8Bit.m in Sources */,
-				D6A507ED1B49E32F005D9FC3 /* Joyyor.m in Sources */,
 				D61D1DE31B5366DC00DE37DF /* JYPost.m in Sources */,
 				D6C82B6A1B12553D00876F57 /* JYComment.m in Sources */,
-				D63F0D8D1ACBBF1F0067C5EE /* JYCollectionViewCell.m in Sources */,
-				D6C82B661B12551500876F57 /* JYBid.m in Sources */,
-				D65AFA631AEC791D007867D0 /* JYBidViewCell.m in Sources */,
-				D6B2F0641ACF4755009601B0 /* JYOrderDetailsViewController.m in Sources */,
 				D61D1DC31B4E336E00DE37DF /* TGCameraGridView.m in Sources */,
 				D61D1DBD1B4E336E00DE37DF /* TGAssetImageFile.m in Sources */,
 				D63F0D561AC7ACB70067C5EE /* JYSignUpViewController.m in Sources */,
-				D61C48A51B44A8A5009E422A /* JYBaseViewController.m in Sources */,
 				D61D1DA11B4E336E00DE37DF /* UIImage+CameraFilters.m in Sources */,
 				D67DD0E11B744D1C00333626 /* JYCommentView.m in Sources */,
-				D6A507F11B49E5AA005D9FC3 /* JYImageLabelView.m in Sources */,
-				D6A507E81B49C00B005D9FC3 /* JYSelectionViewController.m in Sources */,
 				D61D1D501B4A65F200DE37DF /* MDCSwipeOptions.m in Sources */,
 				D63F0D7E1ACA5E260067C5EE /* JYSignViewController.m in Sources */,
 				D63B69BB1AC624F8005600A9 /* JYAutoCompleteDataSource.m in Sources */,
-				D679F0311B2951D5004F1C37 /* JYFixedLengthRowValidator.m in Sources */,
 				D61D1DC71B4E336E00DE37DF /* TGCameraSlideUpView.m in Sources */,
-				D6B2F0681AD1B5EC009601B0 /* JYMapDashBoardView.m in Sources */,
-				D6348D281ADA3BC90002BC35 /* JYPriceTextFieldCell.m in Sources */,
-				D63F0DA91ACDFD1D0067C5EE /* JYPinAnnotationView.m in Sources */,
-				D689ED631AE01F9C00CB4D2B /* JYDateView.m in Sources */,
 				D61D1DAD1B4E336E00DE37DF /* TGAssetsLibrary.m in Sources */,
-				D6FA6A8C1B37CDB3007CB30E /* JYOrderViewCell.m in Sources */,
-				D61D1D5F1B4DDCB200DE37DF /* JYCameraOverlayView.m in Sources */,
 				D63F0D761AC9F6F80067C5EE /* JYDataStore.m in Sources */,
-				D6348D2C1ADA4A650002BC35 /* JYRestrictedTextViewCell.m in Sources */,
 				D61D1D5A1B4A65F200DE37DF /* UIView+MDCSwipeToChoose.m in Sources */,
-				D679F0271B1C39BB004F1C37 /* JYFloatLabeledTextFieldCell.m in Sources */,
+				D67DD0ED1B75321A00333626 /* JYPerson.m in Sources */,
 				D61D1D481B4A65F200DE37DF /* MDCGeometry.m in Sources */,
-				D61C48A11B449143009E422A /* JYMenuViewCell.m in Sources */,
 				D65F37471B04807D007B534C /* JYCommentViewCell.m in Sources */,
-				D6B2F0821AD5A679009601B0 /* JYPlacesViewController.m in Sources */,
 				D6B2F05C1ACE630F009601B0 /* JYAutoCompleteTextField.m in Sources */,
 				D69202CF1AC4C7C1001C1C3D /* joyyiosTests.m in Sources */,
 				D61D1D521B4A65F200DE37DF /* MDCSwipeToChooseViewOptions.m in Sources */,
 				D63F0D5A1AC7CFF20067C5EE /* JYButton.m in Sources */,
 				D61D1D581B4A65F200DE37DF /* MDCSwipeToChooseView.m in Sources */,
 				D61D1D4E1B4A65F200DE37DF /* UIView+MDCBorderedLabel.m in Sources */,
-				D6B2F08E1AD714DA009601B0 /* JYInvite.m in Sources */,
 				D61D1DA51B4E336E00DE37DF /* TGCameraNavigationController.m in Sources */,
-				D65AFA671AEDEF3D007867D0 /* JYOrderCard.m in Sources */,
 				D6C6BBAD1B62DF6B00FFFAC7 /* NSDictionary+Joyy.m in Sources */,
 				D61D1DB51B4E336E00DE37DF /* TGCameraFocus.m in Sources */,
 				D61D1DB11B4E336E00DE37DF /* TGCameraColor.m in Sources */,
 				D65AFA5F1AEC715D007867D0 /* JYMasqueradeViewController.m in Sources */,
 				D61D1DBF1B4E336E00DE37DF /* TGCameraFilterView.m in Sources */,
-				D65AFA761AEF5F3A007867D0 /* UIImageEffects.m in Sources */,
-				D63F0D981ACC95B00067C5EE /* JYMapViewController.m in Sources */,
 				D63F0DA31ACD08260067C5EE /* UIColor+Joyy.m in Sources */,
 				D61D1DCB1B4E336E00DE37DF /* TGTintedButton.m in Sources */,
 				D61D1DA71B4E336E00DE37DF /* TGCameraViewController.m in Sources */,
 				D61D1DB31B4E336E00DE37DF /* TGCameraFlash.m in Sources */,
-				D6B2F0861AD5E165009601B0 /* JYPlacesViewCell.m in Sources */,
 				D61D1D4A1B4A65F200DE37DF /* MDCViewState.m in Sources */,
-				D6FA6A801B33E3DD007CB30E /* JYCreditCardViewCell.m in Sources */,
-				D65AFA741AEF5F3A007867D0 /* UICustomActionSheet.m in Sources */,
 				D61D1D541B4A65F200DE37DF /* MDCPanState.m in Sources */,
 				D61D1DC11B4E336E00DE37DF /* TGCameraFocusView.m in Sources */,
 				D63B69B31AC51D61005600A9 /* JYSignBaseViewController.m in Sources */,
 				D61D1DC51B4E336E00DE37DF /* TGCameraSlideDownView.m in Sources */,
 				D61D1DB91B4E336E00DE37DF /* TGCameraShot.m in Sources */,
-				D6A507F51B49E61C005D9FC3 /* JoyyorCard.m in Sources */,
 				D61D1DB71B4E336E00DE37DF /* TGCameraGrid.m in Sources */,
-				D61C489D1B4483B4009E422A /* JYMenuViewController.m in Sources */,
 				D6348D301ADB4DD60002BC35 /* NSString+Joyy.m in Sources */,
 				D61D1DC91B4E336E00DE37DF /* TGCameraSlideView.m in Sources */,
-				D61C48A91B45085C009E422A /* JYOrdersHistoryViewController.m in Sources */,
 				D61D1D561B4A65F200DE37DF /* MDCSwipeResult.m in Sources */,
-				D6FA6A7C1B33752C007CB30E /* JYPaymentViewController.m in Sources */,
 				D693798E1B54E8BC00E64F3A /* JYPhotoCaptionViewController.m in Sources */,
+				D67DD0E91B7530AF00333626 /* JYPersonCard.m in Sources */,
 				D61D1DAF1B4E336E00DE37DF /* TGCamera.m in Sources */,
-				D61C48B01B451877009E422A /* JYOrdersBidsViewController.m in Sources */,
 				D6C82B5D1B0EFDEA00876F57 /* JYCommentTextView.m in Sources */,
 				D61D1DBB1B4E336E00DE37DF /* TGCameraToggle.m in Sources */,
 				D61D1DA91B4E336E00DE37DF /* TGPhotoViewController.m in Sources */,
 				D63B69B71AC53BB4005600A9 /* JYFloatLabeledTextField.m in Sources */,
 				D6C82B561B0D9FAE00876F57 /* JYCommentViewController.m in Sources */,
+				D67DD0E51B75302800333626 /* JYPeopleViewController.m in Sources */,
+				D67DD0F11B75337400333626 /* JYImageLabelView.m in Sources */,
 				D6348D381ADB7ABC0002BC35 /* NSMutableDictionary+Joyy.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

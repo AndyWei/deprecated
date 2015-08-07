@@ -400,10 +400,6 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 
              NSLog(@"comment GET success responseObject: %@", responseObject);
              [weakSelf _updateTableWithComments:responseObject toEnd:toEnd];
-
-             NSDictionary *info = @{@"post": self.post};
-             [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationDidCreateComment object:nil userInfo:info];
-
              [weakSelf _networkThreadEnd];
          }
          failure:^(AFHTTPRequestOperation *operation, NSError *error) {

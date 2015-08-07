@@ -13,7 +13,6 @@
 
 #import "AppDelegate.h"
 #import "JYButton.h"
-#import "JYCameraOverlayView.h"
 #import "JYCommentViewController.h"
 #import "JYMasqueradeViewController.h"
 #import "JYPost.h"
@@ -21,7 +20,6 @@
 #import "JYUser.h"
 #import "TGCameraColor.h"
 #import "TGCameraViewController.h"
-#import "UICustomActionSheet.h"
 #import "UIImage+Joyy.h"
 
 @interface JYMasqueradeViewController () <TGCameraDelegate, UITableViewDataSource, UITableViewDelegate>
@@ -64,7 +62,6 @@ static NSString *const kPostCellIdentifier = @"postCell";
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_like:) name:kNotificationWillLikePost object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_comment:) name:kNotificationWillCommentPost object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_brief:) name:kNotificationDidCreateComment object:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -200,11 +197,6 @@ static NSString *const kPostCellIdentifier = @"postCell";
             [self _presentCommentViewForPost:post showKeyBoard:edit];
         }
     }
-}
-
-- (void)_brief:(NSNotification *)notification
-{
-    [self _fetchBrief];
 }
 
 - (void) _presentCommentViewForPost:(JYPost *)post showKeyBoard:(BOOL)edit

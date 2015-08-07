@@ -1,0 +1,207 @@
+//
+//  JYPeopleViewController.m
+//  joyyios
+//
+//  Created by Ping Yang on 7/5/15.
+//  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
+//
+
+#import "JYPeopleViewController.h"
+
+@interface JYPeopleViewController ()
+@property (nonatomic) NSMutableArray *personList;
+@end
+
+static const CGFloat kHorizontalPadding = 80.f;
+static const CGFloat kVerticalPadding = 20.f;
+
+@implementation JYPeopleViewController
+
+#pragma mark - Object Lifecycle
+
+- (instancetype)init
+{
+    self = [super init];
+    if (self)
+    {
+        _personList = [[self defaultPeople] mutableCopy];
+    }
+    return self;
+}
+
+#pragma mark - UIViewController Overrides
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    self.view.backgroundColor = JoyyWhite;
+    self.frontCard = [self popJYPersonCardWithFrame:[self frontCardFrame]];
+    [self.view addSubview:self.frontCard];
+
+    self.backCard = [self popJYPersonCardWithFrame:[self backCardFrame]];
+    [self.view insertSubview:self.backCard belowSubview:self.frontCard];
+
+    [self _createNopeButton];
+    [self _createLikedButton];
+}
+
+#pragma mark - MDCSwipeToChooseDelegate Protocol Methods
+
+// This is called when a user didn't fully swipe left or right.
+- (void)viewDidCancelSwipe:(UIView *)view
+{
+    NSLog(@"You couldn't decide on %@.", self.currentPerson.name);
+}
+
+// This is called then a user swipes the view fully left or right.
+- (void)view:(UIView *)view wasChosenWithDirection:(MDCSwipeDirection)direction
+{
+    if (direction == MDCSwipeDirectionLeft)
+    {
+        NSLog(@"You noped %@.", self.currentPerson.name);
+    } else {
+        NSLog(@"You liked %@.", self.currentPerson.name);
+    }
+
+    // MDCSwipeToChooseView removes the view from the view hierarchy
+    // after it is swiped (this behavior can be customized via the
+    // MDCSwipeOptions class). Since the front card view is gone, we
+    // move the back card to the front, and create a new back card.
+    self.frontCard = self.backCard;
+    if ((self.backCard = [self popJYPersonCardWithFrame:[self backCardFrame]]))
+    {
+        // Fade the back card into view.
+        self.backCard.alpha = 0.f;
+        [self.view insertSubview:self.backCard belowSubview:self.frontCard];
+        [UIView animateWithDuration:0.5
+                              delay:0.0
+                            options:UIViewAnimationOptionCurveEaseInOut
+                         animations:^{
+                             self.backCard.alpha = 1.f;
+                         } completion:nil];
+    }
+}
+
+#pragma mark - Internal Methods
+
+- (void)setFrontCard:(JYPersonCard *)frontCard
+{
+    _frontCard = frontCard;
+    self.currentPerson = frontCard.person;
+}
+
+- (NSArray *)defaultPeople
+{
+    return @[
+             [[JYPerson alloc] initWithName:@"Finn"
+                                    image:[UIImage imageNamed:@"finn"]
+                                      age:15
+                    numberOfSharedFriends:3
+                  numberOfSharedInterests:2
+                           numberOfPhotos:1],
+             [[JYPerson alloc] initWithName:@"Jake"
+                                    image:[UIImage imageNamed:@"jake"]
+                                      age:28
+                    numberOfSharedFriends:2
+                  numberOfSharedInterests:6
+                           numberOfPhotos:8],
+             [[JYPerson alloc] initWithName:@"Fiona"
+                                    image:[UIImage imageNamed:@"fiona"]
+                                      age:14
+                    numberOfSharedFriends:1
+                  numberOfSharedInterests:3
+                           numberOfPhotos:5],
+             ];
+}
+
+- (JYPersonCard *)popJYPersonCardWithFrame:(CGRect)frame
+{
+    if ([self.personList count] == 0)
+    {
+        return nil;
+    }
+
+    MDCSwipeToChooseViewOptions *options = [MDCSwipeToChooseViewOptions new];
+    options.delegate = self;
+    options.threshold = 120.f;
+    options.likedText = NSLocalizedString(@"LIKE", nil);
+    options.nopeText = NSLocalizedString(@"NOPE", nil);
+    options.onPan = ^(MDCPanState *state)
+    {
+        CGRect frame = [self backCardFrame];
+        self.backCard.frame = CGRectMake(frame.origin.x,
+                                             frame.origin.y - (state.thresholdRatio * 10.f),
+                                             CGRectGetWidth(frame),
+                                             CGRectGetHeight(frame));
+    };
+
+    JYPersonCard *personView = [[JYPersonCard alloc] initWithFrame:frame person:self.personList[0] options:options];
+    [self.personList removeObjectAtIndex:0];
+    return personView;
+}
+
+#pragma mark View Contruction
+
+- (CGRect)frontCardFrame
+{
+    CGFloat horizontalPadding = 20.f;
+    CGFloat topPadding = 60.f;
+    CGFloat bottomPadding = 200.f;
+    return CGRectMake(horizontalPadding,
+                      topPadding,
+                      CGRectGetWidth(self.view.frame) - (horizontalPadding * 2),
+                      CGRectGetHeight(self.view.frame) - bottomPadding);
+}
+
+- (CGRect)backCardFrame
+{
+    CGRect frontFrame = [self frontCardFrame];
+    return CGRectMake(frontFrame.origin.x,
+                      frontFrame.origin.y + 10.f,
+                      CGRectGetWidth(frontFrame),
+                      CGRectGetHeight(frontFrame));
+}
+
+// Create and add the "nope" button.
+- (void)_createNopeButton
+{
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    UIImage *image = [UIImage imageNamed:@"nope"];
+    button.frame = CGRectMake(kHorizontalPadding,
+                              CGRectGetMaxY(self.backCard.frame) + kVerticalPadding,
+                              image.size.width,
+                              image.size.height);
+    [button setImage:image forState:UIControlStateNormal];
+    [button setTintColor:FlatWatermelon];
+    [button addTarget:self action:@selector(_nopeFrontCard) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:button];
+}
+
+// Create and add the "like" button.
+- (void)_createLikedButton
+{
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    UIImage *image = [UIImage imageNamed:@"like"];
+    button.frame = CGRectMake(CGRectGetMaxX(self.view.frame) - image.size.width - kHorizontalPadding,
+                              CGRectGetMaxY(self.backCard.frame) + kVerticalPadding,
+                              image.size.width,
+                              image.size.height);
+    [button setImage:image forState:UIControlStateNormal];
+    [button setTintColor:FlatGreen];
+    [button addTarget:self action:@selector(_likeFrontCard) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:button];
+}
+
+#pragma mark Control Events
+
+- (void)_nopeFrontCard
+{
+    [self.frontCard mdc_swipe:MDCSwipeDirectionLeft];
+}
+
+- (void)_likeFrontCard
+{
+    [self.frontCard mdc_swipe:MDCSwipeDirectionRight];
+}
+
+@end

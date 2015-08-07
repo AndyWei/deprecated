@@ -10,13 +10,10 @@
 #import <KVNProgress/KVNProgress.h>
 #import <MSWeakTimer/MSWeakTimer.h>
 #import <RKDropdownAlert/RKDropdownAlert.h>
-#import <Stripe/Stripe.h>
 
 #import "AppDelegate.h"
 #import "JYDataStore.h"
 #import "JYMasqueradeViewController.h"
-#import "JYMenuViewController.h"
-#import "JYMapViewController.h"
 #import "JYSignViewController.h"
 #import "JYUser.h"
 #import "OnboardingViewController.h"
@@ -163,21 +160,6 @@
 
     [[UINavigationBar appearance] setTintColor:JoyyBlue];
     [[UITabBar appearance] setTintColor:JoyyBlue];
-
-//    [[UINavigationBar appearance]
-//        setTitleTextAttributes:[NSDictionary
-//                                   dictionaryWithObjectsAndKeys:[UIFont systemFontOfSize:kNavBarTitleFontSize], NSFontAttributeName, nil]];
-
-
-//    [[UITabBarItem appearance]
-//        setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIFont systemFontOfSize:kTabBarTitleFontSize], NSFontAttributeName, nil]
-//                      forState:UIControlStateNormal];
-//
-//    [[UITabBarItem appearance]
-//        setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIFont systemFontOfSize:kTabBarTitleFontSize], NSFontAttributeName, nil]
-//                      forState:UIControlStateSelected];
-
-//    [[UITabBarItem appearance] setTitlePositionAdjustment:UIOffsetMake(0.0, -10.0f)];
 }
 
 - (void)_setupLocationManager
@@ -287,13 +269,13 @@
     UIViewController *vc1 = [JYMasqueradeViewController new];
     UINavigationController *nc1 = [[UINavigationController alloc] initWithRootViewController:vc1];
 
-    UIViewController *vc2 = [JYMenuViewController new];
+    UIViewController *vc2 = [JYSignViewController new];
     UINavigationController *nc2 = [[UINavigationController alloc] initWithRootViewController:vc2];
 
-    UIViewController *vc3 = [JYMenuViewController new];
+    UIViewController *vc3 = [JYSignViewController new];
     UINavigationController *nc3 = [[UINavigationController alloc] initWithRootViewController:vc3];
 
-    UIViewController *vc4 = [JYMenuViewController new];
+    UIViewController *vc4 = [JYSignViewController new];
     UINavigationController *nc4 = [[UINavigationController alloc] initWithRootViewController:vc4];
 
     UITabBarController *tabBarController = [UITabBarController new];
