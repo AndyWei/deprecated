@@ -14,12 +14,14 @@
 
 #import "JYComment.h"
 #import "JYCommentTextView.h"
+#import "JYCommentView.h"
 #import "JYCommentViewCell.h"
 #import "JYCommentViewController.h"
 #import "JYUser.h"
 
 @interface JYCommentViewController ()
 @property(nonatomic) BOOL autoShowKeyboard;
+@property(nonatomic) JYCommentView *captionView;
 @property(nonatomic) JYPost *post;
 @property(nonatomic) MJRefreshNormalHeader *header;
 @property(nonatomic) MJRefreshAutoNormalFooter *footer;
@@ -74,20 +76,21 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
     self.tableView.allowsSelection = NO;
     self.tableView.backgroundColor = JoyyBlack;
     self.tableView.backgroundView = self.backgroundView;
-    self.tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
-    self.tableView.separatorColor = ClearColor;
+    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     [self.tableView registerClass:[JYCommentViewCell class] forCellReuseIdentifier:kCommentCellIdentifier];
     [self _showBackgroundImage];
+    [self _fetchNewComments];
 
     self.tableView.header = self.header;
     self.tableView.footer = self.footer;
+
+    self.captionView.caption = self.post.caption;
+    self.tableView.tableHeaderView = self.captionView;
 
     if (self.autoShowKeyboard)
     {
         [self.textView becomeFirstResponder];
     }
-
-    [self _fetchNewComments];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -103,7 +106,6 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 
 - (void)dealloc
 {
-
 }
 
 // pull-down-to-refresh header
@@ -111,7 +113,6 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 {
     if (!_header)
     {
-
         _header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(_fetchOldComments)];
         _header.lastUpdatedTimeLabel.hidden = YES;
         _header.stateLabel.hidden = YES;
@@ -170,6 +171,15 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
      } failure:nil];
 }
 
+- (JYCommentView *)captionView
+{
+    if (!_captionView)
+    {
+        _captionView = [[JYCommentView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 0)];
+    }
+    return _captionView;
+}
+
 - (void)_networkThreadBegin
 {
     if (self.networkThreadCount == 0)
@@ -221,7 +231,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return MAX(6, self.commentList.count);
+    return self.commentList.count + 5; // Use 5 dummy cell to cover the background photo with JoyyBlack50 color
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -253,22 +263,6 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
     return [JYCommentViewCell heightForComment:comment];
 }
 
-//- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
-//{
-//    return [JYOrderCard heightForOrder:self.order withAddress:NO andBid:YES];
-//}
-//
-//- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
-//{
-//    CGFloat height = [JYOrderCard heightForOrder:self.order withAddress:NO andBid:YES];
-//
-//    JYOrderCard *card = [[JYOrderCard alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(tableView.frame), height)];
-//    card.tinyLabelsHidden = NO;
-//    [card presentOrder:self.order withAddress:NO andBid:YES];
-//    card.backgroundColor = self.order.bidColor;
-//    return card;
-//}
-
 #pragma mark - Maintain Table
 
 - (void)_updateTableWithComments:(NSArray *)list toEnd:(BOOL)toEnd
@@ -278,10 +272,25 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
         return;
     }
 
+    BOOL firstLoad = self.commentList.count == 0;
     dispatch_async(dispatch_get_main_queue(), ^{
         [self _addCommentsFromList:list toEnd:toEnd];
-        [self.tableView reloadData];
-        [self _scrollTableViewToBottom];
+
+        if (firstLoad)
+        {
+            [self.tableView reloadData];
+            [self _scrollTableViewToBottom];
+        }
+        else
+        {
+            CGSize beforeContentSize = self.tableView.contentSize;
+            [self.tableView reloadData];
+            CGSize afterContentSize = self.tableView.contentSize;
+
+            CGPoint afterContentOffset = self.tableView.contentOffset;
+            CGPoint newContentOffset = CGPointMake(afterContentOffset.x, afterContentOffset.y + afterContentSize.height - beforeContentSize.height);
+            self.tableView.contentOffset = newContentOffset;
+        }
     });
 }
 
@@ -292,10 +301,10 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
         return;
     }
 
-    // The items in commentsList are ASC sorted by id
+    // The items in commentsList are DESC sorted by id
     if (toEnd)
     {
-        for (NSDictionary *dict in list)
+        for (NSDictionary *dict in [list reverseObjectEnumerator])
         {
             JYComment *comment = [[JYComment alloc] initWithDictionary:dict];
             [self.commentList addObject:comment];
@@ -303,7 +312,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
     }
     else
     {
-        for (NSDictionary *dict in [list reverseObjectEnumerator])
+        for (NSDictionary *dict in list)
         {
             JYComment *comment = [[JYComment alloc] initWithDictionary:dict];
             [self.commentList insertObject:comment atIndex:0];

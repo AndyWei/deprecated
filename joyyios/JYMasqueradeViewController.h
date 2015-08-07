@@ -6,8 +6,6 @@
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
-#import "TGCameraViewController.h"
-
-@interface JYMasqueradeViewController : UIViewController <TGCameraDelegate, UITableViewDataSource, UITableViewDelegate>
+@interface JYMasqueradeViewController : UIViewController
 
 @end

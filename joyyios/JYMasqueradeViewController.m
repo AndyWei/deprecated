@@ -20,21 +20,20 @@
 #import "JYPostViewCell.h"
 #import "JYUser.h"
 #import "TGCameraColor.h"
+#import "TGCameraViewController.h"
 #import "UICustomActionSheet.h"
 #import "UIImage+Joyy.h"
 
-@interface JYMasqueradeViewController ()
-
+@interface JYMasqueradeViewController () <TGCameraDelegate, UITableViewDataSource, UITableViewDelegate>
+@property(nonatomic) CABasicAnimation *colorPulse;
+@property(nonatomic) JYButton *cameraButton;
 @property(nonatomic) NSInteger networkThreadCount;
 @property(nonatomic) NSMutableArray *postList;
 @property(nonatomic) UIColor *originalTabBarTintColor;
-@property(nonatomic) JYButton *cameraButton;
 @property(nonatomic) UITableView *tableView;
-@property(nonatomic) CABasicAnimation *colorPulse;
-
 @end
 
-const CGFloat kCamerButtonWidth = 50;
+static const CGFloat kCameraButtonWidth = 50;
 static NSString *const kPostCellIdentifier = @"postCell";
 
 @implementation JYMasqueradeViewController
@@ -52,6 +51,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
     self.navigationController.navigationBar.barTintColor = JoyyBlack;
     self.navigationController.navigationBar.translucent = YES;
     [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName: JoyyGray}];
+    self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:self.navigationItem.backBarButtonItem.style target:nil action:nil];
 
     self.networkThreadCount = 0;
     self.postList = [NSMutableArray new];
@@ -124,7 +124,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
 {
     if (!_cameraButton)
     {
-        CGRect frame = CGRectMake(0, 0, kCamerButtonWidth, kCamerButtonWidth);
+        CGRect frame = CGRectMake(0, 0, kCameraButtonWidth, kCameraButtonWidth);
         _cameraButton = [JYButton buttonWithFrame:frame buttonStyle:JYButtonStyleCentralImage shouldMaskImage:YES];
         _cameraButton.centerX = self.view.centerX;
         _cameraButton.centerY = SCREEN_HEIGHT - self.tabBarController.tabBar.height;

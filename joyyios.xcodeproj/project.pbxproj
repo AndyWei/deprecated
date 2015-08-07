@@ -157,6 +157,8 @@
 		D679F0271B1C39BB004F1C37 /* JYFloatLabeledTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D679F0251B1C39BB004F1C37 /* JYFloatLabeledTextFieldCell.m */; };
 		D679F0301B2951D5004F1C37 /* JYFixedLengthRowValidator.m in Sources */ = {isa = PBXBuildFile; fileRef = D679F02F1B2951D5004F1C37 /* JYFixedLengthRowValidator.m */; };
 		D679F0311B2951D5004F1C37 /* JYFixedLengthRowValidator.m in Sources */ = {isa = PBXBuildFile; fileRef = D679F02F1B2951D5004F1C37 /* JYFixedLengthRowValidator.m */; };
+		D67DD0E01B744D1C00333626 /* JYCommentView.m in Sources */ = {isa = PBXBuildFile; fileRef = D67DD0DF1B744D1C00333626 /* JYCommentView.m */; };
+		D67DD0E11B744D1C00333626 /* JYCommentView.m in Sources */ = {isa = PBXBuildFile; fileRef = D67DD0DF1B744D1C00333626 /* JYCommentView.m */; };
 		D689ED621AE01F9C00CB4D2B /* JYDateView.m in Sources */ = {isa = PBXBuildFile; fileRef = D689ED611AE01F9C00CB4D2B /* JYDateView.m */; };
 		D689ED631AE01F9C00CB4D2B /* JYDateView.m in Sources */ = {isa = PBXBuildFile; fileRef = D689ED611AE01F9C00CB4D2B /* JYDateView.m */; };
 		D689ED6A1AE42C8300CB4D2B /* UIView+Joyy.m in Sources */ = {isa = PBXBuildFile; fileRef = D689ED691AE42C8300CB4D2B /* UIView+Joyy.m */; };
@@ -371,6 +373,8 @@
 		D679F02E1B2951D5004F1C37 /* JYFixedLengthRowValidator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYFixedLengthRowValidator.h; sourceTree = "<group>"; };
 		D679F02F1B2951D5004F1C37 /* JYFixedLengthRowValidator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYFixedLengthRowValidator.m; sourceTree = "<group>"; };
 		D679F03F1B320EEA004F1C37 /* joyyios.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = joyyios.entitlements; sourceTree = "<group>"; };
+		D67DD0DE1B744D1C00333626 /* JYCommentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYCommentView.h; sourceTree = "<group>"; };
+		D67DD0DF1B744D1C00333626 /* JYCommentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYCommentView.m; sourceTree = "<group>"; };
 		D689ED601AE01F9C00CB4D2B /* JYDateView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYDateView.h; sourceTree = "<group>"; };
 		D689ED611AE01F9C00CB4D2B /* JYDateView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYDateView.m; sourceTree = "<group>"; };
 		D689ED681AE42C8300CB4D2B /* UIView+Joyy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Joyy.h"; sourceTree = "<group>"; };
@@ -570,6 +574,8 @@
 				D61D1DE51B536B2700DE37DF /* JYPostViewCell.m */,
 				D6C82B5A1B0EFDEA00876F57 /* JYCommentTextView.h */,
 				D6C82B5B1B0EFDEA00876F57 /* JYCommentTextView.m */,
+				D67DD0DE1B744D1C00333626 /* JYCommentView.h */,
+				D67DD0DF1B744D1C00333626 /* JYCommentView.m */,
 				D65F37441B04807D007B534C /* JYCommentViewCell.h */,
 				D65F37451B04807D007B534C /* JYCommentViewCell.m */,
 				D6C82B531B0D9FAE00876F57 /* JYCommentViewController.h */,
@@ -1176,6 +1182,7 @@
 				D61D1DB61B4E336E00DE37DF /* TGCameraGrid.m in Sources */,
 				D63F0D711AC9EC060067C5EE /* JYUser.m in Sources */,
 				D6FA6A7B1B33752C007CB30E /* JYPaymentViewController.m in Sources */,
+				D67DD0E01B744D1C00333626 /* JYCommentView.m in Sources */,
 				D61D1DE21B5366DC00DE37DF /* JYPost.m in Sources */,
 				D6B2F0631ACF4755009601B0 /* JYOrderDetailsViewController.m in Sources */,
 				D6A507F01B49E5AA005D9FC3 /* JYImageLabelView.m in Sources */,
@@ -1253,6 +1260,7 @@
 				D63F0D561AC7ACB70067C5EE /* JYSignUpViewController.m in Sources */,
 				D61C48A51B44A8A5009E422A /* JYBaseViewController.m in Sources */,
 				D61D1DA11B4E336E00DE37DF /* UIImage+CameraFilters.m in Sources */,
+				D67DD0E11B744D1C00333626 /* JYCommentView.m in Sources */,
 				D6A507F11B49E5AA005D9FC3 /* JYImageLabelView.m in Sources */,
 				D6A507E81B49C00B005D9FC3 /* JYSelectionViewController.m in Sources */,
 				D61D1D501B4A65F200DE37DF /* MDCSwipeOptions.m in Sources */,

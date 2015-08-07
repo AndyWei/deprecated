@@ -8,6 +8,7 @@
 
 #import <AFNetworking/UIImageView+AFNetworking.h>
 #import <KVOController/FBKVOController.h>
+#import <TTTAttributedLabel/TTTAttributedLabel.h>
 
 #import "JYButton.h"
 #import "JYPost.h"
@@ -18,23 +19,18 @@ static const CGFloat kButtonDistance = 20;
 static const CGFloat kLikeCountLabelWidth = 80;
 static const CGFloat kCommentCountButtonWidth = 100;
 
-@interface JYPostViewCell ()
-
-@property(nonatomic) UIImageView *photoView;
-@property(nonatomic) UILabel *captionLabel;
-
-@property(nonatomic) UIView *actionBar;
-@property(nonatomic) UILabel *likeCountLabel;
-
-@property(nonatomic) JYButton *likeButton;
+@interface JYPostViewCell () <TTTAttributedLabelDelegate>
+@property(nonatomic) BOOL likeButtonPressed;
+@property(nonatomic) FBKVOController *observer;
 @property(nonatomic) JYButton *commentButton;
 @property(nonatomic) JYButton *commentCountButton;
-
+@property(nonatomic) JYButton *likeButton;
 @property(nonatomic) NSMutableArray *commentLabels;
-@property(nonatomic) BOOL likeButtonPressed;
-
-@property(nonatomic) FBKVOController *observer;
-
+@property(nonatomic) UIImageView *photoView;
+@property(nonatomic) UILabel *captionLabel;
+@property(nonatomic) UILabel *likeCountLabel;
+@property(nonatomic) UITapGestureRecognizer *tapGestureRecognizer;
+@property(nonatomic) UIView *actionBar;
 @end
 
 
@@ -61,7 +57,6 @@ static const CGFloat kCommentCountButtonWidth = 100;
     return labelHeight;
 }
 
-
 + (CGFloat)heightForPost:(JYPost *)post;
 {
     CGFloat imageHeight = SCREEN_WIDTH;
@@ -76,7 +71,6 @@ static const CGFloat kCommentCountButtonWidth = 100;
 
     return imageHeight + commentsHeight + kButtonWidth;
 }
-
 
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
@@ -175,7 +169,6 @@ static const CGFloat kCommentCountButtonWidth = 100;
                                    } failure:nil];
 }
 
-
 - (void)_updateActionBar
 {
     _likeButtonPressed = NO;
@@ -184,7 +177,6 @@ static const CGFloat kCommentCountButtonWidth = 100;
     [self _updateLikeCount];
     [self _updateCommentCount];
 }
-
 
 - (void)_updateLikeButtonImage
 {
@@ -200,20 +192,17 @@ static const CGFloat kCommentCountButtonWidth = 100;
     }
 }
 
-
 - (void)_updateLikeCount
 {
     NSString *likes = NSLocalizedString(@"likes", nil);
     self.likeCountLabel.text = [NSString stringWithFormat:@"%tu %@   ·", self.post.likeCount, likes];
 }
 
-
 - (void)_updateCommentCount
 {
     NSString *comments = NSLocalizedString(@"comments", nil);
     self.commentCountButton.textLabel.text = [NSString stringWithFormat:@"%tu %@", self.post.commentCount, comments];
 }
-
 
 - (void)_updateCaption
 {
@@ -224,18 +213,19 @@ static const CGFloat kCommentCountButtonWidth = 100;
     self.captionLabel.y = SCREEN_WIDTH - self.captionLabel.height;
 }
 
-
 - (void)_updateComments
 {
     CGFloat y = CGRectGetMaxY(self.actionBar.frame);
 
     for (NSUInteger i = 0; i < kBriefCommentsCount; ++i)
     {
-        UILabel *label = self.commentLabels[i];
+        TTTAttributedLabel *label = self.commentLabels[i];
         if (i < _post.commentTextList.count)
         {
             NSString *text = [NSString stringWithFormat:@"🐨: %@", _post.commentTextList[i]];
             label.text = text;
+            NSRange range = NSMakeRange(0, text.length);
+            [label addLinkToURL:[NSURL URLWithString:@"comment://list"] withRange:range];
 
             CGFloat height = [JYPostViewCell labelHeightForText:text withFontSize:kFontSizeComment textAlignment:NSTextAlignmentLeft andWidth:label.width];
             label.height = height + 5;
@@ -251,7 +241,6 @@ static const CGFloat kCommentCountButtonWidth = 100;
     }
 }
 
-
 - (FBKVOController *)observer
 {
     if (!_observer)
@@ -260,7 +249,6 @@ static const CGFloat kCommentCountButtonWidth = 100;
     }
     return _observer;
 }
-
 
 - (UIImageView *)photoView
 {
@@ -272,7 +260,6 @@ static const CGFloat kCommentCountButtonWidth = 100;
     }
     return _photoView;
 }
-
 
 - (UIView *)actionBar
 {
@@ -300,7 +287,6 @@ static const CGFloat kCommentCountButtonWidth = 100;
     return _actionBar;
 }
 
-
 - (UILabel *)likeCountLabel
 {
     if (!_likeCountLabel)
@@ -314,7 +300,6 @@ static const CGFloat kCommentCountButtonWidth = 100;
     return _likeCountLabel;
 }
 
-
 - (JYButton *)commentCountButton
 {
     if (!_commentCountButton)
@@ -325,18 +310,16 @@ static const CGFloat kCommentCountButtonWidth = 100;
         _commentCountButton.contentAnimateToColor = JoyyBlue;
         _commentCountButton.foregroundColor = JoyyBlack;
         _commentCountButton.textLabel.font = [UIFont systemFontOfSize:kFontSizeDetail];
-        [_commentCountButton addTarget:self action:@selector(_showMoreComments) forControlEvents:UIControlEventTouchUpInside];
+        [_commentCountButton addTarget:self action:@selector(_showAllComments) forControlEvents:UIControlEventTouchUpInside];
     }
     return _commentCountButton;
 }
 
-
-- (void)_showMoreComments
+- (void)_showAllComments
 {
     NSDictionary *info = @{@"post": self.post, @"edit":@(NO)};
     [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationWillCommentPost object:nil userInfo:info];
 }
-
 
 - (JYButton *)commentButton
 {
@@ -348,13 +331,11 @@ static const CGFloat kCommentCountButtonWidth = 100;
     return _commentButton;
 }
 
-
 - (void)_comment
 {
     NSDictionary *info = @{@"post": self.post, @"edit":@(YES)};
     [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationWillCommentPost object:nil userInfo:info];
 }
-
 
 - (JYButton *)likeButton
 {
@@ -365,7 +346,6 @@ static const CGFloat kCommentCountButtonWidth = 100;
     }
     return _likeButton;
 }
-
 
 - (void)_like
 {
@@ -379,7 +359,6 @@ static const CGFloat kCommentCountButtonWidth = 100;
     NSDictionary *info = @{@"post": self.post};
    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationWillLikePost object:nil userInfo:info];
 }
-
 
 - (UILabel *)captionLabel
 {
@@ -398,15 +377,15 @@ static const CGFloat kCommentCountButtonWidth = 100;
     return _captionLabel;
 }
 
-
-- (NSArray *)commentLabels
+- (NSMutableArray *)commentLabels
 {
     if (!_commentLabels)
     {
         _commentLabels = [NSMutableArray new];
         for (NSUInteger i = 0; i < kBriefCommentsCount; i++)
         {
-            UILabel *label = [self _createLabel];
+            TTTAttributedLabel *label = [self _createLabel];
+
             [_commentLabels addObject:label];
             [self addSubview:label];
         }
@@ -414,22 +393,25 @@ static const CGFloat kCommentCountButtonWidth = 100;
     return _commentLabels;
 }
 
-
-- (UILabel *)_createLabel
+- (TTTAttributedLabel *)_createLabel
 {
     CGFloat width = SCREEN_WIDTH - kMarginLeft - kMarginRight;
     CGRect frame = CGRectMake(kMarginLeft, 0, width, 0);
-    UILabel *label = [[UILabel alloc] initWithFrame:frame];
+    TTTAttributedLabel *label = [[TTTAttributedLabel alloc] initWithFrame:frame];
+    label.delegate = self;
     label.backgroundColor = JoyyBlack;
     label.font = [UIFont systemFontOfSize:kFontSizeComment];
     label.textColor = JoyyWhite;
     label.textAlignment = NSTextAlignmentLeft;
     label.numberOfLines = 0;
     label.lineBreakMode = NSLineBreakByWordWrapping;
+    label.activeLinkAttributes = nil; // Do not change color on link is being tapped
+    label.linkAttributes =  @{ (id)kCTForegroundColorAttributeName: JoyyWhite,
+                               (id)kCTUnderlineStyleAttributeName: [NSNumber numberWithInt:NSUnderlineStyleNone]
+                             };
 
     return label;
 }
-
 
 - (JYButton *)_createButtonWithImage:(UIImage *)image
 {
@@ -442,6 +424,16 @@ static const CGFloat kCommentCountButtonWidth = 100;
     button.foregroundColor = ClearColor;
 
     return button;
+}
+
+# pragma -mark TTTAttributedLabelDelegate
+
+- (void)attributedLabel:(TTTAttributedLabel *)label didSelectLinkWithURL:(NSURL *)url
+{
+    if ([[url scheme] hasPrefix:@"comment"])
+    {
+        [self _showAllComments];
+    }
 }
 
 @end
