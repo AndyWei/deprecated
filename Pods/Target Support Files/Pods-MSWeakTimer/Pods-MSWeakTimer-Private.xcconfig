@@ -1,6 +1,0 @@
-#include "Pods-MSWeakTimer.xcconfig"
-GCC_PREPROCESSOR_DEFINITIONS = $(inherited) COCOAPODS=1
-HEADER_SEARCH_PATHS = "${PODS_ROOT}/Headers/Private" "${PODS_ROOT}/Headers/Private/MSWeakTimer" "${PODS_ROOT}/Headers/Public" "${PODS_ROOT}/Headers/Public/AFNetworking" "${PODS_ROOT}/Headers/Public/AXRatingView" "${PODS_ROOT}/Headers/Public/CardIO" "${PODS_ROOT}/Headers/Public/ChameleonFramework" "${PODS_ROOT}/Headers/Public/FMDB" "${PODS_ROOT}/Headers/Public/HMSegmentedControl" "${PODS_ROOT}/Headers/Public/JVFloatLabeledTextField" "${PODS_ROOT}/Headers/Public/KVNProgress" "${PODS_ROOT}/Headers/Public/KVOController" "${PODS_ROOT}/Headers/Public/MCSwipeTableViewCell" "${PODS_ROOT}/Headers/Public/MJRefresh" "${PODS_ROOT}/Headers/Public/MMDrawerController" "${PODS_ROOT}/Headers/Public/MSWeakTimer" "${PODS_ROOT}/Headers/Public/Onboard" "${PODS_ROOT}/Headers/Public/RKDropdownAlert" "${PODS_ROOT}/Headers/Public/SlackTextViewController" "${PODS_ROOT}/Headers/Public/SlackTextViewController/Additions" "${PODS_ROOT}/Headers/Public/SlackTextViewController/Classes" "${PODS_ROOT}/Headers/Public/Stripe" "${PODS_ROOT}/Headers/Public/TTTAttributedLabel" "${PODS_ROOT}/Headers/Public/UIView+Positioning" "${PODS_ROOT}/Headers/Public/XLForm" "${PODS_ROOT}/Headers/Public/YTKKeyValueStore"
-OTHER_LDFLAGS = -ObjC
-PODS_ROOT = ${SRCROOT}
-SKIP_INSTALL = YES

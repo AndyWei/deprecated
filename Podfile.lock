@@ -23,6 +23,7 @@ PODS:
   - AXRatingView (1.0.3)
   - CardIO (5.0.6)
   - ChameleonFramework (1.2.0)
+  - FDFullscreenPopGesture (1.1)
   - FMDB (2.5):
     - FMDB/standard (= 2.5)
   - FMDB/common (2.5)
@@ -69,6 +70,7 @@ DEPENDENCIES:
   - AXRatingView
   - CardIO
   - ChameleonFramework
+  - FDFullscreenPopGesture
   - HMSegmentedControl
   - JVFloatLabeledTextField
   - KVNProgress
@@ -92,6 +94,7 @@ SPEC CHECKSUMS:
   AXRatingView: ccaadc1bbda99a4b7e1d556059482d2b933a9f4e
   CardIO: 3fb62d56651d80e8f98e9572bfbe589ebf13d706
   ChameleonFramework: 4d6bf87fcaee176f487176cdccc4229637ec97f0
+  FDFullscreenPopGesture: a8a620179e3d9c40e8e00256dcee1c1a27c6d0f0
   FMDB: 96e8f1bcc1329e269330f99770ad4285d9003e52
   HMSegmentedControl: 83b9686022d2176fb6457d2bdb61e5d6393fed7d
   JVFloatLabeledTextField: 18b05449d479733841b2c451c87e201a45de26e2
@@ -110,4 +113,4 @@ SPEC CHECKSUMS:
   XLForm: 799e61ef230f519914e722bf032b19a597223c19
   YTKKeyValueStore: 4d002941540dd5108fa23009b71e0f2f937f7a0f
 
-COCOAPODS: 0.37.1
+COCOAPODS: 0.38.2

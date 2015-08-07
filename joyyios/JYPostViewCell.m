@@ -14,10 +14,11 @@
 #import "JYPost.h"
 #import "JYPostViewCell.h"
 
-static const CGFloat kButtonWidth = 40;
+static const CGFloat kActionBarHeight = 40;
+static const CGFloat kButtonWidth = kActionBarHeight;
 static const CGFloat kButtonDistance = 20;
-static const CGFloat kLikeCountLabelWidth = 80;
 static const CGFloat kCommentCountButtonWidth = 100;
+static const CGFloat kLikeCountLabelWidth = 80;
 
 @interface JYPostViewCell () <TTTAttributedLabelDelegate>
 @property(nonatomic) BOOL likeButtonPressed;
@@ -40,10 +41,10 @@ static const CGFloat kCommentCountButtonWidth = 100;
 {
     CGSize maximumSize = CGSizeMake(width, MAXFLOAT);
 
-    static UILabel *dummyLabel = nil;
+    static TTTAttributedLabel *dummyLabel = nil;
     if (!dummyLabel)
     {
-        dummyLabel = [UILabel new];
+        dummyLabel = [TTTAttributedLabel new];
         dummyLabel.numberOfLines = 0;
         dummyLabel.lineBreakMode = NSLineBreakByWordWrapping;
     }
@@ -62,14 +63,37 @@ static const CGFloat kCommentCountButtonWidth = 100;
     CGFloat imageHeight = SCREEN_WIDTH;
 
     CGFloat commentsHeight = 0;
-    CGFloat labelWidth = SCREEN_WIDTH - kMarginLeft - kMarginRight;
-    for (NSString *text in post.commentTextList)
+    for (NSString *content in post.commentTextList)
     {
-        CGFloat height = [JYPostViewCell labelHeightForText:text withFontSize:kFontSizeComment textAlignment:NSTextAlignmentLeft andWidth:labelWidth];
+        NSString *text = [JYPostViewCell displayTextForString:content];
+        CGFloat height = [JYPostViewCell labelHeightForText:text withFontSize:kFontSizeComment textAlignment:NSTextAlignmentLeft andWidth:[JYPostViewCell labelWidth]];
         commentsHeight += (height + 5);
     }
 
-    return imageHeight + commentsHeight + kButtonWidth;
+    return imageHeight + commentsHeight + kActionBarHeight;
+}
+
++ (CGFloat)labelWidth
+{
+    return (SCREEN_WIDTH - kMarginLeft - kMarginRight);
+}
+
++ (NSString *)displayTextForString:(NSString *)text
+{
+    return [NSString stringWithFormat:@"🐨: %@", text];
+}
+
++ (UIImage *)sharedPlaceholderImage
+{
+    static UIImage *_sharedPlaceholderImage = nil;
+    static dispatch_once_t done;
+
+    dispatch_once(&done, ^{
+
+        _sharedPlaceholderImage = [UIImage imageNamed:@"mask"];
+    });
+
+    return _sharedPlaceholderImage;
 }
 
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
@@ -160,7 +184,7 @@ static const CGFloat kCommentCountButtonWidth = 100;
 
     __weak typeof(self) weakSelf = self;
     [self.photoView setImageWithURLRequest:request
-                          placeholderImage:nil
+                          placeholderImage:[[self class] sharedPlaceholderImage]
                                    success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image)
                                    {
                                        weakSelf.photoView.image = image;
@@ -222,7 +246,8 @@ static const CGFloat kCommentCountButtonWidth = 100;
         TTTAttributedLabel *label = self.commentLabels[i];
         if (i < _post.commentTextList.count)
         {
-            NSString *text = [NSString stringWithFormat:@"🐨: %@", _post.commentTextList[i]];
+            NSString *content = _post.commentTextList[i];
+            NSString *text = [[self class] displayTextForString:content];
             label.text = text;
             NSRange range = NSMakeRange(0, text.length);
             [label addLinkToURL:[NSURL URLWithString:@"comment://list"] withRange:range];
@@ -266,7 +291,7 @@ static const CGFloat kCommentCountButtonWidth = 100;
     if (!_actionBar)
     {
         CGFloat y = CGRectGetMaxY(self.photoView.frame);
-        _actionBar = [[UIView alloc] initWithFrame:CGRectMake(0, y, SCREEN_WIDTH, kButtonWidth)];
+        _actionBar = [[UIView alloc] initWithFrame:CGRectMake(0, y, SCREEN_WIDTH, kActionBarHeight)];
         _actionBar.opaque = YES;
         _actionBar.backgroundColor = JoyyBlack;
 
@@ -291,7 +316,7 @@ static const CGFloat kCommentCountButtonWidth = 100;
 {
     if (!_likeCountLabel)
     {
-        _likeCountLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, kLikeCountLabelWidth, kButtonWidth)];
+        _likeCountLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, kLikeCountLabelWidth, kActionBarHeight)];
         _likeCountLabel.backgroundColor = JoyyBlack;
         _likeCountLabel.font = [UIFont systemFontOfSize:kFontSizeDetail];
         _likeCountLabel.textColor = JoyyGray;
@@ -304,7 +329,7 @@ static const CGFloat kCommentCountButtonWidth = 100;
 {
     if (!_commentCountButton)
     {
-        CGRect frame = CGRectMake(0, 0, kCommentCountButtonWidth, kButtonWidth);
+        CGRect frame = CGRectMake(0, 0, kCommentCountButtonWidth, kActionBarHeight);
         _commentCountButton = [JYButton buttonWithFrame:frame buttonStyle:JYButtonStyleTitle shouldMaskImage:NO];
         _commentCountButton.contentColor = JoyyGray;
         _commentCountButton.contentAnimateToColor = JoyyBlue;
@@ -395,8 +420,7 @@ static const CGFloat kCommentCountButtonWidth = 100;
 
 - (TTTAttributedLabel *)_createLabel
 {
-    CGFloat width = SCREEN_WIDTH - kMarginLeft - kMarginRight;
-    CGRect frame = CGRectMake(kMarginLeft, 0, width, 0);
+    CGRect frame = CGRectMake(kMarginLeft, 0, [[self class] labelWidth], 0);
     TTTAttributedLabel *label = [[TTTAttributedLabel alloc] initWithFrame:frame];
     label.delegate = self;
     label.backgroundColor = JoyyBlack;
@@ -415,7 +439,7 @@ static const CGFloat kCommentCountButtonWidth = 100;
 
 - (JYButton *)_createButtonWithImage:(UIImage *)image
 {
-    CGRect frame = CGRectMake(0, 0, kButtonWidth, kButtonWidth);
+    CGRect frame = CGRectMake(0, 0, kButtonWidth, kActionBarHeight);
     JYButton *button = [JYButton buttonWithFrame:frame buttonStyle:JYButtonStyleCentralImage shouldMaskImage:YES];
     button.contentEdgeInsets = UIEdgeInsetsMake(8, 8, 8, 8);
     button.imageView.image = image;

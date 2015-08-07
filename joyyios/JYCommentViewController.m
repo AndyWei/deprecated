@@ -58,6 +58,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 {
     [super viewDidLoad];
     self.title = NSLocalizedString(@"COMMENTS", nil);
+    self.view.backgroundColor = JoyyBlack;
 
     // textInput view
     self.bounces = YES;
