@@ -22,19 +22,8 @@
 - (void)willMoveToSuperview:(UIView *)newSuperview
 {
     [super willMoveToSuperview:newSuperview];
-
-    self.backgroundColor = JoyyGrayDark;
-
     self.placeholder = NSLocalizedString(@"Add comment:", nil);
-    self.placeholderColor = JoyyGray;
-    self.pastableMediaTypes = SLKPastableMediaTypeAll;
-
-    self.layer.borderColor = JoyyGrayDark.CGColor;
-    self.layer.shouldRasterize = YES;
-    self.layer.rasterizationScale = [UIScreen mainScreen].scale;
-
-    self.textColor = JoyyWhite;
-    self.keyboardAppearance = UIKeyboardAppearanceDark;
 }
 
 @end
+

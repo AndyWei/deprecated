@@ -6,15 +6,15 @@
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
+#import "JYCaptionTextView.h"
 #import "JYPhotoCaptionViewController.h"
 #import "TGAssetsLibrary.h"
 
 @import AssetsLibrary;
 
-@interface JYPhotoCaptionViewController () <UITextViewDelegate>
+@interface JYPhotoCaptionViewController ()
 @property (nonatomic) UIImage *photo;
 @property (nonatomic) UIImageView *imageView;
-@property (nonatomic) UITextView *textView;
 @property (nonatomic, weak) id<TGCameraDelegate> delegate;
 @end
 
@@ -22,17 +22,12 @@ static NSString *const kImageCellIdentifier = @"imageCell";
 
 @implementation JYPhotoCaptionViewController
 
-+ (instancetype)newWithDelegate:(id<TGCameraDelegate>)delegate photo:(UIImage *)photo
+- (instancetype)initWithDelegate:(id<TGCameraDelegate>)delegate photo:(UIImage *)photo
 {
-    return [[JYPhotoCaptionViewController alloc] initWithWithDelegate:delegate photo:photo];
-}
-
-- (instancetype)initWithWithDelegate:(id<TGCameraDelegate>)delegate photo:(UIImage *)photo
-{
-    self = [super initWithStyle:UITableViewStylePlain];
-
+    self = [super initWithTableViewStyle:UITableViewStylePlain];
     if (self)
     {
+       [self registerClassForTextView:[JYCaptionTextView class]];
         self.delegate = delegate;
         self.photo = photo;
     }
@@ -43,15 +38,32 @@ static NSString *const kImageCellIdentifier = @"imageCell";
 {
     [super viewDidLoad];
 
-    self.view.backgroundColor = FlatBlack;
+    self.view.backgroundColor = JoyyBlack;
     self.title = NSLocalizedString(@"Caption", nil);
 
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"CameraBack"] style:UIBarButtonItemStylePlain target:self action:@selector(_back)];
 
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"send"] style:UIBarButtonItemStylePlain target:self action:@selector(_send)];
+    // textInput view
+    self.bounces = YES;
+    self.shakeToClearEnabled = NO;
+    self.keyboardPanningEnabled = YES;
+    self.shouldScrollToBottomAfterKeyboardShows = NO;
+    self.inverted = NO;
 
-    [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:kImageCellIdentifier];
+    [self.rightButton setTitle:NSLocalizedString(@"Send", nil) forState:UIControlStateNormal];
+    self.rightButton.tintColor = JoyyBlue;
+    self.textInputbar.backgroundColor = JoyyBlack;
+    self.textInputbar.autoHideRightButton = NO;
+    self.typingIndicatorView.canResignByTouch = YES;
+
+    // tableView
+    self.tableView.allowsSelection = NO;
+    self.tableView.backgroundColor = JoyyBlack;
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:kImageCellIdentifier];
+
+    // show keyboard
+    [self.textView becomeFirstResponder];
 }
 
 - (void)didReceiveMemoryWarning
@@ -136,24 +148,6 @@ static NSString *const kImageCellIdentifier = @"imageCell";
     return _imageView;
 }
 
-- (UITextView *)textView
-{
-    if (!_textView)
-    {
-        _textView = [[UITextView alloc] initWithFrame:CGRectMake(0, SCREEN_WIDTH - kCaptionLabelHeightMin, SCREEN_WIDTH, kCaptionLabelHeightMin)];
-        _textView.delegate = self;
-        _textView.font = [UIFont systemFontOfSize:kFontSizeCaption];
-        _textView.backgroundColor = JoyyBlack50;
-        _textView.textColor = JoyyWhite;
-        _textView.tintColor = JoyyWhite;
-        _textView.textAlignment = NSTextAlignmentCenter;
-        _textView.keyboardAppearance = UIKeyboardAppearanceDark;
-        _textView.scrollEnabled = NO; // Disable scroll is to fix the top padding automatically change to zero issue.
-        [_textView becomeFirstResponder];
-    }
-    return _textView;
-}
-
 #pragma mark - UITableViewDataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -170,10 +164,7 @@ static NSString *const kImageCellIdentifier = @"imageCell";
 {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kImageCellIdentifier forIndexPath:indexPath];
     cell.backgroundColor = JoyyBlack;
-
     [cell addSubview:self.imageView];
-    [cell addSubview:self.textView];
-
     return cell;
 }
 
@@ -184,23 +175,16 @@ static NSString *const kImageCellIdentifier = @"imageCell";
     return SCREEN_WIDTH;
 }
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    [tableView deselectRowAtIndexPath:indexPath animated:YES];
-}
+#pragma mark - Overriden Method
 
-#pragma mark - UITextView Delegate
-
-- (void)textViewDidChange:(UITextView *)textView
+// Notifies the view controller when the right button's action has been triggered, manually or by using the keyboard return key.
+- (void)didPressRightButton:(id)sender
 {
-    CGSize newSize = [textView sizeThatFits:CGSizeMake(SCREEN_WIDTH, MAXFLOAT)];
-    textView.height = fmin(SCREEN_WIDTH, newSize.height);
-    textView.y = SCREEN_WIDTH - textView.height;
-}
+    // This little trick validates any pending auto-correction or auto-spelling just after hitting the 'Send' button
+    [self.textView refreshFirstResponder];
 
-- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text
-{
-    return textView.text.length + (text.length - range.length) <= 900;
+    [self _send];
+    [super didPressRightButton:sender];
 }
 
 @end

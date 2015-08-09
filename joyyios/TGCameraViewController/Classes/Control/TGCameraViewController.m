@@ -186,7 +186,7 @@
 {
     UIImage *photo = [TGAlbum imageWithMediaInfo:info];
     
-    JYPhotoCaptionViewController *viewController = [JYPhotoCaptionViewController newWithDelegate:_delegate photo:photo];
+    JYPhotoCaptionViewController *viewController = [[JYPhotoCaptionViewController alloc] initWithDelegate:_delegate photo:photo];
     viewController.albumPhoto = YES;
     [self.navigationController pushViewController:viewController animated:NO];
     
@@ -231,7 +231,7 @@
     __weak typeof(self) weakSelf = self;
     [_camera takePhotoWithCaptureView:_captureView videoOrientation:videoOrientation cropSize:_captureView.frame.size
          completion:^(UIImage *photo) {
-             UIViewController *viewController = [JYPhotoCaptionViewController newWithDelegate:_delegate photo:photo];
+             UIViewController *viewController = [[JYPhotoCaptionViewController alloc] initWithDelegate:_delegate photo:photo];
              [weakSelf.navigationController pushViewController:viewController animated:NO];
     }];
 }

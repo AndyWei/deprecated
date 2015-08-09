@@ -10,6 +10,7 @@
 #import <KVOController/FBKVOController.h>
 #import <TTTAttributedLabel/TTTAttributedLabel.h>
 
+#import "JYAvatar.h"
 #import "JYButton.h"
 #import "JYComment.h"
 #import "JYPost.h"
@@ -28,8 +29,8 @@ static const CGFloat kLikeCountLabelWidth = 80;
 @property(nonatomic) JYButton *commentCountButton;
 @property(nonatomic) JYButton *likeButton;
 @property(nonatomic) NSMutableArray *commentLabels;
+@property(nonatomic) TTTAttributedLabel *captionLabel;
 @property(nonatomic) UIImageView *photoView;
-@property(nonatomic) UILabel *captionLabel;
 @property(nonatomic) UILabel *likeCountLabel;
 @property(nonatomic) UITapGestureRecognizer *tapGestureRecognizer;
 @property(nonatomic) UIView *actionBar;
@@ -66,7 +67,7 @@ static const CGFloat kLikeCountLabelWidth = 80;
     CGFloat commentsHeight = 0;
     for (JYComment *comment in post.commentList)
     {
-        NSString *text = [JYPostViewCell displayTextForString:comment.content];
+        NSString *text = [JYPostViewCell dummyTextOfString:comment.content];
         CGFloat height = [JYPostViewCell labelHeightForText:text withFontSize:kFontSizeComment textAlignment:NSTextAlignmentLeft andWidth:[JYPostViewCell labelWidth]];
         commentsHeight += (height + 5);
     }
@@ -79,9 +80,9 @@ static const CGFloat kLikeCountLabelWidth = 80;
     return (SCREEN_WIDTH - kMarginLeft - kMarginRight);
 }
 
-+ (NSString *)displayTextForString:(NSString *)text
++ (NSString *)dummyTextOfString:(NSString *)original
 {
-    return [NSString stringWithFormat:@"🐨: %@", text];
+    return [NSString stringWithFormat:@"🐨: %@", original];
 }
 
 + (UIImage *)sharedPlaceholderImage
@@ -113,6 +114,18 @@ static const CGFloat kLikeCountLabelWidth = 80;
 {
     [self.observer unobserveAll];
     self.observer = nil;
+}
+
+- (NSString *)_displayTextOfCaption
+{
+    return [NSString stringWithFormat:@"🐻: %@", self.post.caption];
+}
+
+- (NSString *)_displayTextOfComment:(JYComment *)comment
+{
+    NSUInteger code = self.post.postId + comment.ownerId;
+    JYAvatar *avatar = [JYAvatar avatarOfCode:code];
+    return [NSString stringWithFormat:@"%@: %@", avatar.symbol, comment.content];
 }
 
 - (void)setPost:(JYPost *)post
@@ -226,8 +239,9 @@ static const CGFloat kLikeCountLabelWidth = 80;
 
 - (void)_updateCaption
 {
-    self.captionLabel.text = self.post.caption;
-    CGFloat height = [JYPostViewCell labelHeightForText:self.post.caption withFontSize:kFontSizeCaption textAlignment:NSTextAlignmentCenter andWidth:SCREEN_WIDTH];
+    NSString *displayText = [self _displayTextOfCaption];
+    self.captionLabel.text = displayText;
+    CGFloat height = [JYPostViewCell labelHeightForText:displayText withFontSize:kFontSizeCaption textAlignment:NSTextAlignmentLeft andWidth:[[self class] labelWidth]];
     self.captionLabel.height = fmax(kCaptionLabelHeightMin, height);
 
     self.captionLabel.y = SCREEN_WIDTH - self.captionLabel.height;
@@ -243,7 +257,7 @@ static const CGFloat kLikeCountLabelWidth = 80;
         if (i < _post.commentList.count)
         {
             JYComment *comment = _post.commentList[i];
-            NSString *text = [[self class] displayTextForString:comment.content];
+            NSString *text = [self _displayTextOfComment:comment];
             label.text = text;
             NSRange range = NSMakeRange(0, text.length);
             [label addLinkToURL:[NSURL URLWithString:@"comment://list"] withRange:range];
@@ -381,16 +395,17 @@ static const CGFloat kLikeCountLabelWidth = 80;
    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationWillLikePost object:nil userInfo:info];
 }
 
-- (UILabel *)captionLabel
+- (TTTAttributedLabel *)captionLabel
 {
     if (!_captionLabel)
     {
         CGRect frame = CGRectMake(0, 0, SCREEN_WIDTH, 0);
-        _captionLabel = [[UILabel alloc] initWithFrame:frame];
+        _captionLabel = [[TTTAttributedLabel alloc] initWithFrame:frame];
+        _captionLabel.textInsets = UIEdgeInsetsMake(0, kMarginLeft, 0, kMarginRight);
         _captionLabel.backgroundColor = JoyyBlack50;
         _captionLabel.font = [UIFont systemFontOfSize:kFontSizeCaption];
         _captionLabel.textColor = JoyyWhite;
-        _captionLabel.textAlignment = NSTextAlignmentCenter;
+        _captionLabel.textAlignment = NSTextAlignmentLeft;
         _captionLabel.numberOfLines = 0;
         _captionLabel.lineBreakMode = NSLineBreakByWordWrapping;
         [self addSubview:_captionLabel];

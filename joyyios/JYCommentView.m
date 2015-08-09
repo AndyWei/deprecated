@@ -6,16 +6,17 @@
 //  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
 //
 
-#import <CommonCrypto/CommonDigest.h>
 #import <TTTAttributedLabel/TTTAttributedLabel.h>
 
+#import "JYAvatar.h"
 #import "JYCommentView.h"
 
 @interface JYCommentView ()
 @property(nonatomic) TTTAttributedLabel *commentLabel;
-@property(nonatomic) UIImageView *avatar;
+@property(nonatomic) UILabel *avatar;
 @end
 
+static const CGFloat kAvatarFontSize = 24;
 static const CGFloat kAvatarWidth = 40;
 static const CGFloat kCommentLabelHeightMin = 60;
 static const CGFloat kSpaceH = (kCommentLabelHeightMin - kAvatarWidth);
@@ -75,17 +76,6 @@ static const CGFloat kSpaceV = kSpaceH / 2;
     return labelWidth;
 }
 
-+ (UIColor *)colorForIndex:(uint)index
-{
-    static NSArray *colorMap = nil;
-    if (!colorMap)
-    {
-        colorMap = @[FlatBlue, FlatCoffee, FlatLime, FlatMagenta, FlatMaroon, FlatMint, FlatOrange, FlatPink];
-    }
-
-    return colorMap[index];
-}
-
 - (instancetype)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
@@ -100,7 +90,8 @@ static const CGFloat kSpaceV = kSpaceH / 2;
 {
     if (!caption)
     {
-        self.avatar.image = nil;
+        self.avatar.text = nil;
+        self.avatar.backgroundColor =ClearColor;
         self.commentLabel.text = nil;
         return;
     }
@@ -115,15 +106,15 @@ static const CGFloat kSpaceV = kSpaceH / 2;
     CGFloat height = [[self class] heightForText:caption];
     self.commentLabel.height = self.height = height;
 
-    self.avatar.image = [UIImage imageNamed:@"avt"];
-    self.avatar.backgroundColor = JoyyBlue;
+    self.avatar.text = @"🐻";
+    self.avatar.backgroundColor = FlatSand;
 }
 
 - (void)setComment:(JYComment *)comment
 {
     if (!comment)
     {
-        self.avatar.image = nil;
+        self.avatar.text = nil;
         self.avatar.backgroundColor = ClearColor;
         self.commentLabel.text = nil;
         self.height = self.commentLabel.height = kCommentLabelHeightMin;
@@ -141,39 +132,24 @@ static const CGFloat kSpaceV = kSpaceH / 2;
 - (void)_updateAvatar
 {
     // calculate image and backgorund color
-    NSUInteger seed = self.comment.ownerId + self.comment.postId;
+    NSUInteger code = self.comment.ownerId + self.comment.postId;
 
-    // md5 hash
-    NSString *str = [NSString stringWithFormat:@"%020tu", seed];
-    const char *cstr = [str UTF8String];
-    unsigned char md5[CC_MD5_DIGEST_LENGTH];
-    CC_MD5(cstr, (CC_LONG)strlen(cstr), md5);
-
-    uint avatarIndex = 0;
-    for (uint i = 0; i < CC_MD5_DIGEST_LENGTH; ++i)
-    {
-        avatarIndex += md5[i];
-    }
-
-    uint colorIndex = avatarIndex % 8;
-    uint imageIndex = (avatarIndex / 8) % 20;
-
-    NSString *imageName = [NSString stringWithFormat:@"avt%02d", imageIndex];
-    self.avatar.image = [UIImage imageNamed:imageName];
-    self.avatar.backgroundColor = [JYCommentView colorForIndex:colorIndex];
+    JYAvatar *avatar = [JYAvatar avatarOfCode:code];
+    self.avatar.text = avatar.symbol;
+    self.avatar.backgroundColor = avatar.color;
 }
 
-- (UIImageView *)avatar
+- (UILabel *)avatar
 {
     if (!_avatar)
     {
-        // Circle shape UIImageView
-        _avatar = [[UIImageView alloc] initWithFrame:CGRectMake(kSpaceH, kSpaceV, kAvatarWidth, kAvatarWidth)];
+        // Circle shape
+        _avatar = [[UILabel alloc] initWithFrame:CGRectMake(kSpaceH, kSpaceV, kAvatarWidth, kAvatarWidth)];
         _avatar.layer.cornerRadius = kAvatarWidth/2;
         _avatar.layer.masksToBounds = YES;
         _avatar.layer.borderWidth = 0;
-        _avatar.contentMode = UIViewContentModeCenter;
-
+        _avatar.font = [UIFont systemFontOfSize:kAvatarFontSize];
+        _avatar.textAlignment = NSTextAlignmentCenter;
         [self addSubview:_avatar];
     }
     return _avatar;
