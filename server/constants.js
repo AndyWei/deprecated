@@ -11,13 +11,19 @@ exports.AUTHTOKEN_PERSON_PAIRS = {
     ttl: 35 * 60
 };
 
-// Lists. key = postId, values = last 3 comments
-exports.POST_COMMENT_LISTS = {
-    segment: 'C',
-    size: 3
+//// Comment
+// Hash. key = commentId, fields = {id, owner, content, ...}
+exports.COMMENT_HASHES = {
+    segment: 'c'
 };
 
-//// Media
+// SortedSet. key = postId, value = commentId, score = comment.ct
+exports.POST_COMMENT_SETS = {
+    segment: 'C',
+    size: 1000
+};
+
+//// Post
 // Hash. key = personId, fields = {filname, uv, badge, likes, comments, ...}
 exports.POST_HASHES = {
     segment: 't'
@@ -48,8 +54,9 @@ exports.TOKEN_LENGTH = 20;
 exports.MAX_ID = '9223372036854775807';
 exports.MAX_SCORE = 2147483647; // the max value of postgres integer
 
-exports.POST_LIMIT = 20;  // the max number of post records returned per query
-exports.PERSON_LIMIT = 50; // the max number of person records returned per query
+exports.COMMENT_PER_QUERY = 20; // the max number of comment records returned per query
+exports.POST_PER_QUERY = 20;    // the max number of post records returned per query
+exports.PERSON_PER_QUERY = 50;  // the max number of person records returned per query
 
 // Error strings
 exports.AUTH_TOKEN_INVALID = 'The authentication token is invalid.';

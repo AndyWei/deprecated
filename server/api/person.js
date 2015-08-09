@@ -92,7 +92,7 @@ exports.register = function (server, options, next) {
                          return callback(null, 0, null);
                     }
 
-                    Cache.zrevrangebyscore(Const.CELL_PERSON_SETS, q.cell, q.max, q.min, Const.PERSON_LIMIT, function (err, result) {
+                    Cache.zrevrangebyscore(Const.CELL_PERSON_SETS, q.cell, q.max, q.min, Const.PERSON_PER_QUERY, function (err, result) {
                         if (err) {
                             console.error(err);
                             return callback(null, 0, null); // continue search in DB

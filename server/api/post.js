@@ -57,7 +57,7 @@ exports.register = function (server, options, next) {
 
                     var min = '(' + q.after.toString();
                     var max = '(' + q.before.toString();
-                    Cache.zrevrangebyscore(Const.CELL_POST_SETS, q.cell, max, min, Const.POST_LIMIT, function (err, result) {
+                    Cache.zrevrangebyscore(Const.CELL_POST_SETS, q.cell, max, min, Const.POST_PER_QUERY, function (err, result) {
                         if (err) {
                             console.error(err);
                             return callback(null, 0, null); // continue search in DB
@@ -133,51 +133,7 @@ exports.register = function (server, options, next) {
     });
 
 
-    // For each post id in the query, get its like count, comment count and last 3 comments. no auth.
-    server.route({
-        method: 'GET',
-        path: options.basePath + '/post/brief',
-        config: {
-            validate: {
-                query: {
-                    id: Joi.array().single(true).unique().items(Joi.string().regex(/^[0-9]+$/).max(19))
-                }
-            }
-        },
-        handler: function (request, reply) {
-
-            var postIds = request.query.id;
-
-            Async.auto({
-                commentListsfromCache: function (callback) {
-
-                    Cache.mgetlist(Const.POST_COMMENT_LISTS, postIds, function (err, result) {
-                        if (err) {
-                            console.error(err);
-                        }
-
-                        var postBriefArray = _.map(result, function (commentList, index) {
-                            return _.object(['id', 'comment_list'], [postIds[index], commentList.reverse()]);
-                        });
-                        return callback(null, postBriefArray);
-                    });
-                }/*,  In case of cache missed, query from DB
-                commentListsfromDB: ['commentListsfromCache', function (callback) {
-
-                }]*/
-            }, function (err, results) {
-
-                if (err) {
-                    return reply(err);
-                }
-
-                return reply(results.commentListsfromCache);
-            });
-        }
-    });
-
-
-    // upload a post. auth.
+    // create a post. auth.
     server.route({
         method: 'POST',
         path: options.basePath + '/post',
@@ -224,7 +180,6 @@ exports.register = function (server, options, next) {
                         }
 
                         console.log('uploaded file success. s3 url = ', data.Location);
-
                         return callback(null);
                     });
                 },
@@ -304,7 +259,7 @@ exports.register = function (server, options, next) {
 
             var postId = request.payload.id;
             var queryConfig = {
-                name: 'post_like',
+                name: 'post_likes',
                 text: 'UPDATE post SET likes = likes + 1 ' +
                       'WHERE id = $1 AND deleted = false ' +
                       'RETURNING likes',
@@ -322,7 +277,7 @@ exports.register = function (server, options, next) {
                     return reply(Boom.badRequest(Const.POST_LIKE_FAILED));
                 }
 
-                Cache.hincrby(Const.POST_HASHES, request.payload.id, 'likes', 1);
+                Cache.hincrby(Const.POST_HASHES, postId, 'likes', 1);
 
                 return reply(null, result.rows[0]);
             });
@@ -359,11 +314,6 @@ internals.searchPostByCellFromDB = function (request, callback) {
 };
 
 
-exports.register.attributes = {
-    name: 'post'
-};
-
-
 internals.searchPostByIdsFromDB = function (request, postIds, callback) {
 
     var parameterList = Utils.parametersString(3, postIds.length);
@@ -388,4 +338,9 @@ internals.searchPostByIdsFromDB = function (request, postIds, callback) {
 
         return callback(null, result.rows);
     });
+};
+
+
+exports.register.attributes = {
+    name: 'post'
 };

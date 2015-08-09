@@ -94,8 +94,8 @@ exports.mget = function (dataset, keys, callback) {
     Hoek.assert(typeof callback === 'function', 'Invalid callback');
     Hoek.assert(internals.redis, 'Connection not started');
 
-    if (!keys || keys.length === 0) {
-        return callback(null, null);
+    if (_.isUndefined(keys) || _.isNull(keys) || _.isEmpty(keys)) {
+        return callback(null, []);
     }
 
     var cacheKeys = _.map(keys, function (key) {
@@ -274,6 +274,57 @@ exports.zadd = internals.zadd = function (dataset, key, score, member, callback)
 };
 
 
+// get the specified range of elements in the sorted set stored at key
+exports.zrange = internals.zrange = function (dataset, key, start, stop, callback) {
+
+    Hoek.assert(internals.redis, 'Connection not started');
+
+    var setKey = internals.generateKey(dataset, key);
+
+    internals.redis.zrange(setKey, start, stop, function (err, result) {
+
+        if (err) {
+            console.error(err);
+        }
+
+        if (typeof callback === 'function') {
+            if (err) {
+                return callback(err);
+            }
+
+            return callback(null, result);
+        }
+    });
+};
+
+
+// get the specified range of elements in the sorted set stored at keys
+exports.mzrange = internals.mzrange = function (dataset, keys, start, stop, callback) {
+
+    Hoek.assert(internals.redis, 'Connection not started');
+
+    var pipeline = internals.redis.pipeline();
+
+    _.each(keys, function (key) {
+        var setKey = internals.generateKey(dataset, key);
+        pipeline.zrange(setKey, start, stop);
+    });
+
+    pipeline.exec(function (err, result) {
+
+        if (err) {
+            return callback(err);
+        }
+
+        // Refer to https://github.com/luin/ioredis
+        // result is an array whose every element is an array in form of: [err, value]
+        var values = _.map(result, _.last);
+
+        return callback(null, values);
+    });
+};
+
+
 // add a member to the SortedSet and trim the size
 exports.zaddtrim = internals.zaddtrim = function (dataset, key, score, member, callback) {
 
@@ -440,6 +491,10 @@ exports.mhgetall = internals.hgetall = function (dataset, keys, callback) {
 
     Hoek.assert(typeof callback === 'function', 'Invalid callback');
     Hoek.assert(internals.redis, 'Connection not started');
+
+    if (_.isUndefined(keys) || _.isNull(keys) || _.isEmpty(keys)) {
+        return callback(null, []);
+    }
 
     var pipeline = internals.redis.pipeline();
 

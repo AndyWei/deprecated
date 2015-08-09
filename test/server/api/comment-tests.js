@@ -55,25 +55,6 @@ lab.afterEach(function (done) {
     return done();
 });
 
-lab.experiment('Comment GET: ', function () {
-
-    lab.test('/comment: GET successfully', function (done) {
-
-        request = {
-            method: 'GET',
-            url: '/comment?post=1&after=1&before=4'
-        };
-
-        server.inject(request, function (response) {
-
-            Code.expect(response.statusCode).to.equal(200);
-            Code.expect(response.result).to.be.an.array().and.to.have.length(2);
-
-            return done();
-        });
-    });
-});
-
 lab.experiment('Comment POST: ', function () {
 
     lab.test('/comment: create successfully', function (done) {
@@ -97,3 +78,41 @@ lab.experiment('Comment POST: ', function () {
         });
     });
 });
+
+
+lab.experiment('Comment GET: ', function () {
+
+    lab.test('/comment: GET successfully', function (done) {
+
+        request = {
+            method: 'GET',
+            url: '/comment?post=1&after=1437524632001&before=1437524632004'
+        };
+
+        server.inject(request, function (response) {
+
+            Code.expect(response.statusCode).to.equal(200);
+            Code.expect(response.result).to.be.an.array().and.to.have.length(2);
+
+            return done();
+        });
+    });
+
+
+    lab.test('/comment: GET recent successfully', function (done) {
+
+        request = {
+            method: 'GET',
+            url: '/comment/recent?post=1&post=2&post=3'
+        };
+
+        server.inject(request, function (response) {
+
+            Code.expect(response.statusCode).to.equal(200);
+            Code.expect(response.result).to.be.an.object();
+
+            return done();
+        });
+    });
+});
+
