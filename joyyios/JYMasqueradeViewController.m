@@ -13,6 +13,7 @@
 
 #import "AppDelegate.h"
 #import "JYButton.h"
+#import "JYComment.h"
 #import "JYCommentViewController.h"
 #import "JYMasqueradeViewController.h"
 #import "JYPost.h"
@@ -25,6 +26,7 @@
 @interface JYMasqueradeViewController () <TGCameraDelegate, UITableViewDataSource, UITableViewDelegate>
 @property(nonatomic) CABasicAnimation *colorPulse;
 @property(nonatomic) JYButton *cameraButton;
+@property(nonatomic) JYPost *currentPost;
 @property(nonatomic) NSInteger networkThreadCount;
 @property(nonatomic) NSMutableArray *postList;
 @property(nonatomic) UIColor *originalTabBarTintColor;
@@ -52,6 +54,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
     self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:self.navigationItem.backBarButtonItem.style target:nil action:nil];
 
     self.networkThreadCount = 0;
+    self.currentPost = nil;
     self.postList = [NSMutableArray new];
 
     [self.view addSubview:self.tableView];
@@ -71,6 +74,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
 
     [self.cameraButton.imageLayer.layer removeAllAnimations];
     [self.cameraButton.imageLayer.layer addAnimation:self.colorPulse forKey:@"ColorPulse"];
+    [self _reloadCurrentCell];
 }
 
 - (void)viewDidDisappear:(BOOL)animated
@@ -188,15 +192,34 @@ static NSString *const kPostCellIdentifier = @"postCell";
     NSDictionary *info = [notification userInfo];
     if (info)
     {
-        id postString = [info objectForKey:@"post"];
-        id editString = [info objectForKey:@"edit"];
-        if (postString != [NSNull null] && editString != [NSNull null])
+        id postObj = [info objectForKey:@"post"];
+        id editObj = [info objectForKey:@"edit"];
+        if (postObj != [NSNull null] && editObj != [NSNull null])
         {
-            JYPost *post = (JYPost *)postString;
-            BOOL edit = [editString boolValue];
+            JYPost *post = (JYPost *)postObj;
+            self.currentPost = post;
+            BOOL edit = [editObj boolValue];
             [self _presentCommentViewForPost:post showKeyBoard:edit];
         }
     }
+}
+
+- (void)_reloadCurrentCell
+{
+    if (!self.currentPost)
+    {
+        return;
+    }
+
+    NSInteger selectedRow = [self.postList indexOfObject:self.currentPost];
+    self.currentPost = nil;
+    if (selectedRow == NSNotFound)
+    {
+        return;
+    }
+
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:selectedRow inSection:0];
+    [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 
 - (void) _presentCommentViewForPost:(JYPost *)post showKeyBoard:(BOOL)edit
@@ -476,7 +499,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
                  JYPost *post = [[JYPost alloc] initWithDictionary:dict];
                  [postList addObject:post];
              }
-             [weakSelf _fetchBriefForPostList:postList toEnd:toEnd];
+             [weakSelf _fetchRecentCommentsForPostList:postList toEnd:toEnd];
              [weakSelf _networkThreadEnd];
          }
          failure:^(AFHTTPRequestOperation *operation, NSError *error) {
@@ -485,12 +508,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
      ];
 }
 
-- (void)_fetchBrief
-{
-    [self _fetchBriefForPostList:self.postList toEnd:YES];
-}
-
-- (void)_fetchBriefForPostList:(NSArray *)list toEnd:(BOOL)toEnd
+- (void)_fetchRecentCommentsForPostList:(NSArray *)list toEnd:(BOOL)toEnd
 {
     if (!list.count)
     {
@@ -501,21 +519,28 @@ static NSString *const kPostCellIdentifier = @"postCell";
 
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
 
-    NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"post/brief"];
-    NSDictionary *parameters = [self _fetchBriefHttpParameters:list];
+    NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"comment/recent"];
+    NSDictionary *parameters = [self _fetchRecentCommentsHttpParameters:list];
 
     __weak typeof(self) weakSelf = self;
     [manager GET:url
       parameters:parameters
          success:^(AFHTTPRequestOperation *operation, id responseObject) {
-//             NSLog(@"post/brief fetch success responseObject: %@", responseObject);
+             NSLog(@"post/brief fetch success responseObject: %@", responseObject);
 
+             NSDictionary *comments = (NSDictionary *)responseObject;
              NSUInteger count = list.count;
              for (NSUInteger i = 0; i < count; i++)
              {
                  JYPost *post = (JYPost *)list[i];
-                 NSDictionary *brief = (NSDictionary *)responseObject[i];
-                 [post setBrief:brief];
+                 NSMutableArray *commentDictList = [comments objectForKey:post.idString];
+                 NSMutableArray *commentList = [NSMutableArray new];
+                 for (NSDictionary *dict in commentDictList)
+                 {
+                     JYComment *comment = [[JYComment alloc] initWithDictionary:dict];
+                     [commentList addObject:comment];
+                 }
+                 post.commentList = commentList;
              }
              [weakSelf _updateTableWithPostList:list toEnd:toEnd];
              [weakSelf _networkThreadEnd];
@@ -551,7 +576,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
     return parameters;
 }
 
-- (NSDictionary *)_fetchBriefHttpParameters:(NSArray *)list
+- (NSDictionary *)_fetchRecentCommentsHttpParameters:(NSArray *)list
 {
     NSMutableArray *postIds = [NSMutableArray new];
     for (JYPost *post in list)
@@ -561,7 +586,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
 
     NSMutableDictionary *parameters = [NSMutableDictionary new];
 
-    [parameters setValue:postIds forKey:@"id"];
+    [parameters setValue:postIds forKey:@"post"];
 
     return parameters;
 }

@@ -10,7 +10,6 @@
 #import "JYUser.h"
 
 @interface JYComment ()
-@property(nonatomic) NSString* content;
 @end
 
 @implementation JYComment
@@ -22,18 +21,14 @@
     {
         if (dict)
         {
-            _commentId = [[dict objectForKey:@"id"] unsignedIntegerValue];
-            _postId = [[dict objectForKey:@"post"] unsignedIntegerValue];
-            _ownerId = [[dict objectForKey:@"owner"] unsignedIntegerValue];
-            _content = [dict objectForKey:@"content"];
+            _content   = [dict objectForKey:@"content"];
+            _commentId = [dict unsignedIntegerValueForKey:@"id"];
+            _postId    = [dict unsignedIntegerValueForKey:@"post"];
+            _ownerId   = [dict unsignedIntegerValueForKey:@"owner"];
+            _timestamp = [dict unsignedIntegerValueForKey:@"ct"];
         }
     }
     return self;
-}
-
-- (NSString *)contentString
-{
-    return _content;
 }
 
 @end

@@ -10,10 +10,10 @@
 
 - (instancetype)initWithDictionary:(NSDictionary *)dict;
 
+@property(nonatomic) NSString *content;
 @property(nonatomic) NSUInteger commentId;
-@property(nonatomic) NSUInteger postId;
 @property(nonatomic) NSUInteger ownerId;
-
-@property(nonatomic, readonly) NSString* contentString;
+@property(nonatomic) NSUInteger postId;
+@property(nonatomic) NSUInteger timestamp;
 
 @end

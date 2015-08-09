@@ -10,10 +10,6 @@
 //NSString *const kUrlAPIBase = @"http://api.joyyapp.com:8000/v1/";
 NSString *const kUrlAPIBase = @"http://192.168.1.145:8000/v1/";
 
-const NSTimeInterval k1Minutes = 60;
-const NSTimeInterval k15Minutes = 900;
-const NSTimeInterval k30Minutes = 1800;
-
 const CGFloat kButtonCornerRadius = 4.0f;
 const CGFloat kButtonDefaultHeight = 44.0f;
 const CGFloat kButtonDefaultFontSize = 18.0f;
@@ -43,8 +39,12 @@ const CGFloat kSignFieldHeight = 70.0f;
 const CGFloat kSignFieldMarginLeft = 50.0f;
 const CGFloat kSignViewTopOffset = 152;
 
-const NSUInteger kBriefCommentsCount = 3;
-const NSUInteger kAPN = 1;;
+const NSTimeInterval k1Minutes = 60;
+const NSTimeInterval k15Minutes = 900;
+const NSTimeInterval k30Minutes = 1800;
+
+const NSUInteger kAPN = 1;
+const NSUInteger kRecentCommentsLimit = 3;
 
 NSString *const kErrorAuthenticationFailed = @"Incorrect Email or password";
 NSString *const kErrorTitle = @"(ᵔᴥᵔ) something wrong";

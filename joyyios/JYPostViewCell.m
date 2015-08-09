@@ -11,6 +11,7 @@
 #import <TTTAttributedLabel/TTTAttributedLabel.h>
 
 #import "JYButton.h"
+#import "JYComment.h"
 #import "JYPost.h"
 #import "JYPostViewCell.h"
 
@@ -63,9 +64,9 @@ static const CGFloat kLikeCountLabelWidth = 80;
     CGFloat imageHeight = SCREEN_WIDTH;
 
     CGFloat commentsHeight = 0;
-    for (NSString *content in post.commentTextList)
+    for (JYComment *comment in post.commentList)
     {
-        NSString *text = [JYPostViewCell displayTextForString:content];
+        NSString *text = [JYPostViewCell displayTextForString:comment.content];
         CGFloat height = [JYPostViewCell labelHeightForText:text withFontSize:kFontSizeComment textAlignment:NSTextAlignmentLeft andWidth:[JYPostViewCell labelWidth]];
         commentsHeight += (height + 5);
     }
@@ -157,11 +158,6 @@ static const CGFloat kLikeCountLabelWidth = 80;
 
         [weakSelf _updateCommentCount];
     }];
-
-    [self.observer observe:post keyPath:@"commentTextList" options:NSKeyValueObservingOptionNew block:^(JYPostViewCell *cell, JYPost *post, NSDictionary *change) {
-
-        [weakSelf _updateComments];
-    }];
 }
 
 - (void)_stopObserve:(JYPost *)post
@@ -241,13 +237,13 @@ static const CGFloat kLikeCountLabelWidth = 80;
 {
     CGFloat y = CGRectGetMaxY(self.actionBar.frame);
 
-    for (NSUInteger i = 0; i < kBriefCommentsCount; ++i)
+    for (NSUInteger i = 0; i < kRecentCommentsLimit; ++i)
     {
         TTTAttributedLabel *label = self.commentLabels[i];
-        if (i < _post.commentTextList.count)
+        if (i < _post.commentList.count)
         {
-            NSString *content = _post.commentTextList[i];
-            NSString *text = [[self class] displayTextForString:content];
+            JYComment *comment = _post.commentList[i];
+            NSString *text = [[self class] displayTextForString:comment.content];
             label.text = text;
             NSRange range = NSMakeRange(0, text.length);
             [label addLinkToURL:[NSURL URLWithString:@"comment://list"] withRange:range];
@@ -407,7 +403,7 @@ static const CGFloat kLikeCountLabelWidth = 80;
     if (!_commentLabels)
     {
         _commentLabels = [NSMutableArray new];
-        for (NSUInteger i = 0; i < kBriefCommentsCount; i++)
+        for (NSUInteger i = 0; i < kRecentCommentsLimit; i++)
         {
             TTTAttributedLabel *label = [self _createLabel];
 

@@ -97,7 +97,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
-    [self _updatePostBrief];
+    [self _updateRecentCommentsOfPost];
 }
 
 - (void)didReceiveMemoryWarning
@@ -210,17 +210,17 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
     }
 }
 
-- (void)_updatePostBrief
+- (void)_updateRecentCommentsOfPost
 {
     NSInteger totalComment = self.commentList.count;
     NSInteger start = MAX(0, totalComment - 3);
-    NSMutableArray *commentTextList = [NSMutableArray new];
+    NSMutableArray *commentList = [NSMutableArray new];
     for (NSInteger i = start; i < totalComment; ++i)
     {
         JYComment *comment = self.commentList[i];
-        [commentTextList addObject:comment.contentString];
+        [commentList addObject:comment];
     }
-    self.post.commentTextList = commentTextList;
+    self.post.commentList = commentList;
 }
 
 #pragma mark - UITableViewDataSource
@@ -429,12 +429,12 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
         if (toEnd)
         {
             JYComment *comment = self.commentList.lastObject;
-            [parameters setValue:@(comment.commentId) forKey:@"after"];
+            [parameters setValue:@(comment.timestamp) forKey:@"after"];
         }
         else
         {
             JYComment *comment = self.commentList.firstObject;
-            [parameters setValue:@(comment.commentId) forKey:@"before"];
+            [parameters setValue:@(comment.timestamp) forKey:@"before"];
         }
     }
 

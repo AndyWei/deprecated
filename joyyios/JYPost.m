@@ -167,14 +167,4 @@ static NSString *const kLikedPostTable = @"liked_post";
     return str;
 }
 
-- (void)setBrief:(NSDictionary *)brief
-{
-    if (!brief)
-    {
-        return;
-    }
-
-    _commentTextList = [brief objectForKey:@"comment_list"];
-}
-
 @end

@@ -52,7 +52,7 @@ static const CGFloat kSpaceV = kSpaceH / 2;
         return kCommentLabelHeightMin;
     }
 
-    return[JYCommentView heightForText:comment.contentString];
+    return[JYCommentView heightForText:comment.content];
 }
 
 + (TTTAttributedLabel *)_createCommentLabel
@@ -131,7 +131,7 @@ static const CGFloat kSpaceV = kSpaceH / 2;
     }
 
     _comment = comment;
-    self.commentLabel.text = comment.contentString;
+    self.commentLabel.text = comment.content;
     CGFloat height = [[self class] heightForComment:_comment];
     self.commentLabel.height = self.height = height;
 

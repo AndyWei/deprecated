@@ -11,11 +11,6 @@
 
 extern NSString *const kUrlAPIBase;
 
-
-extern const NSTimeInterval k1Minutes;
-extern const NSTimeInterval k15Minutes;
-extern const NSTimeInterval k30Minutes;
-
 extern const CGFloat kButtonCornerRadius;
 extern const CGFloat kButtonDefaultHeight;
 extern const CGFloat kButtonDefaultFontSize;
@@ -45,8 +40,12 @@ extern const CGFloat kSignFieldHeight;
 extern const CGFloat kSignFieldMarginLeft;
 extern const CGFloat kSignViewTopOffset;
 
-extern const NSUInteger kBriefCommentsCount;
+extern const NSTimeInterval k1Minutes;
+extern const NSTimeInterval k15Minutes;
+extern const NSTimeInterval k30Minutes;
+
 extern const NSUInteger kAPN;
+extern const NSUInteger kRecentCommentsLimit;
 
 extern NSString *const kErrorAuthenticationFailed;
 extern NSString *const kErrorTitle;

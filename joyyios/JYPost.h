@@ -22,20 +22,17 @@ typedef NS_ENUM(NSUInteger, JYPostType)
 
 @property(nonatomic) BOOL isLiked;
 @property(nonatomic) JYPostType type;
-@property(nonatomic) NSUInteger postId;
+@property(nonatomic) NSUInteger commentCount;
+@property(nonatomic) NSUInteger likeCount;
 @property(nonatomic) NSUInteger ownerId;
-@property(nonatomic) NSUInteger urlVersion;
+@property(nonatomic) NSUInteger postId;
 @property(nonatomic) NSUInteger timestamp;
+@property(nonatomic) NSUInteger urlVersion;
 @property(nonatomic) UIImage *localImage;
 @property(nonatomic, copy) NSString *filename;
 @property(nonatomic, copy) NSString *caption;
 @property(nonatomic, readonly) NSString *url;
 @property(nonatomic, readonly) NSString *idString;
-
-// Brief related
-- (void)setBrief:(NSDictionary *)brief;
-@property(nonatomic) NSUInteger likeCount;
-@property(nonatomic) NSUInteger commentCount;
-@property(nonatomic) NSMutableArray *commentTextList;
+@property(nonatomic) NSMutableArray *commentList;
 
 @end
