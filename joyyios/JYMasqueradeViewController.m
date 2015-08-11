@@ -7,7 +7,6 @@
 //
 
 #import <AFNetworking/AFNetworking.h>
-#import <KVNProgress/KVNProgress.h>
 #import <MJRefresh/MJRefresh.h>
 #import <RKDropdownAlert/RKDropdownAlert.h>
 
@@ -228,12 +227,6 @@ static NSString *const kPostCellIdentifier = @"postCell";
     [self.navigationController pushViewController:viewController animated:YES];
 }
 
-- (JYPost *)_meidaAt:(NSIndexPath *)indexPath
-{
-    NSInteger index = indexPath.row;
-    return self.postList[index];
-}
-
 - (void)_showCamera
 {
     [TGCameraColor setTintColor:JoyyBlue];
@@ -313,7 +306,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
     JYPostViewCell *cell =
     (JYPostViewCell *)[tableView dequeueReusableCellWithIdentifier:kPostCellIdentifier forIndexPath:indexPath];
 
-    JYPost *post = [self _meidaAt:indexPath];
+    JYPost *post = self.postList[indexPath.row];
     cell.post = post;
 
     return cell;
@@ -323,7 +316,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    JYPost *post = [self _meidaAt:indexPath];
+    JYPost *post = self.postList[indexPath.row];
     return [JYPostViewCell heightForPost:post];
 }
 
@@ -423,7 +416,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
     [manager.requestSerializer setValue:token forHTTPHeaderField:@"Authorization"];
 
     NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"post"];
-    NSMutableDictionary *parameters = [self _uploadImageParameters];
+    NSMutableDictionary *parameters = [self _parametersForUploadImage];
     [parameters setObject:caption forKey:@"caption"];
 
     __weak typeof(self) weakSelf = self;
@@ -450,7 +443,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
     }];
 }
 
-- (NSMutableDictionary *)_uploadImageParameters
+- (NSMutableDictionary *)_parametersForUploadImage
 {
     NSMutableDictionary *parameters = [NSMutableDictionary new];
 
@@ -485,13 +478,13 @@ static NSString *const kPostCellIdentifier = @"postCell";
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
 
     NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"post/nearby"];
-    NSDictionary *parameters = [self _fetchPostHttpParameters:toEnd];
+    NSDictionary *parameters = [self _parametersForPostNearby:toEnd];
 
     __weak typeof(self) weakSelf = self;
     [manager GET:url
       parameters:parameters
          success:^(AFHTTPRequestOperation *operation, id responseObject) {
-//             NSLog(@"post/nearby fetch success responseObject: %@", responseObject);
+             NSLog(@"post/nearby fetch success responseObject: %@", responseObject);
 
              NSMutableArray *postList = [NSMutableArray new];
              for (NSDictionary *dict in responseObject)
@@ -512,7 +505,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
 {
     if (!list.count)
     {
-        list = self.postList; // in case no new post, we get new brief for the existing post
+        list = self.postList; // in case no new post, we get new commentList for the existing post
     }
 
     [self _networkThreadBegin];
@@ -520,13 +513,13 @@ static NSString *const kPostCellIdentifier = @"postCell";
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
 
     NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"comment/recent"];
-    NSDictionary *parameters = [self _fetchRecentCommentsHttpParameters:list];
+    NSDictionary *parameters = [self _parametersForRecentCommentsOfPosts:list];
 
     __weak typeof(self) weakSelf = self;
     [manager GET:url
       parameters:parameters
          success:^(AFHTTPRequestOperation *operation, id responseObject) {
-             NSLog(@"post/brief fetch success responseObject: %@", responseObject);
+//             NSLog(@"comment/recent fetch success responseObject: %@", responseObject);
 
              NSDictionary *comments = (NSDictionary *)responseObject;
              NSUInteger count = list.count;
@@ -551,7 +544,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
      ];
 }
 
-- (NSDictionary *)_fetchPostHttpParameters:(BOOL)toEnd
+- (NSDictionary *)_parametersForPostNearby:(BOOL)toEnd
 {
     NSMutableDictionary *parameters = [NSMutableDictionary new];
 
@@ -576,7 +569,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
     return parameters;
 }
 
-- (NSDictionary *)_fetchRecentCommentsHttpParameters:(NSArray *)list
+- (NSDictionary *)_parametersForRecentCommentsOfPosts:(NSArray *)list
 {
     NSMutableArray *postIds = [NSMutableArray new];
     for (JYPost *post in list)

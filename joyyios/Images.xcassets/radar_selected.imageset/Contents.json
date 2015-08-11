@@ -2,18 +2,16 @@
   "images" : [
     {
       "idiom" : "universal",
-      "scale" : "1x",
-      "filename" : "send_26.png"
+      "scale" : "1x"
     },
     {
       "idiom" : "universal",
       "scale" : "2x",
-      "filename" : "send_52.png"
+      "filename" : "radar_selected_50.png"
     },
     {
       "idiom" : "universal",
-      "scale" : "3x",
-      "filename" : "send_78.png"
+      "scale" : "3x"
     }
   ],
   "info" : {

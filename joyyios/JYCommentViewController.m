@@ -359,7 +359,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 
     __weak typeof(self) weakSelf = self;
     [manager POST:url
-       parameters:[self _httpPostCommentParameters]
+       parameters:[self _parametersForCreatingComment]
           success:^(AFHTTPRequestOperation *operation, id responseObject) {
               NSLog(@"Comment POST Success responseObject: %@", responseObject);
 
@@ -395,7 +395,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 
     __weak typeof(self) weakSelf = self;
     [manager GET:url
-      parameters:[self _httpGetCommentsParameters:toEnd]
+      parameters:[self _parametersForCommentOfPost:toEnd]
          success:^(AFHTTPRequestOperation *operation, id responseObject) {
 
              NSLog(@"comment GET success responseObject: %@", responseObject);
@@ -408,7 +408,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
      ];
 }
 
-- (NSDictionary *)_httpPostCommentParameters
+- (NSDictionary *)_parametersForCreatingComment
 {
     NSMutableDictionary *parameters = [NSMutableDictionary new];
 
@@ -418,7 +418,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
     return parameters;
 }
 
-- (NSDictionary *)_httpGetCommentsParameters:(BOOL)toEnd
+- (NSDictionary *)_parametersForCommentOfPost:(BOOL)toEnd
 {
     NSMutableDictionary *parameters = [NSMutableDictionary new];
 

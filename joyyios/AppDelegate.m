@@ -14,6 +14,7 @@
 #import "AppDelegate.h"
 #import "JYDataStore.h"
 #import "JYMasqueradeViewController.h"
+#import "JYPeopleViewController.h"
 #import "JYSignViewController.h"
 #import "JYUser.h"
 #import "OnboardingViewController.h"
@@ -269,7 +270,7 @@
     UIViewController *vc1 = [JYMasqueradeViewController new];
     UINavigationController *nc1 = [[UINavigationController alloc] initWithRootViewController:vc1];
 
-    UIViewController *vc2 = [JYSignViewController new];
+    UIViewController *vc2 = [JYPeopleViewController new];
     UINavigationController *nc2 = [[UINavigationController alloc] initWithRootViewController:vc2];
 
     UIViewController *vc3 = [JYSignViewController new];
@@ -291,9 +292,9 @@
     tabBarItem1.image = [[UIImage imageNamed:@"mask"] imageWithRenderingMode:UIImageRenderingModeAutomatic];
     tabBarItem1.title = NSLocalizedString(@"Masquerade", nil);
 
-    tabBarItem2.selectedImage = [[UIImage imageNamed:@"search_selected"]imageWithRenderingMode:UIImageRenderingModeAutomatic];
-    tabBarItem2.image = [[UIImage imageNamed:@"search"]imageWithRenderingMode:UIImageRenderingModeAutomatic];
-    tabBarItem2.title = NSLocalizedString(@"Search", nil);
+    tabBarItem2.selectedImage = [[UIImage imageNamed:@"radar_selected"]imageWithRenderingMode:UIImageRenderingModeAutomatic];
+    tabBarItem2.image = [[UIImage imageNamed:@"radar"]imageWithRenderingMode:UIImageRenderingModeAutomatic];
+    tabBarItem2.title = NSLocalizedString(@"Radar", nil);
 
     tabBarItem3.selectedImage = [[UIImage imageNamed:@"chat_selected"]imageWithRenderingMode:UIImageRenderingModeAutomatic];
     tabBarItem3.image = [[UIImage imageNamed:@"chat"]imageWithRenderingMode:UIImageRenderingModeAutomatic];

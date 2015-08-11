@@ -70,6 +70,7 @@ extern CGFloat const JYButtonMaxValue;
 + (instancetype)buttonWithFrame:(CGRect)frame buttonStyle:(JYButtonStyle)style appearanceIdentifier:(NSString *)identifier;
 + (instancetype)buttonWithFrame:(CGRect)frame buttonStyle:(JYButtonStyle)style shouldMaskImage:(BOOL)mask;
 + (instancetype)buttonWithFrame:(CGRect)frame buttonStyle:(JYButtonStyle)style shouldMaskImage:(BOOL)mask appearanceIdentifier:(NSString *)identifier;
++ (instancetype)circledButtonWithFrame:(CGRect)frame image:(UIImage *)image color:(UIColor *)color;
 - (instancetype)initWithFrame:(CGRect)frame buttonStyle:(JYButtonStyle)style;
 - (instancetype)initWithFrame:(CGRect)frame buttonStyle:(JYButtonStyle)style appearanceIdentifier:(NSString *)identifier;
 

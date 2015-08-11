@@ -9,8 +9,8 @@
 typedef NS_ENUM(NSUInteger, JYPostType)
 {
     JYPostTypeImage = 0,
-    JYPostTypeVideo = 1,
-    JYPostTypeAudio = 2
+    JYPostTypeGif   = 1,
+    JYPostTypeVideo = 2
 };
 
 @interface JYPost : NSObject

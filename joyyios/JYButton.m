@@ -227,6 +227,18 @@ static CGRect CGRectEdgeInset(CGRect rect, UIEdgeInsets insets)
     return [[JYButton alloc] initWithFrame:frame buttonStyle:style shouldMaskImage:mask appearanceIdentifier:nil];
 }
 
++ (instancetype)circledButtonWithFrame:(CGRect)frame image:(UIImage *)image color:(UIColor *)color;
+{
+    JYButton *button = [JYButton buttonWithFrame:frame buttonStyle:JYButtonStyleCentralImage shouldMaskImage:YES];
+    button.imageView.image = image;
+    button.cornerRadius = frame.size.width / 2;
+    button.contentColor = color;
+    button.contentAnimateToColor = [UIColor whiteColor];
+    button.foregroundColor = ClearColor;
+    button.foregroundAnimateToColor = color;
+    return button;
+}
+
 - (CGRect)boxingRect
 {
     CGRect internalRect = CGRectInset(self.bounds, self.layer.cornerRadius * JY_MAGICAL_VALUE + self.layer.borderWidth,
@@ -293,9 +305,9 @@ static CGRect CGRectEdgeInset(CGRect rect, UIEdgeInsets insets)
 
         case JYButtonStyleImageWithTitle:
             self.topTextLayer.frame = CGRectNull;
-            self.imageLayer.frame = CGRectMake(boxRect.origin.x, boxRect.origin.y, CGRectGetWidth(boxRect) * 0.05, CGRectGetHeight(boxRect));
+            self.imageLayer.frame = CGRectMake(boxRect.origin.x, boxRect.origin.y, CGRectGetWidth(boxRect) * 0.25, CGRectGetHeight(boxRect));
             self.textLayer.frame =
-                CGRectMake(CGRectGetMaxX(self.imageLayer.frame), boxRect.origin.y, CGRectGetWidth(boxRect) * 0.95, CGRectGetHeight(boxRect));
+                CGRectMake(CGRectGetMaxX(self.imageLayer.frame), boxRect.origin.y, CGRectGetWidth(boxRect) * 0.75, CGRectGetHeight(boxRect));
             self.detailTextLayer.frame = CGRectNull;
             break;
 

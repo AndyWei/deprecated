@@ -12,10 +12,8 @@
 
 @interface JYPersonCard : MDCSwipeToChooseView
 
-@property (nonatomic, readonly) JYPerson *person;
+- (instancetype)initWithFrame:(CGRect)frame options:(MDCSwipeToChooseViewOptions *)options;
 
-- (instancetype)initWithFrame:(CGRect)frame
-                       person:(JYPerson *)person
-                      options:(MDCSwipeToChooseViewOptions *)options;
+@property(nonatomic) JYPerson *person;
 
 @end
