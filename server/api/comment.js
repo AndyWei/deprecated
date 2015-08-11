@@ -76,38 +76,42 @@ exports.register = function (server, options, next) {
                             console.error(err);
                         }
 
-                        var missedCommentIds = [];
-                        var foundComments = [];
-                        for (var i = 0; i < commentIds.length; i++) {
-                            // result is an array, and each element is an array in form of [err, commentObj]
-                            if (result[i][0]) {  // found err
-                                missedCommentIds.push(commentIds[i]);
+                        var missedIds = [];
+                        var foundObjs = [];
+
+                        // result is an array, and each element is an array in form of [err, commentObj]
+                        _.each(result, function(element, index) {
+                            var error = element.first;
+                            var obj = element.last;
+
+                            if (error || _.isEmpty(obj)) {  // err or not found
+                                missedIds.push(commentIds[index]);
                             }
                             else {
-                                foundComments.push(result[i][1]);
+                                foundObjs.push(obj);
                             }
-                        }
+                        });
 
-                        return callback(null, setSize, missedCommentIds, foundComments);
+                        return callback(null, setSize, missedIds, foundObjs);
                     });
                 },
-                function (setSize, missedCommentIds, foundComments, callback) {
+                function (setSize, missedIds, cachedObjs, callback) {
                     if (setSize === 0) {
                         internals.searchCommentByPostFromDB(request, function (err, result) {
                             return callback(null, result);
                         });
                     }
-                    else if (_.isNull(missedCommentIds) || _.isEmpty(missedCommentIds)) {
-                        return callback(null, foundComments);
+                    else if (_.isNull(missedIds) || _.isEmpty(missedIds)) {
+                        return callback(null, cachedObjs);
                     }
                     else {
-                        internals.searchCommentByIdsFromDB(request, missedCommentIds, function (err, result) {
+                        internals.searchCommentByIdsFromDB(request, missedIds, function (err, result) {
 
-                            var merged = foundComments.concat(result);
-                            var sorted = _.sortBy(merged, function(comment) {
+                            var mergedObjs = cachedObjs.concat(result);
+                            var sortedObjs = _.sortBy(mergedObjs, function(comment) {
                                 return comment.ct * -1;  // Sort records in DESC order by ct
                             });
-                            return callback(null, sorted);
+                            return callback(null, sortedObjs);
                         });
                     }
                 }
@@ -240,7 +244,7 @@ internals.searchCommentByIdsFromDB = function (request, commentIds, callback) {
 
     var queryValues = [request.query.after, request.query.before];
     var queryConfig = {
-        name: 'comment_by_ids',
+        // Warning: DO NOT give a name to this query since it has variable parameters
         text: select + where + order + limit,
         values: queryValues.concat(commentIds)
     };

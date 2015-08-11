@@ -7,44 +7,49 @@ var exports = module.exports = {};
 
 // Simple pairs. key = authToken, value = personId
 exports.AUTHTOKEN_PERSON_PAIRS = {
-    segment: 'A',
+    key: 'A',
     ttl: 35 * 60
 };
 
 //// Comment
 // Hash. key = commentId, fields = {id, owner, content, ...}
 exports.COMMENT_HASHES = {
-    segment: 'c'
+    key: 'c'
 };
 
 // SortedSet. key = postId, value = commentId, score = comment.ct
 exports.POST_COMMENT_SETS = {
-    segment: 'C',
+    key: 'C',
     size: 1000
 };
 
 //// Post
 // Hash. key = personId, fields = {filname, uv, badge, likes, comments, ...}
 exports.POST_HASHES = {
-    segment: 't'
+    key: 't'
 };
 
 // SortedSet. key = cellId, value = postId, score = post.ct
 exports.CELL_POST_SETS = {
-    segment: 'T',
+    key: 'T',
     size: 1000
 };
 
 //// Person
 // Hash. key = personId, fields = {name, device, badge, hearts, friends, ...}
 exports.PERSON_HASHES = {
-    segment: 'p'
+    key: 'p'
 };
 
 // SortedSet. key = cellId, value = personId, score = personScore
 exports.CELL_PERSON_SETS = {
-    segment: 'P',
-    size: 1000
+    key: 'P'
+};
+
+//// User
+// Hash. key = personId, fields = {device, service, badge}
+exports.USER_HASHES = {
+    key: 'u'
 };
 
 // consts
@@ -92,11 +97,12 @@ exports.Role = {
 
 // org type
 exports.OrgType = {
-    COM: 0,
-    EDU: 1,
-    ORG: 2,
-    GOV: 3,
-    OTHER: 4
+    UNKNOWN: 0,
+    COM: 1,
+    EDU: 2,
+    ORG: 3,
+    GOV: 4,
+    OTHER: 100
 };
 
 // push notification service type

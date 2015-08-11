@@ -8,8 +8,8 @@ var Utils = require('../utils');
 var _ = require('underscore');
 
 var internals = {};
-var selectClause = 'SELECT id, name, org, orgtype, gender, yob, bio, url, hearts, friends, score, ut FROM person ';
-var selectProfileClause = 'SELECT id, email, name, role, org, orgtype, gender, yob, bio, url, hearts, friends, score, verified, met FROM person ';
+var selectInfo = 'SELECT id, name, org, orgtype, gender, yob, bio, ppf, hearts, score, ut FROM person ';
+var selectOwn = 'SELECT id, email, name, role, org, orgtype, gender, yob, bio, ppf, hearts, friends, score, verified, met FROM person ';
 
 
 exports.register = function (server, options, next) {
@@ -27,37 +27,84 @@ exports.register = function (server, options, next) {
             validate: {
                 query: {
                     cell: Joi.string().max(12).required(),
-                    id: Joi.array().single(true).unique().items(Joi.string().regex(/^[0-9]+$/).max(19))
+                    id: Joi.array().single(true).unique().max(Const.PERSON_PER_QUERY).items(Joi.string().regex(/^[0-9]+$/).max(19))
                 }
             }
         },
         handler: function (request, reply) {
 
-            var personIds = request.query.id;
-            var queryValues = [request.query.cell];
-            var parameterList = Utils.parametersString(2, personIds.length);
-            var queryConfig = {
-                // Warning: DO NOT give a name to this query since it has variable parameters
-                text: selectClause +
-                      'WHERE deleted = false AND cell = $1 AND id in ' + parameterList,
-                values: queryValues.concat(personIds)
-            };
+            var q = request.query;
+            var personIds = q.id;
 
-            request.pg.client.query(queryConfig, function (err, result) {
+            Async.waterfall([
+                function (callback) {
+
+                    Cache.mhgetall(Const.PERSON_HASHES, personIds, function (err, result) {
+                        if (err) {
+                            console.error(err);
+                        }
+
+                        var missedIds = [];
+                        var foundObjs = [];
+
+                        // result is an array, and each element is an array in form of [err, personObj]
+                        _.each(result, function(element, index) {
+                            var error = element.first;
+                            var obj = element.last;
+
+                            if (error || _.isEmpty(obj)) {  // err or not found
+                                missedIds.push(personIds[index]);
+                            }
+                            else {
+                                foundObjs.push(obj);
+                            }
+                        });
+
+                        return callback(null, missedIds, foundObjs);
+                    });
+                },
+                function (missedIds, cachedObjs, callback) {
+                    if (_.isEmpty(missedIds)) {
+                        return callback(null, cachedObjs);
+                    }
+
+                    internals.searchPersonByIdsFromDB(request, missedIds, function (err, result) {
+
+                        // write missed records back to cache
+                        // NOTE: we cannot use missedIds here since the sequence of records in result are different
+                        var ids = _.pluck(result, 'id');
+                        var objs = _.map(result, function (obj) {
+                            // remove all falsy properties to save cache space
+                            // see http://stackoverflow.com/questions/14058193/remove-empty-properties-falsy-values-from-object-with-underscore-js
+                            return _.pick(obj, _.identity);
+                        });
+                        Cache.mhmset(Const.PERSON_HASHES, ids, objs);
+
+                        // aggregate objs from cache and DB
+                        var mergedObjs = cachedObjs.concat(objs);
+                        var sortedObjs = _.sortBy(mergedObjs, function (person) {
+                            return person.score * -1;  // Sort objs in DESC order by score
+                        });
+
+                        return callback(null, sortedObjs);
+                    });
+                }
+            ], function (err, results) {
 
                 if (err) {
                     console.error(err);
-                    request.pg.kill = true;
                     return reply(err);
                 }
 
-                return reply(null, result.rows);
+                return reply(null, results);
             });
         }
     });
 
 
     // get person id list in the cell. auth.
+    // Each cell has a sorted person id set read-through cache, and the key is the person score
+    // In case of cache missing, DB will be queried and return a list of (personId, score) and update cache
     server.route({
         method: 'GET',
         path: options.basePath + '/person/nearby',
@@ -99,10 +146,10 @@ exports.register = function (server, options, next) {
                         }
 
                         if (result.length === 0) {                          // found nothing in cache
-                            if (q.min !== 0 && q.max === Const.MAX_SCORE) { // fetch higher score ones
+                            if (q.min !== 0 && q.max === Const.MAX_SCORE) { // client wants higher score ones
                                 return callback(null, setSize, []);         // just return empty result
                             }
-                            else {                                          // fetch lower score ones
+                            else {                                          // client wants lower score ones
                                 return callback(null, 0, null);             // search in DB
                             }
                         }
@@ -112,8 +159,19 @@ exports.register = function (server, options, next) {
                 },
                 function (setSize, personIds, callback) {
                     if (setSize === 0) {
-                        internals.searchPersonByCellFromDB(request, function (err, result) {
-                            return callback(null, result);
+                        internals.searchPersonIdByCellFromDB(request, function (err, result) {
+
+                            if (result.length === 0) {
+                                return callback(null, []);
+                            }
+
+                            var ids = _.pluck(result, 'id');
+                            var scores = _.pluck(result, 'score');
+
+                            // write back to cache
+                            Cache.mzadd(Const.CELL_PERSON_SETS, q.cell, scores, ids);
+
+                            return callback(null, ids);
                         });
                     }
                     else {
@@ -146,7 +204,7 @@ exports.register = function (server, options, next) {
 
             var queryConfig = {
                 name: 'person_profile',
-                text: selectProfileClause +
+                text: selectOwn +
                       'WHERE id = $1 AND deleted = false',
                 values: [request.auth.credentials.id]
             };
@@ -190,7 +248,7 @@ exports.register = function (server, options, next) {
                 badge: request.payload.badge
             };
 
-            Cache.hmset(Const.PERSON_HASHES, personId, personObj, function (err) {
+            Cache.hmset(Const.USER_HASHES, personId, personObj, function (err) {
 
                 if (err) {
                     console.error(err);
@@ -249,13 +307,10 @@ exports.register = function (server, options, next) {
                             return callback(Boom.badRequest(Const.PERSON_UPDATE_PROFILE_FAILED));
                         }
 
+                        p.id = personId;
+                        Cache.hmset(Const.PERSON_HASHES, personId, p);
                         return callback(null);
                     });
-                },
-                function (callback) {
-
-                    Cache.hmset(Const.PERSON_HASHES, personId, p);
-                    callback(null);
                 }
             ], function (err) {
 
@@ -264,7 +319,7 @@ exports.register = function (server, options, next) {
                     return reply(err);
                 }
 
-                return reply(null, { id: personId });
+                return reply(null, p);
             });
         }
     });
@@ -369,17 +424,46 @@ exports.register.attributes = {
 };
 
 
-internals.searchPersonByCellFromDB = function (request, callback) {
+internals.searchPersonIdByCellFromDB = function (request, callback) {
 
-    var where = 'WHERE score >= $1 AND score <= $2 AND cell = $3 AND deleted = false ';
+    var select = 'SELECT id, score FROM person ';
+    var where = 'WHERE score >= $1 AND score <= $2 AND cell = $3 AND verified = true AND deleted = false ';
     var order = 'ORDER BY score DESC ';
     var limit = 'LIMIT 50';
 
     var queryValues = [request.query.min, request.query.max, request.query.cell];
     var queryConfig = {
         name: 'person_by_cell',
-        text: selectClause + where + order + limit,
+        text: select + where + order + limit,
         values: queryValues
+    };
+
+    request.pg.client.query(queryConfig, function (err, result) {
+
+        if (err) {
+            console.error(err);
+            request.pg.kill = true;
+            return callback(err);
+        }
+
+        return callback(null, result.rows);
+    });
+};
+
+
+internals.searchPersonByIdsFromDB = function (request, personIds, callback) {
+
+    var parameterList = Utils.parametersString(2, personIds.length);
+    // Adding more conditions is to speed up the where-in search
+    var where = 'WHERE cell = $1 AND verified = true AND deleted = false AND id in ' + parameterList;
+    var order = 'ORDER BY score DESC ';
+    var limit = 'LIMIT 50';
+
+    var queryValues = [request.query.cell];
+    var queryConfig = {
+        // Warning: DO NOT give a name to this query since it has variable parameters
+        text: selectInfo + where + order + limit,
+        values: queryValues.concat(personIds)
     };
 
     request.pg.client.query(queryConfig, function (err, result) {

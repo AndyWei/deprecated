@@ -25,7 +25,7 @@ exports.notify = internals.notify = function (personId, title, body, callback) {
     Async.waterfall([
         function (next) {
 
-            Cache.hgetall(Const.PERSON_HASHES, personId, function (err, person) {
+            Cache.hgetall(Const.USER_HASHES, personId, function (err, person) {
                 if (err) {
                     return next(err);
                 }
@@ -58,7 +58,7 @@ exports.notify = internals.notify = function (personId, title, body, callback) {
         },
         function (next) {
 
-            Cache.hincrby(Const.PERSON_HASHES, personId, 'badge', 1, function (err) {
+            Cache.hincrby(Const.USER_HASHES, personId, 'badge', 1, function (err) {
 
                 if (err) {
                     return next(err);

@@ -9,7 +9,10 @@ curl -i -u jack@gmail.com:password "http://localhost:8000/v1/signin"
 curl -i -H "Authorization: Bearer XtLn28StytiaIavlMymz" "http://localhost:8000/v1/person/profile"
 
 # GET a list of people's profile
-curl -i -H "Authorization: Bearer XtLn28StytiaIavlMymz" "http://localhost:8000/v1/person?id=1&id=2&id=3&id=4"
+curl -i -H "Authorization: Bearer WiYdpKAfwDOAd5BKDGqx" "http://localhost:8000/v1/person?id=1&id=2&id=3&id=4&cell=94555"
+
+# GET person nearby
+curl -i -H "Authorization: Bearer jwAKzEAYs588F5wsUu1B" "http://localhost:8000/v1/person/nearby?cell=94555"
 
 # Update a person's profile
 curl -i -H "Authorization: Bearer XtLn28StytiaIavlMymz" --data "yob=1995&name='dodo'&gender=2&bio='sound of silence'" "http://localhost:8000/v1/person/profile"
@@ -29,4 +32,8 @@ curl -i "http://localhost:8000/v1/post/nearby?lon=-122.062168&lat=37.5584429&cel
 
 
 # Like a post
-curl -i -X POST -H "Authorization: Bearer 1:XID5YykTQGYKit1Mmca9" --data "id=2" "http://localhost:8000/v1/post/like"
+curl -i -X POST -H "Authorization: Bearer XID5YykTQGYKit1Mmca9" --data "id=2" "http://localhost:8000/v1/post/like"
+
+
+# Heart a person
+curl -i -X POST -H "Authorization: Bearer Gfw2iS937jlyeuSzlB21" --data "receiver=3" "http://localhost:8000/v1/heart"

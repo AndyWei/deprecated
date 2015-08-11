@@ -85,38 +85,42 @@ exports.register = function (server, options, next) {
                             console.error(err);
                         }
 
-                        var missedPostIds = [];
-                        var foundPost = [];
-                        for (var i = 0; i < postIds.length; i++) {
-                            // result is an array, and each element is an array in form of [err, postObj]
-                            if (result[i][0]) {  // found err
-                                missedPostIds.push(postIds[i]);
+                        var missedIds = [];
+                        var foundObjs = [];
+
+                        // result is an array, and each element is an array in form of [err, postObj]
+                        _.each(result, function(element, index) {
+                            var error = element.first;
+                            var obj = element.last;
+
+                            if (error || _.isEmpty(obj)) {  // err or not found
+                                missedIds.push(postIds[index]);
                             }
                             else {
-                                foundPost.push(result[i][1]);
+                                foundObjs.push(obj);
                             }
-                        }
+                        });
 
-                        return callback(null, setSize, missedPostIds, foundPost);
+                        return callback(null, setSize, missedIds, foundObjs);
                     });
                 },
-                function (setSize, missedPostIds, foundPost, callback) {
+                function (setSize, missedIds, cachedObjs, callback) {
                     if (setSize === 0) {
                         internals.searchPostByCellFromDB(request, function (err, result) {
                             return callback(null, result);
                         });
                     }
-                    else if (_.isNull(missedPostIds) || _.isEmpty(missedPostIds)) {
-                        return callback(null, foundPost);
+                    else if (_.isNull(missedIds) || _.isEmpty(missedIds)) {
+                        return callback(null, cachedObjs);
                     }
                     else {
-                        internals.searchPostByIdsFromDB(request, missedPostIds, function (err, result) {
+                        internals.searchPostByIdsFromDB(request, missedIds, function (err, result) {
 
-                            var merged = foundPost.concat(result);
-                            var sorted = _.sortBy(merged, function(post) {
+                            var mergedObjs = cachedObjs.concat(result);
+                            var sortedObjs = _.sortBy(mergedObjs, function(post) {
                                 return post.ct * -1;  // Sort records in DESC order by ct
                             });
-                            return callback(null, sorted);
+                            return callback(null, sortedObjs);
                         });
                     }
                 }
@@ -323,7 +327,7 @@ internals.searchPostByIdsFromDB = function (request, postIds, callback) {
 
     var queryValues = [request.query.after, request.query.before];
     var queryConfig = {
-        name: 'post_by_ids',
+        // Warning: DO NOT give a name to this query since it has variable parameters
         text: selectClause + where + order + limit,
         values: queryValues.concat(postIds)
     };

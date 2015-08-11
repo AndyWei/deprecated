@@ -15,9 +15,9 @@ internals.settings = {
 internals.redis = null;
 
 
-internals.generateKey = function (dataset, key) {
+internals.generateKey = function (partition, localKey) {
 
-    return String(dataset.segment) + String(key);
+    return String(partition.key) + String(localKey);
 };
 
 
@@ -59,11 +59,11 @@ exports.stop = function () {
 
 
 //// pairs
-exports.drop = function (dataset, key, callback) {
+exports.drop = function (partition, key, callback) {
 
     Hoek.assert(internals.redis, 'Connection not started');
 
-    internals.redis.del(internals.generateKey(dataset, key), function (err) {
+    internals.redis.del(internals.generateKey(partition, key), function (err) {
 
         if (typeof callback === 'function') {
             return callback(err);
@@ -72,11 +72,11 @@ exports.drop = function (dataset, key, callback) {
 };
 
 
-exports.incr = function (dataset, key, callback) {
+exports.incr = function (partition, key, callback) {
 
     Hoek.assert(internals.redis, 'Connection not started');
 
-    internals.redis.incr(internals.generateKey(dataset, key), function (err, result) {
+    internals.redis.incr(internals.generateKey(partition, key), function (err, result) {
 
         if (typeof callback === 'function') {
             if (err) {
@@ -89,7 +89,7 @@ exports.incr = function (dataset, key, callback) {
 };
 
 
-exports.mget = function (dataset, keys, callback) {
+exports.mget = function (partition, keys, callback) {
 
     Hoek.assert(typeof callback === 'function', 'Invalid callback');
     Hoek.assert(internals.redis, 'Connection not started');
@@ -99,7 +99,7 @@ exports.mget = function (dataset, keys, callback) {
     }
 
     var cacheKeys = _.map(keys, function (key) {
-        return internals.generateKey(dataset, key);
+        return internals.generateKey(partition, key);
     });
 
     internals.redis.mget(cacheKeys, function (err, result) {
@@ -117,13 +117,13 @@ exports.mget = function (dataset, keys, callback) {
 };
 
 
-exports.mset = function (dataset, keys, values, callback) {
+exports.mset = function (partition, keys, values, callback) {
 
     Hoek.assert(internals.redis, 'Connection not started');
 
     var keyValues = _.map(keys, function (key, index) {
 
-        var cacheKey = internals.generateKey(dataset, key);
+        var cacheKey = internals.generateKey(partition, key);
         return [cacheKey, values[index]];
     });
 
@@ -140,14 +140,14 @@ exports.mset = function (dataset, keys, values, callback) {
 };
 
 
-exports.setex = internals.setex = function (dataset, key, value, callback) {
+exports.setex = internals.setex = function (partition, key, value, callback) {
 
     Hoek.assert(internals.redis, 'Connection not started');
 
-    var cacheKey = internals.generateKey(dataset, key);
+    var cacheKey = internals.generateKey(partition, key);
     value = value.toString();
 
-    internals.redis.setex(cacheKey, dataset.ttl, value, function (err) {
+    internals.redis.setex(cacheKey, partition.ttl, value, function (err) {
 
         if (typeof callback === 'function') {
             if (err) {
@@ -160,12 +160,12 @@ exports.setex = internals.setex = function (dataset, key, value, callback) {
 };
 
 
-exports.get = internals.get = function (dataset, key, callback) {
+exports.get = internals.get = function (partition, key, callback) {
 
     Hoek.assert(typeof callback === 'function', 'Invalid callback');
     Hoek.assert(internals.redis, 'Connection not started');
 
-    var cacheKey = internals.generateKey(dataset, key);
+    var cacheKey = internals.generateKey(partition, key);
     internals.redis.get(cacheKey, function (err, result) {
 
         if (err) {
@@ -179,7 +179,7 @@ exports.get = internals.get = function (dataset, key, callback) {
 
 //// Lists
 // Get all the elements from multi lists
-exports.mgetlist = internals.mgetlist = function (dataset, keys, callback) {
+exports.mgetlist = internals.mgetlist = function (partition, keys, callback) {
 
     Hoek.assert(typeof callback === 'function', 'Invalid callback');
     Hoek.assert(internals.redis, 'Connection not started');
@@ -187,7 +187,7 @@ exports.mgetlist = internals.mgetlist = function (dataset, keys, callback) {
     var pipeline = internals.redis.pipeline();
 
     _.each(keys, function (key) {
-        var listKey = internals.generateKey(dataset, key);
+        var listKey = internals.generateKey(partition, key);
         pipeline.lrange(listKey, 0, -1);
     });
 
@@ -209,12 +209,12 @@ exports.mgetlist = internals.mgetlist = function (dataset, keys, callback) {
 
 
 // Get all the elements from a lists
-exports.getlist = internals.getlist = function (dataset, key, callback) {
+exports.getlist = internals.getlist = function (partition, key, callback) {
 
     Hoek.assert(typeof callback === 'function', 'Invalid callback');
     Hoek.assert(internals.redis, 'Connection not started');
 
-    var listKey = internals.generateKey(dataset, key);
+    var listKey = internals.generateKey(partition, key);
     internals.redis.lrange(listKey, 0, -1, function (err, result) {
 
         if (err) {
@@ -226,16 +226,16 @@ exports.getlist = internals.getlist = function (dataset, key, callback) {
 };
 
 
-exports.pushlist = internals.pushlist = function (dataset, key, value, callback) {
+exports.pushlist = internals.pushlist = function (partition, key, value, callback) {
 
     Hoek.assert(internals.redis, 'Connection not started');
 
-    var listKey = internals.generateKey(dataset, key);
+    var listKey = internals.generateKey(partition, key);
     var pipeline = internals.redis.pipeline();
 
     pipeline
         .lpush(listKey, value)
-        .ltrim(listKey, 0, dataset.size - 1)
+        .ltrim(listKey, 0, partition.size - 1)
         .exec(function (err, result) {
 
         if (typeof callback === 'function') {
@@ -251,11 +251,11 @@ exports.pushlist = internals.pushlist = function (dataset, key, value, callback)
 
 //// Sorted Sets
 // add a member to the SortedSet
-exports.zadd = internals.zadd = function (dataset, key, score, member, callback) {
+exports.zadd = internals.zadd = function (partition, key, score, member, callback) {
 
     Hoek.assert(internals.redis, 'Connection not started');
 
-    var setKey = internals.generateKey(dataset, key);
+    var setKey = internals.generateKey(partition, key);
 
     internals.redis.zadd(setKey, score, member, function (err, result) {
 
@@ -274,12 +274,52 @@ exports.zadd = internals.zadd = function (dataset, key, score, member, callback)
 };
 
 
-// get the specified range of elements in the sorted set stored at key
-exports.zrange = internals.zrange = function (dataset, key, start, stop, callback) {
+// add nulti members to the SortedSet
+exports.mzadd = internals.mzadd = function (partition, key, scores, members, callback) {
 
     Hoek.assert(internals.redis, 'Connection not started');
 
-    var setKey = internals.generateKey(dataset, key);
+    if (_.isUndefined(scores) || _.isNull(scores) || _.isEmpty(scores) ||
+        _.isUndefined(members) || _.isNull(members) || _.isEmpty(members) ||
+        !_.isArray(scores) || !_.isArray(members) || scores.count !== members.count) {
+
+        console.err('The invalid scores or members');
+        if (typeof callback === 'function') {
+            return callback(null, []);
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    var setKey = internals.generateKey(partition, key);
+    var pipeline = internals.redis.pipeline();
+
+    _.each(members, function (member, index) {
+        var score = scores[index];
+        pipeline.zadd(setKey, score, member);
+    });
+
+    pipeline.exec(function (err, result) {
+
+        if (typeof callback === 'function') {
+            if (err) {
+                return callback(err);
+            }
+
+            return callback(null, result);
+        }
+    });
+};
+
+
+// get the specified range of elements in the sorted set stored at key
+exports.zrange = internals.zrange = function (partition, key, start, stop, callback) {
+
+    Hoek.assert(internals.redis, 'Connection not started');
+
+    var setKey = internals.generateKey(partition, key);
 
     internals.redis.zrange(setKey, start, stop, function (err, result) {
 
@@ -299,14 +339,15 @@ exports.zrange = internals.zrange = function (dataset, key, start, stop, callbac
 
 
 // get the specified range of elements in the sorted set stored at keys
-exports.mzrange = internals.mzrange = function (dataset, keys, start, stop, callback) {
+exports.mzrange = internals.mzrange = function (partition, keys, start, stop, callback) {
 
+    Hoek.assert(typeof callback === 'function', 'Invalid callback');
     Hoek.assert(internals.redis, 'Connection not started');
 
     var pipeline = internals.redis.pipeline();
 
     _.each(keys, function (key) {
-        var setKey = internals.generateKey(dataset, key);
+        var setKey = internals.generateKey(partition, key);
         pipeline.zrange(setKey, start, stop);
     });
 
@@ -326,16 +367,16 @@ exports.mzrange = internals.mzrange = function (dataset, keys, start, stop, call
 
 
 // add a member to the SortedSet and trim the size
-exports.zaddtrim = internals.zaddtrim = function (dataset, key, score, member, callback) {
+exports.zaddtrim = internals.zaddtrim = function (partition, key, score, member, callback) {
 
     Hoek.assert(internals.redis, 'Connection not started');
 
-    var setKey = internals.generateKey(dataset, key);
+    var setKey = internals.generateKey(partition, key);
 
     internals.redis
         .multi()
         .zadd(setKey, score, member)
-        .zremrangebyrank(setKey, 0, dataset.size * -1)
+        .zremrangebyrank(setKey, 0, partition.size * -1)
         .exec(function (err, result) {
 
         if (typeof callback === 'function') {
@@ -350,7 +391,7 @@ exports.zaddtrim = internals.zaddtrim = function (dataset, key, score, member, c
 
 
 // change the key of the member
-exports.zchangekey = internals.zchangekey = function (dataset, oldkey, newKey, score, member, callback) {
+exports.zchangekey = internals.zchangekey = function (partition, oldkey, newKey, score, member, callback) {
 
     Hoek.assert(internals.redis, 'Connection not started');
 
@@ -358,13 +399,13 @@ exports.zchangekey = internals.zchangekey = function (dataset, oldkey, newKey, s
         return callback(null, null);
     }
 
-    oldkey = internals.generateKey(dataset, oldkey);
-    newKey = internals.generateKey(dataset, newKey);
+    oldkey = internals.generateKey(partition, oldkey);
+    newKey = internals.generateKey(partition, newKey);
 
     internals.redis
         .multi()
         .zadd(newKey, score, member)
-        .zremrangebyrank(newKey, 0, dataset.size * -1)
+        .zremrangebyrank(newKey, 0, partition.size * -1)
         .zrem(oldkey, member)
         .exec(function (err, result) {
 
@@ -380,12 +421,12 @@ exports.zchangekey = internals.zchangekey = function (dataset, oldkey, newKey, s
 
 
 // Get the cardinality of the set
-exports.zcard = internals.zcard = function (dataset, key, callback) {
+exports.zcard = internals.zcard = function (partition, key, callback) {
 
     Hoek.assert(typeof callback === 'function', 'Invalid callback');
     Hoek.assert(internals.redis, 'Connection not started');
 
-    var setKey = internals.generateKey(dataset, key);
+    var setKey = internals.generateKey(partition, key);
     internals.redis.zcard(setKey, function (err, result) {
 
         if (err) {
@@ -398,12 +439,12 @@ exports.zcard = internals.zcard = function (dataset, key, callback) {
 
 
 // Get all the elements in the sorted set at key with a score between max and min
-exports.zrevrangebyscore = internals.zrevrangebyscore = function (dataset, key, max, min, limit, callback) {
+exports.zrevrangebyscore = internals.zrevrangebyscore = function (partition, key, max, min, limit, callback) {
 
     Hoek.assert(typeof callback === 'function', 'Invalid callback');
     Hoek.assert(internals.redis, 'Connection not started');
 
-    var setKey = internals.generateKey(dataset, key);
+    var setKey = internals.generateKey(partition, key);
     internals.redis.zrevrangebyscore(setKey, max, min, 'LIMIT', 0, limit, function (err, result) {
 
         if (err) {
@@ -416,11 +457,11 @@ exports.zrevrangebyscore = internals.zrevrangebyscore = function (dataset, key, 
 
 
 //// Hashes
-exports.hset = internals.hset = function (dataset, key, field, value, callback) {
+exports.hset = internals.hset = function (partition, key, field, value, callback) {
 
     Hoek.assert(internals.redis, 'Connection not started');
 
-    var hashKey = internals.generateKey(dataset, key);
+    var hashKey = internals.generateKey(partition, key);
     internals.redis.hset(hashKey, field, value.toString(), function (err, result) {
 
         if (typeof callback === 'function') {
@@ -434,11 +475,11 @@ exports.hset = internals.hset = function (dataset, key, field, value, callback) 
 };
 
 
-exports.hmset = internals.hmset = function (dataset, key, obj, callback) {
+exports.hmset = internals.hmset = function (partition, key, obj, callback) {
 
     Hoek.assert(internals.redis, 'Connection not started');
 
-    var hashKey = internals.generateKey(dataset, key);
+    var hashKey = internals.generateKey(partition, key);
     internals.redis.hmset(hashKey, obj, function (err, result) {
 
         if (typeof callback === 'function') {
@@ -452,11 +493,51 @@ exports.hmset = internals.hmset = function (dataset, key, obj, callback) {
 };
 
 
-exports.hincrby = internals.hincrby = function (dataset, key, field, increment, callback) {
+exports.mhmset = internals.mhmset = function (partition, keys, objs, callback) {
 
     Hoek.assert(internals.redis, 'Connection not started');
 
-    var hashKey = internals.generateKey(dataset, key);
+    if (_.isUndefined(keys) || _.isNull(keys) || _.isEmpty(keys) ||
+        _.isUndefined(objs) || _.isNull(objs) || _.isEmpty(objs) ||
+        !_.isArray(keys) || !_.isArray(objs) || keys.count !== objs.count) {
+
+        console.err('The invalid keys or objs');
+        if (typeof callback === 'function') {
+            return callback(null, []);
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    var hashKeys = _.map(keys, function (key) {
+        return internals.generateKey(partition, key);
+    });
+    var pipeline = internals.redis.pipeline();
+
+    _.each(hashKeys, function (hashKey, index) {
+        pipeline.hmset(hashKey, objs[index]);
+    });
+
+    pipeline.exec(function (err, result) {
+
+        if (typeof callback === 'function') {
+            if (err) {
+                return callback(err);
+            }
+
+            return callback(null, result);
+        }
+    });
+};
+
+
+exports.hincrby = internals.hincrby = function (partition, key, field, increment, callback) {
+
+    Hoek.assert(internals.redis, 'Connection not started');
+
+    var hashKey = internals.generateKey(partition, key);
     internals.redis.hincrby(hashKey, field, increment, function (err, result) {
 
         if (typeof callback === 'function') {
@@ -470,12 +551,12 @@ exports.hincrby = internals.hincrby = function (dataset, key, field, increment, 
 };
 
 
-exports.hgetall = internals.hgetall = function (dataset, key, callback) {
+exports.hgetall = internals.hgetall = function (partition, key, callback) {
 
     Hoek.assert(typeof callback === 'function', 'Invalid callback');
     Hoek.assert(internals.redis, 'Connection not started');
 
-    var hashKey = internals.generateKey(dataset, key);
+    var hashKey = internals.generateKey(partition, key);
     internals.redis.hgetall(hashKey, function (err, result) {
 
         if (err) {
@@ -487,7 +568,7 @@ exports.hgetall = internals.hgetall = function (dataset, key, callback) {
 };
 
 
-exports.mhgetall = internals.hgetall = function (dataset, keys, callback) {
+exports.mhgetall = internals.hgetall = function (partition, keys, callback) {
 
     Hoek.assert(typeof callback === 'function', 'Invalid callback');
     Hoek.assert(internals.redis, 'Connection not started');
@@ -499,7 +580,7 @@ exports.mhgetall = internals.hgetall = function (dataset, keys, callback) {
     var pipeline = internals.redis.pipeline();
 
     _.each(keys, function (key) {
-        var hashKey = internals.generateKey(dataset, key);
+        var hashKey = internals.generateKey(partition, key);
         pipeline.hgetall(hashKey);
     });
 
