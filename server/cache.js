@@ -1,7 +1,7 @@
 var Config = require('../config');
 var Hoek = require('hoek');
 var Redis = require('ioredis');
-var _ = require('underscore');
+var _ = require('lodash');
 
 var exports = module.exports = {};
 var internals = {};
@@ -94,7 +94,7 @@ exports.mget = function (partition, keys, callback) {
     Hoek.assert(typeof callback === 'function', 'Invalid callback');
     Hoek.assert(internals.redis, 'Connection not started');
 
-    if (_.isUndefined(keys) || _.isNull(keys) || _.isEmpty(keys)) {
+    if (!_.isArray(keys) || _.isEmpty(keys)) {
         return callback(null, []);
     }
 
@@ -122,7 +122,6 @@ exports.mset = function (partition, keys, values, callback) {
     Hoek.assert(internals.redis, 'Connection not started');
 
     var keyValues = _.map(keys, function (key, index) {
-
         var cacheKey = internals.generateKey(partition, key);
         return [cacheKey, values[index]];
     });
@@ -186,7 +185,7 @@ exports.mgetlist = internals.mgetlist = function (partition, keys, callback) {
 
     var pipeline = internals.redis.pipeline();
 
-    _.each(keys, function (key) {
+    _.forEach(keys, function (key) {
         var listKey = internals.generateKey(partition, key);
         pipeline.lrange(listKey, 0, -1);
     });
@@ -279,9 +278,8 @@ exports.mzadd = internals.mzadd = function (partition, key, scores, members, cal
 
     Hoek.assert(internals.redis, 'Connection not started');
 
-    if (_.isUndefined(scores) || _.isNull(scores) || _.isEmpty(scores) ||
-        _.isUndefined(members) || _.isNull(members) || _.isEmpty(members) ||
-        !_.isArray(scores) || !_.isArray(members) || scores.count !== members.count) {
+    if (!_.isArray(scores) || _.isEmpty(scores) ||
+        !_.isArray(members) || _.isEmpty(members) || scores.length !== members.length) {
 
         console.err('The invalid scores or members');
         if (typeof callback === 'function') {
@@ -296,7 +294,7 @@ exports.mzadd = internals.mzadd = function (partition, key, scores, members, cal
     var setKey = internals.generateKey(partition, key);
     var pipeline = internals.redis.pipeline();
 
-    _.each(members, function (member, index) {
+    _.forEach(members, function (member, index) {
         var score = scores[index];
         pipeline.zadd(setKey, score, member);
     });
@@ -346,7 +344,7 @@ exports.mzrange = internals.mzrange = function (partition, keys, start, stop, ca
 
     var pipeline = internals.redis.pipeline();
 
-    _.each(keys, function (key) {
+    _.forEach(keys, function (key) {
         var setKey = internals.generateKey(partition, key);
         pipeline.zrange(setKey, start, stop);
     });
@@ -497,9 +495,8 @@ exports.mhmset = internals.mhmset = function (partition, keys, objs, callback) {
 
     Hoek.assert(internals.redis, 'Connection not started');
 
-    if (_.isUndefined(keys) || _.isNull(keys) || _.isEmpty(keys) ||
-        _.isUndefined(objs) || _.isNull(objs) || _.isEmpty(objs) ||
-        !_.isArray(keys) || !_.isArray(objs) || keys.count !== objs.count) {
+    if (!_.isArray(keys) || _.isEmpty(keys) ||
+        !_.isArray(objs) || _.isEmpty(objs) || keys.length !== objs.length) {
 
         console.err('The invalid keys or objs');
         if (typeof callback === 'function') {
@@ -516,7 +513,7 @@ exports.mhmset = internals.mhmset = function (partition, keys, objs, callback) {
     });
     var pipeline = internals.redis.pipeline();
 
-    _.each(hashKeys, function (hashKey, index) {
+    _.forEach(hashKeys, function (hashKey, index) {
         pipeline.hmset(hashKey, objs[index]);
     });
 
@@ -573,13 +570,13 @@ exports.mhgetall = internals.hgetall = function (partition, keys, callback) {
     Hoek.assert(typeof callback === 'function', 'Invalid callback');
     Hoek.assert(internals.redis, 'Connection not started');
 
-    if (_.isUndefined(keys) || _.isNull(keys) || _.isEmpty(keys)) {
+    if (!_.isArray(keys) || _.isEmpty(keys)) {
         return callback(null, []);
     }
 
     var pipeline = internals.redis.pipeline();
 
-    _.each(keys, function (key) {
+    _.forEach(keys, function (key) {
         var hashKey = internals.generateKey(partition, key);
         pipeline.hgetall(hashKey);
     });

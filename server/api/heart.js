@@ -4,7 +4,7 @@ var Cache = require('../cache');
 var Const = require('../constants');
 var Hoek = require('hoek');
 var Joi = require('joi');
-var _ = require('underscore');
+var _ = require('lodash');
 
 
 exports.register = function (server, options, next) {

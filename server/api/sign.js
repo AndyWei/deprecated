@@ -6,7 +6,7 @@ var Const = require('../constants');
 var Hoek = require('hoek');
 var Joi = require('joi');
 var Rand = require('rand-token');
-var _ = require('underscore');
+var _ = require('lodash');
 
 var internals = {};
 

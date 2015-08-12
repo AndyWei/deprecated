@@ -2,7 +2,7 @@ var Apn = require('apn');
 var Async = require('async');
 var Cache = require('./cache');
 var Const = require('./constants');
-var _ = require('underscore');
+var _ = require('lodash');
 
 var exports = module.exports = {};
 var internals = {};
@@ -84,7 +84,7 @@ exports.mnotify = function (personIds, title, body) {
         return;
     }
 
-    _.each(personIds, function (id) {
+    _.forEach(personIds, function (id) {
 
         if (!id) {
             return;

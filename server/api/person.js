@@ -5,7 +5,7 @@ var Const = require('../constants');
 var Hoek = require('hoek');
 var Joi = require('joi');
 var Utils = require('../utils');
-var _ = require('underscore');
+var _ = require('lodash');
 
 var internals = {};
 var selectInfo = 'SELECT id, name, org, orgtype, gender, yob, bio, ppf, hearts, score, ut FROM person ';
@@ -44,21 +44,10 @@ exports.register = function (server, options, next) {
                             console.error(err);
                         }
 
-                        var missedIds = [];
-                        var foundObjs = [];
-
                         // result is an array, and each element is an array in form of [err, personObj]
-                        _.each(result, function(element, index) {
-                            var error = element.first;
-                            var obj = element.last;
-
-                            if (error || _.isEmpty(obj)) {  // err or not found
-                                missedIds.push(personIds[index]);
-                            }
-                            else {
-                                foundObjs.push(obj);
-                            }
-                        });
+                        var foundObjs = _(result).map(_.last).compact().reject(_.isEmpty).value();
+                        var foundIds = _.pluck(foundObjs, 'id');
+                        var missedIds = _.difference(personIds, foundIds);
 
                         return callback(null, missedIds, foundObjs);
                     });

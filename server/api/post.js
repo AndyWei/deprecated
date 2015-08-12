@@ -7,7 +7,7 @@ var Const = require('../constants');
 var Hoek = require('hoek');
 var Joi = require('joi');
 var Utils = require('../utils');
-var _ = require('underscore');
+var _ = require('lodash');
 
 var internals = {};
 var selectClause = 'SELECT id, owner, type, uv, filename, caption, likes, comments, ct FROM post ';
@@ -85,21 +85,10 @@ exports.register = function (server, options, next) {
                             console.error(err);
                         }
 
-                        var missedIds = [];
-                        var foundObjs = [];
-
                         // result is an array, and each element is an array in form of [err, postObj]
-                        _.each(result, function(element, index) {
-                            var error = element.first;
-                            var obj = element.last;
-
-                            if (error || _.isEmpty(obj)) {  // err or not found
-                                missedIds.push(postIds[index]);
-                            }
-                            else {
-                                foundObjs.push(obj);
-                            }
-                        });
+                        var foundObjs = _(result).map(_.last).compact().reject(_.isEmpty).value();
+                        var foundIds = _.pluck(foundObjs, 'id');
+                        var missedIds = _.difference(postIds, foundIds);
 
                         return callback(null, setSize, missedIds, foundObjs);
                     });
@@ -110,7 +99,7 @@ exports.register = function (server, options, next) {
                             return callback(null, result);
                         });
                     }
-                    else if (_.isNull(missedIds) || _.isEmpty(missedIds)) {
+                    else if (_.isEmpty(missedIds)) {
                         return callback(null, cachedObjs);
                     }
                     else {

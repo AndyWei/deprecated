@@ -1,26 +1,6 @@
-var _ = require('underscore');
-
+var _ = require('lodash');
 
 var exports = module.exports = {};
-
-
-/*
- *  left pad zero: (199, 7) -> '0000199'
- */
-exports.padZero = function (num, len, pad) {
-
-    var prefix = '';
-    var str = num.toString();
-
-    pad = pad || '0';
-    len = (len || 2) - str.length;
-
-    while(prefix.length < len) {
-        prefix += pad;
-    }
-
-    return prefix + str;
-};
 
 /*
  * Generate node-postgres variable length parameters string
