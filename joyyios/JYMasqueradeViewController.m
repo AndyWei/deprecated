@@ -28,6 +28,7 @@
 @property(nonatomic) JYPost *currentPost;
 @property(nonatomic) NSInteger networkThreadCount;
 @property(nonatomic) NSMutableArray *postList;
+@property(nonatomic) UIButton *titleButton;
 @property(nonatomic) UIColor *originalTabBarTintColor;
 @property(nonatomic) UITableView *tableView;
 @end
@@ -40,17 +41,15 @@ static NSString *const kPostCellIdentifier = @"postCell";
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-
     self.title = NSLocalizedString(@"Masquerade", nil);
-
     // Do not use UIBarStyleBlack in the next line, because it will make the status bar text white, which is not what we want
     // self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
 
-    // Setup the navigationBar appearence
+    // Setup the navigationBar appearence and function
     self.navigationController.navigationBar.barTintColor = JoyyBlack;
     self.navigationController.navigationBar.translucent = YES;
-    [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName: JoyyGray}];
     self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:self.navigationItem.backBarButtonItem.style target:nil action:nil];
+    self.navigationItem.titleView = self.titleButton;
 
     self.networkThreadCount = 0;
     self.currentPost = nil;
@@ -64,6 +63,32 @@ static NSString *const kPostCellIdentifier = @"postCell";
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_like:) name:kNotificationWillLikePost object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_comment:) name:kNotificationWillCommentPost object:nil];
+}
+
+- (UIButton *)titleButton
+{
+    if (!_titleButton)
+    {
+        NSString *title = NSLocalizedString(@"Masquerade", nil);
+        _titleButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        _titleButton.frame = CGRectMake(0, 0, 70, 44);
+        _titleButton.titleLabel.font = [UIFont boldSystemFontOfSize:16];
+        [_titleButton setTitle:title forState:UIControlStateNormal];
+        [_titleButton setTitleColor:JoyyGray forState:UIControlStateNormal];
+        [_titleButton addTarget:self action:@selector(_scrollToTop) forControlEvents:UIControlEventTouchUpInside];
+    }
+    return _titleButton;
+}
+
+- (void)_scrollToTop
+{
+    if (self.postList.count == 0)
+    {
+        return;
+    }
+
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
+    [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:YES];
 }
 
 - (void)viewWillAppear:(BOOL)animated

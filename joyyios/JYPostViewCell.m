@@ -92,7 +92,7 @@ static const CGFloat kLikeCountLabelWidth = 80;
 
     dispatch_once(&done, ^{
 
-        _sharedPlaceholderImage = [UIImage imageNamed:@"mask"];
+        _sharedPlaceholderImage = [UIImage imageNamed:@"heart"];
     });
 
     return _sharedPlaceholderImage;
@@ -193,12 +193,14 @@ static const CGFloat kLikeCountLabelWidth = 80;
 
     __weak typeof(self) weakSelf = self;
     [self.photoView setImageWithURLRequest:request
-                          placeholderImage:[[self class] sharedPlaceholderImage]
+                          placeholderImage:nil
                                    success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image)
                                    {
                                        weakSelf.photoView.image = image;
-                                       [weakSelf setNeedsLayout];
-
+                                       weakSelf.photoView.alpha = 0;
+                                       [UIView animateWithDuration:0.5 animations:^{
+                                           weakSelf.photoView.alpha = 1;
+                                       }];
                                    } failure:nil];
 }
 
