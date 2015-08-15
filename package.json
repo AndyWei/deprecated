@@ -28,10 +28,10 @@
     "hoek": "^2.14.0",
     "ioredis": "^1.6.1",
     "joi": "^6.5.0",
+    "jsonwebtoken": "^5.0.4",
     "lodash": "^3.10.1",
     "pg": "^4.4.0",
-    "pg-native": "^1.8.1",
-    "rand-token": "^0.2.1"
+    "pg-native": "^1.8.1"
   },
   "devDependencies": {
     "code": "^1.4.1",

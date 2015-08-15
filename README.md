@@ -40,17 +40,17 @@ exists.
 ```bash
 $ npm run setup
 
-# > joyyserver@0.0.0 setup /Users/andy/joyy/joyyserver
+# > joyyserver@0.0.0 setup /Users/ping/joyy/joyyserver
 # > ./setup.js
 
 # Project name: (joyyserver)
 # Postgres URL: (postgres://postgres:password@localhost:5432/joyy)
-# Root user email: andyweius@gmail.com
+# Root user email: joyybiz@gmail.com
 # Root user password:
-# System email: (andyweius@gmail.com)
+# System email: (joyybiz@gmail.com)
 # SMTP host: (smtp.gmail.com)
 # SMTP port: (465)
-# SMTP username: (andyweius@gmail.com)
+# SMTP username: (joyybiz@gmail.com)
 # SMTP password:
 # Setup complete.
 ```
@@ -61,7 +61,7 @@ $ npm run setup
 ```bash
 $ npm start
 
-# > joyyserver@0.0.0 start /Users/andy/joyy/joyyserver
+# > joyyserver@0.0.0 start /Users/ping/joyy/joyyserver
 # > ./node_modules/nodemon/bin/nodemon.js -e js,md server
 
 # 20 Sep 03:47:15 - [nodemon] v1.2.1
@@ -125,7 +125,7 @@ For command line output:
 ```bash
 $ npm test
 
-# > joyyserver@0.0.1 test /Users/andy/joyy/joyyserver
+# > joyyserver@0.0.1 test /Users/ping/joyy/joyyserver
 # > ./node_modules/lab/bin/lab -c
 
 # ..................................................
@@ -146,7 +146,7 @@ With html code coverage report:
 ```bash
 $ npm run test-cover
 
-# > joyyserver@0.0.1 test-cover /Users/andy/joyy/joyyserver
+# > joyyserver@0.0.1 test-cover /Users/ping/joyy/joyyserver
 # > ./node_modules/lab/bin/lab -c -r html -o ./test/artifacts/coverage.html && open ./test/artifacts/coverage.html
 ```
 

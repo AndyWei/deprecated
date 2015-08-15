@@ -1,15 +1,9 @@
 var exports = module.exports = {};
 
 
-/*
- * cache dataset settings
- */
-
-// Simple pairs. key = authToken, value = personId
-exports.AUTHTOKEN_PERSON_PAIRS = {
-    key: 'A',
-    ttl: 35 * 60
-};
+/* * * * * * * * * * * * * *
+ * cache dataset settings  *
+ * * * * * * * * * * * * * */
 
 //// Comment
 // Hash. key = commentId, fields = {id, owner, content, ...}
@@ -55,7 +49,7 @@ exports.USER_HASHES = {
 // consts
 exports.BCRYPT_ROUND = 10;
 exports.DEGREE_FACTOR = 0.0089827983;
-exports.TOKEN_LENGTH = 20;
+
 exports.MAX_ID = '9223372036854775807';
 exports.MAX_SCORE = 2147483647; // the max value of postgres integer
 

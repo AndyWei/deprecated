@@ -17,6 +17,10 @@ var config = {
         connectionString: 'postgres://postgres:password@localhost/joyy',
         native: true
     },
+    jwt: {
+        key: 'Lh;U2.JD5VW8*LoCJT1xR,Q9On=khDcy',
+        expiresInMinutes: 31
+    },
     nodemailer: {
         host: 'smtp.gmail.com',
         port: 465,

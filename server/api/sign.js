@@ -1,11 +1,11 @@
 var Async = require('async');
 var Bcrypt = require('bcrypt');
 var Boom = require('boom');
-var Cache = require('../cache');
+var Config = require('../../config');
 var Const = require('../constants');
 var Hoek = require('hoek');
 var Joi = require('joi');
-var Rand = require('rand-token');
+var Jwt  = require('jsonwebtoken');
 var _ = require('lodash');
 
 var internals = {};
@@ -26,19 +26,10 @@ exports.register = function (server, options, next) {
         },
         handler: function (request, reply) {
 
-            internals.createAuthToken(request.auth.credentials.id, function (err, token) {
+            var response = request.auth.credentials;
+            response.token = internals.createJwtToken(request.auth.credentials.id);
 
-                if (err) {
-                    console.error(err);
-                    request.pg.kill = true;
-                    return reply(err);
-                }
-
-                var response = request.auth.credentials;
-                response.token = token;
-
-                reply(null, response);
-            });
+            reply(null, response);
         }
     });
 
@@ -136,12 +127,6 @@ internals.signup = function (request, reply) {
 
                 callback(err, queryResult.rows[0].id);
             });
-        }],
-        token: ['personId', function (callback, results) {
-
-            internals.createAuthToken(results.personId, function (err, token) {
-                callback(err, token);
-            });
         }]
     }, function (err, results) {
 
@@ -151,11 +136,11 @@ internals.signup = function (request, reply) {
         }
 
         var message = {
-                id: results.personId,
-                email: email,
-                name: name,
-                password: request.payload.password,
-                token: results.token
+            id: results.personId,
+            email: email,
+            name: name,
+            password: request.payload.password,
+            token: internals.createJwtToken(results.personId)
         };
 
         console.log('user created. email=%s, name = %s', email, name);
@@ -194,33 +179,16 @@ internals.getOrgFromEmail = function (email) {
 };
 
 
-// Create a 20 character alpha-numeric token and store it in cache as key
-internals.createAuthToken = function (personId, callback) {
+internals.createJwtToken = function (personId) {
 
-    Async.auto({
-        token: function (next) {
+    if (!_.isString(personId)) {
+         personId = personId.toString();
+    }
 
-            var str = Rand.generate(Const.TOKEN_LENGTH);
-            return next(null, str);
-        },
-        cache: ['token', function (next, result) {
+    var obj = { id: personId };
+    var key = Config.get('/jwt/key');
+    var options = { expiresInMinutes: Config.get('/jwt/expiresInMinutes')};
+    var token = Jwt.sign(obj, key, options);
 
-            Cache.setex(Const.AUTHTOKEN_PERSON_PAIRS, result.token, personId, function (err) {
-
-                if (err) {
-                    return next(err);
-                }
-
-                return next(null);
-            });
-        }]
-    }, function (err, result) {
-
-        if (err) {
-            console.error(err);
-            return callback(err);
-        }
-
-        return callback(null, result.token);
-    });
+    return token;
 };

@@ -1,8 +1,9 @@
 var Async = require('async');
 var Bcrypt = require('bcrypt');
 var Boom = require('boom');
-var Cache = require('./cache');
+var Config = require('../config');
 var Const = require('./constants');
+var Jwt  = require('jsonwebtoken');
 
 var exports = module.exports = {};
 var internals = {};
@@ -59,22 +60,16 @@ internals.validateSimple = function (request, email, password, finish) {
 
 internals.validateToken = function (token, callback) {
 
-    if (typeof token !== 'string' || token.length !== Const.TOKEN_LENGTH) {
-        return callback(Boom.unauthorized(Const.AUTH_TOKEN_INVALID));
-    }
-
-    Cache.get(Const.AUTHTOKEN_PERSON_PAIRS, token, function (err, result) {
+    var key = Config.get('/jwt/key');
+    Jwt.verify(token, key, function(err, decoded) {
 
         if (err) {
-            console.error(err);
-            return callback(err);
-        }
-
-        if (!result) {
+            console.log(err);
             return callback(Boom.unauthorized(Const.AUTH_TOKEN_INVALID));
         }
 
-        return callback(null, true, { id: result});
+        // Authenticated
+        return callback(null, true, decoded);
     });
 };
 
