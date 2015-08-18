@@ -116,11 +116,6 @@ static const CGFloat kLikeCountLabelWidth = 80;
     self.observer = nil;
 }
 
-- (NSString *)_displayTextOfCaption
-{
-    return [NSString stringWithFormat:@"🐻: %@", self.post.caption];
-}
-
 - (NSString *)_displayTextOfComment:(JYComment *)comment
 {
     NSUInteger code = self.post.postId + comment.ownerId;
@@ -241,12 +236,14 @@ static const CGFloat kLikeCountLabelWidth = 80;
 
 - (void)_updateCaption
 {
-    NSString *displayText = [self _displayTextOfCaption];
-    self.captionLabel.text = displayText;
-    CGFloat height = [JYPostViewCell labelHeightForText:displayText withFontSize:kFontSizeCaption textAlignment:NSTextAlignmentLeft andWidth:[[self class] labelWidth]];
-    self.captionLabel.height = fmax(kCaptionLabelHeightMin, height);
+    NSString *text = self.post.caption;
+    self.captionLabel.text = text;
+    CGFloat height = [JYPostViewCell labelHeightForText:text withFontSize:kFontSizeCaption textAlignment:NSTextAlignmentCenter andWidth:[[self class] labelWidth]];
+    self.captionLabel.height = height;
+    self.captionLabel.y = SCREEN_WIDTH - self.captionLabel.height - 10;
 
-    self.captionLabel.y = SCREEN_WIDTH - self.captionLabel.height;
+    [self.captionLabel sizeToFit];
+    self.captionLabel.centerX = self.centerX;
 }
 
 - (void)_updateComments
@@ -404,12 +401,15 @@ static const CGFloat kLikeCountLabelWidth = 80;
         CGRect frame = CGRectMake(0, 0, SCREEN_WIDTH, 0);
         _captionLabel = [[TTTAttributedLabel alloc] initWithFrame:frame];
         _captionLabel.textInsets = UIEdgeInsetsMake(0, kMarginLeft, 0, kMarginRight);
-        _captionLabel.backgroundColor = JoyyBlack50;
+        _captionLabel.backgroundColor = JoyyBlack80;
         _captionLabel.font = [UIFont systemFontOfSize:kFontSizeCaption];
         _captionLabel.textColor = JoyyWhite;
-        _captionLabel.textAlignment = NSTextAlignmentLeft;
+        _captionLabel.textAlignment = NSTextAlignmentCenter;
         _captionLabel.numberOfLines = 0;
         _captionLabel.lineBreakMode = NSLineBreakByWordWrapping;
+
+        _captionLabel.layer.cornerRadius = 4;
+        _captionLabel.clipsToBounds = YES;
         [self addSubview:_captionLabel];
     }
     return _captionLabel;

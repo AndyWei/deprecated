@@ -22,7 +22,7 @@
 
 + (UIColor *)joyyBlackColor80
 {
-    return rgba(0, 0, 0, 0.5);
+    return rgba(40, 40, 40, 0.8);
 }
 
 + (UIColor *)joyyBlueColor
