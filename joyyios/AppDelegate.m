@@ -356,6 +356,7 @@
         parameters:nil
         success:^(AFHTTPRequestOperation *operation, id responseObject) {
             NSLog(@"_autoSignIn Success");
+            NSLog(@"_autoSignIn responseObject = %@", responseObject);
             [JYUser currentUser].credential = responseObject;
             [weakSelf _signInAfter:k30Minutes];
 
