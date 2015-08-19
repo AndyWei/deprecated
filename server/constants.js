@@ -46,7 +46,9 @@ exports.USER_HASHES = {
     key: 'u'
 };
 
+
 // consts
+exports.IM_DOMAIN = 'joyy.im';
 exports.BCRYPT_ROUND = 10;
 exports.DEGREE_FACTOR = 0.0089827983;
 

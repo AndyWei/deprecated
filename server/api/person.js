@@ -339,7 +339,7 @@ exports.register = function (server, options, next) {
 
                 function (callback) {
                     var queryConfig = {
-                        name: 'person_by_id',
+                        name: 'person_cell_by_id',
                         text: 'SELECT cell, score FROM person WHERE id = $1 AND deleted = false',
                         values: [personId]
                     };

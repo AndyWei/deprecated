@@ -37,6 +37,7 @@ var manifest = {
         'hapi-auth-basic': {},
         'hapi-auth-bearer-token': {},
         './server/authenticate': {},
+        './server/api/auth': { basePath: '/v1' },
         './server/api/comment': { basePath: '/v1' },
         './server/api/heart': { basePath: '/v1' },
         './server/api/person': { basePath: '/v1' },

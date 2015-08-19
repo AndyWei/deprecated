@@ -39,7 +39,7 @@ lab.beforeEach(function (done) {
             if (error) {
                 return done(error);
             }
-            done();
+            return done();
         });
     });
 });
@@ -48,7 +48,7 @@ lab.beforeEach(function (done) {
 lab.afterEach(function (done) {
 
     Cache.stop();
-    done();
+    return done();
 });
 
 
@@ -66,7 +66,7 @@ lab.experiment('post GET: ', function () {
             Code.expect(response.statusCode).to.equal(200);
             Code.expect(response.result).to.be.an.array().and.to.have.length(5);
 
-            done();
+            return done();
         });
     });
 
@@ -82,7 +82,7 @@ lab.experiment('post GET: ', function () {
             Code.expect(response.statusCode).to.equal(200);
             Code.expect(response.result).to.be.an.array().and.to.be.empty();
 
-            done();
+            return done();
         });
     });
 });
