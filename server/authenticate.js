@@ -1,3 +1,6 @@
+//  Copyright (c) 2015 Joyy, Inc. All rights reserved.
+
+
 var Async = require('async');
 var Bcrypt = require('bcrypt');
 var Boom = require('boom');

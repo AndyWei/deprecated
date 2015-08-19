@@ -1,3 +1,4 @@
+//  Copyright (c) 2015 Joyy, Inc. All rights reserved.
 // Provide auth API for ejabberd servers
 
 var Async = require('async');

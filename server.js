@@ -1,3 +1,6 @@
+//  Copyright (c) 2015 Joyy, Inc. All rights reserved.
+
+
 var Cache = require('./server/cache');
 var Push = require('./server/push');
 var composer = require('./index');

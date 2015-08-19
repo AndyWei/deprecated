@@ -1,3 +1,6 @@
+//  Copyright (c) 2015 Joyy, Inc. All rights reserved.
+
+
 var AuthPlugin = require('../../../server/authenticate');
 var Cache = require('../../../server/cache');
 var Code = require('code');

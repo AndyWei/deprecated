@@ -1,3 +1,6 @@
+//  Copyright (c) 2015 Joyy, Inc. All rights reserved.
+
+
 var Config = require('../config');
 var Hoek = require('hoek');
 var Redis = require('ioredis');

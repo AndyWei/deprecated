@@ -1,3 +1,6 @@
+//  Copyright (c) 2015 Joyy, Inc. All rights reserved.
+
+
 var Code = require('code');
 var Glue = require('../glue');
 var Lab = require('lab');

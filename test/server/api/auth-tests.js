@@ -1,3 +1,6 @@
+//  Copyright (c) 2015 Joyy, Inc. All rights reserved.
+
+
 var AuthPlugin = require('../../../server/api/auth');
 var Code = require('code');
 var Config = require('../../../config');
