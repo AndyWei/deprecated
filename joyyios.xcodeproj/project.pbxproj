@@ -113,7 +113,6 @@
 		D63F0D761AC9F6F80067C5EE /* JYDataStore.m in Sources */ = {isa = PBXBuildFile; fileRef = D63F0D741AC9F6F80067C5EE /* JYDataStore.m */; };
 		D63F0D7D1ACA5E260067C5EE /* JYSignViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D63F0D7C1ACA5E260067C5EE /* JYSignViewController.m */; };
 		D63F0D7E1ACA5E260067C5EE /* JYSignViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D63F0D7C1ACA5E260067C5EE /* JYSignViewController.m */; };
-		D63F0D9A1ACC96230067C5EE /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D63F0D991ACC96230067C5EE /* MapKit.framework */; };
 		D63F0DA21ACD08260067C5EE /* UIColor+Joyy.m in Sources */ = {isa = PBXBuildFile; fileRef = D63F0DA11ACD08260067C5EE /* UIColor+Joyy.m */; };
 		D63F0DA31ACD08260067C5EE /* UIColor+Joyy.m in Sources */ = {isa = PBXBuildFile; fileRef = D63F0DA11ACD08260067C5EE /* UIColor+Joyy.m */; };
 		D63F0DA51ACD16190067C5EE /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D63F0DA41ACD16190067C5EE /* CoreLocation.framework */; };
@@ -272,7 +271,6 @@
 		D63F0D741AC9F6F80067C5EE /* JYDataStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYDataStore.m; sourceTree = "<group>"; };
 		D63F0D7B1ACA5E260067C5EE /* JYSignViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYSignViewController.h; sourceTree = "<group>"; };
 		D63F0D7C1ACA5E260067C5EE /* JYSignViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYSignViewController.m; sourceTree = "<group>"; };
-		D63F0D991ACC96230067C5EE /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		D63F0DA01ACD08260067C5EE /* UIColor+Joyy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+Joyy.h"; sourceTree = "<group>"; };
 		D63F0DA11ACD08260067C5EE /* UIColor+Joyy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Joyy.m"; sourceTree = "<group>"; };
 		D63F0DA41ACD16190067C5EE /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
@@ -331,7 +329,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				D63F0DA51ACD16190067C5EE /* CoreLocation.framework in Frameworks */,
-				D63F0D9A1ACC96230067C5EE /* MapKit.framework in Frameworks */,
 				743498E564A05714440866C9 /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -735,7 +732,6 @@
 			isa = PBXGroup;
 			children = (
 				D63F0DA41ACD16190067C5EE /* CoreLocation.framework */,
-				D63F0D991ACC96230067C5EE /* MapKit.framework */,
 				8E034C4F8FC61E210B60EDCC /* libPods.a */,
 			);
 			name = Frameworks;
@@ -790,17 +786,17 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 0620;
-				ORGANIZATIONNAME = "Joyy Technologies, Inc";
+				ORGANIZATIONNAME = "Joyy, Inc";
 				TargetAttributes = {
 					D69202AB1AC4C7C0001C1C3D = {
 						CreatedOnToolsVersion = 6.2;
 						DevelopmentTeam = 4F23HD53FY;
 						SystemCapabilities = {
 							com.apple.Maps.iOS = {
-								enabled = 1;
+								enabled = 0;
 							};
 							com.apple.OMC = {
-								enabled = 1;
+								enabled = 0;
 							};
 						};
 					};
@@ -1199,7 +1195,6 @@
 			baseConfigurationReference = 47240DA3592328D7C382C992 /* Pods.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = joyyios/joyyios.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1219,7 +1214,6 @@
 			baseConfigurationReference = F67CA15F6F0CAF970CBFB660 /* Pods.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = joyyios/joyyios.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (

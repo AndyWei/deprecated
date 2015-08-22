@@ -3,7 +3,7 @@
 //  joyyios
 //
 //  Created by Ping Yang on 8/6/15.
-//  Copyright (c) 2015 Joyy Technologies, Inc. All rights reserved.
+//  Copyright (c) 2015 Joyy Inc. All rights reserved.
 //
 
 #import "JYComment.h"
