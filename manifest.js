@@ -1,4 +1,4 @@
-//  Copyright (c) 2015 Joyy, Inc. All rights reserved.
+//  Copyright (c) 2015 Joyy Inc. All rights reserved.
 
 
 var Confidence = require('confidence');
@@ -40,12 +40,12 @@ var manifest = {
         'hapi-auth-basic': {},
         'hapi-auth-bearer-token': {},
         './server/authenticate': {},
-        './server/api/auth': { basePath: '/v1' },
         './server/api/comment': { basePath: '/v1' },
         './server/api/heart': { basePath: '/v1' },
         './server/api/person': { basePath: '/v1' },
         './server/api/post': { basePath: '/v1' },
-        './server/api/sign': { basePath: '/v1' }
+        './server/api/sign': { basePath: '/v1' },
+        './server/api/xmpp': { basePath: '/v1' }
     }
 };
 

@@ -1,11 +1,12 @@
-//  Copyright (c) 2015 Joyy, Inc. All rights reserved.
-// Provide auth API for ejabberd servers
+// Copyright (c) 2015 Joyy Inc. All rights reserved.
+// Provide APIs for XMPP servers
 
 var Async = require('async');
 var Bcrypt = require('bcrypt');
 var Const = require('../constants');
 var Hoek = require('hoek');
 var Joi = require('joi');
+var Push = require('../push');
 var _ = require('lodash');
 
 
@@ -21,11 +22,11 @@ exports.register = function (server, options, next) {
     // check if a credential is valid.
     server.route({
         method: 'POST',
-        path: options.basePath + '/auth/credential',
+        path: options.basePath + '/xmpp/credential',
         config: {
             validate: {
                 payload: {
-                    jid: Joi.string().email(),
+                    jid: Joi.string().email().required(),
                     password: Joi.string().min(4).max(100).required()
                 }
             }
@@ -94,14 +95,14 @@ exports.register = function (server, options, next) {
         }
     });
 
-        // check if an username is valid.
+    // check if an username is valid.
     server.route({
         method: 'POST',
-        path: options.basePath + '/auth/username',
+        path: options.basePath + '/xmpp/username',
         config: {
             validate: {
                 payload: {
-                    jid: Joi.string().email()
+                    jid: Joi.string().email().required()
                 }
             }
         },
@@ -157,10 +158,33 @@ exports.register = function (server, options, next) {
         }
     });
 
+
+    server.route({
+        method: 'POST',
+        path: options.basePath + '/xmpp/push',
+        config: {
+            validate: {
+                payload: {
+                    from: Joi.string().regex(/^[0-9]+$/).max(19).required(),
+                    to: Joi.string().regex(/^[0-9]+$/).max(19).required(),
+                    message: Joi.string().required()
+                }
+            }
+        },
+        handler: function (request, reply) {
+
+            var fromId = request.payload.from;
+            var toId = request.payload.to;
+
+            Push.notify(fromId, toId, request.payload.message, 'xmpp');
+            return reply(null, null);
+        }
+    });
+
     next();
 };
 
 
 exports.register.attributes = {
-    name: 'auth'
+    name: 'xmpp'
 };

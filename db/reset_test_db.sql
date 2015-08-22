@@ -14,26 +14,26 @@ INSERT INTO person
 
 
 INSERT INTO post
-    (owner,            filename,  uv,  caption,            ct,    cell, coords) VALUES
-    (    1, 'j5802_458440716099',  0, '750_.7', 1437524632000, '94555', ST_SetSRID(ST_MakePoint(-122.062175637225, 37.5584115414299), 4326)),
-    (    1, 'j0128_458441665579',  0, '375_.7', 1437524632001, '94555', ST_SetSRID(ST_MakePoint(-122.062175637225, 37.5584115414299), 4326)),
-    (    1, 'j6301_458441807960',  0, '375_.7', 1437524632002, '94555', ST_SetSRID(ST_MakePoint(-122.062175637225, 37.5584115414299), 4326)),
-    (    1, 'j5222_458441928465',  0, '375_.9', 1437524632003, '94102', ST_SetSRID(ST_MakePoint(-122.062175637225, 37.5584115414299), 4326)),
-    (    1, 'j2552_458446437154',  0, '375_.7', 1437524632004, '94555', ST_SetSRID(ST_MakePoint(-122.062175637225, 37.5584115414299), 4326)),
-    (    1, 'j9187_458447815669',  0, '375_.7', 1437524632005, '94555', ST_SetSRID(ST_MakePoint(-122.062175637225, 37.5584115414299), 4326)),
-    (    1, 'j2715_458447869224',  0, '375_.7', 1437524632006, '94102', ST_SetSRID(ST_MakePoint(-122.062175637225, 37.5584115414299), 4326));
+    (owner,            filename,  uv,  caption,                              ct,    cell, coords) VALUES
+    (    1, 'j5802_458440716099',  0, 'Whats up',                 1437524632000, '94555', ST_SetSRID(ST_MakePoint(-122.062175637225, 37.5584115414299), 4326)),
+    (    1, 'j0128_458441665579',  0, 'DREAM',                    1437524632001, '94555', ST_SetSRID(ST_MakePoint(-122.062175637225, 37.5584115414299), 4326)),
+    (    1, 'j6301_458441807960',  0, 'HOPE',                     1437524632002, '94555', ST_SetSRID(ST_MakePoint(-122.062175637225, 37.5584115414299), 4326)),
+    (    1, 'j5222_458441928465',  0, 'Like it',                  1437524632003, '94102', ST_SetSRID(ST_MakePoint(-122.062175637225, 37.5584115414299), 4326)),
+    (    1, 'j2552_458446437154',  0, 'maybe the best of things', 1437524632004, '94555', ST_SetSRID(ST_MakePoint(-122.062175637225, 37.5584115414299), 4326)),
+    (    1, 'j9187_458447815669',  0, 'Leonardo da Vinci',        1437524632005, '94555', ST_SetSRID(ST_MakePoint(-122.062175637225, 37.5584115414299), 4326)),
+    (    1, 'j3844_461624043152',  0, 'Take off',                 1437524632006, '94102', ST_SetSRID(ST_MakePoint(-122.062175637225, 37.5584115414299), 4326));
 
 
 INSERT INTO comment
     ( post, owner,            ct, content) VALUES
-    (    1,     2, 1437524632001, 'How many sqft?'),
-    (    1,     3, 1437524632002, 'Include kitchen as well?'),
-    (    1,     4, 1437524632003, 'I know your house is quite huge bro, its really difficult at this price man. I may consider 500 bucks'),
-    (    1,     1, 1437524632004, '@mike Just 3000 sqft, and 500 bucks is ridiculous！$499 is my bottomline!!'),
-    (    2,     2, 1437524632005, 'This is andy!'),
-    (    2,     3, 1437524632006, 'Ping'),
-    (    2,     4, 1437524632007, 'Mike always talk a lot: I know your house is quite huge bro, its really difficult at this price man. I may consider 500 bucks'),
-    (    2,     1, 1437524632008, '@mike Just 3000 sqft, and 500 bucks is ridiculous！$499 is my bottomline!!');
+    (    1,     2, 1437524632001, 'How many girlfriends?'),
+    (    1,     3, 1437524632002, 'Whats up?'),
+    (    1,     4, 1437524632003, 'The quick brown fox jumps over the lazy dog. '),
+    (    1,     1, 1437524632004, 'Leonardo di ser Piero da Vinci, more commonly Leonardo da Vinci, (15 April 1452 – 2 May 1519) was an Italian polymath. His areas of strength included painting, sculpting, architecture, science, music, mathematics, engineering, invention, anatomy, geology, astronomy, botany, writing, history, and cartography.'),
+    (    2,     2, 1437524632005, 'So we beat on, boats against the current, borne back ceaselessly into the past.'),
+    (    2,     3, 1437524632006, 'The knife came down, missing him by inches, and he took off.'),
+    (    2,     4, 1437524632007, 'What are u talking about?'),
+    (    2,     1, 1437524632008, 'Remember Red, hope is a good thing, maybe the best of things, and no good thing ever dies.');
 
 
 INSERT INTO heart

@@ -1,11 +1,11 @@
-//  Copyright (c) 2015 Joyy, Inc. All rights reserved.
+// Copyright (c) 2015 Joyy Inc. All rights reserved.
 
 
-var AuthPlugin = require('../../../server/api/auth');
 var Code = require('code');
 var Config = require('../../../config');
 var Hapi = require('hapi');
 var Lab = require('lab');
+var XmppPlugin = require('../../../server/api/xmpp');
 
 var lab = exports.lab = Lab.script();
 
@@ -22,7 +22,7 @@ var request, server;
 
 lab.before(function (done) {
 
-    var plugins = [PgPlugin, AuthPlugin];
+    var plugins = [PgPlugin, XmppPlugin];
     server = new Hapi.Server();
     server.connection({ port: Config.get('/port/api') });
     server.register(plugins, function (err) {
@@ -53,7 +53,7 @@ lab.experiment('Auth credential for external service: ', function () {
 
         request = {
             method: 'POST',
-            url: '/auth/credential',
+            url: '/xmpp/credential',
             payload: {
                 jid: '1@joyy.im',
                 password: 'password'
@@ -74,7 +74,7 @@ lab.experiment('Auth credential for external service: ', function () {
 
         request = {
             method: 'POST',
-            url: '/auth/credential',
+            url: '/xmpp/credential',
             payload: {
                 jid: '1@joyy.im',
                 password: 'invalidpassword'
@@ -95,7 +95,7 @@ lab.experiment('Auth credential for external service: ', function () {
 
         request = {
             method: 'POST',
-            url: '/auth/credential',
+            url: '/xmpp/credential',
             payload: {
                 jid: '1@joyy.com',
                 password: 'password'
@@ -120,7 +120,7 @@ lab.experiment('Auth username for external service: ', function () {
 
         request = {
             method: 'POST',
-            url: '/auth/username',
+            url: '/xmpp/username',
             payload: {
                 jid: '1@joyy.im'
             }
@@ -140,7 +140,7 @@ lab.experiment('Auth username for external service: ', function () {
 
         request = {
             method: 'POST',
-            url: '/auth/username',
+            url: '/xmpp/username',
             payload: {
                 jid: 'what@joyy.im'
             }
@@ -160,7 +160,7 @@ lab.experiment('Auth username for external service: ', function () {
 
         request = {
             method: 'POST',
-            url: '/auth/username',
+            url: '/xmpp/username',
             payload: {
                 jid: '1@joyy.in'
             }

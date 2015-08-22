@@ -1,4 +1,4 @@
-//  Copyright (c) 2015 Joyy, Inc. All rights reserved.
+//  Copyright (c) 2015 Joyy Inc. All rights reserved.
 
 
 var AuthPlugin = require('../../../server/authenticate');

@@ -1,4 +1,4 @@
-//  Copyright (c) 2015 Joyy, Inc. All rights reserved.
+//  Copyright (c) 2015 Joyy Inc. All rights reserved.
 
 
 var Apn = require('apn');
@@ -23,29 +23,29 @@ exports.connect = internals.connect = function () {
 };
 
 
-exports.notify = internals.notify = function (personId, title, body, callback) {
+exports.notify = internals.notify = function (fromPersonId, toPersonId, message, messageType) {
 
     Async.waterfall([
         function (next) {
 
-            Cache.hgetall(Const.USER_HASHES, personId, function (err, person) {
+            Cache.hgetall(Const.USER_HASHES, toPersonId, function (err, toPerson) {
                 if (err) {
                     return next(err);
                 }
 
-                if (!person.device || !person.service) {
-                    var error = new Error(Const.DEVICE_TOKEN_NOT_FOUND + 'personId = ' + personId);
+                if (!toPerson.device || !toPerson.service) {
+                    var error = new Error(Const.DEVICE_TOKEN_NOT_FOUND + 'toPersonId = ' + toPersonId);
                     return next(error);
                 }
 
-                next(null, person);
+                next(null, toPerson);
             });
         },
-        function (person, next) {
-
-            switch(person.service) {
+        function (toPerson, next) {
+// add fromPerson name lookup
+            switch(toPerson.service) {
                 case Const.NotificationServiceType.APN:
-                    internals.apnSend(person.device, person.badge, title, body);
+                    internals.apnSend(toPerson.device, toPerson.badge, message, messageType);
                     break;
                 case Const.NotificationServiceType.GCM:
                     internals.gcmSend();
@@ -54,14 +54,14 @@ exports.notify = internals.notify = function (personId, title, body, callback) {
                     internals.mpnSend();
                     break;
                 default:
-                    var error = new Error(Const.DEVICE_TOKEN_INVALID + 'personId = ' + personId);
+                    var error = new Error(Const.DEVICE_TOKEN_INVALID + 'toPersonId = ' + toPersonId);
                     return next(error);
             }
             next(null);
         },
         function (next) {
 
-            Cache.hincrby(Const.USER_HASHES, personId, 'badge', 1, function (err) {
+            Cache.hincrby(Const.USER_HASHES, toPersonId, 'badge', 1, function (err) {
 
                 if (err) {
                     return next(err);
@@ -73,37 +73,37 @@ exports.notify = internals.notify = function (personId, title, body, callback) {
     ], function (err) {
 
         if (err) {
-            return callback(err);
+            console.err(err);
         }
 
-        callback(null, personId);
-    });
-};
-
-
-exports.mnotify = function (personIds, title, body) {
-
-    if (!personIds || personIds.length === 0) {
         return;
-    }
-
-    _.forEach(personIds, function (id) {
-
-        if (!id) {
-            return;
-        }
-
-        internals.notify(id, title, body, function (err) {
-
-            if (err) {
-                console.error(err);
-            }
-        });
     });
 };
 
 
-internals.apnSend = function (device, badge, title, body) {
+// exports.mnotify = function (personIds, message, body) {
+
+//     if (!personIds || personIds.length === 0) {
+//         return;
+//     }
+
+//     _.forEach(personIds, function (id) {
+
+//         if (!id) {
+//             return;
+//         }
+
+//         internals.notify(id, message, body, function (err) {
+
+//             if (err) {
+//                 console.error(err);
+//             }
+//         });
+//     });
+// };
+
+
+internals.apnSend = function (device, badge, message, messageType) {
 
     var apnDevice = new Apn.Device(device);
     var notification = new Apn.Notification();
@@ -115,8 +115,8 @@ internals.apnSend = function (device, badge, title, body) {
     notification.badge = badge + 1;
     notification.expiry = Math.floor(_.now() / 1000) + 3600; // Expires 1 hour from now.
     notification.sound = 'default';
-    notification.alert = title;
-    notification.payload = {'message': body};
+    notification.alert = message;
+    notification.payload = {'type': messageType};
 
     var connection = apnConnection;
 

@@ -1,4 +1,4 @@
-//  Copyright (c) 2015 Joyy, Inc. All rights reserved.
+//  Copyright (c) 2015 Joyy Inc. All rights reserved.
 
 
 var exports = module.exports = {};
@@ -33,7 +33,7 @@ exports.CELL_POST_SETS = {
 };
 
 //// Person
-// Hash. key = personId, fields = {name, device, badge, hearts, friends, ...}
+// Hash. key = personId, fields = {name, hearts, friends, ...}
 exports.PERSON_HASHES = {
     key: 'p'
 };
