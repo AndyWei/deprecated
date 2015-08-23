@@ -37,3 +37,8 @@ curl -i -X POST -H "Authorization: Bearer XID5YykTQGYKit1Mmca9" --data "id=2" "h
 
 # Heart a person
 curl -i -X POST -H "Authorization: Bearer Gfw2iS937jlyeuSzlB21" --data "receiver=3" "http://localhost:8000/v1/heart"
+
+## XMPP
+curl -i "http://localhost:8000/v1/xmpp/check_password?user=1&server=joyy.im&pass=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjEiLCJpYXQiOjE0NDAzNzM1MTcsImV4cCI6MTQ0MDM3NTM3N30.HmtFHuLPjGAKllWMtUbiyZp9rZYiaQRixC3kvF2VMHo"
+
+

@@ -37,26 +37,26 @@ internals.validateSimple = function (request, email, password, finish) {
                 return callback(null, result.rows[0]);
             });
         },
-        function (person, callback) {
+        function (credentials, callback) {
 
-            Bcrypt.compare(password, person.password, function (err, isValid) {
+            Bcrypt.compare(password, credentials.password, function (err, isValid) {
 
                 if (err) {
                     return callback(Boom.unauthorized(err));
                 }
 
-                person.password = password;
-                return callback(null, isValid, person);
+                credentials.password = password;
+                return callback(null, isValid, credentials);
             });
         }
-    ], function (err, isValid, person) {
+    ], function (err, isValid, credentials) {
 
         if (err || !isValid) {
             console.error(err);
             return finish(err, false);
         }
 
-        return finish(err, isValid, person);
+        return finish(err, isValid, credentials);
     });
 };
 

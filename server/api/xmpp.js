@@ -1,159 +1,89 @@
 // Copyright (c) 2015 Joyy Inc. All rights reserved.
-// Provide APIs for XMPP servers
+// Provide endpoints for the MongooseIM XMPP servers
 
-var Async = require('async');
-var Bcrypt = require('bcrypt');
-var Const = require('../constants');
+var Config = require('../../config');
 var Hoek = require('hoek');
 var Joi = require('joi');
+var Jwt  = require('jsonwebtoken');
 var Push = require('../push');
 var _ = require('lodash');
-
-
-function isNumeric(value) {
-    return /^\d+$/.test(value);
-}
 
 
 exports.register = function (server, options, next) {
 
     options = Hoek.applyToDefaults({ basePath: '' }, options);
 
-    // check if a credential is valid.
+    // Http auth endpoint to check if an user pasword is valid.
+    // Refer to: https://github.com/esl/MongooseIM/wiki/HTTP-authentication-module
+    // Note: we use personId from joyyserver as the username in joyy.im and the JWT token as joyy.im password
     server.route({
-        method: 'POST',
-        path: options.basePath + '/xmpp/credential',
+        method: 'GET',
+        path: options.basePath + '/xmpp/check_password',
         config: {
             validate: {
-                payload: {
-                    jid: Joi.string().email().required(),
-                    password: Joi.string().min(4).max(100).required()
+                query: {
+                    user: Joi.string().regex(/^[0-9]+$/).max(19).required(),
+                    server: Joi.string().valid('joyy.im').required(),
+                    pass: Joi.string().min(4).max(200).required()
                 }
             }
         },
         handler: function (request, reply) {
 
-            var fail = {
-                success: false,
-                message: 'invalid username or credential'
-            };
+            var key = Config.get('/jwt/key');
+            Jwt.verify(request.query.pass, key, function(err, decoded) {
 
-            var jid = request.payload.jid.split('@');
-            var personId = jid[0];
-            var domain = jid[1];
-
-            if (!isNumeric(personId) || !_.isEqual(domain, Const.IM_DOMAIN)) {
-                return reply(null, fail);
-            }
-
-            Async.waterfall([
-                function (callback) {
-
-                    var queryConfig = {
-                        text: 'SELECT password FROM person WHERE id = $1 AND deleted = false',
-                        values: [personId],
-                        name: 'person_password_by_id'
-                    };
-
-                    request.pg.client.query(queryConfig, function (err, result) {
-
-                        if (err) {
-                            request.pg.kill = true;
-                            return callback(err);
-                        }
-
-                        if (result.rowCount === 0) {
-                            return callback(Const.PERSON_NOT_FOUND);
-                        }
-
-                        return callback(null, result.rows[0].password);
-                    });
-                },
-                function (password, callback) {
-
-                    Bcrypt.compare(request.payload.password, password, function (err, isValid) {
-
-                        if (err) {
-                            return callback(err);
-                        }
-
-                        return callback(null, isValid);
-                    });
-                }
-            ], function (err, isValid) {
-
-                if (err || !isValid) {
-                    console.error(err);
-                    return reply(null, fail);
+                if (err) {
+                    console.log(err);
+                    return reply(null, false);
                 }
 
-                var success = {
-                    success: true
-                };
-                return reply(null, success);
+                // The pass token is good, but user id not match, which means the token is stolen from another user
+                if (!_.isEqual(request.query.user, decoded.id)) {
+                    console.log('Authentication of user %s failed due to user-id mismatch', request.query.user);
+                    return reply(null, false);
+                }
+
+                // Authenticated passed
+                console.log('Authentication of user %s succeeded', request.query.user);
+                return reply(null, true);
             });
         }
     });
 
-    // check if an username is valid.
+    // check if an user exists.
     server.route({
-        method: 'POST',
-        path: options.basePath + '/xmpp/username',
+        method: 'GET',
+        path: options.basePath + '/xmpp/user_exists',
         config: {
             validate: {
-                payload: {
-                    jid: Joi.string().email().required()
+                query: {
+                    user: Joi.string().regex(/^[0-9]+$/).max(19).required(),
+                    server: Joi.string().valid('joyy.im').required()
                 }
             }
         },
         handler: function (request, reply) {
 
-            var fail = {
-                success: false,
-                message: 'invalid username'
+            var queryConfig = {
+                text: 'SELECT password FROM person WHERE id = $1 AND deleted = false',
+                values: [request.query.user],
+                name: 'person_password_by_id'
             };
 
-            var jid = request.payload.jid.split('@');
-            var personId = jid[0];
-            var domain = jid[1];
-            if (!isNumeric(personId) || !_.isEqual(domain, Const.IM_DOMAIN)) {
-                return reply(null, fail);
-            }
-
-            Async.waterfall([
-                function (callback) {
-
-                    var queryConfig = {
-                        text: 'SELECT password FROM person WHERE id = $1 AND deleted = false',
-                        values: [personId],
-                        name: 'person_password_by_id'
-                    };
-
-                    request.pg.client.query(queryConfig, function (err, result) {
-
-                        if (err) {
-                            request.pg.kill = true;
-                            return callback(err);
-                        }
-
-                        if (result.rowCount === 0) {
-                            return callback(Const.PERSON_NOT_FOUND);
-                        }
-
-                        return callback(null);
-                    });
-                }
-            ], function (err) {
+            request.pg.client.query(queryConfig, function (err, result) {
 
                 if (err) {
                     console.error(err);
-                    return reply(null, fail);
+                    request.pg.kill = true;
+                    return reply(err);
                 }
 
-                var success = {
-                    success: true
-                };
-                return reply(null, success);
+                if (result.rowCount === 0) {
+                    return reply(null, false);
+                }
+
+                return reply(null, true);
             });
         }
     });

@@ -1,9 +1,9 @@
 // Copyright (c) 2015 Joyy Inc. All rights reserved.
 
-
 var Code = require('code');
 var Config = require('../../../config');
 var Hapi = require('hapi');
+var Jwt  = require('jsonwebtoken');
 var Lab = require('lab');
 var XmppPlugin = require('../../../server/api/xmpp');
 
@@ -18,7 +18,18 @@ var PgPlugin = {
     }
 };
 
-var request, server;
+var request, server, jwtToken;
+
+
+function createJwtToken (personId) {
+
+    var obj = { id: personId };
+    var key = Config.get('/jwt/key');
+    var options = { expiresInMinutes: Config.get('/jwt/expiresInMinutes')};
+    var token = Jwt.sign(obj, key, options);
+
+    return token;
+}
 
 lab.before(function (done) {
 
@@ -32,6 +43,9 @@ lab.before(function (done) {
         }
 
         server.start(function () {
+
+            jwtToken = createJwtToken('1');
+            console.log('jwtToken = %s', jwtToken);
             return done();
         });
     });
@@ -47,66 +61,50 @@ lab.after(function (done) {
 });
 
 
-lab.experiment('Auth credential for external service: ', function () {
+lab.experiment('XMPP check_password for MongooseIM: ', function () {
 
-    lab.test('credential auth success', function (done) {
+    lab.test('auth success', function (done) {
 
         request = {
-            method: 'POST',
-            url: '/xmpp/credential',
-            payload: {
-                jid: '1@joyy.im',
-                password: 'password'
-            }
+            method: 'GET',
+            url: '/xmpp/check_password?user=1&server=joyy.im&pass=' + jwtToken
         };
 
         server.inject(request, function (response) {
 
             Code.expect(response.statusCode).to.equal(200);
-            Code.expect(response.result).to.be.an.object();
-            Code.expect(response.result.success).to.equal(true);
+            Code.expect(response.result).to.be.a.boolean().and.to.equal(true);
 
             return done();
         });
     });
 
-    lab.test('credential auth fail due to wrong password', function (done) {
+    lab.test('auth fail due to wrong password', function (done) {
 
         request = {
-            method: 'POST',
-            url: '/xmpp/credential',
-            payload: {
-                jid: '1@joyy.im',
-                password: 'invalidpassword'
-            }
+            method: 'GET',
+            url: '/xmpp/check_password?user=1&server=joyy.im&pass=' + 'invalid_token'
         };
 
         server.inject(request, function (response) {
 
             Code.expect(response.statusCode).to.equal(200);
-            Code.expect(response.result).to.be.an.object();
-            Code.expect(response.result.success).to.equal(false);
+            Code.expect(response.result).to.be.a.boolean().and.to.equal(false);
 
             return done();
         });
     });
 
-    lab.test('credential auth fail due to invalid domain name', function (done) {
+    lab.test('auth fail due to invalid domain name', function (done) {
 
         request = {
-            method: 'POST',
-            url: '/xmpp/credential',
-            payload: {
-                jid: '1@joyy.com',
-                password: 'password'
-            }
+            method: 'GET',
+            url: '/xmpp/check_password?user=1&server=google.com&pass=' + jwtToken
         };
 
         server.inject(request, function (response) {
 
-            Code.expect(response.statusCode).to.equal(200);
-            Code.expect(response.result).to.be.an.object();
-            Code.expect(response.result.success).to.equal(false);
+            Code.expect(response.statusCode).to.equal(400);
 
             return done();
         });
@@ -114,43 +112,50 @@ lab.experiment('Auth credential for external service: ', function () {
 });
 
 
-lab.experiment('Auth username for external service: ', function () {
+lab.experiment('XMPP user_exists for MongooseIM: ', function () {
 
-    lab.test('username exists', function (done) {
+    lab.test('user exists', function (done) {
 
         request = {
-            method: 'POST',
-            url: '/xmpp/username',
-            payload: {
-                jid: '1@joyy.im'
-            }
+            method: 'GET',
+            url: '/xmpp/user_exists?user=1&server=joyy.im'
         };
 
         server.inject(request, function (response) {
 
             Code.expect(response.statusCode).to.equal(200);
-            Code.expect(response.result).to.be.an.object();
-            Code.expect(response.result.success).to.equal(true);
+            Code.expect(response.result).to.be.a.boolean().and.to.equal(true);
 
             return done();
         });
     });
 
-    lab.test('username auth fail due to invalid JID name', function (done) {
+    lab.test('username is a number but does not exists', function (done) {
 
         request = {
-            method: 'POST',
-            url: '/xmpp/username',
-            payload: {
-                jid: 'what@joyy.im'
-            }
+            method: 'GET',
+            url: '/xmpp/user_exists?user=123456&server=joyy.im'
         };
 
         server.inject(request, function (response) {
 
             Code.expect(response.statusCode).to.equal(200);
-            Code.expect(response.result).to.be.an.object();
-            Code.expect(response.result.success).to.equal(false);
+            Code.expect(response.result).to.be.a.boolean().and.to.equal(false);
+
+            return done();
+        });
+    });
+
+    lab.test('username is not a number', function (done) {
+
+        request = {
+            method: 'GET',
+            url: '/xmpp/user_exists?user=what&server=joyy.im'
+        };
+
+        server.inject(request, function (response) {
+
+            Code.expect(response.statusCode).to.equal(400);
 
             return done();
         });
@@ -159,18 +164,13 @@ lab.experiment('Auth username for external service: ', function () {
     lab.test('username auth fail due to invalid JID domain', function (done) {
 
         request = {
-            method: 'POST',
-            url: '/xmpp/username',
-            payload: {
-                jid: '1@joyy.in'
-            }
+            method: 'GET',
+            url: '/xmpp/user_exists?user=1&server=google.com'
         };
 
         server.inject(request, function (response) {
 
-            Code.expect(response.statusCode).to.equal(200);
-            Code.expect(response.result).to.be.an.object();
-            Code.expect(response.result.success).to.equal(false);
+            Code.expect(response.statusCode).to.equal(400);
 
             return done();
         });
