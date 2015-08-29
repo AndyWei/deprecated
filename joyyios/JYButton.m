@@ -147,7 +147,7 @@ static CGRect CGRectEdgeInset(CGRect rect, UIEdgeInsets insets)
 
         _buttonStyle = style;
         _contentColor = self.tintColor;
-        _foregroundColor = [UIColor whiteColor];
+        _foregroundColor = JoyyWhitePure;
         _restoreSelectedState = YES;
         _trackingInside = NO;
         _cornerRadius = 0.0;
@@ -233,7 +233,7 @@ static CGRect CGRectEdgeInset(CGRect rect, UIEdgeInsets insets)
     button.imageView.image = image;
     button.cornerRadius = frame.size.width / 2;
     button.contentColor = color;
-    button.contentAnimateToColor = [UIColor whiteColor];
+    button.contentAnimateToColor = JoyyWhitePure;
     button.foregroundColor = ClearColor;
     button.foregroundAnimateToColor = color;
     return button;

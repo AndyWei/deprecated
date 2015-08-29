@@ -607,6 +607,15 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
+		D62C2C6A1B917FE500233F5B /* Vendor */ = {
+			isa = PBXGroup;
+			children = (
+				D61D1D601B4E336E00DE37DF /* TGCameraViewController */,
+				D61D1D281B4A65F200DE37DF /* MDCSwipeToChoose */,
+			);
+			name = Vendor;
+			sourceTree = "<group>";
+		};
 		D63B69AB1AC5184D005600A9 /* People */ = {
 			isa = PBXGroup;
 			children = (
@@ -662,8 +671,6 @@
 				D63F0D581AC7CFF20067C5EE /* JYButton.m */,
 				D63B69B41AC53BB4005600A9 /* JYFloatLabeledTextField.h */,
 				D63B69B51AC53BB4005600A9 /* JYFloatLabeledTextField.m */,
-				D61D1D601B4E336E00DE37DF /* TGCameraViewController */,
-				D61D1D281B4A65F200DE37DF /* MDCSwipeToChoose */,
 			);
 			name = Common;
 			sourceTree = "<group>";
@@ -711,6 +718,7 @@
 				D69202B41AC4C7C0001C1C3D /* AppDelegate.m */,
 				D68DAF921AC4CACD00838E7E /* Constants.h */,
 				D68DAF931AC4CACD00838E7E /* Constants.m */,
+				D62C2C6A1B917FE500233F5B /* Vendor */,
 				D68DAF991AC4CD0800838E7E /* Common */,
 				D61D1D5B1B4DBA5D00DE37DF /* Masquerade */,
 				D68486B31B8AC207005CA0C4 /* Message */,

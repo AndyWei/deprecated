@@ -32,7 +32,7 @@ static const CGFloat kButtonWidth = 60;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.view.backgroundColor = [UIColor whiteColor];
+    self.view.backgroundColor = JoyyWhitePure;
     self.title = NSLocalizedString(@"Radar", nil);
 
     self.personList = [NSMutableArray new];

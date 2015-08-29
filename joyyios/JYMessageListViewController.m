@@ -21,6 +21,10 @@ static NSString *const kMessageCellIdentifier = @"messageCell";
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+
+    // Hide the "Back" text on the pushed view navigation bar
+    self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:self.navigationItem.backBarButtonItem.style target:nil action:nil];
+
     [self.view addSubview:self.tableView];
 }
 

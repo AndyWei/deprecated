@@ -26,6 +26,8 @@
 #define JoyyWhite80   [UIColor joyyWhiteColor80]
 #define JoyyWhite50   [UIColor joyyWhiteColor50]
 
+#define JoyyWhitePure [UIColor whiteColor]
+
 
 @interface UIColor (Joyy)
 

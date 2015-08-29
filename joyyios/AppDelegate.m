@@ -177,7 +177,7 @@
 
 - (void)_setupGlobalAppearance
 {
-    self.window.backgroundColor = [UIColor whiteColor];
+    self.window.backgroundColor = JoyyWhitePure;
 
     [[UINavigationBar appearance] setTintColor:JoyyBlue];
     [[UITabBar appearance] setTintColor:JoyyBlue];

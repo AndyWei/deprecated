@@ -11,7 +11,7 @@
 
 @interface JYMessage ()
 @property(nonatomic) XMPPMessageArchiving_Message_CoreDataObject *coreDataMessage;
-@property (nonatomic) JYMessageBodyType bodyType;
+@property(nonatomic) JYMessageBodyType bodyType;
 @end
 
 
