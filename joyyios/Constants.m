@@ -49,7 +49,7 @@ const NSUInteger kAPN = 1;
 const NSUInteger kRecentCommentsLimit = 3;
 
 NSString *const kErrorAuthenticationFailed = @"Incorrect Email or password";
-NSString *const kErrorTitle = @"🐨: something wrong";
+NSString *const kErrorTitle = @"🐻: something wrong";
 
 NSString *const kMessageBodyTypeAudio    = @"a:";
 NSString *const kMessageBodyTypeEmoji    = @"e:";
