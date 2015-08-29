@@ -29,19 +29,22 @@ typedef NS_ENUM(NSUInteger, JYOrgType)
 @property(nonatomic) BOOL isVerified;
 @property(nonatomic) JYGender gender;
 @property(nonatomic) JYOrgType orgType;
+
+@property(nonatomic) NSString *age;
+@property(nonatomic) NSString *avatarUrl;
 @property(nonatomic) NSString *bio;
+@property(nonatomic) NSString *idString;
+@property(nonatomic) NSString *messageAvatarUrl;
 @property(nonatomic) NSString *name;
 @property(nonatomic) NSString *org;
-@property(nonatomic) NSString *photoFilename;
-@property(nonatomic) NSString *age;
+
 @property(nonatomic) NSUInteger friendCount;
 @property(nonatomic) NSUInteger heartCount;
 @property(nonatomic) NSUInteger personId;
 @property(nonatomic) NSUInteger score;
-@property(nonatomic) NSUInteger membershipExpiryTimestamp;
-@property(nonatomic, readonly) NSString *url;
-@property(nonatomic, readonly) NSString *idString;
 
+
++ (JYPerson *)me;
 - (instancetype)initWithDictionary:(NSDictionary *)dict;
 
 @end

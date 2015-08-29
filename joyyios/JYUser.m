@@ -27,7 +27,8 @@
     _name = [_credential valueForKey:@"name"];
     _password = [_credential valueForKey:@"password"];
     _token = [_credential valueForKey:@"token"];
-    _userId = [[_credential valueForKey:@"id"] unsignedIntegerValue];
+    _userIdString = [_credential valueForKey:@"id"];
+    _userId = [_credential unsignedIntegerValueForKey:@"id"];
 }
 
 - (void)setCredential:(NSDictionary *)credential

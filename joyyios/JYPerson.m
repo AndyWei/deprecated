@@ -9,12 +9,26 @@
 #import "JYPerson.h"
 
 @interface JYPerson ()
-@property (nonatomic) NSUInteger yearOfBirth;
+@property(nonatomic) NSUInteger yearOfBirth;
+@property(nonatomic) NSString *avatarFilename;
+@property(nonatomic) NSString *avatarUrlBase;
 @end
 
 @implementation JYPerson
 
 #pragma mark - Object Lifecycle
+
++ (JYPerson *)me
+{
+    static JYPerson *_me;
+    static dispatch_once_t done;
+    dispatch_once(&done, ^{
+        _me = [JYPerson new];
+
+        // TODO: read from KV store and fetch from server if no local information
+    });
+    return _me;
+}
 
 - (instancetype)initWithDictionary:(NSDictionary *)dict
 {
@@ -24,7 +38,7 @@
         _bio  = [dict objectForKey:@"bio"];
         _name = [dict objectForKey:@"name"];
         _org  = [dict objectForKey:@"org"];
-        _photoFilename = [dict objectForKey:@"ppf"];
+        _avatarFilename = [dict objectForKey:@"avatar"];
         _friendCount = [dict unsignedIntegerValueForKey:@"friends"];
         _gender      = [dict unsignedIntegerValueForKey:@"gender"];
         _heartCount  = [dict unsignedIntegerValueForKey:@"hearts"];
@@ -32,7 +46,6 @@
         _personId    = [dict unsignedIntegerValueForKey:@"id"];
         _score       = [dict unsignedIntegerValueForKey:@"score"];
         _yearOfBirth = [dict unsignedIntegerValueForKey:@"yob"];
-        _membershipExpiryTimestamp = [dict unsignedIntegerValueForKey:@"met"];
     }
     return self;
 }
@@ -56,28 +69,34 @@
 
 - (NSString *)idString
 {
-    return [NSString stringWithFormat:@"%tu", self.personId];
+    if (!_idString)
+    {
+        _idString = [NSString stringWithFormat:@"%tu", self.personId];
+    }
+    return _idString;
 }
 
-- (NSString *)url
+- (NSString *)avatarUrl
 {
-    return [NSString stringWithFormat:@"%@%@.jpg", [self baseURL], self.photoFilename];
+    if (!_avatarUrl)
+    {
+        _avatarUrl = [NSString stringWithFormat:@"%@%@.jpg", self.avatarUrlBase, self.avatarFilename];
+    }
+    return _avatarUrl;
 }
 
-- (NSString *)baseURL
+- (NSString *)messageAvatarUrl
 {
-    NSString *url = @"https://joyydev.s3.amazonaws.com/";
-//    switch (self.urlVersion)
-//    {
-//        case 0:
-//            break;
-//        case 1:
-//            // url = ....
-//            break;
-//        default:
-//            break;
-//    }
-    return url;
+    return [NSString stringWithFormat:@"%@%@_small.jpg", self.avatarUrlBase, self.avatarFilename];
+}
+
+- (NSString *)avatarUrlBase
+{
+    if (!_avatarUrlBase)
+    {
+        _avatarUrlBase = @"https://avatars.joyyapp.com/";
+    }
+    return _avatarUrlBase;
 }
 
 @end

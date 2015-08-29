@@ -14,17 +14,23 @@
 #import "AppDelegate.h"
 #import "JYDataStore.h"
 #import "JYMasqueradeViewController.h"
+#import "JYMessageListViewController.h"
 #import "JYPeopleViewController.h"
 #import "JYSignViewController.h"
 #import "JYUser.h"
+#import "JYXmppManager.h"
 #import "OnboardingViewController.h"
 #import "OnboardingContentViewController.h"
 
 @interface AppDelegate ()
-
+@property(nonatomic) BOOL shouldXmppGoOnline;
 @property(nonatomic) MSWeakTimer *signInTimer;
-@property (nonatomic) dispatch_queue_t backgroundQueue;
-
+@property(nonatomic) OnboardingContentViewController *page1;
+@property(nonatomic) OnboardingContentViewController *page2;
+@property(nonatomic) OnboardingContentViewController *page3;
+@property(nonatomic) OnboardingViewController *onboardingViewController;
+@property(nonatomic) UITabBarController *tabBarController;
+@property(nonatomic) dispatch_queue_t backgroundQueue;
 @end
 
 @implementation AppDelegate
@@ -36,8 +42,8 @@
     self.cellId = [JYDataStore sharedInstance].lastCellId ? [JYDataStore sharedInstance].lastCellId : @"94555"; // default zipcode
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_signDidFinish) name:kNotificationDidSignIn object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_signDidFinish) name:kNotificationDidSignUp object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_didSignInManually) name:kNotificationDidSignIn object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_didSignInManually) name:kNotificationDidSignUp object:nil];
 
     [self _setupGlobalAppearance];
     [self _setupLocationManager];
@@ -67,6 +73,7 @@
         [self.signInTimer invalidate];
         self.signInTimer = nil;
     }
+    [[JYXmppManager sharedInstance] xmppUserLogout];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
@@ -88,6 +95,8 @@
         return;
     }
 
+    self.shouldXmppGoOnline = [self _isPresentingMessageViewController];
+
     NSTimeInterval now = [NSDate timeIntervalSinceReferenceDate];
     if (user.tokenExpireTimeInSecs < now)
     {
@@ -102,6 +111,11 @@
     else
     {
         [self _signInAfter:(user.tokenExpireTimeInSecs - now)];
+        if (self.shouldXmppGoOnline)
+        {
+            [[JYXmppManager sharedInstance] xmppUserLogin:nil];
+            self.shouldXmppGoOnline = NO;
+        }
     }
 }
 
@@ -113,7 +127,13 @@
         [self.signInTimer invalidate];
         self.signInTimer = nil;
     }
+    [[JYXmppManager sharedInstance] xmppUserLogout];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (BOOL)_isPresentingMessageViewController
+{
+    return self.tabBarController.selectedIndex == 2;
 }
 
 #pragma mark - Properties
@@ -247,9 +267,8 @@
 
 - (void)_introductionDidFinish
 {
-    // Store introduction history
+    // Update introduction history
     [JYDataStore sharedInstance].presentedIntroductionVersion = kIntroductionVersion;
-
     [self _launchViewController];
 }
 
@@ -262,27 +281,39 @@
 
 - (void)_launchIntroductionViewController
 {
-    self.window.rootViewController = [self _onboardingViewController];
+    self.window.rootViewController = self.onboardingViewController;
 }
 
 - (void)_launchMainViewController
 {
+    self.window.rootViewController = self.tabBarController;
+    self.onboardingViewController = nil;
+}
+
+- (UITabBarController *)tabBarController
+{
+    if (_tabBarController)
+    {
+        return _tabBarController;
+    }
+
+    _tabBarController = [UITabBarController new];
+
     UIViewController *vc1 = [JYMasqueradeViewController new];
     UINavigationController *nc1 = [[UINavigationController alloc] initWithRootViewController:vc1];
 
     UIViewController *vc2 = [JYPeopleViewController new];
     UINavigationController *nc2 = [[UINavigationController alloc] initWithRootViewController:vc2];
 
-    UIViewController *vc3 = [JYSignViewController new];
+    UIViewController *vc3 = [JYMessageListViewController new];
     UINavigationController *nc3 = [[UINavigationController alloc] initWithRootViewController:vc3];
 
     UIViewController *vc4 = [JYSignViewController new];
     UINavigationController *nc4 = [[UINavigationController alloc] initWithRootViewController:vc4];
 
-    UITabBarController *tabBarController = [UITabBarController new];
-    tabBarController.viewControllers = @[ nc1, nc2, nc3, nc4 ];
+    _tabBarController.viewControllers = @[ nc1, nc2, nc3, nc4 ];
 
-    UITabBar *tabBar = tabBarController.tabBar;
+    UITabBar *tabBar = _tabBarController.tabBar;
     UITabBarItem *tabBarItem1 = [tabBar.items objectAtIndex:0];
     UITabBarItem *tabBarItem2 = [tabBar.items objectAtIndex:1];
     UITabBarItem *tabBarItem3 = [tabBar.items objectAtIndex:2];
@@ -304,14 +335,26 @@
     tabBarItem4.image = [[UIImage imageNamed:@"me"]imageWithRenderingMode:UIImageRenderingModeAutomatic];
     tabBarItem4.title = NSLocalizedString(@"Me", nil);
 
-    self.window.rootViewController = tabBarController;
+    return _tabBarController;
 }
 
-- (void)_signDidFinish
+- (void)_didSignInManually
 {
+    [self _didSignInAutomatically];
+    [self _launchMainViewController];
+}
+
+- (void)_didSignInAutomatically
+{
+    // Register push notification now to trigger device token uploading, which is to avoid server side device token lost unexpectedly
     [self _registerPushNotifications];
     [self _signInAfter:k30Minutes];
-    [self _launchMainViewController];
+
+    if (self.shouldXmppGoOnline)
+    {
+        [[JYXmppManager sharedInstance] xmppUserLogin:nil];
+        self.shouldXmppGoOnline = NO;
+    }
 }
 
 - (void)_signInAfter:(NSTimeInterval)interval
@@ -358,10 +401,7 @@
             NSLog(@"_autoSignIn Success");
             NSLog(@"_autoSignIn responseObject = %@", responseObject);
             [JYUser currentUser].credential = responseObject;
-            [weakSelf _signInAfter:k30Minutes];
-
-            // Register push notification now to trigger device token uploading, which is to avoid server side device token lost unexpectedly
-            [weakSelf _registerPushNotifications];
+            [weakSelf _didSignInAutomatically];
         }
         failure:^(AFHTTPRequestOperation *operation, NSError *error) {
             NSLog(@"_autoSignIn Error: %@", error);
@@ -479,61 +519,81 @@
 
 #pragma mark - Introduction Pages
 
-- (OnboardingViewController *)_onboardingViewController
+- (OnboardingViewController *)onboardingViewController
 {
-    NSArray *pages = @[ [self _page1], [self _page2], [self _page3] ];
-    OnboardingViewController *onboardingVC = [OnboardingViewController onboardWithBackgroundImage:[UIImage imageNamed:@"street"] contents:pages];
-    onboardingVC.shouldFadeTransitions = YES;
-    onboardingVC.fadePageControlOnLastPage = YES;
+    if (_onboardingViewController)
+    {
+        return _onboardingViewController;
+    }
+
+    NSArray *pages = @[ self.page1, self.page2, self.page3 ];
+    _onboardingViewController = [OnboardingViewController onboardWithBackgroundImage:[UIImage imageNamed:@"street"] contents:pages];
+    _onboardingViewController.shouldFadeTransitions = YES;
+    _onboardingViewController.fadePageControlOnLastPage = YES;
 
     // Allow skipping the onboarding process
-    onboardingVC.allowSkipping = YES;
+    _onboardingViewController.allowSkipping = YES;
     __weak typeof(self) weakSelf = self;
-    onboardingVC.skipHandler = ^{
+    _onboardingViewController.skipHandler = ^{
         [weakSelf _introductionDidFinish];
     };
-    return onboardingVC;
+
+    return _onboardingViewController;
 }
 
-- (OnboardingContentViewController *)_page1
+- (OnboardingContentViewController *)page1
 {
+    if (_page1)
+    {
+        return _page1;
+    }
+
     __weak typeof(self) weakSelf = self;
-    OnboardingContentViewController *page = [OnboardingContentViewController contentWithTitle:@"Get Service Anytime Anywhere"
-                                                                                         body:@"People arround you are glad to serve you..."
-                                                                                        image:[UIImage imageNamed:@"blue"]
-                                                                                   buttonText:@"Get Started"
-                                                                                       action:^{
-                                                                                           [weakSelf _introductionDidFinish];
-                                                                                       }];
-    return page;
+    _page1 = [OnboardingContentViewController contentWithTitle:@"Get Service Anytime Anywhere"
+                                                          body:@"People arround you are glad to serve you..."
+                                                         image:[UIImage imageNamed:@"blue"]
+                                                    buttonText:@"Get Started"
+                                                        action:^{
+                                                            [weakSelf _introductionDidFinish];
+                                                        }];
+    return _page1;
 }
 
-- (OnboardingContentViewController *)_page2
+- (OnboardingContentViewController *)page2
 {
-    __weak typeof(self) weakSelf = self;
-    OnboardingContentViewController *page = [OnboardingContentViewController contentWithTitle:@"In Joyy People Help Each Other"
-                                                                                         body:@"You can provide service too, and get paid"
-                                                                                        image:[UIImage imageNamed:@"red"]
-                                                                                   buttonText:@"Get Started"
-                                                                                       action:^{
-                                                                                           [weakSelf _introductionDidFinish];
-                                                                                       }];
-    page.movesToNextViewController = YES;
+    if (_page2)
+    {
+        return _page2;
+    }
 
-    return page;
+    __weak typeof(self) weakSelf = self;
+    _page2 = [OnboardingContentViewController contentWithTitle:@"Get Service Anytime Anywhere"
+                                                          body:@"People arround you are glad to serve you..."
+                                                         image:[UIImage imageNamed:@"blue"]
+                                                    buttonText:@"Get Started"
+                                                        action:^{
+                                                            [weakSelf _introductionDidFinish];
+                                                        }];
+    _page2.movesToNextViewController = YES;
+    return _page2;
 }
 
-- (OnboardingContentViewController *)_page3
+- (OnboardingContentViewController *)page3
 {
+    if (_page3)
+    {
+        return _page3;
+    }
+
     __weak typeof(self) weakSelf = self;
-    OnboardingContentViewController *page = [OnboardingContentViewController contentWithTitle:@"Welcome To Joyy"
-                                                                                         body:@"All men are created equal, that they are endowed by their Creator with certain unalienable Rights, that among these are Life, Liberty, iPhone and \n Joyy Account."
-                                                                                        image:[UIImage imageNamed:@"yellow"]
-                                                                                   buttonText:@"Get Started"
-                                                                                       action:^{
-                                                                                           [weakSelf _introductionDidFinish];
-                                                                                       }];
-    return page;
+    _page3 = [OnboardingContentViewController contentWithTitle:@"Welcome To Joyy"
+                                                          body:@"All men are created equal, that they are endowed by their Creator with certain unalienable Rights, that among these are Life, Liberty, iPhone and \n Joyy."
+                                                         image:[UIImage imageNamed:@"yellow"]
+                                                    buttonText:@"Get Started"
+                                                        action:^{
+                                                            [weakSelf _introductionDidFinish];
+                                                        }];
+    return _page3;
 }
 
 @end

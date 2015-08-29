@@ -10,6 +10,9 @@
 #define joyy_Constants_h
 
 extern NSString *const kUrlAPIBase;
+extern NSString *const kMessageDomain;
+extern NSString *const kMessageResource;
+extern const UInt16 kMessagePort;
 
 extern const CGFloat kButtonCornerRadius;
 extern const CGFloat kButtonDefaultHeight;
@@ -41,12 +44,21 @@ extern const CGFloat kSignViewTopOffset;
 extern const NSTimeInterval k1Minutes;
 extern const NSTimeInterval k15Minutes;
 extern const NSTimeInterval k30Minutes;
+extern const NSTimeInterval k5Minutes;
 
 extern const NSUInteger kAPN;
 extern const NSUInteger kRecentCommentsLimit;
 
 extern NSString *const kErrorAuthenticationFailed;
 extern NSString *const kErrorTitle;
+
+extern NSString *const kMessageBodyTypeAudio;
+extern NSString *const kMessageBodyTypeEmoji;
+extern NSString *const kMessageBodyTypeGif;
+extern NSString *const kMessageBodyTypeImage;
+extern NSString *const kMessageBodyTypeLocation;
+extern NSString *const kMessageBodyTypeText;
+extern NSString *const kMessageBodyTypeVideo;
 
 extern NSString *const kNotificationDidSignIn;
 extern NSString *const kNotificationDidSignUp;
