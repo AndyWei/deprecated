@@ -11,8 +11,10 @@ var Utils = require('../utils');
 var _ = require('lodash');
 
 var internals = {};
-var selectInfo = 'SELECT id, name, org, orgtype, gender, yob, bio, ppf, hearts, score, ut FROM person ';
-var selectOwn = 'SELECT id, email, name, role, org, orgtype, gender, yob, bio, ppf, hearts, friends, score, verified, met FROM person ';
+var basicFields = 'id, name, org, orgtype, gender, yob, bio, avatar, hearts, score, ut, verified';
+var extraFields = ', email';
+var selectBasic = 'SELECT ' + basicFields + ' FROM person ';
+var selectExtra = 'SELECT ' + basicFields + extraFields + ' FROM person ';
 
 
 exports.register = function (server, options, next) {
@@ -196,7 +198,7 @@ exports.register = function (server, options, next) {
 
             var queryConfig = {
                 name: 'person_profile',
-                text: selectOwn +
+                text: selectExtra +
                       'WHERE id = $1 AND deleted = false',
                 values: [request.auth.credentials.id]
             };
@@ -454,7 +456,7 @@ internals.searchPersonByIdsFromDB = function (request, personIds, callback) {
     var queryValues = [request.query.cell];
     var queryConfig = {
         // Warning: DO NOT give a name to this query since it has variable parameters
-        text: selectInfo + where + order + limit,
+        text: selectBasic + where + order + limit,
         values: queryValues.concat(personIds)
     };
 

@@ -3,7 +3,6 @@ CREATE TABLE person (
     email              TEXT          NOT NULL, -- email is used as identity to signup and signin
     password           TEXT          NOT NULL, -- bcrypt hashed password, it always 60 bytes, however TEXT makes it flexible
     name               TEXT          NOT NULL, -- person display name
-    role               SMALLINT      NOT NULL DEFAULT 0, -- 0 - user,  1 - admin, 2 - test, 3 - robot.
     verified           BOOLEAN       NOT NULL DEFAULT false,
     hearts             INTEGER       NOT NULL DEFAULT 0, -- the number of hearts
     friends            SMALLINT      NOT NULL DEFAULT 0, -- the number of friends
@@ -14,7 +13,7 @@ CREATE TABLE person (
     orgtype            SMALLINT              , -- organization type. 0 - unknown, 1 - com,  2 - edu, 3 - org, 4 - gov, 100 - other.
     yob                NUMERIC(4)            , -- year of birth
     bio                TEXT                  ,
-    ppf                TEXT                  , -- profile photo filename
+    avatar             TEXT                  , -- avatar filename
     coords             GEOMETRY(Point, 4326) , -- the point where the person last reported
     met                BIGINT                , -- membership expiry timestamp.
     ct                 BIGINT        NOT NULL, -- created_at timestamp

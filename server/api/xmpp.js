@@ -40,12 +40,12 @@ exports.register = function (server, options, next) {
 
                 // The pass token is good, but user id not match, which means the token is stolen from another user
                 if (!_.isEqual(request.query.user, decoded.id)) {
-                    console.log('Authentication of user %s failed due to user-id mismatch', request.query.user);
+                    console.log('Failure: authentication of user %s failed due to user-id mismatch', request.query.user);
                     return reply(null, false);
                 }
 
                 // Authenticated passed
-                console.log('Authentication of user %s succeeded', request.query.user);
+                console.log('Success: authentication of user %s passed', request.query.user);
                 return reply(null, true);
             });
         }
@@ -59,7 +59,8 @@ exports.register = function (server, options, next) {
             validate: {
                 query: {
                     user: Joi.string().regex(/^[0-9]+$/).max(19).required(),
-                    server: Joi.string().valid('joyy.im').required()
+                    server: Joi.string().valid('joyy.im').required(),
+                    pass: Joi.any().optional()
                 }
             }
         },
