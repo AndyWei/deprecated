@@ -4,6 +4,8 @@ xcodeproj 'joyyios.xcodeproj'
 platform :ios, '7.0'
 
 pod 'AFNetworking', '~> 2.5'
+pod 'AWSCore'
+pod 'AWSS3'
 pod 'ChameleonFramework'
 pod 'FDFullscreenPopGesture'
 pod 'JSQMessagesViewController'

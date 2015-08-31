@@ -38,6 +38,8 @@
 #import "UIView+Joyy.h"
 #import "UIView+Positioning.h"
 
+#import "JYCredential.h"
+
 #endif
 
 #ifdef NDEBUG

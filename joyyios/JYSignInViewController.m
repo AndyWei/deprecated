@@ -13,7 +13,6 @@
 #import "JYButton.h"
 #import "JYFloatLabeledTextField.h"
 #import "JYSignInViewController.h"
-#import "JYUser.h"
 
 @interface JYSignInViewController ()
 
@@ -66,7 +65,7 @@
 
             [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
             [KVNProgress dismiss];
-            [JYUser currentUser].credential = responseObject;
+            [JYCredential current].dictionary = responseObject;
             [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationDidSignIn object:nil];
         }
         failure:^(AFHTTPRequestOperation *operation, NSError *error) {

@@ -17,7 +17,6 @@
 #import "JYCommentView.h"
 #import "JYCommentViewCell.h"
 #import "JYCommentViewController.h"
-#import "JYUser.h"
 
 @interface JYCommentViewController ()
 @property(nonatomic) BOOL autoShowKeyboard;
@@ -350,7 +349,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
     [self _networkThreadBegin];
 
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYUser currentUser].token];
+    NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYCredential current].token];
     [manager.requestSerializer setValue:token forHTTPHeaderField:@"Authorization"];
 
     NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"comment"];

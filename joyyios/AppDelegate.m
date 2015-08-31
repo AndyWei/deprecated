@@ -18,7 +18,6 @@
 #import "JYPeopleViewController.h"
 #import "JYSignViewController.h"
 #import "JYSoundPlayer.h"
-#import "JYUser.h"
 #import "JYXmppManager.h"
 #import "OnboardingViewController.h"
 #import "OnboardingContentViewController.h"
@@ -90,7 +89,7 @@
     // background, optionally refresh the user interface.
 
     NSLog(@"applicationDidBecomeActive");
-    JYUser *user = [JYUser currentUser];
+    JYCredential *user = [JYCredential current];
     if(![user exists])
     {
         return;
@@ -243,7 +242,7 @@
 
 - (void)_launchViewController
 {
-    JYUser *user = [JYUser currentUser];
+    JYCredential *user = [JYCredential current];
 
     BOOL needIntro = ([JYDataStore sharedInstance].presentedIntroductionVersion < kIntroductionVersion);
 
@@ -385,8 +384,8 @@
 
 - (void)_autoSignIn
 {
-    NSString *email = [JYUser currentUser].email;
-    NSString *password = [JYUser currentUser].password;
+    NSString *email = [JYCredential current].email;
+    NSString *password = [JYCredential current].password;
     if (!email || !password)
     {
         return;
@@ -409,7 +408,7 @@
         success:^(AFHTTPRequestOperation *operation, id responseObject) {
             NSLog(@"_autoSignIn Success");
             NSLog(@"_autoSignIn responseObject = %@", responseObject);
-            [JYUser currentUser].credential = responseObject;
+            [JYCredential current].dictionary = responseObject;
             [weakSelf _didSignInAutomatically];
         }
         failure:^(AFHTTPRequestOperation *operation, NSError *error) {
@@ -432,7 +431,7 @@
     NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"person/device"];
 
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYUser currentUser].token];
+    NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYCredential current].token];
     [manager.requestSerializer setValue:token forHTTPHeaderField:@"Authorization"];
 
     [manager POST:url
@@ -492,7 +491,7 @@
     NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"person/location"];
 
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYUser currentUser].token];
+    NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYCredential current].token];
     [manager.requestSerializer setValue:token forHTTPHeaderField:@"Authorization"];
 
     [manager POST:url

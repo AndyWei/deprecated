@@ -11,7 +11,6 @@
 #import "JYMessage.h"
 #import "JYMessageAvatar.h"
 #import "JYMessageViewController.h"
-#import "JYUser.h"
 #import "JYXmppManager.h"
 
 @interface JYMessageViewController() <UIActionSheetDelegate, NSFetchedResultsControllerDelegate>
@@ -39,9 +38,9 @@
 
     XMPPJID *myJid = [JYXmppManager myJid];
     self.senderId = myJid.bare;
-    self.senderDisplayName = [JYUser currentUser].name;
+    self.senderDisplayName = [JYCredential current].name;
 
-    self.remoteJid = [JYXmppManager jidWithUserIdString:self.person.idString];
+    self.remoteJid = [JYXmppManager jidWithIdString:self.person.idString];
 
     // Bubble images
     UIImage *bubble = [UIImage imageNamed:@"message_bubble"];

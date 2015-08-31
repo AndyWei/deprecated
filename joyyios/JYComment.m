@@ -7,7 +7,6 @@
 //
 
 #import "JYComment.h"
-#import "JYUser.h"
 
 @interface JYComment ()
 @end

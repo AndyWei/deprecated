@@ -9,7 +9,7 @@
 #import <YTKKeyValueStore/YTKKeyValueStore.h>
 
 #import "JYPost.h"
-#import "JYUser.h"
+#import "JYCredential.h"
 
 @interface JYPost ()
 
@@ -34,7 +34,7 @@ static NSString *const kLikedPostTable = @"liked_post";
 
 + (NSString *)newFilename
 {
-    NSString *first = [[JYUser currentUser].name substringToIndex:1];  // "j" for jack
+    NSString *first = [[JYCredential current].name substringToIndex:1];  // "j" for jack
 
     u_int32_t rand = arc4random_uniform(10000);                        // 176
     NSString *randString = [NSString stringWithFormat:@"%04d", rand];  // "0176"
@@ -89,7 +89,7 @@ static NSString *const kLikedPostTable = @"liked_post";
         _postId = 0;
         _urlVersion = 0;
         _type = JYPostTypeImage;
-        _ownerId = [JYUser currentUser].userId;
+        _ownerId = [JYCredential current].personId;
         _likeCount = 0;
         _commentCount = 0;
     }
@@ -100,8 +100,7 @@ static NSString *const kLikedPostTable = @"liked_post";
 {
     if (isLiked)
     {
-        NSUInteger personId = [JYUser currentUser].userId;
-        NSDictionary *value = @{ @"personId": @(personId)};
+        NSDictionary *value = @{ @"personId": [JYCredential current].idString };
         [[JYPost sharedKVStore] putObject:value withId:self.idString intoTable:kLikedPostTable];
     }
 
@@ -117,7 +116,7 @@ static NSString *const kLikedPostTable = @"liked_post";
     }
 
     NSUInteger likedByPerson = [liked unsignedIntegerValueForKey:@"personId"];
-    return (likedByPerson == [JYUser currentUser].userId);
+    return (likedByPerson == [JYCredential current].personId);
 }
 
 - (NSString *)idString

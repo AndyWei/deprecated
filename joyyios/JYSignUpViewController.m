@@ -13,7 +13,6 @@
 #import "JYButton.h"
 #import "JYFloatLabeledTextField.h"
 #import "JYSignUpViewController.h"
-#import "JYUser.h"
 
 @interface JYSignUpViewController ()
 
@@ -67,7 +66,7 @@
 
              [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
              [KVNProgress dismiss];
-             [JYUser currentUser].credential = responseObject;
+             [JYCredential current].dictionary = responseObject;
              [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationDidSignUp object:nil];
          }
          failure:^(AFHTTPRequestOperation *operation, NSError *error) {

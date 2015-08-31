@@ -17,7 +17,6 @@
 #import "JYMasqueradeViewController.h"
 #import "JYPost.h"
 #import "JYPostViewCell.h"
-#import "JYUser.h"
 #import "TGCameraColor.h"
 #import "TGCameraViewController.h"
 #import "UIImage+Joyy.h"
@@ -409,7 +408,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
     [self _networkThreadBegin];
 
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYUser currentUser].token];
+    NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYCredential current].token];
     [manager.requestSerializer setValue:token forHTTPHeaderField:@"Authorization"];
 
     NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"post/like"];
@@ -437,7 +436,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
     [self _networkThreadBegin];
 
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYUser currentUser].token];
+    NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYCredential current].token];
     [manager.requestSerializer setValue:token forHTTPHeaderField:@"Authorization"];
 
     NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"post"];

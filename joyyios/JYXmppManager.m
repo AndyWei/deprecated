@@ -7,7 +7,6 @@
 //
 
 #import "JYSoundPlayer.h"
-#import "JYUser.h"
 #import "JYXmppManager.h"
 
 @interface JYXmppManager() <XMPPStreamDelegate>
@@ -45,22 +44,21 @@
     return _sharedInstance;
 }
 
-+ (XMPPJID *)jidWithUserIdString:(NSString *)idString
++ (XMPPJID *)jidWithIdString:(NSString *)idString
 {
     return [XMPPJID jidWithUser:idString domain:kMessageDomain resource:nil];
 }
 
 + (XMPPJID *)myJid
 {
-    NSString *userId = [JYUser currentUser].userIdString;
-
     // XMPP needs a "resource" string to identify different devices of the same user
     NSString *deviceId = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
 
-    // The first 5 chars o fdevice ID should be enough
-    NSString *prefix = [deviceId substringToIndex:5];
+    // The first 3 chars of device ID should be enough
+    NSString *prefix = [deviceId substringToIndex:3];
+    NSString *resource = [NSString stringWithFormat:@"iPhone_%@", prefix];
 
-    return [XMPPJID jidWithUser:userId domain:kMessageDomain resource:prefix];
+    return [XMPPJID jidWithUser:[JYCredential current].idString domain:kMessageDomain resource:resource];
 }
 
 + (NSFetchedResultsController *)fetchedResultsControllerForRemoteJid:(XMPPJID *)remoteJid
@@ -176,7 +174,7 @@
 // Authenticate should be called after connect success
 - (void)authenticate
 {
-    NSString *password = [JYUser currentUser].token;
+    NSString *password = [JYCredential current].token;
     XMPPPlainAuthentication *auth = [[XMPPPlainAuthentication alloc] initWithStream:self.xmppStream password:password];
 
     // Invoke the async auth method

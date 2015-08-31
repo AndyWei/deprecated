@@ -20,6 +20,9 @@ PODS:
   - AFNetworking/UIKit (2.5.4):
     - AFNetworking/NSURLConnection
     - AFNetworking/NSURLSession
+  - AWSCore (2.2.4)
+  - AWSS3 (2.2.4):
+    - AWSCore (= 2.2.4)
   - ChameleonFramework (1.2.0)
   - CocoaAsyncSocket (7.4.2)
   - CocoaLumberjack (1.9.2):
@@ -193,6 +196,8 @@ PODS:
 
 DEPENDENCIES:
   - AFNetworking (~> 2.5)
+  - AWSCore
+  - AWSS3
   - ChameleonFramework
   - FDFullscreenPopGesture
   - JSQMessagesViewController
@@ -211,6 +216,8 @@ DEPENDENCIES:
 
 SPEC CHECKSUMS:
   AFNetworking: 05edc0ac4c4c8cf57bcf4b84be5b0744b6d8e71e
+  AWSCore: 483fa0f25c8508e3364f818e9b941c6204619afa
+  AWSS3: da758d5a95e65bb9e6e718245c1a86b6f63de9ae
   ChameleonFramework: 4d6bf87fcaee176f487176cdccc4229637ec97f0
   CocoaAsyncSocket: f5783bdedd232d91b89769bc4b5a1580aed518ad
   CocoaLumberjack: 628fca2e88ef06f7cf6817309aa405f325d9a6fa

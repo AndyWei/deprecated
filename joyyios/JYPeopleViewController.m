@@ -12,7 +12,7 @@
 #import "JYButton.h"
 #import "JYPerson.h"
 #import "JYPeopleViewController.h"
-#import "JYUser.h"
+
 
 @interface JYPeopleViewController ()
 @property(nonatomic) CGRect frontCardFrame;
@@ -246,7 +246,7 @@ static const CGFloat kButtonWidth = 60;
     [self _networkThreadBegin];
 
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYUser currentUser].token];
+    NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYCredential current].token];
     [manager.requestSerializer setValue:token forHTTPHeaderField:@"Authorization"];
 
     NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"person/nearby"];
@@ -289,7 +289,7 @@ static const CGFloat kButtonWidth = 60;
     [self _networkThreadBegin];
 
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYUser currentUser].token];
+    NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYCredential current].token];
     [manager.requestSerializer setValue:token forHTTPHeaderField:@"Authorization"];
 
     NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"person"];
