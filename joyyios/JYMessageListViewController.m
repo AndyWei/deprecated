@@ -9,6 +9,7 @@
 #import "JYMessageViewController.h"
 #import "JYMessageListViewController.h"
 #import "JYUser.h"
+#import "JYXmppManager.h"
 
 @interface JYMessageListViewController () <UITableViewDataSource, UITableViewDelegate>
 @property(nonatomic) UITableView *tableView;
@@ -21,6 +22,9 @@ static NSString *const kMessageCellIdentifier = @"messageCell";
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+
+    // Connect to Message server
+    [[JYXmppManager sharedInstance] xmppUserLogin:nil];
 
     // Hide the "Back" text on the pushed view navigation bar
     self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:self.navigationItem.backBarButtonItem.style target:nil action:nil];

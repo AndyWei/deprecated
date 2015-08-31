@@ -6,12 +6,19 @@
 //  Copyright (c) 2015 Joyy Inc. All rights reserved.
 //
 
+#import "JYSoundPlayer.h"
 #import "JYUser.h"
 #import "JYXmppManager.h"
 
 @interface JYXmppManager() <XMPPStreamDelegate>
-@property(nonatomic, copy) JYXmppStatusHandler statusHandler;
+@property(nonatomic) JYXmppStatus xmppStatus;
 @property(nonatomic) XMPPReconnect *reconnect;
+@property(nonatomic, copy) JYXmppStatusHandler statusHandler;
+@property(nonatomic, readonly)XMPPMessageArchiving *msgArchiving;
+@property(nonatomic, readonly)XMPPMessageArchivingCoreDataStorage *msgStorage;
+//@property (nonatomic, readonly)XMPPRoster *roster;
+//@property (nonatomic, readonly)XMPPRosterCoreDataStorage *rosterStorage;
+//@property (nonatomic, readonly)XMPPvCardTempModule *vCard;
 //@property(nonatomic) XMPPvCardCoreDataStorage *vCardStorage;
 //@property(nonatomic) XMPPvCardAvatarModule *avatar;
 
@@ -106,9 +113,9 @@
     [_msgArchiving activate:_xmppStream];
 
     // roster
-    _rosterStorage = [[XMPPRosterCoreDataStorage alloc]init];
-    _roster = [[XMPPRoster alloc]initWithRosterStorage:_rosterStorage];
-    [_roster activate:_xmppStream];
+//    _rosterStorage = [[XMPPRosterCoreDataStorage alloc]init];
+//    _roster = [[XMPPRoster alloc]initWithRosterStorage:_rosterStorage];
+//    [_roster activate:_xmppStream];
 
 //    // vCard
 //    _vCardStorage = [XMPPvCardCoreDataStorage sharedInstance];
@@ -150,18 +157,17 @@
     [_reconnect deactivate];
     [_msgArchiving deactivate];
     [_xmppStream disconnect];
-    [_roster deactivate];
+//    [_roster deactivate];
 //    [_vCard deactivate];
 //    [_avatar deactivate];
-
 
     _reconnect = nil;
     _msgArchiving = nil;
     _msgStorage = nil;
     _xmppStream = nil;
-    _roster = nil;
-    _rosterStorage = nil;
 
+//    _roster = nil;
+//    _rosterStorage = nil;
 //    _vCard = nil;
 //    _avatar = nil;
 //    _vCardStorage = nil;
@@ -265,6 +271,11 @@
 - (void)xmppStream:(XMPPStream *)sender didReceiveMessage:(XMPPMessage *)message
 {
     NSLog(@"Success: xmpp didReceiveMessage = %@", message);
+
+    // If there is a viewController to show the message, then no vibrate
+    NSString *fromJid = message.from.bare;
+    BOOL willShowMessage = self.currentRemoteJid && [self.currentRemoteJid.bare isEqualToString:fromJid];
+    [JYSoundPlayer playMessageReceivedAlertWithVibrate:!willShowMessage];
 }
 
 - (void)xmppStream:(XMPPStream *)sender didReceivePresence:(XMPPPresence *)presence

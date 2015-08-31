@@ -11,7 +11,6 @@
 #import "JYMessage.h"
 #import "JYMessageAvatar.h"
 #import "JYMessageViewController.h"
-#import "JYSoundPlayer.h"
 #import "JYUser.h"
 #import "JYXmppManager.h"
 
@@ -74,9 +73,18 @@
     {
         NSLog(@"fetchedResultsController performFetch error = %@", error);
     }
+}
 
-    // Connect to Message server
-    [[JYXmppManager sharedInstance] xmppUserLogin:nil];
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [JYXmppManager sharedInstance].currentRemoteJid = self.remoteJid;
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    [JYXmppManager sharedInstance].currentRemoteJid = nil;
 }
 
 - (BOOL)hidesBottomBarWhenPushed
@@ -364,13 +372,6 @@
 {
     [self.collectionView reloadData];
     [self scrollToBottomAnimated:YES];
-
-    // Play sound
-    XMPPMessageArchiving_Message_CoreDataObject *lastMessage = [self.fetchedResultsController.fetchedObjects lastObject];
-    if (!lastMessage.isOutgoing)
-    {
-        [JYSoundPlayer playMessageReceivedAlertWithVibrate:NO];
-    }
 }
 
 @end
