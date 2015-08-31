@@ -17,6 +17,7 @@
 #import "JYMessageListViewController.h"
 #import "JYPeopleViewController.h"
 #import "JYSignViewController.h"
+#import "JYSoundPlayer.h"
 #import "JYUser.h"
 #import "JYXmppManager.h"
 #import "OnboardingViewController.h"
@@ -166,11 +167,19 @@
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)notification
 {
     NSLog(@"Notification = %@", notification);
+    NSString *notificationType = [notification objectForKey:@"type"];
 
-    NSDictionary *aps = [notification objectForKey:@"aps"];
-    NSString *title = aps ? [aps objectForKey:@"alert"] : @"Notification";
+    if ([notificationType isEqualToString:@"xmpp"])
+    {
+        [JYSoundPlayer playMessageReceivedAlertWithVibrate:YES];
+    }
+    else
+    {
+        NSDictionary *aps = [notification objectForKey:@"aps"];
+        NSString *title = aps ? [aps objectForKey:@"alert"] : @"Notification";
 
-    [RKDropdownAlert title:title backgroundColor:FlatGreen textColor:JoyyWhite time:3];
+        [RKDropdownAlert title:title backgroundColor:FlatGreen textColor:JoyyWhite time:3];
+    }
 }
 
 #pragma mark - Private methods
@@ -348,7 +357,7 @@
 {
     // Register push notification now to trigger device token uploading, which is to avoid server side device token lost unexpectedly
     [self _registerPushNotifications];
-    [self _signInAfter:k30Minutes];
+    [self _signInAfter:k60Minutes];
 
     if (self.shouldXmppGoOnline)
     {

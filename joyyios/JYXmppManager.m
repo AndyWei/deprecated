@@ -10,10 +10,10 @@
 #import "JYXmppManager.h"
 
 @interface JYXmppManager() <XMPPStreamDelegate>
-@property (nonatomic, copy) JYXmppStatusHandler statusHandler;
-@property (nonatomic) XMPPReconnect *reconnect;
-//@property (nonatomic) XMPPvCardCoreDataStorage *vCardStorage;
-//@property (nonatomic) XMPPvCardAvatarModule *avatar;
+@property(nonatomic, copy) JYXmppStatusHandler statusHandler;
+@property(nonatomic) XMPPReconnect *reconnect;
+//@property(nonatomic) XMPPvCardCoreDataStorage *vCardStorage;
+//@property(nonatomic) XMPPvCardAvatarModule *avatar;
 
 - (void)setupStream;
 - (void)destoyStream;
@@ -46,8 +46,14 @@
 + (XMPPJID *)myJid
 {
     NSString *userId = [JYUser currentUser].userIdString;
-    NSString* deviceId = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
-    return [XMPPJID jidWithUser:userId domain:kMessageDomain resource:deviceId];
+
+    // XMPP needs a "resource" string to identify different devices of the same user
+    NSString *deviceId = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
+
+    // The first 5 chars o fdevice ID should be enough
+    NSString *prefix = [deviceId substringToIndex:5];
+
+    return [XMPPJID jidWithUser:userId domain:kMessageDomain resource:prefix];
 }
 
 + (NSFetchedResultsController *)fetchedResultsControllerForRemoteJid:(XMPPJID *)remoteJid
@@ -196,25 +202,19 @@
 {
     NSLog(@"Success: xmpp connect");
 
-    if (self.isRegisterOperation)
-    {
-        // Currently the backend doesn't enable registeration, so this part should not be called
-         NSString *password = [JYUser currentUser].token;
-         [_xmppStream registerWithPassword:password error:nil];
-    }
-    else
-    {
-        [self authenticate];
-    }
+    [self authenticate];
 }
 
 - (void)xmppStreamDidDisconnect:(XMPPStream *)sender withError:(NSError *)error
 {
     NSLog(@"Failure: xmpp disconnected with error = %@", error);
+
     if (self.statusHandler)
     {
         self.statusHandler(JYXmppStatusNetErr, error);
     }
+
+    // Do nothing, reconnect module will handle this.
 }
 
 - (void)xmppStreamDidAuthenticate:(XMPPStream *)sender

@@ -153,6 +153,9 @@
 		D69202CF1AC4C7C1001C1C3D /* joyyiosTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D69202CE1AC4C7C1001C1C3D /* joyyiosTests.m */; };
 		D693798D1B54E8BC00E64F3A /* JYPhotoCaptionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D693798C1B54E8BC00E64F3A /* JYPhotoCaptionViewController.m */; };
 		D693798E1B54E8BC00E64F3A /* JYPhotoCaptionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D693798C1B54E8BC00E64F3A /* JYPhotoCaptionViewController.m */; };
+		D69FF6D31B94105F00466FE5 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D69FF6D21B94105F00466FE5 /* AudioToolbox.framework */; };
+		D69FF6D61B94144100466FE5 /* JYSoundPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = D69FF6D51B94144100466FE5 /* JYSoundPlayer.m */; };
+		D69FF6D71B94144100466FE5 /* JYSoundPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = D69FF6D51B94144100466FE5 /* JYSoundPlayer.m */; };
 		D6B2F05B1ACE630F009601B0 /* JYAutoCompleteTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B2F05A1ACE630F009601B0 /* JYAutoCompleteTextField.m */; };
 		D6B2F05C1ACE630F009601B0 /* JYAutoCompleteTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B2F05A1ACE630F009601B0 /* JYAutoCompleteTextField.m */; };
 		D6C6BBAC1B62DF6B00FFFAC7 /* NSDictionary+Joyy.m in Sources */ = {isa = PBXBuildFile; fileRef = D6C6BBAB1B62DF6B00FFFAC7 /* NSDictionary+Joyy.m */; };
@@ -330,6 +333,9 @@
 		D69202CE1AC4C7C1001C1C3D /* joyyiosTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = joyyiosTests.m; sourceTree = "<group>"; };
 		D693798B1B54E8BC00E64F3A /* JYPhotoCaptionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYPhotoCaptionViewController.h; sourceTree = "<group>"; };
 		D693798C1B54E8BC00E64F3A /* JYPhotoCaptionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYPhotoCaptionViewController.m; sourceTree = "<group>"; };
+		D69FF6D21B94105F00466FE5 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		D69FF6D41B94144100466FE5 /* JYSoundPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYSoundPlayer.h; sourceTree = "<group>"; };
+		D69FF6D51B94144100466FE5 /* JYSoundPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYSoundPlayer.m; sourceTree = "<group>"; };
 		D6B2F0591ACE630F009601B0 /* JYAutoCompleteTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYAutoCompleteTextField.h; sourceTree = "<group>"; };
 		D6B2F05A1ACE630F009601B0 /* JYAutoCompleteTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYAutoCompleteTextField.m; sourceTree = "<group>"; };
 		D6C6BBAA1B62DF6B00FFFAC7 /* NSDictionary+Joyy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+Joyy.h"; sourceTree = "<group>"; };
@@ -348,6 +354,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D69FF6D31B94105F00466FE5 /* AudioToolbox.framework in Frameworks */,
 				D63F0DA51ACD16190067C5EE /* CoreLocation.framework in Frameworks */,
 				743498E564A05714440866C9 /* libPods.a in Frameworks */,
 			);
@@ -634,10 +641,10 @@
 				D68486BD1B8C59BF005CA0C4 /* JYMessage.m */,
 				D68486B81B8C40A3005CA0C4 /* JYMessageAvatar.h */,
 				D68486B91B8C40A3005CA0C4 /* JYMessageAvatar.m */,
-				D68486B41B8AC267005CA0C4 /* JYMessageViewController.h */,
-				D68486B51B8AC267005CA0C4 /* JYMessageViewController.m */,
 				D62C2C661B90261000233F5B /* JYMessageListViewController.h */,
 				D62C2C671B90261000233F5B /* JYMessageListViewController.m */,
+				D68486B41B8AC267005CA0C4 /* JYMessageViewController.h */,
+				D68486B51B8AC267005CA0C4 /* JYMessageViewController.m */,
 				D62C2C5E1B8E887200233F5B /* JYXmppManager.h */,
 				D62C2C5F1B8E887200233F5B /* JYXmppManager.m */,
 			);
@@ -647,30 +654,32 @@
 		D68DAF991AC4CD0800838E7E /* Common */ = {
 			isa = PBXGroup;
 			children = (
-				D63F0D731AC9F6F80067C5EE /* JYDataStore.h */,
-				D63F0D741AC9F6F80067C5EE /* JYDataStore.m */,
-				D6C6BBAA1B62DF6B00FFFAC7 /* NSDictionary+Joyy.h */,
-				D6C6BBAB1B62DF6B00FFFAC7 /* NSDictionary+Joyy.m */,
-				D6348D351ADB7ABC0002BC35 /* NSMutableDictionary+Joyy.h */,
-				D6348D361ADB7ABC0002BC35 /* NSMutableDictionary+Joyy.m */,
-				D6348D2D1ADB4DD60002BC35 /* NSString+Joyy.h */,
-				D6348D2E1ADB4DD60002BC35 /* NSString+Joyy.m */,
-				D63B69A71AC51302005600A9 /* UIFont+Joyy.h */,
-				D63B69A81AC51302005600A9 /* UIFont+Joyy.m */,
-				D63F0DA01ACD08260067C5EE /* UIColor+Joyy.h */,
-				D63F0DA11ACD08260067C5EE /* UIColor+Joyy.m */,
-				D689ED681AE42C8300CB4D2B /* UIView+Joyy.h */,
-				D689ED691AE42C8300CB4D2B /* UIView+Joyy.m */,
-				D61D1DDC1B5342DD00DE37DF /* UIImage+Joyy.h */,
-				D61D1DDD1B5342DD00DE37DF /* UIImage+Joyy.m */,
 				D63B69B81AC624F8005600A9 /* JYAutoCompleteDataSource.h */,
 				D63B69B91AC624F8005600A9 /* JYAutoCompleteDataSource.m */,
 				D6B2F0591ACE630F009601B0 /* JYAutoCompleteTextField.h */,
 				D6B2F05A1ACE630F009601B0 /* JYAutoCompleteTextField.m */,
 				D63F0D571AC7CFF20067C5EE /* JYButton.h */,
 				D63F0D581AC7CFF20067C5EE /* JYButton.m */,
+				D63F0D731AC9F6F80067C5EE /* JYDataStore.h */,
+				D63F0D741AC9F6F80067C5EE /* JYDataStore.m */,
 				D63B69B41AC53BB4005600A9 /* JYFloatLabeledTextField.h */,
 				D63B69B51AC53BB4005600A9 /* JYFloatLabeledTextField.m */,
+				D69FF6D41B94144100466FE5 /* JYSoundPlayer.h */,
+				D69FF6D51B94144100466FE5 /* JYSoundPlayer.m */,
+				D6C6BBAA1B62DF6B00FFFAC7 /* NSDictionary+Joyy.h */,
+				D6C6BBAB1B62DF6B00FFFAC7 /* NSDictionary+Joyy.m */,
+				D6348D351ADB7ABC0002BC35 /* NSMutableDictionary+Joyy.h */,
+				D6348D361ADB7ABC0002BC35 /* NSMutableDictionary+Joyy.m */,
+				D6348D2D1ADB4DD60002BC35 /* NSString+Joyy.h */,
+				D6348D2E1ADB4DD60002BC35 /* NSString+Joyy.m */,
+				D63F0DA01ACD08260067C5EE /* UIColor+Joyy.h */,
+				D63F0DA11ACD08260067C5EE /* UIColor+Joyy.m */,
+				D63B69A71AC51302005600A9 /* UIFont+Joyy.h */,
+				D63B69A81AC51302005600A9 /* UIFont+Joyy.m */,
+				D61D1DDC1B5342DD00DE37DF /* UIImage+Joyy.h */,
+				D61D1DDD1B5342DD00DE37DF /* UIImage+Joyy.m */,
+				D689ED681AE42C8300CB4D2B /* UIView+Joyy.h */,
+				D689ED691AE42C8300CB4D2B /* UIView+Joyy.m */,
 			);
 			name = Common;
 			sourceTree = "<group>";
@@ -777,6 +786,7 @@
 		E8953528E7D4E03D9881458B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				D69FF6D21B94105F00466FE5 /* AudioToolbox.framework */,
 				D63F0DA41ACD16190067C5EE /* CoreLocation.framework */,
 				8E034C4F8FC61E210B60EDCC /* libPods.a */,
 			);
@@ -1003,6 +1013,7 @@
 				D63F0D711AC9EC060067C5EE /* JYUser.m in Sources */,
 				D67DD0E01B744D1C00333626 /* JYCommentView.m in Sources */,
 				D61D1DE21B5366DC00DE37DF /* JYPost.m in Sources */,
+				D69FF6D61B94144100466FE5 /* JYSoundPlayer.m in Sources */,
 				D61D1DA21B4E336E00DE37DF /* TGCameraAuthorizationViewController.m in Sources */,
 				D61D1D4B1B4A65F200DE37DF /* UIColor+MDCRGB8Bit.m in Sources */,
 				D6C6BBAC1B62DF6B00FFFAC7 /* NSDictionary+Joyy.m in Sources */,
@@ -1089,6 +1100,7 @@
 				D61D1DB11B4E336E00DE37DF /* TGCameraColor.m in Sources */,
 				D65AFA5F1AEC715D007867D0 /* JYMasqueradeViewController.m in Sources */,
 				D61D1DBF1B4E336E00DE37DF /* TGCameraFilterView.m in Sources */,
+				D69FF6D71B94144100466FE5 /* JYSoundPlayer.m in Sources */,
 				D63F0DA31ACD08260067C5EE /* UIColor+Joyy.m in Sources */,
 				D61D1DCB1B4E336E00DE37DF /* TGTintedButton.m in Sources */,
 				D61D1DA71B4E336E00DE37DF /* TGCameraViewController.m in Sources */,

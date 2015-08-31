@@ -30,7 +30,6 @@ typedef void(^JYXmppStatusHandler)(JYXmppStatus type, NSError *error);
 
 @property (nonatomic) JYXmppStatus xmppStatus;
 @property (nonatomic, readonly) XMPPStream *xmppStream;
-@property (nonatomic, getter=isRegisterOperation) BOOL registerOperation; // YES: register; NO: login
 @property (nonatomic, readonly)XMPPMessageArchiving *msgArchiving;
 @property (nonatomic, readonly)XMPPMessageArchivingCoreDataStorage *msgStorage;
 @property (nonatomic, readonly)XMPPRoster *roster;

@@ -35,7 +35,7 @@
 {
     _credential = credential;
     [self _loadProperties];
-    _tokenExpireTimeInSecs = [NSDate timeIntervalSinceReferenceDate] + k30Minutes;
+    _tokenExpireTimeInSecs = [NSDate timeIntervalSinceReferenceDate] + k60Minutes;
 
     [JYDataStore sharedInstance].tokenExpireTime = _tokenExpireTimeInSecs;
     [JYDataStore sharedInstance].userCredential = _credential;

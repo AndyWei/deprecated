@@ -42,8 +42,8 @@ const CGFloat kSignViewTopOffset = 152;
 
 const NSTimeInterval k1Minutes = 60;
 const NSTimeInterval k15Minutes = 900;
-const NSTimeInterval k30Minutes = 1800;
 const NSTimeInterval k5Minutes = 300;
+const NSTimeInterval k60Minutes = 3600;
 
 const NSUInteger kAPN = 1;
 const NSUInteger kRecentCommentsLimit = 3;

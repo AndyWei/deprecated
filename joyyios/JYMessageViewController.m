@@ -11,6 +11,7 @@
 #import "JYMessage.h"
 #import "JYMessageAvatar.h"
 #import "JYMessageViewController.h"
+#import "JYSoundPlayer.h"
 #import "JYUser.h"
 #import "JYXmppManager.h"
 
@@ -368,7 +369,7 @@
     XMPPMessageArchiving_Message_CoreDataObject *lastMessage = [self.fetchedResultsController.fetchedObjects lastObject];
     if (!lastMessage.isOutgoing)
     {
-        [JSQSystemSoundPlayer jsq_playMessageReceivedSound];
+        [JYSoundPlayer playMessageReceivedAlertWithVibrate:NO];
     }
 }
 

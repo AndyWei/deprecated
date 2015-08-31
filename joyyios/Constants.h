@@ -43,7 +43,7 @@ extern const CGFloat kSignViewTopOffset;
 
 extern const NSTimeInterval k1Minutes;
 extern const NSTimeInterval k15Minutes;
-extern const NSTimeInterval k30Minutes;
+extern const NSTimeInterval k60Minutes;
 extern const NSTimeInterval k5Minutes;
 
 extern const NSUInteger kAPN;
