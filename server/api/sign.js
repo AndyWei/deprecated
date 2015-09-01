@@ -2,6 +2,7 @@
 
 
 var Async = require('async');
+var AWS = require('aws-sdk');
 var Bcrypt = require('bcrypt');
 var Boom = require('boom');
 var Config = require('../../config');
@@ -18,6 +19,14 @@ exports.register = function (server, options, next) {
 
     options = Hoek.applyToDefaults({ basePath: '' }, options);
 
+    AWS.config.update({
+        accessKeyId: Config.get('/aws/accessKeyId'),
+        secretAccessKey: Config.get('/aws/secretAccessKey'),
+        region: Config.get('/aws/region')
+    });
+
+    internals.cognitoidentity = new AWS.CognitoIdentity({apiVersion: '2014-06-30'});
+
     // Existing person sign in
     server.route({
         method: 'GET',
@@ -29,10 +38,47 @@ exports.register = function (server, options, next) {
         },
         handler: function (request, reply) {
 
-            var response = request.auth.credentials;
-            response.token = internals.createJwtToken(request.auth.credentials.id);
+            var personId = request.auth.credentials.id;
+            Async.auto({
+                cognito: function (callback) {
 
-            reply(null, response);
+                    var params = {
+                        IdentityPoolId: Config.get('/aws/identifyPoolId'),
+                        Logins: {
+                            joyy: personId
+                        },
+                        IdentityId: request.auth.credentials.cognito_identity_id,
+                        TokenDuration: Config.get('/aws/identifyExpiresInSeconds')
+                    };
+
+                    internals.cognitoidentity.getOpenIdTokenForDeveloperIdentity(params, function(err, data) {
+
+                        if (err) {
+                            console.error(err);
+                            return callback(err);
+                        }
+                        return callback(null, data);
+                    });
+                },
+                jwt: function (callback) {
+
+                    var token = internals.createJwtToken(personId);
+                    return callback(null, token);
+                }
+            }, function (err, results) {
+
+                if (err) {
+                    console.error(err);
+                    return reply(err);
+                }
+
+                var response = request.auth.credentials;
+                delete response.cognito_identity_id;
+                response.cognito = results.cognito;
+                response.token = results.jwt;
+
+                return reply(null, response);
+            });
         }
     });
 
@@ -130,6 +176,49 @@ internals.signup = function (request, reply) {
 
                 callback(err, queryResult.rows[0].id);
             });
+        }],
+        cognito: ['personId', function (callback, results) {
+
+            var params = {
+                IdentityPoolId: Config.get('/aws/identifyPoolId'),
+                Logins: {
+                    joyy: results.personId
+                },
+                TokenDuration: Config.get('/aws/identifyExpiresInSeconds')
+            };
+
+            internals.cognitoidentity.getOpenIdTokenForDeveloperIdentity(params, function(err, data) {
+
+                if (err) {
+                    console.error(err);
+                    return callback(err);
+                }
+                return callback(null, data);
+            });
+        }],
+        cognitoIdentityId: ['cognito', function (callback, results) {
+
+            var queryConfig = {
+                name: 'person_update_cognito',
+                text: 'UPDATE person SET cognito_identity_id = $1, ut = $2 ' +
+                      'WHERE id = $3 AND deleted = false ' +
+                      'RETURNING id',
+                values: [results.cognito.IdentityId, _.now(), results.personId]
+            };
+
+            request.pg.client.query(queryConfig, function (err, result) {
+
+                if (err) {
+                    request.pg.kill = true;
+                    return callback(err);
+                }
+
+                if (result.rows.length === 0) {
+                    return callback(Boom.badRequest(Const.PERSON_UPDATE_COGNITO_FAILED));
+                }
+
+                return callback(null);
+            });
         }]
     }, function (err, results) {
 
@@ -143,11 +232,12 @@ internals.signup = function (request, reply) {
             email: email,
             name: name,
             password: request.payload.password,
-            token: internals.createJwtToken(results.personId)
+            token: internals.createJwtToken(results.personId),
+            cognito: results.cognito
         };
 
         console.log('user created. email=%s, name = %s', email, name);
-        reply(null, message).code(201);
+        return reply(null, message).code(201);
     });
 };
 

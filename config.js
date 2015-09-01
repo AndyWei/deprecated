@@ -16,22 +16,20 @@ var config = {
         forIp: 50,
         forIpAndUser: 7
     },
+    aws: {
+        accessKeyId: 'AKIAICT6VFHHEMOS62AQ',
+        secretAccessKey: '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',
+        region: 'us-east-1',
+        identifyPoolId: 'us-east-1:a9366287-4298-443f-aa0b-d4d6ee43fa67',
+        identifyExpiresInSeconds: 3600
+    },
     db: {
         connectionString: 'postgres://postgres:password@localhost/joyy',
         native: true
     },
     jwt: {
         key: 'Lh;U2.JD5VW8*LoCJT1xR,Q9On=khDcy',
-        expiresInMinutes: 31
-    },
-    nodemailer: {
-        host: 'smtp.gmail.com',
-        port: 465,
-        secure: true,
-        auth: {
-            user: 'joyybiz@gmail.com',
-            pass: 'weserveeachother!'
-        }
+        expiresInMinutes: 65
     },
     port: {
         api: {
@@ -44,11 +42,6 @@ var config = {
         host: '127.0.0.1',
         password: 'TheSimplePasswordForTestOnly',
         port: 6379
-    },
-    s3: {
-        bucketName: 'joyydev',
-        accessControlLevel: 'public-read',
-        region: 'us-east-1'
     },
     stripe: {
         platformSecretKey: 'sk_test_LhUJDVWLoCJT1xRQ9OnkhDcy'

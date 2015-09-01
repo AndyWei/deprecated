@@ -34,7 +34,7 @@ exports.notify = internals.notify = function (fromPersonId, toPersonId, message,
                 }
 
                 if (!toPerson.device || !toPerson.service) {
-                    var error = new Error(Const.DEVICE_TOKEN_NOT_FOUND + 'toPersonId = ' + toPersonId);
+                    var error = new Error(Const.DEVICE_TOKEN_NOT_FOUND + ' toPersonId = ' + toPersonId);
                     return next(error);
                 }
 
@@ -43,7 +43,9 @@ exports.notify = internals.notify = function (fromPersonId, toPersonId, message,
         },
         function (toPerson, next) {
 // add fromPerson name lookup
-            switch(toPerson.service) {
+
+            var service = Number(toPerson.service);
+            switch(service) {
                 case Const.NotificationServiceType.APN:
                     internals.apnSend(toPerson.device, toPerson.badge, message, messageType);
                     break;
@@ -54,7 +56,7 @@ exports.notify = internals.notify = function (fromPersonId, toPersonId, message,
                     internals.mpnSend();
                     break;
                 default:
-                    var error = new Error(Const.DEVICE_TOKEN_INVALID + 'toPersonId = ' + toPersonId);
+                    var error = new Error(Const.DEVICE_TOKEN_INVALID + ' toPersonId = ' + toPersonId);
                     return next(error);
             }
             next(null);
@@ -73,7 +75,7 @@ exports.notify = internals.notify = function (fromPersonId, toPersonId, message,
     ], function (err) {
 
         if (err) {
-            console.err(err);
+            console.error(err);
         }
 
         return;

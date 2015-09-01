@@ -18,7 +18,7 @@ internals.validateSimple = function (request, email, password, finish) {
         function (callback) {
 
             var queryConfig = {
-                text: 'SELECT id, password, email, name FROM person WHERE email = $1 AND deleted = false',
+                text: 'SELECT id, password, email, name, cognito_identity_id FROM person WHERE email = $1 AND deleted = false',
                 values: [email],
                 name: 'person_by_email'
             };
