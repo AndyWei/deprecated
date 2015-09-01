@@ -1,9 +1,8 @@
 CREATE TABLE post (
     id                 BIGSERIAL  PRIMARY KEY,
     owner              BIGINT        NOT NULL,  -- the person.id of the owner who uploaded this post
-    type               SMALLINT      NOT NULL DEFAULT 0,  -- the post type: 0-photo, 1-video, 2-audio
     uv                 SMALLINT      NOT NULL DEFAULT 0,  -- the url version of the post file. Client will map this number to the base_url. 0-KeyCDN
-    filename           TEXT          NOT NULL,  -- the file name without suffix. e.g., j0176_458354045799
+    filename           TEXT          NOT NULL,  -- the file name with suffix. e.g., j0176_458354045799.jpg
     caption            TEXT          NOT NULL,
     cell               TEXT          NOT NULL, -- the cell where the post belongs to
     coords             GEOMETRY(Point, 4326) NOT NULL,  -- the coordinate of the place where the post was uploaded. It's used for searching

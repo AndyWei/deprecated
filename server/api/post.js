@@ -2,10 +2,8 @@
 
 
 var Async = require('async');
-var AWS = require('aws-sdk');
 var Boom = require('boom');
 var Cache = require('../cache');
-var Config = require('../../config');
 var Const = require('../constants');
 var Hoek = require('hoek');
 var Joi = require('joi');
@@ -13,18 +11,12 @@ var Utils = require('../utils');
 var _ = require('lodash');
 
 var internals = {};
-var selectClause = 'SELECT id, owner, type, uv, filename, caption, likes, comments, ct FROM post ';
+var selectClause = 'SELECT id, owner, uv, filename, caption, likes, comments, ct FROM post ';
 
 
 exports.register = function (server, options, next) {
 
     options = Hoek.applyToDefaults({ basePath: '' }, options);
-
-    // config s3 region
-    AWS.config.update({region: Config.get('/s3/region')});
-    var bucketName = Config.get('/s3/bucketName');
-    var bucket = new AWS.S3({params: {Bucket: bucketName}});
-    var fileACL = Config.get('/s3/accessControlLevel');
 
     // get post in the cell. no auth.
     server.route({
@@ -137,17 +129,12 @@ exports.register = function (server, options, next) {
             auth: {
                 strategy: 'token'
             },
-            payload: {
-                maxBytes: 1048576, // Hapi default is 1MB
-                output: 'stream',
-                parse: true
-            },
             validate: {
                 payload: {
                     lon: Joi.number().min(-180).max(180).required(),
                     lat: Joi.number().min(-90).max(90).required(),
-                    file: Joi.any().required(),
-                    type: Joi.number().min(0).max(2).required(),
+                    filename: Joi.string().required(),
+                    uv: Joi.number().min(0).required(),
                     caption: Joi.string().max(900).required(),
                     cell: Joi.string().max(12).required()
                 }
@@ -157,34 +144,14 @@ exports.register = function (server, options, next) {
 
             var ownerId = request.auth.credentials.id;
             var p = request.payload;
-            var dbFilename = p.file.hapi.filename;
-            var s3Filename = p.file.hapi.filename + '.jpg';
-
-            if (!dbFilename) {
-                return reply(Boom.badData(Const.FILENAME_MISSING));
-            }
 
             Async.waterfall([
                 function (callback) {
 
-                    var params = {Key: s3Filename, Body: p.file, ACL: fileACL};
-
-                    bucket.upload(params, function (err, data) {
-
-                        if (err) {
-                            return callback(err);
-                        }
-
-                        console.log('uploaded file success. s3 url = ', data.Location);
-                        return callback(null);
-                    });
-                },
-                function (callback) {
-
-                    var fields = 'INSERT INTO post (owner, type, uv, filename, caption, coords, cell, ct) ';
-                    var values = 'VALUES ($1, $2, $3, $4, $5, ST_SetSRID(ST_MakePoint($6, $7), 4326), $8, $9) RETURNING id';
+                    var fields = 'INSERT INTO post (owner, uv, filename, caption, coords, cell, ct) ';
+                    var values = 'VALUES ($1, $2, $3, $4, ST_SetSRID(ST_MakePoint($5, $6), 4326), $7, $8) RETURNING id';
                     var createdAt = _.now();
-                    var queryValues = [ownerId, p.type, 0, dbFilename, p.caption, p.lon, p.lat, p.cell, createdAt];
+                    var queryValues = [ownerId, p.uv, p.filename, p.caption, p.lon, p.lat, p.cell, createdAt];
 
                     var queryConfig = {
                         name: 'post_create',
@@ -211,9 +178,8 @@ exports.register = function (server, options, next) {
                     var postObj = {
                         id: postId,
                         owner: ownerId,
-                        type: p.type,
-                        uv: 0,
-                        filename: dbFilename,
+                        uv: p.uv,
+                        filename: p.filename,
                         caption: p.caption,
                         likes: 0,
                         comments: 0,
