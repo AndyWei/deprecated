@@ -80,7 +80,6 @@ exports.HEART_NOT_ALLOWED = 'Cannot heart yourself.';
 exports.PERSON_CREATE_FAILED = 'Failed to create person record.';
 exports.PERSON_INCREASE_HEART_COUNT_FAILED = 'Failed to update the heart count of the person.';
 exports.PERSON_NOT_FOUND = 'Failed to find the person record.';
-exports.PERSON_UPDATE_COGNITO_FAILED = 'Failed to update the cognito_identity_id of the person.';
 exports.PERSON_UPDATE_LOCATION_FAILED = 'Failed to update the location of the person.';
 exports.PERSON_UPDATE_PROFILE_FAILED = 'Failed to update the profile of the person.';
 

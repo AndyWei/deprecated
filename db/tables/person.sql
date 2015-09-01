@@ -15,8 +15,7 @@ CREATE TABLE person (
     bio                    TEXT                  ,
     avatar                 TEXT                  , -- avatar filename
     coords                 GEOMETRY(Point, 4326) , -- the point where the person last reported
-    met                    BIGINT                , -- membership expiry timestamp.
-    cognito_identity_id    TEXT                  , -- the IdentityId assigned by AWS Cognito Identity service
+    met                    BIGINT                , -- membership expiry timestamp
     ct                     BIGINT        NOT NULL, -- created_at timestamp
     ut                     BIGINT        NOT NULL, -- updated_at timestamp
     deleted                BOOLEAN       NOT NULL DEFAULT false,

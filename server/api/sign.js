@@ -13,7 +13,13 @@ var Jwt  = require('jsonwebtoken');
 var _ = require('lodash');
 
 var internals = {};
-
+var params = {
+    IdentityPoolId: Config.get('/aws/identifyPoolId'),
+    Logins: {
+        joyy: 0
+    },
+    TokenDuration: Config.get('/aws/identifyExpiresInSeconds')
+};
 
 exports.register = function (server, options, next) {
 
@@ -40,26 +46,6 @@ exports.register = function (server, options, next) {
 
             var personId = request.auth.credentials.id;
             Async.auto({
-                cognito: function (callback) {
-
-                    var params = {
-                        IdentityPoolId: Config.get('/aws/identifyPoolId'),
-                        Logins: {
-                            joyy: personId
-                        },
-                        IdentityId: request.auth.credentials.cognito_identity_id,
-                        TokenDuration: Config.get('/aws/identifyExpiresInSeconds')
-                    };
-
-                    internals.cognitoidentity.getOpenIdTokenForDeveloperIdentity(params, function(err, data) {
-
-                        if (err) {
-                            console.error(err);
-                            return callback(err);
-                        }
-                        return callback(null, data);
-                    });
-                },
                 jwt: function (callback) {
 
                     var token = internals.createJwtToken(personId);
@@ -73,8 +59,6 @@ exports.register = function (server, options, next) {
                 }
 
                 var response = request.auth.credentials;
-                delete response.cognito_identity_id;
-                response.cognito = results.cognito;
                 response.token = results.jwt;
 
                 return reply(null, response);
@@ -179,14 +163,7 @@ internals.signup = function (request, reply) {
         }],
         cognito: ['personId', function (callback, results) {
 
-            var params = {
-                IdentityPoolId: Config.get('/aws/identifyPoolId'),
-                Logins: {
-                    joyy: results.personId
-                },
-                TokenDuration: Config.get('/aws/identifyExpiresInSeconds')
-            };
-
+            params.Logins.joyy = results.personId;
             internals.cognitoidentity.getOpenIdTokenForDeveloperIdentity(params, function(err, data) {
 
                 if (err) {
@@ -194,30 +171,6 @@ internals.signup = function (request, reply) {
                     return callback(err);
                 }
                 return callback(null, data);
-            });
-        }],
-        cognitoIdentityId: ['cognito', function (callback, results) {
-
-            var queryConfig = {
-                name: 'person_update_cognito',
-                text: 'UPDATE person SET cognito_identity_id = $1, ut = $2 ' +
-                      'WHERE id = $3 AND deleted = false ' +
-                      'RETURNING id',
-                values: [results.cognito.IdentityId, _.now(), results.personId]
-            };
-
-            request.pg.client.query(queryConfig, function (err, result) {
-
-                if (err) {
-                    request.pg.kill = true;
-                    return callback(err);
-                }
-
-                if (result.rows.length === 0) {
-                    return callback(Boom.badRequest(Const.PERSON_UPDATE_COGNITO_FAILED));
-                }
-
-                return callback(null);
             });
         }]
     }, function (err, results) {

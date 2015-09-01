@@ -65,7 +65,7 @@ lab.experiment('Auth Basic: ', function () {
             method: 'GET',
             url: '/',
             headers: {
-                authorization: 'Basic ' + (new Buffer('andy94555@gmail.com:password')).toString('base64')
+                authorization: 'Basic ' + (new Buffer('andy@gmail.com:password')).toString('base64')
             }
         };
 
@@ -96,7 +96,7 @@ lab.experiment('Auth Basic: ', function () {
             method: 'GET',
             url: '/',
             headers: {
-                authorization: 'Basic ' + (new Buffer('andy94555@gmail.com:wrongpassword')).toString('base64')
+                authorization: 'Basic ' + (new Buffer('andy@gmail.com:wrongpassword')).toString('base64')
             }
         };
 
