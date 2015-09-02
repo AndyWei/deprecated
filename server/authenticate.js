@@ -2,7 +2,6 @@
 
 
 var Async = require('async');
-var AWS = require('aws-sdk');
 var Bcrypt = require('bcrypt');
 var Boom = require('boom');
 var Config = require('../config');
@@ -11,14 +10,6 @@ var Jwt  = require('jsonwebtoken');
 
 var exports = module.exports = {};
 var internals = {};
-
-var params = {
-    IdentityPoolId: Config.get('/aws/identifyPoolId'),
-    Logins: {
-        joyy: 0
-    },
-    TokenDuration: Config.get('/aws/identifyExpiresInSeconds')
-};
 
 internals.validateSimple = function (request, email, password, finish) {
 
@@ -56,19 +47,6 @@ internals.validateSimple = function (request, email, password, finish) {
                 results.credentials.password = password;
                 return callback(null, compareResult);
             });
-        }],
-        cognito: ['credentials', function (callback, results) {
-
-            params.Logins.joyy =  results.credentials.id;
-
-            internals.cognitoidentity.getOpenIdTokenForDeveloperIdentity(params, function(err, data) {
-
-                if (err) {
-                    console.error(err);
-                    return callback(err);
-                }
-                return callback(null, data);
-            });
         }]
     }, function (err, results) {
 
@@ -77,7 +55,6 @@ internals.validateSimple = function (request, email, password, finish) {
             return finish(err, false);
         }
 
-        results.credentials.cognito = results.cognito;
         return finish(null, true, results.credentials);
     });
 };
@@ -108,14 +85,6 @@ exports.register = function (server, options, next) {
     server.auth.strategy('token', 'bearer-access-token', {
         validateFunc: internals.validateToken
     });
-
-    AWS.config.update({
-        accessKeyId: Config.get('/aws/accessKeyId'),
-        secretAccessKey: Config.get('/aws/secretAccessKey'),
-        region: Config.get('/aws/region')
-    });
-
-    internals.cognitoidentity = new AWS.CognitoIdentity({apiVersion: '2014-06-30'});
 
     next();
 };

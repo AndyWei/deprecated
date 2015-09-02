@@ -13,13 +13,6 @@ var Jwt  = require('jsonwebtoken');
 var _ = require('lodash');
 
 var internals = {};
-var params = {
-    IdentityPoolId: Config.get('/aws/identifyPoolId'),
-    Logins: {
-        joyy: 0
-    },
-    TokenDuration: Config.get('/aws/identifyExpiresInSeconds')
-};
 
 exports.register = function (server, options, next) {
 
@@ -83,6 +76,40 @@ exports.register = function (server, options, next) {
             }]
         },
         handler: internals.signup
+    });
+
+
+    // Existing person get cognito token
+    server.route({
+        method: 'GET',
+        path: options.basePath + '/cognito',
+        config: {
+            auth: {
+                strategy: 'token'
+            }
+        },
+        handler: function (request, reply) {
+
+            var tokenDuration = Config.get('/aws/identifyExpiresInSeconds');
+            var params = {
+                IdentityPoolId: Config.get('/aws/identifyPoolId'),
+                Logins: {
+                    joyy: request.auth.credentials.id
+                },
+                TokenDuration: tokenDuration
+            };
+
+            internals.cognitoidentity.getOpenIdTokenForDeveloperIdentity(params, function(err, data) {
+
+                if (err) {
+                    console.error(err);
+                    return reply(err);
+                }
+
+                data.tokenDuration = tokenDuration;
+                return reply(null, data);
+            });
+        }
     });
 
     next();
@@ -160,18 +187,6 @@ internals.signup = function (request, reply) {
 
                 callback(err, queryResult.rows[0].id);
             });
-        }],
-        cognito: ['personId', function (callback, results) {
-
-            params.Logins.joyy = results.personId;
-            internals.cognitoidentity.getOpenIdTokenForDeveloperIdentity(params, function(err, data) {
-
-                if (err) {
-                    console.error(err);
-                    return callback(err);
-                }
-                return callback(null, data);
-            });
         }]
     }, function (err, results) {
 
@@ -185,8 +200,7 @@ internals.signup = function (request, reply) {
             email: email,
             name: name,
             password: request.payload.password,
-            token: internals.createJwtToken(results.personId),
-            cognito: results.cognito
+            token: internals.createJwtToken(results.personId)
         };
 
         console.log('user created. email=%s, name = %s', email, name);

@@ -21,7 +21,7 @@ var config = {
         secretAccessKey: 'bhCmsoYHFeJPTh7WBuManYkjIlwXPizTaMyfpeI2',
         region: 'us-east-1',
         identifyPoolId: 'us-east-1:a9366287-4298-443f-aa0b-d4d6ee43fa67',
-        identifyExpiresInSeconds: 3600
+        identifyExpiresInSeconds: 86400
     },
     db: {
         connectionString: 'postgres://postgres:password@localhost/joyy',
