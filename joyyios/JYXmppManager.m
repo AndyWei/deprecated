@@ -56,7 +56,7 @@
 
     // The first 3 chars of device ID should be enough
     NSString *prefix = [deviceId substringToIndex:3];
-    NSString *resource = [NSString stringWithFormat:@"iPhone_%@", prefix];
+    NSString *resource = [NSString stringWithFormat:@"%@_%@", kMessageResource, prefix];
 
     return [XMPPJID jidWithUser:[JYCredential current].idString domain:kMessageDomain resource:resource];
 }

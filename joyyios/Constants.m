@@ -6,51 +6,49 @@
 //  Copyright (c) 2015 Joyy Inc. All rights reserved.
 //
 
+CGFloat const kButtonCornerRadius = 4.0f;
+CGFloat const kButtonDefaultHeight = 44.0f;
+CGFloat const kButtonDefaultFontSize = 18.0f;
+CGFloat const kButtonLocateDiameter = 40;
+CGFloat const kIntroductionVersion = 1.0;
+CGFloat const kFontSizeCaption = 16.0f;
+CGFloat const kFontSizeComment = 15.0f;
+CGFloat const kFontSizeDetail = 13.0f;
+CGFloat const kMarginLeft = 8.0f;
+CGFloat const kMarginRight = 8.0f;
+CGFloat const kMarginTop = 8.0f;
+CGFloat const kPhotoQuality = 0.7;
+CGFloat const kPhotoWidth = 375.0;
+CGFloat const kSignButtonHeight = 60.0f;
+CGFloat const kSignButtonWidth = 120;
+CGFloat const kSignButtonMarginTop = 20.0f;
+CGFloat const kSignFieldFloatingLabelFontSize = 11.0f;
+CGFloat const kSignFieldFontSize = 18.0f;
+CGFloat const kSignFieldHeight = 70.0f;
+CGFloat const kSignFieldMarginLeft = 50.0f;
+CGFloat const kSignViewTopOffset = 152;
 
-NSString *const kUrlAPIBase = @"http://api.joyyapp.com:8000/v1/";
-//NSString *const kUrlAPIBase = @"http://192.168.1.145:8000/v1/";
-NSString *const kMessageDomain = @"joyy.im";
-NSString *const kMessageResource = @"iPhone";
-const UInt16 kMessagePort = 5222;
+NSTimeInterval const k1Minutes = 60;
+NSTimeInterval const k15Minutes = 900;
+NSTimeInterval const k5Minutes = 300;
+NSTimeInterval const k60Minutes = 3600;
 
-const CGFloat kButtonCornerRadius = 4.0f;
-const CGFloat kButtonDefaultHeight = 44.0f;
-const CGFloat kButtonDefaultFontSize = 18.0f;
-const CGFloat kButtonLocateDiameter = 40;
+NSUInteger const kAPN = 1;
+NSUInteger const kRecentCommentsLimit = 3;
 
-const CGFloat kIntroductionVersion = 1.0;
+UInt16 const kMessagePort = 5222;
 
-const CGFloat kFontSizeCaption = 16.0f;
-const CGFloat kFontSizeComment = 15.0f;
-const CGFloat kFontSizeDetail = 13.0f;
-
-const CGFloat kMarginLeft = 8.0f;
-const CGFloat kMarginRight = 8.0f;
-const CGFloat kMarginTop = 8.0f;
-
-const CGFloat kPhotoQuality = 0.7;
-const CGFloat kPhotoWidth = 375.0;
-
-const CGFloat kSignButtonHeight = 60.0f;
-const CGFloat kSignButtonWidth = 120;
-const CGFloat kSignButtonMarginTop = 20.0f;
-const CGFloat kSignFieldFloatingLabelFontSize = 11.0f;
-const CGFloat kSignFieldFontSize = 18.0f;
-const CGFloat kSignFieldHeight = 70.0f;
-const CGFloat kSignFieldMarginLeft = 50.0f;
-const CGFloat kSignViewTopOffset = 152;
-
-const NSTimeInterval k1Minutes = 60;
-const NSTimeInterval k15Minutes = 900;
-const NSTimeInterval k5Minutes = 300;
-const NSTimeInterval k60Minutes = 3600;
-
-const NSUInteger kAPN = 1;
-const NSUInteger kRecentCommentsLimit = 3;
+// AWS
+NSString *const kAuthProviderName = @"joyy"; // the provider name configured in the Cognito console.
+NSString *const kCognitoIdentityPoolId = @"us-east-1:a9366287-4298-443f-aa0b-d4d6ee43fa67";
+AWSRegionType const kCognitoRegionType = AWSRegionUSEast1;
+// AWS end
 
 NSString *const kErrorAuthenticationFailed = @"Incorrect Email or password";
 NSString *const kErrorTitle = @"🐻: something wrong";
 
+NSString *const kMessageDomain = @"joyy.im";
+NSString *const kMessageResource = @"iPhone";
 NSString *const kMessageBodyTypeAudio    = @"a:";
 NSString *const kMessageBodyTypeEmoji    = @"e:";
 NSString *const kMessageBodyTypeGif      = @"g:";
@@ -69,3 +67,6 @@ NSString *const kSystemFontBold = @"AvenirNextCondensed-DemiBold";
 NSString *const kSystemFontItalic = @"AvenirNextCondensed-Italic ";
 NSString *const kSystemFontLight = @"AvenirNextCondensed-UltraLight ";
 NSString *const kSystemFontRegular = @"AvenirNextCondensed-Regular";
+
+//NSString *const kUrlAPIBase = @"http://api.joyyapp.com:8000/v1/";
+NSString *const kUrlAPIBase = @"http://192.168.1.145:8000/v1/";

@@ -156,6 +156,12 @@
 		D69FF6D31B94105F00466FE5 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D69FF6D21B94105F00466FE5 /* AudioToolbox.framework */; };
 		D69FF6D61B94144100466FE5 /* JYSoundPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = D69FF6D51B94144100466FE5 /* JYSoundPlayer.m */; };
 		D69FF6D71B94144100466FE5 /* JYSoundPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = D69FF6D51B94144100466FE5 /* JYSoundPlayer.m */; };
+		D69FF6DB1B96471600466FE5 /* JYAmazonClientManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D69FF6DA1B96471600466FE5 /* JYAmazonClientManager.m */; };
+		D69FF6DC1B96471600466FE5 /* JYAmazonClientManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D69FF6DA1B96471600466FE5 /* JYAmazonClientManager.m */; };
+		D69FF6E51B96474200466FE5 /* JYAuthenticatedIdentityProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = D69FF6E01B96474200466FE5 /* JYAuthenticatedIdentityProvider.m */; };
+		D69FF6E61B96474200466FE5 /* JYAuthenticatedIdentityProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = D69FF6E01B96474200466FE5 /* JYAuthenticatedIdentityProvider.m */; };
+		D69FF6E71B96474200466FE5 /* JYAuthenticationClient.m in Sources */ = {isa = PBXBuildFile; fileRef = D69FF6E21B96474200466FE5 /* JYAuthenticationClient.m */; };
+		D69FF6E81B96474200466FE5 /* JYAuthenticationClient.m in Sources */ = {isa = PBXBuildFile; fileRef = D69FF6E21B96474200466FE5 /* JYAuthenticationClient.m */; };
 		D6B2F05B1ACE630F009601B0 /* JYAutoCompleteTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B2F05A1ACE630F009601B0 /* JYAutoCompleteTextField.m */; };
 		D6B2F05C1ACE630F009601B0 /* JYAutoCompleteTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B2F05A1ACE630F009601B0 /* JYAutoCompleteTextField.m */; };
 		D6C6BBAC1B62DF6B00FFFAC7 /* NSDictionary+Joyy.m in Sources */ = {isa = PBXBuildFile; fileRef = D6C6BBAB1B62DF6B00FFFAC7 /* NSDictionary+Joyy.m */; };
@@ -336,6 +342,12 @@
 		D69FF6D21B94105F00466FE5 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		D69FF6D41B94144100466FE5 /* JYSoundPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYSoundPlayer.h; sourceTree = "<group>"; };
 		D69FF6D51B94144100466FE5 /* JYSoundPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYSoundPlayer.m; sourceTree = "<group>"; };
+		D69FF6D91B96471600466FE5 /* JYAmazonClientManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYAmazonClientManager.h; sourceTree = "<group>"; };
+		D69FF6DA1B96471600466FE5 /* JYAmazonClientManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYAmazonClientManager.m; sourceTree = "<group>"; };
+		D69FF6DF1B96474200466FE5 /* JYAuthenticatedIdentityProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYAuthenticatedIdentityProvider.h; sourceTree = "<group>"; };
+		D69FF6E01B96474200466FE5 /* JYAuthenticatedIdentityProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYAuthenticatedIdentityProvider.m; sourceTree = "<group>"; };
+		D69FF6E11B96474200466FE5 /* JYAuthenticationClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYAuthenticationClient.h; sourceTree = "<group>"; };
+		D69FF6E21B96474200466FE5 /* JYAuthenticationClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYAuthenticationClient.m; sourceTree = "<group>"; };
 		D6B2F0591ACE630F009601B0 /* JYAutoCompleteTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYAutoCompleteTextField.h; sourceTree = "<group>"; };
 		D6B2F05A1ACE630F009601B0 /* JYAutoCompleteTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYAutoCompleteTextField.m; sourceTree = "<group>"; };
 		D6C6BBAA1B62DF6B00FFFAC7 /* NSDictionary+Joyy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+Joyy.h"; sourceTree = "<group>"; };
@@ -729,6 +741,7 @@
 				D68DAF931AC4CACD00838E7E /* Constants.m */,
 				D62C2C6A1B917FE500233F5B /* Vendor */,
 				D68DAF991AC4CD0800838E7E /* Common */,
+				D69FF6D81B9646CF00466FE5 /* AWS */,
 				D61D1D5B1B4DBA5D00DE37DF /* Masquerade */,
 				D68486B31B8AC207005CA0C4 /* Message */,
 				D63B69AB1AC5184D005600A9 /* People */,
@@ -766,6 +779,19 @@
 				D69202CD1AC4C7C1001C1C3D /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		D69FF6D81B9646CF00466FE5 /* AWS */ = {
+			isa = PBXGroup;
+			children = (
+				D69FF6DF1B96474200466FE5 /* JYAuthenticatedIdentityProvider.h */,
+				D69FF6E01B96474200466FE5 /* JYAuthenticatedIdentityProvider.m */,
+				D69FF6E11B96474200466FE5 /* JYAuthenticationClient.h */,
+				D69FF6E21B96474200466FE5 /* JYAuthenticationClient.m */,
+				D69FF6D91B96471600466FE5 /* JYAmazonClientManager.h */,
+				D69FF6DA1B96471600466FE5 /* JYAmazonClientManager.m */,
+			);
+			name = AWS;
 			sourceTree = "<group>";
 		};
 		D6C82B611B1252FE00876F57 /* Model */ = {
@@ -993,6 +1019,7 @@
 				D61D1DC21B4E336E00DE37DF /* TGCameraGridView.m in Sources */,
 				D63F0D591AC7CFF20067C5EE /* JYButton.m in Sources */,
 				D63B69BA1AC624F8005600A9 /* JYAutoCompleteDataSource.m in Sources */,
+				D69FF6DB1B96471600466FE5 /* JYAmazonClientManager.m in Sources */,
 				D63B69B21AC51D61005600A9 /* JYSignBaseViewController.m in Sources */,
 				D61D1DC41B4E336E00DE37DF /* TGCameraSlideDownView.m in Sources */,
 				D67DD0E41B75302800333626 /* JYPeopleViewController.m in Sources */,
@@ -1003,6 +1030,7 @@
 				D69202B51AC4C7C0001C1C3D /* AppDelegate.m in Sources */,
 				D63F0DA21ACD08260067C5EE /* UIColor+Joyy.m in Sources */,
 				D61D1D491B4A65F200DE37DF /* MDCViewState.m in Sources */,
+				D69FF6E71B96474200466FE5 /* JYAuthenticationClient.m in Sources */,
 				D6C82B551B0D9FAE00876F57 /* JYCommentViewController.m in Sources */,
 				D6B2F05B1ACE630F009601B0 /* JYAutoCompleteTextField.m in Sources */,
 				D61D1D4F1B4A65F200DE37DF /* MDCSwipeOptions.m in Sources */,
@@ -1046,6 +1074,7 @@
 				D67DD0EC1B75321A00333626 /* JYPerson.m in Sources */,
 				D68DAF971AC4CACD00838E7E /* JYSignInViewController.m in Sources */,
 				D61D1DB81B4E336E00DE37DF /* TGCameraShot.m in Sources */,
+				D69FF6E51B96474200466FE5 /* JYAuthenticatedIdentityProvider.m in Sources */,
 				D61D1DA01B4E336E00DE37DF /* UIImage+CameraFilters.m in Sources */,
 				D62C2C681B90261000233F5B /* JYMessageListViewController.m in Sources */,
 				D67DD0E81B7530AF00333626 /* JYPersonCard.m in Sources */,
@@ -1068,9 +1097,11 @@
 				D689ED6B1AE42C8300CB4D2B /* UIView+Joyy.m in Sources */,
 				D61D1DA31B4E336E00DE37DF /* TGCameraAuthorizationViewController.m in Sources */,
 				D61D1D4C1B4A65F200DE37DF /* UIColor+MDCRGB8Bit.m in Sources */,
+				D69FF6E61B96474200466FE5 /* JYAuthenticatedIdentityProvider.m in Sources */,
 				D61D1DE31B5366DC00DE37DF /* JYPost.m in Sources */,
 				D6C82B6A1B12553D00876F57 /* JYComment.m in Sources */,
 				D61D1DC31B4E336E00DE37DF /* TGCameraGridView.m in Sources */,
+				D69FF6E81B96474200466FE5 /* JYAuthenticationClient.m in Sources */,
 				D61D1DBD1B4E336E00DE37DF /* TGAssetImageFile.m in Sources */,
 				D63F0D561AC7ACB70067C5EE /* JYSignUpViewController.m in Sources */,
 				D67DD0F91B7728E300333626 /* JYAvatar.m in Sources */,
@@ -1101,6 +1132,7 @@
 				D65AFA5F1AEC715D007867D0 /* JYMasqueradeViewController.m in Sources */,
 				D61D1DBF1B4E336E00DE37DF /* TGCameraFilterView.m in Sources */,
 				D69FF6D71B94144100466FE5 /* JYSoundPlayer.m in Sources */,
+				D69FF6DC1B96471600466FE5 /* JYAmazonClientManager.m in Sources */,
 				D63F0DA31ACD08260067C5EE /* UIColor+Joyy.m in Sources */,
 				D61D1DCB1B4E336E00DE37DF /* TGTintedButton.m in Sources */,
 				D61D1DA71B4E336E00DE37DF /* TGCameraViewController.m in Sources */,

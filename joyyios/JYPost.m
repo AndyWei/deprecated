@@ -32,7 +32,7 @@ static NSString *const kLikedPostTable = @"liked_post";
     return _sharedKVStore;
 }
 
-+ (NSString *)newFilename
++ (NSString *)newFilenameWithSuffix:(NSString *)suffix
 {
     NSString *first = [[JYCredential current].name substringToIndex:1];  // "j" for jack
 
@@ -41,7 +41,7 @@ static NSString *const kLikedPostTable = @"liked_post";
 
     NSString *timestamp = [JYPost _timeInMiliSeconds];                // 458354045799
 
-    return [NSString stringWithFormat:@"%@%@_%@", first, randString, timestamp]; // "j0176_458354045799"
+    return [NSString stringWithFormat:@"%@%@_%@.%@", first, randString, timestamp, suffix]; // "j0176_458354045799.jpg"
 }
 
 + (NSString *)_timeInMiliSeconds

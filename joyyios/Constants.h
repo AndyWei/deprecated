@@ -9,49 +9,48 @@
 #ifndef joyy_Constants_h
 #define joyy_Constants_h
 
-extern NSString *const kUrlAPIBase;
-extern NSString *const kMessageDomain;
-extern NSString *const kMessageResource;
-extern const UInt16 kMessagePort;
+#import <AWSCore/AWSCore.h>
 
-extern const CGFloat kButtonCornerRadius;
-extern const CGFloat kButtonDefaultHeight;
-extern const CGFloat kButtonDefaultFontSize;
-extern const CGFloat kButtonLocateDiameter;
+extern UInt16  const kMessagePort;
+extern CGFloat const kButtonCornerRadius;
+extern CGFloat const kButtonDefaultHeight;
+extern CGFloat const kButtonDefaultFontSize;
+extern CGFloat const kButtonLocateDiameter;
+extern CGFloat const kIntroductionVersion;
+extern CGFloat const kFontSizeCaption;
+extern CGFloat const kFontSizeComment;
+extern CGFloat const kFontSizeDetail;
+extern CGFloat const kMarginLeft;
+extern CGFloat const kMarginRight;
+extern CGFloat const kMarginTop;
+extern CGFloat const kPhotoQuality;
+extern CGFloat const kPhotoWidth;  // exact pixel size
+extern CGFloat const kSignButtonHeight;
+extern CGFloat const kSignButtonWidth;
+extern CGFloat const kSignButtonMarginTop;
+extern CGFloat const kSignFieldFloatingLabelFontSize;
+extern CGFloat const kSignFieldFontSize;
+extern CGFloat const kSignFieldHeight;
+extern CGFloat const kSignFieldMarginLeft;
+extern CGFloat const kSignViewTopOffset;
+extern NSTimeInterval const k1Minutes;
+extern NSTimeInterval const k15Minutes;
+extern NSTimeInterval const k60Minutes;
+extern NSTimeInterval const k5Minutes;
+extern NSUInteger const kAPN;
+extern NSUInteger const kRecentCommentsLimit;
 
-extern const CGFloat kIntroductionVersion;
-
-extern const CGFloat kFontSizeCaption;
-extern const CGFloat kFontSizeComment;
-extern const CGFloat kFontSizeDetail;
-
-extern const CGFloat kMarginLeft;
-extern const CGFloat kMarginRight;
-extern const CGFloat kMarginTop;
-
-extern const CGFloat kPhotoQuality;
-extern const CGFloat kPhotoWidth;  // exact pixel size
-
-extern const CGFloat kSignButtonHeight;
-extern const CGFloat kSignButtonWidth;
-extern const CGFloat kSignButtonMarginTop;
-extern const CGFloat kSignFieldFloatingLabelFontSize;
-extern const CGFloat kSignFieldFontSize;
-extern const CGFloat kSignFieldHeight;
-extern const CGFloat kSignFieldMarginLeft;
-extern const CGFloat kSignViewTopOffset;
-
-extern const NSTimeInterval k1Minutes;
-extern const NSTimeInterval k15Minutes;
-extern const NSTimeInterval k60Minutes;
-extern const NSTimeInterval k5Minutes;
-
-extern const NSUInteger kAPN;
-extern const NSUInteger kRecentCommentsLimit;
+// AWS
+extern NSString *const kAuthProviderName;
+extern NSString *const kCognitoIdentityPoolId;
+extern AWSRegionType const kCognitoRegionType;
+// AWS end
 
 extern NSString *const kErrorAuthenticationFailed;
 extern NSString *const kErrorTitle;
 
+extern NSString *const kMessageDomain;
+extern NSString *const kMessageResource;
 extern NSString *const kMessageBodyTypeAudio;
 extern NSString *const kMessageBodyTypeEmoji;
 extern NSString *const kMessageBodyTypeGif;
@@ -70,6 +69,8 @@ extern NSString *const kSystemFontBold;
 extern NSString *const kSystemFontItalic;
 extern NSString *const kSystemFontLight;
 extern NSString *const kSystemFontRegular;
+
+extern NSString *const kUrlAPIBase;
 
 #define NAVIGATION_BAR_HEIGHT       (self.navigationController.navigationBar.frame.size.height)    // 44
 #define STATUS_BAR_HEIGHT           ([UIApplication sharedApplication].statusBarFrame.size.height) // 20

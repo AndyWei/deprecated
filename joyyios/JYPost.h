@@ -15,7 +15,7 @@ typedef NS_ENUM(NSUInteger, JYPostType)
 
 @interface JYPost : NSObject
 
-+ (NSString *)newFilename;
++ (NSString *)newFilenameWithSuffix:(NSString *)suffix;
 
 - (instancetype)initWithDictionary:(NSDictionary *)dict;
 - (instancetype)initWithLocalImage:(UIImage *)image;

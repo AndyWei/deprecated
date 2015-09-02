@@ -299,7 +299,8 @@ static NSString *const kPostCellIdentifier = @"postCell";
     // Handling and upload the photo
     UIImage *image = [UIImage imageWithImage:photo scaledToSize:CGSizeMake(kPhotoWidth, kPhotoWidth)];
     NSData *imageData = UIImageJPEGRepresentation(image, kPhotoQuality);
-    [self _uploadImageNamed:[JYPost newFilename] withData:imageData andCaption:caption];
+    NSString *filename = [JYPost newFilenameWithSuffix:@"jpg"];
+    [self _uploadImageNamed:filename withData:imageData andCaption:caption];
 
     __weak typeof(self) weakSelf = self;
     [self dismissViewControllerAnimated:YES completion:^{

@@ -7,11 +7,13 @@
 //
 
 #import <AFNetworking/AFNetworking.h>
+#import <AWSCore/AWSCore.h>
 #import <KVNProgress/KVNProgress.h>
 #import <MSWeakTimer/MSWeakTimer.h>
 #import <RKDropdownAlert/RKDropdownAlert.h>
 
 #import "AppDelegate.h"
+#import "JYAmazonClientManager.h"
 #import "JYDataStore.h"
 #import "JYMasqueradeViewController.h"
 #import "JYMessageListViewController.h"
@@ -48,7 +50,6 @@
     [self _setupGlobalAppearance];
     [self _setupLocationManager];
     [self _launchViewController];
-
     [self.window makeKeyAndVisible];
     return YES;
 }
@@ -363,6 +364,8 @@
         [[JYXmppManager sharedInstance] xmppUserLogin:nil];
         self.shouldXmppGoOnline = NO;
     }
+
+    [[JYAmazonClientManager sharedInstance] goActiveWithCompletionHandler:nil];
 }
 
 - (void)_signInAfter:(NSTimeInterval)interval
