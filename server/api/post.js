@@ -11,7 +11,7 @@ var Utils = require('../utils');
 var _ = require('lodash');
 
 var internals = {};
-var selectClause = 'SELECT id, owner, uv, filename, caption, likes, comments, ct FROM post ';
+var selectClause = 'SELECT id, owner, filename, caption, likes, comments, ct FROM post ';
 
 
 exports.register = function (server, options, next) {
@@ -26,8 +26,8 @@ exports.register = function (server, options, next) {
             validate: {
                 query: {
                     cell: Joi.string().max(12).required(),
-                    after: Joi.number().default(0),
-                    before: Joi.number().positive().default(Number.MAX_SAFE_INTEGER)
+                    after: Joi.number().min(0).max(Number.MAX_SAFE_INTEGER).default(0),
+                    before: Joi.number().min(0).max(Number.MAX_SAFE_INTEGER).default(Number.MAX_SAFE_INTEGER)
                 }
             }
         },
@@ -134,7 +134,6 @@ exports.register = function (server, options, next) {
                     lon: Joi.number().min(-180).max(180).required(),
                     lat: Joi.number().min(-90).max(90).required(),
                     filename: Joi.string().required(),
-                    uv: Joi.number().min(0).required(),
                     caption: Joi.string().max(900).required(),
                     cell: Joi.string().max(12).required()
                 }
@@ -148,10 +147,10 @@ exports.register = function (server, options, next) {
             Async.waterfall([
                 function (callback) {
 
-                    var fields = 'INSERT INTO post (owner, uv, filename, caption, coords, cell, ct) ';
-                    var values = 'VALUES ($1, $2, $3, $4, ST_SetSRID(ST_MakePoint($5, $6), 4326), $7, $8) RETURNING id';
+                    var fields = 'INSERT INTO post (owner, filename, caption, coords, cell, ct) ';
+                    var values = 'VALUES ($1, $2, $3, ST_SetSRID(ST_MakePoint($4, $5), 4326), $6, $7) RETURNING id';
                     var createdAt = _.now();
-                    var queryValues = [ownerId, p.uv, p.filename, p.caption, p.lon, p.lat, p.cell, createdAt];
+                    var queryValues = [ownerId, p.filename, p.caption, p.lon, p.lat, p.cell, createdAt];
 
                     var queryConfig = {
                         name: 'post_create',
@@ -178,7 +177,6 @@ exports.register = function (server, options, next) {
                     var postObj = {
                         id: postId,
                         owner: ownerId,
-                        uv: p.uv,
                         filename: p.filename,
                         caption: p.caption,
                         likes: 0,
