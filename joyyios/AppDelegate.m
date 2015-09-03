@@ -8,6 +8,7 @@
 
 #import <AFNetworking/AFNetworking.h>
 #import <AWSCore/AWSCore.h>
+#import <AWSS3/AWSS3.h>
 #import <KVNProgress/KVNProgress.h>
 #import <MSWeakTimer/MSWeakTimer.h>
 #import <RKDropdownAlert/RKDropdownAlert.h>
@@ -99,7 +100,8 @@
     self.shouldXmppGoOnline = [self _isPresentingMessageViewController];
 
     NSTimeInterval now = [NSDate timeIntervalSinceReferenceDate];
-    if (user.tokenExpireTimeInSecs < now)
+    NSTimeInterval validPeriod = user.tokenExpireTimeInSecs - now;
+    if (validPeriod < 0)
     {
         if (self.signInTimer)
         {
@@ -111,12 +113,7 @@
     }
     else
     {
-        [self _signInAfter:(user.tokenExpireTimeInSecs - now)];
-        if (self.shouldXmppGoOnline)
-        {
-            [[JYXmppManager sharedInstance] xmppUserLogin:nil];
-            self.shouldXmppGoOnline = NO;
-        }
+        [self _signValidForSeconds:validPeriod];
     }
 }
 
@@ -349,15 +346,15 @@
 
 - (void)_didSignInManually
 {
-    [self _didSignInAutomatically];
+    [self _signValidForSeconds:k60Minutes];
     [self _launchMainViewController];
 }
 
-- (void)_didSignInAutomatically
+- (void)_signValidForSeconds:(NSTimeInterval)seconds
 {
     // Register push notification now to trigger device token uploading, which is to avoid server side device token lost unexpectedly
     [self _registerPushNotifications];
-    [self _signInAfter:k60Minutes];
+    [self _signInAfter:seconds];
 
     if (self.shouldXmppGoOnline)
     {
@@ -412,7 +409,7 @@
             NSLog(@"_autoSignIn Success");
             NSLog(@"_autoSignIn responseObject = %@", responseObject);
             [JYCredential current].dictionary = responseObject;
-            [weakSelf _didSignInAutomatically];
+            [weakSelf  _signValidForSeconds:k60Minutes];
         }
         failure:^(AFHTTPRequestOperation *operation, NSError *error) {
             NSLog(@"_autoSignIn Error: %@", error);

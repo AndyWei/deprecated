@@ -41,6 +41,8 @@ UInt16 const kMessagePort = 5222;
 // AWS
 NSString *const kAuthProviderName = @"joyy"; // the provider name configured in the Cognito console.
 NSString *const kCognitoIdentityPoolId = @"us-east-1:a9366287-4298-443f-aa0b-d4d6ee43fa67";
+NSString *const kMasqueradeBucket = @"masquerade.joyy";
+NSString *const kMessagesBucket = @"messages.joyy";
 AWSRegionType const kCognitoRegionType = AWSRegionUSEast1;
 // AWS end
 

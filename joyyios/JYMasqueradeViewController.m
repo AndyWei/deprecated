@@ -7,6 +7,7 @@
 //
 
 #import <AFNetworking/AFNetworking.h>
+#import <AWSS3/AWSS3.h>
 #import <MJRefresh/MJRefresh.h>
 #import <RKDropdownAlert/RKDropdownAlert.h>
 
@@ -14,6 +15,7 @@
 #import "JYButton.h"
 #import "JYComment.h"
 #import "JYCommentViewController.h"
+#import "JYFile.h"
 #import "JYMasqueradeViewController.h"
 #import "JYPost.h"
 #import "JYPostViewCell.h"
@@ -299,8 +301,8 @@ static NSString *const kPostCellIdentifier = @"postCell";
     // Handling and upload the photo
     UIImage *image = [UIImage imageWithImage:photo scaledToSize:CGSizeMake(kPhotoWidth, kPhotoWidth)];
     NSData *imageData = UIImageJPEGRepresentation(image, kPhotoQuality);
-    NSString *filename = [JYPost newFilenameWithSuffix:@"jpg"];
-    [self _uploadImageNamed:filename withData:imageData andCaption:caption];
+
+    [self _createPostWithMediaData:imageData contentType:@"image/jpg" caption:caption];
 
     __weak typeof(self) weakSelf = self;
     [self dismissViewControllerAnimated:YES completion:^{
@@ -402,7 +404,105 @@ static NSString *const kPostCellIdentifier = @"postCell";
     cell.post = self.postList[0];
 }
 
+#pragma mark - AWS S3
+
+- (void)_createPostWithMediaData:(NSData *)data contentType:(NSString *)contentType caption:(NSString *)caption
+{
+    NSURL *fileURL = [NSURL fileURLWithPath:[NSTemporaryDirectory() stringByAppendingPathComponent:@"masquerade"]];
+    [data writeToURL:fileURL atomically:YES];
+
+    NSString *s3filename = [JYFile filenameWithHttpContentType:contentType];
+
+    AWSS3TransferManager *transferManager = [AWSS3TransferManager defaultS3TransferManager];
+    AWSS3TransferManagerUploadRequest *request = [AWSS3TransferManagerUploadRequest new];
+    request.bucket = kMasqueradeBucket;
+    request.key = s3filename;
+    request.body = fileURL;
+    request.contentType = contentType;
+    request.ACL = AWSS3ObjectCannedACLPublicRead;
+
+    __weak typeof(self) weakSelf = self;
+    [[transferManager upload:request] continueWithExecutor:[AWSExecutor mainThreadExecutor] withBlock:^id(AWSTask *task) {
+        if (task.error)
+        {
+            if ([task.error.domain isEqualToString:AWSS3TransferManagerErrorDomain])
+            {
+                switch (task.error.code)
+                {
+                    case AWSS3TransferManagerErrorCancelled:
+                    case AWSS3TransferManagerErrorPaused:
+                        break;
+                    default:
+                        NSLog(@"Error: AWSS3TransferManager upload error = %@", task.error);
+                        break;
+                }
+            }
+            else
+            {
+                // Unknown error.
+                NSLog(@"Error: AWSS3TransferManager upload error = %@", task.error);
+            }
+        }
+        if (task.result)
+        {
+            AWSS3TransferManagerUploadOutput *uploadOutput = task.result;
+            NSLog(@"Success: AWSS3TransferManager upload task.result = %@", uploadOutput);
+            NSLog(@"calling _createPostRecordWithFilename");
+            [weakSelf _createPostRecordWithFilename:s3filename caption:caption];
+        }
+        return nil;
+    }];
+}
+
 #pragma mark - Network
+
+- (void)_createPostRecordWithFilename:(NSString *)filename caption:(NSString *)caption
+{
+    [self _networkThreadBegin];
+
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYCredential current].token];
+    [manager.requestSerializer setValue:token forHTTPHeaderField:@"Authorization"];
+
+    NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"post"];
+    NSMutableDictionary *parameters = [self _parametersForCreatingPostRecord];
+    [parameters setObject:filename forKey:@"filename"];
+    [parameters setObject:caption forKey:@"caption"];
+
+    __weak typeof(self) weakSelf = self;
+    [manager POST:url
+       parameters:parameters
+          success:^(AFHTTPRequestOperation *operation, id responseObject) {
+
+        NSLog(@"Success: createPostRecord response = %@", responseObject);
+        JYPost *post = [[JYPost alloc] initWithDictionary:responseObject];
+        [weakSelf _replaceQuickShowWithReal:post];
+        [weakSelf _networkThreadEnd];
+
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"Failure: createPostRecord error = %@", error);
+        [weakSelf _networkThreadEnd];
+
+        [RKDropdownAlert title:NSLocalizedString(kErrorTitle, nil)
+                       message:error.localizedDescription
+               backgroundColor:FlatYellow
+                     textColor:FlatBlack
+                          time:5];
+    }];
+}
+
+- (NSMutableDictionary *)_parametersForCreatingPostRecord
+{
+    NSMutableDictionary *parameters = [NSMutableDictionary new];
+
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    [parameters setObject:@(appDelegate.currentCoordinate.latitude) forKey:@"lat"];
+    [parameters setObject:@(appDelegate.currentCoordinate.longitude) forKey:@"lon"];
+    [parameters setObject:appDelegate.cellId forKey:@"cell"];
+
+    [parameters setObject:@(0) forKey:@"uv"];
+    return parameters;
+}
 
 - (void)_likePost:(JYPost *)post
 {
@@ -417,69 +517,19 @@ static NSString *const kPostCellIdentifier = @"postCell";
 
     __weak typeof(self) weakSelf = self;
     [manager POST:url
-      parameters:parameters
-         success:^(AFHTTPRequestOperation *operation, id responseObject) {
-//             NSLog(@"post/like POST success responseObject: %@", responseObject);
+       parameters:parameters
+          success:^(AFHTTPRequestOperation *operation, id responseObject) {
+              //             NSLog(@"post/like POST success responseObject: %@", responseObject);
 
-             NSDictionary *dict = (NSDictionary *)responseObject;
-             post.likeCount = [[dict objectForKey:@"likes"] unsignedIntegerValue];
-             post.isLiked = YES;
-             [weakSelf _networkThreadEnd];
-         }
-         failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-             [weakSelf _networkThreadEnd];
-         }
+              NSDictionary *dict = (NSDictionary *)responseObject;
+              post.likeCount = [[dict objectForKey:@"likes"] unsignedIntegerValue];
+              post.isLiked = YES;
+              [weakSelf _networkThreadEnd];
+          }
+          failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+              [weakSelf _networkThreadEnd];
+          }
      ];
-}
-
-- (void)_uploadImageNamed:(NSString *)filename withData:(NSData *)imageData andCaption:(NSString *)caption
-{
-    [self _networkThreadBegin];
-
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYCredential current].token];
-    [manager.requestSerializer setValue:token forHTTPHeaderField:@"Authorization"];
-
-    NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"post"];
-    NSMutableDictionary *parameters = [self _parametersForUploadImage];
-    [parameters setObject:caption forKey:@"caption"];
-
-    __weak typeof(self) weakSelf = self;
-    [manager POST:url parameters:parameters constructingBodyWithBlock:^(id<AFMultipartFormData> formData){
-
-        [formData appendPartWithFileData:imageData name:@"file" fileName:filename mimeType:@"image/jpeg"];
-    } success:^(AFHTTPRequestOperation *operation, id responseObject) {
-
-        NSLog(@"Image upload success: %@", responseObject);
-        JYPost *post = [[JYPost alloc] initWithDictionary:responseObject];
-        [weakSelf _replaceQuickShowWithReal:post];
-        [weakSelf _networkThreadEnd];
-
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        NSLog(@"Image upload error: %@ ***** %@", operation.responseString, error);
-
-        [weakSelf _networkThreadEnd];
-
-        [RKDropdownAlert title:NSLocalizedString(kErrorTitle, nil)
-                       message:error.localizedDescription
-               backgroundColor:FlatYellow
-                     textColor:FlatBlack
-                          time:5];
-    }];
-}
-
-- (NSMutableDictionary *)_parametersForUploadImage
-{
-    NSMutableDictionary *parameters = [NSMutableDictionary new];
-
-    [parameters setObject:@(JYPostTypeImage) forKey:@"type"];
-
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [parameters setObject:@(appDelegate.currentCoordinate.latitude) forKey:@"lat"];
-    [parameters setObject:@(appDelegate.currentCoordinate.longitude) forKey:@"lon"];
-    [parameters setObject:appDelegate.cellId forKey:@"cell"];
-
-    return parameters;
 }
 
 - (void)_fetchNewPost

@@ -6,22 +6,12 @@
 //  Copyright (c) 2015 Joyy Inc. All rights reserved.
 //
 
-typedef NS_ENUM(NSUInteger, JYPostType)
-{
-    JYPostTypeImage = 0,
-    JYPostTypeGif   = 1,
-    JYPostTypeVideo = 2
-};
-
 @interface JYPost : NSObject
-
-+ (NSString *)newFilenameWithSuffix:(NSString *)suffix;
 
 - (instancetype)initWithDictionary:(NSDictionary *)dict;
 - (instancetype)initWithLocalImage:(UIImage *)image;
 
 @property(nonatomic) BOOL isLiked;
-@property(nonatomic) JYPostType type;
 @property(nonatomic) NSUInteger commentCount;
 @property(nonatomic) NSUInteger likeCount;
 @property(nonatomic) NSUInteger ownerId;

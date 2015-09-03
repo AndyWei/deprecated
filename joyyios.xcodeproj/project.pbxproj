@@ -124,6 +124,8 @@
 		D65AFA5F1AEC715D007867D0 /* JYMasqueradeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D65AFA5D1AEC715D007867D0 /* JYMasqueradeViewController.m */; };
 		D65F37461B04807D007B534C /* JYCommentViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D65F37451B04807D007B534C /* JYCommentViewCell.m */; };
 		D65F37471B04807D007B534C /* JYCommentViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D65F37451B04807D007B534C /* JYCommentViewCell.m */; };
+		D679B3011B97B1E5004EBA61 /* JYFile.m in Sources */ = {isa = PBXBuildFile; fileRef = D679B3001B97B1E5004EBA61 /* JYFile.m */; };
+		D679B3021B97B1E5004EBA61 /* JYFile.m in Sources */ = {isa = PBXBuildFile; fileRef = D679B3001B97B1E5004EBA61 /* JYFile.m */; };
 		D67DD0E01B744D1C00333626 /* JYCommentView.m in Sources */ = {isa = PBXBuildFile; fileRef = D67DD0DF1B744D1C00333626 /* JYCommentView.m */; };
 		D67DD0E11B744D1C00333626 /* JYCommentView.m in Sources */ = {isa = PBXBuildFile; fileRef = D67DD0DF1B744D1C00333626 /* JYCommentView.m */; };
 		D67DD0E41B75302800333626 /* JYPeopleViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D67DD0E31B75302800333626 /* JYPeopleViewController.m */; };
@@ -301,6 +303,8 @@
 		D65AFA5D1AEC715D007867D0 /* JYMasqueradeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYMasqueradeViewController.m; sourceTree = "<group>"; };
 		D65F37441B04807D007B534C /* JYCommentViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYCommentViewCell.h; sourceTree = "<group>"; };
 		D65F37451B04807D007B534C /* JYCommentViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYCommentViewCell.m; sourceTree = "<group>"; };
+		D679B2FF1B97B1E5004EBA61 /* JYFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYFile.h; sourceTree = "<group>"; };
+		D679B3001B97B1E5004EBA61 /* JYFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYFile.m; sourceTree = "<group>"; };
 		D679F03F1B320EEA004F1C37 /* joyyios.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = joyyios.entitlements; sourceTree = "<group>"; };
 		D67DD0DE1B744D1C00333626 /* JYCommentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYCommentView.h; sourceTree = "<group>"; };
 		D67DD0DF1B744D1C00333626 /* JYCommentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYCommentView.m; sourceTree = "<group>"; };
@@ -797,12 +801,14 @@
 		D6C82B611B1252FE00876F57 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				D67DD0EA1B75321A00333626 /* JYPerson.h */,
-				D67DD0EB1B75321A00333626 /* JYPerson.m */,
 				D6C82B671B12553D00876F57 /* JYComment.h */,
 				D6C82B681B12553D00876F57 /* JYComment.m */,
 				D63F0D6F1AC9EC060067C5EE /* JYCredential.h */,
 				D63F0D701AC9EC060067C5EE /* JYCredential.m */,
+				D679B2FF1B97B1E5004EBA61 /* JYFile.h */,
+				D679B3001B97B1E5004EBA61 /* JYFile.m */,
+				D67DD0EA1B75321A00333626 /* JYPerson.h */,
+				D67DD0EB1B75321A00333626 /* JYPerson.m */,
 				D61D1DE01B5366DC00DE37DF /* JYPost.h */,
 				D61D1DE11B5366DC00DE37DF /* JYPost.m */,
 			);
@@ -1028,6 +1034,7 @@
 				D63F0D751AC9F6F80067C5EE /* JYDataStore.m in Sources */,
 				D6348D371ADB7ABC0002BC35 /* NSMutableDictionary+Joyy.m in Sources */,
 				D69202B51AC4C7C0001C1C3D /* AppDelegate.m in Sources */,
+				D679B3011B97B1E5004EBA61 /* JYFile.m in Sources */,
 				D63F0DA21ACD08260067C5EE /* UIColor+Joyy.m in Sources */,
 				D61D1D491B4A65F200DE37DF /* MDCViewState.m in Sources */,
 				D69FF6E71B96474200466FE5 /* JYAuthenticationClient.m in Sources */,
@@ -1104,6 +1111,7 @@
 				D69FF6E81B96474200466FE5 /* JYAuthenticationClient.m in Sources */,
 				D61D1DBD1B4E336E00DE37DF /* TGAssetImageFile.m in Sources */,
 				D63F0D561AC7ACB70067C5EE /* JYSignUpViewController.m in Sources */,
+				D679B3021B97B1E5004EBA61 /* JYFile.m in Sources */,
 				D67DD0F91B7728E300333626 /* JYAvatar.m in Sources */,
 				D61D1DA11B4E336E00DE37DF /* UIImage+CameraFilters.m in Sources */,
 				D67DD0E11B744D1C00333626 /* JYCommentView.m in Sources */,

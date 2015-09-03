@@ -9,7 +9,6 @@
 #import <YTKKeyValueStore/YTKKeyValueStore.h>
 
 #import "JYPost.h"
-#import "JYCredential.h"
 
 @interface JYPost ()
 
@@ -32,24 +31,6 @@ static NSString *const kLikedPostTable = @"liked_post";
     return _sharedKVStore;
 }
 
-+ (NSString *)newFilenameWithSuffix:(NSString *)suffix
-{
-    NSString *first = [[JYCredential current].name substringToIndex:1];  // "j" for jack
-
-    u_int32_t rand = arc4random_uniform(10000);                        // 176
-    NSString *randString = [NSString stringWithFormat:@"%04d", rand];  // "0176"
-
-    NSString *timestamp = [JYPost _timeInMiliSeconds];                // 458354045799
-
-    return [NSString stringWithFormat:@"%@%@_%@.%@", first, randString, timestamp, suffix]; // "j0176_458354045799.jpg"
-}
-
-+ (NSString *)_timeInMiliSeconds
-{
-    long long timestamp = [@(floor([NSDate timeIntervalSinceReferenceDate] * 1000)) longLongValue];
-    return [NSString stringWithFormat:@"%lld",timestamp];
-}
-
 - (instancetype)initWithDictionary:(NSDictionary *)dict
 {
     self = [super init];
@@ -64,7 +45,6 @@ static NSString *const kLikedPostTable = @"liked_post";
 
             _postId = [dict unsignedIntegerValueForKey:@"id"];
             _urlVersion = [dict unsignedIntegerValueForKey:@"uv"];
-            _type = [dict unsignedIntegerValueForKey:@"type"];
             _ownerId = [dict unsignedIntegerValueForKey:@"owner"];
             _likeCount = [dict unsignedIntegerValueForKey:@"likes"];
             _commentCount = [dict unsignedIntegerValueForKey:@"comments"];
@@ -88,7 +68,6 @@ static NSString *const kLikedPostTable = @"liked_post";
 
         _postId = 0;
         _urlVersion = 0;
-        _type = JYPostTypeImage;
         _ownerId = [JYCredential current].personId;
         _likeCount = 0;
         _commentCount = 0;
@@ -131,12 +110,14 @@ static NSString *const kLikedPostTable = @"liked_post";
         return nil;
     }
 
-    return [NSString stringWithFormat:@"%@%@%@", [self baseURL], self.filename, [self suffix]];
+    return [NSString stringWithFormat:@"%@%@", [self baseURL], self.filename];
 }
 
 - (NSString *)baseURL
 {
-    NSString *url = @"https://joyydev.s3.amazonaws.com/";
+//    NSString *url = @"https://masquerade.joyy.s3.amazonaws.com/";
+    NSString *url = @"https://s3.amazonaws.com/masquerade.joyy/";
+
     switch (self.urlVersion)
     {
         case 0:
@@ -148,22 +129,6 @@ static NSString *const kLikedPostTable = @"liked_post";
             break;
     }
     return url;
-}
-
-- (NSString *)suffix
-{
-    NSString *str = @".jpg";
-    switch (self.type)
-    {
-        case JYPostTypeImage:
-            break;
-        case JYPostTypeVideo:
-            // str = @".mp4"
-            break;
-        default:
-            break;
-    }
-    return str;
 }
 
 @end
