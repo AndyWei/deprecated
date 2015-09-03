@@ -44,7 +44,6 @@ static NSString *const kLikedPostTable = @"liked_post";
             _caption = [dict objectForKey:@"caption"];
 
             _postId = [dict unsignedIntegerValueForKey:@"id"];
-            _urlVersion = [dict unsignedIntegerValueForKey:@"uv"];
             _ownerId = [dict unsignedIntegerValueForKey:@"owner"];
             _likeCount = [dict unsignedIntegerValueForKey:@"likes"];
             _commentCount = [dict unsignedIntegerValueForKey:@"comments"];
@@ -67,7 +66,6 @@ static NSString *const kLikedPostTable = @"liked_post";
         _caption = @"local";
 
         _postId = 0;
-        _urlVersion = 0;
         _ownerId = [JYCredential current].personId;
         _likeCount = 0;
         _commentCount = 0;
@@ -110,25 +108,7 @@ static NSString *const kLikedPostTable = @"liked_post";
         return nil;
     }
 
-    return [NSString stringWithFormat:@"%@%@", [self baseURL], self.filename];
-}
-
-- (NSString *)baseURL
-{
-//    NSString *url = @"https://masquerade.joyy.s3.amazonaws.com/";
-    NSString *url = @"https://s3.amazonaws.com/masquerade.joyy/";
-
-    switch (self.urlVersion)
-    {
-        case 0:
-            break;
-        case 1:
-            // url = ....
-            break;
-        default:
-            break;
-    }
-    return url;
+    return [NSString stringWithFormat:@"%@%@", kUrlPostBase, self.filename];
 }
 
 @end

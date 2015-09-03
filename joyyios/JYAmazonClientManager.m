@@ -55,7 +55,6 @@
     if (!self.completionHandler)
     {
         self.completionHandler = ^id(AWSTask *task) {
-            NSLog(@"Default CompletionHandler");
             return nil;
         };
     }

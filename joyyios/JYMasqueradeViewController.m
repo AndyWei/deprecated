@@ -415,7 +415,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
 
     AWSS3TransferManager *transferManager = [AWSS3TransferManager defaultS3TransferManager];
     AWSS3TransferManagerUploadRequest *request = [AWSS3TransferManagerUploadRequest new];
-    request.bucket = kMasqueradeBucket;
+    request.bucket = kPostBucket;
     request.key = s3filename;
     request.body = fileURL;
     request.contentType = contentType;
@@ -447,7 +447,6 @@ static NSString *const kPostCellIdentifier = @"postCell";
         {
             AWSS3TransferManagerUploadOutput *uploadOutput = task.result;
             NSLog(@"Success: AWSS3TransferManager upload task.result = %@", uploadOutput);
-            NSLog(@"calling _createPostRecordWithFilename");
             [weakSelf _createPostRecordWithFilename:s3filename caption:caption];
         }
         return nil;
@@ -500,7 +499,6 @@ static NSString *const kPostCellIdentifier = @"postCell";
     [parameters setObject:@(appDelegate.currentCoordinate.longitude) forKey:@"lon"];
     [parameters setObject:appDelegate.cellId forKey:@"cell"];
 
-    [parameters setObject:@(0) forKey:@"uv"];
     return parameters;
 }
 

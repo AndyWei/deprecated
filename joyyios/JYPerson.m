@@ -80,23 +80,14 @@
 {
     if (!_avatarUrl)
     {
-        _avatarUrl = [NSString stringWithFormat:@"%@%@.jpg", self.avatarUrlBase, self.avatarFilename];
+        _avatarUrl = [NSString stringWithFormat:@"%@%@.jpg", kUrlAvatarBase, self.avatarFilename];
     }
     return _avatarUrl;
 }
 
 - (NSString *)messageAvatarUrl
 {
-    return [NSString stringWithFormat:@"%@%@_small.jpg", self.avatarUrlBase, self.avatarFilename];
-}
-
-- (NSString *)avatarUrlBase
-{
-    if (!_avatarUrlBase)
-    {
-        _avatarUrlBase = @"https://avatars.joyyapp.com/";
-    }
-    return _avatarUrlBase;
+    return [NSString stringWithFormat:@"%@%@_small.jpg", kUrlAvatarBase, self.avatarFilename];
 }
 
 @end

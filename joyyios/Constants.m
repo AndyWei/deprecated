@@ -41,8 +41,9 @@ UInt16 const kMessagePort = 5222;
 // AWS
 NSString *const kAuthProviderName = @"joyy"; // the provider name configured in the Cognito console.
 NSString *const kCognitoIdentityPoolId = @"us-east-1:a9366287-4298-443f-aa0b-d4d6ee43fa67";
-NSString *const kMasqueradeBucket = @"masquerade.joyy";
-NSString *const kMessagesBucket = @"messages.joyy";
+NSString *const kAvatarBucket = @"joyyavatar";
+NSString *const kMessagesBucket = @"joyyim";
+NSString *const kPostBucket = @"joyypost";
 AWSRegionType const kCognitoRegionType = AWSRegionUSEast1;
 // AWS end
 
@@ -72,3 +73,10 @@ NSString *const kSystemFontRegular = @"AvenirNextCondensed-Regular";
 
 //NSString *const kUrlAPIBase = @"http://api.joyyapp.com:8000/v1/";
 NSString *const kUrlAPIBase = @"http://192.168.1.145:8000/v1/";
+
+NSString *const kUrlAvatarBase = @"http://avatar.joyyapp.com/";
+
+//NSString *const kUrlPostBase = @"http://post.joyyapp.com/";
+NSString *const kUrlPostBase =@"http://joyypost-1d98.kxcdn.com/";
+
+NSString *const kUrlMessageMediaBase = @"http://media.joyy.im/";

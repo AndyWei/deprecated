@@ -140,7 +140,7 @@
 {
     if (!_backgroundQueue)
     {
-        _backgroundQueue = dispatch_queue_create("com.joyyapp.background_queue", DISPATCH_QUEUE_CONCURRENT);
+        _backgroundQueue = dispatch_queue_create("com.joyyapp.queue.background", DISPATCH_QUEUE_CONCURRENT);
     }
     return _backgroundQueue;
 }
@@ -362,7 +362,9 @@
         self.shouldXmppGoOnline = NO;
     }
 
-    [[JYAmazonClientManager sharedInstance] goActiveWithCompletionHandler:nil];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+        [[JYAmazonClientManager sharedInstance] goActiveWithCompletionHandler:nil];
+    });
 }
 
 - (void)_signInAfter:(NSTimeInterval)interval

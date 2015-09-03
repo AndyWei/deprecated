@@ -36,7 +36,7 @@ extern CGFloat const kSignViewTopOffset;
 // AWS
 extern NSString *const kAuthProviderName;
 extern NSString *const kCognitoIdentityPoolId;
-extern NSString *const kMasqueradeBucket;
+extern NSString *const kPostBucket;
 extern NSString *const kMessagesBucket;
 extern AWSRegionType const kCognitoRegionType;
 // AWS end
@@ -62,6 +62,9 @@ extern NSString *const kSystemFontItalic;
 extern NSString *const kSystemFontLight;
 extern NSString *const kSystemFontRegular;
 extern NSString *const kUrlAPIBase;
+extern NSString *const kUrlAvatarBase;
+extern NSString *const kUrlPostBase;
+extern NSString *const kUrlMessageAttachmentBase;
 
 extern NSTimeInterval const k1Minutes;
 extern NSTimeInterval const k15Minutes;
