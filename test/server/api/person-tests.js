@@ -167,7 +167,7 @@ lab.experiment('person POST: ', function () {
             payload: {
                 yob: 1995,
                 bio: 'I love this game',
-                name: 'andy',
+                username: 'andy',
                 gender: 1
             },
             credentials: andy

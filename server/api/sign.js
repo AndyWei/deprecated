@@ -1,6 +1,5 @@
 //  Copyright (c) 2015 Joyy Inc. All rights reserved.
 
-
 var Async = require('async');
 var AWS = require('aws-sdk');
 var Bcrypt = require('bcrypt');
@@ -51,8 +50,10 @@ exports.register = function (server, options, next) {
                     return reply(err);
                 }
 
-                var response = request.auth.credentials;
-                response.token = results.jwt;
+                var response = {
+                    token: results.jwt,
+                    tokenDuration: 60 * Config.get('/jwt/expiresInMinutes')
+                };
 
                 return reply(null, response);
             });
@@ -149,7 +150,7 @@ internals.emailChecker = function (request, reply) {
 internals.signup = function (request, reply) {
 
     var email = request.payload.email;
-    var name = email.substring(0, 3); // auto given name is the first 3 chars of email
+    var username = email.substring(0, 3); // auto given name is the first 3 chars of email
 
     Async.auto({
         salt: function (callback) {
@@ -168,10 +169,10 @@ internals.signup = function (request, reply) {
 
             var queryConfig = {
                 text: 'INSERT INTO person ' +
-                          '(email, name, password, ct, ut) VALUES ' +
+                          '(email, username, password, ct, ut) VALUES ' +
                           '($1, $2, $3, $4, $5) ' +
                           'RETURNING id',
-                values: [email, name, results.password, _.now(), _.now()],
+                values: [email, username, results.password, _.now(), _.now()],
                 name: 'person_signup'
             };
 
@@ -198,12 +199,12 @@ internals.signup = function (request, reply) {
         var message = {
             id: results.personId,
             email: email,
-            name: name,
-            password: request.payload.password,
-            token: internals.createJwtToken(results.personId)
+            username: username,
+            token: internals.createJwtToken(results.personId),
+            tokenDuration: 60 * Config.get('/jwt/expiresInMinutes')
         };
 
-        console.log('user created. email=%s, name = %s', email, name);
+        console.log('user created. email=%s, username = %s', email, username);
         return reply(null, message).code(201);
     });
 };

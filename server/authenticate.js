@@ -17,7 +17,7 @@ internals.validateSimple = function (request, email, password, finish) {
         credentials: function (callback) {
 
             var queryConfig = {
-                text: 'SELECT id, password, email, name FROM person WHERE email = $1 AND deleted = false',
+                text: 'SELECT id, password FROM person WHERE email = $1 AND deleted = false',
                 values: [email],
                 name: 'person_by_email'
             };
@@ -44,7 +44,6 @@ internals.validateSimple = function (request, email, password, finish) {
                     return callback(Boom.unauthorized(err));
                 }
 
-                results.credentials.password = password;
                 return callback(null, compareResult);
             });
         }]
@@ -55,6 +54,7 @@ internals.validateSimple = function (request, email, password, finish) {
             return finish(err, false);
         }
 
+        delete results.credentials.password;
         return finish(null, true, results.credentials);
     });
 };

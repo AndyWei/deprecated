@@ -11,10 +11,7 @@ var Utils = require('../utils');
 var _ = require('lodash');
 
 var internals = {};
-var basicFields = 'id, name, org, orgtype, gender, yob, bio, avatar, hearts, score, ut, verified';
-var extraFields = ', email';
-var selectBasic = 'SELECT ' + basicFields + ' FROM person ';
-var selectExtra = 'SELECT ' + basicFields + extraFields + ' FROM person ';
+var selectAll = 'SELECT id, email, username, org, orgtype, gender, yob, bio, avatar, hearts, score, ut, verified FROM person ';
 
 
 exports.register = function (server, options, next) {
@@ -198,7 +195,7 @@ exports.register = function (server, options, next) {
 
             var queryConfig = {
                 name: 'person_profile',
-                text: selectExtra +
+                text: selectAll +
                       'WHERE id = $1 AND deleted = false',
                 values: [request.auth.credentials.id]
             };
@@ -266,7 +263,7 @@ exports.register = function (server, options, next) {
             },
             validate: {
                 payload: {
-                    name: Joi.string().max(30).required(),
+                    username: Joi.string().max(30).required(),
                     gender: Joi.number().min(0).max(3).default(0),
                     yob: Joi.number().min(1900).max(2010).default(0),
                     bio: Joi.string().max(2000).default('.')
@@ -284,10 +281,10 @@ exports.register = function (server, options, next) {
 
                     var queryConfig = {
                         name: 'person_update_profile',
-                        text: 'UPDATE person SET name = $1, gender = $2, yob = $3, bio = $4, ut = $5 ' +
+                        text: 'UPDATE person SET username = $1, gender = $2, yob = $3, bio = $4, ut = $5 ' +
                               'WHERE id = $6 AND deleted = false ' +
                               'RETURNING id',
-                        values: [p.name, p.gender, p.yob, p.bio, _.now(), personId]
+                        values: [p.username, p.gender, p.yob, p.bio, _.now(), personId]
                     };
 
                     request.pg.client.query(queryConfig, function (err, result) {
@@ -456,7 +453,7 @@ internals.searchPersonByIdsFromDB = function (request, personIds, callback) {
     var queryValues = [request.query.cell];
     var queryConfig = {
         // Warning: DO NOT give a name to this query since it has variable parameters
-        text: selectBasic + where + order + limit,
+        text: selectAll + where + order + limit,
         values: queryValues.concat(personIds)
     };
 

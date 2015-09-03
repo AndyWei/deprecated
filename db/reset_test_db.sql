@@ -2,7 +2,7 @@
 
 
 INSERT INTO person
-    (    name,                                                       password,                 email,      org,     cell, verified, gender,  yob,               avatar, hearts,   score,            ct,            ut, coords) VALUES
+    (username,                                                       password,                 email,      org,     cell, verified, gender,  yob,               avatar, hearts,   score,            ct,            ut, coords) VALUES
     (  'jack', '$2a$10$sTaFcBz.lhDXr2bVNZJZeenPJ3qiKG.NaQQ5zqiz0peku0fDvO0YG',      'jack@gmail.com', 'goooog',  '94555',     true,      1, 1980, 'j5802_458440716099',      1,       5, 1437524632001, 1437524632001, ST_SetSRID(ST_MakePoint(-122.4164623, 37.7766092), 4326)),
     (  'andy', '$2a$10$sTaFcBz.lhDXr2bVNZJZeenPJ3qiKG.NaQQ5zqiz0peku0fDvO0YG',      'andy@gmail.com', 'goooog',  '94555',     true,      1, 1977, 'j0128_458441665579',      1,       5, 1437524632002, 1437524632002, ST_SetSRID(ST_MakePoint(-122.4074981, 37.7879331), 4326)),
     (  'ping', '$2a$10$sTaFcBz.lhDXr2bVNZJZeenPJ3qiKG.NaQQ5zqiz0peku0fDvO0YG',      'ping@gmail.com', 'appple',  '94555',     true,      2, null, 'j6301_458441807960',    235,    1155, 1437524632003, 1437524632003, ST_SetSRID(ST_MakePoint(-121.9989519, 37.5293864), 4326)),

@@ -2,7 +2,7 @@ CREATE TABLE person (
     id                     BIGSERIAL  PRIMARY KEY,
     email                  TEXT          NOT NULL, -- email is used as identity to signup and signin
     password               TEXT          NOT NULL, -- bcrypt hashed password, it always 60 bytes, however TEXT makes it flexible
-    name                   TEXT          NOT NULL, -- person display name
+    username               TEXT          NOT NULL, -- unique display name
     verified               BOOLEAN       NOT NULL DEFAULT false,
     hearts                 INTEGER       NOT NULL DEFAULT 0, -- the number of hearts
     friends                SMALLINT      NOT NULL DEFAULT 0, -- the number of friends
@@ -20,7 +20,8 @@ CREATE TABLE person (
     ut                     BIGINT        NOT NULL, -- updated_at timestamp
     deleted                BOOLEAN       NOT NULL DEFAULT false,
 
-    UNIQUE (email)
+    UNIQUE (email),
+    UNIQUE (username)
 );
 
 
