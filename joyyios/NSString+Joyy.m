@@ -42,6 +42,12 @@
     return [NSString stringWithFormat:@"%d %@ %@", numberOfSeconds, seconds, ago];
 }
 
+- (BOOL)isInvisible
+{
+    NSCharacterSet *whiteSpaceSet = [NSCharacterSet whitespaceAndNewlineCharacterSet];
+    return [[self stringByTrimmingCharactersInSet:whiteSpaceSet] length] == 0;
+}
+
 - (BOOL)isValidEmail
 {
     NSString *emailRegex = @"[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}";

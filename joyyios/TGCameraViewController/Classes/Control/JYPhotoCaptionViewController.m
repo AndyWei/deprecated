@@ -76,6 +76,11 @@ static NSString *const kImageCellIdentifier = @"imageCell";
     return YES;
 }
 
+- (BOOL)canPressRightButton
+{
+    return YES;
+}
+
 - (void)_back
 {
     [self.navigationController popViewControllerAnimated:NO];

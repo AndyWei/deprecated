@@ -13,9 +13,9 @@
 + (NSString *)filenameWithHttpContentType:(NSString *)contentType
 {
     NSString *suffix = @"unknown";
-    if ([contentType hasPrefix:@"image"])
+    if ([contentType isEqualToString:kContentTypeJPG])
     {
-        suffix = [contentType substringFromIndex:6];
+        suffix = @"jpg";
     }
     return [JYFile filenameWithSuffix:suffix];
 }

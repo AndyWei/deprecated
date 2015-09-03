@@ -41,6 +41,8 @@ extern NSString *const kMessagesBucket;
 extern AWSRegionType const kCognitoRegionType;
 // AWS end
 
+extern NSString *const kContentTypeJPG;
+extern NSString *const kDummyCaptionText;
 extern NSString *const kErrorAuthenticationFailed;
 extern NSString *const kErrorTitle;
 extern NSString *const kMessageDomain;

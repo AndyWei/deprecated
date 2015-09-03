@@ -68,14 +68,14 @@ static const CGFloat kLikeCountLabelWidth = 80;
     for (JYComment *comment in post.commentList)
     {
         NSString *text = [JYPostViewCell dummyTextOfString:comment.content];
-        CGFloat height = [JYPostViewCell labelHeightForText:text withFontSize:kFontSizeComment textAlignment:NSTextAlignmentLeft andWidth:[JYPostViewCell labelWidth]];
+        CGFloat height = [JYPostViewCell labelHeightForText:text withFontSize:kFontSizeComment textAlignment:NSTextAlignmentLeft andWidth:[JYPostViewCell textAreaWidth]];
         commentsHeight += (height + 5);
     }
 
     return imageHeight + commentsHeight + kActionBarHeight;
 }
 
-+ (CGFloat)labelWidth
++ (CGFloat)textAreaWidth
 {
     return (SCREEN_WIDTH - kMarginLeft - kMarginRight);
 }
@@ -189,14 +189,15 @@ static const CGFloat kLikeCountLabelWidth = 80;
     __weak typeof(self) weakSelf = self;
     [self.photoView setImageWithURLRequest:request
                           placeholderImage:nil
-                                   success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image)
-                                   {
-                                       weakSelf.photoView.image = image;
-                                       weakSelf.photoView.alpha = 0;
-                                       [UIView animateWithDuration:0.5 animations:^{
-                                           weakSelf.photoView.alpha = 1;
-                                       }];
-                                   } failure:nil];
+                                   success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
+         weakSelf.photoView.image = image;
+         weakSelf.photoView.alpha = 0;
+         [UIView animateWithDuration:0.5 animations:^{
+             weakSelf.photoView.alpha = 1;
+         }];
+     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
+         NSLog(@"setImageWithURLRequest response = %@", response);
+     }];
 }
 
 - (void)_updateActionBar
@@ -236,14 +237,14 @@ static const CGFloat kLikeCountLabelWidth = 80;
 
 - (void)_updateCaption
 {
-    NSString *text = self.post.caption;
-    self.captionLabel.text = text;
-    CGFloat height = [JYPostViewCell labelHeightForText:text withFontSize:kFontSizeCaption textAlignment:NSTextAlignmentCenter andWidth:[[self class] labelWidth]];
-    self.captionLabel.height = height;
-    self.captionLabel.y = SCREEN_WIDTH - self.captionLabel.height - 10;
+    self.captionLabel.text = self.post.caption;
+    self.captionLabel.width = SCREEN_WIDTH;
+    self.captionLabel.preferredMaxLayoutWidth = [[self class] textAreaWidth];
+    self.captionLabel.textInsets = UIEdgeInsetsMake(0, kMarginLeft, 0, kMarginRight);
 
     [self.captionLabel sizeToFit];
     self.captionLabel.centerX = self.centerX;
+    self.captionLabel.y = SCREEN_WIDTH - self.captionLabel.height - 10;
 }
 
 - (void)_updateComments
@@ -400,7 +401,6 @@ static const CGFloat kLikeCountLabelWidth = 80;
     {
         CGRect frame = CGRectMake(0, 0, SCREEN_WIDTH, 0);
         _captionLabel = [[TTTAttributedLabel alloc] initWithFrame:frame];
-        _captionLabel.textInsets = UIEdgeInsetsMake(0, kMarginLeft, 0, kMarginRight);
         _captionLabel.backgroundColor = JoyyBlack80;
         _captionLabel.font = [UIFont systemFontOfSize:kFontSizeCaption];
         _captionLabel.textColor = JoyyWhite;
@@ -422,7 +422,7 @@ static const CGFloat kLikeCountLabelWidth = 80;
         _commentLabels = [NSMutableArray new];
         for (NSUInteger i = 0; i < kRecentCommentsLimit; i++)
         {
-            TTTAttributedLabel *label = [self _createLabel];
+            TTTAttributedLabel *label = [self _createCommentLabel];
 
             [_commentLabels addObject:label];
             [self addSubview:label];
@@ -431,9 +431,9 @@ static const CGFloat kLikeCountLabelWidth = 80;
     return _commentLabels;
 }
 
-- (TTTAttributedLabel *)_createLabel
+- (TTTAttributedLabel *)_createCommentLabel
 {
-    CGRect frame = CGRectMake(kMarginLeft, 0, [[self class] labelWidth], 0);
+    CGRect frame = CGRectMake(kMarginLeft, 0, [[self class] textAreaWidth], 0);
     TTTAttributedLabel *label = [[TTTAttributedLabel alloc] initWithFrame:frame];
     label.delegate = self;
     label.backgroundColor = JoyyBlack;

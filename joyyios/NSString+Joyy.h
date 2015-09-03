@@ -10,6 +10,7 @@
 
 + (NSString *)stringFromTimeInterval:(NSTimeInterval)interval;
 
+- (BOOL)isInvisible;
 - (BOOL)isValidEmail;
 - (NSUInteger)unsignedIntegerValue;
 

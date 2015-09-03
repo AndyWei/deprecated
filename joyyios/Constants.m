@@ -47,6 +47,8 @@ NSString *const kPostBucket = @"joyypost";
 AWSRegionType const kCognitoRegionType = AWSRegionUSEast1;
 // AWS end
 
+NSString *const kContentTypeJPG = @"image/jpeg";
+NSString *const kDummyCaptionText = @"⌛︎";
 NSString *const kErrorAuthenticationFailed = @"Incorrect Email or password";
 NSString *const kErrorTitle = @"🐻: something wrong";
 
@@ -75,8 +77,5 @@ NSString *const kSystemFontRegular = @"AvenirNextCondensed-Regular";
 NSString *const kUrlAPIBase = @"http://192.168.1.145:8000/v1/";
 
 NSString *const kUrlAvatarBase = @"http://avatar.joyyapp.com/";
-
-//NSString *const kUrlPostBase = @"http://post.joyyapp.com/";
-NSString *const kUrlPostBase =@"http://joyypost-1d98.kxcdn.com/";
-
 NSString *const kUrlMessageMediaBase = @"http://media.joyy.im/";
+NSString *const kUrlPostBase = @"http://post.joyyapp.com/";

@@ -262,30 +262,6 @@ static NSString *const kPostCellIdentifier = @"postCell";
     [self presentViewController:camera animated:NO completion:nil];
 }
 
-- (void)_quickShow:(UIImage *)image withCaption:(NSString *)caption
-{
-    JYPost *post = [[JYPost alloc] initWithLocalImage:image];
-    post.caption = caption;
-    if (self.postList.count > 0)
-    {
-        JYPost *firstPost = self.postList.firstObject;
-        post.timestamp = firstPost.timestamp; // Make sure the future _fetchNewPost call get the correct last timestamp
-    }
-
-    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
-    if (self.postList.count > 0)
-    {
-        [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:NO];
-    }
-
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self.postList insertObject:post atIndex:0];
-        [self.tableView beginUpdates];
-        [self.tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-        [self.tableView endUpdates];
-    });
-}
-
 #pragma mark - TGCameraDelegate Methods
 
 - (void)cameraDidCancel
@@ -296,19 +272,17 @@ static NSString *const kPostCellIdentifier = @"postCell";
 - (void)cameraDidTakePhoto:(UIImage *)photo withCaption:(NSString *)caption
 {
     // Default caption
-    caption = (caption.length == 0) ? @"(ᵔᴥᵔ)" : caption;
+    if (caption.length == 0 || [caption isInvisible])
+    {
+        caption = kDummyCaptionText;
+    }
 
     // Handling and upload the photo
     UIImage *image = [UIImage imageWithImage:photo scaledToSize:CGSizeMake(kPhotoWidth, kPhotoWidth)];
     NSData *imageData = UIImageJPEGRepresentation(image, kPhotoQuality);
 
-    [self _createPostWithMediaData:imageData contentType:@"image/jpg" caption:caption];
-
-    __weak typeof(self) weakSelf = self;
-    [self dismissViewControllerAnimated:YES completion:^{
-        // QuickShow is to make the user feel speedy before the uploading has been really done
-        [weakSelf _quickShow:photo withCaption:caption];
-    }];
+    [self _createPostWithMediaData:imageData contentType:kContentTypeJPG caption:caption];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)cameraDidSelectAlbumPhoto:(UIImage *)image withCaption:(NSString *)caption
@@ -388,22 +362,6 @@ static NSString *const kPostCellIdentifier = @"postCell";
     }
 }
 
-- (void)_replaceQuickShowWithReal:(JYPost *)post
-{
-    // remove quick show
-    JYPost *quickShow = self.postList[0];
-    if (quickShow.localImage)
-    {
-        [self.postList removeObject:quickShow];
-    }
-
-    // insert the real one
-    [self.postList insertObject:post atIndex:0];
-    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
-    JYPostViewCell *cell = (JYPostViewCell *)[self.tableView cellForRowAtIndexPath:indexPath];
-    cell.post = self.postList[0];
-}
-
 #pragma mark - AWS S3
 
 - (void)_createPostWithMediaData:(NSData *)data contentType:(NSString *)contentType caption:(NSString *)caption
@@ -475,7 +433,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
 
         NSLog(@"Success: createPostRecord response = %@", responseObject);
         JYPost *post = [[JYPost alloc] initWithDictionary:responseObject];
-        [weakSelf _replaceQuickShowWithReal:post];
+        [weakSelf _updateTableWithPostList:@[post] toEnd:NO];
         [weakSelf _networkThreadEnd];
 
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {

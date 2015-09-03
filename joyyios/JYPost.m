@@ -41,14 +41,18 @@ static NSString *const kLikedPostTable = @"liked_post";
             _localImage = nil;
 
             _filename = [dict objectForKey:@"filename"];
-            _caption = [dict objectForKey:@"caption"];
-
             _postId = [dict unsignedIntegerValueForKey:@"id"];
             _ownerId = [dict unsignedIntegerValueForKey:@"owner"];
             _likeCount = [dict unsignedIntegerValueForKey:@"likes"];
             _commentCount = [dict unsignedIntegerValueForKey:@"comments"];
             _timestamp = [dict unsignedIntegerValueForKey:@"ct"];
             _isLiked = [self _isInLikedStore];
+
+            _caption = [dict objectForKey:@"caption"];
+            if ([kDummyCaptionText isEqualToString:_caption])
+            {
+                _caption = @"";
+            }
         }
     }
     return self;
