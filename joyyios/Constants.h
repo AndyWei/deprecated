@@ -80,10 +80,12 @@ extern NSString *const kSystemFontBold;
 extern NSString *const kSystemFontItalic;
 extern NSString *const kSystemFontLight;
 extern NSString *const kSystemFontRegular;
+extern NSString *const kTableNameLikedPost;
+extern NSString *const kTableNamePerson;
 extern NSString *const kUrlAPIBase;
-extern NSString *const kUrlAvatarBase;
-extern NSString *const kUrlPostBase;
-extern NSString *const kUrlMessageAttachmentBase;
+extern NSString *const kURLAvatarBase;
+extern NSString *const kURLPostBase;
+extern NSString *const kURLMessageBase;
 
 extern NSTimeInterval const k1Minutes;
 extern NSTimeInterval const k15Minutes;

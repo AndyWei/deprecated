@@ -6,7 +6,6 @@
 //  Copyright (c) 2015 Joyy Inc. All rights reserved.
 //
 
-
 #import "JYComment.h"
 
 @interface JYCommentViewCell : UITableViewCell

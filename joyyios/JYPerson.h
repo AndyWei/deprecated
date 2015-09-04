@@ -31,12 +31,12 @@ typedef NS_ENUM(NSUInteger, JYOrgType)
 @property(nonatomic) JYOrgType orgType;
 
 @property(nonatomic) NSString *age;
-@property(nonatomic) NSString *avatarUrl;
 @property(nonatomic) NSString *bio;
 @property(nonatomic) NSString *idString;
-@property(nonatomic) NSString *messageAvatarUrl;
 @property(nonatomic) NSString *name;
 @property(nonatomic) NSString *org;
+@property(nonatomic) NSString *avatarURL;
+@property(nonatomic) NSString *fullAvatarURL;
 
 @property(nonatomic) NSUInteger friendCount;
 @property(nonatomic) NSUInteger heartCount;

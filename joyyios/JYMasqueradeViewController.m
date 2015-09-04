@@ -424,7 +424,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
     [self _networkThreadBegin];
 
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager managerWithToken];
-    NSString *url = [NSString joyyAPIURLWithPath:@"post"];
+    NSString *url = [NSString apiURLWithPath:@"post"];
     NSMutableDictionary *parameters = [self _parametersForPostWithFilename:filename caption:caption];
 
     __weak typeof(self) weakSelf = self;
@@ -469,7 +469,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
     [self _networkThreadBegin];
 
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager managerWithToken];
-    NSString *url = [NSString joyyAPIURLWithPath:@"post/like"];
+    NSString *url = [NSString apiURLWithPath:@"post/like"];
     NSDictionary *parameters = @{@"id": @(post.postId)};
 
     __weak typeof(self) weakSelf = self;
@@ -509,7 +509,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
 
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
 
-    NSString *url = [NSString joyyAPIURLWithPath:@"post/nearby"];
+    NSString *url = [NSString apiURLWithPath:@"post/nearby"];
     NSDictionary *parameters = [self _parametersForPostNearby:toEnd];
 
     __weak typeof(self) weakSelf = self;
@@ -544,7 +544,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
 
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
 
-    NSString *url = [NSString joyyAPIURLWithPath:@"comment/recent"];
+    NSString *url = [NSString apiURLWithPath:@"comment/recent"];
     NSDictionary *parameters = [self _parametersForRecentCommentsOfPosts:list];
 
     __weak typeof(self) weakSelf = self;

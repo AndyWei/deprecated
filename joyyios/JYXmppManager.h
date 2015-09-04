@@ -8,8 +8,6 @@
 
 #import <CoreData/CoreData.h>
 
-#import "JYPerson.h"
-
 typedef NS_ENUM(NSUInteger, JYXmppStatus)
 {
     JYXmppStatusLoginSuccess,
@@ -24,7 +22,8 @@ typedef void(^JYXmppStatusHandler)(JYXmppStatus type, NSError *error);
 @interface JYXmppManager : NSObject
 
 + (JYXmppManager *)sharedInstance;
-+ (NSFetchedResultsController *)fetchedResultsControllerForRemoteJid:(XMPPJID *)remoteJid;
++ (NSFetchedResultsController *)fetcherForForContacts;
++ (NSFetchedResultsController *)fetcherForRemoteJid:(XMPPJID *)remoteJid;
 + (XMPPJID *)jidWithIdString:(NSString *)idString;
 + (XMPPJID *)myJid;
 

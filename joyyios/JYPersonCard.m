@@ -10,7 +10,6 @@
 #import <TTTAttributedLabel/TTTAttributedLabel.h>
 
 #import "JYButton.h"
-#import "JYPerson.h"
 #import "JYPersonCard.h"
 
 static const CGFloat kLabelHeight = 40.f;
@@ -96,8 +95,8 @@ static const CGFloat kInfoLabelWidth = 280.f;
 - (void)_updateImage
 {
     // Fetch network image
-    NSURL *avatarUrl = [NSURL URLWithString:self.person.avatarUrl];
-    NSURLRequest *request = [NSURLRequest requestWithURL:avatarUrl];
+    NSURL *avatarURL = [NSURL URLWithString:self.person.avatarURL];
+    NSURLRequest *request = [NSURLRequest requestWithURL:avatarURL];
 
     __weak typeof(self) weakSelf = self;
     [self.imageView setImageWithURLRequest:request

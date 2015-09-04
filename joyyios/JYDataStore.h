@@ -6,6 +6,8 @@
 //  Copyright (c) 2015 Joyy Inc. All rights reserved.
 //
 
+#import <YTKKeyValueStore/YTKKeyValueStore.h>
+#import "JYPerson.h"
 
 @import CoreLocation;
 
@@ -13,11 +15,16 @@
 
 + (JYDataStore *)sharedInstance;
 
-@property(nonatomic) CGFloat presentedIntroductionVersion;
-@property(nonatomic) CLLocationCoordinate2D lastCoordinate;
-@property(nonatomic) NSString *lastCellId;
-@property(nonatomic) NSString *deviceToken;
-@property(nonatomic) NSInteger badgeCount;
+- (void)getPersonWithIdString:(NSString *)idString
+                      success:(void (^)(JYPerson *person))success
+                      failure:(void (^)(NSError *error))failure;
+
+@property (nonatomic) YTKKeyValueStore *store;
+@property (nonatomic) CGFloat presentedIntroductionVersion;
+@property (nonatomic) CLLocationCoordinate2D lastCoordinate;
+@property (nonatomic) NSString *lastCellId;
+@property (nonatomic) NSString *deviceToken;
+@property (nonatomic) NSInteger badgeCount;
 
 
 @end

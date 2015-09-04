@@ -10,7 +10,7 @@
 
 @implementation NSString (Joyy)
 
-+ (NSString *)stringFromTimeInterval:(NSTimeInterval)interval
++ (NSString *)agoStringForTimeInterval:(NSTimeInterval)interval
 {
     NSString *ago = NSLocalizedString(@"ago", nil);
     int numberOfDays = interval / 86400;
@@ -42,7 +42,7 @@
     return [NSString stringWithFormat:@"%d %@ %@", numberOfSeconds, seconds, ago];
 }
 
-+ (NSString *)joyyAPIURLWithPath:(NSString *)path
++ (NSString *)apiURLWithPath:(NSString *)path
 {
     return [NSString stringWithFormat:@"%@%@", kUrlAPIBase, path];
 }
@@ -64,6 +64,12 @@
 {
     NSNumber *number = [NSNumber numberWithLongLong: self.longLongValue];
     return number.unsignedIntegerValue;
+}
+
+- (NSString *)personIdString
+{
+    NSArray *parts = [self componentsSeparatedByString:@"@"];
+    return parts[0];
 }
 
 @end

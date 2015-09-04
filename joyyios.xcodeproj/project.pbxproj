@@ -176,6 +176,10 @@
 		D6C82B6A1B12553D00876F57 /* JYComment.m in Sources */ = {isa = PBXBuildFile; fileRef = D6C82B681B12553D00876F57 /* JYComment.m */; };
 		D6E3B0511B99334900B707DF /* AFHTTPRequestOperationManager+Joyy.m in Sources */ = {isa = PBXBuildFile; fileRef = D6E3B0501B99334900B707DF /* AFHTTPRequestOperationManager+Joyy.m */; };
 		D6E3B0521B99334900B707DF /* AFHTTPRequestOperationManager+Joyy.m in Sources */ = {isa = PBXBuildFile; fileRef = D6E3B0501B99334900B707DF /* AFHTTPRequestOperationManager+Joyy.m */; };
+		D6E3B0551B996F5400B707DF /* JYMessageContactViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D6E3B0541B996F5400B707DF /* JYMessageContactViewCell.m */; };
+		D6E3B0561B996F5400B707DF /* JYMessageContactViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D6E3B0541B996F5400B707DF /* JYMessageContactViewCell.m */; };
+		D6E3B0611B9A38F500B707DF /* JYMessageDateFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = D6E3B0601B9A38F500B707DF /* JYMessageDateFormatter.m */; };
+		D6E3B0621B9A38F500B707DF /* JYMessageDateFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = D6E3B0601B9A38F500B707DF /* JYMessageDateFormatter.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -366,6 +370,10 @@
 		D6C82B681B12553D00876F57 /* JYComment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYComment.m; sourceTree = "<group>"; };
 		D6E3B04F1B99334900B707DF /* AFHTTPRequestOperationManager+Joyy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AFHTTPRequestOperationManager+Joyy.h"; sourceTree = "<group>"; };
 		D6E3B0501B99334900B707DF /* AFHTTPRequestOperationManager+Joyy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "AFHTTPRequestOperationManager+Joyy.m"; sourceTree = "<group>"; };
+		D6E3B0531B996F5400B707DF /* JYMessageContactViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYMessageContactViewCell.h; sourceTree = "<group>"; };
+		D6E3B0541B996F5400B707DF /* JYMessageContactViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYMessageContactViewCell.m; sourceTree = "<group>"; };
+		D6E3B05F1B9A38F500B707DF /* JYMessageDateFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYMessageDateFormatter.h; sourceTree = "<group>"; };
+		D6E3B0601B9A38F500B707DF /* JYMessageDateFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYMessageDateFormatter.m; sourceTree = "<group>"; };
 		F67CA15F6F0CAF970CBFB660 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -661,6 +669,10 @@
 				D68486BD1B8C59BF005CA0C4 /* JYMessage.m */,
 				D68486B81B8C40A3005CA0C4 /* JYMessageAvatar.h */,
 				D68486B91B8C40A3005CA0C4 /* JYMessageAvatar.m */,
+				D6E3B0531B996F5400B707DF /* JYMessageContactViewCell.h */,
+				D6E3B0541B996F5400B707DF /* JYMessageContactViewCell.m */,
+				D6E3B05F1B9A38F500B707DF /* JYMessageDateFormatter.h */,
+				D6E3B0601B9A38F500B707DF /* JYMessageDateFormatter.m */,
 				D62C2C661B90261000233F5B /* JYMessageListViewController.h */,
 				D62C2C671B90261000233F5B /* JYMessageListViewController.m */,
 				D68486B41B8AC267005CA0C4 /* JYMessageViewController.h */,
@@ -674,6 +686,8 @@
 		D68DAF991AC4CD0800838E7E /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				D6E3B04F1B99334900B707DF /* AFHTTPRequestOperationManager+Joyy.h */,
+				D6E3B0501B99334900B707DF /* AFHTTPRequestOperationManager+Joyy.m */,
 				D63B69B81AC624F8005600A9 /* JYAutoCompleteDataSource.h */,
 				D63B69B91AC624F8005600A9 /* JYAutoCompleteDataSource.m */,
 				D6B2F0591ACE630F009601B0 /* JYAutoCompleteTextField.h */,
@@ -700,8 +714,6 @@
 				D61D1DDD1B5342DD00DE37DF /* UIImage+Joyy.m */,
 				D689ED681AE42C8300CB4D2B /* UIView+Joyy.h */,
 				D689ED691AE42C8300CB4D2B /* UIView+Joyy.m */,
-				D6E3B04F1B99334900B707DF /* AFHTTPRequestOperationManager+Joyy.h */,
-				D6E3B0501B99334900B707DF /* AFHTTPRequestOperationManager+Joyy.m */,
 			);
 			name = Common;
 			sourceTree = "<group>";
@@ -1046,6 +1058,7 @@
 				D69FF6E71B96474200466FE5 /* JYAuthenticationClient.m in Sources */,
 				D6C82B551B0D9FAE00876F57 /* JYCommentViewController.m in Sources */,
 				D6B2F05B1ACE630F009601B0 /* JYAutoCompleteTextField.m in Sources */,
+				D6E3B0611B9A38F500B707DF /* JYMessageDateFormatter.m in Sources */,
 				D61D1D4F1B4A65F200DE37DF /* MDCSwipeOptions.m in Sources */,
 				D62C2C601B8E887200233F5B /* JYXmppManager.m in Sources */,
 				D61D1DBE1B4E336E00DE37DF /* TGCameraFilterView.m in Sources */,
@@ -1092,6 +1105,7 @@
 				D61D1DA01B4E336E00DE37DF /* UIImage+CameraFilters.m in Sources */,
 				D62C2C681B90261000233F5B /* JYMessageListViewController.m in Sources */,
 				D67DD0E81B7530AF00333626 /* JYPersonCard.m in Sources */,
+				D6E3B0551B996F5400B707DF /* JYMessageContactViewCell.m in Sources */,
 				D61D1D571B4A65F200DE37DF /* MDCSwipeToChooseView.m in Sources */,
 				D61D1DC81B4E336E00DE37DF /* TGCameraSlideView.m in Sources */,
 				D67DD0F81B7728E300333626 /* JYAvatar.m in Sources */,
@@ -1138,6 +1152,7 @@
 				D63F0D5A1AC7CFF20067C5EE /* JYButton.m in Sources */,
 				D61D1D581B4A65F200DE37DF /* MDCSwipeToChooseView.m in Sources */,
 				D67DD0F51B77187000333626 /* JYCaptionTextView.m in Sources */,
+				D6E3B0561B996F5400B707DF /* JYMessageContactViewCell.m in Sources */,
 				D62C2C611B8E887200233F5B /* JYXmppManager.m in Sources */,
 				D61D1D4E1B4A65F200DE37DF /* UIView+MDCBorderedLabel.m in Sources */,
 				D6E3B0521B99334900B707DF /* AFHTTPRequestOperationManager+Joyy.m in Sources */,
@@ -1153,6 +1168,7 @@
 				D61D1DCB1B4E336E00DE37DF /* TGTintedButton.m in Sources */,
 				D61D1DA71B4E336E00DE37DF /* TGCameraViewController.m in Sources */,
 				D61D1DB31B4E336E00DE37DF /* TGCameraFlash.m in Sources */,
+				D6E3B0621B9A38F500B707DF /* JYMessageDateFormatter.m in Sources */,
 				D61D1D4A1B4A65F200DE37DF /* MDCViewState.m in Sources */,
 				D61D1D541B4A65F200DE37DF /* MDCPanState.m in Sources */,
 				D61D1DC11B4E336E00DE37DF /* TGCameraFocusView.m in Sources */,

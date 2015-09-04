@@ -8,7 +8,6 @@
 
 #import <JSQMessagesViewController/JSQMessages.h>
 
-#import "JYPerson.h"
 
 @interface JYMessageViewController : JSQMessagesViewController
 

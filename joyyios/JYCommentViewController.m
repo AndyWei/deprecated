@@ -349,7 +349,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
     [self _networkThreadBegin];
 
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager managerWithToken];
-    NSString *url = [NSString joyyAPIURLWithPath:@"comment"];
+    NSString *url = [NSString apiURLWithPath:@"comment"];
 
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
 
@@ -387,7 +387,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
     [self _networkThreadBegin];
 
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    NSString *url = [NSString joyyAPIURLWithPath:@"comment"];
+    NSString *url = [NSString apiURLWithPath:@"comment"];
 
     __weak typeof(self) weakSelf = self;
     [manager GET:url

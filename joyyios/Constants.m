@@ -87,9 +87,12 @@ NSString *const kSystemFontItalic = @"AvenirNextCondensed-Italic ";
 NSString *const kSystemFontLight = @"AvenirNextCondensed-UltraLight ";
 NSString *const kSystemFontRegular = @"AvenirNextCondensed-Regular";
 
+NSString *const kTableNameLikedPost = @"liked_post";
+NSString *const kTableNamePerson = @"person";
+
 //NSString *const kUrlAPIBase = @"http://api.joyyapp.com:8000/v1/";
 NSString *const kUrlAPIBase = @"http://192.168.1.145:8000/v1/";
 
-NSString *const kUrlAvatarBase = @"http://avatar.joyyapp.com/";
+NSString *const kURLAvatarBase = @"http://avatar.joyyapp.com/";
 NSString *const kUrlMessageMediaBase = @"http://media.joyy.im/";
-NSString *const kUrlPostBase = @"http://post.joyyapp.com/";
+NSString *const kURLPostBase = @"http://post.joyyapp.com/";

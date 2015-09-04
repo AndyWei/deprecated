@@ -10,7 +10,6 @@
 
 #import "AppDelegate.h"
 #import "JYButton.h"
-#import "JYPerson.h"
 #import "JYPeopleViewController.h"
 
 
@@ -246,7 +245,7 @@ static const CGFloat kButtonWidth = 60;
     [self _networkThreadBegin];
 
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager managerWithToken];
-    NSString *url = [NSString joyyAPIURLWithPath:@"person/nearby"];
+    NSString *url = [NSString apiURLWithPath:@"person/nearby"];
     NSDictionary *parameters = [self _parametersForPersonNearby];
 
     __weak typeof(self) weakSelf = self;
@@ -286,8 +285,8 @@ static const CGFloat kButtonWidth = 60;
     [self _networkThreadBegin];
 
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager managerWithToken];
-    NSString *url = [NSString joyyAPIURLWithPath:@"person"];
-    NSDictionary *parameters = [self _parametersForPersonByIds:personIds];
+    NSString *url = [NSString apiURLWithPath:@"person"];
+    NSDictionary *parameters = @{@"id": personIds};
 
     __weak typeof(self) weakSelf = self;
     [manager GET:url
@@ -307,18 +306,6 @@ static const CGFloat kButtonWidth = 60;
              [weakSelf _networkThreadEnd];
          }
      ];
-}
-
-- (NSDictionary *)_parametersForPersonByIds:(NSArray *)personIds
-{
-    NSMutableDictionary *parameters = [NSMutableDictionary new];
-
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [parameters setObject:appDelegate.cellId forKey:@"cell"];
-    [parameters setObject:personIds forKey:@"id"];
-
-//    NSLog(@"fetch person by ids parameters: %@", parameters);
-    return parameters;
 }
 
 - (void)_networkThreadBegin

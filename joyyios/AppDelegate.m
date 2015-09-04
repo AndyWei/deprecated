@@ -15,7 +15,6 @@
 
 #import "AppDelegate.h"
 #import "JYAmazonClientManager.h"
-#import "JYDataStore.h"
 #import "JYMasqueradeViewController.h"
 #import "JYMessageListViewController.h"
 #import "JYPeopleViewController.h"
@@ -390,7 +389,7 @@
 - (void)_autoSignIn
 {
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager managerWithPassword];
-    NSString *url = [NSString joyyAPIURLWithPath:@"signin"];
+    NSString *url = [NSString apiURLWithPath:@"signin"];
 
     NSLog(@"autoSignIn start");
 
@@ -424,7 +423,7 @@
     NSDictionary *parameters = @{@"service": @(kAPN), @"device": deviceToken, @"badge": @(badgeCount)};
 
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager managerWithToken];
-    NSString *url = [NSString joyyAPIURLWithPath:@"person/device"];
+    NSString *url = [NSString apiURLWithPath:@"person/device"];
 
     [manager POST:url
        parameters:parameters
@@ -480,7 +479,7 @@
 {
     CLLocationCoordinate2D coods = self.currentCoordinate;
     NSDictionary *parameters = @{@"lon": @(coods.longitude), @"lat": @(coods.latitude), @"cell": self.cellId};
-    NSString *url = [NSString joyyAPIURLWithPath:@"person/location"];
+    NSString *url = [NSString apiURLWithPath:@"person/location"];
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager managerWithToken];
 
     [manager POST:url

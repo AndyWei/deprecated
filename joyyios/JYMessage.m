@@ -7,7 +7,6 @@
 //
 
 #import "JYMessage.h"
-#import "JYPerson.h"
 
 @interface JYMessage ()
 @property(nonatomic) XMPPMessageArchiving_Message_CoreDataObject *coreDataMessage;

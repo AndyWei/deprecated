@@ -11,25 +11,9 @@
 #import "JYPost.h"
 
 @interface JYPost ()
-
 @end
 
-static NSString *const kLikedPostTable = @"liked_post";
-
 @implementation JYPost
-
-+ (YTKKeyValueStore *)sharedKVStore;
-{
-    static YTKKeyValueStore *_sharedKVStore = nil;
-    static dispatch_once_t done;
-
-    dispatch_once(&done, ^{
-        _sharedKVStore = [[YTKKeyValueStore alloc] initDBWithName:@"joyy_kv.db"];
-        [_sharedKVStore createTableWithName:kLikedPostTable];
-    });
-
-    return _sharedKVStore;
-}
 
 - (instancetype)initWithDictionary:(NSDictionary *)dict
 {
@@ -38,8 +22,6 @@ static NSString *const kLikedPostTable = @"liked_post";
     {
         if (dict)
         {
-            _localImage = nil;
-
             _filename = [dict objectForKey:@"filename"];
             _postId = [dict unsignedIntegerValueForKey:@"id"];
             _ownerId = [dict unsignedIntegerValueForKey:@"owner"];
@@ -63,7 +45,7 @@ static NSString *const kLikedPostTable = @"liked_post";
     if (isLiked)
     {
         NSDictionary *value = @{ @"personId": [JYCredential currentCredential].idString };
-        [[JYPost sharedKVStore] putObject:value withId:self.idString intoTable:kLikedPostTable];
+        [[JYDataStore sharedInstance].store putObject:value withId:self.idString intoTable:kTableNameLikedPost];
     }
 
     _isLiked = isLiked;
@@ -71,7 +53,7 @@ static NSString *const kLikedPostTable = @"liked_post";
 
 - (BOOL)_isInLikedStore
 {
-    NSDictionary *liked = [[JYPost sharedKVStore] getObjectById:self.idString fromTable:kLikedPostTable];
+    NSDictionary *liked = [[JYDataStore sharedInstance].store getObjectById:self.idString fromTable:kTableNameLikedPost];
     if (!liked)
     {
         return NO;
@@ -88,12 +70,7 @@ static NSString *const kLikedPostTable = @"liked_post";
 
 - (NSString *)url
 {
-    if (self.localImage)
-    {
-        return nil;
-    }
-
-    return [NSString stringWithFormat:@"%@%@", kUrlPostBase, self.filename];
+    return [NSString stringWithFormat:@"%@%@", kURLPostBase, self.filename];
 }
 
 @end

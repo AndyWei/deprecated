@@ -175,13 +175,6 @@ static const CGFloat kLikeCountLabelWidth = 80;
 
 - (void)_updateImage
 {
-    // Use local image
-    if (_post.localImage)
-    {
-        self.photoView.image = _post.localImage;
-        return;
-    }
-
     // Fetch network image
     NSURL *url = [NSURL URLWithString:_post.url];
     NSURLRequest *request = [NSURLRequest requestWithURL:url];

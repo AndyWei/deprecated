@@ -18,7 +18,7 @@
 @property (nonatomic) JSQMessagesBubbleImage *incomingBubbleImageData;
 @property (nonatomic) JYMessageAvatar *remoteAvatar;
 @property (nonatomic) JYMessageAvatar *myAvatar;
-@property (nonatomic) NSFetchedResultsController *fetchedResultsController;
+@property (nonatomic) NSFetchedResultsController *fetcher;
 @property (nonatomic) XMPPJID *remoteJid;
 @end
 
@@ -64,13 +64,13 @@
     self.inputToolbar.maximumHeight = 150;
 
     // Start fetch data
-    self.fetchedResultsController = [JYXmppManager fetchedResultsControllerForRemoteJid:self.remoteJid];
-    self.fetchedResultsController.delegate = self;
+    self.fetcher = [JYXmppManager fetcherForRemoteJid:self.remoteJid];
+    self.fetcher.delegate = self;
     NSError *error = nil;
-    [self.fetchedResultsController performFetch:&error];
+    [self.fetcher performFetch:&error];
     if (error)
     {
-        NSLog(@"fetchedResultsController performFetch error = %@", error);
+        NSLog(@"fetcher performFetch error = %@", error);
     }
 }
 
@@ -187,14 +187,14 @@
 
 - (id<JSQMessageData>)collectionView:(JSQMessagesCollectionView *)collectionView messageDataForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    XMPPMessageArchiving_Message_CoreDataObject *coreDataMessage = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    XMPPMessageArchiving_Message_CoreDataObject *coreDataMessage = [self.fetcher objectAtIndexPath:indexPath];
     JYMessage *message = [[JYMessage alloc] initWithXMPPCoreDataMessage:coreDataMessage];
     return message;
 }
 
 - (id<JSQMessageBubbleImageDataSource>)collectionView:(JSQMessagesCollectionView *)collectionView messageBubbleImageDataForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    XMPPMessageArchiving_Message_CoreDataObject *coreDataMessage = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    XMPPMessageArchiving_Message_CoreDataObject *coreDataMessage = [self.fetcher objectAtIndexPath:indexPath];
     if (coreDataMessage.isOutgoing)
     {
         return self.outgoingBubbleImageData;
@@ -205,7 +205,7 @@
 
 - (id<JSQMessageAvatarImageDataSource>)collectionView:(JSQMessagesCollectionView *)collectionView avatarImageDataForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    XMPPMessageArchiving_Message_CoreDataObject *coreDataMessage = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    XMPPMessageArchiving_Message_CoreDataObject *coreDataMessage = [self.fetcher objectAtIndexPath:indexPath];
 
     if (coreDataMessage.isOutgoing)
     {
@@ -219,7 +219,7 @@
 - (NSAttributedString *)collectionView:(JSQMessagesCollectionView *)collectionView attributedTextForCellTopLabelAtIndexPath:(NSIndexPath *)indexPath
 {
     // Show timestamp label for messages 5+ minutes later than its prior
-    XMPPMessageArchiving_Message_CoreDataObject *message = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    XMPPMessageArchiving_Message_CoreDataObject *message = [self.fetcher objectAtIndexPath:indexPath];
     NSAttributedString *timestampStr = [[JSQMessagesTimestampFormatter sharedFormatter] attributedTimestampForDate:message.timestamp];
     if (indexPath.section == 0 && indexPath.item == 0)
     {
@@ -227,7 +227,7 @@
     }
 
     NSIndexPath *prevIndexPath = [self previousIndexPath:indexPath];
-    XMPPMessageArchiving_Message_CoreDataObject *prevMessage = [self.fetchedResultsController objectAtIndexPath:prevIndexPath];
+    XMPPMessageArchiving_Message_CoreDataObject *prevMessage = [self.fetcher objectAtIndexPath:prevIndexPath];
 
     if ([message.timestamp timeIntervalSinceDate:prevMessage.timestamp] > k5Minutes)
     {
@@ -251,19 +251,19 @@
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
 {
-    return self.fetchedResultsController.sections.count;
+    return self.fetcher.sections.count;
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-    return [[self.fetchedResultsController.sections objectAtIndex:section] numberOfObjects];
+    return [[self.fetcher.sections objectAtIndex:section] numberOfObjects];
 }
 
 - (UICollectionViewCell *)collectionView:(JSQMessagesCollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     JSQMessagesCollectionViewCell *cell = (JSQMessagesCollectionViewCell *)[super collectionView:collectionView cellForItemAtIndexPath:indexPath];
 
-    XMPPMessageArchiving_Message_CoreDataObject *coreDataMessage = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    XMPPMessageArchiving_Message_CoreDataObject *coreDataMessage = [self.fetcher objectAtIndexPath:indexPath];
 
     if ([coreDataMessage.message.body hasPrefix:kMessageBodyTypeText])
     {
@@ -289,14 +289,14 @@
                    layout:(JSQMessagesCollectionViewFlowLayout *)collectionViewLayout heightForCellTopLabelAtIndexPath:(NSIndexPath *)indexPath
 {
     // Show timestamp label for messages 5+ minutes later than its prior
-    XMPPMessageArchiving_Message_CoreDataObject *message = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    XMPPMessageArchiving_Message_CoreDataObject *message = [self.fetcher objectAtIndexPath:indexPath];
     if (indexPath.section == 0 && indexPath.item == 0)
     {
         return kJSQMessagesCollectionViewCellLabelHeightDefault;
     }
 
     NSIndexPath *prevIndexPath = [self previousIndexPath:indexPath];
-    XMPPMessageArchiving_Message_CoreDataObject *prevMessage = [self.fetchedResultsController objectAtIndexPath:prevIndexPath];
+    XMPPMessageArchiving_Message_CoreDataObject *prevMessage = [self.fetcher objectAtIndexPath:prevIndexPath];
 
     if ([message.timestamp timeIntervalSinceDate:prevMessage.timestamp] > k5Minutes)
     {

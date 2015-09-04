@@ -61,7 +61,27 @@
     return [XMPPJID jidWithUser:[JYCredential currentCredential].idString domain:kMessageDomain resource:resource];
 }
 
-+ (NSFetchedResultsController *)fetchedResultsControllerForRemoteJid:(XMPPJID *)remoteJid
++ (NSFetchedResultsController *)fetcherForForContacts
+{
+    // Standard process for fetch XMPPMessageArchiving_Contact_CoreDataObject objects
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"XMPPMessageArchiving_Contact_CoreDataObject"];
+    NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"mostRecentMessageTimestamp" ascending:NO];
+    request.sortDescriptors = @[sort];
+    request.fetchBatchSize = 10;
+
+    // Select the messages between me and the peer
+    XMPPJID *myJid = [JYXmppManager myJid];
+    request.predicate = [NSPredicate predicateWithFormat:@"streamBareJidStr = %@", myJid.bare];
+
+    NSManagedObjectContext *context = [JYXmppManager sharedInstance].msgStorage.mainThreadManagedObjectContext;
+
+    // NOTE: DO NOT USE cache here, otherwise the messages would be disordered since XMPPFramework is writing to the same context
+    NSFetchedResultsController *controller = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:context sectionNameKeyPath:nil cacheName:nil];
+
+    return controller;
+}
+
++ (NSFetchedResultsController *)fetcherForRemoteJid:(XMPPJID *)remoteJid
 {
     // Standard process for fetch XMPPMessageArchiving_Message_CoreDataObject objects
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"XMPPMessageArchiving_Message_CoreDataObject"];

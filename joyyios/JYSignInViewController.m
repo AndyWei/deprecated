@@ -58,7 +58,7 @@
     [JYCredential currentCredential].password = password;
 
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager managerWithPassword];
-    NSString *url = [NSString joyyAPIURLWithPath:@"signin"];
+    NSString *url = [NSString apiURLWithPath:@"signin"];
 
     [KVNProgress show];
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;

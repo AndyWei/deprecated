@@ -113,7 +113,7 @@ NSString *const kJYAuthenticationClientDomain = @"JYAuthenticationClient";
     return [[AWSTask taskWithResult:nil] continueWithBlock:^id(AWSTask *task) {
 
         AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager managerWithToken];
-        NSString *url = [NSString joyyAPIURLWithPath:@"cognito"];
+        NSString *url = [NSString apiURLWithPath:@"cognito"];
         NSError *error = nil;
         NSDictionary *response = [manager syncGET:url parameters:nil operation:NULL error:&error];
 

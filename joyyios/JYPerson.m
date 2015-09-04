@@ -6,12 +6,9 @@
 //  Copyright (c) 2015 Joyy Inc. All rights reserved.
 //
 
-#import "JYPerson.h"
 
 @interface JYPerson ()
 @property(nonatomic) NSUInteger yearOfBirth;
-@property(nonatomic) NSString *avatarFilename;
-@property(nonatomic) NSString *avatarUrlBase;
 @end
 
 @implementation JYPerson
@@ -36,9 +33,8 @@
     if (self)
     {
         _bio  = [dict objectForKey:@"bio"];
-        _name = [dict objectForKey:@"name"];
+        _name = [dict objectForKey:@"username"];
         _org  = [dict objectForKey:@"org"];
-        _avatarFilename = [dict objectForKey:@"avatar"];
         _friendCount = [dict unsignedIntegerValueForKey:@"friends"];
         _gender      = [dict unsignedIntegerValueForKey:@"gender"];
         _heartCount  = [dict unsignedIntegerValueForKey:@"hearts"];
@@ -76,18 +72,18 @@
     return _idString;
 }
 
-- (NSString *)avatarUrl
+- (NSString *)avatarURL
 {
-    if (!_avatarUrl)
+    if (!_avatarURL)
     {
-        _avatarUrl = [NSString stringWithFormat:@"%@%@.jpg", kUrlAvatarBase, self.avatarFilename];
+        _avatarURL = [NSString stringWithFormat:@"%@%@_s.jpg", kURLAvatarBase, self.name];
     }
-    return _avatarUrl;
+    return _avatarURL;
 }
 
-- (NSString *)messageAvatarUrl
+- (NSString *)fullAvatarURL
 {
-    return [NSString stringWithFormat:@"%@%@_small.jpg", kUrlAvatarBase, self.avatarFilename];
+    return [NSString stringWithFormat:@"%@%@.jpg", kURLAvatarBase, self.name];
 }
 
 @end

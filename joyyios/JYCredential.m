@@ -7,7 +7,6 @@
 //
 
 #import <UICKeychainStore/UICKeychainStore.h>
-#import "JYDataStore.h"
 
 @interface JYCredential()
 @property (nonatomic) UICKeyChainStore *keychain;

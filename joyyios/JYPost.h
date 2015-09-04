@@ -16,7 +16,6 @@
 @property(nonatomic) NSUInteger ownerId;
 @property(nonatomic) NSUInteger postId;
 @property(nonatomic) NSUInteger timestamp;
-@property(nonatomic) UIImage *localImage;
 @property(nonatomic) NSString *filename;
 @property(nonatomic) NSString *caption;
 @property(nonatomic, readonly) NSString *url;

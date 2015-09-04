@@ -7,7 +7,6 @@
 //
 
 #import "MDCSwipeToChoose.h"
-#import "JYPerson.h"
 #import "JYPersonCard.h"
 
 @interface JYPeopleViewController : UIViewController <MDCSwipeToChooseDelegate>
