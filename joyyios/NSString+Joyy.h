@@ -9,6 +9,7 @@
 @interface NSString (Joyy)
 
 + (NSString *)stringFromTimeInterval:(NSTimeInterval)interval;
++ (NSString *)joyyAPIURLWithPath:(NSString *)path;
 
 - (BOOL)isInvisible;
 - (BOOL)isValidEmail;

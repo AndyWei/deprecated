@@ -64,7 +64,7 @@
 - (AWSTask *)_initializeProviders:(NSDictionary *)logins
 {
     NSLog(@"initializing providers...");
-    [AWSLogger defaultLogger].logLevel = AWSLogLevelDebug;
+    [AWSLogger defaultLogger].logLevel = AWSLogLevelWarn;
 
     id<AWSCognitoIdentityProvider> identityProvider = [[JYAuthenticatedIdentityProvider alloc] initWithRegionType:kCognitoRegionType identityId:nil identityPoolId:kCognitoIdentityPoolId logins:logins providerName:kAuthProviderName authClient:self.authClient];
 

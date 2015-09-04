@@ -50,13 +50,11 @@
     }
 
     NSString *email = [self.emailField.text lowercaseString];
-    NSString *password = [self.passwordField.text lowercaseString];
-    [JYCredential currentCredential].email = email;
+    NSString *password = self.passwordField.text;
     [JYCredential currentCredential].password = password;
-
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
 
-    NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"signup"];
+    NSString *url = [NSString joyyAPIURLWithPath:@"signup"];
     NSDictionary *parameters = @{@"email": email, @"password": password};
 
     [KVNProgress show];

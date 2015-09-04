@@ -42,6 +42,11 @@
     return [NSString stringWithFormat:@"%d %@ %@", numberOfSeconds, seconds, ago];
 }
 
++ (NSString *)joyyAPIURLWithPath:(NSString *)path
+{
+    return [NSString stringWithFormat:@"%@%@", kUrlAPIBase, path];
+}
+
 - (BOOL)isInvisible
 {
     NSCharacterSet *whiteSpaceSet = [NSCharacterSet whitespaceAndNewlineCharacterSet];

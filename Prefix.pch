@@ -16,6 +16,7 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
+#import <AFNetworking/AFNetworking.h>
 #import <ChameleonFramework/Chameleon.h>
 
 // XMPP XEPs
@@ -39,6 +40,7 @@
 #import "UIView+Positioning.h"
 
 #import "JYCredential.h"
+#import "AFHTTPRequestOperationManager+Joyy.h"
 
 #endif
 

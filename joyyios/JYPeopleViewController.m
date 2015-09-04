@@ -245,11 +245,8 @@ static const CGFloat kButtonWidth = 60;
     }
     [self _networkThreadBegin];
 
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYCredential currentCredential].token];
-    [manager.requestSerializer setValue:token forHTTPHeaderField:@"Authorization"];
-
-    NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"person/nearby"];
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager managerWithToken];
+    NSString *url = [NSString joyyAPIURLWithPath:@"person/nearby"];
     NSDictionary *parameters = [self _parametersForPersonNearby];
 
     __weak typeof(self) weakSelf = self;
@@ -288,11 +285,8 @@ static const CGFloat kButtonWidth = 60;
 {
     [self _networkThreadBegin];
 
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYCredential currentCredential].token];
-    [manager.requestSerializer setValue:token forHTTPHeaderField:@"Authorization"];
-
-    NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"person"];
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager managerWithToken];
+    NSString *url = [NSString joyyAPIURLWithPath:@"person"];
     NSDictionary *parameters = [self _parametersForPersonByIds:personIds];
 
     __weak typeof(self) weakSelf = self;

@@ -50,13 +50,15 @@
     }
 
     NSString *email = [self.emailField.text lowercaseString];
-    NSString *password = [self.passwordField.text lowercaseString];
+    NSString *password = self.passwordField.text;
+
+    NSLog(@"password = %@", password);
+
     [JYCredential currentCredential].email = email;
     [JYCredential currentCredential].password = password;
 
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    [manager.requestSerializer setAuthorizationHeaderFieldWithUsername:email password:password];
-    NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"signin"];
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager managerWithPassword];
+    NSString *url = [NSString joyyAPIURLWithPath:@"signin"];
 
     [KVNProgress show];
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;

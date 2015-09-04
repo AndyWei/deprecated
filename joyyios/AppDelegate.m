@@ -389,23 +389,10 @@
 
 - (void)_autoSignIn
 {
-    NSString *email = [JYCredential currentCredential].email;
-    NSString *password = [JYCredential currentCredential].password;
-    if (!email || !password)
-    {
-        return;
-    }
-
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-
-    manager.requestSerializer = [AFHTTPRequestSerializer serializer];
-    [manager.requestSerializer setAuthorizationHeaderFieldWithUsername:email password:password];
-
-    NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"signin"];
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager managerWithPassword];
+    NSString *url = [NSString joyyAPIURLWithPath:@"signin"];
 
     NSLog(@"autoSignIn start");
-    NSLog(@"email = %@", email);
-    NSLog(@"password = %@", password);
 
     __weak typeof(self) weakSelf = self;
     [manager GET:url
@@ -415,8 +402,8 @@
             NSLog(@"Success: autoSignIn responseObject = %@", responseObject);
 
             [[JYCredential currentCredential] save:responseObject];
-            NSTimeInterval seconds = [JYCredential currentCredential].tokenValidInSeconds;
 
+            NSTimeInterval seconds = [JYCredential currentCredential].tokenValidInSeconds;
             [weakSelf _signValidForSeconds:seconds];
         }
         failure:^(AFHTTPRequestOperation *operation, NSError *error) {
@@ -434,13 +421,10 @@
     }
 
     NSInteger badgeCount = [JYDataStore sharedInstance].badgeCount;
-
     NSDictionary *parameters = @{@"service": @(kAPN), @"device": deviceToken, @"badge": @(badgeCount)};
-    NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"person/device"];
 
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYCredential currentCredential].token];
-    [manager.requestSerializer setValue:token forHTTPHeaderField:@"Authorization"];
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager managerWithToken];
+    NSString *url = [NSString joyyAPIURLWithPath:@"person/device"];
 
     [manager POST:url
        parameters:parameters
@@ -496,11 +480,8 @@
 {
     CLLocationCoordinate2D coods = self.currentCoordinate;
     NSDictionary *parameters = @{@"lon": @(coods.longitude), @"lat": @(coods.latitude), @"cell": self.cellId};
-    NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"person/location"];
-
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYCredential currentCredential].token];
-    [manager.requestSerializer setValue:token forHTTPHeaderField:@"Authorization"];
+    NSString *url = [NSString joyyAPIURLWithPath:@"person/location"];
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager managerWithToken];
 
     [manager POST:url
        parameters:parameters

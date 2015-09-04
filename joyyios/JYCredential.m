@@ -50,32 +50,32 @@
 - (void)setEmail:(NSString *)email
 {
     _email = email;
-    self.keychain[kAPIEmailKey] = email;
+    self.keychain[kAPIEmailKey] = _email;
 }
 
 - (void)setPassword:(NSString *)password
 {
     _password = password;
-    self.keychain[kAPIPasswordKey] = password;
+    self.keychain[kAPIPasswordKey] = _password;
 }
 
 - (void)setUsername:(NSString *)username
 {
     _username = username;
-    self.keychain[kAPIUsernameKey] = username;
+    self.keychain[kAPIUsernameKey] = _username;
 }
 
 - (void)setIdString:(NSString *)idString
 {
     _idString = idString;
-    self.keychain[kAPIUserIdKey] = idString;
+    self.keychain[kAPIUserIdKey] = _idString;
     _userId = _idString? [_idString unsignedIntegerValue] : 0;
 }
 
 - (void)setToken:(NSString *)token
 {
     _token = token;
-    self.keychain[kAPITokenKey] = token;
+    self.keychain[kAPITokenKey] = _token;
 }
 
 - (void)setTokenExpiryTime:(NSTimeInterval)tokenExpiryTime
@@ -112,7 +112,8 @@
         self.token = [dict valueForKey:@"token"];
 
         NSUInteger tokenDuration = [dict unsignedIntegerValueForKey:@"tokenDuration"];
-        self.tokenExpiryTime = [NSDate timeIntervalSinceReferenceDate] + tokenDuration;
+        NSUInteger now = (NSUInteger)[NSDate timeIntervalSinceReferenceDate];
+        self.tokenExpiryTime = now + tokenDuration;
     }
 }
 

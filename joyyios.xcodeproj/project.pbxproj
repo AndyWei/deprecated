@@ -174,6 +174,8 @@
 		D6C82B5D1B0EFDEA00876F57 /* JYCommentTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = D6C82B5B1B0EFDEA00876F57 /* JYCommentTextView.m */; };
 		D6C82B691B12553D00876F57 /* JYComment.m in Sources */ = {isa = PBXBuildFile; fileRef = D6C82B681B12553D00876F57 /* JYComment.m */; };
 		D6C82B6A1B12553D00876F57 /* JYComment.m in Sources */ = {isa = PBXBuildFile; fileRef = D6C82B681B12553D00876F57 /* JYComment.m */; };
+		D6E3B0511B99334900B707DF /* AFHTTPRequestOperationManager+Joyy.m in Sources */ = {isa = PBXBuildFile; fileRef = D6E3B0501B99334900B707DF /* AFHTTPRequestOperationManager+Joyy.m */; };
+		D6E3B0521B99334900B707DF /* AFHTTPRequestOperationManager+Joyy.m in Sources */ = {isa = PBXBuildFile; fileRef = D6E3B0501B99334900B707DF /* AFHTTPRequestOperationManager+Joyy.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -362,6 +364,8 @@
 		D6C82B5B1B0EFDEA00876F57 /* JYCommentTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYCommentTextView.m; sourceTree = "<group>"; };
 		D6C82B671B12553D00876F57 /* JYComment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYComment.h; sourceTree = "<group>"; };
 		D6C82B681B12553D00876F57 /* JYComment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYComment.m; sourceTree = "<group>"; };
+		D6E3B04F1B99334900B707DF /* AFHTTPRequestOperationManager+Joyy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AFHTTPRequestOperationManager+Joyy.h"; sourceTree = "<group>"; };
+		D6E3B0501B99334900B707DF /* AFHTTPRequestOperationManager+Joyy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "AFHTTPRequestOperationManager+Joyy.m"; sourceTree = "<group>"; };
 		F67CA15F6F0CAF970CBFB660 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -696,6 +700,8 @@
 				D61D1DDD1B5342DD00DE37DF /* UIImage+Joyy.m */,
 				D689ED681AE42C8300CB4D2B /* UIView+Joyy.h */,
 				D689ED691AE42C8300CB4D2B /* UIView+Joyy.m */,
+				D6E3B04F1B99334900B707DF /* AFHTTPRequestOperationManager+Joyy.h */,
+				D6E3B0501B99334900B707DF /* AFHTTPRequestOperationManager+Joyy.m */,
 			);
 			name = Common;
 			sourceTree = "<group>";
@@ -1082,6 +1088,7 @@
 				D68DAF971AC4CACD00838E7E /* JYSignInViewController.m in Sources */,
 				D61D1DB81B4E336E00DE37DF /* TGCameraShot.m in Sources */,
 				D69FF6E51B96474200466FE5 /* JYAuthenticatedIdentityProvider.m in Sources */,
+				D6E3B0511B99334900B707DF /* AFHTTPRequestOperationManager+Joyy.m in Sources */,
 				D61D1DA01B4E336E00DE37DF /* UIImage+CameraFilters.m in Sources */,
 				D62C2C681B90261000233F5B /* JYMessageListViewController.m in Sources */,
 				D67DD0E81B7530AF00333626 /* JYPersonCard.m in Sources */,
@@ -1133,6 +1140,7 @@
 				D67DD0F51B77187000333626 /* JYCaptionTextView.m in Sources */,
 				D62C2C611B8E887200233F5B /* JYXmppManager.m in Sources */,
 				D61D1D4E1B4A65F200DE37DF /* UIView+MDCBorderedLabel.m in Sources */,
+				D6E3B0521B99334900B707DF /* AFHTTPRequestOperationManager+Joyy.m in Sources */,
 				D61D1DA51B4E336E00DE37DF /* TGCameraNavigationController.m in Sources */,
 				D6C6BBAD1B62DF6B00FFFAC7 /* NSDictionary+Joyy.m in Sources */,
 				D61D1DB51B4E336E00DE37DF /* TGCameraFocus.m in Sources */,
