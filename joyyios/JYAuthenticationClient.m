@@ -13,9 +13,6 @@
 #import "JYAuthenticationClient.h"
 
 NSString *const kJYAuthenticationClientDomain = @"JYAuthenticationClient";
-NSString *const kIdentityIdKey = @"identityId";
-NSString *const kTokenKey = @"openIDToken";
-NSString *const kTokenExpiryTimeKey = @"tokenExpiryTime";
 
 @interface JYAuthenticationResponse()
 
@@ -31,10 +28,7 @@ NSString *const kTokenExpiryTimeKey = @"tokenExpiryTime";
 @property (nonatomic) NSString *identityId;
 @property (nonatomic) NSString *token;
 @property (nonatomic) NSTimeInterval tokenExpiryTime;
-
-// used to save state of authentication
-@property (nonatomic, strong) UICKeyChainStore *keychain;
-
+@property (nonatomic) UICKeyChainStore *keychain;
 @end
 
 @implementation JYAuthenticationClient
@@ -43,12 +37,12 @@ NSString *const kTokenExpiryTimeKey = @"tokenExpiryTime";
 {
     if (self = [super init])
     {
-        self.keychain = _keychain = [UICKeyChainStore keyChainStoreWithService:[NSString stringWithFormat:@"%@.%@", [NSBundle mainBundle].bundleIdentifier, [JYAuthenticationClient class]]];
+        self.keychain = [UICKeyChainStore keyChainStoreWithService:kKeyChainStoreAWS];
         
-        _identityId = self.keychain[kIdentityIdKey];
-        _token = self.keychain[kTokenKey];
+        _identityId = self.keychain[kAWSIdentityIdKey];
+        _token = self.keychain[kAWSTokenKey];
 
-        NSString *expiryTimeStr = self.keychain[kTokenExpiryTimeKey];
+        NSString *expiryTimeStr = self.keychain[kAWSTokenExpiryTimeKey];
         _tokenExpiryTime = expiryTimeStr ? [expiryTimeStr doubleValue] : 0.0f;
     }
     
@@ -57,31 +51,41 @@ NSString *const kTokenExpiryTimeKey = @"tokenExpiryTime";
 
 - (BOOL)isAuthenticated
 {
-    return [JYCredential current].idString != nil;
+    return [JYCredential currentCredential].tokenValidInSeconds > 0;
 }
 
-- (BOOL)_isTokenExpired
+- (BOOL)_isTokenValid
 {
+    if (!self.identityId)
+    {
+        return NO;
+    }
+
+    if (!self.token)
+    {
+        return NO;
+    }
+
     NSTimeInterval now = [NSDate timeIntervalSinceReferenceDate];
-    return self.tokenExpiryTime < now;
+    return (now < self.tokenExpiryTime);
 }
 
 - (void)setIdentityId:(NSString *)identityId
 {
     _identityId = identityId;
-    self.keychain[kIdentityIdKey] = identityId;
+    self.keychain[kAWSIdentityIdKey] = identityId;
 }
 
 - (void)setToken:(NSString *)token
 {
     _token = token;
-    self.keychain[kTokenKey] = token;
+    self.keychain[kAWSTokenKey] = token;
 }
 
 - (void)setTokenExpiryTime:(NSTimeInterval)tokenExpiryTime
 {
     _tokenExpiryTime = tokenExpiryTime;
-    self.keychain[kTokenExpiryTimeKey] = [NSString stringWithFormat:@"%.0f", tokenExpiryTime];
+    self.keychain[kAWSTokenExpiryTimeKey] = [NSString stringWithFormat:@"%.0f", tokenExpiryTime];
 }
 
 // call gettoken and set our values from returned result
@@ -89,17 +93,19 @@ NSString *const kTokenExpiryTimeKey = @"tokenExpiryTime";
 {
     if (![self isAuthenticated])
     {
+        NSLog(@"Error: not authenticated by joyyserver, cannot get IdentityId and OpenID token");
         return [AWSTask taskWithError:[NSError errorWithDomain:kJYAuthenticationClientDomain
                                                          code:JYAuthenticationErrorLoginFailed
                                                      userInfo:nil]];
     }
 
-    if (![self _isTokenExpired])
+    if ([self _isTokenValid])
     {
         JYAuthenticationResponse *authResponse = [JYAuthenticationResponse new];
         authResponse.token = self.token;
         authResponse.identityId = self.identityId;
-            
+
+        NSLog(@"Success: token is not expired, no need to get a new one");
         return [AWSTask taskWithResult:authResponse];
     }
 
@@ -107,7 +113,7 @@ NSString *const kTokenExpiryTimeKey = @"tokenExpiryTime";
     return [[AWSTask taskWithResult:nil] continueWithBlock:^id(AWSTask *task) {
 
         AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-        NSString *apiToken = [NSString stringWithFormat:@"Bearer %@", [JYCredential current].token];
+        NSString *apiToken = [NSString stringWithFormat:@"Bearer %@", [JYCredential currentCredential].token];
         [manager.requestSerializer setValue:apiToken forHTTPHeaderField:@"Authorization"];
 
         NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"cognito"];
@@ -116,6 +122,7 @@ NSString *const kTokenExpiryTimeKey = @"tokenExpiryTime";
 
         if (!response)
         {
+            NSLog(@"Error: no response from AWS server");
             return [AWSTask taskWithError:[NSError errorWithDomain:kJYAuthenticationClientDomain
                                                              code:JYAuthenticationErrorNoCognitoResponse
                                                          userInfo:nil]];
@@ -126,6 +133,7 @@ NSString *const kTokenExpiryTimeKey = @"tokenExpiryTime";
 
         if (!identityId || !token)
         {
+            NSLog(@"Error: invalid response from AWS server");
             return [AWSTask taskWithError:[NSError errorWithDomain:kJYAuthenticationClientDomain
                                                              code:JYAuthenticationErrorInvalidCognito
                                                          userInfo:nil]];
@@ -138,6 +146,7 @@ NSString *const kTokenExpiryTimeKey = @"tokenExpiryTime";
         NSUInteger tokenDuration = [response unsignedIntegerValueForKey:@"tokenDuration"];
         weakSelf.tokenExpiryTime = [NSDate timeIntervalSinceReferenceDate] + tokenDuration;
 
+        NSLog(@"Success: got new token from joyyserver");
         return [AWSTask taskWithResult:authResponse];
     }];
 }

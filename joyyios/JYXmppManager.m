@@ -58,7 +58,7 @@
     NSString *prefix = [deviceId substringToIndex:3];
     NSString *resource = [NSString stringWithFormat:@"%@_%@", kMessageResource, prefix];
 
-    return [XMPPJID jidWithUser:[JYCredential current].idString domain:kMessageDomain resource:resource];
+    return [XMPPJID jidWithUser:[JYCredential currentCredential].idString domain:kMessageDomain resource:resource];
 }
 
 + (NSFetchedResultsController *)fetchedResultsControllerForRemoteJid:(XMPPJID *)remoteJid
@@ -174,7 +174,7 @@
 // Authenticate should be called after connect success
 - (void)authenticate
 {
-    NSString *password = [JYCredential current].token;
+    NSString *password = [JYCredential currentCredential].token;
     XMPPPlainAuthentication *auth = [[XMPPPlainAuthentication alloc] initWithStream:self.xmppStream password:password];
 
     // Invoke the async auth method

@@ -91,17 +91,16 @@
     // background, optionally refresh the user interface.
 
     NSLog(@"applicationDidBecomeActive");
-    JYCredential *user = [JYCredential current];
-    if(![user exists])
+    JYCredential *credential = [JYCredential currentCredential];
+    if(credential.isEmpty)
     {
         return;
     }
 
     self.shouldXmppGoOnline = [self _isPresentingMessageViewController];
 
-    NSTimeInterval now = [NSDate timeIntervalSinceReferenceDate];
-    NSTimeInterval validPeriod = user.tokenExpireTimeInSecs - now;
-    if (validPeriod < 0)
+    NSTimeInterval seconds = credential.tokenValidInSeconds;
+    if (seconds < 0)
     {
         if (self.signInTimer)
         {
@@ -113,7 +112,7 @@
     }
     else
     {
-        [self _signValidForSeconds:validPeriod];
+        [self _signValidForSeconds:seconds];
     }
 }
 
@@ -240,21 +239,19 @@
 
 - (void)_launchViewController
 {
-    JYCredential *user = [JYCredential current];
+    BOOL needIntroduction = ([JYDataStore sharedInstance].presentedIntroductionVersion < kIntroductionVersion);
 
-    BOOL needIntro = ([JYDataStore sharedInstance].presentedIntroductionVersion < kIntroductionVersion);
-
-    if (needIntro)
+    if (needIntroduction)
     {
         [self _launchIntroductionViewController];
     }
-    else if ([user exists])
+    else if ([JYCredential currentCredential].isEmpty)
     {
-        [self _launchMainViewController];
+        [self _launchSignViewController];
     }
     else
     {
-        [self _launchSignViewController];
+        [self _launchMainViewController];
     }
 }
 
@@ -346,7 +343,8 @@
 
 - (void)_didSignInManually
 {
-    [self _signValidForSeconds:k60Minutes];
+    NSTimeInterval seconds = [JYCredential currentCredential].tokenValidInSeconds;
+    [self _signValidForSeconds:seconds];
     [self _launchMainViewController];
 }
 
@@ -362,9 +360,7 @@
         self.shouldXmppGoOnline = NO;
     }
 
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-        [[JYAmazonClientManager sharedInstance] goActiveWithCompletionHandler:nil];
-    });
+    [self _refreshAWSAccess];
 }
 
 - (void)_signInAfter:(NSTimeInterval)interval
@@ -382,12 +378,19 @@
                                                      dispatchQueue:self.backgroundQueue];
 }
 
+- (void)_refreshAWSAccess
+{
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+        [[JYAmazonClientManager sharedInstance] goActiveWithCompletionHandler:nil];
+    });
+}
+
 #pragma mark - Network
 
 - (void)_autoSignIn
 {
-    NSString *email = [JYCredential current].email;
-    NSString *password = [JYCredential current].password;
+    NSString *email = [JYCredential currentCredential].email;
+    NSString *password = [JYCredential currentCredential].password;
     if (!email || !password)
     {
         return;
@@ -400,7 +403,7 @@
 
     NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"signin"];
 
-    NSLog(@"_autoSignIn start");
+    NSLog(@"autoSignIn start");
     NSLog(@"email = %@", email);
     NSLog(@"password = %@", password);
 
@@ -408,13 +411,16 @@
     [manager GET:url
         parameters:nil
         success:^(AFHTTPRequestOperation *operation, id responseObject) {
-            NSLog(@"_autoSignIn Success");
-            NSLog(@"_autoSignIn responseObject = %@", responseObject);
-            [JYCredential current].dictionary = responseObject;
-            [weakSelf  _signValidForSeconds:k60Minutes];
+
+            NSLog(@"Success: autoSignIn responseObject = %@", responseObject);
+
+            [[JYCredential currentCredential] save:responseObject];
+            NSTimeInterval seconds = [JYCredential currentCredential].tokenValidInSeconds;
+
+            [weakSelf _signValidForSeconds:seconds];
         }
         failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-            NSLog(@"_autoSignIn Error: %@", error);
+            NSLog(@"Error: autoSignIn Error: %@", error);
             [weakSelf _signInAfter:k1Minutes];
         }];
 }
@@ -433,7 +439,7 @@
     NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"person/device"];
 
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYCredential current].token];
+    NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYCredential currentCredential].token];
     [manager.requestSerializer setValue:token forHTTPHeaderField:@"Authorization"];
 
     [manager POST:url
@@ -493,7 +499,7 @@
     NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"person/location"];
 
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYCredential current].token];
+    NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYCredential currentCredential].token];
     [manager.requestSerializer setValue:token forHTTPHeaderField:@"Authorization"];
 
     [manager POST:url

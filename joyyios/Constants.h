@@ -41,6 +41,23 @@ extern NSString *const kMessagesBucket;
 extern AWSRegionType const kCognitoRegionType;
 // AWS end
 
+
+// KeyChain
+extern NSString *const kKeyChainStoreAPI;
+extern NSString *const kKeyChainStoreAWS;
+
+extern NSString *const kAPIEmailKey;
+extern NSString *const kAPIPasswordKey;
+extern NSString *const kAPIUserIdKey;
+extern NSString *const kAPIUsernameKey;
+extern NSString *const kAPITokenKey;
+extern NSString *const kAPITokenExpiryTimeKey;
+
+extern NSString *const kAWSIdentityIdKey;
+extern NSString *const kAWSTokenKey;
+extern NSString *const kAWSTokenExpiryTimeKey;
+// KeyChain end
+
 extern NSString *const kContentTypeJPG;
 extern NSString *const kDummyCaptionText;
 extern NSString *const kErrorAuthenticationFailed;
@@ -70,13 +87,13 @@ extern NSString *const kUrlMessageAttachmentBase;
 
 extern NSTimeInterval const k1Minutes;
 extern NSTimeInterval const k15Minutes;
-extern NSTimeInterval const k60Minutes;
 extern NSTimeInterval const k5Minutes;
 
 extern NSUInteger const kAPN;
 extern NSUInteger const kRecentCommentsLimit;
 
 extern UInt16  const kMessagePort;
+
 
 #define NAVIGATION_BAR_HEIGHT       (self.navigationController.navigationBar.frame.size.height)    // 44
 #define STATUS_BAR_HEIGHT           ([UIApplication sharedApplication].statusBarFrame.size.height) // 20

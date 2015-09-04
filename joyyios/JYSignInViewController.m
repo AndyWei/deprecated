@@ -51,6 +51,9 @@
 
     NSString *email = [self.emailField.text lowercaseString];
     NSString *password = [self.passwordField.text lowercaseString];
+    [JYCredential currentCredential].email = email;
+    [JYCredential currentCredential].password = password;
+
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     [manager.requestSerializer setAuthorizationHeaderFieldWithUsername:email password:password];
     NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"signin"];
@@ -65,7 +68,7 @@
 
             [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
             [KVNProgress dismiss];
-            [JYCredential current].dictionary = responseObject;
+            [[JYCredential currentCredential] save:responseObject];
             [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationDidSignIn object:nil];
         }
         failure:^(AFHTTPRequestOperation *operation, NSError *error) {

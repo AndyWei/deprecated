@@ -29,9 +29,7 @@ CGFloat const kSignFieldMarginLeft = 50.0f;
 CGFloat const kSignViewTopOffset = 152;
 
 NSTimeInterval const k1Minutes = 60;
-NSTimeInterval const k15Minutes = 900;
 NSTimeInterval const k5Minutes = 300;
-NSTimeInterval const k60Minutes = 3600;
 
 NSUInteger const kAPN = 1;
 NSUInteger const kRecentCommentsLimit = 3;
@@ -41,14 +39,30 @@ UInt16 const kMessagePort = 5222;
 // AWS
 NSString *const kAuthProviderName = @"joyy"; // the provider name configured in the Cognito console.
 NSString *const kCognitoIdentityPoolId = @"us-east-1:a9366287-4298-443f-aa0b-d4d6ee43fa67";
-NSString *const kAvatarBucket = @"joyyavatar";
+NSString *const kAvatarBucket   = @"joyyavatar";
 NSString *const kMessagesBucket = @"joyyim";
-NSString *const kPostBucket = @"joyypost";
+NSString *const kPostBucket     = @"joyypost";
 AWSRegionType const kCognitoRegionType = AWSRegionUSEast1;
 // AWS end
 
+// KeyChain -- DO NOT MODIFY!!!
+NSString *const kKeyChainStoreAPI = @"com.joyyapp.api";
+NSString *const kKeyChainStoreAWS = @"com.joyyapp.aws";
+
+NSString *const kAPIEmailKey    = @"email";
+NSString *const kAPIPasswordKey = @"password";
+NSString *const kAPIUserIdKey   = @"user_id";
+NSString *const kAPIUsernameKey = @"username";
+NSString *const kAPITokenKey    = @"api_token";
+NSString *const kAPITokenExpiryTimeKey = @"api_token_expiry_time";
+
+NSString *const kAWSIdentityIdKey = @"identity_id";
+NSString *const kAWSTokenKey      = @"openid_token";
+NSString *const kAWSTokenExpiryTimeKey = @"openid_token_expiry_time";
+// KeyChain end
+
 NSString *const kContentTypeJPG = @"image/jpeg";
-NSString *const kDummyCaptionText = @"⌛︎";
+NSString *const kDummyCaptionText = @"◦";
 NSString *const kErrorAuthenticationFailed = @"Incorrect Email or password";
 NSString *const kErrorTitle = @"🐻: something wrong";
 
@@ -62,8 +76,8 @@ NSString *const kMessageBodyTypeLocation = @"l:";
 NSString *const kMessageBodyTypeText     = @"t:";
 NSString *const kMessageBodyTypeVideo    = @"v:";
 
-NSString *const kNotificationDidSignIn = @"signIn";
-NSString *const kNotificationDidSignUp = @"signUp";
+NSString *const kNotificationDidSignIn = @"didSignIn";
+NSString *const kNotificationDidSignUp = @"didSignUp";
 NSString *const kNotificationNeedGeoInfo = @"needGeoInfo";
 NSString *const kNotificationWillCommentPost = @"willCommentPost";
 NSString *const kNotificationWillLikePost = @"willLikePost";

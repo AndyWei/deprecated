@@ -349,7 +349,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
     [self _networkThreadBegin];
 
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYCredential current].token];
+    NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYCredential currentCredential].token];
     [manager.requestSerializer setValue:token forHTTPHeaderField:@"Authorization"];
 
     NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"comment"];

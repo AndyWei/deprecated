@@ -81,7 +81,7 @@ static NSString *const kMessageCellIdentifier = @"messageCell";
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
 
     // test chat between user 1 and 2
-    NSUInteger myUid = [JYCredential current].personId;
+    NSUInteger myUid = [JYCredential currentCredential].userId;
     NSUInteger personUid = (myUid == 1) ? (indexPath.row + 2) : 1;
 
     NSDictionary *dict = @{@"id": @(personUid)};

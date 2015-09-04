@@ -58,30 +58,11 @@ static NSString *const kLikedPostTable = @"liked_post";
     return self;
 }
 
-- (instancetype)initWithLocalImage:(UIImage *)image;
-{
-    self = [super init];
-    if (self)
-    {
-        _localImage = image;
-        _isLiked = NO;
-
-        _filename = @"";
-        _caption = @"local";
-
-        _postId = 0;
-        _ownerId = [JYCredential current].personId;
-        _likeCount = 0;
-        _commentCount = 0;
-    }
-    return self;
-}
-
 - (void)setIsLiked:(BOOL)isLiked
 {
     if (isLiked)
     {
-        NSDictionary *value = @{ @"personId": [JYCredential current].idString };
+        NSDictionary *value = @{ @"personId": [JYCredential currentCredential].idString };
         [[JYPost sharedKVStore] putObject:value withId:self.idString intoTable:kLikedPostTable];
     }
 
@@ -97,7 +78,7 @@ static NSString *const kLikedPostTable = @"liked_post";
     }
 
     NSUInteger likedByPerson = [liked unsignedIntegerValueForKey:@"personId"];
-    return (likedByPerson == [JYCredential current].personId);
+    return (likedByPerson == [JYCredential currentCredential].userId);
 }
 
 - (NSString *)idString

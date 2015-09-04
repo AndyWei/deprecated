@@ -31,11 +31,22 @@
     return self;
 }
 
+- (AWSTask *)getIdentityId
+{
+    return [self refresh];
+}
+
 // Get valid identityId and openIdToken from self.client
 // If the identityId and openIdToken is expired (i.e., over 24 hours), client will get new ones from Joyyserver
 - (AWSTask *)refresh
 {
-    return [[self.client getToken] continueWithSuccessBlock:^id(AWSTask *task) {
+    return [[self.client getToken] continueWithBlock:^id(AWSTask *task) {
+        if (task.error)
+        {
+            NSLog(@"Error: getToken returned with error = %@", task.error);
+            return task;
+        }
+
         if (task.result)
         {
             JYAuthenticationResponse *response = task.result;
@@ -44,13 +55,14 @@
             self.identityId = response.identityId;
             self.token = response.token;
         }
+
         return [AWSTask taskWithResult:self.identityId];
     }];
 }
 
 - (BOOL)isAuthenticated
 {
-    return [JYCredential current].idString != nil;
+    return [JYCredential currentCredential].tokenValidInSeconds > 0;
 }
 
 @end

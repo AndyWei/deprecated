@@ -38,7 +38,7 @@
 
     XMPPJID *myJid = [JYXmppManager myJid];
     self.senderId = myJid.bare;
-    self.senderDisplayName = [JYCredential current].name;
+    self.senderDisplayName = [JYCredential currentCredential].username;
 
     self.remoteJid = [JYXmppManager jidWithIdString:self.person.idString];
 

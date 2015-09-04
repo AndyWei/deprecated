@@ -8,17 +8,17 @@
 
 @interface JYCredential : NSObject
 
-+ (JYCredential *)current;
++ (JYCredential *)currentCredential;
 
-@property(nonatomic) NSDictionary *dictionary;
-@property(nonatomic, readonly) NSString *email;
-@property(nonatomic, readonly) NSString *name;
-@property(nonatomic, readonly) NSString *password;
-@property(nonatomic, readonly) NSString *token;
-@property(nonatomic, readonly) NSString *idString;
-@property(nonatomic, readonly) NSTimeInterval tokenExpireTimeInSecs;
-@property(nonatomic, readonly) NSUInteger personId;
+@property (nonatomic) NSString *email;
+@property (nonatomic) NSString *username;
+@property (nonatomic) NSString *password;
+@property (nonatomic) NSString *token;
+@property (nonatomic) NSString *idString;
+@property (nonatomic, readonly) BOOL isEmpty;
+@property (nonatomic, readonly) NSTimeInterval tokenValidInSeconds;
+@property (nonatomic, readonly) NSUInteger userId;
 
-- (BOOL)exists;
+- (void)save:(NSDictionary *)dict;
 
 @end

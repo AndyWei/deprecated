@@ -12,9 +12,9 @@
 
 
 @interface JYAmazonClientManager()
-@property (nonatomic, strong) AWSCognitoCredentialsProvider *credentialsProvider;
+@property (nonatomic) AWSCognitoCredentialsProvider *credentialsProvider;
 @property (atomic, copy) AWSContinuationBlock completionHandler;
-@property (nonatomic, strong) JYAuthenticationClient *authClient;
+@property (nonatomic) JYAuthenticationClient *authClient;
 @end
 
 @implementation JYAmazonClientManager
@@ -34,9 +34,9 @@
 {
     self.completionHandler = completionHandler;
 
-    if ([JYCredential current].idString)
+    if ([JYCredential currentCredential].tokenValidInSeconds > 0)
     {
-        [self _completeLogin:@{ kAuthProviderName: [JYCredential current].idString }];
+        [self _completeLogin:@{ kAuthProviderName: [JYCredential currentCredential].idString }];
     }
 }
 
@@ -64,7 +64,7 @@
 - (AWSTask *)_initializeProviders:(NSDictionary *)logins
 {
     NSLog(@"initializing providers...");
-    [AWSLogger defaultLogger].logLevel = AWSLogLevelWarn;
+    [AWSLogger defaultLogger].logLevel = AWSLogLevelDebug;
 
     id<AWSCognitoIdentityProvider> identityProvider = [[JYAuthenticatedIdentityProvider alloc] initWithRegionType:kCognitoRegionType identityId:nil identityPoolId:kCognitoIdentityPoolId logins:logins providerName:kAuthProviderName authClient:self.authClient];
 

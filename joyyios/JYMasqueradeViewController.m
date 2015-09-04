@@ -372,6 +372,12 @@ static NSString *const kPostCellIdentifier = @"postCell";
     NSString *s3filename = [JYFile filenameWithHttpContentType:contentType];
 
     AWSS3TransferManager *transferManager = [AWSS3TransferManager defaultS3TransferManager];
+    if (!transferManager)
+    {
+        NSLog(@"Error: no S3 transferManager");
+        return;
+    }
+
     AWSS3TransferManagerUploadRequest *request = [AWSS3TransferManagerUploadRequest new];
     request.bucket = kPostBucket;
     request.key = s3filename;
@@ -380,7 +386,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
     request.ACL = AWSS3ObjectCannedACLPublicRead;
 
     __weak typeof(self) weakSelf = self;
-    [[transferManager upload:request] continueWithExecutor:[AWSExecutor mainThreadExecutor] withBlock:^id(AWSTask *task) {
+    [[transferManager upload:request] continueWithBlock:^id(AWSTask *task) {
         if (task.error)
         {
             if ([task.error.domain isEqualToString:AWSS3TransferManagerErrorDomain])
@@ -418,7 +424,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
     [self _networkThreadBegin];
 
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYCredential current].token];
+    NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYCredential currentCredential].token];
     [manager.requestSerializer setValue:token forHTTPHeaderField:@"Authorization"];
 
     NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"post"];
@@ -465,7 +471,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
     [self _networkThreadBegin];
 
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYCredential current].token];
+    NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYCredential currentCredential].token];
     [manager.requestSerializer setValue:token forHTTPHeaderField:@"Authorization"];
 
     NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"post/like"];

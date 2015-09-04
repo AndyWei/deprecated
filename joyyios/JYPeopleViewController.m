@@ -246,7 +246,7 @@ static const CGFloat kButtonWidth = 60;
     [self _networkThreadBegin];
 
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYCredential current].token];
+    NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYCredential currentCredential].token];
     [manager.requestSerializer setValue:token forHTTPHeaderField:@"Authorization"];
 
     NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"person/nearby"];
@@ -289,7 +289,7 @@ static const CGFloat kButtonWidth = 60;
     [self _networkThreadBegin];
 
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYCredential current].token];
+    NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYCredential currentCredential].token];
     [manager.requestSerializer setValue:token forHTTPHeaderField:@"Authorization"];
 
     NSString *url = [NSString stringWithFormat:@"%@%@", kUrlAPIBase, @"person"];

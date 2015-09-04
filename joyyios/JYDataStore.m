@@ -8,18 +8,12 @@
 
 #import "JYDataStore.h"
 
-
-NSString *const kKeyAPITokenExpireTime = @"APITokenExpireTime";
 NSString *const kKeyBadgeCount = @"BadgeCount";
-NSString *const kKeyDefaultCardNumber = @"DefaultCardNumber";
-NSString *const kKeyDefaultCustomerId = @"DefaultCustomerId";
 NSString *const kKeyDeviceToken = @"DeviceToken";
 NSString *const kKeyLastCoordinateLat = @"LastCoordinateLat";
 NSString *const kKeyLastCoordinateLon = @"LastCoordinateLon";
 NSString *const kKeyLastCellId = @"LastCellId";
 NSString *const kKeyPresentedIntroductionVersion = @"PresentedIntroductionVersion";
-NSString *const kKeyUserCredential = @"UserCredential";
-
 
 @implementation JYDataStore
 
@@ -35,38 +29,6 @@ NSString *const kKeyUserCredential = @"UserCredential";
     return _sharedInstance;
 }
 
-// UserCredential
-- (void)setUserCredential:(NSDictionary *)credential
-{
-    [[NSUserDefaults standardUserDefaults] setObject:credential forKey:kKeyUserCredential];
-}
-
-- (NSDictionary *)userCredential
-{
-    NSDictionary *credential = nil;
-    if ([[NSUserDefaults standardUserDefaults] objectForKey:kKeyUserCredential])
-    {
-        credential = [[NSUserDefaults standardUserDefaults] objectForKey:kKeyUserCredential];
-    }
-    return credential;
-}
-
-// TokenExpireTime
-- (void)setTokenExpireTime:(NSTimeInterval)seconds
-{
-    [[NSUserDefaults standardUserDefaults] setDouble:seconds forKey:kKeyAPITokenExpireTime];
-}
-
-- (NSTimeInterval)tokenExpireTime
-{
-    NSTimeInterval expireTime = 0.0f;
-    if ([[NSUserDefaults standardUserDefaults] doubleForKey:kKeyAPITokenExpireTime])
-    {
-        expireTime = [[NSUserDefaults standardUserDefaults] doubleForKey:kKeyAPITokenExpireTime];
-    }
-    return expireTime;
-}
-
 // DeviceToken
 - (void)setDeviceToken:(NSString *)token
 {
@@ -76,30 +38,6 @@ NSString *const kKeyUserCredential = @"UserCredential";
 - (NSString *)deviceToken
 {
     return [[NSUserDefaults standardUserDefaults] stringForKey:kKeyDeviceToken];
-}
-
-// DefaultCardNumber
-- (void)setDefaultCardNumber:(NSString *)defaultCardNumber
-{
-    [[NSUserDefaults standardUserDefaults] setObject:defaultCardNumber forKey:kKeyDefaultCardNumber];
-}
-
-- (NSString *)defaultCardNumber
-{
-    return [[NSUserDefaults standardUserDefaults] stringForKey:kKeyDefaultCardNumber];
-
-}
-
-// DefaultCustomerId
-- (void)setDefaultCustomerId:(NSString *)defaultCustomerId
-{
-    [[NSUserDefaults standardUserDefaults] setObject:defaultCustomerId forKey:kKeyDefaultCustomerId];
-}
-
-- (NSString *)defaultCustomerId
-{
-    return [[NSUserDefaults standardUserDefaults] stringForKey:kKeyDefaultCustomerId];
-
 }
 
 // BadgeCount

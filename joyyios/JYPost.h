@@ -9,7 +9,6 @@
 @interface JYPost : NSObject
 
 - (instancetype)initWithDictionary:(NSDictionary *)dict;
-- (instancetype)initWithLocalImage:(UIImage *)image;
 
 @property(nonatomic) BOOL isLiked;
 @property(nonatomic) NSUInteger commentCount;
