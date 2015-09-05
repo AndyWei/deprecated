@@ -13,7 +13,11 @@
 
 - (BOOL)isInvisible;
 - (BOOL)isValidEmail;
-- (NSUInteger)unsignedIntegerValue;
+
+- (NSString *)messageDisplayString;
+- (NSString *)messageMediaURL;
 - (NSString *)personIdString;
+- (NSUInteger)unsignedIntegerValue;
+
 
 @end

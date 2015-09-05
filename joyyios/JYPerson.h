@@ -26,25 +26,32 @@ typedef NS_ENUM(NSUInteger, JYOrgType)
 
 @interface JYPerson : NSObject
 
++ (JYPerson *)me;
+- (instancetype)initWithDictionary:(NSDictionary *)dict;
+
+// Identities
+@property(nonatomic, readonly) NSString *idString;
+@property(nonatomic) NSUInteger personId;
+@property(nonatomic) NSString *name;
+
+// Avatar
+@property(nonatomic) UIImage *avatarImage;
+@property(nonatomic, readonly) NSString *avatarURL;
+@property(nonatomic, readonly) NSString *fullAvatarURL;
+
+// Profile
 @property(nonatomic) BOOL isVerified;
 @property(nonatomic) JYGender gender;
 @property(nonatomic) JYOrgType orgType;
-
-@property(nonatomic) NSString *age;
 @property(nonatomic) NSString *bio;
-@property(nonatomic) NSString *idString;
-@property(nonatomic) NSString *name;
 @property(nonatomic) NSString *org;
-@property(nonatomic) NSString *avatarURL;
-@property(nonatomic) NSString *fullAvatarURL;
-
+@property(nonatomic) NSUInteger yearOfBirth;
 @property(nonatomic) NSUInteger friendCount;
 @property(nonatomic) NSUInteger heartCount;
-@property(nonatomic) NSUInteger personId;
 @property(nonatomic) NSUInteger score;
+@property(nonatomic, readonly) NSString *ageString;
 
 
-+ (JYPerson *)me;
-- (instancetype)initWithDictionary:(NSDictionary *)dict;
+
 
 @end

@@ -9,18 +9,21 @@
 #import <CoreData/CoreData.h>
 
 #import "JYMessage.h"
-#import "JYMessageAvatar.h"
 #import "JYMessageViewController.h"
 #import "JYXmppManager.h"
 
 @interface JYMessageViewController() <UIActionSheetDelegate, NSFetchedResultsControllerDelegate>
 @property (nonatomic) JSQMessagesBubbleImage *outgoingBubbleImageData;
 @property (nonatomic) JSQMessagesBubbleImage *incomingBubbleImageData;
-@property (nonatomic) JYMessageAvatar *remoteAvatar;
-@property (nonatomic) JYMessageAvatar *myAvatar;
+@property (nonatomic) JSQMessagesAvatarImage *remoteAvatar;
 @property (nonatomic) NSFetchedResultsController *fetcher;
+@property (nonatomic) UIButton *attachmentButton;
+@property (nonatomic) UIButton *cameraButton;
+@property (nonatomic) UIButton *voiceButton;
 @property (nonatomic) XMPPJID *remoteJid;
 @end
+
+CGFloat const kAvatarDiameter = 40.f;
 
 @implementation JYMessageViewController
 
@@ -35,34 +38,32 @@
     self.view.backgroundColor = JoyyWhite;
     self.collectionView.backgroundColor = JoyyWhite;
     self.collectionView.collectionViewLayout.messageBubbleFont = [UIFont systemFontOfSize:16];
+    self.collectionView.collectionViewLayout.incomingAvatarViewSize = CGSizeMake(kAvatarDiameter, kAvatarDiameter);
+    self.collectionView.collectionViewLayout.outgoingAvatarViewSize = CGSizeZero;
 
     XMPPJID *myJid = [JYXmppManager myJid];
     self.senderId = myJid.bare;
     self.senderDisplayName = [JYCredential currentCredential].username;
-
     self.remoteJid = [JYXmppManager jidWithIdString:self.person.idString];
 
     // Bubble images
     UIImage *bubble = [UIImage imageNamed:@"message_bubble"];
-
     JSQMessagesBubbleImageFactory *factory = [[JSQMessagesBubbleImageFactory alloc] initWithBubbleImage:bubble capInsets:UIEdgeInsetsZero];
     self.outgoingBubbleImageData = [factory outgoingMessagesBubbleImageWithColor:JoyyBlue];
     self.incomingBubbleImageData = [factory incomingMessagesBubbleImageWithColor:JoyyWhitePure];
 
     self.showLoadEarlierMessagesHeader = NO;
+
+    self.inputToolbar.contentView.leftBarButtonItem = self.attachmentButton;
+     /*  self.inputToolbar.contentView.rightBarButtonItem = custom button or nil to remove
+     */
+    self.inputToolbar.maximumHeight = 150;
+
+    // Profile Button
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"me_selected"]
                                                                               style:UIBarButtonItemStyleBordered
                                                                              target:self
                                                                              action:@selector(_showPersonProfile)];
-
-    /**
-     *  Customize your toolbar buttons
-     *
-     *  self.inputToolbar.contentView.leftBarButtonItem = custom button or nil to remove
-     *  self.inputToolbar.contentView.rightBarButtonItem = custom button or nil to remove
-     */
-    self.inputToolbar.maximumHeight = 150;
-
     // Start fetch data
     self.fetcher = [JYXmppManager fetcherForRemoteJid:self.remoteJid];
     self.fetcher.delegate = self;
@@ -93,29 +94,72 @@
 
 #pragma mark - Properties
 
-- (JYMessageAvatar *)remoteAvatar
+- (JSQMessagesAvatarImage *)remoteAvatar
 {
     if (!_remoteAvatar)
     {
-        UIImage *image = [UIImage imageNamed:@"me"];
-        _remoteAvatar = [JYMessageAvatar avatarWithImage:image];
+        _remoteAvatar = [JSQMessagesAvatarImageFactory avatarImageWithImage:self.person.avatarImage diameter:kAvatarDiameter];
     }
 
     return _remoteAvatar;
 }
 
-- (JYMessageAvatar *)myAvatar
+- (UIButton *)attachmentButton
 {
-    if (!_myAvatar)
+    if (!_attachmentButton)
     {
-        UIImage *image = [UIImage imageNamed:@"me_selected"];
-        _myAvatar = [JYMessageAvatar avatarWithImage:image];
+        _attachmentButton = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
+        [_attachmentButton addTarget:self action:@selector(_attachmentButtonPressed) forControlEvents:UIControlEventTouchUpInside];
     }
+    return _attachmentButton;
+}
 
-    return _myAvatar;
+- (UIButton *)cameraButton
+{
+    if (!_cameraButton)
+    {
+        _cameraButton = [UIButton buttonWithType:UIButtonTypeSystem];
+        [_cameraButton addTarget:self action:@selector(_cameraButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+    }
+    return _cameraButton;
+}
+
+- (UIButton *)voiceButton
+{
+    if (!_voiceButton)
+    {
+        _voiceButton = [UIButton buttonWithType:UIButtonTypeSystem];
+        [_voiceButton addTarget:self action:@selector(_voiceButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+    }
+    return _voiceButton;
 }
 
 #pragma mark - Actions
+
+- (void)_attachmentButtonPressed
+{
+
+}
+
+- (void)_cameraButtonPressed
+{
+
+}
+
+- (void)_voiceButtonPressed
+{
+
+}
+
+- (void)_voiceButtonHold
+{
+
+}
+
+- (void)_voiceButtonReleased
+{
+
+}
 
 - (void)_showPersonProfile
 {
@@ -203,16 +247,38 @@
     return self.incomingBubbleImageData;
 }
 
+// Show avatar for incoming messages. For a incoming messages burst, only show avatar for the first one
 - (id<JSQMessageAvatarImageDataSource>)collectionView:(JSQMessagesCollectionView *)collectionView avatarImageDataForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    XMPPMessageArchiving_Message_CoreDataObject *coreDataMessage = [self.fetcher objectAtIndexPath:indexPath];
+    XMPPMessageArchiving_Message_CoreDataObject *message = [self.fetcher objectAtIndexPath:indexPath];
 
-    if (coreDataMessage.isOutgoing)
+    // No avatar for outgoing message
+    if (message.isOutgoing)
     {
-        return self.myAvatar;
+        return nil;
     }
 
-    return self.remoteAvatar;
+    // Show avatar for the first message
+    NSIndexPath *prev = [indexPath previous];
+    if (!prev)
+    {
+        return self.remoteAvatar;
+    }
+
+    XMPPMessageArchiving_Message_CoreDataObject *prevMessage = [self.fetcher objectAtIndexPath:prev];
+
+    if (prevMessage.isOutgoing)
+    {
+        return self.remoteAvatar;
+    }
+
+    // Show avatar if the previous one has over 5 minutes old
+    if ([message.timestamp timeIntervalSinceDate:prevMessage.timestamp] > k5Minutes)
+    {
+        return self.remoteAvatar;
+    }
+
+    return nil;
 }
 
 // Return timestamp label text
@@ -221,14 +287,14 @@
     // Show timestamp label for messages 5+ minutes later than its prior
     XMPPMessageArchiving_Message_CoreDataObject *message = [self.fetcher objectAtIndexPath:indexPath];
     NSAttributedString *timestampStr = [[JSQMessagesTimestampFormatter sharedFormatter] attributedTimestampForDate:message.timestamp];
-    if (indexPath.section == 0 && indexPath.item == 0)
+
+    NSIndexPath *prev = [indexPath previous];
+    if (!prev)
     {
         return timestampStr;
     }
 
-    NSIndexPath *prevIndexPath = [self previousIndexPath:indexPath];
-    XMPPMessageArchiving_Message_CoreDataObject *prevMessage = [self.fetcher objectAtIndexPath:prevIndexPath];
-
+    XMPPMessageArchiving_Message_CoreDataObject *prevMessage = [self.fetcher objectAtIndexPath:prev];
     if ([message.timestamp timeIntervalSinceDate:prevMessage.timestamp] > k5Minutes)
     {
         return timestampStr;
@@ -289,43 +355,20 @@
                    layout:(JSQMessagesCollectionViewFlowLayout *)collectionViewLayout heightForCellTopLabelAtIndexPath:(NSIndexPath *)indexPath
 {
     // Show timestamp label for messages 5+ minutes later than its prior
-    XMPPMessageArchiving_Message_CoreDataObject *message = [self.fetcher objectAtIndexPath:indexPath];
-    if (indexPath.section == 0 && indexPath.item == 0)
+    NSIndexPath *prev = [indexPath previous];
+    if (!prev)
     {
         return kJSQMessagesCollectionViewCellLabelHeightDefault;
     }
 
-    NSIndexPath *prevIndexPath = [self previousIndexPath:indexPath];
-    XMPPMessageArchiving_Message_CoreDataObject *prevMessage = [self.fetcher objectAtIndexPath:prevIndexPath];
-
+    XMPPMessageArchiving_Message_CoreDataObject *message = [self.fetcher objectAtIndexPath:indexPath];
+    XMPPMessageArchiving_Message_CoreDataObject *prevMessage = [self.fetcher objectAtIndexPath:prev];
     if ([message.timestamp timeIntervalSinceDate:prevMessage.timestamp] > k5Minutes)
     {
         return kJSQMessagesCollectionViewCellLabelHeightDefault;
     }
 
     return 0.0f;
-}
-
-// Return the previous indexPath of the given one
-// If the given one is the first one, then return itself
-- (NSIndexPath *)previousIndexPath:(NSIndexPath *)indexPath
-{
-    if (indexPath.section == 0 && indexPath.item == 0)
-    {
-        return indexPath;
-    }
-
-    NSInteger item = indexPath.item;
-    NSInteger section = indexPath.section;
-    if (item == 0)
-    {
-        --section;
-    }
-    else
-    {
-        --item;
-    }
-    return [NSIndexPath indexPathForItem:item inSection:section];
 }
 
 - (CGFloat)collectionView:(JSQMessagesCollectionView *)collectionView
@@ -363,7 +406,7 @@
     NSLog(@"Tapped cell at %@!", NSStringFromCGPoint(touchLocation));
 }
 
-#pragma mark - CoreData
+#pragma mark - NSFetchedResultsControllerDelegate
 
 // When a message received , XMPPFramework will archive the message to CoreData storage,
 // and if the message belongs to this conversation, the controllerDidChangeContent will be triggered

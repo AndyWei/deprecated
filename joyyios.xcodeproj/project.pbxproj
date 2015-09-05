@@ -140,8 +140,6 @@
 		D67DD0F91B7728E300333626 /* JYAvatar.m in Sources */ = {isa = PBXBuildFile; fileRef = D67DD0F71B7728E300333626 /* JYAvatar.m */; };
 		D68486B61B8AC267005CA0C4 /* JYMessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D68486B51B8AC267005CA0C4 /* JYMessageViewController.m */; };
 		D68486B71B8AC267005CA0C4 /* JYMessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D68486B51B8AC267005CA0C4 /* JYMessageViewController.m */; };
-		D68486BA1B8C40A3005CA0C4 /* JYMessageAvatar.m in Sources */ = {isa = PBXBuildFile; fileRef = D68486B91B8C40A3005CA0C4 /* JYMessageAvatar.m */; };
-		D68486BB1B8C40A3005CA0C4 /* JYMessageAvatar.m in Sources */ = {isa = PBXBuildFile; fileRef = D68486B91B8C40A3005CA0C4 /* JYMessageAvatar.m */; };
 		D68486BE1B8C59BF005CA0C4 /* JYMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = D68486BD1B8C59BF005CA0C4 /* JYMessage.m */; };
 		D68486BF1B8C59BF005CA0C4 /* JYMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = D68486BD1B8C59BF005CA0C4 /* JYMessage.m */; };
 		D689ED6A1AE42C8300CB4D2B /* UIView+Joyy.m in Sources */ = {isa = PBXBuildFile; fileRef = D689ED691AE42C8300CB4D2B /* UIView+Joyy.m */; };
@@ -180,6 +178,8 @@
 		D6E3B0561B996F5400B707DF /* JYMessageContactViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D6E3B0541B996F5400B707DF /* JYMessageContactViewCell.m */; };
 		D6E3B0611B9A38F500B707DF /* JYMessageDateFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = D6E3B0601B9A38F500B707DF /* JYMessageDateFormatter.m */; };
 		D6E3B0621B9A38F500B707DF /* JYMessageDateFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = D6E3B0601B9A38F500B707DF /* JYMessageDateFormatter.m */; };
+		D6E3B0651B9A7C6D00B707DF /* NSIndexPath+Joyy.m in Sources */ = {isa = PBXBuildFile; fileRef = D6E3B0641B9A7C6D00B707DF /* NSIndexPath+Joyy.m */; };
+		D6E3B0661B9A7C6D00B707DF /* NSIndexPath+Joyy.m in Sources */ = {isa = PBXBuildFile; fileRef = D6E3B0641B9A7C6D00B707DF /* NSIndexPath+Joyy.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -326,8 +326,6 @@
 		D67DD0F71B7728E300333626 /* JYAvatar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYAvatar.m; sourceTree = "<group>"; };
 		D68486B41B8AC267005CA0C4 /* JYMessageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYMessageViewController.h; sourceTree = "<group>"; };
 		D68486B51B8AC267005CA0C4 /* JYMessageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = JYMessageViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		D68486B81B8C40A3005CA0C4 /* JYMessageAvatar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYMessageAvatar.h; sourceTree = "<group>"; };
-		D68486B91B8C40A3005CA0C4 /* JYMessageAvatar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYMessageAvatar.m; sourceTree = "<group>"; };
 		D68486BC1B8C59BF005CA0C4 /* JYMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYMessage.h; sourceTree = "<group>"; };
 		D68486BD1B8C59BF005CA0C4 /* JYMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYMessage.m; sourceTree = "<group>"; };
 		D689ED681AE42C8300CB4D2B /* UIView+Joyy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Joyy.h"; sourceTree = "<group>"; };
@@ -374,6 +372,8 @@
 		D6E3B0541B996F5400B707DF /* JYMessageContactViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYMessageContactViewCell.m; sourceTree = "<group>"; };
 		D6E3B05F1B9A38F500B707DF /* JYMessageDateFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYMessageDateFormatter.h; sourceTree = "<group>"; };
 		D6E3B0601B9A38F500B707DF /* JYMessageDateFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYMessageDateFormatter.m; sourceTree = "<group>"; };
+		D6E3B0631B9A7C6D00B707DF /* NSIndexPath+Joyy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSIndexPath+Joyy.h"; sourceTree = "<group>"; };
+		D6E3B0641B9A7C6D00B707DF /* NSIndexPath+Joyy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSIndexPath+Joyy.m"; sourceTree = "<group>"; };
 		F67CA15F6F0CAF970CBFB660 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -667,8 +667,6 @@
 			children = (
 				D68486BC1B8C59BF005CA0C4 /* JYMessage.h */,
 				D68486BD1B8C59BF005CA0C4 /* JYMessage.m */,
-				D68486B81B8C40A3005CA0C4 /* JYMessageAvatar.h */,
-				D68486B91B8C40A3005CA0C4 /* JYMessageAvatar.m */,
 				D6E3B0531B996F5400B707DF /* JYMessageContactViewCell.h */,
 				D6E3B0541B996F5400B707DF /* JYMessageContactViewCell.m */,
 				D6E3B05F1B9A38F500B707DF /* JYMessageDateFormatter.h */,
@@ -702,6 +700,8 @@
 				D69FF6D51B94144100466FE5 /* JYSoundPlayer.m */,
 				D6C6BBAA1B62DF6B00FFFAC7 /* NSDictionary+Joyy.h */,
 				D6C6BBAB1B62DF6B00FFFAC7 /* NSDictionary+Joyy.m */,
+				D6E3B0631B9A7C6D00B707DF /* NSIndexPath+Joyy.h */,
+				D6E3B0641B9A7C6D00B707DF /* NSIndexPath+Joyy.m */,
 				D6348D351ADB7ABC0002BC35 /* NSMutableDictionary+Joyy.h */,
 				D6348D361ADB7ABC0002BC35 /* NSMutableDictionary+Joyy.m */,
 				D6348D2D1ADB4DD60002BC35 /* NSString+Joyy.h */,
@@ -1058,6 +1058,7 @@
 				D69FF6E71B96474200466FE5 /* JYAuthenticationClient.m in Sources */,
 				D6C82B551B0D9FAE00876F57 /* JYCommentViewController.m in Sources */,
 				D6B2F05B1ACE630F009601B0 /* JYAutoCompleteTextField.m in Sources */,
+				D6E3B0651B9A7C6D00B707DF /* NSIndexPath+Joyy.m in Sources */,
 				D6E3B0611B9A38F500B707DF /* JYMessageDateFormatter.m in Sources */,
 				D61D1D4F1B4A65F200DE37DF /* MDCSwipeOptions.m in Sources */,
 				D62C2C601B8E887200233F5B /* JYXmppManager.m in Sources */,
@@ -1078,7 +1079,6 @@
 				D61D1DA61B4E336E00DE37DF /* TGCameraViewController.m in Sources */,
 				D67DD0F41B77187000333626 /* JYCaptionTextView.m in Sources */,
 				D61D1DC01B4E336E00DE37DF /* TGCameraFocusView.m in Sources */,
-				D68486BA1B8C40A3005CA0C4 /* JYMessageAvatar.m in Sources */,
 				D69202B21AC4C7C0001C1C3D /* main.m in Sources */,
 				D6C82B691B12553D00876F57 /* JYComment.m in Sources */,
 				D61D1DCA1B4E336E00DE37DF /* TGTintedButton.m in Sources */,
@@ -1151,6 +1151,7 @@
 				D61D1D521B4A65F200DE37DF /* MDCSwipeToChooseViewOptions.m in Sources */,
 				D63F0D5A1AC7CFF20067C5EE /* JYButton.m in Sources */,
 				D61D1D581B4A65F200DE37DF /* MDCSwipeToChooseView.m in Sources */,
+				D6E3B0661B9A7C6D00B707DF /* NSIndexPath+Joyy.m in Sources */,
 				D67DD0F51B77187000333626 /* JYCaptionTextView.m in Sources */,
 				D6E3B0561B996F5400B707DF /* JYMessageContactViewCell.m in Sources */,
 				D62C2C611B8E887200233F5B /* JYXmppManager.m in Sources */,
@@ -1175,7 +1176,6 @@
 				D63B69B31AC51D61005600A9 /* JYSignBaseViewController.m in Sources */,
 				D61D1DC51B4E336E00DE37DF /* TGCameraSlideDownView.m in Sources */,
 				D68486BF1B8C59BF005CA0C4 /* JYMessage.m in Sources */,
-				D68486BB1B8C40A3005CA0C4 /* JYMessageAvatar.m in Sources */,
 				D61D1DB91B4E336E00DE37DF /* TGCameraShot.m in Sources */,
 				D61D1DB71B4E336E00DE37DF /* TGCameraGrid.m in Sources */,
 				D6348D301ADB4DD60002BC35 /* NSString+Joyy.m in Sources */,

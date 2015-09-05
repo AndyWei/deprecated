@@ -42,7 +42,7 @@
         return _bodyType;
     }
 
-    // The body type information is stored in the "subject" element
+    // The body type information is stored at the beginning of "body" element
     if ([body hasPrefix:kMessageBodyTypeText])
     {
         _bodyType = JYMessageBodyTypeText;
@@ -112,14 +112,9 @@
 
 - (NSString *)text
 {
-    if (!self.isTextMessage)
-    {
-        return nil;
-    }
-
     if (!_text)
     {
-        _text = [self.coreDataMessage.message.body substringFromIndex:[kMessageBodyTypeText length]];
+        _text = [self.coreDataMessage.message.body messageDisplayString];
     }
 
     return _text;

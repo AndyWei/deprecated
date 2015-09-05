@@ -38,13 +38,13 @@ static const CGFloat kTimeLabelWidth = 80;
 
 - (void)setContact:(XMPPMessageArchiving_Contact_CoreDataObject *)contact
 {
-    if (!contact || _contact == contact)
+    if (!contact)
     {
         return;
     }
 
     _contact = contact;
-    self.messageLabel.text = _contact.mostRecentMessageBody;
+    self.messageLabel.text = [_contact.mostRecentMessageBody messageDisplayString];
     self.timeLabel.text = [[JYMessageDateFormatter sharedInstance] autoStringFromDate:_contact.mostRecentMessageTimestamp];
 
     NSString *idString = [_contact.bareJidStr personIdString];
@@ -72,10 +72,11 @@ static const CGFloat kTimeLabelWidth = 80;
     [self.avatarView setImageWithURLRequest:request
                            placeholderImage:nil
                                     success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
-                                       weakSelf.avatarView.image = image;
+                                        weakSelf.person.avatarImage = image;
+                                        weakSelf.avatarView.image = image;
 
                                    } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
-                                       NSLog(@"setImageWithURLRequest response = %@", response);
+                                        NSLog(@"setImageWithURLRequest response = %@", response);
                                    }];
 }
 

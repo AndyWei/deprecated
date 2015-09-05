@@ -8,12 +8,13 @@
 
 
 @interface JYPerson ()
-@property(nonatomic) NSUInteger yearOfBirth;
 @end
 
 @implementation JYPerson
-
-#pragma mark - Object Lifecycle
+@synthesize ageString = _ageString;
+@synthesize idString = _idString;
+@synthesize avatarURL = _avatarURL;
+@synthesize fullAvatarURL = _fullAvatarURL;
 
 + (JYPerson *)me
 {
@@ -46,21 +47,21 @@
     return self;
 }
 
-- (NSString *)age
+- (NSString *)ageString
 {
     if (self.yearOfBirth == 0)
     {
         return nil;
     }
 
-    if (!_age)
+    if (!_ageString)
     {
         NSCalendar *gregorian = [NSCalendar calendarWithIdentifier:NSCalendarIdentifierGregorian];
         NSInteger year = [gregorian component:NSCalendarUnitYear fromDate:NSDate.date];
         NSInteger age = year - self.yearOfBirth;
-        _age = [NSString stringWithFormat:@"%ld", (long)age];
+        _ageString = [NSString stringWithFormat:@"%ld", (long)age];
     }
-    return _age;
+    return _ageString;
 }
 
 - (NSString *)idString

@@ -72,4 +72,65 @@
     return parts[0];
 }
 
+- (NSString *)messageDisplayString
+{
+    if ([self hasPrefix:kMessageBodyTypeText])
+    {
+        return [self substringFromIndex:[kMessageBodyTypeText length]];
+    }
+
+    if ([self hasPrefix:kMessageBodyTypeImage])
+    {
+        return @"🌋";
+    }
+
+    if ([self hasPrefix:kMessageBodyTypeVideo])
+    {
+        return @"🎬";
+    }
+
+    if ([self hasPrefix:kMessageBodyTypeAudio])
+    {
+        return @"🔊";
+    }
+
+    if ([self hasPrefix:kMessageBodyTypeLocation])
+    {
+        return @"📍";
+    }
+
+    if ([self hasPrefix:kMessageBodyTypeGif])
+    {
+        return @"🎬";
+    }
+
+    return nil;
+}
+
+- (NSString *)messageMediaURL
+{
+    if ([self hasPrefix:kMessageBodyTypeImage])
+    {
+        return [self substringFromIndex:[kMessageBodyTypeImage length]];
+    }
+
+    if ([self hasPrefix:kMessageBodyTypeAudio])
+    {
+        return [self substringFromIndex:[kMessageBodyTypeAudio length]];
+    }
+
+    if ([self hasPrefix:kMessageBodyTypeVideo])
+    {
+        return [self substringFromIndex:[kMessageBodyTypeVideo length]];
+    }
+
+    if ([self hasPrefix:kMessageBodyTypeGif])
+    {
+        return [self substringFromIndex:[kMessageBodyTypeGif length]];
+    }
+
+    return nil;
+
+}
+
 @end

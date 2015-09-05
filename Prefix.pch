@@ -34,6 +34,7 @@
 #import "Constants.h"
 #import "NSString+Joyy.h"
 #import "NSDictionary+Joyy.h"
+#import "NSIndexPath+Joyy.h"
 #import "UIColor+Joyy.h"
 #import "UIFont+Joyy.h"
 #import "UIView+Joyy.h"

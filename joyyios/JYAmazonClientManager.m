@@ -71,6 +71,7 @@
     self.credentialsProvider = [[AWSCognitoCredentialsProvider alloc] initWithRegionType:kCognitoRegionType identityProvider:identityProvider unauthRoleArn:nil authRoleArn:nil];
 
     AWSServiceConfiguration *configuration = [[AWSServiceConfiguration alloc] initWithRegion:kCognitoRegionType credentialsProvider:self.credentialsProvider];
+    configuration.maxRetryCount = 5;
 
     AWSServiceManager.defaultServiceManager.defaultServiceConfiguration = configuration;
 

@@ -9,5 +9,6 @@
 @interface JYMessageContactViewCell : UITableViewCell
 
 @property (nonatomic) XMPPMessageArchiving_Contact_CoreDataObject *contact;
+@property (nonatomic, readonly) JYPerson *person;
 
 @end

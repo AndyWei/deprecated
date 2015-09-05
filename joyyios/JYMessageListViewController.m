@@ -96,16 +96,29 @@ static NSString *const kContactCellIdentifier = @"contactCell";
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    [tableView deselectRowAtIndexPath:indexPath animated:NO];
-
-    XMPPMessageArchiving_Contact_CoreDataObject *contact = [self.fetcher objectAtIndexPath:indexPath];
-    NSString *personIdString = [contact.bareJidStr personIdString];
-
-    NSDictionary *dict = @{ @"id": personIdString };
-    JYPerson *person = [[JYPerson alloc] initWithDictionary:dict];
     JYMessageViewController *viewController = [JYMessageViewController new];
-    viewController.person = person;
-    [self.navigationController pushViewController:viewController animated:YES];
+    JYMessageContactViewCell *cell = (JYMessageContactViewCell *)[tableView cellForRowAtIndexPath:indexPath];
+
+    if (cell.person)
+    {
+        viewController.person = cell.person;
+        [self.navigationController pushViewController:viewController animated:YES];
+        [tableView deselectRowAtIndexPath:indexPath animated:NO];
+    }
+    else
+    {
+        NSLog(@"Warning: The person object is not available, cannot push message view controller");
+        // Use animation to tell user the table row has been selected 
+        [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    }
 }
 
+#pragma mark - NSFetchedResultsControllerDelegate
+
+// When a message received , XMPPFramework will archive the message to CoreData storage, and update contacts.
+// Thus the controllerDidChangeContent will be triggered
+- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
+{
+    [self.tableView reloadData];
+}
 @end
