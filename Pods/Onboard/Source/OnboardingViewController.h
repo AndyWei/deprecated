@@ -21,6 +21,7 @@
 @property (nonatomic) BOOL shouldBlurBackground;
 @property (nonatomic) BOOL shouldFadeTransitions;
 @property (nonatomic) BOOL fadePageControlOnLastPage;
+@property (nonatomic) BOOL fadeSkipButtonOnLastPage;
 
 // Skipping
 @property (nonatomic) BOOL allowSkipping;
@@ -37,6 +38,7 @@
 @property (nonatomic, strong) UIButton *skipButton;
 
 // Movie player
+@property (nonatomic) BOOL stopMoviePlayerWhenDisappear;
 @property (nonatomic) MPMoviePlayerController *moviePlayerController;
 
 // Initializers

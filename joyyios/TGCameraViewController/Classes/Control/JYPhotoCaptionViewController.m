@@ -27,7 +27,9 @@ static NSString *const kImageCellIdentifier = @"imageCell";
     self = [super initWithTableViewStyle:UITableViewStylePlain];
     if (self)
     {
-       [self registerClassForTextView:[JYCaptionTextView class]];
+        [self registerClassForTextView:[JYCaptionTextView class]];
+        [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:kImageCellIdentifier];
+
         self.delegate = delegate;
         self.photo = photo;
     }
@@ -60,7 +62,7 @@ static NSString *const kImageCellIdentifier = @"imageCell";
     self.tableView.allowsSelection = NO;
     self.tableView.backgroundColor = JoyyBlack;
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:kImageCellIdentifier];
+//    [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:kImageCellIdentifier];
 
     // show keyboard
     [self.textView becomeFirstResponder];
