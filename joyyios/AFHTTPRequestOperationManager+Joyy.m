@@ -10,8 +10,8 @@
 
 + (AFHTTPRequestOperationManager *)managerWithPassword
 {
-    NSString *email = [JYCredential currentCredential].email;
-    NSString *password = [JYCredential currentCredential].password;
+    NSString *email = [JYCredential mine].email;
+    NSString *password = [JYCredential mine].password;
 
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     [manager.requestSerializer setAuthorizationHeaderFieldWithUsername:email password:password];
@@ -22,7 +22,7 @@
 + (AFHTTPRequestOperationManager *)managerWithToken
 {
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYCredential currentCredential].token];
+    NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYCredential mine].token];
     [manager.requestSerializer setValue:token forHTTPHeaderField:@"Authorization"];
 
     return manager;

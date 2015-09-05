@@ -101,7 +101,7 @@ static NSString *const kContactCellIdentifier = @"contactCell";
 
     if (cell.person)
     {
-        viewController.person = cell.person;
+        viewController.thatPerson = cell.person;
         [self.navigationController pushViewController:viewController animated:YES];
         [tableView deselectRowAtIndexPath:indexPath animated:NO];
     }

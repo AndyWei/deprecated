@@ -11,6 +11,6 @@
 
 @interface JYMessageViewController : JSQMessagesViewController
 
-@property (nonatomic) JYPerson *person; // The person we are chatting with
+@property (nonatomic) JYPerson *thatPerson;
 
 @end

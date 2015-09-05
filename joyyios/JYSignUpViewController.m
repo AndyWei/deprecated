@@ -51,7 +51,7 @@
 
     NSString *email = [self.emailField.text lowercaseString];
     NSString *password = self.passwordField.text;
-    [JYCredential currentCredential].password = password;
+    [JYCredential mine].password = password;
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
 
     NSString *url = [NSString apiURLWithPath:@"signup"];
@@ -67,7 +67,7 @@
 
              [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
              [KVNProgress dismiss];
-             [[JYCredential currentCredential] save:responseObject];
+             [[JYCredential mine] save:responseObject];
              [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationDidSignUp object:nil];
          }
          failure:^(AFHTTPRequestOperation *operation, NSError *error) {

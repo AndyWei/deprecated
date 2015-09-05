@@ -20,7 +20,7 @@
 @property (nonatomic) UIButton *attachmentButton;
 @property (nonatomic) UIButton *cameraButton;
 @property (nonatomic) UIButton *voiceButton;
-@property (nonatomic) XMPPJID *remoteJid;
+@property (nonatomic) XMPPJID *thatJID;
 @end
 
 CGFloat const kAvatarDiameter = 40.f;
@@ -33,7 +33,7 @@ CGFloat const kAvatarDiameter = 40.f;
 {
     [super viewDidLoad];
 
-    self.title = self.person.name;
+    self.title = self.thatPerson.name;
 
     self.view.backgroundColor = JoyyWhite;
     self.collectionView.backgroundColor = JoyyWhite;
@@ -41,13 +41,13 @@ CGFloat const kAvatarDiameter = 40.f;
     self.collectionView.collectionViewLayout.incomingAvatarViewSize = CGSizeMake(kAvatarDiameter, kAvatarDiameter);
     self.collectionView.collectionViewLayout.outgoingAvatarViewSize = CGSizeZero;
 
-    XMPPJID *myJid = [JYXmppManager myJid];
-    self.senderId = myJid.bare;
-    self.senderDisplayName = [JYCredential currentCredential].username;
-    self.remoteJid = [JYXmppManager jidWithIdString:self.person.idString];
+    XMPPJID *myJID = [JYXmppManager myJID];
+    self.senderId = myJID.bare;
+    self.senderDisplayName = [JYCredential mine].username;
+    self.thatJID = [JYXmppManager jidWithIdString:self.thatPerson.idString];
 
     // Bubble images
-    UIImage *bubble = [UIImage imageNamed:@"message_bubble"];
+    UIImage *bubble = [UIImage imageNamed:@"message_bubble_neat"];
     JSQMessagesBubbleImageFactory *factory = [[JSQMessagesBubbleImageFactory alloc] initWithBubbleImage:bubble capInsets:UIEdgeInsetsZero];
     self.outgoingBubbleImageData = [factory outgoingMessagesBubbleImageWithColor:JoyyBlue];
     self.incomingBubbleImageData = [factory incomingMessagesBubbleImageWithColor:JoyyWhitePure];
@@ -65,7 +65,7 @@ CGFloat const kAvatarDiameter = 40.f;
                                                                              target:self
                                                                              action:@selector(_showPersonProfile)];
     // Start fetch data
-    self.fetcher = [JYXmppManager fetcherForRemoteJid:self.remoteJid];
+    self.fetcher = [JYXmppManager fetcherForRemoteJid:self.thatJID];
     self.fetcher.delegate = self;
     NSError *error = nil;
     [self.fetcher performFetch:&error];
@@ -78,7 +78,7 @@ CGFloat const kAvatarDiameter = 40.f;
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    [JYXmppManager sharedInstance].currentRemoteJid = self.remoteJid;
+    [JYXmppManager sharedInstance].currentRemoteJid = self.thatJID;
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -98,7 +98,7 @@ CGFloat const kAvatarDiameter = 40.f;
 {
     if (!_remoteAvatar)
     {
-        _remoteAvatar = [JSQMessagesAvatarImageFactory avatarImageWithImage:self.person.avatarImage diameter:kAvatarDiameter];
+        _remoteAvatar = [JSQMessagesAvatarImageFactory avatarImageWithImage:self.thatPerson.avatarImage diameter:kAvatarDiameter];
     }
 
     return _remoteAvatar;
@@ -174,7 +174,7 @@ CGFloat const kAvatarDiameter = 40.f;
          senderDisplayName:(NSString *)senderDisplayName
                       date:(NSDate *)date
 {
-    XMPPMessage *message = [XMPPMessage messageWithType:@"chat" to:self.remoteJid];
+    XMPPMessage *message = [XMPPMessage messageWithType:@"chat" to:self.thatJID];
     NSString *body = [NSString stringWithFormat:@"%@%@", kMessageBodyTypeText, text];
     [message addBody:body];
     [message addSubject:kMessageBodyTypeText];

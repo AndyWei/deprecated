@@ -49,7 +49,7 @@
     return [XMPPJID jidWithUser:idString domain:kMessageDomain resource:nil];
 }
 
-+ (XMPPJID *)myJid
++ (XMPPJID *)myJID
 {
     // XMPP needs a "resource" string to identify different devices of the same user
     NSString *deviceId = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
@@ -58,7 +58,7 @@
     NSString *prefix = [deviceId substringToIndex:3];
     NSString *resource = [NSString stringWithFormat:@"%@_%@", kMessageResource, prefix];
 
-    return [XMPPJID jidWithUser:[JYCredential currentCredential].idString domain:kMessageDomain resource:resource];
+    return [XMPPJID jidWithUser:[JYCredential mine].idString domain:kMessageDomain resource:resource];
 }
 
 + (NSFetchedResultsController *)fetcherForForContacts
@@ -70,8 +70,8 @@
     request.fetchBatchSize = 10;
 
     // Select the messages between me and the peer
-    XMPPJID *myJid = [JYXmppManager myJid];
-    request.predicate = [NSPredicate predicateWithFormat:@"streamBareJidStr = %@", myJid.bare];
+    XMPPJID *myJID = [JYXmppManager myJID];
+    request.predicate = [NSPredicate predicateWithFormat:@"streamBareJidStr = %@", myJID.bare];
 
     NSManagedObjectContext *context = [JYXmppManager sharedInstance].msgStorage.mainThreadManagedObjectContext;
 
@@ -90,8 +90,8 @@
     request.fetchBatchSize = 10;
 
     // Select the messages between me and the peer
-    XMPPJID *myJid = [JYXmppManager myJid];
-    request.predicate = [NSPredicate predicateWithFormat:@"streamBareJidStr = %@ and bareJidStr = %@", myJid.bare, remoteJid.bare];
+    XMPPJID *myJID = [JYXmppManager myJID];
+    request.predicate = [NSPredicate predicateWithFormat:@"streamBareJidStr = %@ and bareJidStr = %@", myJID.bare, remoteJid.bare];
 
     NSManagedObjectContext *context = [JYXmppManager sharedInstance].msgStorage.mainThreadManagedObjectContext;
 
@@ -156,7 +156,7 @@
         [self setupStream];
     }
 
-    _xmppStream.myJID = [[self class] myJid];
+    _xmppStream.myJID = [[self class] myJID];
     _xmppStream.hostName = kMessageDomain;
     _xmppStream.hostPort = kMessagePort;
 
@@ -194,7 +194,7 @@
 // Authenticate should be called after connect success
 - (void)authenticate
 {
-    NSString *password = [JYCredential currentCredential].token;
+    NSString *password = [JYCredential mine].token;
     XMPPPlainAuthentication *auth = [[XMPPPlainAuthentication alloc] initWithStream:self.xmppStream password:password];
 
     // Invoke the async auth method

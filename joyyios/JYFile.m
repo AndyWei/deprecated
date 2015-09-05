@@ -22,7 +22,7 @@
 
 + (NSString *)filenameWithSuffix:(NSString *)suffix
 {
-    NSString *first = [[JYCredential currentCredential].username substringToIndex:1];  // "j" for jack
+    NSString *first = [[JYCredential mine].username substringToIndex:1];  // "j" for jack
 
     u_int32_t rand = arc4random_uniform(10000);                        // 176
     NSString *randString = [NSString stringWithFormat:@"%04d", rand];  // "0176"

@@ -25,7 +25,7 @@ typedef void(^JYXmppStatusHandler)(JYXmppStatus type, NSError *error);
 + (NSFetchedResultsController *)fetcherForForContacts;
 + (NSFetchedResultsController *)fetcherForRemoteJid:(XMPPJID *)remoteJid;
 + (XMPPJID *)jidWithIdString:(NSString *)idString;
-+ (XMPPJID *)myJid;
++ (XMPPJID *)myJID;
 
 - (void)xmppUserLogin:(JYXmppStatusHandler)statusBlock;
 - (void)xmppUserLogout;

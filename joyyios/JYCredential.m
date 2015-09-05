@@ -15,7 +15,7 @@
 
 @implementation JYCredential
 
-+ (JYCredential *)currentCredential
++ (JYCredential *)mine
 {
     static JYCredential *_current;
     static dispatch_once_t done;

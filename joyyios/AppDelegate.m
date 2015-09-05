@@ -90,7 +90,7 @@
     // background, optionally refresh the user interface.
 
     NSLog(@"applicationDidBecomeActive");
-    JYCredential *credential = [JYCredential currentCredential];
+    JYCredential *credential = [JYCredential mine];
     if(credential.isEmpty)
     {
         return;
@@ -244,7 +244,7 @@
     {
         [self _launchIntroductionViewController];
     }
-    else if ([JYCredential currentCredential].isEmpty)
+    else if ([JYCredential mine].isEmpty)
     {
         [self _launchSignViewController];
     }
@@ -342,7 +342,7 @@
 
 - (void)_didSignInManually
 {
-    NSTimeInterval seconds = [JYCredential currentCredential].tokenValidInSeconds;
+    NSTimeInterval seconds = [JYCredential mine].tokenValidInSeconds;
     [self _signValidForSeconds:seconds];
     [self _launchMainViewController];
 }
@@ -400,9 +400,9 @@
 
             NSLog(@"Success: autoSignIn responseObject = %@", responseObject);
 
-            [[JYCredential currentCredential] save:responseObject];
+            [[JYCredential mine] save:responseObject];
 
-            NSTimeInterval seconds = [JYCredential currentCredential].tokenValidInSeconds;
+            NSTimeInterval seconds = [JYCredential mine].tokenValidInSeconds;
             [weakSelf _signValidForSeconds:seconds];
         }
         failure:^(AFHTTPRequestOperation *operation, NSError *error) {

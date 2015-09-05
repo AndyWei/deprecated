@@ -62,7 +62,7 @@
 
 - (BOOL)isAuthenticated
 {
-    return [JYCredential currentCredential].tokenValidInSeconds > 0;
+    return [JYCredential mine].tokenValidInSeconds > 0;
 }
 
 @end

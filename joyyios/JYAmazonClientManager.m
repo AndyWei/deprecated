@@ -34,9 +34,9 @@
 {
     self.completionHandler = completionHandler;
 
-    if ([JYCredential currentCredential].tokenValidInSeconds > 0)
+    if ([JYCredential mine].tokenValidInSeconds > 0)
     {
-        [self _completeLogin:@{ kAuthProviderName: [JYCredential currentCredential].idString }];
+        [self _completeLogin:@{ kAuthProviderName: [JYCredential mine].idString }];
     }
 }
 
