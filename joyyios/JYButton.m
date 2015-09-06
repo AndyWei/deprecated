@@ -239,6 +239,17 @@ static CGRect CGRectEdgeInset(CGRect rect, UIEdgeInsets insets)
     return button;
 }
 
++ (instancetype)iconButtonWithFrame:(CGRect)frame icon:(UIImage *)image color:(UIColor *)color
+{
+    JYButton *button = [JYButton buttonWithFrame:frame buttonStyle:JYButtonStyleCentralImage shouldMaskImage:YES];
+    button.imageView.image = image;
+    button.contentColor = color;
+    button.contentAnimateToColor = JoyyGray;
+    button.foregroundColor = ClearColor;
+    button.foregroundAnimateToColor = ClearColor;
+    return button;
+}
+
 - (CGRect)boxingRect
 {
     CGRect internalRect = CGRectInset(self.bounds, self.layer.cornerRadius * JY_MAGICAL_VALUE + self.layer.borderWidth,

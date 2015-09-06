@@ -8,6 +8,7 @@
 
 #import <CoreData/CoreData.h>
 
+#import "JYButton.h"
 #import "JYMessage.h"
 #import "JYMessageViewController.h"
 #import "JYXmppManager.h"
@@ -17,13 +18,20 @@
 @property (nonatomic) JSQMessagesBubbleImage *incomingBubbleImageData;
 @property (nonatomic) JSQMessagesAvatarImage *remoteAvatar;
 @property (nonatomic) NSFetchedResultsController *fetcher;
-@property (nonatomic) UIButton *attachmentButton;
-@property (nonatomic) UIButton *cameraButton;
-@property (nonatomic) UIButton *voiceButton;
+@property (nonatomic) JYButton *accButton;
+@property (nonatomic) JYButton *cameraButton;
+@property (nonatomic) JYButton *micButton;
+@property (nonatomic) UIView *leftContainerView;
+@property (nonatomic) UIView *rightContainerView;
 @property (nonatomic) XMPPJID *thatJID;
 @end
 
 CGFloat const kAvatarDiameter = 40.f;
+CGFloat const kAccButtonWidth = 44.f;
+CGFloat const kMediaButtonWidth = 44.f;
+CGFloat const kLeftContainerWidth = kAccButtonWidth;
+CGFloat const kRightContainerWidth = 2 * kMediaButtonWidth;
+CGFloat const kEdgeInset = 10.f;
 
 @implementation JYMessageViewController
 
@@ -34,36 +42,22 @@ CGFloat const kAvatarDiameter = 40.f;
     [super viewDidLoad];
 
     self.title = self.thatPerson.name;
-
     self.view.backgroundColor = JoyyWhite;
-    self.collectionView.backgroundColor = JoyyWhite;
-    self.collectionView.collectionViewLayout.messageBubbleFont = [UIFont systemFontOfSize:16];
-    self.collectionView.collectionViewLayout.incomingAvatarViewSize = CGSizeMake(kAvatarDiameter, kAvatarDiameter);
-    self.collectionView.collectionViewLayout.outgoingAvatarViewSize = CGSizeZero;
 
     XMPPJID *myJID = [JYXmppManager myJID];
     self.senderId = myJID.bare;
     self.senderDisplayName = [JYCredential mine].username;
     self.thatJID = [JYXmppManager jidWithIdString:self.thatPerson.idString];
 
-    // Bubble images
-    UIImage *bubble = [UIImage imageNamed:@"message_bubble_neat"];
-    JSQMessagesBubbleImageFactory *factory = [[JSQMessagesBubbleImageFactory alloc] initWithBubbleImage:bubble capInsets:UIEdgeInsetsZero];
-    self.outgoingBubbleImageData = [factory outgoingMessagesBubbleImageWithColor:JoyyBlue];
-    self.incomingBubbleImageData = [factory incomingMessagesBubbleImageWithColor:JoyyWhitePure];
-
-    self.showLoadEarlierMessagesHeader = NO;
-
-    self.inputToolbar.contentView.leftBarButtonItem = self.attachmentButton;
-     /*  self.inputToolbar.contentView.rightBarButtonItem = custom button or nil to remove
-     */
-    self.inputToolbar.maximumHeight = 150;
+    [self configCollectionView];
+    [self configBubbleImage];
+    [self configInputToolBar];
 
     // Profile Button
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"me_selected"]
                                                                               style:UIBarButtonItemStyleBordered
                                                                              target:self
-                                                                             action:@selector(_showPersonProfile)];
+                                                                             action:@selector(showPersonProfile)];
     // Start fetch data
     self.fetcher = [JYXmppManager fetcherForRemoteJid:self.thatJID];
     self.fetcher.delegate = self;
@@ -92,6 +86,48 @@ CGFloat const kAvatarDiameter = 40.f;
     return YES;
 }
 
+- (void)configCollectionView
+{
+    self.collectionView.backgroundColor = JoyyWhite;
+    self.collectionView.collectionViewLayout.messageBubbleFont = [UIFont systemFontOfSize:16];
+    self.collectionView.collectionViewLayout.incomingAvatarViewSize = CGSizeMake(kAvatarDiameter, kAvatarDiameter);
+    self.collectionView.collectionViewLayout.outgoingAvatarViewSize = CGSizeZero;
+    self.showLoadEarlierMessagesHeader = NO;
+}
+
+- (void)configBubbleImage
+{
+    UIImage *bubble = [UIImage imageNamed:@"message_bubble_neat"];
+    JSQMessagesBubbleImageFactory *factory = [[JSQMessagesBubbleImageFactory alloc] initWithBubbleImage:bubble capInsets:UIEdgeInsetsZero];
+    self.outgoingBubbleImageData = [factory outgoingMessagesBubbleImageWithColor:JoyyBlue];
+    self.incomingBubbleImageData = [factory incomingMessagesBubbleImageWithColor:JoyyWhitePure];
+}
+
+- (void)configInputToolBar
+{
+    self.inputToolbar.contentView.leftBarButtonItem.hidden = YES;
+    self.inputToolbar.contentView.leftBarButtonItemWidth = kLeftContainerWidth;
+    [self.inputToolbar.contentView.leftBarButtonContainerView addSubview:self.leftContainerView];
+
+    self.inputToolbar.contentView.rightBarButtonItemWidth = kRightContainerWidth;
+    [self.inputToolbar.contentView.rightBarButtonContainerView addSubview:self.rightContainerView];
+    [self showSendButton:NO];
+}
+
+- (void)showSendButton:(BOOL)show
+{
+    if (show)
+    {
+        self.rightContainerView.hidden = YES;
+        self.inputToolbar.contentView.rightBarButtonItem.hidden = NO;
+    }
+    else
+    {
+        self.rightContainerView.hidden = NO;
+        self.inputToolbar.contentView.rightBarButtonItem.hidden = YES;
+    }
+}
+
 #pragma mark - Properties
 
 - (JSQMessagesAvatarImage *)remoteAvatar
@@ -104,86 +140,77 @@ CGFloat const kAvatarDiameter = 40.f;
     return _remoteAvatar;
 }
 
-- (UIButton *)attachmentButton
+- (UIView *)leftContainerView
 {
-    if (!_attachmentButton)
+    if (!_leftContainerView)
     {
-        _attachmentButton = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
-        [_attachmentButton addTarget:self action:@selector(_attachmentButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+        CGFloat height = self.inputToolbar.preferredDefaultHeight;
+        _leftContainerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kLeftContainerWidth, height)];
+        _leftContainerView.backgroundColor = ClearColor;
+        [_leftContainerView addSubview:self.accButton];
     }
-    return _attachmentButton;
+    return _leftContainerView;
 }
 
-- (UIButton *)cameraButton
+- (UIView *)rightContainerView
+{
+    if (!_rightContainerView)
+    {
+        CGFloat height = self.inputToolbar.preferredDefaultHeight;
+        _rightContainerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kRightContainerWidth, height)];
+        _rightContainerView.backgroundColor = ClearColor;
+        [_rightContainerView addSubview:self.cameraButton];
+        [_rightContainerView addSubview:self.micButton];
+    }
+    return _rightContainerView;
+}
+
+- (JYButton *)cameraButton
 {
     if (!_cameraButton)
     {
-        _cameraButton = [UIButton buttonWithType:UIButtonTypeSystem];
-        [_cameraButton addTarget:self action:@selector(_cameraButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+        CGRect frame = CGRectMake(0, 0, kMediaButtonWidth, self.inputToolbar.preferredDefaultHeight);
+        UIImage *icon = [UIImage imageNamed:@"camera"];
+        _cameraButton = [JYButton iconButtonWithFrame:frame icon:icon color:JoyyBlue];
+        _cameraButton.contentEdgeInsets = UIEdgeInsetsMake(0, kEdgeInset, kEdgeInset, kEdgeInset);
+        [_cameraButton addTarget:self action:@selector(cameraButtonPressed) forControlEvents:UIControlEventTouchUpInside];
     }
     return _cameraButton;
 }
 
-- (UIButton *)voiceButton
+- (JYButton *)micButton
 {
-    if (!_voiceButton)
+    if (!_micButton)
     {
-        _voiceButton = [UIButton buttonWithType:UIButtonTypeSystem];
-        [_voiceButton addTarget:self action:@selector(_voiceButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+        CGFloat x = kRightContainerWidth - kMediaButtonWidth;
+        CGRect frame = CGRectMake(x, 0, kMediaButtonWidth, self.inputToolbar.preferredDefaultHeight);
+        UIImage *icon = [UIImage imageNamed:@"microphone"];
+        _micButton = [JYButton iconButtonWithFrame:frame icon:icon color:JoyyBlue];
+        _micButton.contentEdgeInsets = UIEdgeInsetsMake(0, kEdgeInset, kEdgeInset + 2, kEdgeInset);
+
+        [_micButton addTarget:self action:@selector(micButtonTouchDown) forControlEvents:UIControlEventTouchDown];
+        [_micButton addTarget:self action:@selector(micButtonTouchRelease) forControlEvents:UIControlEventTouchUpInside];
+        [_micButton addTarget:self action:@selector(micButtonTouchRelease) forControlEvents:UIControlEventTouchUpOutside];
     }
-    return _voiceButton;
+    return _micButton;
+}
+
+- (JYButton *)accButton
+{
+    if (!_accButton)
+    {
+        CGRect frame = CGRectMake(0, 0, kAccButtonWidth, self.inputToolbar.preferredDefaultHeight);
+        UIImage *icon = [UIImage imageNamed:@"upload"];
+        _accButton = [JYButton iconButtonWithFrame:frame icon:icon color:JoyyBlue];
+        _accButton.contentEdgeInsets = UIEdgeInsetsMake(0, kEdgeInset, kEdgeInset + 1, kEdgeInset);
+        [_accButton addTarget:self action:@selector(accButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+    }
+    return _accButton;
 }
 
 #pragma mark - Actions
 
-- (void)_attachmentButtonPressed
-{
-
-}
-
-- (void)_cameraButtonPressed
-{
-
-}
-
-- (void)_voiceButtonPressed
-{
-
-}
-
-- (void)_voiceButtonHold
-{
-
-}
-
-- (void)_voiceButtonReleased
-{
-
-}
-
-- (void)_showPersonProfile
-{
-
-}
-
-#pragma mark - JSQMessagesViewController method overrides
-
-- (void)didPressSendButton:(UIButton *)button
-           withMessageText:(NSString *)text
-                  senderId:(NSString *)senderId
-         senderDisplayName:(NSString *)senderDisplayName
-                      date:(NSDate *)date
-{
-    XMPPMessage *message = [XMPPMessage messageWithType:@"chat" to:self.thatJID];
-    NSString *body = [NSString stringWithFormat:@"%@%@", kMessageBodyTypeText, text];
-    [message addBody:body];
-    [message addSubject:kMessageBodyTypeText];
-    [[JYXmppManager sharedInstance].xmppStream sendElement:message];
-
-    [self finishSendingMessageAnimated:YES];
-}
-
-- (void)didPressAccessoryButton:(UIButton *)sender
+- (void)accButtonPressed
 {
     UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:@"Media messages"
                                                        delegate:self
@@ -192,6 +219,58 @@ CGFloat const kAvatarDiameter = 40.f;
                                               otherButtonTitles:@"Send photo", @"Send location", @"Send video", nil];
 
     [sheet showFromToolbar:self.inputToolbar];
+}
+
+- (void)cameraButtonPressed
+{
+    NSLog(@"cameraButtonPressed");
+}
+
+- (void)micButtonTouchDown
+{
+    NSLog(@"micButtonTouchDown");
+}
+
+- (void)micButtonTouchRelease
+{
+    NSLog(@"micButtonTouchRelease");
+}
+
+- (void)showPersonProfile
+{
+
+}
+
+#pragma mark - TextView delegate
+- (void)textViewDidChange:(UITextView *)textView
+{
+    [super textViewDidChange:textView];
+
+    if (textView != self.inputToolbar.contentView.textView) {
+        return;
+    }
+
+    BOOL hasText = [self.inputToolbar.contentView.textView hasText];
+    [self showSendButton:hasText];
+}
+
+#pragma mark - JSQMessagesViewController method overrides
+
+- (void)didPressSendButton:(JYButton *)button
+           withMessageText:(NSString *)text
+                  senderId:(NSString *)senderId
+         senderDisplayName:(NSString *)senderDisplayName
+                      date:(NSDate *)date
+{
+    [self showSendButton:NO];
+
+    XMPPMessage *message = [XMPPMessage messageWithType:@"chat" to:self.thatJID];
+    NSString *body = [NSString stringWithFormat:@"%@%@", kMessageBodyTypeText, text];
+    [message addBody:body];
+    [message addSubject:kMessageBodyTypeText];
+    [[JYXmppManager sharedInstance].xmppStream sendElement:message];
+
+    [self finishSendingMessageAnimated:YES];
 }
 
 - (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex
@@ -386,7 +465,7 @@ CGFloat const kAvatarDiameter = 40.f;
 #pragma mark - Responding to collection view tap events
 
 - (void)collectionView:(JSQMessagesCollectionView *)collectionView
-                header:(JSQMessagesLoadEarlierHeaderView *)headerView didTapLoadEarlierMessagesButton:(UIButton *)sender
+                header:(JSQMessagesLoadEarlierHeaderView *)headerView didTapLoadEarlierMessagesButton:(JYButton *)sender
 {
     NSLog(@"Load earlier messages!");
 }

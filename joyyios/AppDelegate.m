@@ -15,6 +15,7 @@
 
 #import "AppDelegate.h"
 #import "JYAmazonClientManager.h"
+#import "JYButton.h"
 #import "JYMasqueradeViewController.h"
 #import "JYMessageListViewController.h"
 #import "JYPeopleViewController.h"
