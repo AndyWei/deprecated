@@ -87,7 +87,7 @@ extern NSString *const kURLAvatarBase;
 extern NSString *const kURLPostBase;
 extern NSString *const kURLMessageBase;
 
-extern NSTimeInterval const k1Minutes;
+extern NSInteger const kSignInRetryInSeconds;
 extern NSTimeInterval const k15Minutes;
 extern NSTimeInterval const k5Minutes;
 

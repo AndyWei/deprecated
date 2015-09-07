@@ -99,21 +99,8 @@
 
     self.shouldXmppGoOnline = [self _isPresentingMessageViewController];
 
-    NSTimeInterval seconds = credential.tokenValidInSeconds;
-    if (seconds < 0)
-    {
-        if (self.signInTimer)
-        {
-            [self.signInTimer invalidate];
-            self.signInTimer = nil;
-        }
-
-        [self _autoSignIn];
-    }
-    else
-    {
-        [self _signValidForSeconds:seconds];
-    }
+    NSInteger seconds = credential.tokenValidInSeconds;
+    [self _autoSignInAfter:seconds];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application
@@ -343,16 +330,22 @@
 
 - (void)_didSignInManually
 {
-    NSTimeInterval seconds = [JYCredential mine].tokenValidInSeconds;
-    [self _signValidForSeconds:seconds];
+    NSInteger seconds = [JYCredential mine].tokenValidInSeconds;
+    [self _autoSignInAfter:seconds];
     [self _launchMainViewController];
 }
 
-- (void)_signValidForSeconds:(NSTimeInterval)seconds
+- (void)_autoSignInAfter:(NSInteger)seconds
 {
+    if (seconds < 0)
+    {
+        [self _autoSignInNow];
+        return;
+    }
+
     // Register push notification now to trigger device token uploading, which is to avoid server side device token lost unexpectedly
     [self _registerPushNotifications];
-    [self _signInAfter:seconds];
+    [self _doAutoSignInAfter:seconds];
 
     if (self.shouldXmppGoOnline)
     {
@@ -363,7 +356,7 @@
     [self _refreshAWSAccess];
 }
 
-- (void)_signInAfter:(NSTimeInterval)interval
+- (void)_doAutoSignInAfter:(NSInteger)interval
 {
     if (self.signInTimer)
     {
@@ -372,7 +365,7 @@
 
     self.signInTimer = [MSWeakTimer scheduledTimerWithTimeInterval:interval
                                                             target:self
-                                                          selector:@selector(_autoSignIn)
+                                                          selector:@selector(_autoSignInNow)
                                                           userInfo:nil
                                                            repeats:NO
                                                      dispatchQueue:self.backgroundQueue];
@@ -387,8 +380,14 @@
 
 #pragma mark - Network
 
-- (void)_autoSignIn
+- (void)_autoSignInNow
 {
+    if (self.signInTimer)
+    {
+        [self.signInTimer invalidate];
+        self.signInTimer = nil;
+    }
+
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager managerWithPassword];
     NSString *url = [NSString apiURLWithPath:@"signin"];
 
@@ -403,12 +402,12 @@
 
             [[JYCredential mine] save:responseObject];
 
-            NSTimeInterval seconds = [JYCredential mine].tokenValidInSeconds;
-            [weakSelf _signValidForSeconds:seconds];
+            NSInteger seconds = [JYCredential mine].tokenValidInSeconds;
+            [weakSelf _autoSignInAfter:seconds];
         }
         failure:^(AFHTTPRequestOperation *operation, NSError *error) {
             NSLog(@"Error: autoSignIn Error: %@", error);
-            [weakSelf _signInAfter:k1Minutes];
+            [weakSelf _doAutoSignInAfter:kSignInRetryInSeconds];
         }];
 }
 

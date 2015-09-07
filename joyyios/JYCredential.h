@@ -16,7 +16,7 @@
 @property (nonatomic) NSString *token;
 @property (nonatomic) NSString *idString;
 @property (nonatomic, readonly) BOOL isEmpty;
-@property (nonatomic, readonly) NSTimeInterval tokenValidInSeconds;
+@property (nonatomic, readonly) NSInteger tokenValidInSeconds;
 @property (nonatomic, readonly) NSUInteger userId;
 
 - (void)save:(NSDictionary *)dict;

@@ -83,9 +83,9 @@
     self.keychain[kAWSTokenExpiryTimeKey] = [NSString stringWithFormat:@"%.0f", tokenExpiryTime];
 }
 
-- (NSTimeInterval)tokenValidInSeconds
+- (NSInteger)tokenValidInSeconds
 {
-    NSTimeInterval now = [NSDate timeIntervalSinceReferenceDate];
+    NSInteger now = (NSInteger)[NSDate timeIntervalSinceReferenceDate];
     return self.tokenExpiryTime - now;
 }
 
@@ -111,7 +111,7 @@
         self.token = [dict valueForKey:@"token"];
 
         NSUInteger tokenDuration = [dict unsignedIntegerValueForKey:@"tokenDuration"];
-        NSUInteger now = (NSUInteger)[NSDate timeIntervalSinceReferenceDate];
+        NSInteger now = (NSInteger)[NSDate timeIntervalSinceReferenceDate];
         self.tokenExpiryTime = now + tokenDuration;
     }
 }

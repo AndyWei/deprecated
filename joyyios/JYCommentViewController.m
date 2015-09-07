@@ -39,6 +39,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
     self = [super initWithTableViewStyle:UITableViewStylePlain];
     if (self)
     {
+        [self.tableView registerClass:[JYCommentViewCell class] forCellReuseIdentifier:kCommentCellIdentifier];
         [self registerClassForTextView:[JYCommentTextView class]];
         _post = post;
         _autoShowKeyboard = autoShowKeyBoard;
@@ -77,7 +78,6 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
     self.tableView.backgroundColor = JoyyBlack;
     self.tableView.backgroundView = self.backgroundView;
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    [self.tableView registerClass:[JYCommentViewCell class] forCellReuseIdentifier:kCommentCellIdentifier];
     [self _showBackgroundImage];
     [self _fetchNewComments];
 

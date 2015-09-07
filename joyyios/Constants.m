@@ -28,7 +28,7 @@ CGFloat const kSignFieldHeight = 70.0f;
 CGFloat const kSignFieldMarginLeft = 50.0f;
 CGFloat const kSignViewTopOffset = 152;
 
-NSTimeInterval const k1Minutes = 60;
+NSInteger const kSignInRetryInSeconds = 60;
 NSTimeInterval const k5Minutes = 300;
 
 NSUInteger const kAPN = 1;
