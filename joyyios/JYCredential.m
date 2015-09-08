@@ -10,7 +10,7 @@
 
 @interface JYCredential()
 @property (nonatomic) UICKeyChainStore *keychain;
-@property (nonatomic) NSTimeInterval tokenExpiryTime;
+@property (nonatomic) NSUInteger tokenExpiryTime;
 @end
 
 @implementation JYCredential
@@ -77,10 +77,10 @@
     self.keychain[kAPITokenKey] = _token;
 }
 
-- (void)setTokenExpiryTime:(NSTimeInterval)tokenExpiryTime
+- (void)setTokenExpiryTime:(NSUInteger)tokenExpiryTime
 {
     _tokenExpiryTime = tokenExpiryTime;
-    self.keychain[kAWSTokenExpiryTimeKey] = [NSString stringWithFormat:@"%.0f", tokenExpiryTime];
+    self.keychain[kAPITokenExpiryTimeKey] = [NSString stringWithFormat:@"%tu", tokenExpiryTime];
 }
 
 - (NSInteger)tokenValidInSeconds

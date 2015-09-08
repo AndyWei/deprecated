@@ -11,7 +11,8 @@ typedef NS_ENUM(NSUInteger, JYAuthenticationErrorType)
     JYAuthenticationErrorInvalidConfig,
     JYAuthenticationErrorLoginFailed,
     JYAuthenticationErrorNoCognitoResponse,
-    JYAuthenticationErrorInvalidCognito,
+    JYAuthenticationErrorNoIdentityId,
+    JYAuthenticationErrorNoToken
 };
 
 @class AWSTask;

@@ -27,7 +27,7 @@ NSString *const kJYAuthenticationClientDomain = @"JYAuthenticationClient";
 @interface JYAuthenticationClient()
 @property (nonatomic) NSString *identityId;
 @property (nonatomic) NSString *token;
-@property (nonatomic) NSTimeInterval tokenExpiryTime;
+@property (nonatomic) NSUInteger tokenExpiryTime;
 @property (nonatomic) UICKeyChainStore *keychain;
 @end
 
@@ -43,7 +43,7 @@ NSString *const kJYAuthenticationClientDomain = @"JYAuthenticationClient";
         _token = self.keychain[kAWSTokenKey];
 
         NSString *expiryTimeStr = self.keychain[kAWSTokenExpiryTimeKey];
-        _tokenExpiryTime = expiryTimeStr ? [expiryTimeStr doubleValue] : 0.0f;
+        _tokenExpiryTime = expiryTimeStr ? [expiryTimeStr unsignedIntegerValue] : 0;
     }
     
     return self;
@@ -66,7 +66,7 @@ NSString *const kJYAuthenticationClientDomain = @"JYAuthenticationClient";
         return NO;
     }
 
-    NSTimeInterval now = [NSDate timeIntervalSinceReferenceDate];
+    NSUInteger now = (NSUInteger)[NSDate timeIntervalSinceReferenceDate];
     return (now < self.tokenExpiryTime);
 }
 
@@ -82,10 +82,10 @@ NSString *const kJYAuthenticationClientDomain = @"JYAuthenticationClient";
     self.keychain[kAWSTokenKey] = token;
 }
 
-- (void)setTokenExpiryTime:(NSTimeInterval)tokenExpiryTime
+- (void)setTokenExpiryTime:(NSUInteger)tokenExpiryTime
 {
     _tokenExpiryTime = tokenExpiryTime;
-    self.keychain[kAWSTokenExpiryTimeKey] = [NSString stringWithFormat:@"%.0f", tokenExpiryTime];
+    self.keychain[kAWSTokenExpiryTimeKey] = [NSString stringWithFormat:@"%tu", tokenExpiryTime];
 }
 
 // call gettoken and set our values from returned result
@@ -119,7 +119,7 @@ NSString *const kJYAuthenticationClientDomain = @"JYAuthenticationClient";
 
         if (!response)
         {
-            NSLog(@"Error: no response from AWS server");
+            NSLog(@"Error: no cognito response from joyy server");
             return [AWSTask taskWithError:[NSError errorWithDomain:kJYAuthenticationClientDomain
                                                              code:JYAuthenticationErrorNoCognitoResponse
                                                          userInfo:nil]];
@@ -128,12 +128,20 @@ NSString *const kJYAuthenticationClientDomain = @"JYAuthenticationClient";
         NSString *identityId = [response objectForKey:@"IdentityId"];
         NSString *token = [response objectForKey:@"Token"];
 
-        if (!identityId || !token)
+        if (!identityId)
         {
-            NSLog(@"Error: invalid response from AWS server");
+            NSLog(@"Error: no IdentityId");
             return [AWSTask taskWithError:[NSError errorWithDomain:kJYAuthenticationClientDomain
-                                                             code:JYAuthenticationErrorInvalidCognito
+                                                             code:JYAuthenticationErrorNoIdentityId
                                                          userInfo:nil]];
+        }
+
+        if (!token)
+        {
+            NSLog(@"Error: No Token");
+            return [AWSTask taskWithError:[NSError errorWithDomain:kJYAuthenticationClientDomain
+                                                              code:JYAuthenticationErrorNoToken
+                                                          userInfo:nil]];
         }
 
         JYAuthenticationResponse *authResponse = [JYAuthenticationResponse new];
@@ -141,7 +149,8 @@ NSString *const kJYAuthenticationClientDomain = @"JYAuthenticationClient";
         weakSelf.identityId = authResponse.identityId = identityId;
         weakSelf.token = authResponse.token = token;
         NSUInteger tokenDuration = [response unsignedIntegerValueForKey:@"tokenDuration"];
-        weakSelf.tokenExpiryTime = [NSDate timeIntervalSinceReferenceDate] + tokenDuration;
+        NSUInteger now = (NSUInteger)[NSDate timeIntervalSinceReferenceDate];
+        weakSelf.tokenExpiryTime = now + tokenDuration;
 
         NSLog(@"Success: got new token from joyyserver");
         return [AWSTask taskWithResult:authResponse];
