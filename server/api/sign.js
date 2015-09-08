@@ -24,6 +24,10 @@ exports.register = function (server, options, next) {
     });
 
     internals.cognitoidentity = new AWS.CognitoIdentity({apiVersion: '2014-06-30'});
+    internals.awsTokenDuration = Config.get('/aws/identifyExpiresInSeconds');
+    internals.apiTokenDuration = Config.get('/jwt/expiresInMinutes') * 60;
+
+    60 * Config.get('/jwt/expiresInMinutes')
 
     // Existing person sign in
     server.route({
@@ -36,11 +40,10 @@ exports.register = function (server, options, next) {
         },
         handler: function (request, reply) {
 
-            var personId = request.auth.credentials.id;
             Async.auto({
                 jwt: function (callback) {
 
-                    var token = internals.createJwtToken(personId);
+                    var token = internals.createJwtToken(request.auth.credentials.id);
                     return callback(null, token);
                 }
             }, function (err, results) {
@@ -51,8 +54,11 @@ exports.register = function (server, options, next) {
                 }
 
                 var response = {
+                    id: request.auth.credentials.id,
+                    email: request.auth.credentials.email,
+                    username: request.auth.credentials.username,
                     token: results.jwt,
-                    tokenDuration: 60 * Config.get('/jwt/expiresInMinutes')
+                    tokenDuration: internals.apiTokenDuration
                 };
 
                 return reply(null, response);
@@ -91,13 +97,12 @@ exports.register = function (server, options, next) {
         },
         handler: function (request, reply) {
 
-            var tokenDuration = Config.get('/aws/identifyExpiresInSeconds');
             var params = {
                 IdentityPoolId: Config.get('/aws/identifyPoolId'),
                 Logins: {
                     joyy: request.auth.credentials.id
                 },
-                TokenDuration: tokenDuration
+                TokenDuration: internals.awsTokenDuration
             };
 
             internals.cognitoidentity.getOpenIdTokenForDeveloperIdentity(params, function(err, data) {
@@ -107,7 +112,7 @@ exports.register = function (server, options, next) {
                     return reply(err);
                 }
 
-                data.tokenDuration = tokenDuration;
+                data.tokenDuration = internals.awsTokenDuration;
                 return reply(null, data);
             });
         }
@@ -196,7 +201,7 @@ internals.signup = function (request, reply) {
             return reply(err);
         }
 
-        var message = {
+        var response = {
             id: results.personId,
             email: email,
             username: username,
@@ -205,7 +210,7 @@ internals.signup = function (request, reply) {
         };
 
         console.log('user created. email=%s, username = %s', email, username);
-        return reply(null, message).code(201);
+        return reply(null, response).code(201);
     });
 };
 

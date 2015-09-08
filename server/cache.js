@@ -284,7 +284,7 @@ exports.mzadd = internals.mzadd = function (partition, key, scores, members, cal
     if (!_.isArray(scores) || _.isEmpty(scores) ||
         !_.isArray(members) || _.isEmpty(members) || scores.length !== members.length) {
 
-        console.err('The invalid scores or members');
+        console.error('The invalid scores or members');
         if (typeof callback === 'function') {
             return callback(null, []);
         }
@@ -501,7 +501,7 @@ exports.mhmset = internals.mhmset = function (partition, keys, objs, callback) {
     if (!_.isArray(keys) || _.isEmpty(keys) ||
         !_.isArray(objs) || _.isEmpty(objs) || keys.length !== objs.length) {
 
-        console.err('The invalid keys or objs');
+        console.error('The invalid keys or objs');
         if (typeof callback === 'function') {
             return callback(null, []);
         }

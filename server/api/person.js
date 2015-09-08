@@ -11,7 +11,7 @@ var Utils = require('../utils');
 var _ = require('lodash');
 
 var internals = {};
-var selectAll = 'SELECT id, email, username, org, orgtype, gender, yob, bio, avatar, hearts, score, ut, verified FROM person ';
+var selectAll = 'SELECT id, email, username, org, orgtype, gender, yob, bio, hearts, score, ut, verified FROM person ';
 
 
 exports.register = function (server, options, next) {
@@ -28,7 +28,6 @@ exports.register = function (server, options, next) {
             },
             validate: {
                 query: {
-                    cell: Joi.string().max(12).required(),
                     id: Joi.array().single(true).unique().max(Const.PERSON_PER_QUERY).items(Joi.string().regex(/^[0-9]+$/).max(19))
                 }
             }
@@ -444,17 +443,16 @@ internals.searchPersonIdByCellFromDB = function (request, callback) {
 
 internals.searchPersonByIdsFromDB = function (request, personIds, callback) {
 
-    var parameterList = Utils.parametersString(2, personIds.length);
+    var parameterList = Utils.parametersString(1, personIds.length);
     // Adding more conditions is to speed up the where-in search
-    var where = 'WHERE cell = $1 AND verified = true AND deleted = false AND id in ' + parameterList;
+    var where = 'WHERE deleted = false AND id in ' + parameterList;
     var order = 'ORDER BY score DESC ';
     var limit = 'LIMIT 50';
 
-    var queryValues = [request.query.cell];
     var queryConfig = {
         // Warning: DO NOT give a name to this query since it has variable parameters
         text: selectAll + where + order + limit,
-        values: queryValues.concat(personIds)
+        values: personIds
     };
 
     request.pg.client.query(queryConfig, function (err, result) {

@@ -13,7 +13,6 @@ CREATE TABLE person (
     orgtype                SMALLINT              , -- organization type. 0 - unknown, 1 - com,  2 - edu, 3 - org, 4 - gov, 100 - other.
     yob                    NUMERIC(4)            , -- year of birth
     bio                    TEXT                  ,
-    avatar                 TEXT                  , -- avatar filename
     coords                 GEOMETRY(Point, 4326) , -- the point where the person last reported
     met                    BIGINT                , -- membership expiry timestamp
     ct                     BIGINT        NOT NULL, -- created_at timestamp

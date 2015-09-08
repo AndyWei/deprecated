@@ -29,7 +29,7 @@ var config = {
     },
     jwt: {
         key: 'Lh;U2.JD5VW8*LoCJT1xR,Q9On=khDcy',
-        expiresInMinutes: 65
+        expiresInMinutes: 60
     },
     port: {
         api: {
