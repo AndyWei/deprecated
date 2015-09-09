@@ -1,21 +1,15 @@
 ### This file contains all curl commands used for manual test
 
 ## signup
-curl -i -X POST --data "email=jack@gmail.com&password=password" "http://localhost:8000/v1/signup"
-curl -i -X POST --data "email=andy@gmail.com&password=password" "http://localhost:8000/v1/signup"
-curl -i -X POST --data "email=ping@gmail.com&password=password" "http://localhost:8000/v1/signup"
-curl -i -X POST --data "email=mike@gmail.com&password=password" "http://localhost:8000/v1/signup"
-curl -i -X POST --data "email=moon@gmail.com&password=password" "http://localhost:8000/v1/signup"
-curl -i -X POST --data "email=sky1@gmail.com&password=password" "http://localhost:8000/v1/signup"
-curl -i -X POST --data "email=sun2@gmail.com&password=password" "http://localhost:8000/v1/signup"
-curl -i -X POST --data "email=mini@gmail.com&password=password" "http://localhost:8000/v1/signup"
+curl -i -X POST --data "phone=1-7891234567&password=password" "http://localhost:8000/v1/signup"
+
 
 
 
 
 ## signin
-curl -i -u moon@gmail.com:password "http://localhost:8000/v1/signin"
-curl -i -u sun2@gmail.com:password "http://localhost:8000/v1/signin"
+curl -i -u 1-8008888756:password "http://localhost:8000/v1/signin"
+curl -i -u 1-4257850318:password "http://localhost:8000/v1/signin"
 
 ## person
 # GET a person's own profile

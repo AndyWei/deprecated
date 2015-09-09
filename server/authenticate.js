@@ -11,15 +11,15 @@ var Jwt  = require('jsonwebtoken');
 var exports = module.exports = {};
 var internals = {};
 
-internals.validateSimple = function (request, email, password, finish) {
+internals.validateSimple = function (request, phone, password, finish) {
 
     Async.auto({
         credentials: function (callback) {
 
             var queryConfig = {
-                text: 'SELECT id, email, username, password FROM person WHERE email = $1 AND deleted = false',
-                values: [email],
-                name: 'person_by_email'
+                text: 'SELECT id, phone, username, password FROM person WHERE phone = $1 AND deleted = false',
+                values: [phone],
+                name: 'person_by_phone'
             };
 
             request.pg.client.query(queryConfig, function (err, result) {

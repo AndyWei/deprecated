@@ -27,12 +27,10 @@ exports.register = function (server, options, next) {
     internals.awsTokenDuration = Config.get('/aws/identifyExpiresInSeconds');
     internals.apiTokenDuration = Config.get('/jwt/expiresInMinutes') * 60;
 
-    60 * Config.get('/jwt/expiresInMinutes')
-
     // Existing person sign in
     server.route({
         method: 'GET',
-        path: options.basePath + '/signin',
+        path: options.basePath + '/credential/signin',
         config: {
             auth: {
                 strategy: 'simple'
@@ -55,7 +53,7 @@ exports.register = function (server, options, next) {
 
                 var response = {
                     id: request.auth.credentials.id,
-                    email: request.auth.credentials.email,
+                    phone: request.auth.credentials.phone,
                     username: request.auth.credentials.username,
                     token: results.jwt,
                     tokenDuration: internals.apiTokenDuration
@@ -69,17 +67,17 @@ exports.register = function (server, options, next) {
     // New person sign up
     server.route({
         method: 'POST',
-        path: options.basePath + '/signup',
+        path: options.basePath + '/credential/signup',
         config: {
             validate: {
                 payload: {
-                    email: Joi.string().email().lowercase().min(3).max(30).required(),
+                    phone: Joi.string().min(3).max(30).required(),
                     password: Joi.string().min(4).max(100).required()
                 }
             },
             pre: [{
-                assign: 'emailCheck',
-                method: internals.emailChecker
+                assign: 'phoneCheck',
+                method: internals.phoneChecker
             }]
         },
         handler: internals.signup
@@ -89,7 +87,7 @@ exports.register = function (server, options, next) {
     // Existing person get cognito token
     server.route({
         method: 'GET',
-        path: options.basePath + '/cognito',
+        path: options.basePath + '/credential/cognito',
         config: {
             auth: {
                 strategy: 'token'
@@ -123,16 +121,16 @@ exports.register = function (server, options, next) {
 
 
 exports.register.attributes = {
-    name: 'sign'
+    name: 'credential'
 };
 
 
-internals.emailChecker = function (request, reply) {
+internals.phoneChecker = function (request, reply) {
 
     var queryConfig = {
-        text: 'SELECT id FROM person WHERE email = $1 AND deleted = false',
-        values: [request.payload.email],
-        name: 'person_select_id_by_email'
+        text: 'SELECT id FROM person WHERE phone = $1 AND deleted = false',
+        values: [request.payload.phone],
+        name: 'person_select_id_by_phone'
     };
 
     request.pg.client.query(queryConfig, function (err, result) {
@@ -154,8 +152,8 @@ internals.emailChecker = function (request, reply) {
 
 internals.signup = function (request, reply) {
 
-    var email = request.payload.email;
-    var username = email.substring(0, 3); // auto given name is the first 3 chars of email
+    var phone = request.payload.phone;
+    var username = phone.substring(0, 3); // auto given name is the first 3 chars of phone
 
     Async.auto({
         salt: function (callback) {
@@ -174,10 +172,10 @@ internals.signup = function (request, reply) {
 
             var queryConfig = {
                 text: 'INSERT INTO person ' +
-                          '(email, username, password, ct, ut) VALUES ' +
+                          '(phone, username, password, ct, ut) VALUES ' +
                           '($1, $2, $3, $4, $5) ' +
                           'RETURNING id',
-                values: [email, username, results.password, _.now(), _.now()],
+                values: [phone, username, results.password, _.now(), _.now()],
                 name: 'person_signup'
             };
 
@@ -203,13 +201,13 @@ internals.signup = function (request, reply) {
 
         var response = {
             id: results.personId,
-            email: email,
+            phone: phone,
             username: username,
             token: internals.createJwtToken(results.personId),
             tokenDuration: 60 * Config.get('/jwt/expiresInMinutes')
         };
 
-        console.log('user created. email=%s, username = %s', email, username);
+        console.log('user created. phone=%s, username = %s', phone, username);
         return reply(null, response).code(201);
     });
 };

@@ -11,7 +11,7 @@ var Utils = require('../utils');
 var _ = require('lodash');
 
 var internals = {};
-var selectAll = 'SELECT id, email, username, org, orgtype, gender, yob, bio, hearts, score, ut, verified FROM person ';
+var selectAll = 'SELECT id, phone, username, org, orgtype, gender, yob, bio, hearts, score, ut, verified FROM person ';
 
 
 exports.register = function (server, options, next) {

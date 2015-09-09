@@ -41,10 +41,10 @@ var manifest = {
         'hapi-auth-bearer-token': {},
         './server/authenticate': {},
         './server/api/comment': { basePath: '/v1' },
+        './server/api/credential': { basePath: '/v1' },
         './server/api/heart': { basePath: '/v1' },
         './server/api/person': { basePath: '/v1' },
         './server/api/post': { basePath: '/v1' },
-        './server/api/sign': { basePath: '/v1' },
         './server/api/xmpp': { basePath: '/v1' }
     }
 };

@@ -1,8 +1,8 @@
 CREATE TABLE person (
     id                     BIGSERIAL  PRIMARY KEY,
-    email                  TEXT          NOT NULL, -- email is used as identity to signup and signin
+    phone                  TEXT          NOT NULL, -- phone number is used as identity to signup and signin
     password               TEXT          NOT NULL, -- bcrypt hashed password, it always 60 bytes, however TEXT makes it flexible
-    username               TEXT          NOT NULL, -- unique display name
+    username               TEXT                  , -- unique display name
     verified               BOOLEAN       NOT NULL DEFAULT false,
     hearts                 INTEGER       NOT NULL DEFAULT 0, -- the number of hearts
     friends                SMALLINT      NOT NULL DEFAULT 0, -- the number of friends
@@ -19,12 +19,12 @@ CREATE TABLE person (
     ut                     BIGINT        NOT NULL, -- updated_at timestamp
     deleted                BOOLEAN       NOT NULL DEFAULT false,
 
-    UNIQUE (email),
+    UNIQUE (phone),
     UNIQUE (username)
 );
 
 
-CREATE INDEX person_email_index  ON person (email);
+CREATE INDEX person_phone_index  ON person (phone);
 CREATE INDEX person_score_index  ON person (score);
 CREATE INDEX person_cell_index   ON person (cell);
 CREATE INDEX person_org_index    ON person (org);

@@ -23,11 +23,12 @@ var PgPlugin = {
     }
 };
 
-var jack = {
+
+var andy = {
     id: 1
 };
 
-var andy = {
+var ping = {
     id: 2
 };
 
@@ -68,8 +69,8 @@ lab.experiment('person GET: ', function () {
 
         request = {
             method: 'GET',
-            url: '/person?cell=94555&id=1&id=2&id=3',
-            credentials: jack
+            url: '/person?id=1&id=2&id=3',
+            credentials: andy
         };
 
         server.inject(request, function (response) {
@@ -87,7 +88,7 @@ lab.experiment('person GET: ', function () {
         request = {
             method: 'GET',
             url: '/person/nearby?cell=94102&max=5000',
-            credentials: jack
+            credentials: andy
         };
 
         server.inject(request, function (response) {
@@ -104,7 +105,7 @@ lab.experiment('person GET: ', function () {
         request = {
             method: 'GET',
             url: '/person/nearby?cell=91000&max=5000',
-            credentials: jack
+            credentials: andy
         };
 
         server.inject(request, function (response) {
@@ -121,7 +122,7 @@ lab.experiment('person GET: ', function () {
         request = {
             method: 'GET',
             url: '/person/profile',
-            credentials: jack
+            credentials: andy
         };
 
         server.inject(request, function (response) {
@@ -192,7 +193,7 @@ lab.experiment('person POST: ', function () {
                 lon: -122.0135916,
                 cell: '94102'
             },
-            credentials: jack
+            credentials: ping
         };
 
         server.inject(request, function (response) {
