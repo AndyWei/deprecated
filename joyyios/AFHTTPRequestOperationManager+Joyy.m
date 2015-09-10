@@ -10,11 +10,11 @@
 
 + (AFHTTPRequestOperationManager *)managerWithPassword
 {
-    NSString *email = [JYCredential mine].email;
+    NSString *phoneNumber = [JYCredential mine].phoneNumber;
     NSString *password = [JYCredential mine].password;
 
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    [manager.requestSerializer setAuthorizationHeaderFieldWithUsername:email password:password];
+    [manager.requestSerializer setAuthorizationHeaderFieldWithUsername:phoneNumber password:password];
 
     return manager;
 }

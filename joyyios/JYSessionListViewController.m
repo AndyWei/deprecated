@@ -1,24 +1,24 @@
 //
-//  JYMessageListViewController.m
+//  JYSessionListViewController.m
 //  joyyios
 //
 //  Created by Ping Yang on 8/27/15.
 //  Copyright (c) 2015 Joyy Inc. All rights reserved.
 //
 
-#import "JYMessageContactViewCell.h"
-#import "JYMessageListViewController.h"
-#import "JYMessageViewController.h"
+#import "JYSessionListViewCell.h"
+#import "JYSessionListViewController.h"
+#import "JYSessionViewController.h"
 #import "JYXmppManager.h"
 
-@interface JYMessageListViewController () <NSFetchedResultsControllerDelegate, UITableViewDataSource, UITableViewDelegate>
+@interface JYSessionListViewController () <NSFetchedResultsControllerDelegate, UITableViewDataSource, UITableViewDelegate>
 @property (nonatomic) NSFetchedResultsController *fetcher;
 @property (nonatomic) UITableView *tableView;
 @end
 
 static NSString *const kContactCellIdentifier = @"contactCell";
 
-@implementation JYMessageListViewController
+@implementation JYSessionListViewController
 
 - (void)viewDidLoad
 {
@@ -35,7 +35,7 @@ static NSString *const kContactCellIdentifier = @"contactCell";
     self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:self.navigationItem.backBarButtonItem.style target:nil action:nil];
 
     // Start fetch data
-    self.fetcher = [JYXmppManager fetcherForForContacts];
+    self.fetcher = [JYXmppManager fetcherOfSessions];
     self.fetcher.delegate = self;
     NSError *error = nil;
     [self.fetcher performFetch:&error];
@@ -61,7 +61,7 @@ static NSString *const kContactCellIdentifier = @"contactCell";
         _tableView.delegate = self;
         _tableView.backgroundColor = JoyyBlack;
         _tableView.showsHorizontalScrollIndicator = NO;
-        [_tableView registerClass:[JYMessageContactViewCell class] forCellReuseIdentifier:kContactCellIdentifier];
+        [_tableView registerClass:[JYSessionListViewCell class] forCellReuseIdentifier:kContactCellIdentifier];
     }
     return _tableView;
 }
@@ -70,17 +70,19 @@ static NSString *const kContactCellIdentifier = @"contactCell";
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return self.fetcher.sections.count;
+    NSInteger number = self.fetcher.sections.count;
+    return number;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return [[self.fetcher.sections objectAtIndex:section] numberOfObjects];
+    NSInteger number = [[self.fetcher.sections objectAtIndex:section] numberOfObjects];
+    return number;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    JYMessageContactViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kContactCellIdentifier forIndexPath:indexPath];
+    JYSessionListViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kContactCellIdentifier forIndexPath:indexPath];
 
     cell.contact = [self.fetcher objectAtIndexPath:indexPath];
 
@@ -96,8 +98,8 @@ static NSString *const kContactCellIdentifier = @"contactCell";
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    JYMessageViewController *viewController = [JYMessageViewController new];
-    JYMessageContactViewCell *cell = (JYMessageContactViewCell *)[tableView cellForRowAtIndexPath:indexPath];
+    JYSessionViewController *viewController = [JYSessionViewController new];
+    JYSessionListViewCell *cell = (JYSessionListViewCell *)[tableView cellForRowAtIndexPath:indexPath];
 
     if (cell.person)
     {

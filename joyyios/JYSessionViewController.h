@@ -1,5 +1,5 @@
 //
-//  JYMessageViewController.h
+//  JYSessionViewController.h
 //  joyyios
 //
 //  Created by Ping Yang on 8/23/15.
@@ -9,7 +9,7 @@
 #import <JSQMessagesViewController/JSQMessages.h>
 
 
-@interface JYMessageViewController : JSQMessagesViewController
+@interface JYSessionViewController : JSQMessagesViewController
 
 @property (nonatomic) JYPerson *thatPerson;
 

@@ -61,7 +61,7 @@
     return [XMPPJID jidWithUser:[JYCredential mine].idString domain:kMessageDomain resource:resource];
 }
 
-+ (NSFetchedResultsController *)fetcherForForContacts
++ (NSFetchedResultsController *)fetcherOfSessions
 {
     // Standard process for fetch XMPPMessageArchiving_Contact_CoreDataObject objects
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"XMPPMessageArchiving_Contact_CoreDataObject"];

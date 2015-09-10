@@ -1,5 +1,5 @@
 //
-//  JYMessageContactViewCell.m
+//  JYSessionListViewCell.m
 //  joyyios
 //
 //  Created by Ping Yang on 9/3/15.
@@ -9,13 +9,13 @@
 #import <AFNetworking/UIImageView+AFNetworking.h>
 #import <TTTAttributedLabel/TTTAttributedLabel.h>
 
-#import "JYMessageContactViewCell.h"
+#import "JYSessionListViewCell.h"
 #import "JYMessageDateFormatter.h"
 
 static const CGFloat kAvatarImageWidth = 70;
 static const CGFloat kTimeLabelWidth = 80;
 
-@interface JYMessageContactViewCell ()
+@interface JYSessionListViewCell ()
 @property (nonatomic) JYPerson *person;
 @property (nonatomic) TTTAttributedLabel *nameLabel;
 @property (nonatomic) TTTAttributedLabel *messageLabel;
@@ -23,7 +23,7 @@ static const CGFloat kTimeLabelWidth = 80;
 @property (nonatomic) UIImageView *avatarView;
 @end
 
-@implementation JYMessageContactViewCell
+@implementation JYSessionListViewCell
 
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {

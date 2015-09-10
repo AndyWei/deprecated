@@ -1,5 +1,5 @@
 //
-//  JYMessageViewController.m
+//  JYSessionViewController.m
 //  joyyios
 //
 //  Created by Ping Yang on 8/23/15.
@@ -10,10 +10,10 @@
 
 #import "JYButton.h"
 #import "JYMessage.h"
-#import "JYMessageViewController.h"
+#import "JYSessionViewController.h"
 #import "JYXmppManager.h"
 
-@interface JYMessageViewController() <UIActionSheetDelegate, NSFetchedResultsControllerDelegate>
+@interface JYSessionViewController() <UIActionSheetDelegate, NSFetchedResultsControllerDelegate>
 @property (nonatomic) JSQMessagesBubbleImage *outgoingBubbleImageData;
 @property (nonatomic) JSQMessagesBubbleImage *incomingBubbleImageData;
 @property (nonatomic) JSQMessagesAvatarImage *remoteAvatar;
@@ -33,7 +33,7 @@ CGFloat const kLeftContainerWidth = kAccButtonWidth;
 CGFloat const kRightContainerWidth = 2 * kMediaButtonWidth;
 CGFloat const kEdgeInset = 10.f;
 
-@implementation JYMessageViewController
+@implementation JYSessionViewController
 
 #pragma mark - View lifecycle
 

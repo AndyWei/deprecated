@@ -46,7 +46,7 @@ extern AWSRegionType const kCognitoRegionType;
 extern NSString *const kKeyChainStoreAPI;
 extern NSString *const kKeyChainStoreAWS;
 
-extern NSString *const kAPIEmailKey;
+extern NSString *const kAPIPhoneNumberKey;
 extern NSString *const kAPIPasswordKey;
 extern NSString *const kAPIUserIdKey;
 extern NSString *const kAPIUsernameKey;

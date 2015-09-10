@@ -49,7 +49,7 @@ AWSRegionType const kCognitoRegionType = AWSRegionUSEast1;
 NSString *const kKeyChainStoreAPI = @"com.joyyapp.api";
 NSString *const kKeyChainStoreAWS = @"com.joyyapp.aws";
 
-NSString *const kAPIEmailKey    = @"email";
+NSString *const kAPIPhoneNumberKey    = @"phone_number";
 NSString *const kAPIPasswordKey = @"password";
 NSString *const kAPIUserIdKey   = @"user_id";
 NSString *const kAPIUsernameKey = @"username";

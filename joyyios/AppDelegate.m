@@ -17,8 +17,8 @@
 #import "JYAmazonClientManager.h"
 #import "JYButton.h"
 #import "JYMasqueradeViewController.h"
-#import "JYMessageListViewController.h"
 #import "JYPeopleViewController.h"
+#import "JYSessionListViewController.h"
 #import "JYSignViewController.h"
 #import "JYSoundPlayer.h"
 #import "JYXmppManager.h"
@@ -295,7 +295,7 @@
     UIViewController *vc2 = [JYPeopleViewController new];
     UINavigationController *nc2 = [[UINavigationController alloc] initWithRootViewController:vc2];
 
-    UIViewController *vc3 = [JYMessageListViewController new];
+    UIViewController *vc3 = [JYSessionListViewController new];
     UINavigationController *nc3 = [[UINavigationController alloc] initWithRootViewController:vc3];
 
     UIViewController *vc4 = [JYSignViewController new];
@@ -313,17 +313,17 @@
     tabBarItem1.image = [[UIImage imageNamed:@"mask"] imageWithRenderingMode:UIImageRenderingModeAutomatic];
     tabBarItem1.title = NSLocalizedString(@"Masquerade", nil);
 
-    tabBarItem2.selectedImage = [[UIImage imageNamed:@"radar_selected"]imageWithRenderingMode:UIImageRenderingModeAutomatic];
-    tabBarItem2.image = [[UIImage imageNamed:@"radar"]imageWithRenderingMode:UIImageRenderingModeAutomatic];
-    tabBarItem2.title = NSLocalizedString(@"Radar", nil);
+    tabBarItem2.selectedImage = [[UIImage imageNamed:@"people_selected"]imageWithRenderingMode:UIImageRenderingModeAutomatic];
+    tabBarItem2.image = [[UIImage imageNamed:@"people"]imageWithRenderingMode:UIImageRenderingModeAutomatic];
+    tabBarItem2.title = NSLocalizedString(@"People", nil);
 
     tabBarItem3.selectedImage = [[UIImage imageNamed:@"chat_selected"]imageWithRenderingMode:UIImageRenderingModeAutomatic];
     tabBarItem3.image = [[UIImage imageNamed:@"chat"]imageWithRenderingMode:UIImageRenderingModeAutomatic];
     tabBarItem3.title = NSLocalizedString(@"Chat", nil);
 
-    tabBarItem4.selectedImage = [[UIImage imageNamed:@"me_selected"]imageWithRenderingMode:UIImageRenderingModeAutomatic];
-    tabBarItem4.image = [[UIImage imageNamed:@"me"]imageWithRenderingMode:UIImageRenderingModeAutomatic];
-    tabBarItem4.title = NSLocalizedString(@"Me", nil);
+    tabBarItem4.selectedImage = [[UIImage imageNamed:@"contacts_selected"]imageWithRenderingMode:UIImageRenderingModeAutomatic];
+    tabBarItem4.image = [[UIImage imageNamed:@"contacts"]imageWithRenderingMode:UIImageRenderingModeAutomatic];
+    tabBarItem4.title = NSLocalizedString(@"Contacts", nil);
 
     return _tabBarController;
 }
@@ -356,14 +356,14 @@
     [self _refreshAWSAccess];
 }
 
-- (void)_doAutoSignInAfter:(NSInteger)interval
+- (void)_doAutoSignInAfter:(NSInteger)seconds
 {
     if (self.signInTimer)
     {
         [self.signInTimer invalidate];
     }
 
-    self.signInTimer = [MSWeakTimer scheduledTimerWithTimeInterval:interval
+    self.signInTimer = [MSWeakTimer scheduledTimerWithTimeInterval:seconds
                                                             target:self
                                                           selector:@selector(_autoSignInNow)
                                                           userInfo:nil
@@ -389,7 +389,7 @@
     }
 
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager managerWithPassword];
-    NSString *url = [NSString apiURLWithPath:@"signin"];
+    NSString *url = [NSString apiURLWithPath:@"credential/signin"];
 
     NSLog(@"autoSignIn start");
 

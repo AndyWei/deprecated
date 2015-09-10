@@ -54,11 +54,11 @@
 
     NSLog(@"password = %@", password);
 
-    [JYCredential mine].email = email;
+    [JYCredential mine].phoneNumber = email;
     [JYCredential mine].password = password;
 
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager managerWithPassword];
-    NSString *url = [NSString apiURLWithPath:@"signin"];
+    NSString *url = [NSString apiURLWithPath:@"credential/signin"];
 
     [KVNProgress show];
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;

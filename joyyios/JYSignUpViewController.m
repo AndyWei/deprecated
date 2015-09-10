@@ -54,7 +54,7 @@
     [JYCredential mine].password = password;
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
 
-    NSString *url = [NSString apiURLWithPath:@"signup"];
+    NSString *url = [NSString apiURLWithPath:@"credential/signup"];
     NSDictionary *parameters = @{@"email": email, @"password": password};
 
     [KVNProgress show];

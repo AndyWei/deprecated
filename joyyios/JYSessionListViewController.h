@@ -1,5 +1,5 @@
 //
-//  JYMessageListViewController.h
+//  JYSessionListViewController.h
 //  joyyios
 //
 //  Created by Ping Yang on 8/27/15.
@@ -7,6 +7,6 @@
 //
 
 
-@interface JYMessageListViewController : UIViewController
+@interface JYSessionListViewController : UIViewController
 
 @end

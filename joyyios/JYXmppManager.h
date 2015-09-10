@@ -22,7 +22,7 @@ typedef void(^JYXmppStatusHandler)(JYXmppStatus type, NSError *error);
 @interface JYXmppManager : NSObject
 
 + (JYXmppManager *)sharedInstance;
-+ (NSFetchedResultsController *)fetcherForForContacts;
++ (NSFetchedResultsController *)fetcherOfSessions;
 + (NSFetchedResultsController *)fetcherForRemoteJid:(XMPPJID *)remoteJid;
 + (XMPPJID *)jidWithIdString:(NSString *)idString;
 + (XMPPJID *)myJID;

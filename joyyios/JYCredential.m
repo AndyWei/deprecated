@@ -31,7 +31,7 @@
     {
         self.keychain = [UICKeyChainStore keyChainStoreWithService:kKeyChainStoreAWS];
 
-        _email    = self.keychain[kAPIEmailKey];
+        _phoneNumber = self.keychain[kAPIPhoneNumberKey];
         _password = self.keychain[kAPIPasswordKey];
         _username = self.keychain[kAPIUsernameKey];
         _idString = self.keychain[kAPIUserIdKey];
@@ -46,10 +46,10 @@
     return self;
 }
 
-- (void)setEmail:(NSString *)email
+- (void)setPhoneNumber:(NSString *)phoneNumber
 {
-    _email = email;
-    self.keychain[kAPIEmailKey] = _email;
+    _phoneNumber = phoneNumber;
+    self.keychain[kAPIPhoneNumberKey] = _phoneNumber;
 }
 
 - (void)setPassword:(NSString *)password
@@ -96,9 +96,9 @@
         self.idString = [dict valueForKey:@"id"];
     }
 
-    if ([dict valueForKey:@"email"])
+    if ([dict valueForKey:@"phone"])
     {
-        self.email = [dict valueForKey:@"email"];
+        self.phoneNumber = [dict valueForKey:@"phone"];
     }
 
     if ([dict valueForKey:@"username"])
@@ -118,7 +118,7 @@
 
 - (BOOL)isEmpty
 {
-    return (!self.email || !self.password || !self.idString);
+    return (!self.phoneNumber || !self.password || !self.idString);
 }
 
 @end
