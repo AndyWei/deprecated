@@ -76,6 +76,7 @@ NSString *const kMessageBodyTypeLocation = @"l:";
 NSString *const kMessageBodyTypeText     = @"t:";
 NSString *const kMessageBodyTypeVideo    = @"v:";
 
+NSString *const kNotificationDidChangeCountryCode = @"didChangeCountryCode";
 NSString *const kNotificationDidSignIn = @"didSignIn";
 NSString *const kNotificationDidSignUp = @"didSignUp";
 NSString *const kNotificationNeedGeoInfo = @"needGeoInfo";

@@ -202,11 +202,11 @@ static CGRect CGRectEdgeInset(CGRect rect, UIEdgeInsets insets)
     CGRect frame = CGRectMake(0, 0, SCREEN_WIDTH, kButtonDefaultHeight);
 
     JYButton *button = [[JYButton alloc] initWithFrame:frame buttonStyle:JYButtonStyleTitle];
-    button.backgroundColor = FlatWhite;
+    button.backgroundColor = JoyyWhitePure;
     button.contentAnimateToColor = FlatGray;
-    button.contentColor = FlatWhite;
-    button.foregroundColor = FlatSkyBlue;
-    button.foregroundAnimateToColor = FlatWhite;
+    button.contentColor = JoyyWhitePure;
+    button.foregroundColor = JoyyBlue;
+    button.foregroundAnimateToColor = JoyyWhitePure;
     button.textLabel.font = [UIFont boldSystemFontOfSize:kButtonDefaultFontSize];
 
     return button;

@@ -70,4 +70,9 @@
     return rgba(215, 215, 215, 0.5);
 }
 
++ (UIColor *)joyyWhiterColor
+{
+    return rgb(235, 235, 235);
+}
+
 @end

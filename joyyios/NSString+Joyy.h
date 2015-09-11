@@ -10,9 +10,11 @@
 
 + (NSString *)agoStringForTimeInterval:(NSTimeInterval)interval;
 + (NSString *)apiURLWithPath:(NSString *)path;
++ (NSString *)e164PrefixForCountryCode:(NSString *)countryCode;
 
 - (BOOL)isInvisible;
 - (BOOL)isValidEmail;
+- (BOOL)isAllDigits;
 
 - (NSString *)messageDisplayString;
 - (NSString *)messageMediaURL;

@@ -153,6 +153,12 @@
 		D69202CF1AC4C7C1001C1C3D /* joyyiosTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D69202CE1AC4C7C1001C1C3D /* joyyiosTests.m */; };
 		D693798D1B54E8BC00E64F3A /* JYPhotoCaptionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D693798C1B54E8BC00E64F3A /* JYPhotoCaptionViewController.m */; };
 		D693798E1B54E8BC00E64F3A /* JYPhotoCaptionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D693798C1B54E8BC00E64F3A /* JYPhotoCaptionViewController.m */; };
+		D6966B321BA2BB2B00AAD8D5 /* UITextField+Joyy.m in Sources */ = {isa = PBXBuildFile; fileRef = D6966B311BA2BB2B00AAD8D5 /* UITextField+Joyy.m */; };
+		D6966B331BA2BB2B00AAD8D5 /* UITextField+Joyy.m in Sources */ = {isa = PBXBuildFile; fileRef = D6966B311BA2BB2B00AAD8D5 /* UITextField+Joyy.m */; };
+		D6966B361BA3753A00AAD8D5 /* JYCountryListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6966B351BA3753A00AAD8D5 /* JYCountryListViewController.m */; };
+		D6966B371BA3753A00AAD8D5 /* JYCountryListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6966B351BA3753A00AAD8D5 /* JYCountryListViewController.m */; };
+		D6966B3A1BA3873200AAD8D5 /* JYCountryViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D6966B391BA3873200AAD8D5 /* JYCountryViewCell.m */; };
+		D6966B3B1BA3873200AAD8D5 /* JYCountryViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D6966B391BA3873200AAD8D5 /* JYCountryViewCell.m */; };
 		D69FF6D31B94105F00466FE5 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D69FF6D21B94105F00466FE5 /* AudioToolbox.framework */; };
 		D69FF6D61B94144100466FE5 /* JYSoundPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = D69FF6D51B94144100466FE5 /* JYSoundPlayer.m */; };
 		D69FF6D71B94144100466FE5 /* JYSoundPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = D69FF6D51B94144100466FE5 /* JYSoundPlayer.m */; };
@@ -347,6 +353,12 @@
 		D69202CE1AC4C7C1001C1C3D /* joyyiosTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = joyyiosTests.m; sourceTree = "<group>"; };
 		D693798B1B54E8BC00E64F3A /* JYPhotoCaptionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYPhotoCaptionViewController.h; sourceTree = "<group>"; };
 		D693798C1B54E8BC00E64F3A /* JYPhotoCaptionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYPhotoCaptionViewController.m; sourceTree = "<group>"; };
+		D6966B301BA2BB2B00AAD8D5 /* UITextField+Joyy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITextField+Joyy.h"; sourceTree = "<group>"; };
+		D6966B311BA2BB2B00AAD8D5 /* UITextField+Joyy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITextField+Joyy.m"; sourceTree = "<group>"; };
+		D6966B341BA3753A00AAD8D5 /* JYCountryListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYCountryListViewController.h; sourceTree = "<group>"; };
+		D6966B351BA3753A00AAD8D5 /* JYCountryListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYCountryListViewController.m; sourceTree = "<group>"; };
+		D6966B381BA3873200AAD8D5 /* JYCountryViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYCountryViewCell.h; sourceTree = "<group>"; };
+		D6966B391BA3873200AAD8D5 /* JYCountryViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYCountryViewCell.m; sourceTree = "<group>"; };
 		D69FF6D21B94105F00466FE5 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		D69FF6D41B94144100466FE5 /* JYSoundPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYSoundPlayer.h; sourceTree = "<group>"; };
 		D69FF6D51B94144100466FE5 /* JYSoundPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYSoundPlayer.m; sourceTree = "<group>"; };
@@ -712,6 +724,8 @@
 				D63B69A81AC51302005600A9 /* UIFont+Joyy.m */,
 				D61D1DDC1B5342DD00DE37DF /* UIImage+Joyy.h */,
 				D61D1DDD1B5342DD00DE37DF /* UIImage+Joyy.m */,
+				D6966B301BA2BB2B00AAD8D5 /* UITextField+Joyy.h */,
+				D6966B311BA2BB2B00AAD8D5 /* UITextField+Joyy.m */,
 				D689ED681AE42C8300CB4D2B /* UIView+Joyy.h */,
 				D689ED691AE42C8300CB4D2B /* UIView+Joyy.m */,
 			);
@@ -723,6 +737,10 @@
 			children = (
 				D63F0D7B1ACA5E260067C5EE /* JYSignViewController.h */,
 				D63F0D7C1ACA5E260067C5EE /* JYSignViewController.m */,
+				D6966B341BA3753A00AAD8D5 /* JYCountryListViewController.h */,
+				D6966B351BA3753A00AAD8D5 /* JYCountryListViewController.m */,
+				D6966B381BA3873200AAD8D5 /* JYCountryViewCell.h */,
+				D6966B391BA3873200AAD8D5 /* JYCountryViewCell.m */,
 				D63B69B01AC51D61005600A9 /* JYSignBaseViewController.h */,
 				D63B69B11AC51D61005600A9 /* JYSignBaseViewController.m */,
 				D68DAF941AC4CACD00838E7E /* JYSignInViewController.h */,
@@ -763,12 +781,12 @@
 				D68DAF931AC4CACD00838E7E /* Constants.m */,
 				D62C2C6A1B917FE500233F5B /* Vendor */,
 				D68DAF991AC4CD0800838E7E /* Common */,
+				D68DAF9A1AC4CD1800838E7E /* Credential */,
 				D69FF6D81B9646CF00466FE5 /* AWS */,
 				D61D1D5B1B4DBA5D00DE37DF /* Masquerade */,
 				D68486B31B8AC207005CA0C4 /* Message */,
 				D63B69AB1AC5184D005600A9 /* People */,
 				D6C82B611B1252FE00876F57 /* Model */,
-				D68DAF9A1AC4CD1800838E7E /* Credential */,
 				D69202BF1AC4C7C0001C1C3D /* Images.xcassets */,
 				D69202C11AC4C7C0001C1C3D /* LaunchScreen.xib */,
 				D69202AF1AC4C7C0001C1C3D /* Supporting Files */,
@@ -1073,6 +1091,7 @@
 				D61D1D4B1B4A65F200DE37DF /* UIColor+MDCRGB8Bit.m in Sources */,
 				D6C6BBAC1B62DF6B00FFFAC7 /* NSDictionary+Joyy.m in Sources */,
 				D63F0D7D1ACA5E260067C5EE /* JYSignViewController.m in Sources */,
+				D6966B321BA2BB2B00AAD8D5 /* UITextField+Joyy.m in Sources */,
 				D63B69B61AC53BB4005600A9 /* JYFloatLabeledTextField.m in Sources */,
 				D65AFA5E1AEC715D007867D0 /* JYMasqueradeViewController.m in Sources */,
 				D61D1DB21B4E336E00DE37DF /* TGCameraFlash.m in Sources */,
@@ -1089,6 +1108,7 @@
 				D61D1DA41B4E336E00DE37DF /* TGCameraNavigationController.m in Sources */,
 				D68486BE1B8C59BF005CA0C4 /* JYMessage.m in Sources */,
 				D63F0D551AC7ACB70067C5EE /* JYSignUpViewController.m in Sources */,
+				D6966B3A1BA3873200AAD8D5 /* JYCountryViewCell.m in Sources */,
 				D61D1DA81B4E336E00DE37DF /* TGPhotoViewController.m in Sources */,
 				D61D1DB41B4E336E00DE37DF /* TGCameraFocus.m in Sources */,
 				D61D1DCC1B4E336E00DE37DF /* TGTintedLabel.m in Sources */,
@@ -1104,6 +1124,7 @@
 				D6E3B0511B99334900B707DF /* AFHTTPRequestOperationManager+Joyy.m in Sources */,
 				D61D1DA01B4E336E00DE37DF /* UIImage+CameraFilters.m in Sources */,
 				D62C2C681B90261000233F5B /* JYSessionListViewController.m in Sources */,
+				D6966B361BA3753A00AAD8D5 /* JYCountryListViewController.m in Sources */,
 				D67DD0E81B7530AF00333626 /* JYPersonCard.m in Sources */,
 				D6E3B0551B996F5400B707DF /* JYSessionListViewCell.m in Sources */,
 				D61D1D571B4A65F200DE37DF /* MDCSwipeToChooseView.m in Sources */,
@@ -1148,6 +1169,7 @@
 				D65F37471B04807D007B534C /* JYCommentViewCell.m in Sources */,
 				D6B2F05C1ACE630F009601B0 /* JYAutoCompleteTextField.m in Sources */,
 				D69202CF1AC4C7C1001C1C3D /* joyyiosTests.m in Sources */,
+				D6966B3B1BA3873200AAD8D5 /* JYCountryViewCell.m in Sources */,
 				D61D1D521B4A65F200DE37DF /* MDCSwipeToChooseViewOptions.m in Sources */,
 				D63F0D5A1AC7CFF20067C5EE /* JYButton.m in Sources */,
 				D61D1D581B4A65F200DE37DF /* MDCSwipeToChooseView.m in Sources */,
@@ -1166,6 +1188,7 @@
 				D69FF6D71B94144100466FE5 /* JYSoundPlayer.m in Sources */,
 				D69FF6DC1B96471600466FE5 /* JYAmazonClientManager.m in Sources */,
 				D63F0DA31ACD08260067C5EE /* UIColor+Joyy.m in Sources */,
+				D6966B371BA3753A00AAD8D5 /* JYCountryListViewController.m in Sources */,
 				D61D1DCB1B4E336E00DE37DF /* TGTintedButton.m in Sources */,
 				D61D1DA71B4E336E00DE37DF /* TGCameraViewController.m in Sources */,
 				D61D1DB31B4E336E00DE37DF /* TGCameraFlash.m in Sources */,
@@ -1187,6 +1210,7 @@
 				D61D1DAF1B4E336E00DE37DF /* TGCamera.m in Sources */,
 				D6C82B5D1B0EFDEA00876F57 /* JYCommentTextView.m in Sources */,
 				D61D1DBB1B4E336E00DE37DF /* TGCameraToggle.m in Sources */,
+				D6966B331BA2BB2B00AAD8D5 /* UITextField+Joyy.m in Sources */,
 				D61D1DA91B4E336E00DE37DF /* TGPhotoViewController.m in Sources */,
 				D62C2C691B90261000233F5B /* JYSessionListViewController.m in Sources */,
 				D63B69B71AC53BB4005600A9 /* JYFloatLabeledTextField.m in Sources */,

@@ -26,6 +26,8 @@
 #define JoyyWhite80   [UIColor joyyWhiteColor80]
 #define JoyyWhite50   [UIColor joyyWhiteColor50]
 
+#define JoyyWhiter    [UIColor joyyWhiterColor]
+
 #define JoyyWhitePure [UIColor whiteColor]
 
 
@@ -44,4 +46,5 @@
 + (UIColor *)joyyWhiteColor80;
 + (UIColor *)joyyWhiteColor50;
 
++ (UIColor *)joyyWhiterColor;
 @end

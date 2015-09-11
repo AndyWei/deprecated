@@ -54,6 +54,7 @@ PODS:
   - TTTAttributedLabel (1.13.4)
   - UICKeyChainStore (2.0.6)
   - UIView+Positioning (1.1)
+  - VMaskTextField (1.0.4)
   - XMPPFramework (3.6.5):
     - XMPPFramework/Authentication (= 3.6.5)
     - XMPPFramework/BandwidthMonitor (= 3.6.5)
@@ -219,6 +220,7 @@ DEPENDENCIES:
   - TTTAttributedLabel
   - UICKeyChainStore
   - UIView+Positioning
+  - VMaskTextField
   - XMPPFramework
   - YTKKeyValueStore
 
@@ -255,6 +257,7 @@ SPEC CHECKSUMS:
   TTTAttributedLabel: 0a2ac7b2dd726d32a070dafb01446026b11e624f
   UICKeyChainStore: c5719c814e8bd69e74e4a0fc09daf8f4d6257a59
   UIView+Positioning: e93fe9e3186d1ed7d60e344aa12787911e902056
+  VMaskTextField: 633dfde6182fb3ea6604abb675e05cdc108006df
   XMPPFramework: 7ae77710dd86f1826f5451dc5f3cf9f4d2a62072
   YTKKeyValueStore: 4d002941540dd5108fa23009b71e0f2f937f7a0f
 
