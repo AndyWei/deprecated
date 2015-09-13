@@ -31,7 +31,8 @@
     "jsonwebtoken": "^5.0.4",
     "lodash": "^3.10.1",
     "pg": "^4.4.0",
-    "pg-native": "^1.8.1"
+    "pg-native": "^1.8.1",
+    "twilio": "^2.3.0"
   },
   "devDependencies": {
     "code": "^1.4.1",

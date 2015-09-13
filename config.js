@@ -55,6 +55,10 @@ var config = {
             name: 'joyyserver',
             address: 'joyybiz@gmail.com'
         }
+    },
+    twilio: {
+        sid: 'ACc80c8160da1eb1a1d9666e2e3c2183ff',
+        token: '788d85e1880cf30383e6f689fb5127a8'
     }
 };
 

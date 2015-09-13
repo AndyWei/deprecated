@@ -4,11 +4,13 @@ var Async = require('async');
 var AWS = require('aws-sdk');
 var Bcrypt = require('bcrypt');
 var Boom = require('boom');
+var Cache = require('../cache');
 var Config = require('../../config');
 var Const = require('../constants');
 var Hoek = require('hoek');
 var Joi = require('joi');
 var Jwt  = require('jsonwebtoken');
+var Twilio = require('twilio');
 var _ = require('lodash');
 
 var internals = {};
@@ -26,6 +28,67 @@ exports.register = function (server, options, next) {
     internals.cognitoidentity = new AWS.CognitoIdentity({apiVersion: '2014-06-30'});
     internals.awsTokenDuration = Config.get('/aws/identifyExpiresInSeconds');
     internals.apiTokenDuration = Config.get('/jwt/expiresInMinutes') * 60;
+
+    var twilioAccountSID = Config.get('/twilio/sid');
+    var twilioAuthToken = Config.get('/twilio/token');
+    internals.twilio = new Twilio.RestClient(twilioAccountSID, twilioAuthToken);
+
+    // Get a verification code to verify phone number
+    server.route({
+        method: 'GET',
+        path: options.basePath + '/credential/code',
+        config: {
+            validate: {
+                query: {
+                    phone: Joi.number().min(0).required() // The e164 code without the '+' prefix
+                }
+            }
+        },
+        handler: function (request, reply) {
+
+            var randomCode = _.random(1000, 9999);
+            Async.auto({
+                cache: function (callback) {
+
+                    Cache.setex(Const.PHONE_VERIFICATION_PAIRS, request.query.phone, randomCode, function (err) {
+
+                        if (err) {
+                            console.error(err);
+                            return callback(err);
+                        }
+
+                        return callback(null);
+                    });
+                },
+                sms: function (callback) {
+
+                    var message = {
+                        to: '+' + request.query.phone.toString(),
+                        from: '+16509008050',
+                        body: randomCode
+                    };
+                    internals.twilio.sendMessage(message, function(err) {
+
+                        if (err) {
+                            console.error(err);
+                            return callback(err);
+                        }
+
+                        return callback(null);
+                    });
+                }
+            }, function (err) {
+
+                if (err) {
+                    console.error(err);
+                    return reply(err);
+                }
+
+                return reply(null);
+            });
+        }
+    });
+
 
     // Existing person sign in
     server.route({
@@ -71,7 +134,7 @@ exports.register = function (server, options, next) {
         config: {
             validate: {
                 payload: {
-                    phone: Joi.string().min(3).max(30).required(),
+                    phone: Joi.number().min(0).required(),
                     password: Joi.string().min(4).max(100).required()
                 }
             },

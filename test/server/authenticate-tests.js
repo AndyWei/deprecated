@@ -65,7 +65,7 @@ lab.experiment('Auth Basic: ', function () {
             method: 'GET',
             url: '/',
             headers: {
-                authorization: 'Basic ' + (new Buffer('1.4257850318:password')).toString('base64')
+                authorization: 'Basic ' + (new Buffer('14257850318:password')).toString('base64')
             }
         };
 
@@ -96,7 +96,7 @@ lab.experiment('Auth Basic: ', function () {
             method: 'GET',
             url: '/',
             headers: {
-                authorization: 'Basic ' + (new Buffer('1.4257850318:wrongpassword')).toString('base64')
+                authorization: 'Basic ' + (new Buffer('14257850318:wrongpassword')).toString('base64')
             }
         };
 
@@ -127,7 +127,7 @@ lab.experiment('Auth Basic: ', function () {
             method: 'GET',
             url: '/',
             headers: {
-                authorization: 'Basic ' + (new Buffer('1.1234567890:password')).toString('base64')
+                authorization: 'Basic ' + (new Buffer('11234567890:password')).toString('base64')
             }
         };
 

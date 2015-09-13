@@ -49,6 +49,11 @@ exports.USER_HASHES = {
     key: 'u'
 };
 
+// Pair. key = phone_number, value = verification_code
+exports.PHONE_VERIFICATION_PAIRS = {
+    key: 'v',
+    ttl: 600
+};
 
 // consts
 exports.IM_DOMAIN = 'joyy.im';
