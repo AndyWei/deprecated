@@ -91,6 +91,10 @@
     // background, optionally refresh the user interface.
 
     NSLog(@"applicationDidBecomeActive");
+
+    // TODO: Implement clear badge number logic in the right places.
+    application.applicationIconBadgeNumber = 0;
+
     JYCredential *credential = [JYCredential mine];
     if(credential.isEmpty)
     {
