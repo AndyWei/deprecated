@@ -10,6 +10,7 @@ var Const = require('../constants');
 var Hoek = require('hoek');
 var Joi = require('joi');
 var Jwt  = require('jsonwebtoken');
+var Plivo = require('plivo');
 var Twilio = require('twilio');
 var _ = require('lodash');
 
@@ -29,31 +30,40 @@ exports.register = function (server, options, next) {
     internals.awsTokenDuration = Config.get('/aws/identifyExpiresInSeconds');
     internals.apiTokenDuration = Config.get('/jwt/expiresInMinutes') * 60;
 
-    var twilioAccountSID = Config.get('/twilio/sid');
-    var twilioAuthToken = Config.get('/twilio/token');
-    internals.twilio = new Twilio.RestClient(twilioAccountSID, twilioAuthToken);
+    internals.plivo = new Plivo.RestAPI({
+        authId: Config.get('/plivo/authId'),
+        authToken: Config.get('/plivo/authToken')
+    });
+
+    internals.twilio = new Twilio.RestClient(
+        Config.get('/twilio/sid'),
+        Config.get('/twilio/token')
+    );
 
     // Get a verification code to verify phone number
     server.route({
         method: 'GET',
-        path: options.basePath + '/credential/code',
+        path: options.basePath + '/credential/vcode',
         config: {
             validate: {
                 query: {
-                    phone: Joi.number().min(0).required() // The e164 code without the '+' prefix
+                    phone: Joi.number().min(0).required(), // The E.164 phone number without the '+' prefix.
+                    language: Joi.string().length(2).lowercase().optional() // The ISO 639-1 language code.
                 }
             }
         },
         handler: function (request, reply) {
 
+            var phoneNumber = request.query.phone.toString();
             var randomCode = _.random(1000, 9999);
+            var messageBody = randomCode + ' is your Joyy verification code.';
+
             Async.auto({
                 cache: function (callback) {
 
                     Cache.setex(Const.PHONE_VERIFICATION_PAIRS, request.query.phone, randomCode, function (err) {
 
                         if (err) {
-                            console.error(err);
                             return callback(err);
                         }
 
@@ -62,20 +72,37 @@ exports.register = function (server, options, next) {
                 },
                 sms: function (callback) {
 
-                    var message = {
-                        to: '+' + request.query.phone.toString(),
-                        from: '+16509008050',
-                        body: randomCode
-                    };
-                    internals.twilio.sendMessage(message, function(err) {
+                    // For phone numbers in China, Indonesia and UK, send SMS via twilio
+                    if (_.startsWith(phoneNumber, '86') || _.startsWith(phoneNumber, '62') || _.startsWith(phoneNumber, '44')) {
 
-                        if (err) {
-                            console.error(err);
-                            return callback(err);
-                        }
+                        var message = {
+                            from: Config.get('/twilio/sourceNumber'),
+                            to: '+' + phoneNumber,
+                            body: messageBody
+                        };
+                        internals.twilio.sendMessage(message, function(err) {
 
-                        return callback(null);
-                    });
+                            if (err) {
+                                return callback(err);
+                            }
+                            return callback(null);
+                        });
+                    }
+                    else {
+                        // For other countries, send SMS via plivo
+                        var params = {
+                            src: Config.get('/plivo/sourceNumber'),
+                            dst: phoneNumber,
+                            text: messageBody
+                        };
+                        internals.plivo.send_message(params, function(status, response) {
+
+                            if (status < 200 || status >= 300) {
+                                return callback(response);
+                            }
+                            return callback(null);
+                        });
+                    }
                 }
             }, function (err) {
 

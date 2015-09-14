@@ -43,22 +43,15 @@ var config = {
         password: 'TheSimplePasswordForTestOnly',
         port: 6379
     },
-    stripe: {
-        platformSecretKey: 'sk_test_LhUJDVWLoCJT1xRQ9OnkhDcy'
-    },
-    system: {
-        fromAddress: {
-            name: 'joyyserver',
-            address: 'joyybiz@gmail.com'
-        },
-        toAddress: {
-            name: 'joyyserver',
-            address: 'joyybiz@gmail.com'
-        }
+    plivo: {
+        authId: 'MAOGI3YWQWYJZHNDZMZD',
+        authToken: 'MDcwOGZjOTZlMGZlZjRkN2YyYjM2MTY0MTUzNWE1',
+        sourceNumber: '16503075000'
     },
     twilio: {
         sid: 'ACc80c8160da1eb1a1d9666e2e3c2183ff',
-        token: '788d85e1880cf30383e6f689fb5127a8'
+        token: '788d85e1880cf30383e6f689fb5127a8',
+        sourceNumber:'+16509008050'
     }
 };
 
