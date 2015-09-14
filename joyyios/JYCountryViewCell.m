@@ -27,15 +27,15 @@ static const CGFloat kCheckMarkImageWidth = 20;
     if (self)
     {
         self.opaque = YES;
-        self.backgroundColor = JoyyWhiter;
+        self.backgroundColor = JoyyWhitePure;
     }
     return self;
 }
 
-- (void)presentCountry:(NSString *)country dailCode:(NSString *)dailCode selected:(BOOL)selected
+- (void)presentCountry:(NSString *)country dialingCode:(NSString *)dialingCode selected:(BOOL)selected
 {
     self.countryNameLabel.text = country;
-    self.countryNumberLabel.text = dailCode;
+    self.countryNumberLabel.text = [NSString stringWithFormat:@"+%@", dialingCode];
     self.checkMarkImageView.image = selected? [UIImage imageNamed:@"checkMark"] : nil;
 }
 
@@ -78,7 +78,7 @@ static const CGFloat kCheckMarkImageWidth = 20;
 {
     if (!_checkMarkImageView)
     {
-        CGFloat x = self.width - kMarginRight - kCheckMarkImageWidth;
+        CGFloat x = self.width - 30 - kCheckMarkImageWidth;
         UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(x, 13, kCheckMarkImageWidth, kCheckMarkImageWidth)];
         [self addSubview:imageView];
 

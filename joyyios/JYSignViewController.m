@@ -17,7 +17,7 @@
 #import "UITextField+Joyy.h"
 
 @interface JYSignViewController () <UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate>
-@property (nonatomic) JYButton *nextButton;
+@property (nonatomic) JYButton *verificationButton;
 @property (nonatomic) NSString *countryCode;
 @property (nonatomic) TTTAttributedLabel *headerLabel;
 @property (nonatomic) TTTAttributedLabel *countryNameLabel;
@@ -89,21 +89,16 @@ CGFloat const kCountryNumberWidth = 60;
     return _tableView;
 }
 
-- (JYButton *)nextButton
+- (JYButton *)verificationButton
 {
-    if (!_nextButton)
+    if (!_verificationButton)
     {
-        _nextButton = [JYButton button];
-        _nextButton.textLabel.text = NSLocalizedString(@"Next", nil);
-        _nextButton.enabled = NO;
-        [_nextButton addTarget:self action:@selector(_next) forControlEvents:UIControlEventTouchUpInside];
+        _verificationButton = [JYButton button];
+        _verificationButton.textLabel.text = NSLocalizedString(@"Verify Phone Number", nil);
+        _verificationButton.enabled = NO;
+        [_verificationButton addTarget:self action:@selector(_getVerificationCode) forControlEvents:UIControlEventTouchUpInside];
     }
-    return _nextButton;
-}
-
-- (void)_next
-{
-
+    return _verificationButton;
 }
 
 - (TTTAttributedLabel *)headerLabel
@@ -179,7 +174,8 @@ CGFloat const kCountryNumberWidth = 60;
     NSString *localizedCountryName = [[NSLocale currentLocale] displayNameForKey:NSLocaleCountryCode value:_countryCode];
     self.countryNameLabel.text = localizedCountryName;
 
-    self.countryNumberLabel.text = [NSString e164PrefixForCountryCode:_countryCode];
+    NSString *dialingCode = [NSString dialingCodeForCountryCode:_countryCode];
+    self.countryNumberLabel.text = [NSString stringWithFormat:@"+%@", dialingCode];
 
     // For NANP countries, use US format
     if ([self.countryNumberLabel.text isEqualToString:@"+1"])       // NANP
@@ -194,6 +190,13 @@ CGFloat const kCountryNumberWidth = 60;
     {
         self.phoneNumberTextField.mask = @"##############";         // Others
     }
+}
+
+- (NSString *)_userPhoneNumberDigits
+{
+    NSString *dialingCode = [NSString dialingCodeForCountryCode:self.countryCode];
+    NSString *localPhoneNumber = [self.phoneNumberTextField.text pureNumberString];
+    return [NSString stringWithFormat:@"%@%@", dialingCode, localPhoneNumber];
 }
 
 #pragma mark - UITableViewDataSource
@@ -257,8 +260,8 @@ CGFloat const kCountryNumberWidth = 60;
     UIView *footer = [[UIView alloc] initWithFrame:frame];
     footer.backgroundColor = ClearColor;
 
-    [footer addSubview:self.nextButton];
-    self.nextButton.y = kFooterHeight - self.nextButton.height;
+    [footer addSubview:self.verificationButton];
+    self.verificationButton.y = kFooterHeight - self.verificationButton.height;
 
     return footer;
 }
@@ -294,29 +297,55 @@ CGFloat const kCountryNumberWidth = 60;
 
 #pragma mark - UITextFieldDelegate methods
 
--(BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
 {
     NSString * newStr = [textField.text stringByReplacingCharactersInRange:range withString:string];
 
     if ([self.countryNumberLabel.text isEqualToString:@"+1"])
     {
-        self.nextButton.enabled = (newStr.length >= 14);
+        self.verificationButton.enabled = (newStr.length >= 14);
     }
     else
     {
-        self.nextButton.enabled = (newStr.length > 3);
+        self.verificationButton.enabled = (newStr.length > 3);
     }
 
     return  [self.phoneNumberTextField shouldChangeCharactersInRange:range replacementString:string];
 }
 
--(BOOL)textFieldShouldClear:(UITextField *)textField
+- (BOOL)textFieldShouldClear:(UITextField *)textField
 {
-    self.nextButton.enabled = NO;
+    self.verificationButton.enabled = NO;
     return YES;
 }
 
 #pragma mark - Network
+
+- (void)_getVerificationCode
+{
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    NSString *url = [NSString apiURLWithPath:@"credential/vcode"];
+
+    NSString *phoneNumber = [self _userPhoneNumberDigits];
+    NSString * language = [[NSLocale preferredLanguages] objectAtIndex:0];
+    NSDictionary *parameters = @{ @"phone": phoneNumber, @"language": language };
+
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+
+    [manager GET:url
+      parameters:parameters
+         success:^(AFHTTPRequestOperation *operation, id responseObject) {
+             NSLog(@"Success: GET credential/vcode");
+
+             [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+         }
+         failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+             NSLog(@"Error: GET credential/vcode error: %@", error);
+
+             [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+         }];
+
+}
 
 
 

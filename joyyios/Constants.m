@@ -92,7 +92,7 @@ NSString *const kTableNameLikedPost = @"liked_post";
 NSString *const kTableNamePerson = @"person";
 
 //NSString *const kUrlAPIBase = @"http://api.joyyapp.com:8000/v1/";
-NSString *const kUrlAPIBase = @"http://192.168.1.145:8000/v1/";
+NSString *const kUrlAPIBase = @"http://192.168.1.106:8000/v1/";
 
 NSString *const kURLAvatarBase = @"http://avatar.joyyapp.com/";
 NSString *const kUrlMessageMediaBase = @"http://media.joyy.im/";

@@ -8,6 +8,6 @@
 
 @interface JYCountryViewCell : UITableViewCell
 
-- (void)presentCountry:(NSString *)country dailCode:(NSString *)dailCode selected:(BOOL)selected;
+- (void)presentCountry:(NSString *)country dialingCode:(NSString *)dialingCode selected:(BOOL)selected;
 
 @end

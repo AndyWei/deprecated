@@ -47,13 +47,13 @@
     return [NSString stringWithFormat:@"%@%@", kUrlAPIBase, path];
 }
 
-+ (NSString *)e164PrefixForCountryCode:(NSString *)countryCode
++ (NSString *)dialingCodeForCountryCode:(NSString *)countryCode
 {
-    static NSDictionary *_e164Dict = nil;
+    static NSDictionary *dialCodeDict = nil;
 
-    if (!_e164Dict)
+    if (!dialCodeDict)
     {
-        _e164Dict = [NSDictionary dictionaryWithObjectsAndKeys:
+        dialCodeDict = [NSDictionary dictionaryWithObjectsAndKeys:
                      @"93",@"AF",@"355",@"AL",@"213",@"DZ",@"1",@"AS",
                      @"376",@"AD",@"244",@"AO",@"1",@"AI",@"1",@"AG",
                      @"54",@"AR",@"374",@"AM",@"297",@"AW",@"61",@"AU",
@@ -116,11 +116,11 @@
                      @"84",@"VN",@"1",@"VG",@"1",@"VI",@"672",@"AQ",
                      @"358",@"AX",@"47",@"BV",@"599",@"BQ",@"599",@"CW",
                      @"689",@"TF",@"1",@"SX",@"211",@"SS",@"212",@"EH",
-                     @"972",@"IL", nil];
+                     @"972",@"IL",@"334",@"HM",@"1",@"UM", nil];
     }
 
-    NSString *number = _e164Dict[countryCode];
-    return [NSString stringWithFormat:@"+%@", number];
+    NSString *number = dialCodeDict[countryCode];
+    return number;
 }
 
 - (BOOL)isInvisible
@@ -214,6 +214,11 @@
 
     return nil;
 
+}
+
+- (NSString *)pureNumberString
+{
+    return [[self componentsSeparatedByCharactersInSet:[[NSCharacterSet decimalDigitCharacterSet] invertedSet]] componentsJoinedByString:@""];
 }
 
 @end
