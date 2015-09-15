@@ -22,7 +22,7 @@ exports.register = function (server, options, next) {
         config: {
             validate: {
                 query: {
-                    user: Joi.string().regex(/^[0-9]+$/).max(19).required(),
+                    user: Joi.string().token().min(4).required(),
                     server: Joi.string().valid('joyy.im').required(),
                     pass: Joi.string().min(4).max(200).required()
                 }
@@ -39,8 +39,8 @@ exports.register = function (server, options, next) {
                 }
 
                 // The pass token is good, but user id not match, which means the token is stolen from another user
-                if (!_.isEqual(request.query.user, decoded.id)) {
-                    console.log('Failure: authentication of user %s failed due to user-id mismatch', request.query.user);
+                if (!_.isEqual(request.query.user, decoded.username)) {
+                    console.log('Failure: authentication of user %s failed due to username mismatch', request.query.user);
                     return reply(null, false);
                 }
 
@@ -58,7 +58,7 @@ exports.register = function (server, options, next) {
         config: {
             validate: {
                 query: {
-                    user: Joi.string().regex(/^[0-9]+$/).max(19).required(),
+                    user: Joi.string().token().min(4).required(),
                     server: Joi.string().valid('joyy.im').required(),
                     pass: Joi.any().optional()
                 }
@@ -67,11 +67,10 @@ exports.register = function (server, options, next) {
         handler: function (request, reply) {
 
             var queryConfig = {
-                text: 'SELECT password FROM person WHERE id = $1 AND deleted = false',
+                text: 'SELECT id FROM person WHERE username = $1 AND deleted = false',
                 values: [request.query.user],
-                name: 'person_password_by_id'
+                name: 'person_select_id_by_username'
             };
-
             request.pg.client.query(queryConfig, function (err, result) {
 
                 if (err) {
@@ -96,18 +95,18 @@ exports.register = function (server, options, next) {
         config: {
             validate: {
                 payload: {
-                    from: Joi.string().regex(/^[0-9]+$/).max(19).required(),
-                    to: Joi.string().regex(/^[0-9]+$/).max(19).required(),
+                    from: Joi.string().token().min(4).required(),
+                    to: Joi.string().token().min(4).required(),
                     message: Joi.string().required()
                 }
             }
         },
         handler: function (request, reply) {
 
-            var fromId = request.payload.from;
-            var toId = request.payload.to;
+            var fromUser = request.payload.from;
+            var toUser = request.payload.to;
 
-            Push.notify(fromId, toId, request.payload.message, 'xmpp');
+            Push.notify(fromUser, toUser, request.payload.message, 'xmpp');
             return reply(null, null);
         }
     });

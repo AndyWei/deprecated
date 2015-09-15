@@ -23,18 +23,18 @@ exports.connect = internals.connect = function () {
 };
 
 
-exports.notify = internals.notify = function (fromPersonId, toPersonId, message, messageType) {
+exports.notify = internals.notify = function (fromUsername, toUsername, message, messageType) {
 
     Async.waterfall([
         function (next) {
 
-            Cache.hgetall(Const.USER_HASHES, toPersonId, function (err, toPerson) {
+            Cache.hgetall(Const.USER_HASHES, toUsername, function (err, toPerson) {
                 if (err) {
                     return next(err);
                 }
 
                 if (!toPerson.device || !toPerson.service) {
-                    var error = new Error(Const.DEVICE_TOKEN_NOT_FOUND + ' toPersonId = ' + toPersonId);
+                    var error = new Error(Const.DEVICE_TOKEN_NOT_FOUND + ' toUsername = ' + toUsername);
                     return next(error);
                 }
 
@@ -42,12 +42,12 @@ exports.notify = internals.notify = function (fromPersonId, toPersonId, message,
             });
         },
         function (toPerson, next) {
-// add fromPerson name lookup
 
             var service = Number(toPerson.service);
+            var fullMessage = '@' + fromUsername + ': ' + message;
             switch(service) {
                 case Const.NotificationServiceType.APN:
-                    internals.apnSend(toPerson.device, toPerson.badge, message, messageType);
+                    internals.apnSend(toPerson.device, toPerson.badge, fullMessage, messageType);
                     break;
                 case Const.NotificationServiceType.GCM:
                     internals.gcmSend();
@@ -56,14 +56,14 @@ exports.notify = internals.notify = function (fromPersonId, toPersonId, message,
                     internals.mpnSend();
                     break;
                 default:
-                    var error = new Error(Const.DEVICE_TOKEN_INVALID + ' toPersonId = ' + toPersonId);
+                    var error = new Error(Const.DEVICE_TOKEN_INVALID + ' toUsername = ' + toUsername);
                     return next(error);
             }
             next(null);
         },
         function (next) {
 
-            Cache.hincrby(Const.USER_HASHES, toPersonId, 'badge', 1, function (err) {
+            Cache.hincrby(Const.USER_HASHES, toUsername, 'badge', 1, function (err) {
 
                 if (err) {
                     return next(err);

@@ -21,9 +21,9 @@ var PgPlugin = {
 var request, server, jwtToken;
 
 
-function createJwtToken (personId) {
+function createJwtToken (personId, username) {
 
-    var obj = { id: personId };
+    var obj = { id: personId, username: username };
     var key = Config.get('/jwt/key');
     var options = { expiresInMinutes: Config.get('/jwt/expiresInMinutes')};
     var token = Jwt.sign(obj, key, options);
@@ -44,7 +44,7 @@ lab.before(function (done) {
 
         server.start(function () {
 
-            jwtToken = createJwtToken('1');
+            jwtToken = createJwtToken('1', 'andy');
             console.log('jwtToken = %s', jwtToken);
             return done();
         });
@@ -67,7 +67,7 @@ lab.experiment('XMPP check_password for MongooseIM: ', function () {
 
         request = {
             method: 'GET',
-            url: '/xmpp/check_password?user=1&server=joyy.im&pass=' + jwtToken
+            url: '/xmpp/check_password?user=andy&server=joyy.im&pass=' + jwtToken
         };
 
         server.inject(request, function (response) {
@@ -83,7 +83,7 @@ lab.experiment('XMPP check_password for MongooseIM: ', function () {
 
         request = {
             method: 'GET',
-            url: '/xmpp/check_password?user=1&server=joyy.im&pass=' + 'invalid_token'
+            url: '/xmpp/check_password?user=andy&server=joyy.im&pass=' + 'invalid_token'
         };
 
         server.inject(request, function (response) {
@@ -99,7 +99,7 @@ lab.experiment('XMPP check_password for MongooseIM: ', function () {
 
         request = {
             method: 'GET',
-            url: '/xmpp/check_password?user=1&server=google.com&pass=' + jwtToken
+            url: '/xmpp/check_password?user=andy&server=google.com&pass=' + jwtToken
         };
 
         server.inject(request, function (response) {
@@ -118,7 +118,7 @@ lab.experiment('XMPP user_exists for MongooseIM: ', function () {
 
         request = {
             method: 'GET',
-            url: '/xmpp/user_exists?user=1&server=joyy.im'
+            url: '/xmpp/user_exists?user=andy&server=joyy.im'
         };
 
         server.inject(request, function (response) {
@@ -130,11 +130,11 @@ lab.experiment('XMPP user_exists for MongooseIM: ', function () {
         });
     });
 
-    lab.test('username is a number but does not exists', function (done) {
+    lab.test('username is valid but does not exists', function (done) {
 
         request = {
             method: 'GET',
-            url: '/xmpp/user_exists?user=123456&server=joyy.im'
+            url: '/xmpp/user_exists?user=somebody&server=joyy.im'
         };
 
         server.inject(request, function (response) {
@@ -146,11 +146,11 @@ lab.experiment('XMPP user_exists for MongooseIM: ', function () {
         });
     });
 
-    lab.test('username is not a number', function (done) {
+    lab.test('username is invalid', function (done) {
 
         request = {
             method: 'GET',
-            url: '/xmpp/user_exists?user=what&server=joyy.im'
+            url: '/xmpp/user_exists?user=#&server=joyy.im'
         };
 
         server.inject(request, function (response) {

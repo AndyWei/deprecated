@@ -45,7 +45,7 @@ lab.afterEach(function (done) {
 
 lab.experiment('Auth Basic: ', function () {
 
-    lab.test('return authentication credentials for valid phone:password', function (done) {
+    lab.test('return authentication credentials for valid username:password', function (done) {
 
         server.route({
             method: 'GET',
@@ -65,7 +65,7 @@ lab.experiment('Auth Basic: ', function () {
             method: 'GET',
             url: '/',
             headers: {
-                authorization: 'Basic ' + (new Buffer('14257850318:password')).toString('base64')
+                authorization: 'Basic ' + (new Buffer('andy:password')).toString('base64')
             }
         };
 
@@ -96,7 +96,7 @@ lab.experiment('Auth Basic: ', function () {
             method: 'GET',
             url: '/',
             headers: {
-                authorization: 'Basic ' + (new Buffer('14257850318:wrongpassword')).toString('base64')
+                authorization: 'Basic ' + (new Buffer('andy:wrongpassword')).toString('base64')
             }
         };
 
@@ -106,7 +106,7 @@ lab.experiment('Auth Basic: ', function () {
     });
 
 
-    lab.test('detect non-exist phone', function (done) {
+    lab.test('detect non-exist username', function (done) {
 
         server.route({
             method: 'GET',
@@ -127,7 +127,7 @@ lab.experiment('Auth Basic: ', function () {
             method: 'GET',
             url: '/',
             headers: {
-                authorization: 'Basic ' + (new Buffer('11234567890:password')).toString('base64')
+                authorization: 'Basic ' + (new Buffer('whatever:password')).toString('base64')
             }
         };
 

@@ -56,12 +56,12 @@ exports.register = function (server, options, next) {
 
             var phoneNumber = request.query.phone.toString();
             var randomCode = _.random(1000, 9999);
-            var messageBody = randomCode + ' is your Joyy verification code.';
+            var messageBody = randomCode + ' is your Winking verification code.';
 
             Async.auto({
                 cache: function (callback) {
 
-                    Cache.setex(Const.PHONE_VERIFICATION_PAIRS, request.query.phone, randomCode, function (err) {
+                    Cache.setex(Const.PHONE_VERIFICATION_PAIRS, phoneNumber, randomCode, function (err) {
 
                         if (err) {
                             return callback(err);
@@ -117,6 +117,94 @@ exports.register = function (server, options, next) {
     });
 
 
+    // Get the username of attached to the phone number. Here vcode is used as authentication
+    server.route({
+        method: 'GET',
+        path: options.basePath + '/credential/username',
+        config: {
+            validate: {
+                query: {
+                    phone: Joi.number().min(0).required(), // The E.164 phone number without the '+' prefix.
+                    vcode: Joi.number().min(1000).max(10000).required() // The vcode user received by SMS.
+                }
+            }
+        },
+        handler: function (request, reply) {
+
+            var phoneNumber = request.query.phone.toString();
+            var vcode = request.query.vcode.toString();
+
+            Async.auto({
+                cache: function (callback) {
+
+                    Cache.get(Const.PHONE_VERIFICATION_PAIRS, phoneNumber, function (err, result) {
+
+                        if (err) {
+                            return callback(err);
+                        }
+
+                        if (vcode !== result) {
+                            return callback(Boom.unauthorized('vcode mismatch'));
+                        }
+
+                        return callback(null);
+                    });
+                },
+                username: function (callback) {
+
+                    var queryConfig = {
+                        name: 'person_username_by_phone',
+                        text: 'SELECT username FROM person WHERE phone = $1 AND deleted = false',
+                        values: [phoneNumber]
+                    };
+
+                    request.pg.client.query(queryConfig, function (err, result) {
+
+                        if (err) {
+                            request.pg.kill = true;
+                            return callback(err);
+                        }
+
+                        return callback(null, result.rows);
+                    });
+                }
+            }, function (err, results) {
+
+                if (err) {
+                    console.error(err);
+                    return reply(err);
+                }
+
+                return reply(null, results.username);
+            });
+        }
+    });
+
+
+    // Check if an username already in use
+    server.route({
+        method: 'GET',
+        path: options.basePath + '/credential/existence',
+        config: {
+            validate: {
+                query: {
+                    username: Joi.string().token().min(4).required()
+                }
+            }
+        },
+        handler: function (request, reply) {
+
+            internals.usernameChecker(request, function (result) {
+                if (result === true) {
+                    return reply(null, { existence: 0 });
+                }
+
+                return reply(null, { existence: 1 });
+            });
+        }
+    });
+
+
     // Existing person sign in
     server.route({
         method: 'GET',
@@ -131,7 +219,7 @@ exports.register = function (server, options, next) {
             Async.auto({
                 jwt: function (callback) {
 
-                    var token = internals.createJwtToken(request.auth.credentials.id);
+                    var token = internals.createJwtToken(request.auth.credentials.id, request.auth.credentials.username);
                     return callback(null, token);
                 }
             }, function (err, results) {
@@ -143,7 +231,6 @@ exports.register = function (server, options, next) {
 
                 var response = {
                     id: request.auth.credentials.id,
-                    phone: request.auth.credentials.phone,
                     username: request.auth.credentials.username,
                     token: results.jwt,
                     tokenDuration: internals.apiTokenDuration
@@ -161,13 +248,14 @@ exports.register = function (server, options, next) {
         config: {
             validate: {
                 payload: {
-                    phone: Joi.number().min(0).required(),
-                    password: Joi.string().min(4).max(100).required()
+                    username: Joi.string().token().min(4).required(),
+                    password: Joi.string().min(4).max(100).required(),
+                    phone: Joi.number().min(0).required()
                 }
             },
             pre: [{
-                assign: 'phoneCheck',
-                method: internals.phoneChecker
+                assign: 'usernameCheck',
+                method: internals.usernameChecker
             }]
         },
         handler: internals.signup
@@ -215,12 +303,12 @@ exports.register.attributes = {
 };
 
 
-internals.phoneChecker = function (request, reply) {
+internals.usernameChecker = function (request, reply) {
 
     var queryConfig = {
-        text: 'SELECT id FROM person WHERE phone = $1 AND deleted = false',
-        values: [request.payload.phone],
-        name: 'person_select_id_by_phone'
+        text: 'SELECT id FROM person WHERE username = $1 AND deleted = false',
+        values: [request.payload.username],
+        name: 'person_select_id_by_username'
     };
 
     request.pg.client.query(queryConfig, function (err, result) {
@@ -232,7 +320,7 @@ internals.phoneChecker = function (request, reply) {
         }
 
         if (result.rows.length > 0) {
-            return reply(Boom.conflict(Const.EMAIL_IN_USE));
+            return reply(Boom.conflict(Const.USERNAME_IN_USE));
         }
 
         reply(true);
@@ -243,7 +331,7 @@ internals.phoneChecker = function (request, reply) {
 internals.signup = function (request, reply) {
 
     var phone = request.payload.phone;
-    var username = phone.substring(0, 3); // auto given name is the first 3 chars of phone
+    var username = request.payload.username;
 
     Async.auto({
         salt: function (callback) {
@@ -262,10 +350,10 @@ internals.signup = function (request, reply) {
 
             var queryConfig = {
                 text: 'INSERT INTO person ' +
-                          '(phone, username, password, ct, ut) VALUES ' +
+                          '(username, password, phone, ct, ut) VALUES ' +
                           '($1, $2, $3, $4, $5) ' +
                           'RETURNING id',
-                values: [phone, username, results.password, _.now(), _.now()],
+                values: [username, results.password, phone, _.now(), _.now()],
                 name: 'person_signup'
             };
 
@@ -291,9 +379,8 @@ internals.signup = function (request, reply) {
 
         var response = {
             id: results.personId,
-            phone: phone,
             username: username,
-            token: internals.createJwtToken(results.personId),
+            token: internals.createJwtToken(results.personId, username),
             tokenDuration: 60 * Config.get('/jwt/expiresInMinutes')
         };
 
@@ -333,13 +420,16 @@ internals.getOrgFromEmail = function (email) {
 };
 
 
-internals.createJwtToken = function (personId) {
+internals.createJwtToken = function (personId, username) {
 
     if (!_.isString(personId)) {
          personId = personId.toString();
     }
 
-    var obj = { id: personId };
+    var obj = {
+       id: personId,
+       username: username
+    };
     var key = Config.get('/jwt/key');
     var options = { expiresInMinutes: Config.get('/jwt/expiresInMinutes')};
     var token = Jwt.sign(obj, key, options);

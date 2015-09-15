@@ -231,22 +231,22 @@ exports.register = function (server, options, next) {
         },
         handler: function (request, reply) {
 
-            var personId = request.auth.credentials.id;
+            var username = request.auth.credentials.username;
             var personObj = {
                 service: request.payload.service,
                 device: request.payload.device,
                 badge: request.payload.badge
             };
 
-            Cache.hmset(Const.USER_HASHES, personId, personObj, function (err) {
+            Cache.hmset(Const.USER_HASHES, username, personObj, function (err) {
 
                 if (err) {
                     console.error(err);
                     return reply(err);
                 }
 
-                console.log('Received device token %s for personId %s', request.payload.device, personId);
-                reply(null, {id: personId});
+                console.log('Received device token %s for user %s', request.payload.device, username);
+                reply(null, {username: username});
             });
         }
     });
