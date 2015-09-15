@@ -1,5 +1,5 @@
 test/artifacts/*
 cert/*
-log/*
+*.log
 config.js
 dump.rdb
