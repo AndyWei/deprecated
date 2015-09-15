@@ -150,7 +150,7 @@ exports.register = function (server, options, next) {
                         return callback(null);
                     });
                 },
-                username: function (callback) {
+                usernames: function (callback) {
 
                     var queryConfig = {
                         name: 'person_username_by_phone',
@@ -165,7 +165,8 @@ exports.register = function (server, options, next) {
                             return callback(err);
                         }
 
-                        return callback(null, result.rows);
+                        var usernameList = _.pluck(result.rows, 'username');
+                        return callback(null, usernameList);
                     });
                 }
             }, function (err, results) {
@@ -175,7 +176,7 @@ exports.register = function (server, options, next) {
                     return reply(err);
                 }
 
-                return reply(null, results.username);
+                return reply(null, results.usernames);
             });
         }
     });
@@ -194,12 +195,25 @@ exports.register = function (server, options, next) {
         },
         handler: function (request, reply) {
 
-            internals.usernameChecker(request, function (result) {
-                if (result === true) {
-                    return reply(null, { existence: 0 });
+            var queryConfig = {
+                text: 'SELECT id FROM person WHERE username = $1 AND deleted = false',
+                values: [request.query.username],
+                name: 'person_select_id_by_username'
+            };
+
+            request.pg.client.query(queryConfig, function (err, result) {
+
+                if (err) {
+                    console.error(err);
+                    request.pg.kill = true;
+                    return reply(err);
                 }
 
-                return reply(null, { existence: 1 });
+                if (result.rows.length > 0) {
+                    return reply(null, { existence: 1 });
+                }
+
+                return reply(null, { existence: 0 });
             });
         }
     });
