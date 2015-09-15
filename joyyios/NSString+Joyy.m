@@ -136,11 +136,18 @@
     return [emailTest evaluateWithObject:self];
 }
 
-- (BOOL)isAllDigits
+- (BOOL)onlyContainsDigits
 {
     NSCharacterSet* nonNumbers = [[NSCharacterSet decimalDigitCharacterSet] invertedSet];
     NSRange r = [self rangeOfCharacterFromSet: nonNumbers];
     return r.location == NSNotFound;
+}
+
+- (BOOL)onlyContainsAlphanumericUnderscore
+{
+    NSString *regex = @"[A-Z0-9a-z_]*";
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", regex];
+    return [predicate evaluateWithObject:self];
 }
 
 - (NSUInteger)unsignedIntegerValue

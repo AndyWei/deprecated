@@ -44,9 +44,9 @@
     return _sharedInstance;
 }
 
-+ (XMPPJID *)jidWithIdString:(NSString *)idString
++ (XMPPJID *)jidWithUsername:(NSString *)username
 {
-    return [XMPPJID jidWithUser:idString domain:kMessageDomain resource:nil];
+    return [XMPPJID jidWithUser:username domain:kMessageDomain resource:nil];
 }
 
 + (XMPPJID *)myJID
@@ -58,7 +58,7 @@
     NSString *prefix = [deviceId substringToIndex:3];
     NSString *resource = [NSString stringWithFormat:@"%@_%@", kMessageResource, prefix];
 
-    return [XMPPJID jidWithUser:[JYCredential mine].idString domain:kMessageDomain resource:resource];
+    return [XMPPJID jidWithUser:[JYCredential mine].username domain:kMessageDomain resource:resource];
 }
 
 + (NSFetchedResultsController *)fetcherOfSessions

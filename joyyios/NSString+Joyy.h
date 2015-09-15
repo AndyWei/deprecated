@@ -14,7 +14,8 @@
 
 - (BOOL)isInvisible;
 - (BOOL)isValidEmail;
-- (BOOL)isAllDigits;
+- (BOOL)onlyContainsDigits;
+- (BOOL)onlyContainsAlphanumericUnderscore; // A-Z, a-z, 0-9, _
 
 - (NSString *)messageDisplayString;
 - (NSString *)messageMediaURL;

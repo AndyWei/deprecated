@@ -112,11 +112,11 @@ static const CGFloat kInfoLabelWidth = 280.f;
 {
     if (self.person.ageString)
     {
-        self.infoLabel.text = [NSString stringWithFormat:@"%@, %@, %@", self.person.name, self.person.org, self.person.ageString];
+        self.infoLabel.text = [NSString stringWithFormat:@"%@, %@, %@", self.person.username, self.person.org, self.person.ageString];
     }
     else
     {
-        self.infoLabel.text = [NSString stringWithFormat:@"%@, %@", self.person.name, self.person.org];
+        self.infoLabel.text = [NSString stringWithFormat:@"%@, %@", self.person.username, self.person.org];
     }
 }
 

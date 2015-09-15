@@ -64,7 +64,7 @@ extern NSString *const kAWSTokenExpiryTimeKey;
 
 extern NSString *const kContentTypeJPG;
 extern NSString *const kDummyCaptionText;
-extern NSString *const kErrorAuthenticationFailed;
+extern NSString *const kErrorSignInFailed;
 extern NSString *const kErrorTitle;
 extern NSString *const kMessageDomain;
 extern NSString *const kMessageResource;

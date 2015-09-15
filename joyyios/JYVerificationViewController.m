@@ -31,7 +31,7 @@ static NSString *const kVerificationCellIdentifier = @"verificationCell";
 {
     [super viewDidLoad];
 
-    self.title = NSLocalizedString(@"Verification", nil);
+    self.title = NSLocalizedString(@"Verify", nil);
     [self.view addSubview:self.tableView];
 }
 
@@ -94,11 +94,12 @@ static NSString *const kVerificationCellIdentifier = @"verificationCell";
 {
     if (!_textField)
     {
-        CGRect frame = CGRectMake(0, 0, 200, kCellHeight);
+        CGRect frame = CGRectMake(0, 0, 90, kCellHeight);
 
         UITextField *textField = [[UITextField alloc] initWithFrame:frame];
         textField.delegate = self;
         textField.backgroundColor = JoyyWhitePure;
+        textField.tintColor = JoyyBlue;
         textField.font = [UIFont systemFontOfSize:40];
         textField.textAlignment = NSTextAlignmentLeft;
         textField.keyboardType = UIKeyboardTypeNumberPad;
@@ -188,7 +189,7 @@ static NSString *const kVerificationCellIdentifier = @"verificationCell";
 {
     NSString *newStr = [textField.text stringByReplacingCharactersInRange:range withString:string];
 
-    BOOL more = (([newStr length] <= 4) && [newStr isAllDigits]);
+    BOOL more = (([newStr length] <= 4) && [newStr onlyContainsDigits]);
 
     self.button.enabled = (newStr.length >= 4);
     return more;
@@ -217,7 +218,21 @@ static NSString *const kVerificationCellIdentifier = @"verificationCell";
 
 - (void)_showUsernames
 {
-    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Which one is you?", nil)
+    NSString *title = nil;
+    NSString *cancel = nil;
+
+    if (self.usernameList.count == 1)
+    {
+        title  = NSLocalizedString(@"Hi, is this you?", nil);
+        cancel = NSLocalizedString(@"No", nil);
+    }
+    else
+    {
+        title  = NSLocalizedString(@"Hi, which one is you?", nil);
+        cancel = NSLocalizedString(@"None of them", nil);
+    }
+
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:title
                                                              delegate:self
                                                     cancelButtonTitle:nil
                                                destructiveButtonTitle:nil
@@ -228,7 +243,7 @@ static NSString *const kVerificationCellIdentifier = @"verificationCell";
         [actionSheet addButtonWithTitle:username];
     }
 
-    actionSheet.cancelButtonIndex = [actionSheet addButtonWithTitle:NSLocalizedString(@"None of them", nil)];
+    actionSheet.cancelButtonIndex = [actionSheet addButtonWithTitle:cancel];
 
     [actionSheet showInView:self.view];
 }
@@ -253,6 +268,7 @@ static NSString *const kVerificationCellIdentifier = @"verificationCell";
 {
     if (buttonIndex == actionSheet.cancelButtonIndex)
     {
+        [self _showSignupView];
         return;
     }
 
@@ -282,7 +298,7 @@ static NSString *const kVerificationCellIdentifier = @"verificationCell";
     [manager GET:url
       parameters:parameters
          success:^(AFHTTPRequestOperation *operation, id responseObject) {
-             NSLog(@"Success: GET credential/username");
+             NSLog(@"Success: GET credential/username. responseObject = %@", responseObject);
              [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
              [KVNProgress dismiss];
 
@@ -296,15 +312,7 @@ static NSString *const kVerificationCellIdentifier = @"verificationCell";
 
              weakSelf.button.enabled = YES;
 
-             NSString *errorMessage = nil;
-             if (error.code == NSURLErrorBadServerResponse)
-             {
-                 errorMessage = NSLocalizedString(kErrorAuthenticationFailed, nil);
-             }
-             else
-             {
-                 errorMessage = [error.userInfo valueForKey:NSLocalizedDescriptionKey];
-             }
+             NSString *errorMessage = [error.userInfo valueForKey:NSLocalizedDescriptionKey];
 
              [RKDropdownAlert title:NSLocalizedString(kErrorTitle, nil)
                             message:errorMessage

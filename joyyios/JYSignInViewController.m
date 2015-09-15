@@ -70,7 +70,7 @@
             NSString *errorMessage = nil;
             if (error.code == NSURLErrorBadServerResponse)
             {
-                errorMessage = NSLocalizedString(kErrorAuthenticationFailed, nil);
+                errorMessage = NSLocalizedString(kErrorSignInFailed, nil);
             }
             else
             {

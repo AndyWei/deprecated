@@ -8,20 +8,14 @@
 
 #import <KVNProgress/KVNProgress.h>
 #import <RKDropdownAlert/RKDropdownAlert.h>
-#import <TTTAttributedLabel/TTTAttributedLabel.h>
 
-#import "JYButton.h"
 #import "JYSignBaseViewController.h"
 
 @interface JYSignBaseViewController () <UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate>
-@property (nonatomic) TTTAttributedLabel *headerLabel;
-@property (nonatomic) TTTAttributedLabel *usernameLabel;
-@property (nonatomic) TTTAttributedLabel *passwordLabel;
 @property (nonatomic) UITableView *tableView;
 @end
 
 static NSString *const kSignCellIdentifier = @"signCell";
-CGFloat const kSignLabelWidth = 150;
 
 @implementation JYSignBaseViewController
 
@@ -74,7 +68,6 @@ CGFloat const kSignLabelWidth = 150;
         label.numberOfLines = 0;
         label.lineBreakMode = NSLineBreakByWordWrapping;
         label.font = [UIFont systemFontOfSize:15];
-        label.text = NSLocalizedString(@"People can see your username, so please choose a good one.", nil);
         label.textAlignment = NSTextAlignmentCenter;
 
         _headerLabel = label;
@@ -82,32 +75,12 @@ CGFloat const kSignLabelWidth = 150;
     return _headerLabel;
 }
 
-- (TTTAttributedLabel *)usernameLabel
-{
-    if (!_usernameLabel)
-    {
-        _usernameLabel = [self _createLabel];
-        _usernameLabel.text = NSLocalizedString(@"Username", nil);
-    }
-    return _usernameLabel;
-}
-
-- (TTTAttributedLabel *)passwordLabel
-{
-    if (!_passwordLabel)
-    {
-        _passwordLabel = [self _createLabel];
-        _passwordLabel.text = NSLocalizedString(@"Password", nil);
-    }
-    return _passwordLabel;
-}
-
 - (UITextField *)usernameField
 {
     if (!_usernameField)
     {
         _usernameField = [self _createTextField];
-        _usernameField.placeholder = NSLocalizedString(@"at least 4 characters", nil);
+        _usernameField.placeholder = NSLocalizedString(@"Username", nil);
     }
     return _usernameField;
 }
@@ -117,31 +90,21 @@ CGFloat const kSignLabelWidth = 150;
     if (!_passwordField)
     {
         _passwordField = [self _createTextField];
-        _passwordField.placeholder = NSLocalizedString(@"at least 4 characters", nil);
+        _passwordField.placeholder = NSLocalizedString(@"Password", nil);
         _passwordField.secureTextEntry = YES;
     }
     return _passwordField;
 }
 
-- (TTTAttributedLabel *)_createLabel
-{
-    CGRect frame = CGRectMake(0, 0, kSignLabelWidth, kCellHeight);
-    TTTAttributedLabel *label = [[TTTAttributedLabel alloc] initWithFrame:frame];
-    label.font = [UIFont systemFontOfSize:20];
-    label.textAlignment = NSTextAlignmentRight;
-
-    return label;
-}
-
 - (UITextField *)_createTextField
 {
-    CGRect frame = CGRectMake(0, 0, 0, kCellHeight);
+    CGFloat width = SCREEN_WIDTH - kMarginLeft - kMarginRight;
+    CGRect frame = CGRectMake(0, 0, width, kCellHeight);
     UITextField *textField = [[UITextField alloc] initWithFrame:frame];
     textField.delegate = self;
     textField.backgroundColor = JoyyWhitePure;
     textField.font = [UIFont systemFontOfSize:20];
     textField.textAlignment = NSTextAlignmentLeft;
-    textField.layer.borderWidth = 2.0f;
 
     return textField;
 }
@@ -160,7 +123,7 @@ CGFloat const kSignLabelWidth = 150;
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kSignCellIdentifier forIndexPath:indexPath];
-    cell.backgroundColor = JoyyWhiter;
+    cell.backgroundColor = JoyyWhitePure;
 
     if ([cell.contentView subviews])
     {
@@ -172,19 +135,13 @@ CGFloat const kSignLabelWidth = 150;
 
     if (indexPath.row == 0)
     {
-        [cell.contentView addSubview:self.usernameLabel];
         [cell.contentView addSubview:self.usernameField];
-        self.usernameLabel.x = kMarginLeft;
-        self.usernameField.x = CGRectGetMidX(self.usernameLabel.frame) + kMarginLeft;
-        self.usernameField.width = SCREEN_WIDTH - self.usernameField.x - kMarginRight;
+        self.usernameField.x = kMarginLeft;
     }
     else
     {
-        [cell.contentView addSubview:self.passwordLabel];
         [cell.contentView addSubview:self.passwordField];
-        self.passwordLabel.x = kMarginLeft;
-        self.passwordField.x = CGRectGetMidX(self.passwordLabel.frame) + kMarginLeft;
-        self.passwordField.width = SCREEN_WIDTH - self.passwordField.x - kMarginRight;
+        self.passwordField.x = kMarginLeft;
     }
 
     return cell;
@@ -237,20 +194,11 @@ CGFloat const kSignLabelWidth = 150;
 
     if (textField == self.usernameField)
     {
-        self.signButton.enabled = self.passwordField.text.length >= 4 && (newStr.length >= 4);
+        self.signButton.enabled = self.passwordField.text.length >= 4 && (newStr.length >= 2);
     }
     else
     {
-        self.signButton.enabled = self.usernameField.text.length >= 4 && (newStr.length >= 4);
-
-        if (newStr.length >= 4)
-        {
-            self.passwordField.layer.borderColor = [FlatGreen CGColor];
-        }
-        else
-        {
-            self.passwordField.layer.borderColor = [FlatRed CGColor];
-        }
+        self.signButton.enabled = self.usernameField.text.length >= 2 && (newStr.length >= 4);
     }
 
     return YES;
@@ -259,7 +207,6 @@ CGFloat const kSignLabelWidth = 150;
 - (BOOL)textFieldShouldClear:(UITextField *)textField
 {
     self.signButton.enabled = NO;
-    textField.layer.borderColor = [FlatRed CGColor];
 
     return YES;
 }

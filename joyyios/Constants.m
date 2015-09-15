@@ -66,8 +66,8 @@ NSString *const kAWSTokenExpiryTimeKey = @"openid_token_expiry_time";
 
 NSString *const kContentTypeJPG = @"image/jpeg";
 NSString *const kDummyCaptionText = @"◦";
-NSString *const kErrorAuthenticationFailed = @"Incorrect Email or password";
-NSString *const kErrorTitle = @"🐻: something wrong";
+NSString *const kErrorSignInFailed = @"Incorrect password";
+NSString *const kErrorTitle = @"😜: oops!";
 
 NSString *const kMessageDomain = @"joyy.im";
 NSString *const kMessageResource = @"iPhone";

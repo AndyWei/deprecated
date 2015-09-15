@@ -34,7 +34,7 @@
     if (self)
     {
         _bio  = [dict objectForKey:@"bio"];
-        _name = [dict objectForKey:@"username"];
+        _username = [dict objectForKey:@"username"];
         _org  = [dict objectForKey:@"org"];
         _friendCount = [dict unsignedIntegerValueForKey:@"friends"];
         _gender      = [dict unsignedIntegerValueForKey:@"gender"];
@@ -77,14 +77,14 @@
 {
     if (!_avatarURL)
     {
-        _avatarURL = [NSString stringWithFormat:@"%@%@_s.jpg", kURLAvatarBase, self.name];
+        _avatarURL = [NSString stringWithFormat:@"%@%@_s.jpg", kURLAvatarBase, self.username];
     }
     return _avatarURL;
 }
 
 - (NSString *)fullAvatarURL
 {
-    return [NSString stringWithFormat:@"%@%@.jpg", kURLAvatarBase, self.name];
+    return [NSString stringWithFormat:@"%@%@.jpg", kURLAvatarBase, self.username];
 }
 
 @end

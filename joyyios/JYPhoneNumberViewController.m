@@ -18,7 +18,7 @@
 #import "UITextField+Joyy.h"
 
 @interface JYPhoneNumberViewController () <UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate>
-@property (nonatomic) JYButton *verificationButton;
+@property (nonatomic) JYButton *button;
 @property (nonatomic) NSString *countryCode;
 @property (nonatomic) TTTAttributedLabel *headerLabel;
 @property (nonatomic) TTTAttributedLabel *countryNameLabel;
@@ -87,16 +87,16 @@ CGFloat const kCountryNumberWidth = 60;
     return _tableView;
 }
 
-- (JYButton *)verificationButton
+- (JYButton *)button
 {
-    if (!_verificationButton)
+    if (!_button)
     {
-        _verificationButton = [JYButton button];
-        _verificationButton.textLabel.text = NSLocalizedString(@"Verify Phone Number", nil);
-        _verificationButton.enabled = NO;
-        [_verificationButton addTarget:self action:@selector(_getVerificationCode) forControlEvents:UIControlEventTouchUpInside];
+        _button = [JYButton button];
+        _button.textLabel.text = NSLocalizedString(@"Verify", nil);
+        _button.enabled = NO;
+        [_button addTarget:self action:@selector(_getVerificationCode) forControlEvents:UIControlEventTouchUpInside];
     }
-    return _verificationButton;
+    return _button;
 }
 
 - (TTTAttributedLabel *)headerLabel
@@ -203,7 +203,7 @@ CGFloat const kCountryNumberWidth = 60;
     vc.phoneNumber = phoneNumber;
     [self.navigationController pushViewController:vc animated:YES];
 
-    self.verificationButton.enabled = YES;
+    self.button.enabled = YES;
 }
 
 #pragma mark - UITableViewDataSource
@@ -267,8 +267,8 @@ CGFloat const kCountryNumberWidth = 60;
     UIView *footer = [[UIView alloc] initWithFrame:frame];
     footer.backgroundColor = ClearColor;
 
-    [footer addSubview:self.verificationButton];
-    self.verificationButton.y = kFooterHeight - self.verificationButton.height;
+    [footer addSubview:self.button];
+    self.button.y = kFooterHeight - self.button.height;
 
     return footer;
 }
@@ -310,11 +310,11 @@ CGFloat const kCountryNumberWidth = 60;
 
     if ([self.countryNumberLabel.text isEqualToString:@"+1"])
     {
-        self.verificationButton.enabled = (newStr.length >= 14);
+        self.button.enabled = (newStr.length >= 14);
     }
     else
     {
-        self.verificationButton.enabled = (newStr.length > 3);
+        self.button.enabled = (newStr.length > 3);
     }
 
     return  [self.phoneNumberTextField shouldChangeCharactersInRange:range replacementString:string];
@@ -322,7 +322,7 @@ CGFloat const kCountryNumberWidth = 60;
 
 - (BOOL)textFieldShouldClear:(UITextField *)textField
 {
-    self.verificationButton.enabled = NO;
+    self.button.enabled = NO;
     return YES;
 }
 
@@ -330,7 +330,7 @@ CGFloat const kCountryNumberWidth = 60;
 
 - (void)_getVerificationCode
 {
-    self.verificationButton.enabled = NO;
+    self.button.enabled = NO;
 
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     NSString *url = [NSString apiURLWithPath:@"credential/vcode"];
@@ -346,17 +346,17 @@ CGFloat const kCountryNumberWidth = 60;
       parameters:parameters
          success:^(AFHTTPRequestOperation *operation, id responseObject) {
              NSLog(@"Success: GET credential/vcode");
-
              [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-             [weakSelf _showNextScreenWithPhoneNumber:phoneNumber];
+             
          }
          failure:^(AFHTTPRequestOperation *operation, NSError *error) {
              NSLog(@"Error: GET credential/vcode error: %@", error);
 
              [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-             weakSelf.verificationButton.enabled = NO;
+             weakSelf.button.enabled = YES;
          }];
 
+    [self _showNextScreenWithPhoneNumber:phoneNumber];
 }
 
 @end

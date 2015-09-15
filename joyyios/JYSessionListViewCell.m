@@ -62,7 +62,7 @@ static const CGFloat kTimeLabelWidth = 80;
 {
     _person = person;
 
-    self.nameLabel.text = person.name;
+    self.nameLabel.text = person.username;
 
     // Fetch avatar image via network
     NSURL *url = [NSURL URLWithString:person.avatarURL];

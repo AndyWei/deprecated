@@ -117,11 +117,11 @@ static const CGFloat kButtonWidth = 60;
 {
     if (direction == MDCSwipeDirectionLeft)
     {
-        NSLog(@"You noped %@.", self.currentPerson.name);
+        NSLog(@"You noped %@.", self.currentPerson.username);
     }
     else
     {
-        NSLog(@"You liked %@.", self.currentPerson.name);
+        NSLog(@"You liked %@.", self.currentPerson.username);
     }
 
     // MDCSwipeToChooseView has removed the frontCard from the view hierarchy

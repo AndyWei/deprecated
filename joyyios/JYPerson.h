@@ -32,7 +32,7 @@ typedef NS_ENUM(NSUInteger, JYOrgType)
 // Identities
 @property(nonatomic, readonly) NSString *idString;
 @property(nonatomic) NSUInteger personId;
-@property(nonatomic) NSString *name;
+@property(nonatomic) NSString *username;
 
 // Avatar
 @property(nonatomic) UIImage *avatarImage;

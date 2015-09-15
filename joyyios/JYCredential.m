@@ -106,7 +106,8 @@
 
 - (BOOL)isEmpty
 {
-    return (!self.username || !self.password || !self.idString);
+//    return (!self.username || !self.password || !self.idString);
+    return YES;
 }
 
 @end

@@ -23,11 +23,11 @@
 {
     [super viewDidLoad];
 
-    self.title = NSLocalizedString(@"Sign up", nil);
-
-    self.signButton.textLabel.text = NSLocalizedString(@"Sign Up", nil);
-
     [self.signButton addTarget:self action:@selector(_signUp) forControlEvents:UIControlEventTouchUpInside];
+
+    self.title = NSLocalizedString(@"Sign up", nil);
+    self.signButton.textLabel.text = NSLocalizedString(@"Sign Up", nil);
+    self.headerLabel.text = NSLocalizedString(@"Username can only contain letters, numbers and underscore.", nil);
 
     [self.usernameField becomeFirstResponder];
 }
@@ -39,14 +39,7 @@
 
 - (void)_usernameExist:(BOOL)exist
 {
-    if (exist)
-    {
-        self.usernameField.layer.borderColor = [FlatRed CGColor];
-    }
-    else
-    {
-        self.usernameField.layer.borderColor = [FlatGreen CGColor];
-    }
+    self.usernameField.textColor = exist? FlatRed: FlatGreen;
 }
 
 #pragma mark - UITextFieldDelegate methods
@@ -67,6 +60,12 @@
     if (textField == self.usernameField)
     {
         NSString *newStr = [textField.text stringByReplacingCharactersInRange:range withString:string];
+
+        if (![newStr onlyContainsAlphanumericUnderscore])
+        {
+            return NO;
+        }
+    
         if (newStr.length >= 4)
         {
             [self _getExistenceOfUsername:newStr];
@@ -109,14 +108,7 @@
              [KVNProgress dismiss];
 
              NSString *errorMessage = nil;
-             if (error.code == NSURLErrorBadServerResponse)
-             {
-                 errorMessage = NSLocalizedString(kErrorAuthenticationFailed, nil);
-             }
-             else
-             {
-                 errorMessage = [error.userInfo valueForKey:NSLocalizedDescriptionKey];
-             }
+             errorMessage = [error.userInfo valueForKey:NSLocalizedDescriptionKey];
 
              [RKDropdownAlert title:NSLocalizedString(kErrorTitle, nil)
                             message:errorMessage

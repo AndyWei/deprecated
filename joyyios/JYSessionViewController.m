@@ -41,13 +41,13 @@ CGFloat const kEdgeInset = 10.f;
 {
     [super viewDidLoad];
 
-    self.title = self.thatPerson.name;
+    self.title = self.thatPerson.username;
     self.view.backgroundColor = JoyyWhite;
 
     XMPPJID *myJID = [JYXmppManager myJID];
     self.senderId = myJID.bare;
     self.senderDisplayName = [JYCredential mine].username;
-    self.thatJID = [JYXmppManager jidWithIdString:self.thatPerson.idString];
+    self.thatJID = [JYXmppManager jidWithUsername:self.thatPerson.username];
 
     [self configCollectionView];
     [self configBubbleImage];
