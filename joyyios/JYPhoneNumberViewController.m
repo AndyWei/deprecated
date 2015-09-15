@@ -13,10 +13,11 @@
 
 #import "JYButton.h"
 #import "JYCountryListViewController.h"
-#import "JYSignViewController.h"
+#import "JYPhoneNumberViewController.h"
+#import "JYVerificationViewController.h"
 #import "UITextField+Joyy.h"
 
-@interface JYSignViewController () <UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate>
+@interface JYPhoneNumberViewController () <UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate>
 @property (nonatomic) JYButton *verificationButton;
 @property (nonatomic) NSString *countryCode;
 @property (nonatomic) TTTAttributedLabel *headerLabel;
@@ -26,13 +27,10 @@
 @property (nonatomic) VMaskTextField *phoneNumberTextField;
 @end
 
-static NSString *const kSignCellIdentifier = @"signCell";
-CGFloat const kCellHeight = 50;
-CGFloat const kHeaderHeight = 100;
-CGFloat const kFooterHeight = 100;
+static NSString *const kPhoneNumberCellIdentifier = @"phoneNumberCell";
 CGFloat const kCountryNumberWidth = 60;
 
-@implementation JYSignViewController
+@implementation JYPhoneNumberViewController
 
 - (void)viewDidLoad
 {
@@ -84,7 +82,7 @@ CGFloat const kCountryNumberWidth = 60;
         _tableView.backgroundColor = JoyyWhiter;
         _tableView.showsHorizontalScrollIndicator = NO;
         _tableView.showsVerticalScrollIndicator = NO;
-        [_tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:kSignCellIdentifier];
+        [_tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:kPhoneNumberCellIdentifier];
     }
     return _tableView;
 }
@@ -199,6 +197,15 @@ CGFloat const kCountryNumberWidth = 60;
     return [NSString stringWithFormat:@"%@%@", dialingCode, localPhoneNumber];
 }
 
+- (void)_showNextScreenWithPhoneNumber:(NSString *)phoneNumber
+{
+    JYVerificationViewController *vc = [JYVerificationViewController new];
+    vc.phoneNumber = phoneNumber;
+    [self.navigationController pushViewController:vc animated:YES];
+
+    self.verificationButton.enabled = YES;
+}
+
 #pragma mark - UITableViewDataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -213,7 +220,7 @@ CGFloat const kCountryNumberWidth = 60;
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kSignCellIdentifier forIndexPath:indexPath];
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kPhoneNumberCellIdentifier forIndexPath:indexPath];
 
     if ([cell.contentView subviews])
     {
@@ -299,7 +306,7 @@ CGFloat const kCountryNumberWidth = 60;
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
 {
-    NSString * newStr = [textField.text stringByReplacingCharactersInRange:range withString:string];
+    NSString *newStr = [textField.text stringByReplacingCharactersInRange:range withString:string];
 
     if ([self.countryNumberLabel.text isEqualToString:@"+1"])
     {
@@ -323,6 +330,8 @@ CGFloat const kCountryNumberWidth = 60;
 
 - (void)_getVerificationCode
 {
+    self.verificationButton.enabled = NO;
+
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     NSString *url = [NSString apiURLWithPath:@"credential/vcode"];
 
@@ -332,21 +341,22 @@ CGFloat const kCountryNumberWidth = 60;
 
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
 
+    __weak typeof(self) weakSelf = self;
     [manager GET:url
       parameters:parameters
          success:^(AFHTTPRequestOperation *operation, id responseObject) {
              NSLog(@"Success: GET credential/vcode");
 
              [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+             [weakSelf _showNextScreenWithPhoneNumber:phoneNumber];
          }
          failure:^(AFHTTPRequestOperation *operation, NSError *error) {
              NSLog(@"Error: GET credential/vcode error: %@", error);
 
              [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+             weakSelf.verificationButton.enabled = NO;
          }];
 
 }
-
-
 
 @end

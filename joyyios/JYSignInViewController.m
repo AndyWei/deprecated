@@ -11,7 +11,6 @@
 #import <RKDropdownAlert/RKDropdownAlert.h>
 
 #import "JYButton.h"
-#import "JYFloatLabeledTextField.h"
 #import "JYSignInViewController.h"
 
 @interface JYSignInViewController ()
@@ -27,8 +26,12 @@
     self.title = NSLocalizedString(@"Welcome Back!", nil);
 
     self.signButton.textLabel.text = NSLocalizedString(@"Sign In", nil);
-
     [self.signButton addTarget:self action:@selector(_signIn) forControlEvents:UIControlEventTouchUpInside];
+
+    self.usernameField.text = self.username;
+    self.usernameField.userInteractionEnabled = NO;
+
+    [self.passwordField becomeFirstResponder];
 }
 
 - (void)didReceiveMemoryWarning
@@ -37,25 +40,10 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (void)signButtonPressed
-{
-    [self _signIn];
-}
-
 - (void)_signIn
 {
-    if (![self inputCheckPassed])
-    {
-        return;
-    }
-
-    NSString *email = [self.emailField.text lowercaseString];
-    NSString *password = self.passwordField.text;
-
-    NSLog(@"password = %@", password);
-
-    [JYCredential mine].phoneNumber = email;
-    [JYCredential mine].password = password;
+    [JYCredential mine].username = self.username;
+    [JYCredential mine].password = self.passwordField.text;
 
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager managerWithPassword];
     NSString *url = [NSString apiURLWithPath:@"credential/signin"];

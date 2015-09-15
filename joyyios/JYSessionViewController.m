@@ -304,8 +304,6 @@ CGFloat const kEdgeInset = 10.f;
     [self finishSendingMessageAnimated:YES];
 }
 
-
-
 #pragma mark - JSQMessages CollectionView DataSource
 
 - (id<JSQMessageData>)collectionView:(JSQMessagesCollectionView *)collectionView messageDataForItemAtIndexPath:(NSIndexPath *)indexPath

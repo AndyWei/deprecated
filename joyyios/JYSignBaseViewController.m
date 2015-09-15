@@ -6,166 +6,260 @@
 //  Copyright (c) 2015 Joyy Inc. All rights reserved.
 //
 
+#import <KVNProgress/KVNProgress.h>
 #import <RKDropdownAlert/RKDropdownAlert.h>
+#import <TTTAttributedLabel/TTTAttributedLabel.h>
 
-#import "JYAutoCompleteDataSource.h"
 #import "JYButton.h"
-#import "JYFloatLabeledTextField.h"
 #import "JYSignBaseViewController.h"
 
-
-@interface JYSignBaseViewController ()
-
-@property(nonatomic, strong) UIView *partingLine;
-
+@interface JYSignBaseViewController () <UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate>
+@property (nonatomic) TTTAttributedLabel *headerLabel;
+@property (nonatomic) TTTAttributedLabel *usernameLabel;
+@property (nonatomic) TTTAttributedLabel *passwordLabel;
+@property (nonatomic) UITableView *tableView;
 @end
+
+static NSString *const kSignCellIdentifier = @"signCell";
+CGFloat const kSignLabelWidth = 150;
 
 @implementation JYSignBaseViewController
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-
-    self.view.tintColor = JoyyBlue;
-    self.navigationController.navigationBar.tintColor = JoyyBlue;
-
-    [self _createEmailField];
-    [self _createPartingLine];
-    [self _createPasswordField];
-    [self _createSignButton];
-
-    [self.emailField becomeFirstResponder];
+    [self.view addSubview:self.tableView];
 }
 
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
-- (void)pressSignButton
+- (UITableView *)tableView
 {
-    self.signButton.selected = YES;
-    [self signButtonPressed];
-    self.signButton.selected = NO;
-}
-
-- (void)signButtonPressed
-{
-    NSAssert(NO, @"The signButtonPressed method in the base clasee should never been called");
-}
-
-#pragma mark - UITextFieldDelegate
-
-- (BOOL)textFieldShouldReturn:(UITextField *)textField
-{
-    if (textField == _emailField)
+    if (!_tableView)
     {
-        [self.emailField resignFirstResponder];
-        [self.passwordField becomeFirstResponder];
-        return NO;
+        _tableView = [[UITableView alloc] initWithFrame:self.view.frame style:UITableViewStylePlain];
+        _tableView.dataSource = self;
+        _tableView.delegate = self;
+        _tableView.backgroundColor = JoyyWhiter;
+        _tableView.allowsSelection = NO;
+        _tableView.showsHorizontalScrollIndicator = NO;
+        _tableView.showsVerticalScrollIndicator = NO;
+        [_tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:kSignCellIdentifier];
     }
-    else if (textField == self.passwordField)
+    return _tableView;
+}
+
+- (JYButton *)signButton
+{
+    if (!_signButton)
     {
-        [self.passwordField resignFirstResponder];
-        [self pressSignButton];
-        return NO;
+        JYButton *button = [JYButton button];
+        button.enabled = NO;
+
+        _signButton = button;
+    }
+    return _signButton;
+}
+
+- (TTTAttributedLabel *)headerLabel
+{
+    if (!_headerLabel)
+    {
+        CGFloat width = SCREEN_WIDTH - kMarginLeft - kMarginRight;
+        CGRect frame = CGRectMake(kMarginLeft, 0, width, kHeaderHeight);
+        TTTAttributedLabel *label = [[TTTAttributedLabel alloc] initWithFrame:frame];
+        label.numberOfLines = 0;
+        label.lineBreakMode = NSLineBreakByWordWrapping;
+        label.font = [UIFont systemFontOfSize:15];
+        label.text = NSLocalizedString(@"People can see your username, so please choose a good one.", nil);
+        label.textAlignment = NSTextAlignmentCenter;
+
+        _headerLabel = label;
+    }
+    return _headerLabel;
+}
+
+- (TTTAttributedLabel *)usernameLabel
+{
+    if (!_usernameLabel)
+    {
+        _usernameLabel = [self _createLabel];
+        _usernameLabel.text = NSLocalizedString(@"Username", nil);
+    }
+    return _usernameLabel;
+}
+
+- (TTTAttributedLabel *)passwordLabel
+{
+    if (!_passwordLabel)
+    {
+        _passwordLabel = [self _createLabel];
+        _passwordLabel.text = NSLocalizedString(@"Password", nil);
+    }
+    return _passwordLabel;
+}
+
+- (UITextField *)usernameField
+{
+    if (!_usernameField)
+    {
+        _usernameField = [self _createTextField];
+        _usernameField.placeholder = NSLocalizedString(@"at least 4 characters", nil);
+    }
+    return _usernameField;
+}
+
+- (UITextField *)passwordField
+{
+    if (!_passwordField)
+    {
+        _passwordField = [self _createTextField];
+        _passwordField.placeholder = NSLocalizedString(@"at least 4 characters", nil);
+        _passwordField.secureTextEntry = YES;
+    }
+    return _passwordField;
+}
+
+- (TTTAttributedLabel *)_createLabel
+{
+    CGRect frame = CGRectMake(0, 0, kSignLabelWidth, kCellHeight);
+    TTTAttributedLabel *label = [[TTTAttributedLabel alloc] initWithFrame:frame];
+    label.font = [UIFont systemFontOfSize:20];
+    label.textAlignment = NSTextAlignmentRight;
+
+    return label;
+}
+
+- (UITextField *)_createTextField
+{
+    CGRect frame = CGRectMake(0, 0, 0, kCellHeight);
+    UITextField *textField = [[UITextField alloc] initWithFrame:frame];
+    textField.delegate = self;
+    textField.backgroundColor = JoyyWhitePure;
+    textField.font = [UIFont systemFontOfSize:20];
+    textField.textAlignment = NSTextAlignmentLeft;
+    textField.layer.borderWidth = 2.0f;
+
+    return textField;
+}
+#pragma mark - UITableViewDataSource
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    return 1;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return 2;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kSignCellIdentifier forIndexPath:indexPath];
+    cell.backgroundColor = JoyyWhiter;
+
+    if ([cell.contentView subviews])
+    {
+        for (UIView *subview in [cell.contentView subviews])
+        {
+            [subview removeFromSuperview];
+        }
+    }
+
+    if (indexPath.row == 0)
+    {
+        [cell.contentView addSubview:self.usernameLabel];
+        [cell.contentView addSubview:self.usernameField];
+        self.usernameLabel.x = kMarginLeft;
+        self.usernameField.x = CGRectGetMidX(self.usernameLabel.frame) + kMarginLeft;
+        self.usernameField.width = SCREEN_WIDTH - self.usernameField.x - kMarginRight;
+    }
+    else
+    {
+        [cell.contentView addSubview:self.passwordLabel];
+        [cell.contentView addSubview:self.passwordField];
+        self.passwordLabel.x = kMarginLeft;
+        self.passwordField.x = CGRectGetMidX(self.passwordLabel.frame) + kMarginLeft;
+        self.passwordField.width = SCREEN_WIDTH - self.passwordField.x - kMarginRight;
+    }
+
+    return cell;
+}
+
+- (UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+{
+    CGRect frame = CGRectMake(0, 0, SCREEN_WIDTH, kHeaderHeight);
+    UIView *header = [[UIView alloc] initWithFrame:frame];
+    header.backgroundColor = ClearColor;
+    [header addSubview:self.headerLabel];
+
+    return header;
+}
+
+- (UIView*)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
+{
+    CGRect frame = CGRectMake(0, 0, SCREEN_WIDTH, kFooterHeight);
+    UIView *footer = [[UIView alloc] initWithFrame:frame];
+    footer.backgroundColor = ClearColor;
+
+    [footer addSubview:self.signButton];
+    self.signButton.y = kFooterHeight - self.signButton.height;
+
+    return footer;
+}
+
+#pragma mark - UITableView Delegate
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return kCellHeight;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    return kHeaderHeight;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
+{
+    return kFooterHeight;
+}
+
+#pragma mark - UITextFieldDelegate methods
+
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
+{
+    NSString *newStr = [textField.text stringByReplacingCharactersInRange:range withString:string];
+
+    if (textField == self.usernameField)
+    {
+        self.signButton.enabled = self.passwordField.text.length >= 4 && (newStr.length >= 4);
+    }
+    else
+    {
+        self.signButton.enabled = self.usernameField.text.length >= 4 && (newStr.length >= 4);
+
+        if (newStr.length >= 4)
+        {
+            self.passwordField.layer.borderColor = [FlatGreen CGColor];
+        }
+        else
+        {
+            self.passwordField.layer.borderColor = [FlatRed CGColor];
+        }
     }
 
     return YES;
 }
 
-#pragma mark - Private Methods
-
-- (void)_createEmailField
+- (BOOL)textFieldShouldClear:(UITextField *)textField
 {
-    CGFloat y = kSignViewTopOffset;
-    CGFloat width = CGRectGetWidth(self.view.frame) - 2 * kSignFieldMarginLeft;
-    _emailField = [[JYFloatLabeledTextField alloc] initWithFrame:CGRectMake(kSignFieldMarginLeft, y, width, kSignFieldHeight)];
-
-    _emailField.attributedPlaceholder =
-        [[NSAttributedString alloc] initWithString:NSLocalizedString(@"Email", nil) attributes:@{NSForegroundColorAttributeName : FlatGrayDark}];
-
-    _emailField.autocompleteDataSource = [JYAutoCompleteDataSource sharedDataSource];
-    _emailField.autocompleteType = JYAutoCompleteTypeEmail;
-    _emailField.delegate = self;
-    _emailField.floatingLabel.font = [UIFont systemFontOfSize:kSignFieldFloatingLabelFontSize];
-    _emailField.font = [UIFont systemFontOfSize:kSignFieldFontSize];
-    _emailField.keyboardType = UIKeyboardTypeEmailAddress;
-    _emailField.returnKeyType = UIReturnKeyNext;
-
-    [self.view addSubview:_emailField];
-}
-
-- (void)_createPartingLine
-{
-    CGFloat y = _emailField.frame.origin.y + _emailField.frame.size.height;
-    CGFloat width = CGRectGetWidth(self.view.frame) - 2 * kSignFieldMarginLeft;
-    _partingLine = [UIView new];
-    _partingLine.frame = CGRectMake(kSignFieldMarginLeft, y, width, 1.0f);
-    _partingLine.backgroundColor = [FlatGray colorWithAlphaComponent:0.3f];
-    [self.view addSubview:_partingLine];
-}
-
-- (void)_createPasswordField
-{
-    CGFloat y = _partingLine.frame.origin.y + _partingLine.frame.size.height;
-    CGFloat width = CGRectGetWidth(self.view.frame) - 2 * kSignFieldMarginLeft;
-    _passwordField = [[JYFloatLabeledTextField alloc] initWithFrame:CGRectMake(kSignFieldMarginLeft, y, width, kSignFieldHeight)];
-    _passwordField.attributedPlaceholder =
-        [[NSAttributedString alloc] initWithString:NSLocalizedString(@"Password", nil) attributes:@{NSForegroundColorAttributeName : FlatGray}];
-    _passwordField.delegate = self;
-    _passwordField.floatingLabel.font = [UIFont systemFontOfSize:kSignFieldFloatingLabelFontSize];
-    _passwordField.font = [UIFont systemFontOfSize:kSignFieldFontSize];
-    _passwordField.returnKeyType = UIReturnKeyDone;
-    _passwordField.secureTextEntry = YES;
-
-    [self.view addSubview:_passwordField];
-}
-
-- (void)_createSignButton
-{
-    CGFloat y = self.passwordField.frame.origin.y + self.passwordField.frame.size.height + kSignButtonMarginTop;
-    CGFloat width = CGRectGetWidth(self.view.frame) - 2 * kSignFieldMarginLeft;
-    CGRect signButtonFrame = CGRectMake(kSignFieldMarginLeft, y, width, kSignButtonHeight);
-
-    _signButton = [[JYButton alloc] initWithFrame:signButtonFrame buttonStyle:JYButtonStyleTitle];
-    _signButton.backgroundColor = ClearColor;
-    _signButton.contentAnimateToColor = FlatGreen;
-    _signButton.contentColor = FlatWhite;
-    _signButton.cornerRadius = kButtonCornerRadius;
-    _signButton.foregroundAnimateToColor = FlatWhite;
-    _signButton.foregroundColor = FlatGreen;
-    _signButton.textLabel.font = [UIFont boldSystemFontOfSize:kSignFieldFontSize];
-
-    [self.view addSubview:_signButton];
-}
-
-- (BOOL)inputCheckPassed
-{
-    if (!self.emailField.text || ![self.emailField.text isValidEmail])
-    {
-        [RKDropdownAlert title:NSLocalizedString(@"(ᵔᴥᵔ) please input an valid email", nil)
-                       message:nil
-               backgroundColor:FlatYellow
-                     textColor:FlatBlack
-                          time:3];
-
-        [self.emailField becomeFirstResponder];
-        return NO;
-    }
-
-    if (!self.passwordField.text || self.passwordField.text.length < 4)
-    {
-        [RKDropdownAlert title:NSLocalizedString(@"(ᵔᴥᵔ) password is too short", nil)
-                       message:nil
-               backgroundColor:FlatYellow
-                     textColor:FlatBlack
-                          time:3];
-
-        [self.passwordField becomeFirstResponder];
-        return NO;
-    }
+    self.signButton.enabled = NO;
+    textField.layer.borderColor = [FlatRed CGColor];
 
     return YES;
 }

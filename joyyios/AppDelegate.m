@@ -19,7 +19,7 @@
 #import "JYMasqueradeViewController.h"
 #import "JYPeopleViewController.h"
 #import "JYSessionListViewController.h"
-#import "JYSignViewController.h"
+#import "JYPhoneNumberViewController.h"
 #import "JYSoundPlayer.h"
 #import "JYXmppManager.h"
 #import "OnboardingViewController.h"
@@ -268,7 +268,7 @@
 
 - (void)_launchSignViewController
 {
-    UIViewController *viewController = [JYSignViewController new];
+    UIViewController *viewController = [JYPhoneNumberViewController new];
     UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:viewController];
     self.window.rootViewController = navigationController;
 }
@@ -302,7 +302,7 @@
     UIViewController *vc3 = [JYSessionListViewController new];
     UINavigationController *nc3 = [[UINavigationController alloc] initWithRootViewController:vc3];
 
-    UIViewController *vc4 = [JYSignViewController new];
+    UIViewController *vc4 = [JYPhoneNumberViewController new];
     UINavigationController *nc4 = [[UINavigationController alloc] initWithRootViewController:vc4];
 
     _tabBarController.viewControllers = @[ nc1, nc2, nc3, nc4 ];

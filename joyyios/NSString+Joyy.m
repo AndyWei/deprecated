@@ -44,7 +44,7 @@
 
 + (NSString *)apiURLWithPath:(NSString *)path
 {
-    return [NSString stringWithFormat:@"%@%@", kUrlAPIBase, path];
+    return [NSString stringWithFormat:@"%@%@", kURLAPIBase, path];
 }
 
 + (NSString *)dialingCodeForCountryCode:(NSString *)countryCode

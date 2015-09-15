@@ -10,4 +10,6 @@
 
 @interface JYSignInViewController : JYSignBaseViewController
 
+@property (nonatomic) NSString *username;
+
 @end

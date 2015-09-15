@@ -28,6 +28,10 @@ CGFloat const kSignFieldHeight = 70.0f;
 CGFloat const kSignFieldMarginLeft = 50.0f;
 CGFloat const kSignViewTopOffset = 152;
 
+CGFloat const kCellHeight = 50;
+CGFloat const kHeaderHeight = 100;
+CGFloat const kFooterHeight = 100;
+
 NSInteger const kSignInRetryInSeconds = 60;
 NSTimeInterval const k5Minutes = 300;
 
@@ -49,7 +53,6 @@ AWSRegionType const kCognitoRegionType = AWSRegionUSEast1;
 NSString *const kKeyChainStoreAPI = @"com.joyyapp.api";
 NSString *const kKeyChainStoreAWS = @"com.joyyapp.aws";
 
-NSString *const kAPIPhoneNumberKey    = @"phone_number";
 NSString *const kAPIPasswordKey = @"password";
 NSString *const kAPIUserIdKey   = @"user_id";
 NSString *const kAPIUsernameKey = @"username";
@@ -91,9 +94,9 @@ NSString *const kSystemFontRegular = @"AvenirNextCondensed-Regular";
 NSString *const kTableNameLikedPost = @"liked_post";
 NSString *const kTableNamePerson = @"person";
 
-//NSString *const kUrlAPIBase = @"http://api.joyyapp.com:8000/v1/";
-NSString *const kUrlAPIBase = @"http://192.168.1.106:8000/v1/";
+//NSString *const kURLAPIBase = @"http://api.joyyapp.com:8000/v1/";
+NSString *const kURLAPIBase = @"http://192.168.1.106:8000/v1/";
 
 NSString *const kURLAvatarBase = @"http://avatar.joyyapp.com/";
-NSString *const kUrlMessageMediaBase = @"http://media.joyy.im/";
+NSString *const kURLMessageMediaBase = @"http://media.joyy.im/";
 NSString *const kURLPostBase = @"http://post.joyyapp.com/";

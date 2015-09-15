@@ -6,6 +6,6 @@
 //  Copyright (c) 2015 Joyy Inc. All rights reserved.
 //
 
-@interface JYSignViewController : UIViewController
+@interface JYPhoneNumberViewController : UIViewController
 
 @end

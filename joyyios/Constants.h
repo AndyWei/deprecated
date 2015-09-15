@@ -33,6 +33,10 @@ extern CGFloat const kSignFieldHeight;
 extern CGFloat const kSignFieldMarginLeft;
 extern CGFloat const kSignViewTopOffset;
 
+extern CGFloat const kCellHeight;
+extern CGFloat const kHeaderHeight;
+extern CGFloat const kFooterHeight;
+
 // AWS
 extern NSString *const kAuthProviderName;
 extern NSString *const kCognitoIdentityPoolId;
@@ -83,7 +87,7 @@ extern NSString *const kSystemFontLight;
 extern NSString *const kSystemFontRegular;
 extern NSString *const kTableNameLikedPost;
 extern NSString *const kTableNamePerson;
-extern NSString *const kUrlAPIBase;
+extern NSString *const kURLAPIBase;
 extern NSString *const kURLAvatarBase;
 extern NSString *const kURLPostBase;
 extern NSString *const kURLMessageBase;

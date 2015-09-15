@@ -11,7 +11,6 @@
 #import <RKDropdownAlert/RKDropdownAlert.h>
 
 #import "JYButton.h"
-#import "JYFloatLabeledTextField.h"
 #import "JYSignUpViewController.h"
 
 @interface JYSignUpViewController ()
@@ -24,12 +23,13 @@
 {
     [super viewDidLoad];
 
-    self.title = NSLocalizedString(@"Create Account", nil);
+    self.title = NSLocalizedString(@"Sign up", nil);
 
     self.signButton.textLabel.text = NSLocalizedString(@"Sign Up", nil);
-    self.signButton.foregroundColor = FlatSkyBlue;
 
     [self.signButton addTarget:self action:@selector(_signUp) forControlEvents:UIControlEventTouchUpInside];
+
+    [self.usernameField becomeFirstResponder];
 }
 
 - (void)didReceiveMemoryWarning
@@ -37,25 +37,57 @@
     [super didReceiveMemoryWarning];
 }
 
-- (void)signButtonPressed
+- (void)_usernameExist:(BOOL)exist
 {
-    [self _signUp];
+    if (exist)
+    {
+        self.usernameField.layer.borderColor = [FlatRed CGColor];
+    }
+    else
+    {
+        self.usernameField.layer.borderColor = [FlatGreen CGColor];
+    }
 }
 
-- (void)_signUp
+#pragma mark - UITextFieldDelegate methods
+
+// Show Red/Green boarder on the usernameField
+- (void)textFieldDidEndEditing:(UITextField *)textField
 {
-    if (![self inputCheckPassed])
+    if (textField == self.passwordField)
     {
         return;
     }
 
-    NSString *email = [self.emailField.text lowercaseString];
+    [self _getExistenceOfUsername:self.usernameField.text];
+}
+
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
+{
+    if (textField == self.usernameField)
+    {
+        NSString *newStr = [textField.text stringByReplacingCharactersInRange:range withString:string];
+        if (newStr.length >= 4)
+        {
+            [self _getExistenceOfUsername:newStr];
+        }
+    }
+    return [super textField:textField shouldChangeCharactersInRange:range replacementString:string];
+}
+
+#pragma mark - Network
+
+- (void)_signUp
+{
+    NSString *username = self.usernameField.text;
     NSString *password = self.passwordField.text;
+    [JYCredential mine].username = username;
     [JYCredential mine].password = password;
+
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
 
     NSString *url = [NSString apiURLWithPath:@"credential/signup"];
-    NSDictionary *parameters = @{@"email": email, @"password": password};
+    NSDictionary *parameters = @{ @"username":username, @"password":password, @"phone":self.phoneNumber };
 
     [KVNProgress show];
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
@@ -92,6 +124,31 @@
                           textColor:FlatBlack
                                time:5];
          }];
+}
+
+- (void)_getExistenceOfUsername:(NSString *)username
+{
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+
+    NSString *url = [NSString apiURLWithPath:@"credential/existence"];
+    NSDictionary *parameters = @{ @"username":username };
+
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+
+    __weak typeof(self) weakSelf = self;
+    [manager GET:url
+       parameters:parameters
+          success:^(AFHTTPRequestOperation *operation, id responseObject) {
+              NSLog(@"Success: credential/existence responseObject: %@", responseObject);
+              [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+
+              BOOL doesExist = [[responseObject objectForKey:@"existence"] boolValue];
+              [weakSelf _usernameExist:doesExist];
+          }
+          failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+              NSLog(@"Error: credential/existence error = %@", error);
+              [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+          }];
 }
 
 @end

@@ -10,7 +10,6 @@
 
 + (JYCredential *)mine;
 
-@property (nonatomic) NSString *phoneNumber;
 @property (nonatomic) NSString *username;
 @property (nonatomic) NSString *password;
 @property (nonatomic) NSString *token;
