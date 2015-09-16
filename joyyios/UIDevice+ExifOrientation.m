@@ -1,20 +1,21 @@
 //
 //  UIDevice+ExifOrientation.m
-//  FacialGestures
+//  joyyios
 //
-//  Created by Danny Shmueli on 6/28/13.
-//  Copyright (c) 2013 Danny Shmueli. All rights reserved.
+//  Created by Ping Yang on 9/15/15.
+//  Copyright (c) 2015 Joyy Inc. All rights reserved.
 //
 
 #import "UIDevice+ExifOrientation.h"
 
 @implementation UIDevice (ExifOrientation)
 
--(ExifForOrientationType)exifForCurrentOrientationWithFrontCamera:(BOOL)isUsingFrontCamera
+- (ExifForOrientationType)exifForCurrentOrientationWithFrontCamera:(BOOL)isUsingFrontCamera
 {
 	ExifForOrientationType exifOrientation;
 
-	switch (self.orientation) {
+	switch (self.orientation)
+    {
 		case UIDeviceOrientationPortraitUpsideDown:  // Device oriented vertically, home button on the top
 			exifOrientation = ExifForOrientationTypePHOTOS_EXIF_0ROW_LEFT_0COL_BOTTOM;
 			break;
@@ -37,4 +38,5 @@
 	}
     return exifOrientation;
 }
+
 @end

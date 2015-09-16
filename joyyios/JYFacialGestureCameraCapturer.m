@@ -1,16 +1,17 @@
 //
-//  DSFacialGestureCameraCapturer.m
-//  DSFacialGestureDetectorExampleProject
+//  JYFacialGestureCameraCapturer.m
+//  joyyios
 //
-//  Created by Danny Shmueli on 10/18/14.
-//  Copyright (c) 2014 DS. All rights reserved.
+//  Created by Ping Yang on 9/15/15.
+//  Copyright (c) 2015 Joyy Inc. All rights reserved.
 //
 
-#import "DSFacialGestureCameraCapturer.h"
-#import <UIKit/UIKit.h>
 #import <AVFoundation/AVFoundation.h>
 
-@interface DSFacialGestureCameraCapturer() <AVCaptureVideoDataOutputSampleBufferDelegate>
+#import "JYFacialGestureCameraCapturer.h"
+
+
+@interface JYFacialGestureCameraCapturer() <AVCaptureVideoDataOutputSampleBufferDelegate>
 
 @property (nonatomic, strong) AVCaptureSession *session;
 @property (nonatomic, strong) AVCaptureVideoDataOutput *videoDataOutput;
@@ -23,7 +24,7 @@
 
 @end
 
-@implementation DSFacialGestureCameraCapturer
+@implementation JYFacialGestureCameraCapturer
 
 
 -(void)setAVCaptureAtSampleRate:(float)sampleRate withCameraPreviewView:(UIView *)cameraPreviewView withError:(NSError **)error
