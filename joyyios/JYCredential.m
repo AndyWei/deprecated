@@ -13,6 +13,14 @@
 @property (nonatomic) NSUInteger tokenExpiryTime;
 @end
 
+// KeyChain -- DO NOT MODIFY!!!
+static NSString *const kKeyChainStoreAPI = @"com.joyyapp.api";
+static NSString *const kAPIPasswordKey = @"api_password";
+static NSString *const kAPIUserIdKey   = @"api_user_id";
+static NSString *const kAPIUsernameKey = @"api_username";
+static NSString *const kAPITokenKey    = @"api_token";
+static NSString *const kAPITokenExpiryTimeKey = @"api_token_expiry_time";
+
 @implementation JYCredential
 
 + (JYCredential *)mine
@@ -29,15 +37,15 @@
 {
     if (self = [super init])
     {
-        self.keychain = [UICKeyChainStore keyChainStoreWithService:kKeyChainStoreAWS];
+        self.keychain = [UICKeyChainStore keyChainStoreWithService:kKeyChainStoreAPI];
 
         _password = self.keychain[kAPIPasswordKey];
         _username = self.keychain[kAPIUsernameKey];
         _idString = self.keychain[kAPIUserIdKey];
         _token    = self.keychain[kAPITokenKey];
 
-        NSString *expiryTimeStr = self.keychain[kAWSTokenExpiryTimeKey];
-        _tokenExpiryTime = expiryTimeStr ? [expiryTimeStr doubleValue] : 0.0f;
+        NSString *expiryTimeStr = self.keychain[kAPITokenExpiryTimeKey];
+        _tokenExpiryTime = expiryTimeStr ? [expiryTimeStr unsignedIntegerValue] : 0;
 
         _userId = _idString? [_idString unsignedIntegerValue] : 0;
     }
@@ -106,8 +114,7 @@
 
 - (BOOL)isEmpty
 {
-//    return (!self.username || !self.password || !self.idString);
-    return YES;
+    return (!self.username || !self.password || !self.idString);
 }
 
 @end

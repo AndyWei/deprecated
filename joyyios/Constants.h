@@ -45,23 +45,6 @@ extern NSString *const kMessagesBucket;
 extern AWSRegionType const kCognitoRegionType;
 // AWS end
 
-
-// KeyChain
-extern NSString *const kKeyChainStoreAPI;
-extern NSString *const kKeyChainStoreAWS;
-
-extern NSString *const kAPIPhoneNumberKey;
-extern NSString *const kAPIPasswordKey;
-extern NSString *const kAPIUserIdKey;
-extern NSString *const kAPIUsernameKey;
-extern NSString *const kAPITokenKey;
-extern NSString *const kAPITokenExpiryTimeKey;
-
-extern NSString *const kAWSIdentityIdKey;
-extern NSString *const kAWSTokenKey;
-extern NSString *const kAWSTokenExpiryTimeKey;
-// KeyChain end
-
 extern NSString *const kContentTypeJPG;
 extern NSString *const kDummyCaptionText;
 extern NSString *const kErrorSignInFailed;

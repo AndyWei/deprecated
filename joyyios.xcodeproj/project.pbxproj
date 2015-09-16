@@ -188,6 +188,16 @@
 		D6E3B0661B9A7C6D00B707DF /* NSIndexPath+Joyy.m in Sources */ = {isa = PBXBuildFile; fileRef = D6E3B0641B9A7C6D00B707DF /* NSIndexPath+Joyy.m */; };
 		D6F7F1381BA71ADF008118DA /* JYVerificationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F7F1371BA71ADF008118DA /* JYVerificationViewController.m */; };
 		D6F7F1391BA71ADF008118DA /* JYVerificationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F7F1371BA71ADF008118DA /* JYVerificationViewController.m */; };
+		D6F7F1451BA8ED76008118DA /* DSFacialGesture.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F7F13C1BA8ED76008118DA /* DSFacialGesture.m */; };
+		D6F7F1461BA8ED76008118DA /* DSFacialGesture.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F7F13C1BA8ED76008118DA /* DSFacialGesture.m */; };
+		D6F7F1471BA8ED76008118DA /* DSFacialGestureAggregator.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F7F13E1BA8ED76008118DA /* DSFacialGestureAggregator.m */; };
+		D6F7F1481BA8ED76008118DA /* DSFacialGestureAggregator.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F7F13E1BA8ED76008118DA /* DSFacialGestureAggregator.m */; };
+		D6F7F1491BA8ED76008118DA /* DSFacialGestureCameraCapturer.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F7F1401BA8ED76008118DA /* DSFacialGestureCameraCapturer.m */; };
+		D6F7F14A1BA8ED76008118DA /* DSFacialGestureCameraCapturer.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F7F1401BA8ED76008118DA /* DSFacialGestureCameraCapturer.m */; };
+		D6F7F14B1BA8ED76008118DA /* DSFacialGesturesDetector.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F7F1421BA8ED76008118DA /* DSFacialGesturesDetector.m */; };
+		D6F7F14C1BA8ED76008118DA /* DSFacialGesturesDetector.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F7F1421BA8ED76008118DA /* DSFacialGesturesDetector.m */; };
+		D6F7F14D1BA8ED76008118DA /* UIDevice+ExifOrientation.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F7F1441BA8ED76008118DA /* UIDevice+ExifOrientation.m */; };
+		D6F7F14E1BA8ED76008118DA /* UIDevice+ExifOrientation.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F7F1441BA8ED76008118DA /* UIDevice+ExifOrientation.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -390,6 +400,16 @@
 		D6E3B0641B9A7C6D00B707DF /* NSIndexPath+Joyy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSIndexPath+Joyy.m"; sourceTree = "<group>"; };
 		D6F7F1361BA71ADF008118DA /* JYVerificationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYVerificationViewController.h; sourceTree = "<group>"; };
 		D6F7F1371BA71ADF008118DA /* JYVerificationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYVerificationViewController.m; sourceTree = "<group>"; };
+		D6F7F13B1BA8ED76008118DA /* DSFacialGesture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DSFacialGesture.h; sourceTree = "<group>"; };
+		D6F7F13C1BA8ED76008118DA /* DSFacialGesture.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DSFacialGesture.m; sourceTree = "<group>"; };
+		D6F7F13D1BA8ED76008118DA /* DSFacialGestureAggregator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DSFacialGestureAggregator.h; sourceTree = "<group>"; };
+		D6F7F13E1BA8ED76008118DA /* DSFacialGestureAggregator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DSFacialGestureAggregator.m; sourceTree = "<group>"; };
+		D6F7F13F1BA8ED76008118DA /* DSFacialGestureCameraCapturer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DSFacialGestureCameraCapturer.h; sourceTree = "<group>"; };
+		D6F7F1401BA8ED76008118DA /* DSFacialGestureCameraCapturer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DSFacialGestureCameraCapturer.m; sourceTree = "<group>"; };
+		D6F7F1411BA8ED76008118DA /* DSFacialGesturesDetector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DSFacialGesturesDetector.h; sourceTree = "<group>"; };
+		D6F7F1421BA8ED76008118DA /* DSFacialGesturesDetector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DSFacialGesturesDetector.m; sourceTree = "<group>"; };
+		D6F7F1431BA8ED76008118DA /* UIDevice+ExifOrientation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIDevice+ExifOrientation.h"; sourceTree = "<group>"; };
+		D6F7F1441BA8ED76008118DA /* UIDevice+ExifOrientation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIDevice+ExifOrientation.m"; sourceTree = "<group>"; };
 		F67CA15F6F0CAF970CBFB660 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -789,6 +809,7 @@
 				D69FF6D81B9646CF00466FE5 /* AWS */,
 				D68DAF991AC4CD0800838E7E /* Common */,
 				D68DAF9A1AC4CD1800838E7E /* Credential */,
+				D6F7F13A1BA8ECCC008118DA /* Detector */,
 				D61D1D5B1B4DBA5D00DE37DF /* Masquerade */,
 				D68486B31B8AC207005CA0C4 /* Message */,
 				D63B69AB1AC5184D005600A9 /* People */,
@@ -855,6 +876,23 @@
 				D61D1DE11B5366DC00DE37DF /* JYPost.m */,
 			);
 			name = Model;
+			sourceTree = "<group>";
+		};
+		D6F7F13A1BA8ECCC008118DA /* Detector */ = {
+			isa = PBXGroup;
+			children = (
+				D6F7F13B1BA8ED76008118DA /* DSFacialGesture.h */,
+				D6F7F13C1BA8ED76008118DA /* DSFacialGesture.m */,
+				D6F7F13D1BA8ED76008118DA /* DSFacialGestureAggregator.h */,
+				D6F7F13E1BA8ED76008118DA /* DSFacialGestureAggregator.m */,
+				D6F7F13F1BA8ED76008118DA /* DSFacialGestureCameraCapturer.h */,
+				D6F7F1401BA8ED76008118DA /* DSFacialGestureCameraCapturer.m */,
+				D6F7F1411BA8ED76008118DA /* DSFacialGesturesDetector.h */,
+				D6F7F1421BA8ED76008118DA /* DSFacialGesturesDetector.m */,
+				D6F7F1431BA8ED76008118DA /* UIDevice+ExifOrientation.h */,
+				D6F7F1441BA8ED76008118DA /* UIDevice+ExifOrientation.m */,
+			);
+			name = Detector;
 			sourceTree = "<group>";
 		};
 		E8953528E7D4E03D9881458B /* Frameworks */ = {
@@ -1061,15 +1099,18 @@
 				D689ED6A1AE42C8300CB4D2B /* UIView+Joyy.m in Sources */,
 				D61D1D591B4A65F200DE37DF /* UIView+MDCSwipeToChoose.m in Sources */,
 				D61D1D511B4A65F200DE37DF /* MDCSwipeToChooseViewOptions.m in Sources */,
+				D6F7F14B1BA8ED76008118DA /* DSFacialGesturesDetector.m in Sources */,
 				D61D1D471B4A65F200DE37DF /* MDCGeometry.m in Sources */,
 				D61D1DC61B4E336E00DE37DF /* TGCameraSlideUpView.m in Sources */,
 				D61D1DDE1B5342DD00DE37DF /* UIImage+Joyy.m in Sources */,
 				D61D1DC21B4E336E00DE37DF /* TGCameraGridView.m in Sources */,
+				D6F7F1491BA8ED76008118DA /* DSFacialGestureCameraCapturer.m in Sources */,
 				D63F0D591AC7CFF20067C5EE /* JYButton.m in Sources */,
 				D63B69BA1AC624F8005600A9 /* JYAutoCompleteDataSource.m in Sources */,
 				D69FF6DB1B96471600466FE5 /* JYAmazonClientManager.m in Sources */,
 				D63B69B21AC51D61005600A9 /* JYSignBaseViewController.m in Sources */,
 				D61D1DC41B4E336E00DE37DF /* TGCameraSlideDownView.m in Sources */,
+				D6F7F1471BA8ED76008118DA /* DSFacialGestureAggregator.m in Sources */,
 				D67DD0E41B75302800333626 /* JYPeopleViewController.m in Sources */,
 				D65F37461B04807D007B534C /* JYCommentViewCell.m in Sources */,
 				D61D1DAE1B4E336E00DE37DF /* TGCamera.m in Sources */,
@@ -1116,6 +1157,7 @@
 				D68486BE1B8C59BF005CA0C4 /* JYMessage.m in Sources */,
 				D63F0D551AC7ACB70067C5EE /* JYSignUpViewController.m in Sources */,
 				D6966B3A1BA3873200AAD8D5 /* JYCountryViewCell.m in Sources */,
+				D6F7F1451BA8ED76008118DA /* DSFacialGesture.m in Sources */,
 				D61D1DA81B4E336E00DE37DF /* TGPhotoViewController.m in Sources */,
 				D61D1DB41B4E336E00DE37DF /* TGCameraFocus.m in Sources */,
 				D61D1DCC1B4E336E00DE37DF /* TGTintedLabel.m in Sources */,
@@ -1136,6 +1178,7 @@
 				D6E3B0551B996F5400B707DF /* JYSessionListViewCell.m in Sources */,
 				D61D1D571B4A65F200DE37DF /* MDCSwipeToChooseView.m in Sources */,
 				D61D1DC81B4E336E00DE37DF /* TGCameraSlideView.m in Sources */,
+				D6F7F14D1BA8ED76008118DA /* UIDevice+ExifOrientation.m in Sources */,
 				D67DD0F81B7728E300333626 /* JYAvatar.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1165,11 +1208,13 @@
 				D61D1DA11B4E336E00DE37DF /* UIImage+CameraFilters.m in Sources */,
 				D67DD0E11B744D1C00333626 /* JYCommentView.m in Sources */,
 				D61D1D501B4A65F200DE37DF /* MDCSwipeOptions.m in Sources */,
+				D6F7F1481BA8ED76008118DA /* DSFacialGestureAggregator.m in Sources */,
 				D6F7F1391BA71ADF008118DA /* JYVerificationViewController.m in Sources */,
 				D63F0D7E1ACA5E260067C5EE /* JYPhoneNumberViewController.m in Sources */,
 				D63B69BB1AC624F8005600A9 /* JYAutoCompleteDataSource.m in Sources */,
 				D61D1DC71B4E336E00DE37DF /* TGCameraSlideUpView.m in Sources */,
 				D61D1DAD1B4E336E00DE37DF /* TGAssetsLibrary.m in Sources */,
+				D6F7F14C1BA8ED76008118DA /* DSFacialGesturesDetector.m in Sources */,
 				D63F0D761AC9F6F80067C5EE /* JYDataStore.m in Sources */,
 				D61D1D5A1B4A65F200DE37DF /* UIView+MDCSwipeToChoose.m in Sources */,
 				D67DD0ED1B75321A00333626 /* JYPerson.m in Sources */,
@@ -1182,6 +1227,7 @@
 				D63F0D5A1AC7CFF20067C5EE /* JYButton.m in Sources */,
 				D61D1D581B4A65F200DE37DF /* MDCSwipeToChooseView.m in Sources */,
 				D6E3B0661B9A7C6D00B707DF /* NSIndexPath+Joyy.m in Sources */,
+				D6F7F14A1BA8ED76008118DA /* DSFacialGestureCameraCapturer.m in Sources */,
 				D67DD0F51B77187000333626 /* JYCaptionTextView.m in Sources */,
 				D6E3B0561B996F5400B707DF /* JYSessionListViewCell.m in Sources */,
 				D62C2C611B8E887200233F5B /* JYXmppManager.m in Sources */,
@@ -1195,6 +1241,7 @@
 				D61D1DBF1B4E336E00DE37DF /* TGCameraFilterView.m in Sources */,
 				D69FF6D71B94144100466FE5 /* JYSoundPlayer.m in Sources */,
 				D69FF6DC1B96471600466FE5 /* JYAmazonClientManager.m in Sources */,
+				D6F7F14E1BA8ED76008118DA /* UIDevice+ExifOrientation.m in Sources */,
 				D63F0DA31ACD08260067C5EE /* UIColor+Joyy.m in Sources */,
 				D6966B371BA3753A00AAD8D5 /* JYCountryListViewController.m in Sources */,
 				D61D1DCB1B4E336E00DE37DF /* TGTintedButton.m in Sources */,
@@ -1210,6 +1257,7 @@
 				D61D1DB91B4E336E00DE37DF /* TGCameraShot.m in Sources */,
 				D61D1DB71B4E336E00DE37DF /* TGCameraGrid.m in Sources */,
 				D6348D301ADB4DD60002BC35 /* NSString+Joyy.m in Sources */,
+				D6F7F1461BA8ED76008118DA /* DSFacialGesture.m in Sources */,
 				D68486B71B8AC267005CA0C4 /* JYSessionViewController.m in Sources */,
 				D61D1DC91B4E336E00DE37DF /* TGCameraSlideView.m in Sources */,
 				D61D1D561B4A65F200DE37DF /* MDCSwipeResult.m in Sources */,

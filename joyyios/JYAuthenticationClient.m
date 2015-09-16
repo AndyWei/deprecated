@@ -31,6 +31,12 @@ NSString *const kJYAuthenticationClientDomain = @"JYAuthenticationClient";
 @property (nonatomic) UICKeyChainStore *keychain;
 @end
 
+// KeyChain -- DO NOT MODIFY!!!
+static NSString *const kKeyChainStoreAWS = @"com.joyyapp.aws";
+static NSString *const kAWSIdentityIdKey = @"aws_identity_id";
+static NSString *const kAWSTokenKey      = @"aws_openid_token";
+static NSString *const kAWSTokenExpiryTimeKey = @"aws_openid_token_expiry_time";
+
 @implementation JYAuthenticationClient
 
 - (instancetype)init

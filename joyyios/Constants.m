@@ -49,21 +49,6 @@ NSString *const kPostBucket     = @"joyypost";
 AWSRegionType const kCognitoRegionType = AWSRegionUSEast1;
 // AWS end
 
-// KeyChain -- DO NOT MODIFY!!!
-NSString *const kKeyChainStoreAPI = @"com.joyyapp.api";
-NSString *const kKeyChainStoreAWS = @"com.joyyapp.aws";
-
-NSString *const kAPIPasswordKey = @"password";
-NSString *const kAPIUserIdKey   = @"user_id";
-NSString *const kAPIUsernameKey = @"username";
-NSString *const kAPITokenKey    = @"api_token";
-NSString *const kAPITokenExpiryTimeKey = @"api_token_expiry_time";
-
-NSString *const kAWSIdentityIdKey = @"identity_id";
-NSString *const kAWSTokenKey      = @"openid_token";
-NSString *const kAWSTokenExpiryTimeKey = @"openid_token_expiry_time";
-// KeyChain end
-
 NSString *const kContentTypeJPG = @"image/jpeg";
 NSString *const kDummyCaptionText = @"◦";
 NSString *const kErrorSignInFailed = @"Incorrect password";
@@ -94,8 +79,8 @@ NSString *const kSystemFontRegular = @"AvenirNextCondensed-Regular";
 NSString *const kTableNameLikedPost = @"liked_post";
 NSString *const kTableNamePerson = @"person";
 
-//NSString *const kURLAPIBase = @"http://api.joyyapp.com:8000/v1/";
-NSString *const kURLAPIBase = @"http://192.168.1.106:8000/v1/";
+NSString *const kURLAPIBase = @"http://api.joyyapp.com:8000/v1/";
+//NSString *const kURLAPIBase = @"http://192.168.1.106:8000/v1/";
 
 NSString *const kURLAvatarBase = @"http://avatar.joyyapp.com/";
 NSString *const kURLMessageMediaBase = @"http://media.joyy.im/";

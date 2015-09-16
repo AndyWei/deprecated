@@ -31,6 +31,7 @@ static const CGFloat kInfoLabelWidth = 280.f;
                                 UIViewAutoresizingFlexibleWidth |
                                 UIViewAutoresizingFlexibleBottomMargin;
         self.imageView.autoresizingMask = self.autoresizingMask;
+        self.backgroundColor = JoyyWhitePure;
     }
     return self;
 }
@@ -94,8 +95,8 @@ static const CGFloat kInfoLabelWidth = 280.f;
 
 - (void)_updateImage
 {
-    // Fetch network image
-    NSURL *avatarURL = [NSURL URLWithString:self.person.avatarURL];
+    // Get network image
+    NSURL *avatarURL = [NSURL URLWithString:self.person.fullAvatarURL];
     NSURLRequest *request = [NSURLRequest requestWithURL:avatarURL];
 
     __weak typeof(self) weakSelf = self;
@@ -103,9 +104,14 @@ static const CGFloat kInfoLabelWidth = 280.f;
                           placeholderImage:nil
                                    success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image)
      {
+         NSLog(@"Success: get person full avatar");
          weakSelf.imageView.image = image;
          [weakSelf setNeedsLayout];
-     } failure:nil];
+     }
+     failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error)
+     {
+         NSLog(@"Error: get person full avatar error: %@", error);
+     }];
 }
 
 - (void)_updateInfoLabel
