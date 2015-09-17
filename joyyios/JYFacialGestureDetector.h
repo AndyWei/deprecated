@@ -1,5 +1,5 @@
 //
-//  JYFacialDetector.h
+//  JYFacialGestureDetector.h
 //  joyyios
 //
 //  Created by Ping Yang on 9/15/15.
@@ -8,23 +8,23 @@
 
 @import ImageIO;
 
-@class JYFacialGesturesDetector;
+@class JYFacialGestureDetector;
 
-@protocol JYFacialDetectorDelegate <NSObject>
+@protocol JYFacialGuestureDetectorDelegate <NSObject>
 
 @required
 - (BOOL)isListening;
 
 @optional
-- (void)detectorDidDetectSmile:(JYFacialGesturesDetector *)detector;
-- (void)detectorDidDetectBlink:(JYFacialGesturesDetector *)detector;
-- (void)detectorDidDetectLeftWink:(JYFacialGesturesDetector *)detector;
-- (void)detectorDidDetectRightWink:(JYFacialGesturesDetector *)detector;
+- (void)detectorDidDetectSmile:(JYFacialGestureDetector *)detector;
+- (void)detectorDidDetectBlink:(JYFacialGestureDetector *)detector;
+- (void)detectorDidDetectLeftWink:(JYFacialGestureDetector *)detector;
+- (void)detectorDidDetectRightWink:(JYFacialGestureDetector *)detector;
 
 @end
 
 
-@interface JYFacialGesturesDetector : NSObject
+@interface JYFacialGestureDetector : NSObject
 
 - (void)startDetectionWithError:(NSError **)error;
 - (void)stopDetection;
@@ -34,7 +34,7 @@
 @property (nonatomic) BOOL detectLeftWink;
 @property (nonatomic) BOOL detectRightWink;
 @property (nonatomic, readonly) CIImage *currentImage;
-@property (nonatomic, weak) id<JYFacialDetectorDelegate> delegate;
+@property (nonatomic, weak) id<JYFacialGuestureDetectorDelegate> delegate;
 @property (nonatomic, weak) UIView *previewView;
 
 @end

@@ -178,6 +178,8 @@
 		D6C82B5D1B0EFDEA00876F57 /* JYCommentTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = D6C82B5B1B0EFDEA00876F57 /* JYCommentTextView.m */; };
 		D6C82B691B12553D00876F57 /* JYComment.m in Sources */ = {isa = PBXBuildFile; fileRef = D6C82B681B12553D00876F57 /* JYComment.m */; };
 		D6C82B6A1B12553D00876F57 /* JYComment.m in Sources */ = {isa = PBXBuildFile; fileRef = D6C82B681B12553D00876F57 /* JYComment.m */; };
+		D6D0FDA21BAA415E002E058D /* JYFacialGestureDecider.m in Sources */ = {isa = PBXBuildFile; fileRef = D6D0FDA11BAA415E002E058D /* JYFacialGestureDecider.m */; };
+		D6D0FDA31BAA415E002E058D /* JYFacialGestureDecider.m in Sources */ = {isa = PBXBuildFile; fileRef = D6D0FDA11BAA415E002E058D /* JYFacialGestureDecider.m */; };
 		D6E3B0511B99334900B707DF /* AFHTTPRequestOperationManager+Joyy.m in Sources */ = {isa = PBXBuildFile; fileRef = D6E3B0501B99334900B707DF /* AFHTTPRequestOperationManager+Joyy.m */; };
 		D6E3B0521B99334900B707DF /* AFHTTPRequestOperationManager+Joyy.m in Sources */ = {isa = PBXBuildFile; fileRef = D6E3B0501B99334900B707DF /* AFHTTPRequestOperationManager+Joyy.m */; };
 		D6E3B0551B996F5400B707DF /* JYSessionListViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D6E3B0541B996F5400B707DF /* JYSessionListViewCell.m */; };
@@ -190,8 +192,8 @@
 		D6F7F1391BA71ADF008118DA /* JYVerificationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F7F1371BA71ADF008118DA /* JYVerificationViewController.m */; };
 		D6F7F1491BA8ED76008118DA /* JYFacialGestureCamera.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F7F1401BA8ED76008118DA /* JYFacialGestureCamera.m */; };
 		D6F7F14A1BA8ED76008118DA /* JYFacialGestureCamera.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F7F1401BA8ED76008118DA /* JYFacialGestureCamera.m */; };
-		D6F7F14B1BA8ED76008118DA /* JYFacialGesturesDetector.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F7F1421BA8ED76008118DA /* JYFacialGesturesDetector.m */; };
-		D6F7F14C1BA8ED76008118DA /* JYFacialGesturesDetector.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F7F1421BA8ED76008118DA /* JYFacialGesturesDetector.m */; };
+		D6F7F14B1BA8ED76008118DA /* JYFacialGestureDetector.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F7F1421BA8ED76008118DA /* JYFacialGestureDetector.m */; };
+		D6F7F14C1BA8ED76008118DA /* JYFacialGestureDetector.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F7F1421BA8ED76008118DA /* JYFacialGestureDetector.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -384,6 +386,8 @@
 		D6C82B5B1B0EFDEA00876F57 /* JYCommentTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYCommentTextView.m; sourceTree = "<group>"; };
 		D6C82B671B12553D00876F57 /* JYComment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYComment.h; sourceTree = "<group>"; };
 		D6C82B681B12553D00876F57 /* JYComment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYComment.m; sourceTree = "<group>"; };
+		D6D0FDA01BAA415E002E058D /* JYFacialGestureDecider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYFacialGestureDecider.h; sourceTree = "<group>"; };
+		D6D0FDA11BAA415E002E058D /* JYFacialGestureDecider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYFacialGestureDecider.m; sourceTree = "<group>"; };
 		D6E3B04F1B99334900B707DF /* AFHTTPRequestOperationManager+Joyy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AFHTTPRequestOperationManager+Joyy.h"; sourceTree = "<group>"; };
 		D6E3B0501B99334900B707DF /* AFHTTPRequestOperationManager+Joyy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "AFHTTPRequestOperationManager+Joyy.m"; sourceTree = "<group>"; };
 		D6E3B0531B996F5400B707DF /* JYSessionListViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYSessionListViewCell.h; sourceTree = "<group>"; };
@@ -396,8 +400,8 @@
 		D6F7F1371BA71ADF008118DA /* JYVerificationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYVerificationViewController.m; sourceTree = "<group>"; };
 		D6F7F13F1BA8ED76008118DA /* JYFacialGestureCamera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYFacialGestureCamera.h; sourceTree = "<group>"; };
 		D6F7F1401BA8ED76008118DA /* JYFacialGestureCamera.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYFacialGestureCamera.m; sourceTree = "<group>"; };
-		D6F7F1411BA8ED76008118DA /* JYFacialGesturesDetector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYFacialGesturesDetector.h; sourceTree = "<group>"; };
-		D6F7F1421BA8ED76008118DA /* JYFacialGesturesDetector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYFacialGesturesDetector.m; sourceTree = "<group>"; };
+		D6F7F1411BA8ED76008118DA /* JYFacialGestureDetector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYFacialGestureDetector.h; sourceTree = "<group>"; };
+		D6F7F1421BA8ED76008118DA /* JYFacialGestureDetector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYFacialGestureDetector.m; sourceTree = "<group>"; };
 		F67CA15F6F0CAF970CBFB660 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -871,8 +875,10 @@
 			children = (
 				D6F7F13F1BA8ED76008118DA /* JYFacialGestureCamera.h */,
 				D6F7F1401BA8ED76008118DA /* JYFacialGestureCamera.m */,
-				D6F7F1411BA8ED76008118DA /* JYFacialGesturesDetector.h */,
-				D6F7F1421BA8ED76008118DA /* JYFacialGesturesDetector.m */,
+				D6D0FDA01BAA415E002E058D /* JYFacialGestureDecider.h */,
+				D6D0FDA11BAA415E002E058D /* JYFacialGestureDecider.m */,
+				D6F7F1411BA8ED76008118DA /* JYFacialGestureDetector.h */,
+				D6F7F1421BA8ED76008118DA /* JYFacialGestureDetector.m */,
 			);
 			name = Detector;
 			sourceTree = "<group>";
@@ -1081,7 +1087,7 @@
 				D689ED6A1AE42C8300CB4D2B /* UIView+Joyy.m in Sources */,
 				D61D1D591B4A65F200DE37DF /* UIView+MDCSwipeToChoose.m in Sources */,
 				D61D1D511B4A65F200DE37DF /* MDCSwipeToChooseViewOptions.m in Sources */,
-				D6F7F14B1BA8ED76008118DA /* JYFacialGesturesDetector.m in Sources */,
+				D6F7F14B1BA8ED76008118DA /* JYFacialGestureDetector.m in Sources */,
 				D61D1D471B4A65F200DE37DF /* MDCGeometry.m in Sources */,
 				D61D1DC61B4E336E00DE37DF /* TGCameraSlideUpView.m in Sources */,
 				D61D1DDE1B5342DD00DE37DF /* UIImage+Joyy.m in Sources */,
@@ -1108,6 +1114,7 @@
 				D6E3B0611B9A38F500B707DF /* JYMessageDateFormatter.m in Sources */,
 				D61D1D4F1B4A65F200DE37DF /* MDCSwipeOptions.m in Sources */,
 				D62C2C601B8E887200233F5B /* JYXmppManager.m in Sources */,
+				D6D0FDA21BAA415E002E058D /* JYFacialGestureDecider.m in Sources */,
 				D61D1DBE1B4E336E00DE37DF /* TGCameraFilterView.m in Sources */,
 				D61D1DB01B4E336E00DE37DF /* TGCameraColor.m in Sources */,
 				D61D1DB61B4E336E00DE37DF /* TGCameraGrid.m in Sources */,
@@ -1192,9 +1199,10 @@
 				D63B69BB1AC624F8005600A9 /* JYAutoCompleteDataSource.m in Sources */,
 				D61D1DC71B4E336E00DE37DF /* TGCameraSlideUpView.m in Sources */,
 				D61D1DAD1B4E336E00DE37DF /* TGAssetsLibrary.m in Sources */,
-				D6F7F14C1BA8ED76008118DA /* JYFacialGesturesDetector.m in Sources */,
+				D6F7F14C1BA8ED76008118DA /* JYFacialGestureDetector.m in Sources */,
 				D63F0D761AC9F6F80067C5EE /* JYDataStore.m in Sources */,
 				D61D1D5A1B4A65F200DE37DF /* UIView+MDCSwipeToChoose.m in Sources */,
+				D6D0FDA31BAA415E002E058D /* JYFacialGestureDecider.m in Sources */,
 				D67DD0ED1B75321A00333626 /* JYPerson.m in Sources */,
 				D61D1D481B4A65F200DE37DF /* MDCGeometry.m in Sources */,
 				D65F37471B04807D007B534C /* JYCommentViewCell.m in Sources */,

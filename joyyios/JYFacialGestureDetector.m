@@ -1,5 +1,5 @@
 //
-//  JYFacialDetector.m
+//  JYFacialGestureDetector.m
 //  joyyios
 //
 //  Created by Ping Yang on 9/15/15.
@@ -7,9 +7,9 @@
 //
 
 #import "JYFacialGestureCamera.h"
-#import "JYFacialGesturesDetector.h"
+#import "JYFacialGestureDetector.h"
 
-@interface JYFacialGesturesDetector () <JYFacialGestureCameraDelegate>
+@interface JYFacialGestureDetector () <JYFacialGestureCameraDelegate>
 @property (nonatomic) CIDetector *faceDetector;
 @property (nonatomic) CIImage *currentImage;
 @property (nonatomic) JYFacialGestureCamera *camera;
@@ -19,7 +19,7 @@
 //  if this value is too low it takes a lot of CPU, if too high the effect is bad cause detection is not happening a lot.
 const CFTimeInterval kCapturePeriod = 0.25f;
 
-@implementation JYFacialGesturesDetector
+@implementation JYFacialGestureDetector
 
 - (id)init
 {

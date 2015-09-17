@@ -10,17 +10,17 @@
 
 #import "AppDelegate.h"
 #import "JYButton.h"
-#import "JYFacialGesturesDetector.h"
+#import "JYFacialGestureDetector.h"
 #import "JYPeopleViewController.h"
 
 
-@interface JYPeopleViewController () <JYFacialDetectorDelegate, JYPersonCardDelegate, MDCSwipeToChooseDelegate>
+@interface JYPeopleViewController () <JYFacialGuestureDetectorDelegate, JYPersonCardDelegate, MDCSwipeToChooseDelegate>
 @property (nonatomic) CGRect frontCardFrame;
 @property (nonatomic) CGRect backCardFrame;
 @property (nonatomic) JYButton *nopeButton;
 @property (nonatomic) JYButton *likeButton;
 @property (nonatomic) NSInteger networkThreadCount;
-@property (nonatomic) JYFacialGesturesDetector *facialGesturesDetector;
+@property (nonatomic) JYFacialGestureDetector *facialGesturesDetector;
 @property (nonatomic) NSMutableArray *personList;
 @property (nonatomic) BOOL isListening;
 @end
@@ -125,11 +125,11 @@ static const CGFloat kButtonWidth = 60;
     return _backCardFrame;
 }
 
-- (JYFacialGesturesDetector *)facialGesturesDetector
+- (JYFacialGestureDetector *)facialGesturesDetector
 {
     if (!_facialGesturesDetector)
     {
-        JYFacialGesturesDetector *detector = [JYFacialGesturesDetector new];
+        JYFacialGestureDetector *detector = [JYFacialGestureDetector new];
         detector.delegate = self;
         detector.detectLeftWink = YES;
         detector.detectRightWink = YES;
@@ -141,13 +141,13 @@ static const CGFloat kButtonWidth = 60;
 
 #pragma mark - JYFacialDetectorDelegate Methods
 
-- (void)detectorDidDetectLeftWink:(JYFacialGesturesDetector *)detector
+- (void)detectorDidDetectLeftWink:(JYFacialGestureDetector *)detector
 {
     self.isListening = NO;
     [self _nope];
 }
 
-- (void)detectorDidDetectRightWink:(JYFacialGesturesDetector *)detector
+- (void)detectorDidDetectRightWink:(JYFacialGestureDetector *)detector
 {
     self.isListening = NO;
     [self _like];
