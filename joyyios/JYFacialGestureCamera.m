@@ -124,7 +124,7 @@
 {
     CFTimeInterval now = CACurrentMediaTime();
     CFTimeInterval timePassed = now - self.lastSampleTimestamp;
-    
+
     if (timePassed < self.capturePeriod)
     {
         return;

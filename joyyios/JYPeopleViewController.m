@@ -25,9 +25,10 @@
 @property (nonatomic) BOOL isListening;
 @end
 
-static const CGFloat kButtonSpaceH = 80;
-static const CGFloat kButtonSpaceV = 10;
-static const CGFloat kButtonWidth = 60;
+//const CFTimeInterval kReportingPeriod = 1.5f;
+const CGFloat kButtonSpaceH = 80;
+const CGFloat kButtonSpaceV = 10;
+const CGFloat kButtonWidth = 60;
 
 @implementation JYPeopleViewController
 
@@ -55,7 +56,6 @@ static const CGFloat kButtonWidth = 60;
 {
     [self _fetchPersonNearby];
 
-    self.isListening = YES;
     NSError *error;
     [self.facialGesturesDetector startDetectionWithError:&error];
 }
@@ -133,6 +133,7 @@ static const CGFloat kButtonWidth = 60;
         detector.delegate = self;
         detector.detectLeftWink = YES;
         detector.detectRightWink = YES;
+//        detector.reportingPeriod = kReportingPeriod;
 
         _facialGesturesDetector = detector;
     }
@@ -143,13 +144,11 @@ static const CGFloat kButtonWidth = 60;
 
 - (void)detectorDidDetectLeftWink:(JYFacialGestureDetector *)detector
 {
-    self.isListening = NO;
     [self _nope];
 }
 
 - (void)detectorDidDetectRightWink:(JYFacialGestureDetector *)detector
 {
-    self.isListening = NO;
     [self _like];
 }
 
@@ -158,10 +157,7 @@ static const CGFloat kButtonWidth = 60;
 - (void)cardDidLoadImage:(JYPersonCard *)card
 {
     // Listen for the first front card
-    if (card == self.frontCard)
-    {
-        self.isListening = YES;
-    }
+    self.isListening = YES;
 }
 
 #pragma mark - MDCSwipeToChooseDelegate Methods
@@ -177,17 +173,21 @@ static const CGFloat kButtonWidth = 60;
 {
     if (direction == MDCSwipeDirectionLeft)
     {
-        NSLog(@"You noped %@.", self.currentPerson.username);
+//        NSLog(@"You noped %@.", self.currentPerson.username);
     }
     else
     {
-        NSLog(@"You liked %@.", self.currentPerson.username);
+//        NSLog(@"You liked %@.", self.currentPerson.username);
     }
 
     // MDCSwipeToChooseView has removed the frontCard from the view hierarchy
     // after it is swiped. So, we move the backCard to the front, and create a new backCard.
     self.frontCard = self.backCard;
-    self.isListening = (self.frontCard != nil);
+
+    if (!self.frontCard)
+    {
+        self.isListening = NO;
+    }
 
     if ((self.backCard = [self popCardWithFrame:self.backCardFrame]))
     {
@@ -254,6 +254,8 @@ static const CGFloat kButtonWidth = 60;
          self.backCard = [self popCardWithFrame:self.backCardFrame];
         [self.view insertSubview:self.backCard belowSubview:self.frontCard];
     }
+
+    self.isListening = (self.frontCard != NULL);
 }
 
 - (void)_nope
@@ -315,7 +317,7 @@ static const CGFloat kButtonWidth = 60;
     [manager GET:url
       parameters:parameters
          success:^(AFHTTPRequestOperation *operation, id responseObject) {
-             NSLog(@"person/nearby fetch success responseObject: %@", responseObject);
+//             NSLog(@"person/nearby fetch success responseObject: %@", responseObject);
 
              [weakSelf _handleNearbyPersonIds:responseObject];
              [weakSelf _networkThreadEnd];
@@ -355,7 +357,7 @@ static const CGFloat kButtonWidth = 60;
     [manager GET:url
       parameters:parameters
          success:^(AFHTTPRequestOperation *operation, id responseObject) {
-             NSLog(@"fetch person by ids success responseObject: %@", responseObject);
+//             NSLog(@"fetch person by ids success responseObject: %@", responseObject);
 
              for (NSDictionary *dict in responseObject)
              {

@@ -29,11 +29,11 @@
 - (void)startDetectionWithError:(NSError **)error;
 - (void)stopDetection;
 
+@property (nonatomic) CFTimeInterval reportingPeriod;
 @property (nonatomic) BOOL detectSmile;
 @property (nonatomic) BOOL detectBlink;
 @property (nonatomic) BOOL detectLeftWink;
 @property (nonatomic) BOOL detectRightWink;
-@property (nonatomic, readonly) CIImage *currentImage;
 @property (nonatomic, weak) id<JYFacialGuestureDetectorDelegate> delegate;
 @property (nonatomic, weak) UIView *previewView;
 

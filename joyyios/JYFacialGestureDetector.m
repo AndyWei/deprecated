@@ -11,13 +11,11 @@
 
 @interface JYFacialGestureDetector () <JYFacialGestureCameraDelegate>
 @property (nonatomic) CIDetector *faceDetector;
-@property (nonatomic) CIImage *currentImage;
 @property (nonatomic) JYFacialGestureCamera *camera;
-@property (nonatomic) dispatch_queue_t detectorQueue;
+@property (nonatomic) CFTimeInterval lastReportingTimestamp;
 @end
 
-//  if this value is too low it takes a lot of CPU, if too high the effect is bad cause detection is not happening a lot.
-const CFTimeInterval kCapturePeriod = 0.25f;
+const CFTimeInterval kCapturePeriod = 0.15f;
 
 @implementation JYFacialGestureDetector
 
@@ -26,26 +24,29 @@ const CFTimeInterval kCapturePeriod = 0.25f;
     self = [super init];
     if (self)
     {
-		self.faceDetector = [CIDetector detectorOfType:CIDetectorTypeFace
-											 context:nil
-											 options:@{CIDetectorAccuracy : CIDetectorAccuracyLow}];
+        NSDictionary *options = @{CIDetectorAccuracy : CIDetectorAccuracyHigh};
+
+        self.faceDetector = [CIDetector detectorOfType:CIDetectorTypeFace
+                                               context:nil
+											 options:options];
 
         self.camera = [JYFacialGestureCamera new];
         self.camera.delegate = self;
         self.detectSmile = self.detectBlink = self.detectLeftWink = self.detectRightWink = NO;
-        self.detectorQueue = dispatch_queue_create("facial_gesture_detector_queue", DISPATCH_QUEUE_SERIAL);
+        self.reportingPeriod = 1.5f;
+        self.lastReportingTimestamp = 0.0f;
     }
     return self;
 }
 
 - (void)startDetectionWithError:(NSError **)error
 {
+    self.lastReportingTimestamp = 0.0f;
     [self.camera startWithPeriod:kCapturePeriod previewView:self.previewView withError:error];
 }
 
 - (void)stopDetection
 {
-    self.currentImage = nil;
 	[self.camera stop];
 }
 
@@ -54,10 +55,8 @@ const CFTimeInterval kCapturePeriod = 0.25f;
 // Note: This method will be invoked from camera video output queue, not the main thread
 - (void)camera:(JYFacialGestureCamera *)camera didCaptureImage:(CIImage *)image isFront:(BOOL)isFrontCamera
 {
-    if (![self.delegate isListening])
+    if (![self _shouldReport])
     {
-        // The delegate is not interested in the detect results, just return to save CPU and RAM
-//        NSLog(@"Camera get image, but the delegate is not listening");
         return;
     }
 
@@ -71,77 +70,97 @@ const CFTimeInterval kCapturePeriod = 0.25f;
         orientation = [[image properties] valueForKey:(NSString *)kCGImagePropertyOrientation];
     }
 
-    id detectSmile = self.detectSmile? @YES: @NO;
-    id detectBlink = (self.detectBlink || self.detectLeftWink || self.detectRightWink)? @YES: @NO;
+    id detectSmile = self.detectSmile? @(YES): @(NO);
+    id detectBlink = (self.detectBlink || self.detectLeftWink || self.detectRightWink)? @(YES): @(NO);
 
     NSDictionary *detectionOtions = @{ CIDetectorImageOrientation:orientation,
                                        CIDetectorSmile:detectSmile,
-                                       CIDetectorEyeBlink:detectBlink,
-                                       CIDetectorAccuracy:CIDetectorAccuracyHigh
+                                       CIDetectorEyeBlink:detectBlink
                                        };
 
-//    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
-    dispatch_async(self.detectorQueue, ^(void){
+    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+
+    dispatch_async(queue, ^(void){
+
+//        NSLog(@"immage: %lu begin", (unsigned long)image);
         NSArray *features = [self.faceDetector featuresInImage:image options:detectionOtions];
+//        NSLog(@"immage: %lu end", (unsigned long)image);
 
         dispatch_async(dispatch_get_main_queue(), ^(void){
             [self _handleFeatures:features];
         });
     });
-
-    self.currentImage = image;
 }
 
 #pragma mark - Private
 
-- (void)_handleFeatures:(NSArray *)features
+- (BOOL)_shouldReport
 {
-    // Since it take some time for getting feature from image, the delegate may not be listening now.
-    // So double check here to avoid unneccessary calls
     if (![self.delegate isListening])
     {
-        NSLog(@"Detector get features, but the delegate is not listening");
+        //        NSLog(@"Camera get image, but the delegate is not listening");
+        return NO;
+    }
+
+    CFTimeInterval now = CACurrentMediaTime();
+    CFTimeInterval timePassed = now - self.lastReportingTimestamp;
+
+    return (timePassed >= self.reportingPeriod);
+}
+
+- (void)_handleFeatures:(NSArray *)features
+{
+    if (features.count == 0)
+    {
         return;
     }
 
-    for (CIFaceFeature *faceFeature in features)
+    // Since it takes some time for getting features from image, the report condition might have been changed, double check here to avoid unneccessary calls
+    if (![self _shouldReport])
     {
-        if (faceFeature.hasSmile)
+        return;
+    }
+
+    CIFaceFeature *faceFeature = features[0]; // only handle the first one
+
+    self.lastReportingTimestamp = CACurrentMediaTime();
+
+    if (faceFeature.hasSmile)
+    {
+        NSLog(@"Detected smile");
+        if ([self.delegate respondsToSelector:@selector(detectorDidDetectSmile:)])
         {
-            NSLog(@"Detected smile");
-            if ([self.delegate respondsToSelector:@selector(detectorDidDetectSmile:)])
-            {
-                [self.delegate detectorDidDetectSmile:self];
-            }
+            [self.delegate detectorDidDetectSmile:self];
+        }
+    }
+
+    if (faceFeature.leftEyeClosed && faceFeature.rightEyeClosed)
+    {
+        NSLog(@"Detected blink");
+
+        if ([self.delegate respondsToSelector:@selector(detectorDidDetectBlink:)])
+        {
+            [self.delegate detectorDidDetectBlink:self];
         }
 
-        if (faceFeature.leftEyeClosed && faceFeature.rightEyeClosed)
-        {
-            NSLog(@"Detected blink");
-            if ([self.delegate respondsToSelector:@selector(detectorDidDetectBlink:)])
-            {
-                [self.delegate detectorDidDetectBlink:self];
-            }
+        // Blink is not left or right wink, so return now
+        return;
+    }
 
-            // Blink is not left or right wink
-            return;
-        }
-
-        if (faceFeature.leftEyeClosed)
+    if (faceFeature.leftEyeClosed)
+    {
+        NSLog(@"Detected left wink");
+        if ([self.delegate respondsToSelector:@selector(detectorDidDetectLeftWink:)])
         {
-            NSLog(@"Detected left wink");
-            if ([self.delegate respondsToSelector:@selector(detectorDidDetectLeftWink:)])
-            {
-                [self.delegate detectorDidDetectLeftWink:self];
-            }
+            [self.delegate detectorDidDetectLeftWink:self];
         }
-        else if (faceFeature.rightEyeClosed)
+    }
+    else if (faceFeature.rightEyeClosed)
+    {
+        NSLog(@"Detected right wink");
+        if ([self.delegate respondsToSelector:@selector(detectorDidDetectRightWink:)])
         {
-            NSLog(@"Detected right wink");
-            if ([self.delegate respondsToSelector:@selector(detectorDidDetectRightWink:)])
-            {
-                [self.delegate detectorDidDetectRightWink:self];
-            }
+            [self.delegate detectorDidDetectRightWink:self];
         }
     }
 }

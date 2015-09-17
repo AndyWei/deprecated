@@ -104,12 +104,12 @@ static const CGFloat kInfoLabelWidth = 280.f;
                           placeholderImage:nil
                                    success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image)
      {
-         NSLog(@"Success: get person full avatar");
+//         NSLog(@"Success: get person full avatar");
          [weakSelf _didLoadImage:image];
      }
      failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error)
      {
-         NSLog(@"Error: get person full avatar error: %@", error);
+//         NSLog(@"Error: get person full avatar error: %@", error);
      }];
 }
 
