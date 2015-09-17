@@ -6,26 +6,35 @@
 //  Copyright (c) 2015 Joyy Inc. All rights reserved.
 //
 
-#import "JYFacialGesture.h"
+@import ImageIO;
+
+@class JYFacialGesturesDetector;
 
 @protocol JYFacialDetectorDelegate <NSObject>
 
-- (void)didRegisterFacialGesutreOfType:(JYGestureType)facialJYGestureType withLastImage:(UIImage *)lastImage;
+@required
+- (BOOL)isListening;
+
 @optional
-- (void)didUpdateProgress:(float)progress forType:(JYGestureType)facialJYGestureType;
+- (void)detectorDidDetectSmile:(JYFacialGesturesDetector *)detector;
+- (void)detectorDidDetectBlink:(JYFacialGesturesDetector *)detector;
+- (void)detectorDidDetectLeftWink:(JYFacialGesturesDetector *)detector;
+- (void)detectorDidDetectRightWink:(JYFacialGesturesDetector *)detector;
 
 @end
 
+
 @interface JYFacialGesturesDetector : NSObject
 
-- (void)startDetection:(NSError **)error;
+- (void)startDetectionWithError:(NSError **)error;
 - (void)stopDetection;
 
+@property (nonatomic) BOOL detectSmile;
+@property (nonatomic) BOOL detectBlink;
+@property (nonatomic) BOOL detectLeftWink;
+@property (nonatomic) BOOL detectRightWink;
+@property (nonatomic, readonly) CIImage *currentImage;
 @property (nonatomic, weak) id<JYFacialDetectorDelegate> delegate;
-
-/**
- *  UIView displaying the camera output, default is nil with no output.
- */
-@property (nonatomic, weak) UIView *cameraPreviewView;
+@property (nonatomic, weak) UIView *previewView;
 
 @end

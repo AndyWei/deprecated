@@ -6,21 +6,18 @@
 //  Copyright (c) 2015 Joyy Inc. All rights reserved.
 //
 
+#import "JYFacialGestureCamera.h"
 #import "JYFacialGesturesDetector.h"
-#import "JYFacialGesture.h"
-#import "UIDevice+ExifOrientation.h"
-#import "JYFacialGestureAggregator.h"
-#import "JYFacialGestureCameraCapturer.h"
 
-@interface JYFacialGesturesDetector () <JYFacialGestureCameraCapturerDelegate, JYFacialGestureAggregatorDelegte>
+@interface JYFacialGesturesDetector () <JYFacialGestureCameraDelegate>
 @property (nonatomic) CIDetector *faceDetector;
 @property (nonatomic) CIImage *currentImage;
-@property (nonatomic) JYFacialGestureCameraCapturer *cameraCapturer;
-@property (nonatomic) JYFacialGestureAggregator *gestureAggregator;
+@property (nonatomic) JYFacialGestureCamera *camera;
+@property (nonatomic) dispatch_queue_t detectorQueue;
 @end
 
 //  if this value is too low it takes a lot of CPU, if too high the effect is bad cause detection is not happening a lot.
-const NSTimeInterval kSamplesPerSecond = 0.3f;
+const CFTimeInterval kCapturePeriod = 0.25f;
 
 @implementation JYFacialGesturesDetector
 
@@ -29,83 +26,124 @@ const NSTimeInterval kSamplesPerSecond = 0.3f;
     self = [super init];
     if (self)
     {
-		self.gestureAggregator = [JYFacialGestureAggregator new];
-        self.gestureAggregator.samplesPerSecond = kSamplesPerSecond;
-        self.gestureAggregator.delegate = self;
 		self.faceDetector = [CIDetector detectorOfType:CIDetectorTypeFace
 											 context:nil
 											 options:@{CIDetectorAccuracy : CIDetectorAccuracyLow}];
-        self.cameraCapturer = [JYFacialGestureCameraCapturer new];
-        self.cameraCapturer.delegate = self;
-        
+
+        self.camera = [JYFacialGestureCamera new];
+        self.camera.delegate = self;
+        self.detectSmile = self.detectBlink = self.detectLeftWink = self.detectRightWink = NO;
+        self.detectorQueue = dispatch_queue_create("facial_gesture_detector_queue", DISPATCH_QUEUE_SERIAL);
     }
     return self;
 }
 
-- (void)startDetection:(NSError **)error
+- (void)startDetectionWithError:(NSError **)error
 {
-    [self.cameraCapturer setAVCaptureAtSampleRate:kSamplesPerSecond withCameraPreviewView:self.cameraPreviewView withError:error];
+    [self.camera startWithPeriod:kCapturePeriod previewView:self.previewView withError:error];
 }
 
 - (void)stopDetection
 {
     self.currentImage = nil;
-	[self.cameraCapturer teardownAVCapture];
+	[self.camera stop];
 }
 
-#pragma mark - Camera Capturer Delegate
+#pragma mark - JYFacialGestureCameraDelegate methods
 
-- (void)imageFromCamera:(CIImage *)image isUsingFrontCamera:(BOOL)isUsingFrontCamera
+// Note: This method will be invoked from camera video output queue, not the main thread
+- (void)camera:(JYFacialGestureCamera *)camera didCaptureImage:(CIImage *)image isFront:(BOOL)isFrontCamera
 {
-    ExifForOrientationType exifOrientation = [[UIDevice currentDevice] exifForCurrentOrientationWithFrontCamera:isUsingFrontCamera];
-    
-    NSDictionary *detectionOtions = @{ CIDetectorImageOrientation:@(exifOrientation),
-                                       CIDetectorSmile:@NO,
-                                       CIDetectorEyeBlink:@YES,
-                                       CIDetectorAccuracy:CIDetectorAccuracyLow
-                                       
+    if (![self.delegate isListening])
+    {
+        // The delegate is not interested in the detect results, just return to save CPU and RAM
+//        NSLog(@"Camera get image, but the delegate is not listening");
+        return;
+    }
+
+    id orientation = nil;
+    if([[image properties] valueForKey:(NSString *)kCGImagePropertyOrientation] == nil)
+    {
+        orientation = [NSNumber numberWithInt:5];
+    }
+    else
+    {
+        orientation = [[image properties] valueForKey:(NSString *)kCGImagePropertyOrientation];
+    }
+
+    id detectSmile = self.detectSmile? @YES: @NO;
+    id detectBlink = (self.detectBlink || self.detectLeftWink || self.detectRightWink)? @YES: @NO;
+
+    NSDictionary *detectionOtions = @{ CIDetectorImageOrientation:orientation,
+                                       CIDetectorSmile:detectSmile,
+                                       CIDetectorEyeBlink:detectBlink,
+                                       CIDetectorAccuracy:CIDetectorAccuracyHigh
                                        };
 
-    NSArray *features = [self.faceDetector featuresInImage:image
-                                                   options:detectionOtions];
-    self.currentImage = image;
-    dispatch_async(dispatch_get_main_queue(), ^(void) {
-        [self extractFacialGesturesFromFeatures:features];
-    });
-}
+//    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
+    dispatch_async(self.detectorQueue, ^(void){
+        NSArray *features = [self.faceDetector featuresInImage:image options:detectionOtions];
 
-#pragma mark - Aggregator Delegte
-- (void)didUpdateProgress:(JYFacialGesture *)gesture
-{
-    [self.delegate didUpdateProgress:gesture.precentForFullGesture forType:gesture.type];
+        dispatch_async(dispatch_get_main_queue(), ^(void){
+            [self _handleFeatures:features];
+        });
+    });
+
+    self.currentImage = image;
 }
 
 #pragma mark - Private
 
-- (void)extractFacialGesturesFromFeatures:(NSArray *)features
+- (void)_handleFeatures:(NSArray *)features
 {
-	for ( CIFaceFeature *faceFeature in features )
-	{
-	    if (faceFeature.hasSmile)
+    // Since it take some time for getting feature from image, the delegate may not be listening now.
+    // So double check here to avoid unneccessary calls
+    if (![self.delegate isListening])
+    {
+        NSLog(@"Detector get features, but the delegate is not listening");
+        return;
+    }
+
+    for (CIFaceFeature *faceFeature in features)
+    {
+        if (faceFeature.hasSmile)
         {
-			[self.gestureAggregator addGesture:JYGestureTypeSmile];
-		}
-		if (faceFeature.leftEyeClosed)
-		{
-			[self.gestureAggregator addGesture:JYGestureTypeLeftBlink];
-		}
-		if (faceFeature.rightEyeClosed)
-		{
-			[self.gestureAggregator addGesture:JYGestureTypeRightBlink];
-		}
-	}
-	JYGestureType registeredGestured = [self.gestureAggregator checkIfRegisteredGesturesAndUpdateProgress];
-	if (registeredGestured == JYGestureTypeNoGesture)
-		return;
+            NSLog(@"Detected smile");
+            if ([self.delegate respondsToSelector:@selector(detectorDidDetectSmile:)])
+            {
+                [self.delegate detectorDidDetectSmile:self];
+            }
+        }
 
-	UIImage *currentImage = [UIImage imageWithCIImage:self.currentImage scale:1 orientation:UIImageOrientationLeftMirrored];
+        if (faceFeature.leftEyeClosed && faceFeature.rightEyeClosed)
+        {
+            NSLog(@"Detected blink");
+            if ([self.delegate respondsToSelector:@selector(detectorDidDetectBlink:)])
+            {
+                [self.delegate detectorDidDetectBlink:self];
+            }
 
-    [self.delegate didRegisterFacialGesutreOfType:registeredGestured withLastImage:currentImage];
+            // Blink is not left or right wink
+            return;
+        }
+
+        if (faceFeature.leftEyeClosed)
+        {
+            NSLog(@"Detected left wink");
+            if ([self.delegate respondsToSelector:@selector(detectorDidDetectLeftWink:)])
+            {
+                [self.delegate detectorDidDetectLeftWink:self];
+            }
+        }
+        else if (faceFeature.rightEyeClosed)
+        {
+            NSLog(@"Detected right wink");
+            if ([self.delegate respondsToSelector:@selector(detectorDidDetectRightWink:)])
+            {
+                [self.delegate detectorDidDetectRightWink:self];
+            }
+        }
+    }
 }
 
 @end

@@ -105,13 +105,23 @@ static const CGFloat kInfoLabelWidth = 280.f;
                                    success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image)
      {
          NSLog(@"Success: get person full avatar");
-         weakSelf.imageView.image = image;
-         [weakSelf setNeedsLayout];
+         [weakSelf _didLoadImage:image];
      }
      failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error)
      {
          NSLog(@"Error: get person full avatar error: %@", error);
      }];
+}
+
+- (void)_didLoadImage:(UIImage *)image
+{
+    if (self.delegate && [self.delegate respondsToSelector:@selector(cardDidLoadImage:)])
+    {
+        [self.delegate cardDidLoadImage:self];
+    }
+
+    self.imageView.image = image;
+    [self setNeedsLayout];
 }
 
 - (void)_updateInfoLabel

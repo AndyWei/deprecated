@@ -10,16 +10,19 @@
 
 #import "AppDelegate.h"
 #import "JYButton.h"
+#import "JYFacialGesturesDetector.h"
 #import "JYPeopleViewController.h"
 
 
-@interface JYPeopleViewController ()
-@property(nonatomic) CGRect frontCardFrame;
-@property(nonatomic) CGRect backCardFrame;
-@property(nonatomic) JYButton *nopeButton;
-@property(nonatomic) JYButton *likeButton;
-@property(nonatomic) NSInteger networkThreadCount;
-@property(nonatomic) NSMutableArray *personList;
+@interface JYPeopleViewController () <JYFacialDetectorDelegate, JYPersonCardDelegate, MDCSwipeToChooseDelegate>
+@property (nonatomic) CGRect frontCardFrame;
+@property (nonatomic) CGRect backCardFrame;
+@property (nonatomic) JYButton *nopeButton;
+@property (nonatomic) JYButton *likeButton;
+@property (nonatomic) NSInteger networkThreadCount;
+@property (nonatomic) JYFacialGesturesDetector *facialGesturesDetector;
+@property (nonatomic) NSMutableArray *personList;
+@property (nonatomic) BOOL isListening;
 @end
 
 static const CGFloat kButtonSpaceH = 80;
@@ -35,13 +38,31 @@ static const CGFloat kButtonWidth = 60;
     self.title = NSLocalizedString(@"People", nil);
 
     self.personList = [NSMutableArray new];
+    self.isListening = NO;
+
+    NSError *error;
+    [self.facialGesturesDetector startDetectionWithError:&error];
 
     _frontCardFrame = CGRectZero;
     _backCardFrame = CGRectZero;
 
     [self.view addSubview:self.nopeButton];
     [self.view addSubview:self.likeButton];
+//    [self _fetchPersonNearby];
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
     [self _fetchPersonNearby];
+
+    self.isListening = YES;
+    NSError *error;
+    [self.facialGesturesDetector startDetectionWithError:&error];
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [self.facialGesturesDetector stopDetection];
 }
 
 - (JYButton *)nopeButton
@@ -97,14 +118,53 @@ static const CGFloat kButtonWidth = 60;
     if (_backCardFrame.size.height == 0)
     {
         return CGRectMake(self.frontCardFrame.origin.x,
-                          self.frontCardFrame.origin.y + 10.f,
+                          self.frontCardFrame.origin.y,
                           CGRectGetWidth(self.frontCardFrame),
                           CGRectGetHeight(self.frontCardFrame));
     }
     return _backCardFrame;
 }
 
-#pragma mark - MDCSwipeToChooseDelegate Protocol Methods
+- (JYFacialGesturesDetector *)facialGesturesDetector
+{
+    if (!_facialGesturesDetector)
+    {
+        JYFacialGesturesDetector *detector = [JYFacialGesturesDetector new];
+        detector.delegate = self;
+        detector.detectLeftWink = YES;
+        detector.detectRightWink = YES;
+
+        _facialGesturesDetector = detector;
+    }
+    return _facialGesturesDetector;
+}
+
+#pragma mark - JYFacialDetectorDelegate Methods
+
+- (void)detectorDidDetectLeftWink:(JYFacialGesturesDetector *)detector
+{
+    self.isListening = NO;
+    [self _nope];
+}
+
+- (void)detectorDidDetectRightWink:(JYFacialGesturesDetector *)detector
+{
+    self.isListening = NO;
+    [self _like];
+}
+
+#pragma mark - JYPersonCardDelegate
+
+- (void)cardDidLoadImage:(JYPersonCard *)card
+{
+    // Listen for the first front card
+    if (card == self.frontCard)
+    {
+        self.isListening = YES;
+    }
+}
+
+#pragma mark - MDCSwipeToChooseDelegate Methods
 
 // This is called when a user didn't fully swipe left or right.
 - (void)viewDidCancelSwipe:(UIView *)view
@@ -127,6 +187,8 @@ static const CGFloat kButtonWidth = 60;
     // MDCSwipeToChooseView has removed the frontCard from the view hierarchy
     // after it is swiped. So, we move the backCard to the front, and create a new backCard.
     self.frontCard = self.backCard;
+    self.isListening = (self.frontCard != nil);
+
     if ((self.backCard = [self popCardWithFrame:self.backCardFrame]))
     {
         [self.view insertSubview:self.backCard belowSubview:self.frontCard];
@@ -153,17 +215,18 @@ static const CGFloat kButtonWidth = 60;
     options.threshold = 120.f;
     options.likedText = NSLocalizedString(@"LIKE", nil);
     options.nopeText = NSLocalizedString(@"NOPE", nil);
-    options.onPan = ^(MDCPanState *state)
-    {
+    options.onPan = ^(MDCPanState *state) {
         CGRect frame = self.backCardFrame;
         self.backCard.frame = CGRectMake(frame.origin.x,
-                                             frame.origin.y - (state.thresholdRatio * 10.f),
-                                             CGRectGetWidth(frame),
-                                             CGRectGetHeight(frame));
+                                         frame.origin.y - (state.thresholdRatio * 10.f),
+                                         CGRectGetWidth(frame),
+                                         CGRectGetHeight(frame));
     };
 
     JYPersonCard *card = [[JYPersonCard alloc] initWithFrame:frame options:options];
+    card.delegate = self;
     card.person = self.personList[0];
+
     [self.personList removeObjectAtIndex:0];
     return card;
 }

@@ -9,7 +9,7 @@
 #import "MDCSwipeToChoose.h"
 #import "JYPersonCard.h"
 
-@interface JYPeopleViewController : UIViewController <MDCSwipeToChooseDelegate>
+@interface JYPeopleViewController : UIViewController
 
 @property (nonatomic) JYPerson *currentPerson;
 @property (nonatomic) JYPersonCard *frontCard;
