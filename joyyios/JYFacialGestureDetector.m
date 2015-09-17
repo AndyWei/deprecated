@@ -13,9 +13,18 @@
 @property (nonatomic) CIDetector *faceDetector;
 @property (nonatomic) JYFacialGestureCamera *camera;
 @property (nonatomic) CFTimeInterval lastReportingTimestamp;
+@property (nonatomic) CFTimeInterval lastBlinkTimestamp;
 @end
 
-const CFTimeInterval kCapturePeriod = 0.15f;
+// How fast a guesture can be captured. shorter means more CPU
+const CFTimeInterval kCapturePeriod = 0.2f;
+
+// Prevent a blink from being parsed as wink
+const CFTimeInterval kBlinkMutePeriod = 0.5f;
+
+// To avoid one actual guesture being mapped to multi
+const CFTimeInterval kReportingPeriod = 1.2f;
+
 
 @implementation JYFacialGestureDetector
 
@@ -32,9 +41,7 @@ const CFTimeInterval kCapturePeriod = 0.15f;
 
         self.camera = [JYFacialGestureCamera new];
         self.camera.delegate = self;
-        self.detectSmile = self.detectBlink = self.detectLeftWink = self.detectRightWink = NO;
-        self.reportingPeriod = 1.5f;
-        self.lastReportingTimestamp = 0.0f;
+        self.detectSmile = self.detectLeftWink = self.detectRightWink = NO;
     }
     return self;
 }
@@ -42,6 +49,7 @@ const CFTimeInterval kCapturePeriod = 0.15f;
 - (void)startDetectionWithError:(NSError **)error
 {
     self.lastReportingTimestamp = 0.0f;
+    self.lastBlinkTimestamp= 0.0f;
     [self.camera startWithPeriod:kCapturePeriod previewView:self.previewView withError:error];
 }
 
@@ -71,7 +79,7 @@ const CFTimeInterval kCapturePeriod = 0.15f;
     }
 
     id detectSmile = self.detectSmile? @(YES): @(NO);
-    id detectBlink = (self.detectBlink || self.detectLeftWink || self.detectRightWink)? @(YES): @(NO);
+    id detectBlink = (self.detectLeftWink || self.detectRightWink)? @(YES): @(NO);
 
     NSDictionary *detectionOtions = @{ CIDetectorImageOrientation:orientation,
                                        CIDetectorSmile:detectSmile,
@@ -85,6 +93,11 @@ const CFTimeInterval kCapturePeriod = 0.15f;
 //        NSLog(@"immage: %lu begin", (unsigned long)image);
         NSArray *features = [self.faceDetector featuresInImage:image options:detectionOtions];
 //        NSLog(@"immage: %lu end", (unsigned long)image);
+
+        if (features.count == 0)
+        {
+            return;
+        }
 
         dispatch_async(dispatch_get_main_queue(), ^(void){
             [self _handleFeatures:features];
@@ -103,18 +116,14 @@ const CFTimeInterval kCapturePeriod = 0.15f;
     }
 
     CFTimeInterval now = CACurrentMediaTime();
-    CFTimeInterval timePassed = now - self.lastReportingTimestamp;
+    CFTimeInterval reportTimePassed = now - self.lastReportingTimestamp;
+    CFTimeInterval blinkTimePassed = now - self.lastBlinkTimestamp;
 
-    return (timePassed >= self.reportingPeriod);
+    return (blinkTimePassed >= kBlinkMutePeriod && reportTimePassed >= kReportingPeriod);
 }
 
 - (void)_handleFeatures:(NSArray *)features
 {
-    if (features.count == 0)
-    {
-        return;
-    }
-
     // Since it takes some time for getting features from image, the report condition might have been changed, double check here to avoid unneccessary calls
     if (![self _shouldReport])
     {
@@ -123,11 +132,10 @@ const CFTimeInterval kCapturePeriod = 0.15f;
 
     CIFaceFeature *faceFeature = features[0]; // only handle the first one
 
-    self.lastReportingTimestamp = CACurrentMediaTime();
-
     if (faceFeature.hasSmile)
     {
         NSLog(@"Detected smile");
+        self.lastReportingTimestamp = CACurrentMediaTime();
         if ([self.delegate respondsToSelector:@selector(detectorDidDetectSmile:)])
         {
             [self.delegate detectorDidDetectSmile:self];
@@ -138,11 +146,7 @@ const CFTimeInterval kCapturePeriod = 0.15f;
     {
         NSLog(@"Detected blink");
 
-        if ([self.delegate respondsToSelector:@selector(detectorDidDetectBlink:)])
-        {
-            [self.delegate detectorDidDetectBlink:self];
-        }
-
+        self.lastBlinkTimestamp = CACurrentMediaTime();
         // Blink is not left or right wink, so return now
         return;
     }
@@ -150,6 +154,8 @@ const CFTimeInterval kCapturePeriod = 0.15f;
     if (faceFeature.leftEyeClosed)
     {
         NSLog(@"Detected left wink");
+        self.lastReportingTimestamp = CACurrentMediaTime();
+
         if ([self.delegate respondsToSelector:@selector(detectorDidDetectLeftWink:)])
         {
             [self.delegate detectorDidDetectLeftWink:self];
@@ -158,6 +164,8 @@ const CFTimeInterval kCapturePeriod = 0.15f;
     else if (faceFeature.rightEyeClosed)
     {
         NSLog(@"Detected right wink");
+        self.lastReportingTimestamp = CACurrentMediaTime();
+
         if ([self.delegate respondsToSelector:@selector(detectorDidDetectRightWink:)])
         {
             [self.delegate detectorDidDetectRightWink:self];

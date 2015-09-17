@@ -25,7 +25,6 @@
 @property (nonatomic) BOOL isListening;
 @end
 
-//const CFTimeInterval kReportingPeriod = 1.5f;
 const CGFloat kButtonSpaceH = 80;
 const CGFloat kButtonSpaceV = 10;
 const CGFloat kButtonWidth = 60;
@@ -133,7 +132,6 @@ const CGFloat kButtonWidth = 60;
         detector.delegate = self;
         detector.detectLeftWink = YES;
         detector.detectRightWink = YES;
-//        detector.reportingPeriod = kReportingPeriod;
 
         _facialGesturesDetector = detector;
     }

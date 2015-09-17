@@ -17,7 +17,6 @@
 
 @optional
 - (void)detectorDidDetectSmile:(JYFacialGestureDetector *)detector;
-- (void)detectorDidDetectBlink:(JYFacialGestureDetector *)detector;
 - (void)detectorDidDetectLeftWink:(JYFacialGestureDetector *)detector;
 - (void)detectorDidDetectRightWink:(JYFacialGestureDetector *)detector;
 
@@ -29,9 +28,7 @@
 - (void)startDetectionWithError:(NSError **)error;
 - (void)stopDetection;
 
-@property (nonatomic) CFTimeInterval reportingPeriod;
 @property (nonatomic) BOOL detectSmile;
-@property (nonatomic) BOOL detectBlink;
 @property (nonatomic) BOOL detectLeftWink;
 @property (nonatomic) BOOL detectRightWink;
 @property (nonatomic, weak) id<JYFacialGuestureDetectorDelegate> delegate;
