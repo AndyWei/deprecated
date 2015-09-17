@@ -11,18 +11,10 @@
 @class JYPerson;
 @class JYPersonCard;
 
-@protocol JYPersonCardDelegate <NSObject>
-
-@optional
-- (void)cardDidLoadImage:(JYPersonCard *)card;
-
-@end
-
 @interface JYPersonCard : MDCSwipeToChooseView
 
 - (instancetype)initWithFrame:(CGRect)frame options:(MDCSwipeToChooseViewOptions *)options;
 
 @property (nonatomic) JYPerson *person;
-@property (nonatomic, weak) id<JYPersonCardDelegate> delegate;
 
 @end

@@ -71,7 +71,7 @@ const CFTimeInterval kReportingPeriod = 1.2f;
     id orientation = nil;
     if([[image properties] valueForKey:(NSString *)kCGImagePropertyOrientation] == nil)
     {
-        orientation = [NSNumber numberWithInt:5];
+        orientation = [NSNumber numberWithInt:6];
     }
     else
     {
@@ -151,7 +151,9 @@ const CFTimeInterval kReportingPeriod = 1.2f;
         return;
     }
 
-    if (faceFeature.leftEyeClosed)
+    // Note: left and right eye here are from camera view, not the user's
+    // So faceFeature.rightEyeClosed actually means the user's left eye is closed, which is defined as left wink
+    if (faceFeature.rightEyeClosed)
     {
         NSLog(@"Detected left wink");
         self.lastReportingTimestamp = CACurrentMediaTime();
@@ -161,7 +163,7 @@ const CFTimeInterval kReportingPeriod = 1.2f;
             [self.delegate detectorDidDetectLeftWink:self];
         }
     }
-    else if (faceFeature.rightEyeClosed)
+    else if (faceFeature.leftEyeClosed)
     {
         NSLog(@"Detected right wink");
         self.lastReportingTimestamp = CACurrentMediaTime();

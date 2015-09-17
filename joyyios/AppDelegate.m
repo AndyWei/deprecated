@@ -33,7 +33,6 @@
 @property(nonatomic) OnboardingContentViewController *page3;
 @property(nonatomic) OnboardingViewController *onboardingViewController;
 @property(nonatomic) UITabBarController *tabBarController;
-@property(nonatomic) dispatch_queue_t backgroundQueue;
 @end
 
 @implementation AppDelegate
@@ -70,6 +69,7 @@
     // application to its current state in case it is terminated later.
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
     NSLog(@"applicationDidEnterBackground");
+    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationAppDidStop object:nil];
     if (self.signInTimer)
     {
         [self.signInTimer invalidate];
@@ -91,6 +91,7 @@
     // background, optionally refresh the user interface.
 
     NSLog(@"applicationDidBecomeActive");
+    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationAppDidStart object:nil];
 
     // TODO: Implement clear badge number logic in the right places.
     application.applicationIconBadgeNumber = 0;
@@ -122,17 +123,6 @@
 - (BOOL)_isPresentingMessageViewController
 {
     return self.tabBarController.selectedIndex == 2;
-}
-
-#pragma mark - Properties
-
-- (dispatch_queue_t)backgroundQueue
-{
-    if (!_backgroundQueue)
-    {
-        _backgroundQueue = dispatch_queue_create("com.joyyapp.queue.background", DISPATCH_QUEUE_CONCURRENT);
-    }
-    return _backgroundQueue;
 }
 
 #pragma mark - Notifications
@@ -367,12 +357,13 @@
         [self.signInTimer invalidate];
     }
 
+    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     self.signInTimer = [MSWeakTimer scheduledTimerWithTimeInterval:seconds
                                                             target:self
                                                           selector:@selector(_autoSignInNow)
                                                           userInfo:nil
                                                            repeats:NO
-                                                     dispatchQueue:self.backgroundQueue];
+                                                     dispatchQueue:queue];
 }
 
 - (void)_refreshAWSAccess

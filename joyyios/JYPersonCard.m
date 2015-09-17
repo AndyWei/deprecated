@@ -115,11 +115,6 @@ static const CGFloat kInfoLabelWidth = 280.f;
 
 - (void)_didLoadImage:(UIImage *)image
 {
-    if (self.delegate && [self.delegate respondsToSelector:@selector(cardDidLoadImage:)])
-    {
-        [self.delegate cardDidLoadImage:self];
-    }
-
     self.imageView.image = image;
     [self setNeedsLayout];
 }

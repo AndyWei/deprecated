@@ -228,21 +228,35 @@ const void * const MDCViewStateKey = &MDCViewStateKey;
 - (void)mdc_onSwipeToChoosePanGestureRecognizer:(UIPanGestureRecognizer *)panGestureRecognizer {
     UIView *view = panGestureRecognizer.view;
 
-    if (panGestureRecognizer.state == UIGestureRecognizerStateBegan) {
+    if (panGestureRecognizer.state == UIGestureRecognizerStateBegan)
+    {
         self.mdc_viewState.originalCenter = view.center;
         self.mdc_viewState.originalTransform = view.transform;
 
         // If the pan gesture originated at the top half of the view, rotate the view
         // away from the center. Otherwise, rotate towards the center.
-        if ([panGestureRecognizer locationInView:view].y < view.center.y) {
+        if ([panGestureRecognizer locationInView:view].y < view.center.y)
+        {
             self.mdc_viewState.rotationDirection = MDCRotationAwayFromCenter;
-        } else {
+        }
+        else
+        {
             self.mdc_viewState.rotationDirection = MDCRotationTowardsCenter;
         }
-    } else if (panGestureRecognizer.state == UIGestureRecognizerStateEnded) {
+
+        id<MDCSwipeToChooseDelegate> delegate = self.mdc_options.delegate;
+        if ([delegate respondsToSelector:@selector(viewDidStartSwipe:)])
+        {
+            [delegate viewDidStartSwipe:self];
+        }
+    }
+    else if (panGestureRecognizer.state == UIGestureRecognizerStateEnded)
+    {
         // Either move the view back to its original position or move it off screen.
         [self mdc_finalizePosition];
-    } else {
+    }
+    else
+    {
         // Update the position and transform. Then, notify any listeners of
         // the updates via the pan block.
         CGPoint translation = [panGestureRecognizer translationInView:view];

@@ -7,6 +7,7 @@
 //
 
 #import <AFNetworking/AFNetworking.h>
+#import <MSWeakTimer/MSWeakTimer.h>
 
 #import "AppDelegate.h"
 #import "JYButton.h"
@@ -14,15 +15,17 @@
 #import "JYPeopleViewController.h"
 
 
-@interface JYPeopleViewController () <JYFacialGuestureDetectorDelegate, JYPersonCardDelegate, MDCSwipeToChooseDelegate>
-@property (nonatomic) CGRect frontCardFrame;
-@property (nonatomic) CGRect backCardFrame;
+@interface JYPeopleViewController () <JYFacialGuestureDetectorDelegate, MDCSwipeToChooseDelegate>
+@property (nonatomic) CGRect cardFrame;
 @property (nonatomic) JYButton *nopeButton;
-@property (nonatomic) JYButton *likeButton;
-@property (nonatomic) NSInteger networkThreadCount;
+@property (nonatomic) JYButton *winkButton;
+
 @property (nonatomic) JYFacialGestureDetector *facialGesturesDetector;
-@property (nonatomic) NSMutableArray *personList;
+@property (nonatomic) MSWeakTimer *detectorAwakeTimer;
 @property (nonatomic) BOOL isListening;
+
+@property (nonatomic) NSMutableArray *personList;
+@property (nonatomic) NSInteger networkThreadCount;
 @end
 
 const CGFloat kButtonSpaceH = 80;
@@ -38,37 +41,146 @@ const CGFloat kButtonWidth = 60;
     self.title = NSLocalizedString(@"People", nil);
 
     self.personList = [NSMutableArray new];
-    self.isListening = NO;
 
     NSError *error;
     [self.facialGesturesDetector startDetectionWithError:&error];
 
-    _frontCardFrame = CGRectZero;
-    _backCardFrame = CGRectZero;
+    _cardFrame = CGRectZero;
+    _cardFrame = CGRectZero;
 
     [self.view addSubview:self.nopeButton];
-    [self.view addSubview:self.likeButton];
+    [self.view addSubview:self.winkButton];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_turnOnDetector) name:kNotificationAppDidStart object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_turnOffDetector) name:kNotificationAppDidStop object:nil];
+
 //    [self _fetchPersonNearby];
+}
+
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
     [self _fetchPersonNearby];
-
-    NSError *error;
-    [self.facialGesturesDetector startDetectionWithError:&error];
+    [self _turnOnDetector];
 }
 
 - (void)viewDidDisappear:(BOOL)animated
 {
-    [self.facialGesturesDetector stopDetection];
+    [self _turnOffDetector];
 }
+
+#pragma mark - Actions
+
+- (void)_turnOnDetector
+{
+    // Since in the init few seconds the reportings from the detector is not accurate, we don't listening to them
+    // Later the awake timer will enable the reporting
+
+    self.isListening = NO;
+    NSError *error;
+    [self.facialGesturesDetector startDetectionWithError:&error];
+
+    [self _startDetectorAwakeTimer];
+}
+
+- (void)_turnOffDetector
+{
+    [self.facialGesturesDetector stopDetection];
+    [self _stopDetectorAwakeTimer];
+}
+
+- (void)_startDetectorAwakeTimer
+{
+    if (self.detectorAwakeTimer)
+    {
+        [self.detectorAwakeTimer invalidate];
+    }
+
+    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    self.detectorAwakeTimer = [MSWeakTimer scheduledTimerWithTimeInterval:2.0f
+                                                            target:self
+                                                          selector:@selector(_startListening)
+                                                          userInfo:nil
+                                                           repeats:NO
+                                                     dispatchQueue:queue];
+}
+
+- (void)_stopDetectorAwakeTimer
+{
+    if (self.detectorAwakeTimer)
+    {
+        [self.detectorAwakeTimer invalidate];
+        self.detectorAwakeTimer = nil;
+    }
+}
+
+- (void)_startListening
+{
+    NSLog(@"AwakeTimer timeout");
+    self.isListening = YES;
+    [self _stopDetectorAwakeTimer];
+}
+
+#pragma mark - MDCSwipeToChooseDelegate Methods
+
+// Disable facial guesture during swipe
+- (void)viewDidStartSwipe:(UIView *)view
+{
+    self.isListening = NO;
+}
+
+// Enable facial guesture during swipe
+- (void)viewDidCancelSwipe:(UIView *)view
+{
+    self.isListening = YES;
+}
+
+- (void)view:(UIView *)view wasChosenWithDirection:(MDCSwipeDirection)direction
+{
+    if (direction == MDCSwipeDirectionLeft)
+    {
+//        NSLog(@"You noped %@.", self.currentPerson.username);
+    }
+    else
+    {
+//        NSLog(@"You liked %@.", self.currentPerson.username);
+    }
+
+    // MDCSwipeToChooseView has removed the frontCard from the view hierarchy
+    // after it is swiped. So, we move the backCard to the front, and create a new backCard.
+    self.frontCard = self.backCard;
+
+    self.isListening = (self.frontCard != nil);
+
+    if ((self.backCard = [self popCard]))
+    {
+        [self.view insertSubview:self.backCard belowSubview:self.frontCard];
+    }
+}
+
+#pragma mark - JYFacialDetectorDelegate Methods
+
+- (void)detectorDidDetectLeftWink:(JYFacialGestureDetector *)detector
+{
+    [self _nope];
+}
+
+- (void)detectorDidDetectRightWink:(JYFacialGestureDetector *)detector
+{
+    [self _like];
+}
+
+#pragma mark View Handling
 
 - (JYButton *)nopeButton
 {
     if (!_nopeButton)
     {
-        CGRect frame = CGRectMake(kButtonSpaceH, CGRectGetMaxY(self.backCardFrame) + kButtonSpaceV, kButtonWidth, kButtonWidth);
+        CGRect frame = CGRectMake(kButtonSpaceH, CGRectGetMaxY(self.cardFrame) + kButtonSpaceV, kButtonWidth, kButtonWidth);
         UIImage *image = [UIImage imageNamed:@"nope"];
         _nopeButton = [JYButton circledButtonWithFrame:frame image:image color:FlatWatermelon];
         _nopeButton.borderWidth = 5;
@@ -81,47 +193,35 @@ const CGFloat kButtonWidth = 60;
     return _nopeButton;
 }
 
-- (JYButton *)likeButton
+- (JYButton *)winkButton
 {
-    if (!_likeButton)
+    if (!_winkButton)
     {
         CGRect frame = CGRectMake(CGRectGetMaxX(self.view.frame) - kButtonWidth - kButtonSpaceH,
-                                  CGRectGetMaxY(self.backCardFrame) + kButtonSpaceV,
+                                  CGRectGetMaxY(self.cardFrame) + kButtonSpaceV,
                                   kButtonWidth,
                                   kButtonWidth);
         UIImage *image = [UIImage imageNamed:@"like"];
-        _likeButton = [JYButton circledButtonWithFrame:frame image:image color:JoyyBlue];
-        _likeButton.borderWidth = 5;
-        _likeButton.borderColor = JoyyBlue;
-        _likeButton.borderAnimateToColor = JoyyBlue;
-        [_likeButton addTarget:self action:@selector(_like) forControlEvents:UIControlEventTouchUpInside];
+        _winkButton = [JYButton circledButtonWithFrame:frame image:image color:JoyyBlue];
+        _winkButton.borderWidth = 5;
+        _winkButton.borderColor = JoyyBlue;
+        _winkButton.borderAnimateToColor = JoyyBlue;
+        [_winkButton addTarget:self action:@selector(_like) forControlEvents:UIControlEventTouchUpInside];
     }
-    return _likeButton;
+    return _winkButton;
 }
 
-- (CGRect)frontCardFrame
+- (CGRect)cardFrame
 {
-    if (_frontCardFrame.size.height == 0)
+    if (_cardFrame.size.height == 0)
     {
         CGFloat paddingLeft = 10.f;
         CGFloat paddingTop = 84.f;
 
         CGFloat width = CGRectGetWidth(self.view.frame) - (paddingLeft * 2);
-        _frontCardFrame = CGRectMake(paddingLeft, paddingTop, width, width);
+        _cardFrame = CGRectMake(paddingLeft, paddingTop, width, width);
     }
-    return _frontCardFrame;
-}
-
-- (CGRect)backCardFrame
-{
-    if (_backCardFrame.size.height == 0)
-    {
-        return CGRectMake(self.frontCardFrame.origin.x,
-                          self.frontCardFrame.origin.y,
-                          CGRectGetWidth(self.frontCardFrame),
-                          CGRectGetHeight(self.frontCardFrame));
-    }
-    return _backCardFrame;
+    return _cardFrame;
 }
 
 - (JYFacialGestureDetector *)facialGesturesDetector
@@ -138,62 +238,17 @@ const CGFloat kButtonWidth = 60;
     return _facialGesturesDetector;
 }
 
-#pragma mark - JYFacialDetectorDelegate Methods
-
-- (void)detectorDidDetectLeftWink:(JYFacialGestureDetector *)detector
+- (void)_nope
 {
-    [self _nope];
+    self.isListening = NO;
+    [self.frontCard mdc_swipe:MDCSwipeDirectionLeft];
 }
 
-- (void)detectorDidDetectRightWink:(JYFacialGestureDetector *)detector
+- (void)_like
 {
-    [self _like];
+    self.isListening = NO;
+    [self.frontCard mdc_swipe:MDCSwipeDirectionRight];
 }
-
-#pragma mark - JYPersonCardDelegate
-
-- (void)cardDidLoadImage:(JYPersonCard *)card
-{
-    // Listen for the first front card
-    self.isListening = YES;
-}
-
-#pragma mark - MDCSwipeToChooseDelegate Methods
-
-// This is called when a user didn't fully swipe left or right.
-- (void)viewDidCancelSwipe:(UIView *)view
-{
-//    NSLog(@"You couldn't decide on %@.", self.currentPerson.name);
-}
-
-// This is called then a user swipes the view fully left or right.
-- (void)view:(UIView *)view wasChosenWithDirection:(MDCSwipeDirection)direction
-{
-    if (direction == MDCSwipeDirectionLeft)
-    {
-//        NSLog(@"You noped %@.", self.currentPerson.username);
-    }
-    else
-    {
-//        NSLog(@"You liked %@.", self.currentPerson.username);
-    }
-
-    // MDCSwipeToChooseView has removed the frontCard from the view hierarchy
-    // after it is swiped. So, we move the backCard to the front, and create a new backCard.
-    self.frontCard = self.backCard;
-
-    if (!self.frontCard)
-    {
-        self.isListening = NO;
-    }
-
-    if ((self.backCard = [self popCardWithFrame:self.backCardFrame]))
-    {
-        [self.view insertSubview:self.backCard belowSubview:self.frontCard];
-    }
-}
-
-#pragma mark View Handling
 
 - (void)setFrontCard:(JYPersonCard *)frontCard
 {
@@ -201,7 +256,7 @@ const CGFloat kButtonWidth = 60;
     self.currentPerson = frontCard.person;
 }
 
-- (JYPersonCard *)popCardWithFrame:(CGRect)frame
+- (JYPersonCard *)popCard
 {
     if ([self.personList count] == 0)
     {
@@ -214,15 +269,14 @@ const CGFloat kButtonWidth = 60;
     options.likedText = NSLocalizedString(@"LIKE", nil);
     options.nopeText = NSLocalizedString(@"NOPE", nil);
     options.onPan = ^(MDCPanState *state) {
-        CGRect frame = self.backCardFrame;
+        CGRect frame = self.cardFrame;
         self.backCard.frame = CGRectMake(frame.origin.x,
                                          frame.origin.y - (state.thresholdRatio * 10.f),
                                          CGRectGetWidth(frame),
                                          CGRectGetHeight(frame));
     };
 
-    JYPersonCard *card = [[JYPersonCard alloc] initWithFrame:frame options:options];
-    card.delegate = self;
+    JYPersonCard *card = [[JYPersonCard alloc] initWithFrame:self.cardFrame options:options];
     card.person = self.personList[0];
 
     [self.personList removeObjectAtIndex:0];
@@ -239,31 +293,21 @@ const CGFloat kButtonWidth = 60;
         }
         else
         {
-            self.frontCard = [self popCardWithFrame:self.frontCardFrame];
+            self.frontCard = [self popCard];
         }
 
         [self.view addSubview:self.frontCard];
 
-        self.backCard = [self popCardWithFrame:self.backCardFrame];
+        self.backCard = [self popCard];
         [self.view insertSubview:self.backCard belowSubview:self.frontCard];
     }
     else if (!self.backCard)
     {
-         self.backCard = [self popCardWithFrame:self.backCardFrame];
+         self.backCard = [self popCard];
         [self.view insertSubview:self.backCard belowSubview:self.frontCard];
     }
 
     self.isListening = (self.frontCard != NULL);
-}
-
-- (void)_nope
-{
-    [self.frontCard mdc_swipe:MDCSwipeDirectionLeft];
-}
-
-- (void)_like
-{
-    [self.frontCard mdc_swipe:MDCSwipeDirectionRight];
 }
 
 #pragma mark - Maintain Data

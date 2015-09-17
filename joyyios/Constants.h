@@ -58,6 +58,8 @@ extern NSString *const kMessageBodyTypeImage;
 extern NSString *const kMessageBodyTypeLocation;
 extern NSString *const kMessageBodyTypeText;
 extern NSString *const kMessageBodyTypeVideo;
+extern NSString *const kNotificationAppDidStart;
+extern NSString *const kNotificationAppDidStop;
 extern NSString *const kNotificationDidChangeCountryCode;
 extern NSString *const kNotificationDidSignIn;
 extern NSString *const kNotificationDidSignUp;
