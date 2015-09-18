@@ -68,7 +68,7 @@
     _floatingLabelFont = [UIFont boldSystemFontOfSize:12.0f];
     _floatingLabel.font = _floatingLabelFont;
     _floatingLabelTextColor = FlatGreen;
-    _floatingLabelInvalidTextColor = FlatRed;
+    _floatingLabelInvalidTextColor = JoyyRed;
     _floatingLabel.textColor = _floatingLabelTextColor;
     _animateEvenIfNotFirstResponder = 0;
     _floatingLabelShowAnimationDuration = kFloatingLabelShowAnimationDuration;

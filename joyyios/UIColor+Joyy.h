@@ -22,6 +22,8 @@
 
 #define JoyyGrayDarker [UIColor joyyGrayDarkerColor]
 
+#define JoyyRed    [UIColor joyyRedColor]
+
 #define JoyyWhite     [UIColor joyyWhiteColor]
 #define JoyyWhite80   [UIColor joyyWhiteColor80]
 #define JoyyWhite50   [UIColor joyyWhiteColor50]
@@ -42,6 +44,7 @@
 + (UIColor *)joyyGrayColor50;
 + (UIColor *)joyyGrayDarkColor50;
 + (UIColor *)joyyGrayDarkerColor;
++ (UIColor *)joyyRedColor;
 + (UIColor *)joyyWhiteColor;
 + (UIColor *)joyyWhiteColor80;
 + (UIColor *)joyyWhiteColor50;

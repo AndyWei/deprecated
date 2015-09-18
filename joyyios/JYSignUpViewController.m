@@ -39,7 +39,7 @@
 
 - (void)_usernameExist:(BOOL)exist
 {
-    self.usernameField.textColor = exist? FlatRed: FlatGreen;
+    self.usernameField.textColor = exist? JoyyRed: FlatGreen;
 }
 
 #pragma mark - UITextFieldDelegate methods

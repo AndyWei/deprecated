@@ -22,6 +22,18 @@ static const CGFloat kInfoLabelWidth = 280.f;
 
 @implementation JYPersonCard
 
++ (UIImage *)winkImage
+{
+    static UIImage *_sharedWinkImage = nil;
+
+    if (!_sharedWinkImage)
+    {
+        _sharedWinkImage = [UIImage imageNamed:@"wink"];
+    }
+
+    return _sharedWinkImage;
+}
+
 - (instancetype)initWithFrame:(CGRect)frame options:(MDCSwipeToChooseViewOptions *)options
 {
     self = [super initWithFrame:frame options:options];
@@ -59,7 +71,7 @@ static const CGFloat kInfoLabelWidth = 280.f;
         CGFloat width = CGRectGetWidth(self.bounds) - kInfoLabelWidth;
         CGRect frame = CGRectMake(x, y, width, kLabelHeight);
         _heartCountView = [JYButton buttonWithFrame:frame buttonStyle:JYButtonStyleImageWithTitle shouldMaskImage:YES];
-        _heartCountView.imageView.image = [UIImage imageNamed:@"like"];
+        _heartCountView.imageView.image = [[self class] winkImage];
         _heartCountView.contentColor = JoyyBlue;
         _heartCountView.foregroundColor = JoyyBlack50;
 

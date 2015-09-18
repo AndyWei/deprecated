@@ -8,6 +8,6 @@
 
 @interface UIImage (Joyy)
 
-+ (UIImage *)imageWithImage:(UIImage *)image scaledToSize:(CGSize)newSize;
++ (instancetype)imageWithImage:(UIImage *)image scaledToSize:(CGSize)newSize;
 
 @end

@@ -10,7 +10,7 @@
 
 @implementation UIImage (Joyy)
 
-+ (UIImage *)imageWithImage:(UIImage *)image scaledToSize:(CGSize)newSize
++ (instancetype)imageWithImage:(UIImage *)image scaledToSize:(CGSize)newSize
 {
     // In next line, pass 1.0 to force exact pixel size
     // Pass 0.0 to use the current device's pixel scaling factor (and thus account for Retina resolution).

@@ -13,7 +13,7 @@
 #import "JYButton.h"
 #import "JYFacialGestureDetector.h"
 #import "JYPeopleViewController.h"
-
+#import "UIImage+Joyy.h"
 
 @interface JYPeopleViewController () <JYFacialGuestureDetectorDelegate, MDCSwipeToChooseDelegate>
 @property (nonatomic) CGRect cardFrame;
@@ -29,7 +29,7 @@
 @end
 
 const CGFloat kButtonSpaceH = 80;
-const CGFloat kButtonSpaceV = 10;
+const CGFloat kButtonSpaceV = 40;
 const CGFloat kButtonWidth = 60;
 
 @implementation JYPeopleViewController
@@ -69,14 +69,14 @@ const CGFloat kButtonWidth = 60;
     {
         [self _turnOffDetector];
     }
-    self.facialGesturesDetector = nil;
 }
 
 #pragma mark - Actions
 
 - (void)_appStart
 {
-    if (_facialGesturesDetector)
+    // Only turn detector on in the cases that app resume active
+    if (self.personList)
     {
         [self _turnOnDetector];
     }
@@ -106,6 +106,7 @@ const CGFloat kButtonWidth = 60;
 {
     [self.facialGesturesDetector stopDetection];
     [self _stopDetectorAwakeTimer];
+    self.facialGesturesDetector = nil;
 }
 
 - (void)_startDetectorAwakeTimer
@@ -138,6 +139,16 @@ const CGFloat kButtonWidth = 60;
     NSLog(@"AwakeTimer timeout");
     self.isListening = YES;
     [self _stopDetectorAwakeTimer];
+}
+
+- (void)_recoverNopeButton
+{
+    self.nopeButton.selected = NO;
+}
+
+- (void)_recoverWinkButton
+{
+    self.winkButton.selected = NO;
 }
 
 #pragma mark - MDCSwipeToChooseDelegate Methods
@@ -181,12 +192,18 @@ const CGFloat kButtonWidth = 60;
 
 - (void)detectorDidDetectLeftWink:(JYFacialGestureDetector *)detector
 {
-    [self _nope];
+    self.nopeButton.selected = YES;
+    [self.nopeButton sendActionsForControlEvents:UIControlEventTouchUpInside];
+
+    [self performSelector:@selector(_recoverNopeButton) withObject:self afterDelay:0.4f];
 }
 
 - (void)detectorDidDetectRightWink:(JYFacialGestureDetector *)detector
 {
-    [self _like];
+    self.winkButton.selected = YES;
+    [self.winkButton sendActionsForControlEvents:UIControlEventTouchUpInside];
+
+    [self performSelector:@selector(_recoverWinkButton) withObject:self afterDelay:0.4f];
 }
 
 #pragma mark View Handling
@@ -197,11 +214,8 @@ const CGFloat kButtonWidth = 60;
     {
         CGRect frame = CGRectMake(kButtonSpaceH, CGRectGetMaxY(self.cardFrame) + kButtonSpaceV, kButtonWidth, kButtonWidth);
         UIImage *image = [UIImage imageNamed:@"nope"];
-        _nopeButton = [JYButton circledButtonWithFrame:frame image:image color:FlatWatermelon];
-        _nopeButton.borderWidth = 5;
-        _nopeButton.borderColor = FlatWatermelon;
-        _nopeButton.borderAnimateToColor = FlatWatermelon;
-        _nopeButton.contentEdgeInsets = UIEdgeInsetsMake(3, 3, 3, 3);
+        _nopeButton = [JYButton iconButtonWithFrame:frame icon:image color:JoyyRed];
+        _winkButton.contentAnimateToColor = JoyyWhite;
 
         [_nopeButton addTarget:self action:@selector(_nope) forControlEvents:UIControlEventTouchUpInside];
     }
@@ -216,12 +230,12 @@ const CGFloat kButtonWidth = 60;
                                   CGRectGetMaxY(self.cardFrame) + kButtonSpaceV,
                                   kButtonWidth,
                                   kButtonWidth);
-        UIImage *image = [UIImage imageNamed:@"like"];
-        _winkButton = [JYButton circledButtonWithFrame:frame image:image color:JoyyBlue];
-        _winkButton.borderWidth = 5;
-        _winkButton.borderColor = JoyyBlue;
-        _winkButton.borderAnimateToColor = JoyyBlue;
-        [_winkButton addTarget:self action:@selector(_like) forControlEvents:UIControlEventTouchUpInside];
+
+        UIImage *image = [UIImage imageNamed:@"wink"];
+        _winkButton = [JYButton iconButtonWithFrame:frame icon:image color:JoyyBlue];
+        _winkButton.contentAnimateToColor = JoyyWhite;
+
+        [_winkButton addTarget:self action:@selector(_wink) forControlEvents:UIControlEventTouchUpInside];
     }
     return _winkButton;
 }
@@ -259,7 +273,7 @@ const CGFloat kButtonWidth = 60;
     [self.frontCard mdc_swipe:MDCSwipeDirectionLeft];
 }
 
-- (void)_like
+- (void)_wink
 {
     self.isListening = NO;
     [self.frontCard mdc_swipe:MDCSwipeDirectionRight];
@@ -283,13 +297,6 @@ const CGFloat kButtonWidth = 60;
     options.threshold = 120.f;
     options.likedText = NSLocalizedString(@"WINK", nil);
     options.nopeText = NSLocalizedString(@"NOPE", nil);
-    options.onPan = ^(MDCPanState *state) {
-        CGRect frame = self.cardFrame;
-        self.backCard.frame = CGRectMake(frame.origin.x,
-                                         frame.origin.y - (state.thresholdRatio * 10.f),
-                                         CGRectGetWidth(frame),
-                                         CGRectGetHeight(frame));
-    };
 
     JYPersonCard *card = [[JYPersonCard alloc] initWithFrame:self.cardFrame options:options];
     card.person = self.personList[0];

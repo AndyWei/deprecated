@@ -13,8 +13,6 @@
 		D61D1D481B4A65F200DE37DF /* MDCGeometry.m in Sources */ = {isa = PBXBuildFile; fileRef = D61D1D2B1B4A65F200DE37DF /* MDCGeometry.m */; };
 		D61D1D491B4A65F200DE37DF /* MDCViewState.m in Sources */ = {isa = PBXBuildFile; fileRef = D61D1D2E1B4A65F200DE37DF /* MDCViewState.m */; };
 		D61D1D4A1B4A65F200DE37DF /* MDCViewState.m in Sources */ = {isa = PBXBuildFile; fileRef = D61D1D2E1B4A65F200DE37DF /* MDCViewState.m */; };
-		D61D1D4B1B4A65F200DE37DF /* UIColor+MDCRGB8Bit.m in Sources */ = {isa = PBXBuildFile; fileRef = D61D1D301B4A65F200DE37DF /* UIColor+MDCRGB8Bit.m */; };
-		D61D1D4C1B4A65F200DE37DF /* UIColor+MDCRGB8Bit.m in Sources */ = {isa = PBXBuildFile; fileRef = D61D1D301B4A65F200DE37DF /* UIColor+MDCRGB8Bit.m */; };
 		D61D1D4D1B4A65F200DE37DF /* UIView+MDCBorderedLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = D61D1D331B4A65F200DE37DF /* UIView+MDCBorderedLabel.m */; };
 		D61D1D4E1B4A65F200DE37DF /* UIView+MDCBorderedLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = D61D1D331B4A65F200DE37DF /* UIView+MDCBorderedLabel.m */; };
 		D61D1D4F1B4A65F200DE37DF /* MDCSwipeOptions.m in Sources */ = {isa = PBXBuildFile; fileRef = D61D1D381B4A65F200DE37DF /* MDCSwipeOptions.m */; };
@@ -211,8 +209,6 @@
 		D61D1D2B1B4A65F200DE37DF /* MDCGeometry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDCGeometry.m; sourceTree = "<group>"; };
 		D61D1D2D1B4A65F200DE37DF /* MDCViewState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDCViewState.h; sourceTree = "<group>"; };
 		D61D1D2E1B4A65F200DE37DF /* MDCViewState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDCViewState.m; sourceTree = "<group>"; };
-		D61D1D2F1B4A65F200DE37DF /* UIColor+MDCRGB8Bit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+MDCRGB8Bit.h"; sourceTree = "<group>"; };
-		D61D1D301B4A65F200DE37DF /* UIColor+MDCRGB8Bit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+MDCRGB8Bit.m"; sourceTree = "<group>"; };
 		D61D1D321B4A65F200DE37DF /* UIView+MDCBorderedLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+MDCBorderedLabel.h"; sourceTree = "<group>"; };
 		D61D1D331B4A65F200DE37DF /* UIView+MDCBorderedLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+MDCBorderedLabel.m"; sourceTree = "<group>"; };
 		D61D1D351B4A65F200DE37DF /* MDCSwipeToChoose.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDCSwipeToChoose.h; sourceTree = "<group>"; };
@@ -447,8 +443,6 @@
 				D61D1D2A1B4A65F200DE37DF /* MDCGeometry.h */,
 				D61D1D2B1B4A65F200DE37DF /* MDCGeometry.m */,
 				D61D1D2C1B4A65F200DE37DF /* State */,
-				D61D1D2F1B4A65F200DE37DF /* UIColor+MDCRGB8Bit.h */,
-				D61D1D301B4A65F200DE37DF /* UIColor+MDCRGB8Bit.m */,
 				D61D1D311B4A65F200DE37DF /* Views */,
 			);
 			path = Internal;
@@ -1116,7 +1110,6 @@
 				D61D1DE21B5366DC00DE37DF /* JYPost.m in Sources */,
 				D69FF6D61B94144100466FE5 /* JYSoundPlayer.m in Sources */,
 				D61D1DA21B4E336E00DE37DF /* TGCameraAuthorizationViewController.m in Sources */,
-				D61D1D4B1B4A65F200DE37DF /* UIColor+MDCRGB8Bit.m in Sources */,
 				D6F7F1381BA71ADF008118DA /* JYVerificationViewController.m in Sources */,
 				D6C6BBAC1B62DF6B00FFFAC7 /* NSDictionary+Joyy.m in Sources */,
 				D63F0D7D1ACA5E260067C5EE /* JYPhoneNumberViewController.m in Sources */,
@@ -1174,7 +1167,6 @@
 				D61D1DE71B536B2700DE37DF /* JYPostViewCell.m in Sources */,
 				D689ED6B1AE42C8300CB4D2B /* UIView+Joyy.m in Sources */,
 				D61D1DA31B4E336E00DE37DF /* TGCameraAuthorizationViewController.m in Sources */,
-				D61D1D4C1B4A65F200DE37DF /* UIColor+MDCRGB8Bit.m in Sources */,
 				D69FF6E61B96474200466FE5 /* JYAuthenticatedIdentityProvider.m in Sources */,
 				D61D1DE31B5366DC00DE37DF /* JYPost.m in Sources */,
 				D6C82B6A1B12553D00876F57 /* JYComment.m in Sources */,

@@ -75,7 +75,7 @@
 /**
  * Text color to be applied to the floating label while the field contains invalid text
  * that doesn't match the autocompleteType.
- * Defaults to `FlatRed`.
+ * Defaults to `JoyyRed`.
  */
 @property(nonatomic, strong) UIColor *floatingLabelInvalidTextColor UI_APPEARANCE_SELECTOR;
 
