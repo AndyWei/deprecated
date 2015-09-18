@@ -8,6 +8,7 @@
 
 #import <AFNetworking/AFNetworking.h>
 #import <MSWeakTimer/MSWeakTimer.h>
+#import <TTTAttributedLabel/TTTAttributedLabel.h>
 
 #import "AppDelegate.h"
 #import "JYButton.h"
@@ -19,6 +20,7 @@
 @property (nonatomic) CGRect cardFrame;
 @property (nonatomic) JYButton *nopeButton;
 @property (nonatomic) JYButton *winkButton;
+@property (nonatomic) JYButton *fetchButton;
 
 @property (nonatomic) JYFacialGestureDetector *facialGesturesDetector;
 @property (nonatomic) MSWeakTimer *detectorAwakeTimer;
@@ -44,6 +46,7 @@ const CGFloat kButtonWidth = 60;
 
     _cardFrame = CGRectZero;
 
+    [self.view addSubview:self.fetchButton];
     [self.view addSubview:self.nopeButton];
     [self.view addSubview:self.winkButton];
 
@@ -208,6 +211,22 @@ const CGFloat kButtonWidth = 60;
 
 #pragma mark View Handling
 
+- (JYButton *)fetchButton
+{
+    if (!_fetchButton)
+    {
+        _fetchButton = [JYButton button];
+        _fetchButton.x = 50;
+        _fetchButton.y = CGRectGetMidY(self.cardFrame);
+        _fetchButton.width = SCREEN_WIDTH - 100;
+        _fetchButton.cornerRadius = 5;
+
+        _fetchButton.textLabel.text = NSLocalizedString(@"GET MORE PEOPLE", nil);
+        [_fetchButton addTarget:self action:@selector(_fetchPersonNearby) forControlEvents:UIControlEventTouchUpInside];
+    }
+    return _fetchButton;
+}
+
 - (JYButton *)nopeButton
 {
     if (!_nopeButton)
@@ -215,7 +234,7 @@ const CGFloat kButtonWidth = 60;
         CGRect frame = CGRectMake(kButtonSpaceH, CGRectGetMaxY(self.cardFrame) + kButtonSpaceV, kButtonWidth, kButtonWidth);
         UIImage *image = [UIImage imageNamed:@"nope"];
         _nopeButton = [JYButton iconButtonWithFrame:frame icon:image color:JoyyRed];
-        _winkButton.contentAnimateToColor = JoyyWhite;
+        _nopeButton.contentAnimateToColor = JoyyWhite;
 
         [_nopeButton addTarget:self action:@selector(_nope) forControlEvents:UIControlEventTouchUpInside];
     }
