@@ -17,7 +17,7 @@
 @end
 
 // How fast a guesture can be captured. shorter means more CPU
-const CFTimeInterval kCapturePeriod = 0.2f;
+const CFTimeInterval kSamplePeriod = 0.2f;
 
 // Prevent a blink from being parsed as wink
 const CFTimeInterval kBlinkMutePeriod = 0.5f;
@@ -50,7 +50,7 @@ const CFTimeInterval kReportingPeriod = 1.2f;
 {
     self.lastReportingTimestamp = 0.0f;
     self.lastBlinkTimestamp= 0.0f;
-    [self.camera startWithPeriod:kCapturePeriod previewView:self.previewView withError:error];
+    [self.camera startWithPeriod:kSamplePeriod previewView:self.previewView withError:error];
 }
 
 - (void)stopDetection
@@ -90,9 +90,8 @@ const CFTimeInterval kReportingPeriod = 1.2f;
 
     dispatch_async(queue, ^(void){
 
-//        NSLog(@"immage: %lu begin", (unsigned long)image);
+        // This operation will take about 0.15 seconds on iPhone6
         NSArray *features = [self.faceDetector featuresInImage:image options:detectionOtions];
-//        NSLog(@"immage: %lu end", (unsigned long)image);
 
         if (features.count == 0)
         {
@@ -111,7 +110,6 @@ const CFTimeInterval kReportingPeriod = 1.2f;
 {
     if (![self.delegate isListening])
     {
-        //        NSLog(@"Camera get image, but the delegate is not listening");
         return NO;
     }
 
@@ -124,13 +122,15 @@ const CFTimeInterval kReportingPeriod = 1.2f;
 
 - (void)_handleFeatures:(NSArray *)features
 {
-    // Since it takes some time for getting features from image, the report condition might have been changed, double check here to avoid unneccessary calls
+    // Since it takes some time for getting features from image, the report condition might have been changed
+    // Double check here to avoid unneccessary calls
     if (![self _shouldReport])
     {
         return;
     }
 
-    CIFaceFeature *faceFeature = features[0]; // only handle the first one
+    // only handle the first one, which has highest confidence
+    CIFaceFeature *faceFeature = features[0];
 
     if (faceFeature.hasSmile)
     {

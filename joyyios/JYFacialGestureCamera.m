@@ -13,11 +13,11 @@
 @interface JYFacialGestureCamera() <AVCaptureVideoDataOutputSampleBufferDelegate>
 @property (nonatomic) AVCaptureSession *session;
 @property (nonatomic) AVCaptureVideoDataOutput *videoDataOutput;
-@property (nonatomic) dispatch_queue_t videoDataOutputQueue;
 @property (nonatomic) AVCaptureVideoPreviewLayer *layer;
 @property (nonatomic) BOOL isUsingFrontCamera;
 @property (nonatomic) CFTimeInterval lastSampleTimestamp;
-@property (nonatomic) CFTimeInterval capturePeriod;
+@property (nonatomic) CFTimeInterval stampPeriod;
+@property (nonatomic) dispatch_queue_t videoDataOutputQueue;
 @end
 
 
@@ -25,7 +25,7 @@
 
 - (void)startWithPeriod:(CFTimeInterval)period previewView:(UIView *)previewView withError:(NSError **)error
 {
-    self.capturePeriod = period;
+    self.stampPeriod = period;
     self.session = [AVCaptureSession new];
     self.session.sessionPreset = AVCaptureSessionPreset352x288;
     AVCaptureDeviceInput *deviceInput = [self _captureDeviceInput:error];
@@ -46,10 +46,10 @@
 
     self.videoDataOutput = [AVCaptureVideoDataOutput new];
     
-    // we want BGRA, both CoreGraphics and OpenGL work well with 'BGRA'
+    // BGRA is the best for accuracy and CPU
     self.videoDataOutput.videoSettings = @{ (id)kCVPixelBufferPixelFormatTypeKey:@(kCMPixelFormat_32BGRA) };
 
-    // TODO: (investigate)
+    // TODO: currently no issue, but need investigate the impact of this setting
     self.videoDataOutput.alwaysDiscardsLateVideoFrames = YES;
     
     [self.videoDataOutput setSampleBufferDelegate:self queue:self.videoDataOutputQueue];
@@ -125,7 +125,7 @@
     CFTimeInterval now = CACurrentMediaTime();
     CFTimeInterval timePassed = now - self.lastSampleTimestamp;
 
-    if (timePassed < self.capturePeriod)
+    if (timePassed < self.stampPeriod)
     {
         return;
     }
@@ -134,13 +134,8 @@
     
     // Get the image from sample buffer
     CVPixelBufferRef pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
-    CFDictionaryRef dict = CMCopyDictionaryOfAttachments(kCFAllocatorDefault, sampleBuffer, kCMAttachmentMode_ShouldPropagate);
-    CIImage *image = [[CIImage alloc] initWithCVPixelBuffer:pixelBuffer options:(__bridge NSDictionary *)dict];
 
-    if (dict)
-    {
-        CFRelease(dict);
-    }
+    CIImage *image = [CIImage imageWithCVPixelBuffer:pixelBuffer];
 
     if ([self.delegate respondsToSelector:@selector(camera:didCaptureImage:isFront:)])
     {

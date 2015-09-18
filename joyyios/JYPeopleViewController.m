@@ -42,19 +42,15 @@ const CGFloat kButtonWidth = 60;
 
     self.personList = [NSMutableArray new];
 
-    NSError *error;
-    [self.facialGesturesDetector startDetectionWithError:&error];
-
-    _cardFrame = CGRectZero;
     _cardFrame = CGRectZero;
 
     [self.view addSubview:self.nopeButton];
     [self.view addSubview:self.winkButton];
 
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_turnOnDetector) name:kNotificationAppDidStart object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_turnOffDetector) name:kNotificationAppDidStop object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_appStart) name:kNotificationAppDidStart object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_appStop) name:kNotificationAppDidStop object:nil];
 
-//    [self _fetchPersonNearby];
+    [self _fetchPersonNearby];
 }
 
 - (void)dealloc
@@ -64,16 +60,35 @@ const CGFloat kButtonWidth = 60;
 
 - (void)viewDidAppear:(BOOL)animated
 {
-    [self _fetchPersonNearby];
     [self _turnOnDetector];
 }
 
 - (void)viewDidDisappear:(BOOL)animated
 {
-    [self _turnOffDetector];
+    if (_facialGesturesDetector)
+    {
+        [self _turnOffDetector];
+    }
+    self.facialGesturesDetector = nil;
 }
 
 #pragma mark - Actions
+
+- (void)_appStart
+{
+    if (_facialGesturesDetector)
+    {
+        [self _turnOnDetector];
+    }
+}
+
+- (void)_appStop
+{
+    if (_facialGesturesDetector)
+    {
+        [self _turnOffDetector];
+    }
+}
 
 - (void)_turnOnDetector
 {
@@ -266,7 +281,7 @@ const CGFloat kButtonWidth = 60;
     MDCSwipeToChooseViewOptions *options = [MDCSwipeToChooseViewOptions new];
     options.delegate = self;
     options.threshold = 120.f;
-    options.likedText = NSLocalizedString(@"LIKE", nil);
+    options.likedText = NSLocalizedString(@"WINK", nil);
     options.nopeText = NSLocalizedString(@"NOPE", nil);
     options.onPan = ^(MDCPanState *state) {
         CGRect frame = self.cardFrame;
