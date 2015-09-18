@@ -107,6 +107,7 @@ const CGFloat kButtonWidth = 60;
 
 - (void)_turnOffDetector
 {
+    self.isListening = NO;
     [self.facialGesturesDetector stopDetection];
     [self _stopDetectorAwakeTimer];
     self.facialGesturesDetector = nil;
@@ -122,7 +123,7 @@ const CGFloat kButtonWidth = 60;
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     self.detectorAwakeTimer = [MSWeakTimer scheduledTimerWithTimeInterval:2.0f
                                                             target:self
-                                                          selector:@selector(_startListening)
+                                                          selector:@selector(_awakeDetector)
                                                           userInfo:nil
                                                            repeats:NO
                                                      dispatchQueue:queue];
@@ -137,7 +138,7 @@ const CGFloat kButtonWidth = 60;
     }
 }
 
-- (void)_startListening
+- (void)_awakeDetector
 {
     NSLog(@"AwakeTimer timeout");
     self.isListening = YES;
@@ -348,7 +349,11 @@ const CGFloat kButtonWidth = 60;
         [self.view insertSubview:self.backCard belowSubview:self.frontCard];
     }
 
-    self.isListening = (self.frontCard != NULL);
+    self.isListening = NO;
+    if (self.frontCard)
+    {
+        [self _startDetectorAwakeTimer];
+    }
 }
 
 #pragma mark - Maintain Data
