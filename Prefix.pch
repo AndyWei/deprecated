@@ -36,7 +36,6 @@
 #import "NSDictionary+Joyy.h"
 #import "NSIndexPath+Joyy.h"
 #import "UIColor+Joyy.h"
-#import "UIFont+Joyy.h"
 #import "UIView+Joyy.h"
 #import "UIView+Positioning.h"
 

@@ -1,28 +1,20 @@
 /* stringprep.h --- Header file for stringprep functions.
-   Copyright (C) 2002-2012 Simon Josefsson
-
+   Copyright (C) 2002-2015 Simon Josefsson
    This file is part of GNU Libidn.
-
    GNU Libidn is free software: you can redistribute it and/or
    modify it under the terms of either:
-
      * the GNU Lesser General Public License as published by the Free
        Software Foundation; either version 3 of the License, or (at
        your option) any later version.
-
    or
-
      * the GNU General Public License as published by the Free
        Software Foundation; either version 2 of the License, or (at
        your option) any later version.
-
    or both in parallel, as here.
-
    GNU Libidn is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
    General Public License for more details.
-
    You should have received copies of the GNU General Public License and
    the GNU Lesser General Public License along with this program.  If
    not, see <http://www.gnu.org/licenses/>. */
@@ -42,16 +34,16 @@
 #  endif
 # endif
 
-# include <stddef.h>		/* size_t */
-# include <sys/types.h>		/* ssize_t */
-# include "idn-int.h"		/* uint32_t */
+# include <stddef.h>    /* size_t */
+# include <sys/types.h>   /* ssize_t */
+# include <idn-int.h>   /* uint32_t */
 
 # ifdef __cplusplus
 extern "C"
 {
 # endif
 
-# define STRINGPREP_VERSION "1.25"
+# define STRINGPREP_VERSION "1.31"
 
 /* Error codes. */
   typedef enum
@@ -68,6 +60,7 @@ extern "C"
     STRINGPREP_PROFILE_ERROR = 101,
     STRINGPREP_FLAG_ERROR = 102,
     STRINGPREP_UNKNOWN_PROFILE = 103,
+    STRINGPREP_ICONV_ERROR = 104,
     /* Internal errors. */
     STRINGPREP_NFKC_FAILED = 200,
     STRINGPREP_MALLOC_ERROR = 201
@@ -99,8 +92,8 @@ extern "C"
   struct Stringprep_table_element
   {
     uint32_t start;
-    uint32_t end;		/* 0 if only one character */
-    uint32_t map[STRINGPREP_MAX_MAP_CHARS];	/* NULL if end is not 0 */
+    uint32_t end;   /* 0 if only one character */
+    uint32_t map[STRINGPREP_MAX_MAP_CHARS]; /* NULL if end is not 0 */
   };
   typedef struct Stringprep_table_element Stringprep_table_element;
 
@@ -144,10 +137,10 @@ extern "C"
 
   extern IDNAPI const Stringprep_profile stringprep_nameprep[];
 
-# define stringprep_nameprep(in, maxlen)			\
+# define stringprep_nameprep(in, maxlen)      \
   stringprep(in, maxlen, 0, stringprep_nameprep)
 
-# define stringprep_nameprep_no_unassigned(in, maxlen)			\
+# define stringprep_nameprep_no_unassigned(in, maxlen)      \
   stringprep(in, maxlen, STRINGPREP_NO_UNASSIGNED, stringprep_nameprep)
 
   /* SASL */
@@ -157,14 +150,14 @@ extern "C"
   extern IDNAPI const Stringprep_profile stringprep_plain[];
   extern IDNAPI const Stringprep_profile stringprep_trace[];
 
-# define stringprep_plain(in, maxlen)		\
+# define stringprep_plain(in, maxlen)   \
   stringprep(in, maxlen, 0, stringprep_plain)
 
   /* Kerberos */
 
   extern IDNAPI const Stringprep_profile stringprep_kerberos5[];
 
-# define stringprep_kerberos5(in, maxlen)		\
+# define stringprep_kerberos5(in, maxlen)   \
   stringprep(in, maxlen, 0, stringprep_kerberos5)
 
   /* XMPP */
@@ -173,9 +166,9 @@ extern "C"
   extern IDNAPI const Stringprep_profile stringprep_xmpp_resourceprep[];
   extern IDNAPI const Stringprep_table_element stringprep_xmpp_nodeprep_prohibit[];
 
-# define stringprep_xmpp_nodeprep(in, maxlen)		\
+# define stringprep_xmpp_nodeprep(in, maxlen)   \
   stringprep(in, maxlen, 0, stringprep_xmpp_nodeprep)
-# define stringprep_xmpp_resourceprep(in, maxlen)		\
+# define stringprep_xmpp_resourceprep(in, maxlen)   \
   stringprep(in, maxlen, 0, stringprep_xmpp_resourceprep)
 
   /* iSCSI */
@@ -183,31 +176,31 @@ extern "C"
   extern IDNAPI const Stringprep_profile stringprep_iscsi[];
   extern IDNAPI const Stringprep_table_element stringprep_iscsi_prohibit[];
 
-# define stringprep_iscsi(in, maxlen)		\
+# define stringprep_iscsi(in, maxlen)   \
   stringprep(in, maxlen, 0, stringprep_iscsi)
 
   /* API */
 
   extern IDNAPI int stringprep_4i (uint32_t * ucs4, size_t * len,
-				   size_t maxucs4len,
-				   Stringprep_profile_flags flags,
-				   const Stringprep_profile * profile);
+           size_t maxucs4len,
+           Stringprep_profile_flags flags,
+           const Stringprep_profile * profile);
   extern IDNAPI int stringprep_4zi (uint32_t * ucs4, size_t maxucs4len,
-				    Stringprep_profile_flags flags,
-				    const Stringprep_profile * profile);
+            Stringprep_profile_flags flags,
+            const Stringprep_profile * profile);
   extern IDNAPI int stringprep (char *in, size_t maxlen,
-				Stringprep_profile_flags flags,
-				const Stringprep_profile * profile);
+        Stringprep_profile_flags flags,
+        const Stringprep_profile * profile);
 
   extern IDNAPI int stringprep_profile (const char *in,
-					char **out,
-					const char *profile,
-					Stringprep_profile_flags flags);
+          char **out,
+          const char *profile,
+          Stringprep_profile_flags flags);
 
   extern IDNAPI const char *stringprep_strerror (Stringprep_rc rc);
 
   extern IDNAPI const char *stringprep_check_version (const char
-						      *req_version);
+                  *req_version);
 
 /* Utility */
 
@@ -215,22 +208,22 @@ extern "C"
   extern IDNAPI uint32_t stringprep_utf8_to_unichar (const char *p);
 
   extern IDNAPI uint32_t *stringprep_utf8_to_ucs4 (const char *str,
-						   ssize_t len,
-						   size_t * items_written);
+               ssize_t len,
+               size_t * items_written);
   extern IDNAPI char *stringprep_ucs4_to_utf8 (const uint32_t * str,
-					       ssize_t len,
-					       size_t * items_read,
-					       size_t * items_written);
+                 ssize_t len,
+                 size_t * items_read,
+                 size_t * items_written);
 
   extern IDNAPI char *stringprep_utf8_nfkc_normalize (const char *str,
-						      ssize_t len);
+                  ssize_t len);
   extern IDNAPI uint32_t *stringprep_ucs4_nfkc_normalize (const uint32_t * str,
-							  ssize_t len);
+                ssize_t len);
 
   extern IDNAPI const char *stringprep_locale_charset (void);
   extern IDNAPI char *stringprep_convert (const char *str,
-					  const char *to_codeset,
-					  const char *from_codeset);
+            const char *to_codeset,
+            const char *from_codeset);
   extern IDNAPI char *stringprep_locale_to_utf8 (const char *str);
   extern IDNAPI char *stringprep_utf8_to_locale (const char *str);
 
@@ -238,4 +231,4 @@ extern "C"
 }
 # endif
 
-#endif				/* STRINGPREP_H */
+#endif        /* STRINGPREP_H */
