@@ -108,6 +108,24 @@ static NSString *const kSignCellIdentifier = @"signCell";
 
     return textField;
 }
+
+#pragma mark - UITableView Delegate
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return kCellHeight;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    return kHeaderHeight;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
+{
+    return kFooterHeight;
+}
+
 #pragma mark - UITableViewDataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -152,8 +170,8 @@ static NSString *const kSignCellIdentifier = @"signCell";
     CGRect frame = CGRectMake(0, 0, SCREEN_WIDTH, kHeaderHeight);
     UIView *header = [[UIView alloc] initWithFrame:frame];
     header.backgroundColor = ClearColor;
+    
     [header addSubview:self.headerLabel];
-
     return header;
 }
 
@@ -167,23 +185,6 @@ static NSString *const kSignCellIdentifier = @"signCell";
     self.signButton.y = kFooterHeight - self.signButton.height;
 
     return footer;
-}
-
-#pragma mark - UITableView Delegate
-
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    return kCellHeight;
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
-{
-    return kHeaderHeight;
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
-{
-    return kFooterHeight;
 }
 
 #pragma mark - UITextFieldDelegate methods

@@ -7,15 +7,19 @@
 //
 
 #import <AFNetworking/AFNetworking.h>
+#import <FBSDKLoginKit/FBSDKLoginKit.h>
 #import <KVNProgress/KVNProgress.h>
 #import <RKDropdownAlert/RKDropdownAlert.h>
 
 #import "JYButton.h"
 #import "JYSignUpViewController.h"
 
-@interface JYSignUpViewController ()
-
+@interface JYSignUpViewController () <FBSDKLoginButtonDelegate>
+@property (nonatomic) FBSDKLoginButton *fbLoginButton;
 @end
+
+const CGFloat kFBLoginButtonHeight = 44;
+
 
 @implementation JYSignUpViewController
 
@@ -42,6 +46,50 @@
     self.usernameField.textColor = exist? JoyyRed: FlatGreen;
 }
 
+-(FBSDKLoginButton *)fbLoginButton
+{
+    if (!_fbLoginButton)
+    {
+        _fbLoginButton = [[FBSDKLoginButton alloc] init];
+        _fbLoginButton.frame = CGRectMake(0, 0, SCREEN_WIDTH - kMarginLeft - kMarginRight, kCellHeight);
+        _fbLoginButton.readPermissions = @[@"public_profile", @"email", @"user_friends"];
+    }
+    return _fbLoginButton;
+}
+
+#pragma mark - UITableView Delegate
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    return kFBLoginButtonHeight + self.headerLabel.height;
+}
+
+#pragma mark - UITableViewDataSource
+
+- (UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+{
+    CGRect frame = CGRectMake(0, 0, SCREEN_WIDTH, kFBLoginButtonHeight + self.headerLabel.height);
+    UIView *header = [[UIView alloc] initWithFrame:frame];
+    header.backgroundColor = ClearColor;
+
+    [header addSubview:self.fbLoginButton];
+    self.headerLabel.y = CGRectGetMaxY(self.fbLoginButton.frame);
+    [header addSubview:self.headerLabel];
+
+    return header;
+}
+
+#pragma mark - FBSDKLoginButtonDelegate
+
+- (void)loginButton:(FBSDKLoginButton *)loginButton didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result error:(NSError *)error
+{
+
+}
+
+- (void)loginButtonDidLogOut:(FBSDKLoginButton *)loginButton
+{
+    
+}
 #pragma mark - UITextFieldDelegate methods
 
 // Show Red/Green boarder on the usernameField

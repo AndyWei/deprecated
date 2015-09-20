@@ -40,6 +40,10 @@ PODS:
   - CocoaLumberjack/Core (1.9.2)
   - CocoaLumberjack/Extensions (1.9.2):
     - CocoaLumberjack/Core
+  - Crashlytics (3.3.1)
+  - Fabric (1.5.1):
+    - Fabric/Base (= 1.5.1)
+  - Fabric/Base (1.5.1)
   - FBSDKCoreKit (4.6.0):
     - Bolts (~> 1.1)
     - FBSDKCoreKit/arc (= 4.6.0)
@@ -50,8 +54,6 @@ PODS:
     - Bolts (~> 1.1)
     - FBSDKCoreKit/arc
   - FBSDKLoginKit (4.6.0):
-    - FBSDKCoreKit
-  - FBSDKShareKit (4.6.0):
     - FBSDKCoreKit
   - FDFullscreenPopGesture (1.1)
   - FMDB (2.5):
@@ -225,9 +227,10 @@ DEPENDENCIES:
   - AWSCore
   - AWSS3
   - ChameleonFramework
+  - Crashlytics
+  - Fabric
   - FBSDKCoreKit
   - FBSDKLoginKit
-  - FBSDKShareKit
   - FDFullscreenPopGesture
   - JSQMessagesViewController
   - JVFloatLabeledTextField
@@ -254,9 +257,10 @@ SPEC CHECKSUMS:
   ChameleonFramework: 3476f813ac1615aef0a9a958f05520dfca47e09d
   CocoaAsyncSocket: f5783bdedd232d91b89769bc4b5a1580aed518ad
   CocoaLumberjack: 628fca2e88ef06f7cf6817309aa405f325d9a6fa
+  Crashlytics: 0e61bdda9def51f1e99720f804eebe94865442b2
+  Fabric: 03c3b3fe77e11a2bc31421b989a9c7adaa4779a5
   FBSDKCoreKit: 9954492d90c5fd65ae831395697a1660360d61f1
   FBSDKLoginKit: 3d07febbfa884b9878cacba54f705bb41f07d4b6
-  FBSDKShareKit: f474f1123791e215d0299b98b3ee92ddd9187d86
   FDFullscreenPopGesture: a8a620179e3d9c40e8e00256dcee1c1a27c6d0f0
   FMDB: 96e8f1bcc1329e269330f99770ad4285d9003e52
   JSQMessagesViewController: 73cab48aa92fc2d512f3b6724f3425cc47a19eb5

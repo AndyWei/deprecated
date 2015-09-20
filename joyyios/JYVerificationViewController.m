@@ -94,13 +94,13 @@ static NSString *const kVerificationCellIdentifier = @"verificationCell";
 {
     if (!_textField)
     {
-        CGRect frame = CGRectMake(0, 0, 90, kCellHeight);
+        CGRect frame = CGRectMake(0, 0, 100, kCellHeight);
 
         UITextField *textField = [[UITextField alloc] initWithFrame:frame];
         textField.delegate = self;
         textField.backgroundColor = JoyyWhitePure;
         textField.tintColor = JoyyBlue;
-        textField.font = [UIFont systemFontOfSize:40];
+        textField.font = [UIFont systemFontOfSize:38];
         textField.textAlignment = NSTextAlignmentLeft;
         textField.keyboardType = UIKeyboardTypeNumberPad;
 
@@ -284,6 +284,7 @@ static NSString *const kVerificationCellIdentifier = @"verificationCell";
 - (void)_next
 {
     self.button.enabled = NO;
+    [self.textField resignFirstResponder];
 
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     NSString *url = [NSString apiURLWithPath:@"credential/username"];

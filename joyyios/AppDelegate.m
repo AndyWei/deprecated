@@ -9,6 +9,9 @@
 #import <AFNetworking/AFNetworking.h>
 #import <AWSCore/AWSCore.h>
 #import <AWSS3/AWSS3.h>
+#import <Crashlytics/Crashlytics.h>
+#import <Fabric/Fabric.h>
+#import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <KVNProgress/KVNProgress.h>
 #import <MSWeakTimer/MSWeakTimer.h>
 #import <RKDropdownAlert/RKDropdownAlert.h>
@@ -22,6 +25,7 @@
 #import "JYPhoneNumberViewController.h"
 #import "JYSoundPlayer.h"
 #import "JYXmppManager.h"
+#import "Flurry.h"
 #import "OnboardingViewController.h"
 #import "OnboardingContentViewController.h"
 
@@ -41,6 +45,10 @@
 {
     NSLog(@"didFinishLaunchingWithOptions");
 
+    // Fabric crashlytics
+    [Fabric with:@[[Crashlytics class]]];
+    [Flurry startSession:@"YOUR_FLURRY_API_KEY"];
+
     self.cellId = [JYDataStore sharedInstance].lastCellId ? [JYDataStore sharedInstance].lastCellId : @"94555"; // default zipcode
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 
@@ -51,7 +59,13 @@
     [self _setupLocationManager];
     [self _launchViewController];
     [self.window makeKeyAndVisible];
+
     return YES;
+}
+
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
+{
+    return [[FBSDKApplicationDelegate sharedInstance] application:application openURL:url sourceApplication:sourceApplication annotation:annotation];
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application
@@ -177,7 +191,7 @@
     self.locationManager = [CLLocationManager new];
     self.locationManager.delegate = self;
     self.locationManager.distanceFilter = kCLDistanceFilterNone;
-    self.locationManager.desiredAccuracy = kCLLocationAccuracyBest;
+    self.locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters;
 
     if ([CLLocationManager locationServicesEnabled])
     {
