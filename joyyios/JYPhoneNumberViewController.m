@@ -336,7 +336,8 @@ CGFloat const kCountryNumberWidth = 60;
     NSString *url = [NSString apiURLWithPath:@"credential/vcode"];
 
     NSString *phoneNumber = [self _userPhoneNumberDigits];
-    NSString * language = [[NSLocale preferredLanguages] objectAtIndex:0];
+    NSString * language = [[[NSLocale preferredLanguages] objectAtIndex:0] substringToIndex:2];
+
     NSDictionary *parameters = @{ @"phone": phoneNumber, @"language": language };
 
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;

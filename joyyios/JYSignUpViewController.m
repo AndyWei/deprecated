@@ -52,7 +52,10 @@
         return;
     }
 
-    [self _getExistenceOfUsername:self.usernameField.text];
+    if (textField.text && [textField.text length] >= 4)
+    {
+        [self _getExistenceOfUsername:self.usernameField.text];
+    }
 }
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string

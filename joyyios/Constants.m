@@ -73,11 +73,6 @@ NSString *const kNotificationNeedGeoInfo = @"needGeoInfo";
 NSString *const kNotificationWillCommentPost = @"willCommentPost";
 NSString *const kNotificationWillLikePost = @"willLikePost";
 
-NSString *const kSystemFontBold = @"AvenirNextCondensed-DemiBold";
-NSString *const kSystemFontItalic = @"AvenirNextCondensed-Italic ";
-NSString *const kSystemFontLight = @"AvenirNextCondensed-UltraLight ";
-NSString *const kSystemFontRegular = @"AvenirNextCondensed-Regular";
-
 NSString *const kTableNameLikedPost = @"liked_post";
 NSString *const kTableNamePerson = @"person";
 

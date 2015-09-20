@@ -25,6 +25,12 @@ PODS:
   - AWSCore (2.2.5)
   - AWSS3 (2.2.5):
     - AWSCore (= 2.2.5)
+  - Bolts (1.2.2):
+    - Bolts/AppLinks (= 1.2.2)
+    - Bolts/Tasks (= 1.2.2)
+  - Bolts/AppLinks (1.2.2):
+    - Bolts/Tasks
+  - Bolts/Tasks (1.2.2)
   - ChameleonFramework (1.2.1):
     - ChameleonFramework/Default (= 1.2.1)
   - ChameleonFramework/Default (1.2.1)
@@ -34,6 +40,19 @@ PODS:
   - CocoaLumberjack/Core (1.9.2)
   - CocoaLumberjack/Extensions (1.9.2):
     - CocoaLumberjack/Core
+  - FBSDKCoreKit (4.6.0):
+    - Bolts (~> 1.1)
+    - FBSDKCoreKit/arc (= 4.6.0)
+    - FBSDKCoreKit/no-arc (= 4.6.0)
+  - FBSDKCoreKit/arc (4.6.0):
+    - Bolts (~> 1.1)
+  - FBSDKCoreKit/no-arc (4.6.0):
+    - Bolts (~> 1.1)
+    - FBSDKCoreKit/arc
+  - FBSDKLoginKit (4.6.0):
+    - FBSDKCoreKit
+  - FBSDKShareKit (4.6.0):
+    - FBSDKCoreKit
   - FDFullscreenPopGesture (1.1)
   - FMDB (2.5):
     - FMDB/standard (= 2.5)
@@ -206,9 +225,11 @@ DEPENDENCIES:
   - AWSCore
   - AWSS3
   - ChameleonFramework
+  - FBSDKCoreKit
+  - FBSDKLoginKit
+  - FBSDKShareKit
   - FDFullscreenPopGesture
-  - JSQMessagesViewController (from `https://github.com/jessesquires/JSQMessagesViewController.git`,
-    branch `master`)
+  - JSQMessagesViewController
   - JVFloatLabeledTextField
   - KVNProgress
   - KVOController
@@ -221,27 +242,21 @@ DEPENDENCIES:
   - UICKeyChainStore
   - UIView+Positioning
   - VMaskTextField
-  - XMPPFramework
+  - XMPPFramework (= 3.6.5)
   - YTKKeyValueStore
-
-EXTERNAL SOURCES:
-  JSQMessagesViewController:
-    :branch: master
-    :git: https://github.com/jessesquires/JSQMessagesViewController.git
-
-CHECKOUT OPTIONS:
-  JSQMessagesViewController:
-    :commit: e63f45308aa01b2cdf5004d80de3a21f52ef3db2
-    :git: https://github.com/jessesquires/JSQMessagesViewController.git
 
 SPEC CHECKSUMS:
   AFNetworking: 79f7eb1a0fcfa7beb409332b2ca49afe9ce53b05
   AFNetworking-Synchronous: 29531ad341ec465a4ff9b66dea9cf7272080e12e
   AWSCore: 101929899cea9febd4ea4fc85774a63ff17cf809
   AWSS3: 78a5be4417c5fe1d9a1c301b05bbfbb6719d4f18
+  Bolts: 20a2bd788273360cb1e31530dc19b8544eef2544
   ChameleonFramework: 3476f813ac1615aef0a9a958f05520dfca47e09d
   CocoaAsyncSocket: f5783bdedd232d91b89769bc4b5a1580aed518ad
   CocoaLumberjack: 628fca2e88ef06f7cf6817309aa405f325d9a6fa
+  FBSDKCoreKit: 9954492d90c5fd65ae831395697a1660360d61f1
+  FBSDKLoginKit: 3d07febbfa884b9878cacba54f705bb41f07d4b6
+  FBSDKShareKit: f474f1123791e215d0299b98b3ee92ddd9187d86
   FDFullscreenPopGesture: a8a620179e3d9c40e8e00256dcee1c1a27c6d0f0
   FMDB: 96e8f1bcc1329e269330f99770ad4285d9003e52
   JSQMessagesViewController: 73cab48aa92fc2d512f3b6724f3425cc47a19eb5
