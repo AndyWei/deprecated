@@ -22,15 +22,10 @@ PODS:
   - AFNetworking/UIKit (2.6.0):
     - AFNetworking/NSURLConnection
     - AFNetworking/NSURLSession
+  - AKPickerView (0.2.6)
   - AWSCore (2.2.5)
   - AWSS3 (2.2.5):
     - AWSCore (= 2.2.5)
-  - Bolts (1.2.2):
-    - Bolts/AppLinks (= 1.2.2)
-    - Bolts/Tasks (= 1.2.2)
-  - Bolts/AppLinks (1.2.2):
-    - Bolts/Tasks
-  - Bolts/Tasks (1.2.2)
   - ChameleonFramework (1.2.1):
     - ChameleonFramework/Default (= 1.2.1)
   - ChameleonFramework/Default (1.2.1)
@@ -44,17 +39,6 @@ PODS:
   - Fabric (1.5.1):
     - Fabric/Base (= 1.5.1)
   - Fabric/Base (1.5.1)
-  - FBSDKCoreKit (4.6.0):
-    - Bolts (~> 1.1)
-    - FBSDKCoreKit/arc (= 4.6.0)
-    - FBSDKCoreKit/no-arc (= 4.6.0)
-  - FBSDKCoreKit/arc (4.6.0):
-    - Bolts (~> 1.1)
-  - FBSDKCoreKit/no-arc (4.6.0):
-    - Bolts (~> 1.1)
-    - FBSDKCoreKit/arc
-  - FBSDKLoginKit (4.6.0):
-    - FBSDKCoreKit
   - FDFullscreenPopGesture (1.1)
   - FMDB (2.5):
     - FMDB/standard (= 2.5)
@@ -224,13 +208,12 @@ PODS:
 DEPENDENCIES:
   - AFNetworking (~> 2.5)
   - AFNetworking-Synchronous/2.x
+  - AKPickerView
   - AWSCore
   - AWSS3
   - ChameleonFramework
   - Crashlytics
   - Fabric
-  - FBSDKCoreKit
-  - FBSDKLoginKit
   - FDFullscreenPopGesture
   - JSQMessagesViewController
   - JVFloatLabeledTextField
@@ -251,16 +234,14 @@ DEPENDENCIES:
 SPEC CHECKSUMS:
   AFNetworking: 79f7eb1a0fcfa7beb409332b2ca49afe9ce53b05
   AFNetworking-Synchronous: 29531ad341ec465a4ff9b66dea9cf7272080e12e
+  AKPickerView: e31dcb9572c04d8439512315798862d9eb84b18f
   AWSCore: 101929899cea9febd4ea4fc85774a63ff17cf809
   AWSS3: 78a5be4417c5fe1d9a1c301b05bbfbb6719d4f18
-  Bolts: 20a2bd788273360cb1e31530dc19b8544eef2544
   ChameleonFramework: 3476f813ac1615aef0a9a958f05520dfca47e09d
   CocoaAsyncSocket: f5783bdedd232d91b89769bc4b5a1580aed518ad
   CocoaLumberjack: 628fca2e88ef06f7cf6817309aa405f325d9a6fa
   Crashlytics: 0e61bdda9def51f1e99720f804eebe94865442b2
   Fabric: 03c3b3fe77e11a2bc31421b989a9c7adaa4779a5
-  FBSDKCoreKit: 9954492d90c5fd65ae831395697a1660360d61f1
-  FBSDKLoginKit: 3d07febbfa884b9878cacba54f705bb41f07d4b6
   FDFullscreenPopGesture: a8a620179e3d9c40e8e00256dcee1c1a27c6d0f0
   FMDB: 96e8f1bcc1329e269330f99770ad4285d9003e52
   JSQMessagesViewController: 73cab48aa92fc2d512f3b6724f3425cc47a19eb5

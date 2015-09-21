@@ -11,7 +11,6 @@
 #import <AWSS3/AWSS3.h>
 #import <Crashlytics/Crashlytics.h>
 #import <Fabric/Fabric.h>
-#import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <KVNProgress/KVNProgress.h>
 #import <MSWeakTimer/MSWeakTimer.h>
 #import <RKDropdownAlert/RKDropdownAlert.h>
@@ -21,6 +20,7 @@
 #import "JYButton.h"
 #import "JYMasqueradeViewController.h"
 #import "JYPeopleViewController.h"
+#import "JYProfileViewController.h"
 #import "JYSessionListViewController.h"
 #import "JYPhoneNumberViewController.h"
 #import "JYSoundPlayer.h"
@@ -61,11 +61,6 @@
     [self.window makeKeyAndVisible];
 
     return YES;
-}
-
-- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
-{
-    return [[FBSDKApplicationDelegate sharedInstance] application:application openURL:url sourceApplication:sourceApplication annotation:annotation];
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application
@@ -272,7 +267,8 @@
 
 - (void)_launchSignViewController
 {
-    UIViewController *viewController = [JYPhoneNumberViewController new];
+//    UIViewController *viewController = [JYPhoneNumberViewController new];
+    UIViewController *viewController = [JYProfileViewController new];
     UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:viewController];
     self.window.rootViewController = navigationController;
 }

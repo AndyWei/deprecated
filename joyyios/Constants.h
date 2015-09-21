@@ -27,8 +27,6 @@ extern CGFloat const kPhotoWidth;  // exact pixel size
 extern CGFloat const kSignButtonHeight;
 extern CGFloat const kSignButtonWidth;
 extern CGFloat const kSignButtonMarginTop;
-extern CGFloat const kSignFieldFloatingLabelFontSize;
-extern CGFloat const kSignFieldFontSize;
 extern CGFloat const kSignFieldHeight;
 extern CGFloat const kSignFieldMarginLeft;
 extern CGFloat const kSignViewTopOffset;
