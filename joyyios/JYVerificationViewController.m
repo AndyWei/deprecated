@@ -32,6 +32,9 @@ static NSString *const kVerificationCellIdentifier = @"verificationCell";
     [super viewDidLoad];
 
     self.title = NSLocalizedString(@"Verify", nil);
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Next", nil) style:UIBarButtonItemStylePlain target:self action:@selector(_didTapButton)];
+    [self _enableButtons:NO];
+
     [self.view addSubview:self.tableView];
 }
 
@@ -66,8 +69,7 @@ static NSString *const kVerificationCellIdentifier = @"verificationCell";
     {
         _button = [JYButton button];
         _button.textLabel.text = NSLocalizedString(@"Next", nil);
-        _button.enabled = NO;
-        [_button addTarget:self action:@selector(_next) forControlEvents:UIControlEventTouchUpInside];
+        [_button addTarget:self action:@selector(_didTapButton) forControlEvents:UIControlEventTouchUpInside];
     }
     return _button;
 }
@@ -191,13 +193,13 @@ static NSString *const kVerificationCellIdentifier = @"verificationCell";
 
     BOOL more = (([newStr length] <= 4) && [newStr onlyContainsDigits]);
 
-    self.button.enabled = (newStr.length >= 4);
+    [self _enableButtons:(newStr.length >= 4)];
     return more;
 }
 
 - (BOOL)textFieldShouldClear:(UITextField *)textField
 {
-    self.button.enabled = NO;
+    [self _enableButtons:NO];
     return YES;
 }
 
@@ -262,6 +264,12 @@ static NSString *const kVerificationCellIdentifier = @"verificationCell";
     [self.navigationController pushViewController:vc animated:YES];
 }
 
+- (void)_enableButtons:(BOOL)enabled
+{
+    self.button.enabled = enabled;
+    self.navigationItem.rightBarButtonItem.enabled = enabled;
+}
+
 #pragma mark - UIActionSheetDelegate methods
 
 - (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex
@@ -281,9 +289,14 @@ static NSString *const kVerificationCellIdentifier = @"verificationCell";
 
 #pragma mark - Network
 
-- (void)_next
+- (void)_didTapButton
 {
-    self.button.enabled = NO;
+    [self _enableButtons:NO];
+    [self _fetchUserName];
+}
+
+- (void)_fetchUserName
+{
     [self.textField resignFirstResponder];
 
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
@@ -311,7 +324,7 @@ static NSString *const kVerificationCellIdentifier = @"verificationCell";
              [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
              [KVNProgress dismiss];
 
-             weakSelf.button.enabled = YES;
+             [weakSelf _enableButtons:YES];
 
              NSString *errorMessage = [error.userInfo valueForKey:NSLocalizedDescriptionKey];
 
@@ -322,7 +335,5 @@ static NSString *const kVerificationCellIdentifier = @"verificationCell";
                                time:5];
          }];
 }
-
-
 
 @end

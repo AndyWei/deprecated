@@ -315,7 +315,7 @@
 
     tabBarItem1.selectedImage = [[UIImage imageNamed:@"people_selected"]imageWithRenderingMode:UIImageRenderingModeAutomatic];
     tabBarItem1.image = [[UIImage imageNamed:@"people"]imageWithRenderingMode:UIImageRenderingModeAutomatic];
-    tabBarItem1.title = NSLocalizedString(@"People", nil);
+    tabBarItem1.title = NSLocalizedString(@"Radar", nil);
 
     tabBarItem2.selectedImage = [[UIImage imageNamed:@"mask_selected"] imageWithRenderingMode:UIImageRenderingModeAutomatic];
     tabBarItem2.image = [[UIImage imageNamed:@"mask"] imageWithRenderingMode:UIImageRenderingModeAutomatic];

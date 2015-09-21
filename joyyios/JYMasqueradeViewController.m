@@ -43,7 +43,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
 {
     [super viewDidLoad];
     self.title = NSLocalizedString(@"Masquerade", nil);
-    // Do not use UIBarStyleBlack in the next line, because it will make the status bar text white, which is not what we want
+    // Do not use UIBarStyleBlack in the next line, because it will make the status bar text white
     // self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
 
     // Setup the navigationBar appearence and function

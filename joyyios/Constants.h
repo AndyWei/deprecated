@@ -38,8 +38,9 @@ extern CGFloat const kFooterHeight;
 // AWS
 extern NSString *const kAuthProviderName;
 extern NSString *const kCognitoIdentityPoolId;
-extern NSString *const kPostBucket;
+extern NSString *const kAvatarBucket;
 extern NSString *const kMessagesBucket;
+extern NSString *const kPostBucket;
 extern AWSRegionType const kCognitoRegionType;
 // AWS end
 

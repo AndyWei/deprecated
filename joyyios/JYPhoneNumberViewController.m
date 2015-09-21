@@ -36,6 +36,10 @@ CGFloat const kCountryNumberWidth = 60;
 {
     [super viewDidLoad];
 
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Verify", nil) style:UIBarButtonItemStylePlain target:self action:@selector(_didTapVerifyButton)];
+
+    [self _enableButtons:NO];
+
     self.title = NSLocalizedString(@"Your Phone Number", nil);
     [self.view addSubview:self.tableView];
 
@@ -93,8 +97,7 @@ CGFloat const kCountryNumberWidth = 60;
     {
         _button = [JYButton button];
         _button.textLabel.text = NSLocalizedString(@"Verify", nil);
-        _button.enabled = NO;
-        [_button addTarget:self action:@selector(_getVerificationCode) forControlEvents:UIControlEventTouchUpInside];
+        [_button addTarget:self action:@selector(_didTapVerifyButton) forControlEvents:UIControlEventTouchUpInside];
     }
     return _button;
 }
@@ -203,7 +206,13 @@ CGFloat const kCountryNumberWidth = 60;
     vc.phoneNumber = phoneNumber;
     [self.navigationController pushViewController:vc animated:YES];
 
-    self.button.enabled = YES;
+    [self _enableButtons:YES];
+}
+
+- (void)_enableButtons:(BOOL)enabled
+{
+    self.button.enabled = enabled;
+    self.navigationItem.rightBarButtonItem.enabled = enabled;
 }
 
 #pragma mark - UITableViewDataSource
@@ -310,11 +319,11 @@ CGFloat const kCountryNumberWidth = 60;
 
     if ([self.countryNumberLabel.text isEqualToString:@"+1"])
     {
-        self.button.enabled = (newStr.length >= 14);
+        [self _enableButtons:(newStr.length >= 14)];
     }
     else
     {
-        self.button.enabled = (newStr.length > 3);
+        [self _enableButtons:(newStr.length > 3)];
     }
 
     return  [self.phoneNumberTextField shouldChangeCharactersInRange:range replacementString:string];
@@ -322,16 +331,20 @@ CGFloat const kCountryNumberWidth = 60;
 
 - (BOOL)textFieldShouldClear:(UITextField *)textField
 {
-    self.button.enabled = NO;
+    [self _enableButtons:NO];
     return YES;
 }
 
 #pragma mark - Network
 
-- (void)_getVerificationCode
+- (void)_didTapVerifyButton
 {
-    self.button.enabled = NO;
+    [self _enableButtons:NO];
+    [self _fetchVerificationCode];
+}
 
+- (void)_fetchVerificationCode
+{
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     NSString *url = [NSString apiURLWithPath:@"credential/vcode"];
 
@@ -354,7 +367,7 @@ CGFloat const kCountryNumberWidth = 60;
              NSLog(@"Error: GET credential/vcode error: %@", error);
 
              [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-             weakSelf.button.enabled = YES;
+             [weakSelf _enableButtons:YES];
          }];
 
     [self _showNextScreenWithPhoneNumber:phoneNumber];
