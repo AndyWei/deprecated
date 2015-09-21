@@ -29,23 +29,24 @@
 @interface TGCameraNavigationController : UINavigationController
 
 + (instancetype)new __attribute__
-((unavailable("[+new] is not allowed, use [+newWithCameraDelegate:]")));
+((unavailable("[+new] is not allowed, use [+cameraWithDelegate:]")));
 
 - (instancetype) init __attribute__
-((unavailable("[-init] is not allowed, use [+newWithCameraDelegate:]")));
+((unavailable("[-init] is not allowed, use [+cameraWithDelegate:]")));
 
 - (id)initWithCoder:(NSCoder *)aDecoder __attribute__
-((unavailable("[-initWithCoder:] is not allowed, use [+newWithCameraDelegate:]")));
+((unavailable("[-initWithCoder:] is not allowed, use [+cameraWithDelegate:]")));
 
 - (instancetype)initWithNavigationBarClass:(Class)navigationBarClass toolbarClass:(Class)toolbarClass __attribute__
-((unavailable("[-initWithNavigationBarClass:toolbarClass:] is not allowed, use [+newWithCameraDelegate:]")));
+((unavailable("[-initWithNavigationBarClass:toolbarClass:] is not allowed, use [+cameraWithDelegate:]")));
 
 - (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil __attribute__
-((unavailable("[-initWithNibName:bundle:] is not allowed, use [+newWithCameraDelegate:]")));
+((unavailable("[-initWithNibName:bundle:] is not allowed, use [+cameraWithDelegate:]")));
 
 - (instancetype)initWithRootViewController:(UIViewController *)rootViewController __attribute__
-((unavailable("[-initWithRootViewController:] is not allowed, use [+newWithCameraDelegate:]")));
+((unavailable("[-initWithRootViewController:] is not allowed, use [+cameraWithDelegate:]")));
 
-+ (instancetype)newWithCameraDelegate:(id<TGCameraDelegate>)delegate;
++ (instancetype)cameraWithDelegate:(id<TGCameraDelegate>)delegate;
++ (instancetype)cameraWithCaptionViewController:(id<TGCaptionViewControllerInterface>)vc;
 
 @end

@@ -23,7 +23,6 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-#import "JYPhotoCaptionViewController.h"
 #import "TGCameraColor.h"
 #import "TGCameraViewController.h"
 #import "TGCameraSlideView.h"
@@ -179,17 +178,13 @@
     _camera = nil;
 }
 
-#pragma mark -
 #pragma mark - UIImagePickerControllerDelegate
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
 {
     UIImage *photo = [TGAlbum imageWithMediaInfo:info];
-    
-    JYPhotoCaptionViewController *viewController = [[JYPhotoCaptionViewController alloc] initWithDelegate:_delegate photo:photo];
-    viewController.albumPhoto = YES;
-    [self.navigationController pushViewController:viewController animated:NO];
-    
+
+    [self _commitPhoto:photo fromAlbum:YES];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
@@ -198,12 +193,32 @@
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-#pragma mark -
+#pragma mark - Methods
+
+- (void)_commitPhoto:(UIImage *)photo fromAlbum:(BOOL)fromAlbum
+{
+    if (self.captionViewController)
+    {
+        self.captionViewController.photo = photo;
+        self.captionViewController.isFromAlbum = fromAlbum;
+        UIViewController *vc = (UIViewController *)self.captionViewController;
+
+        [self.navigationController pushViewController:vc animated:NO];
+        return;
+    }
+
+    if (self.delegate && [self.delegate respondsToSelector:@selector(cameraDidTakePhoto:fromAlbum:withCaption:)])
+    {
+        [self.delegate cameraDidTakePhoto:photo fromAlbum:fromAlbum withCaption:nil];
+    }
+}
+
 #pragma mark - Actions
 
 - (void)_close
 {
-    if ([_delegate respondsToSelector:@selector(cameraDidCancel)]) {
+    if ([_delegate respondsToSelector:@selector(cameraDidCancel)])
+    {
         [_delegate cameraDidCancel];
     }
 }
@@ -231,8 +246,7 @@
     __weak typeof(self) weakSelf = self;
     [_camera takePhotoWithCaptureView:_captureView videoOrientation:videoOrientation cropSize:_captureView.frame.size
          completion:^(UIImage *photo) {
-             UIViewController *viewController = [[JYPhotoCaptionViewController alloc] initWithDelegate:_delegate photo:photo];
-             [weakSelf.navigationController pushViewController:viewController animated:NO];
+             [weakSelf _commitPhoto:photo fromAlbum:NO];
     }];
 }
 

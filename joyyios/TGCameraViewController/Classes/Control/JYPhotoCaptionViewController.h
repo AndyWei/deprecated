@@ -9,10 +9,11 @@
 #import "SLKTextViewController.h"
 #import "TGCamera.h"
 
-@interface JYPhotoCaptionViewController : SLKTextViewController
+@interface JYPhotoCaptionViewController : SLKTextViewController <TGCaptionViewControllerInterface>
 
-- (instancetype)initWithDelegate:(id<TGCameraDelegate>)delegate photo:(UIImage *)photo;
+- (instancetype)initWithDelegate:(id<TGCameraDelegate>)delegate;
 
-@property (nonatomic) BOOL albumPhoto;
+@property (nonatomic) BOOL isFromAlbum;
+@property (nonatomic) UIImage *photo;
 
 @end

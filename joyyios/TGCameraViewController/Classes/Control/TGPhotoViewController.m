@@ -137,14 +137,10 @@ static NSString* const kTGCacheVignetteKey = @"TGCacheVignetteKey";
         [_delegate cameraWillTakePhoto];
     }
     
-    if ([_delegate respondsToSelector:@selector(cameraDidTakePhoto:withCaption:)]) {
+    if ([_delegate respondsToSelector:@selector(cameraDidTakePhoto:fromAlbum:withCaption:)]) {
         _photo = _photoView.image;
         
-        if (_albumPhoto) {
-            [_delegate cameraDidSelectAlbumPhoto:_photo withCaption:nil];
-        } else {
-            [_delegate cameraDidTakePhoto:_photo withCaption:nil];
-        }
+        [_delegate cameraDidTakePhoto:_photo fromAlbum:_albumPhoto withCaption:nil];
         
         ALAuthorizationStatus status = [ALAssetsLibrary authorizationStatus];
         TGAssetsLibrary *library = [TGAssetsLibrary defaultAssetsLibrary];

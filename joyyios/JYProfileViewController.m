@@ -17,10 +17,13 @@
 #import "JYFile.h"
 #import "JYFloatLabeledTextField.h"
 #import "JYProfileViewController.h"
+#import "TGCameraColor.h"
+#import "TGCameraViewController.h"
+#import "UIImage+Joyy.h"
 #import "UIImage+Joyy.h"
 #import "UITextField+Joyy.h"
 
-@interface JYProfileViewController () <AKPickerViewDataSource, AKPickerViewDelegate, UIActionSheetDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate>
+@interface JYProfileViewController () <AKPickerViewDataSource, AKPickerViewDelegate, TGCameraDelegate, UIActionSheetDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate>
 
 @property (nonatomic) UITableView *tableView;
 @property (nonatomic) TTTAttributedLabel *headerLabel;
@@ -29,6 +32,7 @@
 @property (nonatomic) JYButton *avatarButton;
 @property (nonatomic) JYButton *photoButton;
 @property (nonatomic) UIImage *avatarImage;
+@property (nonatomic) UIView *avatarContainerView;
 
 @property (nonatomic) TTTAttributedLabel *genderLabel;
 @property (nonatomic) AKPickerView *genderPickerView;
@@ -100,6 +104,15 @@ const CGFloat kAvatarButtonWidth = kAvatarButtonHeight;
     return _saveButton;
 }
 
+- (UIView *)avatarContainerView
+{
+    if (!_avatarContainerView)
+    {
+        _avatarContainerView = [[UIView alloc] initWithFrame:self.avatarButton.frame];
+    }
+    return _avatarContainerView;
+}
+
 - (JYButton *)avatarButton
 {
     if (!_avatarButton)
@@ -111,6 +124,7 @@ const CGFloat kAvatarButtonWidth = kAvatarButtonHeight;
         button.imageView.layer.borderWidth = 2;
         button.imageView.layer.borderColor = JoyyWhite.CGColor;
         button.imageView.layer.cornerRadius = 4;
+        button.imageView.clipsToBounds = YES;
 
         [button addTarget:self action:@selector(_didTapAvatarButton) forControlEvents:UIControlEventTouchUpInside];
         _avatarButton = button;
@@ -122,11 +136,12 @@ const CGFloat kAvatarButtonWidth = kAvatarButtonHeight;
 {
     if (!_photoButton)
     {
-        CGRect frame = CGRectMake(0, 0, kAvatarButtonWidth, kAvatarButtonHeight);
+        CGRect frame = self.avatarButton.frame;
 
         JYButton *button = [JYButton buttonWithFrame:frame buttonStyle:JYButtonStyleCentralImage shouldMaskImage:NO];
         button.imageView.contentMode = UIViewContentModeScaleAspectFill;
         button.imageView.layer.cornerRadius = 4;
+        button.imageView.clipsToBounds = YES;
 
         [button addTarget:self action:@selector(_didTapAvatarButton) forControlEvents:UIControlEventTouchUpInside];
         _photoButton = button;
@@ -170,11 +185,14 @@ const CGFloat kAvatarButtonWidth = kAvatarButtonHeight;
 {
     if (!_genderPickerView)
     {
-        CGRect frame = CGRectMake(0, 0, 100, kCellHeight);
+        CGRect frame = CGRectMake(0, 0, 120, kCellHeight);
         _genderPickerView = [[AKPickerView alloc] initWithFrame:frame];
         _genderPickerView.dataSource = self;
         _genderPickerView.delegate = self;
         [_genderPickerView reloadData];
+
+        // Selecte the item in the middle, which makes user realize this is a picker
+        [_genderPickerView selectItem:1 animated:NO];
     }
     return _genderPickerView;
 }
@@ -236,8 +254,14 @@ const CGFloat kAvatarButtonWidth = kAvatarButtonHeight;
         return;
     }
 
-    BOOL fromCamera = (buttonIndex == 0);
-    [self _showImagePicker:fromCamera];
+    if (buttonIndex == 0)
+    {
+        [self _showCamera];
+    }
+    else
+    {
+        [self _showImagePicker];
+    }
 }
 
 #pragma mark -  AKPickerViewDataSource
@@ -299,8 +323,9 @@ const CGFloat kAvatarButtonWidth = kAvatarButtonHeight;
     cell.backgroundColor = JoyyWhitePure;
     if (indexPath.row == 0)
     {
-        [cell.contentView addSubview:self.avatarButton];
-        self.avatarButton.centerX = cell.centerX;
+        [self.avatarContainerView addSubview:self.avatarButton];
+        [cell.contentView addSubview:self.avatarContainerView];
+        self.avatarContainerView.centerX = cell.centerX;
     }
     else if (indexPath.row == 1)
     {
@@ -394,29 +419,29 @@ const CGFloat kAvatarButtonWidth = kAvatarButtonHeight;
 
     return YES;
 }
+
 #pragma mark - Actions
 
-- (void)_showImagePicker:(BOOL)fromCamera
+- (void)_showImagePicker
 {
     UIImagePickerController *picker = [[UIImagePickerController alloc] init];
 
-    if (fromCamera)
-    {
-        picker.sourceType = UIImagePickerControllerSourceTypeCamera;
-        picker.cameraCaptureMode = UIImagePickerControllerCameraCaptureModePhoto;
-        picker.cameraDevice = UIImagePickerControllerCameraDeviceFront;
-        picker.showsCameraControls = YES;
-    }
-    else
-    {
-        picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-        picker.mediaTypes = @[(NSString *) kUTTypeImage];
-    }
+    picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+    picker.mediaTypes = @[(NSString *) kUTTypeImage];
 
     picker.allowsEditing = YES;
     picker.delegate = self;
 
     [self.navigationController presentViewController:picker animated:YES completion:nil];
+}
+
+- (void)_showCamera
+{
+    [TGCameraColor setTintColor:JoyyBlue];
+    TGCameraNavigationController *camera = [TGCameraNavigationController cameraWithDelegate:self];
+    camera.title = self.title;
+
+    [self presentViewController:camera animated:NO completion:nil];
 }
 
 - (void)_didTapSaveButton
@@ -430,6 +455,31 @@ const CGFloat kAvatarButtonWidth = kAvatarButtonHeight;
     [self _updateProfileWithMediaData:imageData contentType:kContentTypeJPG];
 }
 
+- (void)_handleImage:(UIImage *)image
+{
+    // Use photoButton to replace the default avatar button
+    self.photoButton.imageView.image = image;
+    [self.avatarButton removeFromSuperview];
+    [self.avatarContainerView addSubview:self.photoButton];
+
+    UIImage *compressedImage = [UIImage imageWithImage:image scaledToSize:CGSizeMake(kPhotoWidth, kPhotoWidth)];
+    self.avatarImage = compressedImage;
+}
+
+#pragma mark - TGCameraDelegate Methods
+
+- (void)cameraDidTakePhoto:(UIImage *)photo fromAlbum:(BOOL)fromAlbum withCaption:(NSString *)caption
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
+
+    [self _handleImage:photo];
+}
+
+- (void)cameraDidCancel
+{
+    [self dismissViewControllerAnimated:NO completion:nil];
+}
+
 #pragma mark - UIImagePickerControllerDelegate Methods
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info
@@ -437,11 +487,7 @@ const CGFloat kAvatarButtonWidth = kAvatarButtonHeight;
     [picker dismissViewControllerAnimated:YES completion:nil];
 
     UIImage *editedImage = [info objectForKey:UIImagePickerControllerEditedImage];
-    UIImage *scaledImage = [UIImage imageWithImage:editedImage scaledToSize:CGSizeMake(kPhotoWidth, kPhotoWidth)];
-
-    self.avatarButton = self.photoButton;
-    self.photoButton.imageView.image = editedImage;
-    self.avatarImage = scaledImage;
+    [self _handleImage:editedImage];
 }
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker

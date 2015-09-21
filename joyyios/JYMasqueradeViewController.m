@@ -13,6 +13,7 @@
 
 #import "AppDelegate.h"
 #import "JYButton.h"
+#import "JYPhotoCaptionViewController.h"
 #import "JYComment.h"
 #import "JYCommentViewController.h"
 #import "JYFile.h"
@@ -255,8 +256,10 @@ static NSString *const kPostCellIdentifier = @"postCell";
 
 - (void)_showCamera
 {
+    JYPhotoCaptionViewController *captionVC = [[JYPhotoCaptionViewController alloc] initWithDelegate:self];
+
     [TGCameraColor setTintColor:JoyyBlue];
-    TGCameraNavigationController *camera = [TGCameraNavigationController newWithCameraDelegate:self];
+    TGCameraNavigationController *camera = [TGCameraNavigationController cameraWithCaptionViewController:captionVC];
     camera.title = self.title;
 
     [self presentViewController:camera animated:NO completion:nil];
@@ -269,7 +272,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
     [self dismissViewControllerAnimated:NO completion:nil];
 }
 
-- (void)cameraDidTakePhoto:(UIImage *)photo withCaption:(NSString *)caption
+- (void)cameraDidTakePhoto:(UIImage *)photo fromAlbum:(BOOL)fromAlbum withCaption:(NSString *)caption
 {
     // Default caption
     if (caption.length == 0 || [caption isInvisible])
@@ -283,11 +286,6 @@ static NSString *const kPostCellIdentifier = @"postCell";
 
     [self _createPostWithMediaData:imageData contentType:kContentTypeJPG caption:caption];
     [self dismissViewControllerAnimated:YES completion:nil];
-}
-
-- (void)cameraDidSelectAlbumPhoto:(UIImage *)image withCaption:(NSString *)caption
-{
-    [self cameraDidTakePhoto:image withCaption:caption];
 }
 
 #pragma mark - UITableViewDataSource

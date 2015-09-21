@@ -29,18 +29,23 @@
 #import "TGCameraViewController.h"
 
 @interface TGCameraNavigationController ()
-
-- (void)setupAuthorizedWithDelegate:(id<TGCameraDelegate>)delegate;
-- (void)setupDenied;
-- (void)setupNotDeterminedWithDelegate:(id<TGCameraDelegate>)delegate;
-
 @end
 
 
 
 @implementation TGCameraNavigationController
 
-+ (instancetype)newWithCameraDelegate:(id<TGCameraDelegate>)delegate
++ (instancetype)cameraWithDelegate:(id<TGCameraDelegate>)delegate
+{
+    return [TGCameraNavigationController cameraWithDelegate:delegate captionViewController:nil];
+}
+
++ (instancetype)cameraWithCaptionViewController:(id<TGCaptionViewControllerInterface>)vc
+{
+    return [TGCameraNavigationController cameraWithDelegate:nil captionViewController:vc];
+}
+
++ (instancetype)cameraWithDelegate:(id<TGCameraDelegate>)delegate captionViewController:(id<TGCaptionViewControllerInterface>)vc
 {
     AVAuthorizationStatus status = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
     TGCameraNavigationController *navigationController = [super new];
@@ -49,7 +54,7 @@
 
         switch (status) {
             case AVAuthorizationStatusAuthorized:
-                [navigationController setupAuthorizedWithDelegate:delegate];
+                [navigationController setupAuthorizedWithDelegate:delegate captionViewController:vc];
                 break;
                 
             case AVAuthorizationStatusRestricted:
@@ -58,7 +63,7 @@
                 break;
                 
             case AVAuthorizationStatusNotDetermined:
-                [navigationController setupNotDeterminedWithDelegate:delegate];
+                [navigationController setupNotDeterminedWithDelegate:delegate captionViewController:vc];
                 break;
         }
     }
@@ -101,27 +106,25 @@
 #pragma mark -
 #pragma mark - Private methods
 
-- (void)setupAuthorizedWithDelegate:(id<TGCameraDelegate>)delegate
+- (void)setupAuthorizedWithDelegate:(id<TGCameraDelegate>)delegate captionViewController:(id<TGCaptionViewControllerInterface>)vc
 {
-    TGCameraViewController *viewController = [TGCameraViewController new];
-    viewController.delegate = delegate;
-    self.viewControllers = @[viewController];
+    TGCameraViewController *camera = [TGCameraViewController new];
+    camera.delegate = delegate;
+    camera.captionViewController = vc;
+    self.viewControllers = @[camera];
 }
 
-- (void)setupDenied
-{
-    UIViewController *viewController = [TGCameraAuthorizationViewController new];
-    self.viewControllers = @[viewController];
-}
-
-- (void)setupNotDeterminedWithDelegate:(id<TGCameraDelegate>)delegate
+- (void)setupNotDeterminedWithDelegate:(id<TGCameraDelegate>)delegate captionViewController:(id<TGCaptionViewControllerInterface>)vc
 {
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
     
     [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:^(BOOL granted) {
-        if (granted) {
-            [self setupAuthorizedWithDelegate:delegate];
-        } else {
+        if (granted)
+        {
+            [self setupAuthorizedWithDelegate:delegate captionViewController:vc];
+        }
+        else
+        {
             [self setupDenied];
         }
         
@@ -129,6 +132,12 @@
     }];
     
     dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+}
+
+- (void)setupDenied
+{
+    UIViewController *viewController = [TGCameraAuthorizationViewController new];
+    self.viewControllers = @[viewController];
 }
 
 @end

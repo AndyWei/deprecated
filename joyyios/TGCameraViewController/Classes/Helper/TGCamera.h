@@ -79,13 +79,21 @@
 @protocol TGCameraDelegate <NSObject>
 
 - (void)cameraDidCancel;
-- (void)cameraDidSelectAlbumPhoto:(UIImage *)image withCaption:(NSString *)caption;
-- (void)cameraDidTakePhoto:(UIImage *)image withCaption:(NSString *)caption;
+- (void)cameraDidTakePhoto:(UIImage *)image fromAlbum:(BOOL)fromAlbum withCaption:(NSString *)caption;
 
 @optional
 
 - (void)cameraDidSavePhotoWithError:(NSError *)error;
 - (void)cameraDidSavePhotoAtPath:(NSURL *)assetURL;
 - (void)cameraWillTakePhoto;
+
+@end
+
+
+@protocol TGCaptionViewControllerInterface <NSObject>
+
+@required
+@property (nonatomic) BOOL isFromAlbum;
+@property (nonatomic) UIImage *photo;
 
 @end

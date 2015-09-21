@@ -253,8 +253,8 @@
 		D69202C21AC4C7C0001C1C3D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		D69202CD1AC4C7C1001C1C3D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D69202CE1AC4C7C1001C1C3D /* joyyiosTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = joyyiosTests.m; sourceTree = "<group>"; };
-		D693798B1B54E8BC00E64F3A /* JYPhotoCaptionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYPhotoCaptionViewController.h; sourceTree = "<group>"; };
-		D693798C1B54E8BC00E64F3A /* JYPhotoCaptionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYPhotoCaptionViewController.m; sourceTree = "<group>"; };
+		D693798B1B54E8BC00E64F3A /* JYPhotoCaptionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JYPhotoCaptionViewController.h; path = TGCameraViewController/Classes/Control/JYPhotoCaptionViewController.h; sourceTree = "<group>"; };
+		D693798C1B54E8BC00E64F3A /* JYPhotoCaptionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JYPhotoCaptionViewController.m; path = TGCameraViewController/Classes/Control/JYPhotoCaptionViewController.m; sourceTree = "<group>"; };
 		D6966B301BA2BB2B00AAD8D5 /* UITextField+Joyy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITextField+Joyy.h"; sourceTree = "<group>"; };
 		D6966B311BA2BB2B00AAD8D5 /* UITextField+Joyy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITextField+Joyy.m"; sourceTree = "<group>"; };
 		D6966B341BA3753A00AAD8D5 /* JYCountryListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYCountryListViewController.h; sourceTree = "<group>"; };
@@ -414,6 +414,8 @@
 			children = (
 				D65AFA5C1AEC715D007867D0 /* JYMasqueradeViewController.h */,
 				D65AFA5D1AEC715D007867D0 /* JYMasqueradeViewController.m */,
+				D693798B1B54E8BC00E64F3A /* JYPhotoCaptionViewController.h */,
+				D693798C1B54E8BC00E64F3A /* JYPhotoCaptionViewController.m */,
 				D61D1DE41B536B2700DE37DF /* JYPostViewCell.h */,
 				D61D1DE51B536B2700DE37DF /* JYPostViewCell.m */,
 				D67DD0F21B77187000333626 /* JYCaptionTextView.h */,
@@ -475,8 +477,6 @@
 				D61D1D6B1B4E336E00DE37DF /* TGCameraViewController.m */,
 				D61D1D6C1B4E336E00DE37DF /* TGPhotoViewController.h */,
 				D61D1D6D1B4E336E00DE37DF /* TGPhotoViewController.m */,
-				D693798B1B54E8BC00E64F3A /* JYPhotoCaptionViewController.h */,
-				D693798C1B54E8BC00E64F3A /* JYPhotoCaptionViewController.m */,
 			);
 			path = Control;
 			sourceTree = "<group>";

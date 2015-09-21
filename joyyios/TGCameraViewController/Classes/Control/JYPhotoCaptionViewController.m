@@ -13,7 +13,6 @@
 @import AssetsLibrary;
 
 @interface JYPhotoCaptionViewController ()
-@property (nonatomic) UIImage *photo;
 @property (nonatomic) UIImageView *imageView;
 @property (nonatomic, weak) id<TGCameraDelegate> delegate;
 @end
@@ -22,7 +21,7 @@ static NSString *const kImageCellIdentifier = @"imageCell";
 
 @implementation JYPhotoCaptionViewController
 
-- (instancetype)initWithDelegate:(id<TGCameraDelegate>)delegate photo:(UIImage *)photo
+- (instancetype)initWithDelegate:(id<TGCameraDelegate>)delegate
 {
     self = [super initWithTableViewStyle:UITableViewStylePlain];
     if (self)
@@ -31,7 +30,6 @@ static NSString *const kImageCellIdentifier = @"imageCell";
         [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:kImageCellIdentifier];
 
         self.delegate = delegate;
-        self.photo = photo;
     }
     return self;
 }
@@ -62,7 +60,6 @@ static NSString *const kImageCellIdentifier = @"imageCell";
     self.tableView.allowsSelection = NO;
     self.tableView.backgroundColor = JoyyBlack;
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-//    [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:kImageCellIdentifier];
 
     // show keyboard
     [self.textView becomeFirstResponder];
@@ -95,17 +92,10 @@ static NSString *const kImageCellIdentifier = @"imageCell";
         [_delegate cameraWillTakePhoto];
     }
 
-    if ([_delegate respondsToSelector:@selector(cameraDidTakePhoto:withCaption:)])
+    if ([_delegate respondsToSelector:@selector(cameraDidTakePhoto:fromAlbum:withCaption:)])
     {
-        if (_albumPhoto)
-        {
-            [_delegate cameraDidSelectAlbumPhoto:_photo withCaption:self.textView.text];
-        }
-        else
-        {
-            [self _saveToPhotoLibary];
-            [_delegate cameraDidTakePhoto:_photo withCaption:self.textView.text];
-        }
+//        [self _saveToPhotoLibary];
+        [_delegate cameraDidTakePhoto:self.photo fromAlbum:self.isFromAlbum withCaption:self.textView.text];
     }
 }
 

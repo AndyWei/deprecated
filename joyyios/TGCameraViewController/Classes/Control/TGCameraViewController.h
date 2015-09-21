@@ -32,6 +32,7 @@
 
 @interface TGCameraViewController : UIViewController
 
-@property (weak) id<TGCameraDelegate> delegate;
+@property (nonatomic, weak) id<TGCameraDelegate> delegate;
+@property (nonatomic) id<TGCaptionViewControllerInterface> captionViewController;
 
 @end
