@@ -104,6 +104,7 @@ exports.register = function (server, options, next) {
             },
             validate: {
                 query: {
+                    gender: Joi.string().allow('M', 'F', 'X').required(),
                     zip: Joi.string().min(2).max(14).required(),
                     min: Joi.number().integer().default(0), // the minimum score, the search will include this value
                     max: Joi.number().positive().integer().default(Number.MAX_SAFE_INTEGER) // the maximum score, the search will include this value
@@ -113,9 +114,10 @@ exports.register = function (server, options, next) {
         handler: function (request, reply) {
 
             var r = request.query;
+            var zip = r.gender + r.zip;
             Async.auto({
                 cell: function (callback) {
-                    internals.getCellFromZip(r.zip, function (err, result) {
+                    internals.getCellFromZip(zip, function (err, result) {
                         if (err) {
                             return callback(err);
                         }
@@ -333,8 +335,8 @@ exports.register = function (server, options, next) {
                 payload: {
                     lon: Joi.number().min(-180).max(180).required(),
                     lat: Joi.number().min(-90).max(90).required(),
-                    zip: Joi.string().min(2).max(14).required(),
-                    cell: Joi.string().min(2).max(12).required()
+                    zip: Joi.string().min(2).max(14).required(), // E.g., US94555
+                    cell: Joi.string().min(3).max(12).required() // E.g., MUS9
                 }
             }
         },
@@ -342,6 +344,7 @@ exports.register = function (server, options, next) {
 
             var r = request.payload;
             var personId = request.auth.credentials.id;
+            var zip = r.cell.charAt(0) + r.zip; // MUS94555
 
             Async.auto({
                 person: function (callback) {
@@ -355,7 +358,7 @@ exports.register = function (server, options, next) {
                     });
                 },
                 updateDB: ['person', function (callback, results) {
-                    if (r.zip === results.person.zip) {
+                    if (zip === results.person.zip) {
                         return callback(null, null);
                     }
 
@@ -364,7 +367,7 @@ exports.register = function (server, options, next) {
                         text: 'UPDATE person SET zip = $1, coords = ST_SetSRID(ST_MakePoint($2, $3), 4326), ut = $4 ' +
                               'WHERE id = $5 AND deleted = false ' +
                               'RETURNING id',
-                        values: [r.cell, r.lon, r.lat, _.now(), personId]
+                        values: [zip, r.lon, r.lat, _.now(), personId]
                     };
 
                     request.pg.client.query(queryConfig, function (err, result) {
@@ -382,7 +385,7 @@ exports.register = function (server, options, next) {
                     });
                 }],
                 newCell: function (callback) {
-                    internals.getCellFromZip(r.zip, function (err, result) {
+                    internals.getCellFromZip(zip, function (err, result) {
                         if (err) {
                             return callback(err);
                         }
@@ -545,7 +548,7 @@ internals.getCellFromZip = function (zip, reply) {
 
                 var cell = result;
                 if (!cell) {
-                    cell = zip.substr(0, 2); // Use country code as default cells
+                    cell = zip.substr(0, 3); // Use Gender + CountryCode as default cells, e.g., MUS
                 }
 
                 return callback(Const.CACHE_HIT, cell);
