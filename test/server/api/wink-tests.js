@@ -9,7 +9,7 @@ var Hapi = require('hapi');
 var HapiAuthBasic = require('hapi-auth-basic');
 var HapiAuthToken = require('hapi-auth-bearer-token');
 var Lab = require('lab');
-var HeartPlugin = require('../../../server/api/heart');
+var HeartPlugin = require('../../../server/api/wink');
 
 
 var lab = exports.lab = Lab.script();
@@ -62,13 +62,13 @@ lab.afterEach(function (done) {
 });
 
 
-lab.experiment('heart GET: ', function () {
+lab.experiment('wink GET: ', function () {
 
-    lab.test('/heart/me: found for jack', function (done) {
+    lab.test('/wink/me: found for jack', function (done) {
 
         request = {
             method: 'GET',
-            url: '/heart/me?status=0&before=100',
+            url: '/wink/me?status=0&before=100',
             credentials: jack
         };
 
@@ -81,11 +81,11 @@ lab.experiment('heart GET: ', function () {
         });
     });
 
-    lab.test('/heart/me: not found for mike', function (done) {
+    lab.test('/wink/me: not found for mike', function (done) {
 
         request = {
             method: 'GET',
-            url: '/heart/me?status=0&before=100',
+            url: '/wink/me?status=0&before=100',
             credentials: mike
         };
 
@@ -98,11 +98,11 @@ lab.experiment('heart GET: ', function () {
         });
     });
 
-    lab.test('/heart/my: found for jack', function (done) {
+    lab.test('/wink/my: found for jack', function (done) {
 
         request = {
             method: 'GET',
-            url: '/heart/my?status=0&before=100',
+            url: '/wink/my?status=0&before=100',
             credentials: jack
         };
 
@@ -117,13 +117,13 @@ lab.experiment('heart GET: ', function () {
 });
 
 
-lab.experiment('heart POST: ', function () {
+lab.experiment('wink POST: ', function () {
 
-    lab.test('/heart: update successfully', function (done) {
+    lab.test('/wink: update successfully', function (done) {
 
         request = {
             method: 'POST',
-            url: '/heart',
+            url: '/wink',
             payload: {
                 receiver: '2'
             },

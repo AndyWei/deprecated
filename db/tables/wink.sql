@@ -1,4 +1,4 @@
-CREATE TABLE heart (
+CREATE TABLE wink (
     id                 BIGSERIAL  PRIMARY KEY,
     sender             BIGINT        NOT NULL,  -- the person.id of sender
     receiver           BIGINT        NOT NULL,  -- the person.id of receiver
@@ -9,6 +9,6 @@ CREATE TABLE heart (
 );
 
 
-CREATE INDEX heart_sender_index ON heart (sender);
-CREATE INDEX heart_receiver_index ON heart (receiver);
+CREATE INDEX wink_sender_index ON wink (sender);
+CREATE INDEX wink_receiver_index ON wink (receiver);
 

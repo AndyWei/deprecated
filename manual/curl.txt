@@ -1,15 +1,12 @@
 ### This file contains all curl commands used for manual test
 
-## signup
-curl -i -X POST --data "phone=1-7891234567&password=password" "http://localhost:8000/v1/signup"
+## credential
+# signup
+curl -i -X POST --data "phone=1-7891234567&password=password" "http://localhost:8000/v1/credential/signup"
 
+# signin
+curl -i -u andy:password "http://localhost:8000/v1/credential/signin"
 
-
-
-
-## signin
-curl -i -u 1-8008888756:password "http://localhost:8000/v1/signin"
-curl -i -u 1-4257850318:password "http://localhost:8000/v1/signin"
 
 ## person
 # GET a person's own profile
@@ -19,10 +16,10 @@ curl -i -H "Authorization: Bearer XtLn28StytiaIavlMymz" "http://localhost:8000/v
 curl -i -H "Authorization: Bearer WiYdpKAfwDOAd5BKDGqx" "http://localhost:8000/v1/person?id=1&id=2&id=3&id=4&cell=94555"
 
 # GET person nearby
-curl -i -H "Authorization: Bearer jwAKzEAYs588F5wsUu1B" "http://localhost:8000/v1/person/nearby?cell=94555"
+curl -i -H "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6ImFuZHkiLCJpYXQiOjE0NDI5MDkyMTQsImV4cCI6MTQ0MjkxMjgxNH0.XYdeN2Fvkj9BW_2Q_xq6E-a4_pWhrJNquBxXp_94uLQ" "http://localhost:8000/v1/person/nearby?zip=US94102&max=5000"
 
 # Update a person's profile
-curl -i -H "Authorization: Bearer XtLn28StytiaIavlMymz" --data "yob=1995&name='dodo'&gender=2&bio='sound of silence'" "http://localhost:8000/v1/person/profile"
+curl -i -H "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6ImFuZHkiLCJpYXQiOjE0NDI5MDkyMTQsImV4cCI6MTQ0MjkxMjgxNH0.XYdeN2Fvkj9BW_2Q_xq6E-a4_pWhrJNquBxXp_94uLQ" --data "yob=1995&gender=M&avatar=avatar" "http://localhost:8000/v1/person/me"
 
 
 

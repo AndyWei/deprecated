@@ -142,6 +142,26 @@ exports.mset = function (partition, keys, values, callback) {
 };
 
 
+exports.set = internals.set = function (partition, key, value, callback) {
+
+    Hoek.assert(internals.redis, 'Connection not started');
+
+    var cacheKey = internals.generateKey(partition, key);
+    value = value.toString();
+
+    internals.redis.set(cacheKey, partition.ttl, value, function (err) {
+
+        if (typeof callback === 'function') {
+            if (err) {
+                return callback(err);
+            }
+
+            return callback(null);
+        }
+    });
+};
+
+
 exports.setex = internals.setex = function (partition, key, value, callback) {
 
     Hoek.assert(internals.redis, 'Connection not started');

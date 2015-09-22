@@ -33,7 +33,7 @@ exports.CELL_POST_SETS = {
 };
 
 //// Person
-// Hash. key = personId, fields = {name, hearts, friends, ...}
+// Hash. key = personId, fields = {name, wcnt, score, ...}
 exports.PERSON_HASHES = {
     key: 'p'
 };
@@ -55,17 +55,25 @@ exports.PHONE_VERIFICATION_PAIRS = {
     ttl: 600
 };
 
+// Pair. key = zip, value = cell
+exports.ZIP_CELL_PAIRS = {
+    key: 'z'
+};
+
 // consts
 exports.IM_DOMAIN = 'joyy.im';
 exports.BCRYPT_ROUND = 10;
-exports.DEGREE_FACTOR = 0.0089827983;
 
 exports.MAX_ID = '9223372036854775807';
-exports.MAX_SCORE = 2147483647; // the max value of postgres integer
 
 exports.COMMENT_PER_QUERY = 20; // the max number of comment records returned per query
 exports.POST_PER_QUERY = 20;    // the max number of post records returned per query
 exports.PERSON_PER_QUERY = 50;  // the max number of person records returned per query
+
+exports.MAX_PERSON_COUNT_PER_CELL = 10000;  // the max number of person in one cell
+
+exports.CACHE_HIT = 'cacheHit';
+
 
 // Error strings
 exports.AUTH_TOKEN_INVALID = 'The authentication token is invalid.';

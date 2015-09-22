@@ -1,6 +1,5 @@
 //  Copyright (c) 2015 Joyy Inc. All rights reserved.
 
-
 var Async = require('async');
 var Boom = require('boom');
 var Cache = require('../cache');
@@ -11,7 +10,7 @@ var Utils = require('../utils');
 var _ = require('lodash');
 
 var internals = {};
-var selectAll = 'SELECT id, phone, username, org, orgtype, gender, yob, bio, hearts, score, ut, verified FROM person ';
+var selectAll = 'SELECT id, username, avatar, gender, yob, wcnt, score FROM person ';
 
 
 exports.register = function (server, options, next) {
@@ -34,8 +33,8 @@ exports.register = function (server, options, next) {
         },
         handler: function (request, reply) {
 
-            var q = request.query;
-            var personIds = q.id;
+            var r = request.query;
+            var personIds = r.id;
 
             Async.waterfall([
                 function (callback) {
@@ -92,7 +91,8 @@ exports.register = function (server, options, next) {
     });
 
 
-    // get person id list in the cell. auth.
+    // Get person id list in the cell. auth.
+    // There is a (zip, cell) store in Cache to maintain the mapping relationship, which is to de-couple zip and cell
     // Each cell has a sorted person id set read-through cache, and the key is the person score
     // In case of cache missing, DB will be queried and return a list of (personId, score) and update cache
     server.route({
@@ -104,18 +104,27 @@ exports.register = function (server, options, next) {
             },
             validate: {
                 query: {
-                    cell: Joi.string().max(12).required(),
+                    zip: Joi.string().min(2).max(14).required(),
                     min: Joi.number().integer().default(0), // the minimum score, the search will include this value
-                    max: Joi.number().positive().integer().default(Const.MAX_SCORE) // the maximum score, the search will include this value
+                    max: Joi.number().positive().integer().default(Number.MAX_SAFE_INTEGER) // the maximum score, the search will include this value
                 }
             }
         },
         handler: function (request, reply) {
 
-            var q = request.query;
-            Async.waterfall([
-                function (callback) {
-                    Cache.zcard(Const.CELL_PERSON_SETS, q.cell, function (err, result) {
+            var r = request.query;
+            Async.auto({
+                cell: function (callback) {
+                    internals.getCellFromZip(r.zip, function (err, result) {
+                        if (err) {
+                            return callback(err);
+                        }
+
+                        return callback(null, result);
+                    });
+                },
+                cacheRecordCount: ['cell', function (callback, results) {
+                    Cache.zcard(Const.CELL_PERSON_SETS, results.cell, function (err, result) {
                         if (err) {
                             console.error(err);
                             return callback(null, 0); // continue search in DB
@@ -123,59 +132,54 @@ exports.register = function (server, options, next) {
 
                         return callback(null, result);
                     });
-                },
-                function (setSize, callback) {
-                    if (setSize === 0) {
-                         return callback(null, 0, null);
+                }],
+                readCache: ['cacheRecordCount', function (callback, results) {
+                    if (results.cacheRecordCount === 0) {
+                         return callback(null, null);
                     }
 
-                    Cache.zrevrangebyscore(Const.CELL_PERSON_SETS, q.cell, q.max, q.min, Const.PERSON_PER_QUERY, function (err, result) {
+                    Cache.zrevrangebyscore(Const.CELL_PERSON_SETS, results.cell, r.max, r.min, Const.PERSON_PER_QUERY, function (err, result) {
                         if (err) {
                             console.error(err);
-                            return callback(null, 0, null); // continue search in DB
+                            return callback(null, null); // continue search in DB
                         }
 
-                        if (result.length === 0) {                          // found nothing in cache
-                            if (q.min !== 0 && q.max === Const.MAX_SCORE) { // client wants higher score ones
-                                return callback(null, setSize, []);         // just return empty result
-                            }
-                            else {                                          // client wants lower score ones
-                                return callback(null, 0, null);             // search in DB
-                            }
+                        if (result.length === 0) {
+                            return callback(null, null); // continue search in DB
                         }
 
-                        return callback(null, setSize, result);
+                        return callback(Const.CACHE_HIT, result);
                     });
-                },
-                function (setSize, personIds, callback) {
-                    if (setSize === 0) {
-                        internals.searchPersonIdByCellFromDB(request, function (err, result) {
+                }],
+                readDB: ['readCache', function (callback, results) {
 
-                            if (result.length === 0) {
-                                return callback(null, []);
-                            }
+                    internals.searchPersonIdByCellFromDB(request, results.cell, function (err, result) {
 
-                            var ids = _.pluck(result, 'id');
-                            var scores = _.pluck(result, 'score');
+                        if (result.length === 0) {
+                            return callback(null, []);
+                        }
 
-                            // write back to cache
-                            Cache.mzadd(Const.CELL_PERSON_SETS, q.cell, scores, ids);
+                        var ids = _.pluck(result, 'id');
+                        var scores = _.pluck(result, 'score');
 
-                            return callback(null, ids);
-                        });
-                    }
-                    else {
-                        return callback(null, personIds);
-                    }
+                        // write back to cache
+                        Cache.mzadd(Const.CELL_PERSON_SETS, results.cell, scores, ids);
+
+                        return callback(null, ids);
+                    });
+                }]
+            }, function (err, results) {
+
+                if (err === Const.CACHE_HIT) {
+                    return reply(null, results.readCache);
                 }
-            ], function (err, results) {
 
                 if (err) {
                     console.error(err);
                     return reply(err);
                 }
 
-                return reply(null, results);
+                return reply(null, results.readDB);
             });
         }
     });
@@ -184,7 +188,7 @@ exports.register = function (server, options, next) {
     // get a person's own profile. auth.
     server.route({
         method: 'GET',
-        path: options.basePath + '/person/profile',
+        path: options.basePath + '/person/me',
         config: {
             auth: {
                 strategy: 'token'
@@ -193,7 +197,7 @@ exports.register = function (server, options, next) {
         handler: function (request, reply) {
 
             var queryConfig = {
-                name: 'person_profile',
+                name: 'person_read_profile',
                 text: selectAll +
                       'WHERE id = $1 AND deleted = false',
                 values: [request.auth.credentials.id]
@@ -255,23 +259,23 @@ exports.register = function (server, options, next) {
     // update a person's profile. auth.
     server.route({
         method: 'POST',
-        path: options.basePath + '/person/profile',
+        path: options.basePath + '/person/me',
         config: {
             auth: {
                 strategy: 'token'
             },
             validate: {
                 payload: {
-                    username: Joi.string().max(30).required(),
-                    gender: Joi.number().min(0).max(3).default(0),
-                    yob: Joi.number().min(1900).max(2010).default(0),
-                    bio: Joi.string().max(2000).default('.')
+                    avatar: Joi.string().required(),
+                    gender: Joi.string().allow('M', 'F', 'X').required(),
+                    yob: Joi.number().min(1900).max(2010).required(),
+                    lang: Joi.string().required()
                 }
             }
         },
         handler: function (request, reply) {
 
-            var p = request.payload;
+            var r = request.payload;
             var personId = request.auth.credentials.id;
 
             Async.waterfall([
@@ -279,11 +283,11 @@ exports.register = function (server, options, next) {
                 function (callback) {
 
                     var queryConfig = {
-                        name: 'person_update_profile',
-                        text: 'UPDATE person SET username = $1, gender = $2, yob = $3, bio = $4, ut = $5 ' +
+                        name: 'person_write_profile',
+                        text: 'UPDATE person SET avatar = $1, gender = $2, yob = $3, lang = $4, ut = $5 ' +
                               'WHERE id = $6 AND deleted = false ' +
                               'RETURNING id',
-                        values: [p.username, p.gender, p.yob, p.bio, _.now(), personId]
+                        values: [r.avatar, r.gender, r.yob, r.lang, _.now(), personId]
                     };
 
                     request.pg.client.query(queryConfig, function (err, result) {
@@ -297,8 +301,10 @@ exports.register = function (server, options, next) {
                             return callback(Boom.badRequest(Const.PERSON_UPDATE_PROFILE_FAILED));
                         }
 
-                        p.id = personId;
-                        Cache.hmset(Const.PERSON_HASHES, personId, p);
+                        r.id = personId;
+                        delete r.lang;
+
+                        Cache.hmset(Const.PERSON_HASHES, personId, r);
                         return callback(null);
                     });
                 }
@@ -309,7 +315,7 @@ exports.register = function (server, options, next) {
                     return reply(err);
                 }
 
-                return reply(null, p);
+                return reply(null, r);
             });
         }
     });
@@ -327,56 +333,38 @@ exports.register = function (server, options, next) {
                 payload: {
                     lon: Joi.number().min(-180).max(180).required(),
                     lat: Joi.number().min(-90).max(90).required(),
-                    cell: Joi.string().max(12).required()
+                    zip: Joi.string().min(2).max(14).required(),
+                    cell: Joi.string().min(2).max(12).required()
                 }
             }
         },
         handler: function (request, reply) {
 
-            var p = request.payload;
+            var r = request.payload;
             var personId = request.auth.credentials.id;
 
-            Async.waterfall([
-
-                function (callback) {
-                    var queryConfig = {
-                        name: 'person_cell_by_id',
-                        text: 'SELECT cell, score FROM person WHERE id = $1 AND deleted = false',
-                        values: [personId]
-                    };
-
-                    request.pg.client.query(queryConfig, function (err, result) {
+            Async.auto({
+                person: function (callback) {
+                    internals.readPersonById(request, function (err, result) {
 
                         if (err) {
-                            request.pg.kill = true;
                             return callback(err);
                         }
 
-                        if (result.rows.length === 0) {
-                            return callback(Boom.badRequest(Const.PERSON_NOT_FOUND));
-                        }
-
-                        return callback(null, result.rows[0]);
+                        return callback(null, result);
                     });
                 },
-                function (person, callback) {
+                updateDB: ['person', function (callback, results) {
+                    if (r.zip === results.person.zip) {
+                        return callback(null, null);
+                    }
 
-                    var oldCell = person.cell;
-                    var newCell = p.cell;
-                    Cache.zchangekey(Const.CELL_PERSON_SETS, oldCell, newCell, person.score, personId, function (err) {
-                        if (err) {
-                            return callback(err);
-                        }
-                        return callback(null);
-                    });
-                },
-                function (callback) {
                     var queryConfig = {
                         name: 'person_update_location',
-                        text: 'UPDATE person SET cell = $1, coords = ST_SetSRID(ST_MakePoint($2, $3), 4326), ut = $4 ' +
+                        text: 'UPDATE person SET zip = $1, coords = ST_SetSRID(ST_MakePoint($2, $3), 4326), ut = $4 ' +
                               'WHERE id = $5 AND deleted = false ' +
                               'RETURNING id',
-                        values: [p.cell, p.lon, p.lat, _.now(), personId]
+                        values: [r.cell, r.lon, r.lat, _.now(), personId]
                     };
 
                     request.pg.client.query(queryConfig, function (err, result) {
@@ -392,15 +380,42 @@ exports.register = function (server, options, next) {
 
                         return callback(null, result);
                     });
-                }
-            ], function (err, results) {
+                }],
+                newCell: function (callback) {
+                    internals.getCellFromZip(r.zip, function (err, result) {
+                        if (err) {
+                            return callback(err);
+                        }
+
+                        return callback(null, result);
+                    });
+                },
+                updateCell: ['newCell', 'person', function (callback, results) {
+
+                    var oldCell = r.cell;
+                    var newCell = results.newCell;
+                    if (oldCell === newCell) {
+                        return callback(null, newCell);
+                    }
+
+                    Cache.zchangekey(Const.CELL_PERSON_SETS, oldCell, newCell, results.person.score, personId, function (err) {
+                        if (err) {
+                            return callback(err);
+                        }
+                        return callback(null, newCell);
+                    });
+                }]
+            }, function (err, results) {
 
                 if (err) {
                     console.error(err);
                     return reply(err);
                 }
 
-                return reply(null, results.rows[0]);
+                var response = {
+                    cell: results.updateCell
+                };
+                return reply(null, response);
             });
         }
     });
@@ -414,14 +429,14 @@ exports.register.attributes = {
 };
 
 
-internals.searchPersonIdByCellFromDB = function (request, callback) {
+internals.searchPersonIdByCellFromDB = function (request, cell, callback) {
 
     var select = 'SELECT id, score FROM person ';
-    var where = 'WHERE score >= $1 AND score <= $2 AND cell = $3 AND verified = true AND deleted = false ';
+    var where = 'WHERE score >= $1 AND score <= $2 AND position($3 in zip) = 1 AND deleted = false ';
     var order = 'ORDER BY score DESC ';
     var limit = 'LIMIT 50';
 
-    var queryValues = [request.query.min, request.query.max, request.query.cell];
+    var queryValues = [request.query.min, request.query.max, cell];
     var queryConfig = {
         name: 'person_by_cell',
         text: select + where + order + limit,
@@ -464,5 +479,109 @@ internals.searchPersonByIdsFromDB = function (request, personIds, callback) {
         }
 
         return callback(null, result.rows);
+    });
+};
+
+
+internals.readPersonById = function (request, reply) {
+
+    var personId = request.auth.credentials.id;
+    Async.auto({
+        readCache: function (callback) {
+            Cache.hgetall(Const.PERSON_HASHES, personId, function (err, result) {
+                if (err) {
+                    console.error(err);
+                    return callback(null);
+                }
+
+                return callback(Const.CACHE_HIT, result);
+            });
+        },
+        readDB: ['readCache', function (callback) {
+            var queryConfig = {
+                name: 'person_read_zip_by_id',
+                text: selectAll + 'WHERE id = $1 AND deleted = false',
+                values: [personId]
+            };
+
+            request.pg.client.query(queryConfig, function (err, result) {
+
+                if (err) {
+                    request.pg.kill = true;
+                    return callback(err);
+                }
+
+                if (result.rows.length === 0) {
+                    return callback(Boom.badRequest(Const.PERSON_NOT_FOUND));
+                }
+
+                return callback(null, result.rows[0]);
+            });
+        }]
+    }, function (err, results) {
+
+        if (err === Const.CACHE_HIT) {
+            return reply(null, results.readCache);
+        }
+
+        if (err) {
+            console.error(err);
+            return reply(err);
+        }
+
+        return reply(null, results.readDB);
+    });
+};
+
+
+internals.getCellFromZip = function (zip, reply) {
+
+    Async.auto({
+        cell: function (callback) {
+            Cache.get(Const.ZIP_CELL_PAIRS, zip, function (err, result) {
+                if (err) {
+                    return callback(err);
+                }
+
+                var cell = result;
+                if (!cell) {
+                    cell = zip.substr(0, 2); // Use country code as default cells
+                }
+
+                return callback(Const.CACHE_HIT, cell);
+            });
+        },
+        personCount: ['cell', function (callback, results) {
+
+            Cache.zcard(Const.CELL_PERSON_SETS, results.cell, function (err, result) {
+                if (err) {
+                    return callback(err);
+                }
+
+                return callback(null, result);
+            });
+        }],
+        split: ['personCount', function (callback, results) {
+
+            var newCell = results.cell;
+            if (results.personCount > Const.MAX_PERSON_COUNT_PER_CELL) {
+
+                newCell = zip.substr(0, newCell.length + 1); // Use one more letter as new cell
+                Cache.set(Const.ZIP_CELL_PAIRS, zip, newCell);
+            }
+            return callback(null, newCell);
+        }]
+    }, function (err, results) {
+
+        if (err === Const.CACHE_HIT) {
+            return reply(null, results.cell);
+        }
+
+        if (err) {
+            console.error(err);
+            return reply(err);
+        }
+
+        return reply(null, results.split);
     });
 };
