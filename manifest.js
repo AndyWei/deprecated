@@ -42,9 +42,9 @@ var manifest = {
         './server/authenticate': {},
         './server/api/comment': { basePath: '/v1' },
         './server/api/credential': { basePath: '/v1' },
-        './server/api/heart': { basePath: '/v1' },
         './server/api/person': { basePath: '/v1' },
         './server/api/post': { basePath: '/v1' },
+        './server/api/wink': { basePath: '/v1' },
         './server/api/xmpp': { basePath: '/v1' }
     }
 };

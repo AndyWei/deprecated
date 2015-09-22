@@ -87,24 +87,24 @@ lab.experiment('person GET: ', function () {
 
         request = {
             method: 'GET',
-            url: '/person/nearby?cell=94102&max=5000',
+            url: '/person/nearby?zip=US94102&max=5000',
             credentials: andy
         };
 
         server.inject(request, function (response) {
 
             Code.expect(response.statusCode).to.equal(200);
-            Code.expect(response.result).to.be.an.array().and.to.have.length(1);
+            Code.expect(response.result).to.be.an.array().and.to.have.length(11);
 
             done();
         });
     });
 
-    lab.test('/person/nearby: not found in Stockton', function (done) {
+    lab.test('/person/nearby: not found in Japan', function (done) {
 
         request = {
             method: 'GET',
-            url: '/person/nearby?cell=91000&max=5000',
+            url: '/person/nearby?zip=JP94102&max=5000',
             credentials: andy
         };
 
@@ -117,11 +117,11 @@ lab.experiment('person GET: ', function () {
         });
     });
 
-    lab.test('/person/profile: found a profile', function (done) {
+    lab.test('/person/me: found a profile', function (done) {
 
         request = {
             method: 'GET',
-            url: '/person/profile',
+            url: '/person/me',
             credentials: andy
         };
 
@@ -160,16 +160,16 @@ lab.experiment('person POST: ', function () {
         });
     });
 
-    lab.test('/person/profile: update successfully', function (done) {
+    lab.test('/person/me: update successfully', function (done) {
 
         request = {
             method: 'POST',
-            url: '/person/profile',
+            url: '/person/me',
             payload: {
+                avatar: 'avatar.joyyapp.com/andy.jpg',
                 yob: 1995,
-                bio: 'I love this game',
-                username: 'andy',
-                gender: 1
+                gender: 'M',
+                lang: 'en_US'
             },
             credentials: andy
         };
@@ -191,7 +191,8 @@ lab.experiment('person POST: ', function () {
             payload: {
                 lat: 37.555883,
                 lon: -122.0135916,
-                cell: '94102'
+                zip: 'US94102',
+                cell: 'US'
             },
             credentials: ping
         };
