@@ -87,14 +87,14 @@ lab.experiment('person GET: ', function () {
 
         request = {
             method: 'GET',
-            url: '/person/nearby?zip=US94102&max=5000',
+            url: '/person/nearby?gender=M&zip=US94102&max=5000',
             credentials: andy
         };
 
         server.inject(request, function (response) {
 
             Code.expect(response.statusCode).to.equal(200);
-            Code.expect(response.result).to.be.an.array().and.to.have.length(11);
+            Code.expect(response.result).to.be.an.array().and.to.have.length(7);
 
             done();
         });
@@ -104,7 +104,7 @@ lab.experiment('person GET: ', function () {
 
         request = {
             method: 'GET',
-            url: '/person/nearby?zip=JP94102&max=5000',
+            url: '/person/nearby?gender=M&zip=JP94102&max=5000',
             credentials: andy
         };
 
@@ -192,7 +192,7 @@ lab.experiment('person POST: ', function () {
                 lat: 37.555883,
                 lon: -122.0135916,
                 zip: 'US94102',
-                cell: 'US'
+                cell: 'FUS'
             },
             credentials: ping
         };
