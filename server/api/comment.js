@@ -301,10 +301,10 @@ internals.createCommentHandler = function (request, reply) {
         post: ['comment', function (next) {
 
             var queryConfig = {
-                name: 'post_comments',
-                text: 'UPDATE post SET comments = comments + 1 ' +
+                name: 'post_ccnt',
+                text: 'UPDATE post SET ccnt = ccnt + 1 ' +
                       'WHERE id = $1 AND deleted = false ' +
-                      'RETURNING comments',
+                      'RETURNING ccnt',
                 values: [postId]
             };
 
@@ -319,7 +319,7 @@ internals.createCommentHandler = function (request, reply) {
                     return next(Boom.badRequest(Const.POST_LIKE_FAILED));
                 }
 
-                Cache.hincrby(Const.POST_HASHES, postId, 'comments', 1);
+                Cache.hincrby(Const.POST_HASHES, postId, 'ccnt', 1);
 
                 return next(null, result.rows[0]);
             });

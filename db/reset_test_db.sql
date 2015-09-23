@@ -2,7 +2,7 @@
 
 
 INSERT INTO person
-    (username,                                                       password,         phone,       zip, gender,  yob,                        avatar,     wcnt,   score,            ct,            ut, coords) VALUES
+    (username,                                                       password,         phone,       zip, gender,  yob,                        avatar,     wcnt,   score,            ct,             ut, coords) VALUES
     (  'andy', '$2a$10$sTaFcBz.lhDXr2bVNZJZeenPJ3qiKG.NaQQ5zqiz0peku0fDvO0YG',   14257850318, 'MUS94555',    'M', 1980, 'avatar.joyyapp.com/andy.jpg',        1,       5, 1437524632001, 1437524632001, ST_SetSRID(ST_MakePoint(-122.4164623, 37.7766092), 4326)),
     (  'ping', '$2a$10$sTaFcBz.lhDXr2bVNZJZeenPJ3qiKG.NaQQ5zqiz0peku0fDvO0YG',   14256287208, 'FUS94555',    'F', 1988, 'avatar.joyyapp.com/ping.jpg',      235,       5, 1437524632002, 1437524632002, ST_SetSRID(ST_MakePoint(-122.4074981, 37.7879331), 4326)),
     ( 'tiger', '$2a$10$sTaFcBz.lhDXr2bVNZJZeenPJ3qiKG.NaQQ5zqiz0peku0fDvO0YG',   18008888756, 'MUS94555',    'M', 1981, 'avatar.joyyapp.com/tiger.jpg',       1,    1155, 1437524632003, 1437524632003, ST_SetSRID(ST_MakePoint(-121.9989519, 37.5293864), 4326)),
@@ -18,14 +18,14 @@ INSERT INTO person
     (  'vkii', '$2a$10$sTaFcBz.lhDXr2bVNZJZeenPJ3qiKG.NaQQ5zqiz0peku0fDvO0YG', 8613308000897, 'FUS94555',    'F', 1985, 'avatar.joyyapp.com/mini.jpg',   342718, 1500000, 1437524632004, 1437524632004, ST_SetSRID(ST_MakePoint(-121.9989519, 37.5293864), 4326));
   
 INSERT INTO post
-    (owner,                 filename,                              caption,                                                  ct,    cell, coords) VALUES
-    (    1, 'j5676_462931203926.jpg',   'Open!!!!',                                                               1437524632000, '94555', ST_SetSRID(ST_MakePoint(-122.062175637225, 37.5584115414299), 4326)),
-    (    1, 'j6575_462929722813.jpg',   'DREAM',                                                                  1437524632001, '94102', ST_SetSRID(ST_MakePoint(-122.062175637225, 37.5584115414299), 4326)),
-    (    1, 'j0000_458440716099.jpg',   'HOPE',                                                                   1437524632002, '94555', ST_SetSRID(ST_MakePoint(-122.062175637225, 37.5584115414299), 4326)),
-    (    1, 'j4403_462934349762.jpg',   'It is hard',                                                             1437524632003, '94555', ST_SetSRID(ST_MakePoint(-122.062175637225, 37.5584115414299), 4326)),
-    (    1, 'j2552_458446437154.jpg',   'maybe the best of things: The quick brown fox jumps over the lazy dog.', 1437524632004, '94555', ST_SetSRID(ST_MakePoint(-122.062175637225, 37.5584115414299), 4326)),
-    (    1, 'j2387_458461122798.jpg',   'Leonardo da Vinci',                                                      1437524632005, '94102', ST_SetSRID(ST_MakePoint(-122.062175637225, 37.5584115414299), 4326)),
-    (    1, 'j3844_461624043152.jpg',   'Take off',                                                               1437524632006, '94555', ST_SetSRID(ST_MakePoint(-122.062175637225, 37.5584115414299), 4326));
+    (owner,                                       url,            ct,       zip, caption) VALUES
+    (    1, 'post.joyyapp.com/j5676_462931203926.jpg', 1437524632000, 'US94555', 'Open!!!!'  ),
+    (    1, 'post.joyyapp.com/j6575_462929722813.jpg', 1437524632001, 'US94102', 'DREAM'     ),
+    (    1, 'post.joyyapp.com/j0000_458440716099.jpg', 1437524632002, 'US94555', 'HOPE'      ),
+    (    1, 'post.joyyapp.com/j4403_462934349762.jpg', 1437524632003, 'US94555', 'It is hard'),
+    (    1, 'post.joyyapp.com/j2552_458446437154.jpg', 1437524632004, 'US94555', 'maybe the best of things: The quick brown fox jumps over the lazy dog.'),
+    (    1, 'post.joyyapp.com/j2387_458461122798.jpg', 1437524632005, 'US94102', 'Leonardo da Vinci'),
+    (    1, 'post.joyyapp.com/j3844_461624043152.jpg', 1437524632006, 'US94555', 'Take off');
 
 
 INSERT INTO comment

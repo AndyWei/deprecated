@@ -1,12 +1,15 @@
-CREATE TABLE post (
+CREATE TABLE post
+(
+    -- Original fields creted in POST post
     id                 BIGSERIAL  PRIMARY KEY,
-    owner              BIGINT        NOT NULL,  -- the person.id of the owner who uploaded this post
-    filename           TEXT          NOT NULL,  -- the file name with suffix. e.g., j0176_458354045799.jpg
-    caption            TEXT          NOT NULL,
-    cell               TEXT          NOT NULL, -- the cell where the post belongs to
-    coords             GEOMETRY(Point, 4326) NOT NULL,  -- the coordinate of the place where the post was uploaded. It's used for searching
-    likes              INTEGER       NOT NULL DEFAULT 0, -- the number of likes
-    comments           INTEGER       NOT NULL DEFAULT 0, -- the number of comments
+    owner              BIGINT        NOT NULL, -- the person.id of the owner who created this post
+    url                TEXT          NOT NULL, -- the url of the image. E.g., "post.joyyapp.com/j0176_458354045799.jpg"
+    caption            TEXT          NOT NULL, -- the text of the post
+    zip                TEXT          NOT NULL, -- the combined zipcode where the post is in. The format is CountryCode + OriginalZipcode. E.g. "US94555"
+    -- Social fields
+    lcnt               INTEGER               , -- the number of likes
+    ccnt               INTEGER               , -- the number of comments
+    -- Management fields
     ct                 BIGINT        NOT NULL,
     deleted            BOOLEAN       NOT NULL DEFAULT false
 );
@@ -14,7 +17,3 @@ CREATE TABLE post (
 
 CREATE INDEX post_owner_index  ON post (owner);
 CREATE INDEX post_ct_index     ON post (ct);
-
-/* 
- * Note: the post url = base_url/filename, where the base_url has been hardcoded to post.joyyapp.com
-*/
