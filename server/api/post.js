@@ -7,25 +7,24 @@ var Cache = require('../cache');
 var Const = require('../constants');
 var Hoek = require('hoek');
 var Joi = require('joi');
-var Utils = require('../utils');
 var _ = require('lodash');
 
 var internals = {};
-var selectClause = 'SELECT id, owner, filename, caption, likes, comments, ct FROM post ';
+var selectClause = 'SELECT id, owner, url, caption, lcnt, ccnt, ct FROM post ';
 
 
 exports.register = function (server, options, next) {
 
     options = Hoek.applyToDefaults({ basePath: '' }, options);
 
-    // get post in the cell. no auth.
+    // get posts from the cell that mapped by the zip. no auth.
     server.route({
         method: 'GET',
         path: options.basePath + '/post/nearby',
         config: {
             validate: {
                 query: {
-                    cell: Joi.string().max(12).required(),
+                    zip: Joi.string().min(2).max(14).required(), // E.g., US94555
                     after: Joi.number().min(0).max(Number.MAX_SAFE_INTEGER).default(0),
                     before: Joi.number().min(0).max(Number.MAX_SAFE_INTEGER).default(Number.MAX_SAFE_INTEGER)
                 }
@@ -33,89 +32,51 @@ exports.register = function (server, options, next) {
         },
         handler: function (request, reply) {
 
-            var q = request.query;
-            Async.waterfall([
-                function (callback) {
-                    Cache.zcard(Const.CELL_POST_SETS, q.cell, function (err, result) {
+            var r = request.query;
+            Async.auto({
+                cell: function (callback) {
+
+                    var readonly = true;
+                    internals.getPostCellFromZip(r.zip, readonly, function (err, result) {
                         if (err) {
-                            console.error(err);
-                            return callback(null, 0); // continue search in DB
+                            return callback(err);
                         }
 
                         return callback(null, result);
                     });
                 },
-                function (setSize, callback) {
-                    if (setSize === 0) {
-                         return callback(null, 0, null);
-                    }
+                cache: ['cell', function (callback, results) {
 
-                    var min = '(' + q.after.toString();
-                    var max = '(' + q.before.toString();
-                    Cache.zrevrangebyscore(Const.CELL_POST_SETS, q.cell, max, min, Const.POST_PER_QUERY, function (err, result) {
-                        if (err) {
-                            console.error(err);
-                            return callback(null, 0, null); // continue search in DB
+                    internals.searchPostFromCache(request, results.cell, function (err, result) {
+
+                        if (err === Const.SKIP_DB_SEARCH) {
+                            return callback(Const.SKIP_DB_SEARCH);
                         }
 
-                        return callback(null, setSize, result);
+                        if (err === Const.CACHE_MISS) {
+                            return callback(null);
+                        }
+
+                        return callback(Const.CACHE_HIT, result);
                     });
-                },
-                function (setSize, postIds, callback) {
-                    if (setSize === 0) {
-                         return callback(null, 0, null, null); // continue search in DB
-                    }
+                }],
+                db: ['cache', function (callback, results) {
 
-                    if (_.isEmpty(postIds)) {
-                        if (q.after !== 0 && q.before === Number.MAX_SAFE_INTEGER) { // try to fetch new but no more fresh post
-                            return callback(null, setSize, null, []);                // just return empty result
-                        }
-                        else {                                                       // try to fetch old
-                            return callback(null, 0, null, null);                    // search in DB
-                        }
-                    }
-
-                    Cache.mhgetall(Const.POST_HASHES, postIds, function (err, result) {
-                        if (err) {
-                            console.error(err);
-                        }
-
-                        // result is an array, and each element is an array in form of [err, postObj]
-                        var foundObjs = _(result).map(_.last).compact().reject(_.isEmpty).value();
-                        var foundIds = _.pluck(foundObjs, 'id');
-                        var missedIds = _.difference(postIds, foundIds);
-
-                        return callback(null, setSize, missedIds, foundObjs);
+                    internals.searchPostByCellFromDB(request, results.cell, function (err, result) {
+                        return callback(null, result);
                     });
-                },
-                function (setSize, missedIds, cachedObjs, callback) {
-                    if (setSize === 0) {
-                        internals.searchPostByCellFromDB(request, function (err, result) {
-                            return callback(null, result);
-                        });
-                    }
-                    else if (_.isEmpty(missedIds)) {
-                        return callback(null, cachedObjs);
-                    }
-                    else {
-                        internals.searchPostByIdsFromDB(request, missedIds, function (err, result) {
+                }]
+            }, function (err, results) {
 
-                            var mergedObjs = cachedObjs.concat(result);
-                            var sortedObjs = _.sortBy(mergedObjs, function(post) {
-                                return post.ct * -1;  // Sort records in DESC order by ct
-                            });
-                            return callback(null, sortedObjs);
-                        });
-                    }
+                if (err === Const.CACHE_HIT) {
+                    return reply(null, results).cache;
                 }
-            ], function (err, results) {
-
                 if (err) {
                     console.error(err);
                     return reply(err);
                 }
 
-                return reply(null, results);
+                return reply(null, results.db);
             });
         }
     });
@@ -131,30 +92,27 @@ exports.register = function (server, options, next) {
             },
             validate: {
                 payload: {
-                    lon: Joi.number().min(-180).max(180).required(),
-                    lat: Joi.number().min(-90).max(90).required(),
-                    filename: Joi.string().required(),
+                    url: Joi.string().required(),
                     caption: Joi.string().max(900).required(),
-                    cell: Joi.string().max(12).required()
+                    zip: Joi.string().min(2).max(14).required() // E.g., US94555
                 }
             }
         },
         handler: function (request, reply) {
 
             var ownerId = request.auth.credentials.id;
-            var p = request.payload;
+            var r = request.payload;
 
-            Async.waterfall([
-                function (callback) {
+            Async.auto({
+                post: function (callback) {
 
-                    var fields = 'INSERT INTO post (owner, filename, caption, coords, cell, ct) ';
-                    var values = 'VALUES ($1, $2, $3, ST_SetSRID(ST_MakePoint($4, $5), 4326), $6, $7) RETURNING id';
-                    var createdAt = _.now();
-                    var queryValues = [ownerId, p.filename, p.caption, p.lon, p.lat, p.cell, createdAt];
+                    var insert = 'INSERT INTO post (owner, url, caption, zip, ct) ';
+                    var values = 'VALUES ($1, $2, $3, $4, $5) RETURNING id, ct';
+                    var queryValues = [ownerId, r.url, r.caption, r.zip, _.now()];
 
                     var queryConfig = {
                         name: 'post_create',
-                        text: fields + values,
+                        text: insert + values,
                         values: queryValues
                     };
 
@@ -169,33 +127,44 @@ exports.register = function (server, options, next) {
                             return reply(Boom.badRequest(Const.POST_CREATE_FAILED));
                         }
 
-                        return callback(null, result.rows[0].id, createdAt);
+                        return callback(null, result.rows[0]);
                     });
                 },
-                function (postId, createdAt, callback) {
+                cell: function (callback) {
 
+                    var readonly = false;
+                    internals.getPostCellFromZip(r.zip, readonly, function (err, result) {
+                        if (err) {
+                            return callback(err);
+                        }
+
+                        return callback(null, result);
+                    });
+                },
+                cache: ['post', 'cell', function (callback, results) {
+
+                    var postId = results.post.id.toString();
+                    var createdAt = results.post.ct;
                     var postObj = {
                         id: postId,
                         owner: ownerId,
-                        filename: p.filename,
-                        caption: p.caption,
-                        likes: 0,
-                        comments: 0,
+                        url: r.url,
+                        caption: r.caption,
                         ct: createdAt
                     };
 
                     Cache.hmset(Const.POST_HASHES, postId, postObj);
-                    Cache.zaddtrim(Const.CELL_POST_SETS, p.cell, createdAt, postId);
+                    Cache.zaddtrim(Const.CELL_POST_SETS, results.cell, createdAt, postId);
                     callback(null, postObj);
-                }
-            ], function (err, postObj) {
+                }]
+            }, function (err, results) {
 
                 if (err) {
                     console.error(err);
                     return reply(err);
                 }
 
-                return reply(null, postObj);
+                return reply(null, results.cache);
             });
         }
     });
@@ -219,10 +188,10 @@ exports.register = function (server, options, next) {
 
             var postId = request.payload.id;
             var queryConfig = {
-                name: 'post_likes',
-                text: 'UPDATE post SET likes = likes + 1 ' +
+                name: 'post_lcnt',
+                text: 'UPDATE post SET lcnt = lcnt + 1 ' +
                       'WHERE id = $1 AND deleted = false ' +
-                      'RETURNING likes',
+                      'RETURNING lcnt',
                 values: [postId]
             };
 
@@ -237,7 +206,7 @@ exports.register = function (server, options, next) {
                     return reply(Boom.badRequest(Const.POST_LIKE_FAILED));
                 }
 
-                Cache.hincrby(Const.POST_HASHES, postId, 'likes', 1);
+                Cache.hincrby(Const.POST_HASHES, postId, 'lcnt', 1);
 
                 return reply(null, result.rows[0]);
             });
@@ -248,13 +217,62 @@ exports.register = function (server, options, next) {
 };
 
 
-internals.searchPostByCellFromDB = function (request, callback) {
+internals.searchPostFromCache = function (request, cell, reply) {
 
-    var where = 'WHERE ct > $1 AND ct < $2 AND cell = $3 AND deleted = false ';
+    var r = request.query;
+    Async.auto({
+        postIds: function (callback) {
+
+            var min = '(' + r.after.toString();
+            var max = '(' + r.before.toString();
+            Cache.zrevrangebyscore(Const.CELL_POST_SETS, cell, max, min, Const.POST_PER_QUERY, function (err, result) {
+                if (err) {
+                    return callback(err);
+                }
+
+                return callback(null, result);
+            });
+        },
+        posts: ['postIds', function (callback, results) {
+
+            if (_.isEmpty(results.postIds)) {
+                if (r.after !== 0 && r.before === Number.MAX_SAFE_INTEGER) { // try to fetch new but no more fresh post
+                    return callback(Const.SKIP_DB_SEARCH);                   // just skip DB search and return empty result
+                }
+                else {                                                       // try to fetch old posts, allow DB search
+                    return callback(Const.CACHE_MISS);
+                }
+            }
+
+            Cache.mhgetall(Const.POST_HASHES, results.postIds, function (err, result) {
+                if (err) {
+                    return callback(err);
+                }
+
+                // result is an array, and each element is an array in form of [err, postObj]
+                var foundObjs = _(result).map(_.last).compact().reject(_.isEmpty).value();
+
+                return callback(null, foundObjs);
+            });
+        }]
+    }, function (err, results) {
+
+        if (err) {
+            return reply(err);
+        }
+
+        return reply(null, results.posts);
+    });
+};
+
+
+internals.searchPostByCellFromDB = function (request, cell, callback) {
+
+    var where = 'WHERE ct > $1 AND ct < $2 AND position($3 in zip) = 1 AND deleted = false ';
     var order = 'ORDER BY ct DESC ';
     var limit = 'LIMIT 20';
 
-    var queryValues = [request.query.after, request.query.before, request.query.cell];
+    var queryValues = [request.query.after, request.query.before, cell];
     var queryConfig = {
         name: 'post_by_cell',
         text: selectClause + where + order + limit,
@@ -274,29 +292,59 @@ internals.searchPostByCellFromDB = function (request, callback) {
 };
 
 
-internals.searchPostByIdsFromDB = function (request, postIds, callback) {
+internals.getPostCellFromZip = function (zip, readonly, reply) {
 
-    var parameterList = Utils.parametersString(3, postIds.length);
-    var where = 'WHERE ct > $1 AND ct < $2 AND deleted = false AND id in ' + parameterList; // Adding the min and max id is to speed up the where-in search
-    var order = 'ORDER BY ct DESC ';
-    var limit = 'LIMIT 20';
+    Async.auto({
+        cell: function (callback) {
+            Cache.get(Const.POST_ZIP_CELL_PAIRS, zip, function (err, result) {
+                if (err) {
+                    return callback(err);
+                }
 
-    var queryValues = [request.query.after, request.query.before];
-    var queryConfig = {
-        // Warning: DO NOT give a name to this query since it has variable parameters
-        text: selectClause + where + order + limit,
-        values: queryValues.concat(postIds)
-    };
+                var cell = result;
+                if (!cell) {
+                    cell = zip.substr(0, 2); // Use CountryCode as default cells, e.g., 'US'
+                }
 
-    request.pg.client.query(queryConfig, function (err, result) {
+                if (readonly) {
+                    return callback(Const.CACHE_HIT, cell);
+                }
+
+                return callback(null, cell);
+            });
+        },
+        postCount: ['cell', function (callback, results) {
+
+            Cache.zcard(Const.CELL_POST_SETS, results.cell, function (err, result) {
+                if (err) {
+                    return callback(err);
+                }
+
+                return callback(null, result);
+            });
+        }],
+        splitCell: ['postCount', function (callback, results) {
+
+            var newCell = results.cell;
+            if (results.postCount > Const.POST_CELL_SPLIT_THRESHOLD) {
+
+                newCell = zip.substr(0, newCell.length + 1); // Use one more letter as new cell
+                Cache.set(Const.POST_ZIP_CELL_PAIRS, zip, newCell);
+            }
+            return callback(null, newCell);
+        }]
+    }, function (err, results) {
+
+        if (err === Const.CACHE_HIT) {
+            return reply(null, results.cell);
+        }
 
         if (err) {
             console.error(err);
-            request.pg.kill = true;
-            return callback(err);
+            return reply(err);
         }
 
-        return callback(null, result.rows);
+        return reply(null, results.splitCell);
     });
 };
 
@@ -304,3 +352,4 @@ internals.searchPostByIdsFromDB = function (request, postIds, callback) {
 exports.register.attributes = {
     name: 'post'
 };
+

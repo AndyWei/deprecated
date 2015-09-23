@@ -23,6 +23,9 @@ var PgPlugin = {
     }
 };
 
+var andy = {
+    id: 1
+};
 
 var request, server;
 
@@ -61,7 +64,7 @@ lab.experiment('post GET: ', function () {
 
         request = {
             method: 'GET',
-            url: '/post/nearby?cell=94555'
+            url: '/post/nearby?zip=US94555&after=1437524632000&before=1437524632006'
         };
 
         server.inject(request, function (response) {
@@ -73,17 +76,39 @@ lab.experiment('post GET: ', function () {
         });
     });
 
-    lab.test('/post/nearby: not found in San Francisco', function (done) {
+    lab.test('/post/nearby: not found in Japan', function (done) {
 
         request = {
             method: 'GET',
-            url: '/post/nearby?cell=94103'
+            url: '/post/nearby?zip=JP94103'
         };
 
         server.inject(request, function (response) {
 
             Code.expect(response.statusCode).to.equal(200);
             Code.expect(response.result).to.be.an.array().and.to.be.empty();
+
+            return done();
+        });
+    });
+
+    lab.test('/post: create new post', function (done) {
+
+        request = {
+            method: 'POST',
+            url: '/post',
+            payload: {
+                url: 'post.joyyapp.com/some.jpg',
+                caption: 'some caption',
+                zip: 'CN610028'
+            },
+            credentials: andy
+        };
+
+        server.inject(request, function (response) {
+
+            Code.expect(response.statusCode).to.equal(200);
+            Code.expect(response.result).to.be.an.object();
 
             return done();
         });

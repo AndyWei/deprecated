@@ -116,8 +116,9 @@ exports.register = function (server, options, next) {
             var r = request.query;
             var zip = r.gender + r.zip;
             Async.auto({
-                cell: function (callback) {
-                    internals.getCellFromZip(zip, function (err, result) {
+                genderCell: function (callback) {
+                    var readonly = true;
+                    internals.getPersonGenderCellFromZip(zip, readonly, function (err, result) {
                         if (err) {
                             return callback(err);
                         }
@@ -125,8 +126,8 @@ exports.register = function (server, options, next) {
                         return callback(null, result);
                     });
                 },
-                cacheRecordCount: ['cell', function (callback, results) {
-                    Cache.zcard(Const.CELL_PERSON_SETS, results.cell, function (err, result) {
+                cacheRecordCount: ['genderCell', function (callback, results) {
+                    Cache.zcard(Const.CELL_PERSON_SETS, results.genderCell, function (err, result) {
                         if (err) {
                             console.error(err);
                             return callback(null, 0); // continue search in DB
@@ -140,7 +141,7 @@ exports.register = function (server, options, next) {
                          return callback(null, null);
                     }
 
-                    Cache.zrevrangebyscore(Const.CELL_PERSON_SETS, results.cell, r.max, r.min, Const.PERSON_PER_QUERY, function (err, result) {
+                    Cache.zrevrangebyscore(Const.CELL_PERSON_SETS, results.genderCell, r.max, r.min, Const.PERSON_PER_QUERY, function (err, result) {
                         if (err) {
                             console.error(err);
                             return callback(null, null); // continue search in DB
@@ -155,7 +156,7 @@ exports.register = function (server, options, next) {
                 }],
                 readDB: ['readCache', function (callback, results) {
 
-                    internals.searchPersonIdByCellFromDB(request, results.cell, function (err, result) {
+                    internals.searchPersonIdByCellFromDB(request, results.genderCell, function (err, result) {
 
                         if (result.length === 0) {
                             return callback(null, []);
@@ -165,7 +166,7 @@ exports.register = function (server, options, next) {
                         var scores = _.pluck(result, 'score');
 
                         // write back to cache
-                        Cache.mzadd(Const.CELL_PERSON_SETS, results.cell, scores, ids);
+                        Cache.mzadd(Const.CELL_PERSON_SETS, results.genderCell, scores, ids);
 
                         return callback(null, ids);
                     });
@@ -385,7 +386,8 @@ exports.register = function (server, options, next) {
                     });
                 }],
                 newCell: function (callback) {
-                    internals.getCellFromZip(zip, function (err, result) {
+                    var readonly = false;
+                    internals.getPersonGenderCellFromZip(zip, readonly, function (err, result) {
                         if (err) {
                             return callback(err);
                         }
@@ -426,20 +428,17 @@ exports.register = function (server, options, next) {
     next();
 };
 
+// TODO
+internals.searchPersonIdByCellFromDB = function (request, genderCell, callback) {
 
-exports.register.attributes = {
-    name: 'person'
-};
-
-
-internals.searchPersonIdByCellFromDB = function (request, cell, callback) {
-
+    var gender = genderCell.charAt(0);
+    var geoCell = genderCell.substring(1);
     var select = 'SELECT id, score FROM person ';
-    var where = 'WHERE score >= $1 AND score <= $2 AND position($3 in zip) = 1 AND deleted = false ';
+    var where = 'WHERE score >= $1 AND score <= $2 AND position($3 in zip) = 2 AND gender = $4 AND deleted = false ';
     var order = 'ORDER BY score DESC ';
     var limit = 'LIMIT 50';
 
-    var queryValues = [request.query.min, request.query.max, cell];
+    var queryValues = [request.query.min, request.query.max, geoCell, gender];
     var queryConfig = {
         name: 'person_by_cell',
         text: select + where + order + limit,
@@ -537,26 +536,30 @@ internals.readPersonById = function (request, reply) {
 };
 
 
-internals.getCellFromZip = function (zip, reply) {
+internals.getPersonGenderCellFromZip = function (zip, readonly, reply) {
 
     Async.auto({
-        cell: function (callback) {
-            Cache.get(Const.ZIP_CELL_PAIRS, zip, function (err, result) {
+        genderCell: function (callback) {
+            Cache.get(Const.PERSON_ZIP_CELL_PAIRS, zip, function (err, result) {
                 if (err) {
                     return callback(err);
                 }
 
-                var cell = result;
-                if (!cell) {
-                    cell = zip.substr(0, 3); // Use Gender + CountryCode as default cells, e.g., MUS
+                var genderCell = result;
+                if (!genderCell) {
+                    genderCell = zip.substr(0, 3); // Use Gender + CountryCode as default genderCell, e.g., MUS
                 }
 
-                return callback(Const.CACHE_HIT, cell);
+                if (readonly) {
+                    return callback(Const.CACHE_HIT, genderCell);
+                }
+
+                return callback(null, genderCell);
             });
         },
-        personCount: ['cell', function (callback, results) {
+        personCount: ['genderCell', function (callback, results) {
 
-            Cache.zcard(Const.CELL_PERSON_SETS, results.cell, function (err, result) {
+            Cache.zcard(Const.CELL_PERSON_SETS, results.genderCell, function (err, result) {
                 if (err) {
                     return callback(err);
                 }
@@ -564,20 +567,20 @@ internals.getCellFromZip = function (zip, reply) {
                 return callback(null, result);
             });
         }],
-        split: ['personCount', function (callback, results) {
+        splitCell: ['personCount', function (callback, results) {
 
-            var newCell = results.cell;
-            if (results.personCount > Const.MAX_PERSON_COUNT_PER_CELL) {
+            var splitCell = results.genderCell;
+            if (results.personCount > Const.PERSON_CELL_SPLIT_THRESHOLD) {
 
-                newCell = zip.substr(0, newCell.length + 1); // Use one more letter as new cell
-                Cache.set(Const.ZIP_CELL_PAIRS, zip, newCell);
+                splitCell = zip.substr(0, splitCell.length + 1); // Use one more letter as new genderCell
+                Cache.set(Const.PERSON_ZIP_CELL_PAIRS, zip, splitCell);
             }
-            return callback(null, newCell);
+            return callback(null, splitCell);
         }]
     }, function (err, results) {
 
         if (err === Const.CACHE_HIT) {
-            return reply(null, results.cell);
+            return reply(null, results.genderCell);
         }
 
         if (err) {
@@ -585,6 +588,11 @@ internals.getCellFromZip = function (zip, reply) {
             return reply(err);
         }
 
-        return reply(null, results.split);
+        return reply(null, results.splitCell);
     });
+};
+
+
+exports.register.attributes = {
+    name: 'person'
 };

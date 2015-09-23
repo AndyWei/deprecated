@@ -175,7 +175,7 @@ exports.register = function (server, options, next) {
 
                     var receiver = results.person;
                     // TODO: get cell from zip
-                    //Cache.zadd(Const.CELL_PERSON_SETS, receiver.cell, receiver.score, p.receiver);
+                    Cache.zadd(Const.CELL_PERSON_SETS, receiver.cell, receiver.score, p.receiver);
                     Cache.hincrby(Const.PERSON_HASHES, p.receiver, 'score', 5);
                     Cache.hincrby(Const.PERSON_HASHES, p.receiver, 'wcnt', 1);
                     callback(null);

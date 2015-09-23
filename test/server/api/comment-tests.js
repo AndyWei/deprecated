@@ -23,9 +23,9 @@ var PgPlugin = {
     }
 };
 
-var jack = {
+var andy = {
     id: 1,
-    username: 'jack'
+    username: 'andy'
 };
 
 var request, server;
@@ -69,7 +69,7 @@ lab.experiment('Comment POST: ', function () {
                 post: '1',
                 content: 'yes'
             },
-            credentials: jack
+            credentials: andy
         };
 
         server.inject(request, function (response) {

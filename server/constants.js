@@ -56,7 +56,12 @@ exports.PHONE_VERIFICATION_PAIRS = {
 };
 
 // Pair. key = zip, value = cell
-exports.ZIP_CELL_PAIRS = {
+exports.PERSON_ZIP_CELL_PAIRS = {
+    key: 'Z'
+};
+
+// Pair. key = zip, value = cell
+exports.POST_ZIP_CELL_PAIRS = {
     key: 'z'
 };
 
@@ -70,9 +75,12 @@ exports.COMMENT_PER_QUERY = 20; // the max number of comment records returned pe
 exports.POST_PER_QUERY = 20;    // the max number of post records returned per query
 exports.PERSON_PER_QUERY = 50;  // the max number of person records returned per query
 
-exports.MAX_PERSON_COUNT_PER_CELL = 10000;  // the max number of person in one cell
+exports.PERSON_CELL_SPLIT_THRESHOLD = 10000;  // the threshold to split a person cell
+exports.POST_CELL_SPLIT_THRESHOLD   = 800;    // the threshold to split a post cell. This value must smaller than CELL_POST_SETS.size
 
-exports.CACHE_HIT = 'cacheHit';
+exports.CACHE_HIT = 'cache_hit';
+exports.CACHE_MISS = 'cache_miss';
+exports.SKIP_DB_SEARCH = 'skip_db_search';
 
 
 // Error strings
