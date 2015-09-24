@@ -538,9 +538,14 @@ internals.readPersonById = function (request, reply) {
 
 internals.getPersonGenderCellFromZip = function (zip, readonly, reply) {
 
+    var splitIndex = zip.length - 3;
+    var zipPrefix = zip.substring(0, splitIndex);
+    var zipSuffix = zip.substring(splitIndex);
+
     Async.auto({
         genderCell: function (callback) {
-            Cache.get(Cache.ZipGenderCellMap, zip, function (err, result) {
+
+            Cache.hget(Cache.ZipGenderCellMap, zipPrefix, zipSuffix, function (err, result) {
                 if (err) {
                     return callback(err);
                 }
@@ -573,7 +578,7 @@ internals.getPersonGenderCellFromZip = function (zip, readonly, reply) {
             if (results.personCount > Const.PERSON_CELL_SPLIT_THRESHOLD) {
 
                 splitCell = zip.substr(0, splitCell.length + 1); // Use one more letter as new genderCell
-                Cache.set(Cache.ZipGenderCellMap, zip, splitCell);
+                Cache.hset(Cache.ZipGenderCellMap, zipPrefix, zipSuffix, splitCell);
             }
             return callback(null, splitCell);
         }]

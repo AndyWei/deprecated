@@ -294,9 +294,15 @@ internals.searchPostByCellFromDB = function (request, cell, callback) {
 
 internals.getPostCellFromZip = function (zip, readonly, reply) {
 
+    var splitIndex = zip.length - 3;
+    var zipPrefix = zip.substring(0, splitIndex);
+    var zipSuffix = zip.substring(splitIndex);
+
     Async.auto({
+
         cell: function (callback) {
-            Cache.get(Cache.ZipCellMap, zip, function (err, result) {
+
+            Cache.hget(Cache.ZipCellMap, zipPrefix, zipSuffix, function (err, result) {
                 if (err) {
                     return callback(err);
                 }
@@ -329,7 +335,7 @@ internals.getPostCellFromZip = function (zip, readonly, reply) {
             if (results.postCount > Const.POST_CELL_SPLIT_THRESHOLD) {
 
                 newCell = zip.substr(0, newCell.length + 1); // Use one more letter as new cell
-                Cache.set(Cache.ZipCellMap, zip, newCell);
+                Cache.hset(Cache.ZipCellMap, zipPrefix, zipSuffix, newCell);
             }
             return callback(null, newCell);
         }]

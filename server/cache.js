@@ -524,6 +524,24 @@ exports.zrevrangebyscore = internals.zrevrangebyscore = function (partition, key
 
 
 //// Hashes
+// Get a field value from hash
+exports.hget = internals.hget = function (partition, key, field, callback) {
+
+    Hoek.assert(typeof callback === 'function', 'Invalid callback');
+    Hoek.assert(internals.redis, 'Connection not started');
+
+    var hashKey = internals.generateKey(partition, key);
+    internals.redis.hget(hashKey, field.toString(), function (err, result) {
+
+        if (err) {
+            return callback(err);
+        }
+
+        return callback(null, result);
+    });
+};
+
+
 exports.hset = internals.hset = function (partition, key, field, value, callback) {
 
     Hoek.assert(internals.redis, 'Connection not started');
