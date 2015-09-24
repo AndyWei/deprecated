@@ -17,7 +17,6 @@ CREATE TABLE person
     score                  BIGINT                , -- score will be used to sort person in a cell. score = 5 * winks + 10 * friends. In the future, more factors will contribute to score 
     -- Geo fields
     zip                    TEXT                  , -- the combined zipcode where the person last stayed. The format is Gender + CountryCode + OriginalZipcode. E.g. "MUS94555"
-    coords                 GEOMETRY(Point, 4326) , -- the point where the person last reported
     -- Management fields
     ct                     BIGINT        NOT NULL, -- created_at timestamp
     ut                     BIGINT        NOT NULL, -- updated_at timestamp
