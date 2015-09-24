@@ -3,6 +3,7 @@
 
 var Apn = require('apn');
 var Async = require('async');
+var Boom = require('boom');
 var Cache = require('./cache');
 var Const = require('./constants');
 var _ = require('lodash');
@@ -23,31 +24,49 @@ exports.connect = internals.connect = function () {
 };
 
 
-exports.notify = internals.notify = function (fromUsername, toUsername, message, messageType) {
+exports.notify = internals.notify = function (request, fromUsername, toUsername, message, messageType) {
 
-    Async.waterfall([
-        function (next) {
+    Async.auto({
+        toPerson: function (callback) {
+            var queryConfig = {
+                name: 'person_read_device_fields_by_id',
+                text: 'SELECT id, service, device FROM person ' +
+                      'WHERE username = $1 AND deleted = false',
+                values: [toUsername]
+            };
 
-            Cache.hgetall(Cache.UsernameStore, toUsername, function (err, toPerson) {
+            request.pg.client.query(queryConfig, function (err, result) {
+
                 if (err) {
-                    return next(err);
+                    request.pg.kill = true;
+                    return callback(err);
                 }
 
-                if (!toPerson.device || !toPerson.service) {
-                    var error = new Error(Const.DEVICE_TOKEN_NOT_FOUND + ' toUsername = ' + toUsername);
-                    return next(error);
+                if (result.rows.length === 0) {
+                    return callback(Boom.badRequest(Const.PERSON_NOT_FOUND));
                 }
 
-                next(null, toPerson);
+                return callback(null, result.rows[0]);
             });
         },
-        function (toPerson, next) {
+        badge: ['toPerson', function (callback, results) {
 
-            var service = Number(toPerson.service);
+            Cache.hget(Cache.PersonStore, results.toPerson.id, 'badge', function (err, result) {
+
+                if (err) {
+                    return callback(err);
+                }
+
+                callback(null, result);
+            });
+        }],
+        send: ['toPerson', 'badge', function (callback, results) {
+
+            var service = Number(results.toPerson.service);
             var fullMessage = '@' + fromUsername + ': ' + message;
             switch(service) {
                 case Const.NotificationServiceType.APN:
-                    internals.apnSend(toPerson.device, toPerson.badge, fullMessage, messageType);
+                    internals.apnSend(results.toPerson.device, results.badge, fullMessage, messageType);
                     break;
                 case Const.NotificationServiceType.GCM:
                     internals.gcmSend();
@@ -56,27 +75,20 @@ exports.notify = internals.notify = function (fromUsername, toUsername, message,
                     internals.mpnSend();
                     break;
                 default:
-                    var error = new Error(Const.DEVICE_TOKEN_INVALID + ' toUsername = ' + toUsername);
-                    return next(error);
+                    var err = new Error(Const.DEVICE_TOKEN_INVALID + ' toUsername = ' + toUsername);
+                    return callback(err);
             }
-            next(null);
-        },
-        function (next) {
 
-            Cache.hincrby(Cache.UsernameStore, toUsername, 'badge', 1, function (err) {
-
-                if (err) {
-                    return next(err);
-                }
-
-                next(null);
-            });
-        }
-    ], function (err) {
+            return callback(null);
+        }]
+    }, function (err) {
 
         if (err) {
             console.error(err);
+            return;
         }
+
+        Cache.hincrby(Cache.UsernameStore, toUsername, 'badge', 1);
 
         return;
     });

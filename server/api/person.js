@@ -201,7 +201,7 @@ exports.register = function (server, options, next) {
         handler: function (request, reply) {
 
             var queryConfig = {
-                name: 'person_read_profile',
+                name: 'person_read_by_id',
                 text: selectAll +
                       'WHERE id = $1 AND deleted = false',
                 values: [request.auth.credentials.id]
@@ -215,7 +215,7 @@ exports.register = function (server, options, next) {
                     return reply(err);
                 }
 
-                return reply(null, result.rows);
+                return reply(null, result.rows[0]);
             });
         }
     });
@@ -231,7 +231,7 @@ exports.register = function (server, options, next) {
             },
             validate: {
                 payload: {
-                    service: Joi.number().min(0).max(2).required(),
+                    service: Joi.number().min(1).max(3).required(),
                     device: Joi.string().max(100).required(),
                     badge: Joi.number().min(0).max(1000).default(0)
                 }
@@ -239,22 +239,47 @@ exports.register = function (server, options, next) {
         },
         handler: function (request, reply) {
 
-            var username = request.auth.credentials.username;
-            var personObj = {
-                service: request.payload.service,
-                device: request.payload.device,
-                badge: request.payload.badge
-            };
+            var r = request.payload;
+            var personId = request.auth.credentials.id;
 
-            Cache.hmset(Cache.UsernameStore, username, personObj, function (err) {
+            Async.auto({
+                db: function (callback) {
+
+                    var queryConfig = {
+                        name: 'person_write_device_fields',
+                        text: 'UPDATE person SET service = $1, device = $2, ut = $3 ' +
+                              'WHERE id = $4 AND deleted = false ' +
+                              'RETURNING id',
+                        values: [r.service, r.device, _.now(), personId]
+                    };
+
+                    request.pg.client.query(queryConfig, function (err, result) {
+
+                        if (err) {
+                            request.pg.kill = true;
+                            return callback(err);
+                        }
+
+                        if (result.rows.length === 0) {
+                            return callback(Boom.badData(Const.PERSON_UPDATE_DEVICE_FAILED));
+                        }
+
+                        return callback(null);
+                    });
+                },
+                cache: function (callback) {
+
+                    Cache.hset(Cache.PersonStore, personId, 'badge', r.badge);
+                    return callback(null);
+                }
+            }, function (err) {
 
                 if (err) {
                     console.error(err);
                     return reply(err);
                 }
 
-                console.log('Received device token %s for user %s', request.payload.device, username);
-                reply(null, {username: username});
+                return reply(null, r);
             });
         }
     });
@@ -500,7 +525,7 @@ internals.readPersonById = function (request, reply) {
         },
         readDB: ['readCache', function (callback) {
             var queryConfig = {
-                name: 'person_read_zip_by_id',
+                name: 'person_read_by_id',
                 text: selectAll + 'WHERE id = $1 AND deleted = false',
                 values: [personId]
             };

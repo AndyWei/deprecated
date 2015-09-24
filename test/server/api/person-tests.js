@@ -128,7 +128,7 @@ lab.experiment('person GET: ', function () {
         server.inject(request, function (response) {
 
             Code.expect(response.statusCode).to.equal(200);
-            Code.expect(response.result).to.be.an.array().and.to.have.length(1);
+            Code.expect(response.result).to.be.an.object();
 
             done();
         });
