@@ -48,12 +48,6 @@ exports.PeopleInCell = {
     key: 'gcell'
 };
 
-//// User
-// Hash. key = personId, fields = {device, service, badge}
-exports.UsernameStore = {
-    key: 'user'
-};
-
 // Pair. key = phone_number, value = vcode
 exports.PhoneVcodeMap = {
     key: 'phonev',

@@ -106,8 +106,8 @@ exports.register = function (server, options, next) {
             var fromUser = request.payload.from;
             var toUser = request.payload.to;
 
-            Push.notify(fromUser, toUser, request.payload.message, 'xmpp');
-            return reply(null, null);
+            Push.notify(request, fromUser, toUser, request.payload.message, 'xmpp');
+            return reply(null);
         }
     });
 
