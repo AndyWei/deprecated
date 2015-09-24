@@ -3,68 +3,6 @@
 
 var exports = module.exports = {};
 
-
-/* * * * * * * * * * * * * *
- * cache dataset settings  *
- * * * * * * * * * * * * * */
-
-//// Comment
-// Hash. key = commentId, fields = {id, owner, content, ...}
-exports.COMMENT_HASHES = {
-    key: 'c'
-};
-
-// SortedSet. key = postId, value = commentId, score = comment.ct
-exports.POST_COMMENT_SETS = {
-    key: 'C',
-    size: 1000
-};
-
-//// Post
-// Hash. key = personId, fields = {filname, uv, badge, likes, comments, ...}
-exports.POST_HASHES = {
-    key: 't'
-};
-
-// SortedSet. key = cellId, value = postId, score = post.ct
-exports.CELL_POST_SETS = {
-    key: 'T',
-    size: 1000
-};
-
-//// Person
-// Hash. key = personId, fields = {name, wcnt, score, ...}
-exports.PERSON_HASHES = {
-    key: 'p'
-};
-
-// SortedSet. key = cellId, value = personId, score = personScore
-exports.CELL_PERSON_SETS = {
-    key: 'P'
-};
-
-//// User
-// Hash. key = personId, fields = {device, service, badge}
-exports.USER_HASHES = {
-    key: 'u'
-};
-
-// Pair. key = phone_number, value = verification_code
-exports.PHONE_VERIFICATION_PAIRS = {
-    key: 'v',
-    ttl: 600
-};
-
-// Pair. key = zip, value = cell
-exports.PERSON_ZIP_CELL_PAIRS = {
-    key: 'Z'
-};
-
-// Pair. key = zip, value = cell
-exports.POST_ZIP_CELL_PAIRS = {
-    key: 'z'
-};
-
 // consts
 exports.IM_DOMAIN = 'joyy.im';
 exports.BCRYPT_ROUND = 10;
@@ -76,7 +14,7 @@ exports.POST_PER_QUERY = 20;    // the max number of post records returned per q
 exports.PERSON_PER_QUERY = 50;  // the max number of person records returned per query
 
 exports.PERSON_CELL_SPLIT_THRESHOLD = 10000;  // the threshold to split a person cell
-exports.POST_CELL_SPLIT_THRESHOLD   = 800;    // the threshold to split a post cell. This value must smaller than CELL_POST_SETS.size
+exports.POST_CELL_SPLIT_THRESHOLD   = 800;    // the threshold to split a post cell. This value must smaller than Cache.PostsInCell.size
 
 exports.CACHE_HIT = 'cache_hit';
 exports.CACHE_MISS = 'cache_miss';

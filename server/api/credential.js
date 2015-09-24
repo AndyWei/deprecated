@@ -61,7 +61,7 @@ exports.register = function (server, options, next) {
             Async.auto({
                 cache: function (callback) {
 
-                    Cache.setex(Const.PHONE_VERIFICATION_PAIRS, phoneNumber, randomCode, function (err) {
+                    Cache.setex(Cache.PhoneVcodeMap, phoneNumber, randomCode, function (err) {
 
                         if (err) {
                             return callback(err);
@@ -137,7 +137,7 @@ exports.register = function (server, options, next) {
             Async.auto({
                 cache: function (callback) {
 
-                    Cache.get(Const.PHONE_VERIFICATION_PAIRS, phoneNumber, function (err, result) {
+                    Cache.get(Cache.PhoneVcodeMap, phoneNumber, function (err, result) {
 
                         if (err) {
                             return callback(err);

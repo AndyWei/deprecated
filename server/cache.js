@@ -9,20 +9,66 @@ var _ = require('lodash');
 var exports = module.exports = {};
 var internals = {};
 
-internals.settings = {
-    host: Config.get('/redis/host'),
-    // password: Config.get('/redis/password'),
-    port: Config.get('/redis/port')
+/* * * * * * * * * * * * * *
+ * cache dataset settings  *
+ * * * * * * * * * * * * * */
+
+//// Comment
+// Hash. key = commentId, fields = {id, owner, content, ...}
+exports.CommentStore = {
+    key: 'cmnt'
 };
 
-internals.redis = null;
-
-
-internals.generateKey = function (partition, localKey) {
-
-    return String(partition.key) + String(localKey);
+// SortedSet. key = postId, value = commentId, score = comment.ct
+exports.CommentsOfPost = {
+    key: 'cop',
+    size: 1000
 };
 
+//// Post
+// Hash. key = personId, fields = {filname, uv, badge, likes, comments, ...}
+exports.PostStore = {
+    key: 'post'
+};
+
+// SortedSet. key = cell, value = postId, score = post.ct
+exports.PostsInCell = {
+    key: 'cell',
+    size: 1000
+};
+
+//// Person
+// Hash. key = personId, fields = {name, wcnt, score, ...}
+exports.PersonStore = {
+    key: 'person'
+};
+
+// SortedSet. key = cellId, value = personId, score = personScore
+exports.PeopleInCell = {
+    key: 'gcell'
+};
+
+//// User
+// Hash. key = personId, fields = {device, service, badge}
+exports.UsernameStore = {
+    key: 'user'
+};
+
+// Pair. key = phone_number, value = vcode
+exports.PhoneVcodeMap = {
+    key: 'phonev',
+    ttl: 600
+};
+
+// Pair. key = zip, value = cell
+exports.ZipGenderCellMap = {
+    key: 'zipg'
+};
+
+// Pair. key = zip, value = cell
+exports.ZipCellMap = {
+    key: 'zip'
+};
 
 exports.start = function (callback) {
 
@@ -614,4 +660,20 @@ exports.mhgetall = internals.hgetall = function (partition, keys, callback) {
         // result is an array, and each element is an array in form of: [err, value]
         return callback(null, results);
     });
+};
+
+
+internals.redis = null;
+
+
+internals.settings = {
+    host: Config.get('/redis/host'),
+    // password: Config.get('/redis/password'),
+    port: Config.get('/redis/port')
+};
+
+
+internals.generateKey = function (partition, localKey) {
+
+    return String(partition.key) + String(localKey);
 };
