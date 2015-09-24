@@ -10,7 +10,7 @@ var Joi = require('joi');
 var _ = require('lodash');
 
 var internals = {};
-var selectClause = 'SELECT id, owner, url, caption, lcnt, ccnt, ct FROM post ';
+var selectClause = 'SELECT id, owner, reg, fn, caption, lcnt, ccnt, ct FROM post ';
 
 
 exports.register = function (server, options, next) {
@@ -92,7 +92,8 @@ exports.register = function (server, options, next) {
             },
             validate: {
                 payload: {
-                    url: Joi.string().required(),
+                    reg: Joi.string().length(2).required(),
+                    fn: Joi.string().required(),
                     caption: Joi.string().max(900).required(),
                     zip: Joi.string().min(2).max(14).required() // E.g., US94555
                 }
@@ -106,9 +107,9 @@ exports.register = function (server, options, next) {
             Async.auto({
                 post: function (callback) {
 
-                    var insert = 'INSERT INTO post (owner, url, caption, zip, ct) ';
-                    var values = 'VALUES ($1, $2, $3, $4, $5) RETURNING id, ct';
-                    var queryValues = [ownerId, r.url, r.caption, r.zip, _.now()];
+                    var insert = 'INSERT INTO post (owner, reg, fn, caption, zip, ct) ';
+                    var values = 'VALUES ($1, $2, $3, $4, $5, $6) RETURNING id, ct';
+                    var queryValues = [ownerId, r.reg, r.fn, r.caption, r.zip, _.now()];
 
                     var queryConfig = {
                         name: 'post_create',
@@ -148,7 +149,8 @@ exports.register = function (server, options, next) {
                     var postObj = {
                         id: postId,
                         owner: ownerId,
-                        url: r.url,
+                        reg: r.reg,
+                        fn: r.fn,
                         caption: r.caption,
                         ct: createdAt
                     };

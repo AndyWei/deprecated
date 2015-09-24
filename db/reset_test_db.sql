@@ -18,14 +18,14 @@ INSERT INTO person
     (  'vkii', '$2a$10$sTaFcBz.lhDXr2bVNZJZeenPJ3qiKG.NaQQ5zqiz0peku0fDvO0YG', 8613308000897, 'FUS94555', 'F', 1985, 'na',   'mini', 342718, 1500000, 1437524632004, 1437524632004);
   
 INSERT INTO post
-    (owner,                                       url,            ct,       zip, caption) VALUES
-    (    1, 'post.joyyapp.com/j5676_462931203926.jpg', 1437524632000, 'US94555', 'Open!!!!'  ),
-    (    1, 'post.joyyapp.com/j6575_462929722813.jpg', 1437524632001, 'US94102', 'DREAM'     ),
-    (    1, 'post.joyyapp.com/j0000_458440716099.jpg', 1437524632002, 'US94555', 'HOPE'      ),
-    (    1, 'post.joyyapp.com/j4403_462934349762.jpg', 1437524632003, 'US94555', 'It is hard'),
-    (    1, 'post.joyyapp.com/j2552_458446437154.jpg', 1437524632004, 'US94555', 'maybe the best of things: The quick brown fox jumps over the lazy dog.'),
-    (    1, 'post.joyyapp.com/j2387_458461122798.jpg', 1437524632005, 'US94102', 'Leonardo da Vinci'),
-    (    1, 'post.joyyapp.com/j3844_461624043152.jpg', 1437524632006, 'US94555', 'Take off');
+    (owner,  reg,                   fn,            ct,       zip, caption) VALUES
+    (    1, 'na', 'j5676_462931203926', 1437524632000, 'US94555', 'Open!!!!'  ),
+    (    1, 'na', 'j6575_462929722813', 1437524632001, 'US94102', 'DREAM'     ),
+    (    1, 'na', 'j0000_458440716099', 1437524632002, 'US94555', 'HOPE'      ),
+    (    1, 'na', 'j4403_462934349762', 1437524632003, 'US94555', 'It is hard'),
+    (    1, 'na', 'j2552_458446437154', 1437524632004, 'US94555', 'maybe the best of things: The quick brown fox jumps over the lazy dog.'),
+    (    1, 'na', 'j2387_458461122798', 1437524632005, 'US94102', 'Leonardo da Vinci'),
+    (    1, 'na', 'j3844_461624043152', 1437524632006, 'US94555', 'Take off');
 
 
 INSERT INTO comment

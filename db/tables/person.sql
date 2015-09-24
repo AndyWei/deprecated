@@ -8,7 +8,7 @@ CREATE TABLE person
 
     -- Profile fields updated in POST profile
     lang                   TEXT                  , -- the language of the person's phone locale
-    reg                    CHAR(2)               , -- the photo bucket region of the avatar photo, which will be used to compose the subdomain of the avatar photo URL. E.g., 'na', 'eu', 'as'
+    reg                    CHAR(2)               , -- the photo bucket region of the avatar photo, which will be used by client to compose the subdomain of the avatar photo URL. E.g., 'na', 'eu', 'as'
     fn                     TEXT                  , -- the filename of avatar photo, which will be used to compose the avatar photo URL
     sex                    CHAR(1)               , -- 'M' - male, 'F' - female, 'X' - other
     yob                    NUMERIC(4)            , -- year of birth

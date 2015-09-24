@@ -98,7 +98,8 @@ lab.experiment('post GET: ', function () {
             method: 'POST',
             url: '/post',
             payload: {
-                url: 'post.joyyapp.com/some.jpg',
+                reg: 'as',
+                fn: 'some',
                 caption: 'some caption',
                 zip: 'CN610028'
             },
