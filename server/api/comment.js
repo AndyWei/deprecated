@@ -35,7 +35,7 @@ exports.register = function (server, options, next) {
             var q = request.query;
             Async.waterfall([
                 function (callback) {
-                    Cache.zcard(Const.POST_COMMENT_SETS, q.post, function (err, result) {
+                    Cache.zcard(Cache.CommentsOfPost, q.post, function (err, result) {
                         if (err) {
                             console.error(err);
                             return callback(null, 0); // continue search in DB
@@ -51,7 +51,7 @@ exports.register = function (server, options, next) {
 
                     var min = '(' + q.after.toString();
                     var max = '(' + q.before.toString();
-                    Cache.zrevrangebyscore(Const.POST_COMMENT_SETS, q.post, max, min, Const.COMMENT_PER_QUERY, function (err, result) {
+                    Cache.zrevrangebyscore(Cache.CommentsOfPost, q.post, max, min, Const.COMMENT_PER_QUERY, function (err, result) {
                         if (err) {
                             console.error(err);
                             return callback(null, 0, null); // continue search in DB
@@ -74,7 +74,7 @@ exports.register = function (server, options, next) {
                         }
                     }
 
-                    Cache.mhgetall(Const.COMMENT_HASHES, commentIds, function (err, result) {
+                    Cache.mhgetall(Cache.CommentStore, commentIds, function (err, result) {
                         if (err) {
                             console.error(err);
                         }
@@ -137,7 +137,7 @@ exports.register = function (server, options, next) {
             Async.auto({
                 commentIds: function (callback) {
 
-                    Cache.mzrange(Const.POST_COMMENT_SETS, postIds, -3, -1, function (err, result) {
+                    Cache.mzrange(Cache.CommentsOfPost, postIds, -3, -1, function (err, result) {
                         if (err) {
                             console.error(err);
                         }
@@ -150,7 +150,7 @@ exports.register = function (server, options, next) {
 
                     var commentIds = _.flatten(results.commentIds);
 
-                    Cache.mhgetall(Const.COMMENT_HASHES, commentIds, function (err, result) {
+                    Cache.mhgetall(Cache.CommentStore, commentIds, function (err, result) {
                         if (err) {
                             console.error(err);
                         }
@@ -292,8 +292,8 @@ internals.createCommentHandler = function (request, reply) {
                     ct: createdAt
                 };
 
-                Cache.hmset(Const.COMMENT_HASHES, commentId, commentObj);
-                Cache.zaddtrim(Const.POST_COMMENT_SETS, postId, createdAt, commentId);
+                Cache.hmset(Cache.CommentStore, commentId, commentObj);
+                Cache.zaddtrim(Cache.CommentsOfPost, postId, createdAt, commentId);
 
                 return next(null, commentObj);
             });
@@ -319,7 +319,7 @@ internals.createCommentHandler = function (request, reply) {
                     return next(Boom.badRequest(Const.POST_LIKE_FAILED));
                 }
 
-                Cache.hincrby(Const.POST_HASHES, postId, 'ccnt', 1);
+                Cache.hincrby(Cache.PostStore, postId, 'ccnt', 1);
 
                 return next(null, result.rows[0]);
             });

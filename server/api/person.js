@@ -39,7 +39,7 @@ exports.register = function (server, options, next) {
             Async.waterfall([
                 function (callback) {
 
-                    Cache.mhgetall(Const.PERSON_HASHES, personIds, function (err, result) {
+                    Cache.mhgetall(Cache.PersonStore, personIds, function (err, result) {
                         if (err) {
                             console.error(err);
                         }
@@ -67,7 +67,7 @@ exports.register = function (server, options, next) {
                             // see http://stackoverflow.com/questions/14058193/remove-empty-properties-falsy-values-from-object-with-underscore-js
                             return _.pick(obj, _.identity);
                         });
-                        Cache.mhmset(Const.PERSON_HASHES, ids, objs);
+                        Cache.mhmset(Cache.PersonStore, ids, objs);
 
                         // aggregate objs from cache and DB
                         var mergedObjs = cachedObjs.concat(objs);
@@ -127,7 +127,7 @@ exports.register = function (server, options, next) {
                     });
                 },
                 cacheRecordCount: ['genderCell', function (callback, results) {
-                    Cache.zcard(Const.CELL_PERSON_SETS, results.genderCell, function (err, result) {
+                    Cache.zcard(Cache.PeopleInCell, results.genderCell, function (err, result) {
                         if (err) {
                             console.error(err);
                             return callback(null, 0); // continue search in DB
@@ -141,7 +141,7 @@ exports.register = function (server, options, next) {
                          return callback(null, null);
                     }
 
-                    Cache.zrevrangebyscore(Const.CELL_PERSON_SETS, results.genderCell, r.max, r.min, Const.PERSON_PER_QUERY, function (err, result) {
+                    Cache.zrevrangebyscore(Cache.PeopleInCell, results.genderCell, r.max, r.min, Const.PERSON_PER_QUERY, function (err, result) {
                         if (err) {
                             console.error(err);
                             return callback(null, null); // continue search in DB
@@ -166,7 +166,7 @@ exports.register = function (server, options, next) {
                         var scores = _.pluck(result, 'score');
 
                         // write back to cache
-                        Cache.mzadd(Const.CELL_PERSON_SETS, results.genderCell, scores, ids);
+                        Cache.mzadd(Cache.PeopleInCell, results.genderCell, scores, ids);
 
                         return callback(null, ids);
                     });
@@ -245,7 +245,7 @@ exports.register = function (server, options, next) {
                 badge: request.payload.badge
             };
 
-            Cache.hmset(Const.USER_HASHES, username, personObj, function (err) {
+            Cache.hmset(Cache.UsernameStore, username, personObj, function (err) {
 
                 if (err) {
                     console.error(err);
@@ -307,7 +307,7 @@ exports.register = function (server, options, next) {
                         r.id = personId;
                         delete r.lang;
 
-                        Cache.hmset(Const.PERSON_HASHES, personId, r);
+                        Cache.hmset(Cache.PersonStore, personId, r);
                         return callback(null);
                     });
                 }
@@ -403,7 +403,7 @@ exports.register = function (server, options, next) {
                         return callback(null, newCell);
                     }
 
-                    Cache.zchangekey(Const.CELL_PERSON_SETS, oldCell, newCell, results.person.score, personId, function (err) {
+                    Cache.zchangekey(Cache.PeopleInCell, oldCell, newCell, results.person.score, personId, function (err) {
                         if (err) {
                             return callback(err);
                         }
@@ -490,7 +490,7 @@ internals.readPersonById = function (request, reply) {
     var personId = request.auth.credentials.id;
     Async.auto({
         readCache: function (callback) {
-            Cache.hgetall(Const.PERSON_HASHES, personId, function (err, result) {
+            Cache.hgetall(Cache.PersonStore, personId, function (err, result) {
                 if (err) {
                     console.error(err);
                     return callback(null);
@@ -538,9 +538,14 @@ internals.readPersonById = function (request, reply) {
 
 internals.getPersonGenderCellFromZip = function (zip, readonly, reply) {
 
+    var splitIndex = zip.length - 3;
+    var zipPrefix = zip.substring(0, splitIndex);
+    var zipSuffix = zip.substring(splitIndex);
+
     Async.auto({
         genderCell: function (callback) {
-            Cache.get(Const.PERSON_ZIP_CELL_PAIRS, zip, function (err, result) {
+
+            Cache.hget(Cache.ZipGenderCellMap, zipPrefix, zipSuffix, function (err, result) {
                 if (err) {
                     return callback(err);
                 }
@@ -559,7 +564,7 @@ internals.getPersonGenderCellFromZip = function (zip, readonly, reply) {
         },
         personCount: ['genderCell', function (callback, results) {
 
-            Cache.zcard(Const.CELL_PERSON_SETS, results.genderCell, function (err, result) {
+            Cache.zcard(Cache.PeopleInCell, results.genderCell, function (err, result) {
                 if (err) {
                     return callback(err);
                 }
@@ -573,7 +578,7 @@ internals.getPersonGenderCellFromZip = function (zip, readonly, reply) {
             if (results.personCount > Const.PERSON_CELL_SPLIT_THRESHOLD) {
 
                 splitCell = zip.substr(0, splitCell.length + 1); // Use one more letter as new genderCell
-                Cache.set(Const.PERSON_ZIP_CELL_PAIRS, zip, splitCell);
+                Cache.hset(Cache.ZipGenderCellMap, zipPrefix, zipSuffix, splitCell);
             }
             return callback(null, splitCell);
         }]

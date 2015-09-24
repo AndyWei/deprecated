@@ -153,8 +153,8 @@ exports.register = function (server, options, next) {
                         ct: createdAt
                     };
 
-                    Cache.hmset(Const.POST_HASHES, postId, postObj);
-                    Cache.zaddtrim(Const.CELL_POST_SETS, results.cell, createdAt, postId);
+                    Cache.hmset(Cache.PostStore, postId, postObj);
+                    Cache.zaddtrim(Cache.PostsInCell, results.cell, createdAt, postId);
                     callback(null, postObj);
                 }]
             }, function (err, results) {
@@ -206,7 +206,7 @@ exports.register = function (server, options, next) {
                     return reply(Boom.badRequest(Const.POST_LIKE_FAILED));
                 }
 
-                Cache.hincrby(Const.POST_HASHES, postId, 'lcnt', 1);
+                Cache.hincrby(Cache.PostStore, postId, 'lcnt', 1);
 
                 return reply(null, result.rows[0]);
             });
@@ -225,7 +225,7 @@ internals.searchPostFromCache = function (request, cell, reply) {
 
             var min = '(' + r.after.toString();
             var max = '(' + r.before.toString();
-            Cache.zrevrangebyscore(Const.CELL_POST_SETS, cell, max, min, Const.POST_PER_QUERY, function (err, result) {
+            Cache.zrevrangebyscore(Cache.PostsInCell, cell, max, min, Const.POST_PER_QUERY, function (err, result) {
                 if (err) {
                     return callback(err);
                 }
@@ -244,7 +244,7 @@ internals.searchPostFromCache = function (request, cell, reply) {
                 }
             }
 
-            Cache.mhgetall(Const.POST_HASHES, results.postIds, function (err, result) {
+            Cache.mhgetall(Cache.PostStore, results.postIds, function (err, result) {
                 if (err) {
                     return callback(err);
                 }
@@ -294,9 +294,15 @@ internals.searchPostByCellFromDB = function (request, cell, callback) {
 
 internals.getPostCellFromZip = function (zip, readonly, reply) {
 
+    var splitIndex = zip.length - 3;
+    var zipPrefix = zip.substring(0, splitIndex);
+    var zipSuffix = zip.substring(splitIndex);
+
     Async.auto({
+
         cell: function (callback) {
-            Cache.get(Const.POST_ZIP_CELL_PAIRS, zip, function (err, result) {
+
+            Cache.hget(Cache.ZipCellMap, zipPrefix, zipSuffix, function (err, result) {
                 if (err) {
                     return callback(err);
                 }
@@ -315,7 +321,7 @@ internals.getPostCellFromZip = function (zip, readonly, reply) {
         },
         postCount: ['cell', function (callback, results) {
 
-            Cache.zcard(Const.CELL_POST_SETS, results.cell, function (err, result) {
+            Cache.zcard(Cache.PostsInCell, results.cell, function (err, result) {
                 if (err) {
                     return callback(err);
                 }
@@ -329,7 +335,7 @@ internals.getPostCellFromZip = function (zip, readonly, reply) {
             if (results.postCount > Const.POST_CELL_SPLIT_THRESHOLD) {
 
                 newCell = zip.substr(0, newCell.length + 1); // Use one more letter as new cell
-                Cache.set(Const.POST_ZIP_CELL_PAIRS, zip, newCell);
+                Cache.hset(Cache.ZipCellMap, zipPrefix, zipSuffix, newCell);
             }
             return callback(null, newCell);
         }]
