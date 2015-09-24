@@ -51,13 +51,17 @@ exports.notify = internals.notify = function (request, fromUsername, toUsername,
         },
         badge: ['toPerson', function (callback, results) {
 
-            Cache.hget(Cache.PersonStore, results.toPerson.id, 'badge', function (err, result) {
+            Cache.hget(Cache.PersonStore, results.toPerson.id, 'bg', function (err, result) {
 
                 if (err) {
                     return callback(err);
                 }
 
-                callback(null, result);
+                if (!result) {
+                    result = 0;
+                }
+
+                return callback(null, result);
             });
         }],
         send: ['toPerson', 'badge', function (callback, results) {

@@ -87,7 +87,7 @@ lab.experiment('person GET: ', function () {
 
         request = {
             method: 'GET',
-            url: '/person/nearby?gender=M&zip=US94102&max=5000',
+            url: '/person/nearby?sex=M&zip=US94102&max=5000',
             credentials: andy
         };
 
@@ -104,7 +104,7 @@ lab.experiment('person GET: ', function () {
 
         request = {
             method: 'GET',
-            url: '/person/nearby?gender=M&zip=JP94102&max=5000',
+            url: '/person/nearby?sex=M&zip=JP94102&max=5000',
             credentials: andy
         };
 
@@ -166,9 +166,10 @@ lab.experiment('person POST: ', function () {
             method: 'POST',
             url: '/person/me',
             payload: {
-                avatar: 'avatar.joyyapp.com/andy.jpg',
+                reg: 'na',
+                fn: 'andy',
                 yob: 1995,
-                gender: 'M',
+                sex: 'M',
                 lang: 'en_US'
             },
             credentials: andy
@@ -191,7 +192,7 @@ lab.experiment('person POST: ', function () {
             payload: {
                 zip: 'CN94100',
                 cell: 'FUS',
-                gender: 'F'
+                sex: 'F'
             },
             credentials: ping
         };
