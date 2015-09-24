@@ -92,7 +92,7 @@ exports.register = function (server, options, next) {
 
 
     // Get person id list in the cell. auth.
-    // There is a (zip, cell) store in Cache to maintain the mapping relationship, which is to de-couple zip and cell
+    // There is a (zip, cell) store in Cache to maintain the mapping relationship, which is to decouple zip and cell and make dynamic cell possible
     // Each cell has a sorted person id set read-through cache, and the key is the person score
     // In case of cache missing, DB will be queried and return a list of (personId, score) and update cache
     server.route({
@@ -114,11 +114,12 @@ exports.register = function (server, options, next) {
         handler: function (request, reply) {
 
             var r = request.query;
-            var zip = r.gender + r.zip;
+            var genderZip = r.gender + r.zip;
+
             Async.auto({
                 genderCell: function (callback) {
                     var readonly = true;
-                    internals.getPersonGenderCellFromZip(zip, readonly, function (err, result) {
+                    internals.getPersonGenderCellFromZip(genderZip, readonly, function (err, result) {
                         if (err) {
                             return callback(err);
                         }
@@ -334,10 +335,9 @@ exports.register = function (server, options, next) {
             },
             validate: {
                 payload: {
-                    lon: Joi.number().min(-180).max(180).required(),
-                    lat: Joi.number().min(-90).max(90).required(),
                     zip: Joi.string().min(2).max(14).required(), // E.g., US94555
-                    cell: Joi.string().min(3).max(12).required() // E.g., MUS9
+                    cell: Joi.string().min(3).max(12).required(), // E.g., MUS9
+                    gender: Joi.string().allow('M', 'F', 'X').required() // used to generate gender cell
                 }
             }
         },
@@ -345,7 +345,7 @@ exports.register = function (server, options, next) {
 
             var r = request.payload;
             var personId = request.auth.credentials.id;
-            var zip = r.cell.charAt(0) + r.zip; // MUS94555
+            var genderZip = r.gender + r.zip; // MUS94555
 
             Async.auto({
                 person: function (callback) {
@@ -359,16 +359,16 @@ exports.register = function (server, options, next) {
                     });
                 },
                 updateDB: ['person', function (callback, results) {
-                    if (zip === results.person.zip) {
+                    if (genderZip === results.person.zip) {
                         return callback(null, null);
                     }
 
                     var queryConfig = {
                         name: 'person_update_location',
-                        text: 'UPDATE person SET zip = $1, coords = ST_SetSRID(ST_MakePoint($2, $3), 4326), ut = $4 ' +
-                              'WHERE id = $5 AND deleted = false ' +
+                        text: 'UPDATE person SET zip = $1, ut = $2 ' +
+                              'WHERE id = $3 AND deleted = false ' +
                               'RETURNING id',
-                        values: [zip, r.lon, r.lat, _.now(), personId]
+                        values: [genderZip, _.now(), personId]
                     };
 
                     request.pg.client.query(queryConfig, function (err, result) {
@@ -386,8 +386,9 @@ exports.register = function (server, options, next) {
                     });
                 }],
                 newCell: function (callback) {
+
                     var readonly = false;
-                    internals.getPersonGenderCellFromZip(zip, readonly, function (err, result) {
+                    internals.getPersonGenderCellFromZip(genderZip, readonly, function (err, result) {
                         if (err) {
                             return callback(err);
                         }
@@ -428,17 +429,15 @@ exports.register = function (server, options, next) {
     next();
 };
 
-// TODO
+
 internals.searchPersonIdByCellFromDB = function (request, genderCell, callback) {
 
-    var gender = genderCell.charAt(0);
-    var geoCell = genderCell.substring(1);
     var select = 'SELECT id, score FROM person ';
-    var where = 'WHERE score >= $1 AND score <= $2 AND position($3 in zip) = 2 AND gender = $4 AND deleted = false ';
+    var where = 'WHERE score >= $1 AND score <= $2 AND position($3 in zip) = 1 AND deleted = false ';
     var order = 'ORDER BY score DESC ';
     var limit = 'LIMIT 50';
 
-    var queryValues = [request.query.min, request.query.max, geoCell, gender];
+    var queryValues = [request.query.min, request.query.max, genderCell];
     var queryConfig = {
         name: 'person_by_cell',
         text: select + where + order + limit,
@@ -536,11 +535,11 @@ internals.readPersonById = function (request, reply) {
 };
 
 
-internals.getPersonGenderCellFromZip = function (zip, readonly, reply) {
+internals.getPersonGenderCellFromZip = function (genderZip, readonly, reply) {
 
-    var splitIndex = zip.length - 3;
-    var zipPrefix = zip.substring(0, splitIndex);
-    var zipSuffix = zip.substring(splitIndex);
+    var splitIndex = genderZip.length - 3;
+    var zipPrefix = genderZip.substring(0, splitIndex);
+    var zipSuffix = genderZip.substring(splitIndex);
 
     Async.auto({
         genderCell: function (callback) {
@@ -552,7 +551,7 @@ internals.getPersonGenderCellFromZip = function (zip, readonly, reply) {
 
                 var genderCell = result;
                 if (!genderCell) {
-                    genderCell = zip.substr(0, 3); // Use Gender + CountryCode as default genderCell, e.g., MUS
+                    genderCell = genderZip.substr(0, 3); // Use Gender + CountryCode as default genderCell, e.g., MUS
                 }
 
                 if (readonly) {
@@ -577,7 +576,7 @@ internals.getPersonGenderCellFromZip = function (zip, readonly, reply) {
             var splitCell = results.genderCell;
             if (results.personCount > Const.PERSON_CELL_SPLIT_THRESHOLD) {
 
-                splitCell = zip.substr(0, splitCell.length + 1); // Use one more letter as new genderCell
+                splitCell = genderZip.substr(0, splitCell.length + 1); // Use one more letter as new genderCell
                 Cache.hset(Cache.ZipGenderCellMap, zipPrefix, zipSuffix, splitCell);
             }
             return callback(null, splitCell);

@@ -189,10 +189,9 @@ lab.experiment('person POST: ', function () {
             method: 'POST',
             url: '/person/location',
             payload: {
-                lat: 37.555883,
-                lon: -122.0135916,
-                zip: 'US94102',
-                cell: 'FUS'
+                zip: 'CN94100',
+                cell: 'FUS',
+                gender: 'F'
             },
             credentials: ping
         };
