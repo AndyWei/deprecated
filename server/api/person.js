@@ -10,7 +10,7 @@ var Utils = require('../utils');
 var _ = require('lodash');
 
 var internals = {};
-var selectAll = 'SELECT id, username, avatar, gender, yob, wcnt, score FROM person ';
+var selectAll = 'SELECT id, username, reg, fn, sex, yob, wcnt, score FROM person ';
 
 
 exports.register = function (server, options, next) {
@@ -104,7 +104,7 @@ exports.register = function (server, options, next) {
             },
             validate: {
                 query: {
-                    gender: Joi.string().allow('M', 'F', 'X').required(),
+                    sex: Joi.string().allow('M', 'F', 'X').required(),
                     zip: Joi.string().min(2).max(14).required(),
                     min: Joi.number().integer().default(0), // the minimum score, the search will include this value
                     max: Joi.number().positive().integer().default(Number.MAX_SAFE_INTEGER) // the maximum score, the search will include this value
@@ -114,12 +114,12 @@ exports.register = function (server, options, next) {
         handler: function (request, reply) {
 
             var r = request.query;
-            var genderZip = r.gender + r.zip;
+            var sexZip = r.sex + r.zip;
 
             Async.auto({
-                genderCell: function (callback) {
+                sexCell: function (callback) {
                     var readonly = true;
-                    internals.getPersonGenderCellFromZip(genderZip, readonly, function (err, result) {
+                    internals.getPersonSexCellFromZip(sexZip, readonly, function (err, result) {
                         if (err) {
                             return callback(err);
                         }
@@ -127,8 +127,8 @@ exports.register = function (server, options, next) {
                         return callback(null, result);
                     });
                 },
-                cacheRecordCount: ['genderCell', function (callback, results) {
-                    Cache.zcard(Cache.PeopleInCell, results.genderCell, function (err, result) {
+                cacheRecordCount: ['sexCell', function (callback, results) {
+                    Cache.zcard(Cache.PeopleInCell, results.sexCell, function (err, result) {
                         if (err) {
                             console.error(err);
                             return callback(null, 0); // continue search in DB
@@ -142,7 +142,7 @@ exports.register = function (server, options, next) {
                          return callback(null, null);
                     }
 
-                    Cache.zrevrangebyscore(Cache.PeopleInCell, results.genderCell, r.max, r.min, Const.PERSON_PER_QUERY, function (err, result) {
+                    Cache.zrevrangebyscore(Cache.PeopleInCell, results.sexCell, r.max, r.min, Const.PERSON_PER_QUERY, function (err, result) {
                         if (err) {
                             console.error(err);
                             return callback(null, null); // continue search in DB
@@ -157,7 +157,7 @@ exports.register = function (server, options, next) {
                 }],
                 readDB: ['readCache', function (callback, results) {
 
-                    internals.searchPersonIdByCellFromDB(request, results.genderCell, function (err, result) {
+                    internals.searchPersonIdByCellFromDB(request, results.sexCell, function (err, result) {
 
                         if (result.length === 0) {
                             return callback(null, []);
@@ -167,7 +167,7 @@ exports.register = function (server, options, next) {
                         var scores = _.pluck(result, 'score');
 
                         // write back to cache
-                        Cache.mzadd(Cache.PeopleInCell, results.genderCell, scores, ids);
+                        Cache.mzadd(Cache.PeopleInCell, results.sexCell, scores, ids);
 
                         return callback(null, ids);
                     });
@@ -269,7 +269,7 @@ exports.register = function (server, options, next) {
                 },
                 cache: function (callback) {
 
-                    Cache.hset(Cache.PersonStore, personId, 'badge', r.badge);
+                    Cache.hset(Cache.PersonStore, personId, 'bg', r.badge);
                     return callback(null);
                 }
             }, function (err) {
@@ -295,8 +295,9 @@ exports.register = function (server, options, next) {
             },
             validate: {
                 payload: {
-                    avatar: Joi.string().required(),
-                    gender: Joi.string().allow('M', 'F', 'X').required(),
+                    reg: Joi.string().length(2).required(),
+                    fn: Joi.string().required(),
+                    sex: Joi.string().allow('M', 'F', 'X').required(),
                     yob: Joi.number().min(1900).max(2010).required(),
                     lang: Joi.string().required()
                 }
@@ -306,6 +307,7 @@ exports.register = function (server, options, next) {
 
             var r = request.payload;
             var personId = request.auth.credentials.id;
+            var username = request.auth.credentials.username;
 
             Async.waterfall([
 
@@ -313,10 +315,10 @@ exports.register = function (server, options, next) {
 
                     var queryConfig = {
                         name: 'person_write_profile',
-                        text: 'UPDATE person SET avatar = $1, gender = $2, yob = $3, lang = $4, ut = $5 ' +
-                              'WHERE id = $6 AND deleted = false ' +
+                        text: 'UPDATE person SET reg = $1, fn = $2, sex = $3, yob = $4, lang = $5, ut = $6 ' +
+                              'WHERE id = $7 AND deleted = false ' +
                               'RETURNING id',
-                        values: [r.avatar, r.gender, r.yob, r.lang, _.now(), personId]
+                        values: [r.reg, r.fn, r.sex, r.yob, r.lang, _.now(), personId]
                     };
 
                     request.pg.client.query(queryConfig, function (err, result) {
@@ -330,8 +332,9 @@ exports.register = function (server, options, next) {
                             return callback(Boom.badRequest(Const.PERSON_UPDATE_PROFILE_FAILED));
                         }
 
-                        r.id = personId;
                         delete r.lang;
+                        r.id = personId;
+                        r.username = username;
 
                         Cache.hmset(Cache.PersonStore, personId, r);
                         return callback(null);
@@ -362,7 +365,7 @@ exports.register = function (server, options, next) {
                 payload: {
                     zip: Joi.string().min(2).max(14).required(), // E.g., US94555
                     cell: Joi.string().min(3).max(12).required(), // E.g., MUS9
-                    gender: Joi.string().allow('M', 'F', 'X').required() // used to generate gender cell
+                    sex: Joi.string().allow('M', 'F', 'X').required() // used to generate sex cell
                 }
             }
         },
@@ -370,7 +373,7 @@ exports.register = function (server, options, next) {
 
             var r = request.payload;
             var personId = request.auth.credentials.id;
-            var genderZip = r.gender + r.zip; // MUS94555
+            var sexZip = r.sex + r.zip; // MUS94555
 
             Async.auto({
                 person: function (callback) {
@@ -384,7 +387,7 @@ exports.register = function (server, options, next) {
                     });
                 },
                 updateDB: ['person', function (callback, results) {
-                    if (genderZip === results.person.zip) {
+                    if (sexZip === results.person.zip) {
                         return callback(null, null);
                     }
 
@@ -393,7 +396,7 @@ exports.register = function (server, options, next) {
                         text: 'UPDATE person SET zip = $1, ut = $2 ' +
                               'WHERE id = $3 AND deleted = false ' +
                               'RETURNING id',
-                        values: [genderZip, _.now(), personId]
+                        values: [sexZip, _.now(), personId]
                     };
 
                     request.pg.client.query(queryConfig, function (err, result) {
@@ -413,7 +416,7 @@ exports.register = function (server, options, next) {
                 newCell: function (callback) {
 
                     var readonly = false;
-                    internals.getPersonGenderCellFromZip(genderZip, readonly, function (err, result) {
+                    internals.getPersonSexCellFromZip(sexZip, readonly, function (err, result) {
                         if (err) {
                             return callback(err);
                         }
@@ -455,14 +458,14 @@ exports.register = function (server, options, next) {
 };
 
 
-internals.searchPersonIdByCellFromDB = function (request, genderCell, callback) {
+internals.searchPersonIdByCellFromDB = function (request, sexCell, callback) {
 
     var select = 'SELECT id, score FROM person ';
     var where = 'WHERE score >= $1 AND score <= $2 AND position($3 in zip) = 1 AND deleted = false ';
     var order = 'ORDER BY score DESC ';
     var limit = 'LIMIT 50';
 
-    var queryValues = [request.query.min, request.query.max, genderCell];
+    var queryValues = [request.query.min, request.query.max, sexCell];
     var queryConfig = {
         name: 'person_by_cell',
         text: select + where + order + limit,
@@ -560,35 +563,35 @@ internals.readPersonById = function (request, reply) {
 };
 
 
-internals.getPersonGenderCellFromZip = function (genderZip, readonly, reply) {
+internals.getPersonSexCellFromZip = function (sexZip, readonly, reply) {
 
-    var splitIndex = genderZip.length - 3;
-    var zipPrefix = genderZip.substring(0, splitIndex);
-    var zipSuffix = genderZip.substring(splitIndex);
+    var splitIndex = sexZip.length - 3;
+    var zipPrefix = sexZip.substring(0, splitIndex);
+    var zipSuffix = sexZip.substring(splitIndex);
 
     Async.auto({
-        genderCell: function (callback) {
+        sexCell: function (callback) {
 
-            Cache.hget(Cache.ZipGenderCellMap, zipPrefix, zipSuffix, function (err, result) {
+            Cache.hget(Cache.ZipSexCellMap, zipPrefix, zipSuffix, function (err, result) {
                 if (err) {
                     return callback(err);
                 }
 
-                var genderCell = result;
-                if (!genderCell) {
-                    genderCell = genderZip.substr(0, 3); // Use Gender + CountryCode as default genderCell, e.g., MUS
+                var sexCell = result;
+                if (!sexCell) {
+                    sexCell = sexZip.substr(0, 3); // Use Sex + CountryCode as default sexCell, e.g., MUS
                 }
 
                 if (readonly) {
-                    return callback(Const.CACHE_HIT, genderCell);
+                    return callback(Const.CACHE_HIT, sexCell);
                 }
 
-                return callback(null, genderCell);
+                return callback(null, sexCell);
             });
         },
-        personCount: ['genderCell', function (callback, results) {
+        personCount: ['sexCell', function (callback, results) {
 
-            Cache.zcard(Cache.PeopleInCell, results.genderCell, function (err, result) {
+            Cache.zcard(Cache.PeopleInCell, results.sexCell, function (err, result) {
                 if (err) {
                     return callback(err);
                 }
@@ -598,18 +601,18 @@ internals.getPersonGenderCellFromZip = function (genderZip, readonly, reply) {
         }],
         splitCell: ['personCount', function (callback, results) {
 
-            var splitCell = results.genderCell;
+            var splitCell = results.sexCell;
             if (results.personCount > Const.PERSON_CELL_SPLIT_THRESHOLD) {
 
-                splitCell = genderZip.substr(0, splitCell.length + 1); // Use one more letter as new genderCell
-                Cache.hset(Cache.ZipGenderCellMap, zipPrefix, zipSuffix, splitCell);
+                splitCell = sexZip.substr(0, splitCell.length + 1); // Use one more letter as new sexCell
+                Cache.hset(Cache.ZipSexCellMap, zipPrefix, zipSuffix, splitCell);
             }
             return callback(null, splitCell);
         }]
     }, function (err, results) {
 
         if (err === Const.CACHE_HIT) {
-            return reply(null, results.genderCell);
+            return reply(null, results.sexCell);
         }
 
         if (err) {

@@ -16,52 +16,52 @@ var internals = {};
 //// Comment
 // Hash. key = commentId, fields = {id, owner, content, ...}
 exports.CommentStore = {
-    key: 'cmnt'
+    key: 'cmt'
 };
 
 // SortedSet. key = postId, value = commentId, score = comment.ct
 exports.CommentsOfPost = {
-    key: 'cop',
+    key: 'cp',
     size: 1000
 };
 
 //// Post
 // Hash. key = personId, fields = {filname, uv, badge, likes, comments, ...}
 exports.PostStore = {
-    key: 'post'
+    key: 'pst'
 };
 
 // SortedSet. key = cell, value = postId, score = post.ct
 exports.PostsInCell = {
-    key: 'cell',
+    key: 'cll',
     size: 1000
 };
 
 //// Person
 // Hash. key = personId, fields = {name, wcnt, score, ...}
 exports.PersonStore = {
-    key: 'person'
+    key: 'per'
 };
 
 // SortedSet. key = cellId, value = personId, score = personScore
 exports.PeopleInCell = {
-    key: 'gcell'
+    key: 'scll'
 };
 
 // Pair. key = phone_number, value = vcode
 exports.PhoneVcodeMap = {
-    key: 'phonev',
+    key: 'pv',
     ttl: 600
 };
 
 // Pair. key = zip, value = cell
-exports.ZipGenderCellMap = {
-    key: 'zipg'
+exports.ZipSexCellMap = {
+    key: 'sz'
 };
 
 // Pair. key = zip, value = cell
 exports.ZipCellMap = {
-    key: 'zip'
+    key: 'z'
 };
 
 exports.start = function (callback) {

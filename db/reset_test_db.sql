@@ -2,30 +2,30 @@
 
 
 INSERT INTO person
-    (username,                                                       password,         phone,       zip, gender,  yob,                        avatar,     wcnt,   score,            ct,             ut) VALUES
-    (  'andy', '$2a$10$sTaFcBz.lhDXr2bVNZJZeenPJ3qiKG.NaQQ5zqiz0peku0fDvO0YG',   14257850318, 'MUS94555',    'M', 1980, 'avatar.joyyapp.com/andy.jpg',        1,       5, 1437524632001, 1437524632001),
-    (  'ping', '$2a$10$sTaFcBz.lhDXr2bVNZJZeenPJ3qiKG.NaQQ5zqiz0peku0fDvO0YG',   14256287208, 'FUS94555',    'F', 1988, 'avatar.joyyapp.com/ping.jpg',      235,       5, 1437524632002, 1437524632002),
-    ( 'tiger', '$2a$10$sTaFcBz.lhDXr2bVNZJZeenPJ3qiKG.NaQQ5zqiz0peku0fDvO0YG',   18008888756, 'MUS94555',    'M', 1981, 'avatar.joyyapp.com/tiger.jpg',       1,    1155, 1437524632003, 1437524632003),
-    ('jayden', '$2a$10$sTaFcBz.lhDXr2bVNZJZeenPJ3qiKG.NaQQ5zqiz0peku0fDvO0YG',   18004933316, 'MUS94102',    'M', 1982, 'avatar.joyyapp.com/jayden.jpg',      1,       5, 1437524632004, 1437524632004),
-    (  'moon', '$2a$10$sTaFcBz.lhDXr2bVNZJZeenPJ3qiKG.NaQQ5zqiz0peku0fDvO0YG',   18882450625, 'FUS94555',    'F', 1983, 'avatar.joyyapp.com/moon.jpg',        0,       0, 1437524632001, 1437524632001),
-    (  'sky1', '$2a$10$sTaFcBz.lhDXr2bVNZJZeenPJ3qiKG.NaQQ5zqiz0peku0fDvO0YG', 8613980796531, 'MUS94555',    'M', 1984, 'avatar.joyyapp.com/sky1.jpg',        0,       0, 1437524632002, 1437524632002),
-    (  'sun2', '$2a$10$sTaFcBz.lhDXr2bVNZJZeenPJ3qiKG.NaQQ5zqiz0peku0fDvO0YG',   18009971468, 'MUS94555',    'M', 1985, 'avatar.joyyapp.com/sun2.jpg',        0,       0, 1437524632003, 1437524632003),
-    (  'mini', '$2a$10$sTaFcBz.lhDXr2bVNZJZeenPJ3qiKG.NaQQ5zqiz0peku0fDvO0YG', 8613308000897, 'FUS94102',    'F', 1985, 'avatar.joyyapp.com/mini.jpg',   342718, 1500000, 1437524632004, 1437524632004),
-    (  'jack', '$2a$10$sTaFcBz.lhDXr2bVNZJZeenPJ3qiKG.NaQQ5zqiz0peku0fDvO0YG',   18004933316, 'MUS94102',    'M', 1982, 'avatar.joyyapp.com/tiger.jpg',       1,       5, 1437524632004, 1437524632004),
-    (  'wkwk', '$2a$10$sTaFcBz.lhDXr2bVNZJZeenPJ3qiKG.NaQQ5zqiz0peku0fDvO0YG',   18882450625, 'FUS94555',    'F', 1983, 'avatar.joyyapp.com/ping.jpg',        0,       0, 1437524632001, 1437524632001),
-    (  'bebe', '$2a$10$sTaFcBz.lhDXr2bVNZJZeenPJ3qiKG.NaQQ5zqiz0peku0fDvO0YG', 8613980796531, 'MUS94555',    'M', 1984, 'avatar.joyyapp.com/moon.jpg',        0,       0, 1437524632002, 1437524632002),
-    ('amanda', '$2a$10$sTaFcBz.lhDXr2bVNZJZeenPJ3qiKG.NaQQ5zqiz0peku0fDvO0YG',   18009971468, 'FUS94555',    'F', 1985, 'avatar.joyyapp.com/sky1.jpg',        0,       0, 1437524632003, 1437524632003),
-    (  'vkii', '$2a$10$sTaFcBz.lhDXr2bVNZJZeenPJ3qiKG.NaQQ5zqiz0peku0fDvO0YG', 8613308000897, 'FUS94555',    'F', 1985, 'avatar.joyyapp.com/mini.jpg',   342718, 1500000, 1437524632004, 1437524632004);
+    (username,                                                       password,         phone,       zip,  sex,  yob,  reg,       fn,   wcnt,   score,            ct,             ut) VALUES
+    (  'andy', '$2a$10$sTaFcBz.lhDXr2bVNZJZeenPJ3qiKG.NaQQ5zqiz0peku0fDvO0YG',   14257850318, 'MUS94555', 'M', 1980, 'na',  ' andy',      1,       5, 1437524632001, 1437524632001),
+    (  'ping', '$2a$10$sTaFcBz.lhDXr2bVNZJZeenPJ3qiKG.NaQQ5zqiz0peku0fDvO0YG',   14256287208, 'FUS94555', 'F', 1988, 'na',   'ping',    235,       5, 1437524632002, 1437524632002),
+    ( 'tiger', '$2a$10$sTaFcBz.lhDXr2bVNZJZeenPJ3qiKG.NaQQ5zqiz0peku0fDvO0YG',   18008888756, 'MUS94555', 'M', 1981, 'na',  'tiger',      1,    1155, 1437524632003, 1437524632003),
+    ('jayden', '$2a$10$sTaFcBz.lhDXr2bVNZJZeenPJ3qiKG.NaQQ5zqiz0peku0fDvO0YG',   18004933316, 'MUS94102', 'M', 1982, 'na', 'jayden',      1,       5, 1437524632004, 1437524632004),
+    (  'moon', '$2a$10$sTaFcBz.lhDXr2bVNZJZeenPJ3qiKG.NaQQ5zqiz0peku0fDvO0YG',   18882450625, 'FUS94555', 'F', 1983, 'na',   'moon',      0,       0, 1437524632001, 1437524632001),
+    (  'sky1', '$2a$10$sTaFcBz.lhDXr2bVNZJZeenPJ3qiKG.NaQQ5zqiz0peku0fDvO0YG', 8613980796531, 'MUS94555', 'M', 1984, 'na',   'sky1',      0,       0, 1437524632002, 1437524632002),
+    (  'sun2', '$2a$10$sTaFcBz.lhDXr2bVNZJZeenPJ3qiKG.NaQQ5zqiz0peku0fDvO0YG',   18009971468, 'MUS94555', 'M', 1985, 'na',   'sun2',      0,       0, 1437524632003, 1437524632003),
+    (  'mini', '$2a$10$sTaFcBz.lhDXr2bVNZJZeenPJ3qiKG.NaQQ5zqiz0peku0fDvO0YG', 8613308000897, 'FUS94102', 'F', 1985, 'na',   'mini', 342718, 1500000, 1437524632004, 1437524632004),
+    (  'jack', '$2a$10$sTaFcBz.lhDXr2bVNZJZeenPJ3qiKG.NaQQ5zqiz0peku0fDvO0YG',   18004933316, 'MUS94102', 'M', 1982, 'na',  'tiger',      1,       5, 1437524632004, 1437524632004),
+    (  'wkwk', '$2a$10$sTaFcBz.lhDXr2bVNZJZeenPJ3qiKG.NaQQ5zqiz0peku0fDvO0YG',   18882450625, 'FUS94555', 'F', 1983, 'na',   'ping',      0,       0, 1437524632001, 1437524632001),
+    (  'bebe', '$2a$10$sTaFcBz.lhDXr2bVNZJZeenPJ3qiKG.NaQQ5zqiz0peku0fDvO0YG', 8613980796531, 'MUS94555', 'M', 1984, 'na',   'moon',      0,       0, 1437524632002, 1437524632002),
+    ('amanda', '$2a$10$sTaFcBz.lhDXr2bVNZJZeenPJ3qiKG.NaQQ5zqiz0peku0fDvO0YG',   18009971468, 'FUS94555', 'F', 1985, 'na',   'sky1',      0,       0, 1437524632003, 1437524632003),
+    (  'vkii', '$2a$10$sTaFcBz.lhDXr2bVNZJZeenPJ3qiKG.NaQQ5zqiz0peku0fDvO0YG', 8613308000897, 'FUS94555', 'F', 1985, 'na',   'mini', 342718, 1500000, 1437524632004, 1437524632004);
   
 INSERT INTO post
-    (owner,                                       url,            ct,       zip, caption) VALUES
-    (    1, 'post.joyyapp.com/j5676_462931203926.jpg', 1437524632000, 'US94555', 'Open!!!!'  ),
-    (    1, 'post.joyyapp.com/j6575_462929722813.jpg', 1437524632001, 'US94102', 'DREAM'     ),
-    (    1, 'post.joyyapp.com/j0000_458440716099.jpg', 1437524632002, 'US94555', 'HOPE'      ),
-    (    1, 'post.joyyapp.com/j4403_462934349762.jpg', 1437524632003, 'US94555', 'It is hard'),
-    (    1, 'post.joyyapp.com/j2552_458446437154.jpg', 1437524632004, 'US94555', 'maybe the best of things: The quick brown fox jumps over the lazy dog.'),
-    (    1, 'post.joyyapp.com/j2387_458461122798.jpg', 1437524632005, 'US94102', 'Leonardo da Vinci'),
-    (    1, 'post.joyyapp.com/j3844_461624043152.jpg', 1437524632006, 'US94555', 'Take off');
+    (owner,  reg,                   fn,            ct,       zip, caption) VALUES
+    (    1, 'na', 'j5676_462931203926', 1437524632000, 'US94555', 'Open!!!!'  ),
+    (    1, 'na', 'j6575_462929722813', 1437524632001, 'US94102', 'DREAM'     ),
+    (    1, 'na', 'j0000_458440716099', 1437524632002, 'US94555', 'HOPE'      ),
+    (    1, 'na', 'j4403_462934349762', 1437524632003, 'US94555', 'It is hard'),
+    (    1, 'na', 'j2552_458446437154', 1437524632004, 'US94555', 'maybe the best of things: The quick brown fox jumps over the lazy dog.'),
+    (    1, 'na', 'j2387_458461122798', 1437524632005, 'US94102', 'Leonardo da Vinci'),
+    (    1, 'na', 'j3844_461624043152', 1437524632006, 'US94555', 'Take off');
 
 
 INSERT INTO comment
