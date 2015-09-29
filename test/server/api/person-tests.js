@@ -87,7 +87,7 @@ lab.experiment('person GET: ', function () {
 
         request = {
             method: 'GET',
-            url: '/person/nearby?sex=M&zip=US94102&max=5000',
+            url: '/person/nearby?orientation=M&zip=US94102&max=5000',
             credentials: andy
         };
 
@@ -104,7 +104,7 @@ lab.experiment('person GET: ', function () {
 
         request = {
             method: 'GET',
-            url: '/person/nearby?sex=M&zip=JP94102&max=5000',
+            url: '/person/nearby?orientation=M&zip=JP94102&max=5000',
             credentials: andy
         };
 
@@ -166,11 +166,11 @@ lab.experiment('person POST: ', function () {
             method: 'POST',
             url: '/person/me',
             payload: {
-                reg: 'na',
-                fn: 'andy',
+                region: 'na',
+                filename: 'andy',
                 yob: 1995,
                 sex: 'M',
-                lang: 'en_US'
+                language: 'en_US'
             },
             credentials: andy
         };

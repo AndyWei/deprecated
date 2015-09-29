@@ -104,7 +104,7 @@ exports.register = function (server, options, next) {
             },
             validate: {
                 query: {
-                    sex: Joi.string().allow('M', 'F', 'X').required(),
+                    orientation: Joi.string().allow('M', 'F', 'X').required(),
                     zip: Joi.string().min(2).max(14).required(),
                     min: Joi.number().integer().default(0), // the minimum score, the search will include this value
                     max: Joi.number().positive().integer().default(Number.MAX_SAFE_INTEGER) // the maximum score, the search will include this value
@@ -114,7 +114,7 @@ exports.register = function (server, options, next) {
         handler: function (request, reply) {
 
             var r = request.query;
-            var sexZip = r.sex + r.zip;
+            var sexZip = r.orientation + r.zip;
 
             Async.auto({
                 sexCell: function (callback) {
@@ -295,11 +295,11 @@ exports.register = function (server, options, next) {
             },
             validate: {
                 payload: {
-                    reg: Joi.string().length(2).required(),
-                    fn: Joi.string().required(),
+                    region: Joi.string().length(2).required(),
+                    filename: Joi.string().required(),
                     sex: Joi.string().allow('M', 'F', 'X').required(),
                     yob: Joi.number().min(1900).max(2010).required(),
-                    lang: Joi.string().required()
+                    language: Joi.string().required()
                 }
             }
         },
@@ -307,7 +307,6 @@ exports.register = function (server, options, next) {
 
             var r = request.payload;
             var personId = request.auth.credentials.id;
-            var username = request.auth.credentials.username;
 
             Async.waterfall([
 
@@ -317,8 +316,8 @@ exports.register = function (server, options, next) {
                         name: 'person_write_profile',
                         text: 'UPDATE person SET reg = $1, fn = $2, sex = $3, yob = $4, lang = $5, ut = $6 ' +
                               'WHERE id = $7 AND deleted = false ' +
-                              'RETURNING id',
-                        values: [r.reg, r.fn, r.sex, r.yob, r.lang, _.now(), personId]
+                              'RETURNING id, username',
+                        values: [r.region, r.filename, r.sex, r.yob, r.language, _.now(), personId]
                     };
 
                     request.pg.client.query(queryConfig, function (err, result) {
@@ -332,11 +331,16 @@ exports.register = function (server, options, next) {
                             return callback(Boom.badRequest(Const.PERSON_UPDATE_PROFILE_FAILED));
                         }
 
-                        delete r.lang;
-                        r.id = personId;
-                        r.username = username;
+                        var profileObj = {
+                            id: personId,
+                            username: result.rows[0].username,
+                            reg: r.region,
+                            fn: r.filename,
+                            sex: r.sex,
+                            yob: r.yob
+                        };
 
-                        Cache.hmset(Cache.PersonStore, personId, r);
+                        Cache.hmset(Cache.PersonStore, personId, profileObj);
                         return callback(null);
                     });
                 }
