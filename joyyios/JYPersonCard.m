@@ -16,7 +16,7 @@ static const CGFloat kLabelHeight = 40.f;
 static const CGFloat kInfoLabelWidth = 280.f;
 
 @interface JYPersonCard ()
-@property(nonatomic) JYButton *heartCountView;
+@property(nonatomic) JYButton *winkCountView;
 @property(nonatomic) TTTAttributedLabel *infoLabel;
 @end
 
@@ -62,23 +62,23 @@ static const CGFloat kInfoLabelWidth = 280.f;
     return _infoLabel;
 }
 
-- (JYButton *)heartCountView
+- (JYButton *)winkCountView
 {
-    if (!_heartCountView)
+    if (!_winkCountView)
     {
         CGFloat x = CGRectGetMaxX(self.infoLabel.bounds);
         CGFloat y = CGRectGetHeight(self.bounds) - kLabelHeight;
         CGFloat width = CGRectGetWidth(self.bounds) - kInfoLabelWidth;
         CGRect frame = CGRectMake(x, y, width, kLabelHeight);
-        _heartCountView = [JYButton buttonWithFrame:frame buttonStyle:JYButtonStyleImageWithTitle shouldMaskImage:YES];
-        _heartCountView.imageView.image = [[self class] winkImage];
-        _heartCountView.contentColor = JoyyBlue;
-        _heartCountView.foregroundColor = JoyyBlack50;
+        _winkCountView = [JYButton buttonWithFrame:frame buttonStyle:JYButtonStyleImageWithTitle shouldMaskImage:YES];
+        _winkCountView.imageView.image = [[self class] winkImage];
+        _winkCountView.contentColor = JoyyBlue;
+        _winkCountView.foregroundColor = JoyyBlack50;
 
-        [self addSubview:_heartCountView];
+        [self addSubview:_winkCountView];
     }
 
-    return _heartCountView;
+    return _winkCountView;
 }
 
 - (TTTAttributedLabel *)_labelWithFrame:(CGRect)frame
@@ -108,7 +108,7 @@ static const CGFloat kInfoLabelWidth = 280.f;
 - (void)_updateImage
 {
     // Get network image
-    NSURL *avatarURL = [NSURL URLWithString:self.person.fullAvatarURL];
+    NSURL *avatarURL = [NSURL URLWithString:self.person.avatarURL];
     NSURLRequest *request = [NSURLRequest requestWithURL:avatarURL];
 
     __weak typeof(self) weakSelf = self;
@@ -135,17 +135,17 @@ static const CGFloat kInfoLabelWidth = 280.f;
 {
     if (self.person.ageString)
     {
-        self.infoLabel.text = [NSString stringWithFormat:@"%@, %@, %@", self.person.username, self.person.org, self.person.ageString];
+        self.infoLabel.text = [NSString stringWithFormat:@"%@, %@", self.person.username, self.person.ageString];
     }
     else
     {
-        self.infoLabel.text = [NSString stringWithFormat:@"%@, %@", self.person.username, self.person.org];
+        self.infoLabel.text = [NSString stringWithFormat:@"%@", self.person.username];
     }
 }
 
 - (void)_updateHeartCount
 {
-    self.heartCountView.textLabel.text = [NSString stringWithFormat:@"%tu", self.person.heartCount];
+    self.winkCountView.textLabel.text = [NSString stringWithFormat:@"%tu", self.person.winkCount];
 }
 
 @end

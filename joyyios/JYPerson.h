@@ -6,52 +6,35 @@
 //  Copyright (c) 2015 Joyy Inc. All rights reserved.
 //
 
-typedef NS_ENUM(NSUInteger, JYGender)
-{
-    JYGenderUnknown = 0,
-    JYGenderMale    = 1,
-    JYGenderFemale  = 2,
-    JYGenderOther   = 3
-};
-
-typedef NS_ENUM(NSUInteger, JYOrgType)
-{
-    JYOrgTypeUnknown = 0,
-    JYOrgTypeCom     = 1,
-    JYOrgTypeEdu     = 2,
-    JYOrgTypeOrg     = 3,
-    JYOrgTypeGov     = 4,
-    JYOrgTypeOther   = 100
-};
-
 @interface JYPerson : NSObject
 
 + (JYPerson *)me;
 - (instancetype)initWithDictionary:(NSDictionary *)dict;
+- (void)save:(NSDictionary *)dict;
 
 // Identities
-@property(nonatomic, readonly) NSString *idString;
-@property(nonatomic) NSUInteger personId;
-@property(nonatomic) NSString *username;
+@property (nonatomic) NSUInteger personId;
+@property (nonatomic) NSString *username;
+@property (nonatomic, readonly) NSString *idString;
 
 // Avatar
-@property(nonatomic) UIImage *avatarImage;
-@property(nonatomic, readonly) NSString *avatarURL;
-@property(nonatomic, readonly) NSString *fullAvatarURL;
+@property (nonatomic) UIImage *avatarImage;
+@property (nonatomic, readonly) NSString *avatarFilename;
+@property (nonatomic, readonly) NSString *avatarURL;
 
 // Profile
-@property(nonatomic) BOOL isVerified;
-@property(nonatomic) JYGender gender;
-@property(nonatomic) JYOrgType orgType;
-@property(nonatomic) NSString *bio;
-@property(nonatomic) NSString *org;
-@property(nonatomic) NSUInteger yearOfBirth;
-@property(nonatomic) NSUInteger friendCount;
-@property(nonatomic) NSUInteger heartCount;
-@property(nonatomic) NSUInteger score;
-@property(nonatomic, readonly) NSString *ageString;
+@property (nonatomic) NSString *sex;
+@property (nonatomic) NSString *sexualOrientation;
+@property (nonatomic) NSString *bio;
+@property (nonatomic) NSUInteger yearOfBirth;
+@property (nonatomic) NSUInteger friendCount;
+@property (nonatomic) NSUInteger winkCount;
+@property (nonatomic) NSUInteger score;
+@property (nonatomic, readonly) NSString *ageString;
 
 
-
+// The fields only for "me"
+@property (nonatomic) NSString *cell;
+@property (nonatomic) NSString *sexCell;
 
 @end

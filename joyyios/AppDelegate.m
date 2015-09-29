@@ -9,6 +9,8 @@
 #import <AFNetworking/AFNetworking.h>
 #import <AWSCore/AWSCore.h>
 #import <AWSS3/AWSS3.h>
+#import <CoreTelephony/CTCarrier.h>
+#import <CoreTelephony/CTTelephonyNetworkInfo.h>
 #import <Crashlytics/Crashlytics.h>
 #import <Fabric/Fabric.h>
 #import <KVNProgress/KVNProgress.h>
@@ -18,9 +20,9 @@
 #import "AppDelegate.h"
 #import "JYAmazonClientManager.h"
 #import "JYButton.h"
+#import "JYFilename.h"
 #import "JYMasqueradeViewController.h"
 #import "JYPeopleViewController.h"
-#import "JYProfileViewController.h"
 #import "JYSessionListViewController.h"
 #import "JYPhoneNumberViewController.h"
 #import "JYSoundPlayer.h"
@@ -49,11 +51,23 @@
     [Fabric with:@[[Crashlytics class]]];
     [Flurry startSession:@"YOUR_FLURRY_API_KEY"];
 
-    self.cellId = [JYDataStore sharedInstance].lastCellId ? [JYDataStore sharedInstance].lastCellId : @"94555"; // default zipcode
+    // Init zip
+    // For those who refuse give us zip, just make some zip for them
+    self.zip = [JYDataStore sharedInstance].lastZip;
+    if (!self.zip)
+    {
+        CTTelephonyNetworkInfo *netInfo = [[CTTelephonyNetworkInfo alloc] init];
+        CTCarrier *carrier = [netInfo subscriberCellularProvider];
+        NSString *countryCode = [carrier.isoCountryCode uppercaseString];
+        NSString *randomCode = [[JYFilename sharedInstance] randomFourDigits];
+        self.zip = [countryCode stringByAppendingString:randomCode]; // random zip of the country
+    }
+
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_didSignInManually) name:kNotificationDidSignIn object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_didSignInManually) name:kNotificationDidSignUp object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_didSignUpManually) name:kNotificationDidSignUp object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_didCreateProfile) name:kNotificationDidCreateProfile object:nil];
 
     [self _setupGlobalAppearance];
     [self _setupLocationManager];
@@ -267,8 +281,7 @@
 
 - (void)_launchSignViewController
 {
-//    UIViewController *viewController = [JYPhoneNumberViewController new];
-    UIViewController *viewController = [JYProfileViewController new];
+    UIViewController *viewController = [JYPhoneNumberViewController new];
     UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:viewController];
     self.window.rootViewController = navigationController;
 }
@@ -336,6 +349,17 @@
 {
     NSInteger seconds = [JYCredential mine].tokenValidInSeconds;
     [self _autoSignInAfter:seconds];
+    [self _launchMainViewController];
+}
+
+- (void)_didSignUpManually
+{
+    NSInteger seconds = [JYCredential mine].tokenValidInSeconds;
+    [self _autoSignInAfter:seconds];
+}
+
+- (void)_didCreateProfile
+{
     [self _launchMainViewController];
 }
 
@@ -455,42 +479,36 @@
                        else
                        {
                            CLPlacemark *placemark = [placemarks lastObject];
-                           [weakSelf _updateCellIdWithPlacemark:placemark];
+                           [weakSelf _updateZipWithPlacemark:placemark];
                        }
                    }];
 }
 
-- (void)_updateCellIdWithPlacemark:(CLPlacemark *)placemark
+- (void)_updateZipWithPlacemark:(CLPlacemark *)placemark
 {
-    NSString *newCellId = nil;
-    if ([placemark.ISOcountryCode isEqualToString:@"US"])
-    {
-        newCellId = placemark.postalCode;
-    }
-    else
-    {
-        newCellId = [NSString stringWithFormat:@"%@%@", placemark.ISOcountryCode, placemark.postalCode];
-    }
+    NSString *newZip = [NSString stringWithFormat:@"%@%@", placemark.ISOcountryCode, placemark.postalCode];;
 
-    if (![newCellId isEqualToString:self.cellId])
+    if (![newZip isEqualToString:self.zip])
     {
-        self.cellId = newCellId;
-        [JYDataStore sharedInstance].lastCellId = newCellId;
-        [self _uploadLocation];
+        [self _uploadLocation:newZip];
     }
 }
 
-- (void)_uploadLocation
+- (void)_uploadLocation:(NSString *)newZip
 {
-    CLLocationCoordinate2D coods = self.currentCoordinate;
-    NSDictionary *parameters = @{@"lon": @(coods.longitude), @"lat": @(coods.latitude), @"cell": self.cellId};
+    NSDictionary *parameters = @{ @"zip": newZip, @"cell": self.cell, @"sex": sex };
     NSString *url = [NSString apiURLWithPath:@"person/location"];
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager managerWithToken];
 
+    __weak typeof(self) weakSelf = self;
     [manager POST:url
        parameters:parameters
           success:^(AFHTTPRequestOperation *operation, id responseObject) {
               NSLog(@"Location upload Success responseObject: %@", responseObject);
+
+              weakSelf.cell = [responseObject objectForKey:@"cell"];
+              weakSelf.zip = newZip;
+              [JYDataStore sharedInstance].lastZip = newZip;
           }
           failure:^(AFHTTPRequestOperation *operation, NSError *error) {
               NSLog(@"Location Upload Error: %@", error);

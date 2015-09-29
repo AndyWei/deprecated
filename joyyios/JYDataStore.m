@@ -12,7 +12,7 @@ NSString *const kKeyBadgeCount = @"BadgeCount";
 NSString *const kKeyDeviceToken = @"DeviceToken";
 NSString *const kKeyLastCoordinateLat = @"LastCoordinateLat";
 NSString *const kKeyLastCoordinateLon = @"LastCoordinateLon";
-NSString *const kKeyLastCellId = @"LastCellId";
+NSString *const kKeyLastZip = @"LastZip";
 NSString *const kKeyPresentedIntroductionVersion = @"PresentedIntroductionVersion";
 
 @interface JYDataStore ()
@@ -149,15 +149,15 @@ NSString *const kKeyPresentedIntroductionVersion = @"PresentedIntroductionVersio
     return CLLocationCoordinate2DMake(lat, lon);
 }
 
-// lastCellId
-- (void)setLastCellId:(NSString *)cellId
+// lastZip
+- (void)setZip:(NSString *)zip
 {
-    [[NSUserDefaults standardUserDefaults] setObject:cellId forKey:kKeyLastCellId];
+    [[NSUserDefaults standardUserDefaults] setObject:zip forKey:kKeyLastZip];
 }
 
 - (NSString *)lastCellId
 {
-    return [[NSUserDefaults standardUserDefaults] stringForKey:kKeyLastCellId];
+    return [[NSUserDefaults standardUserDefaults] stringForKey:kKeyLastZip];
 
 }
 

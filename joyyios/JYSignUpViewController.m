@@ -11,6 +11,7 @@
 #import <RKDropdownAlert/RKDropdownAlert.h>
 
 #import "JYButton.h"
+#import "JYProfileViewController.h"
 #import "JYSignUpViewController.h"
 
 @interface JYSignUpViewController ()
@@ -39,6 +40,12 @@
 - (void)_usernameExist:(BOOL)exist
 {
     self.usernameField.textColor = exist? JoyyRed: FlatGreen;
+}
+
+- (void)_showProfileView
+{
+    UIViewController *viewController = [JYProfileViewController new];
+    [self.navigationController pushViewController:viewController animated:YES];
 }
 
 #pragma mark - UITextFieldDelegate methods
@@ -92,6 +99,7 @@
     [KVNProgress show];
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
 
+    __weak typeof(self) weakSelf = self;
     [manager POST:url
       parameters:parameters
          success:^(AFHTTPRequestOperation *operation, id responseObject) {
@@ -99,8 +107,10 @@
 
              [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
              [KVNProgress dismiss];
+
              [[JYCredential mine] save:responseObject];
              [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationDidSignUp object:nil];
+             [weakSelf _showProfileView];
          }
          failure:^(AFHTTPRequestOperation *operation, NSError *error) {
              NSLog(@"SignUp Error: %@", error);

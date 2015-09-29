@@ -421,7 +421,10 @@ const CGFloat kButtonWidth = 60;
     NSMutableDictionary *parameters = [NSMutableDictionary new];
 
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [parameters setObject:appDelegate.cellId forKey:@"cell"];
+    [parameters setObject:appDelegate.zip forKey:@"zip"];
+
+    NSString *orientation = [JYPerson me].sexualOrientation;
+    [parameters setObject:orientation forKey:@"orientation"];
 
     if (self.personList.count > 0)
     {

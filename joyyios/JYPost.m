@@ -8,9 +8,14 @@
 
 #import <YTKKeyValueStore/YTKKeyValueStore.h>
 
+#import "JYFilename.h"
 #import "JYPost.h"
 
 @interface JYPost ()
+@property(nonatomic) NSString *region;
+@property(nonatomic) NSString *filename;
+@property(nonatomic) NSString *url;
+@property(nonatomic) NSString *idString;
 @end
 
 @implementation JYPost
@@ -22,15 +27,16 @@
     {
         if (dict)
         {
-            _filename = [dict objectForKey:@"filename"];
-            _postId = [dict unsignedIntegerValueForKey:@"id"];
-            _ownerId = [dict unsignedIntegerValueForKey:@"owner"];
-            _likeCount = [dict unsignedIntegerValueForKey:@"likes"];
-            _commentCount = [dict unsignedIntegerValueForKey:@"comments"];
-            _timestamp = [dict unsignedIntegerValueForKey:@"ct"];
+            _region   = [dict objectForKey:@"reg"];
+            _filename = [dict objectForKey:@"fn"];
+            _caption = [dict objectForKey:@"caption"];
+            _postId       = [dict unsignedIntegerValueForKey:@"id"];
+            _ownerId      = [dict unsignedIntegerValueForKey:@"owner"];
+            _likeCount    = [dict unsignedIntegerValueForKey:@"lcnt"];
+            _commentCount = [dict unsignedIntegerValueForKey:@"ccnt"];
+            _timestamp    = [dict unsignedIntegerValueForKey:@"ct"];
             _isLiked = [self _isInLikedStore];
 
-            _caption = [dict objectForKey:@"caption"];
             if ([kDummyCaptionText isEqualToString:_caption])
             {
                 _caption = @"";
@@ -65,12 +71,20 @@
 
 - (NSString *)idString
 {
-    return [NSString stringWithFormat:@"%tu", self.postId];
+    if (!_idString)
+    {
+        _idString = [NSString stringWithFormat:@"%tu", self.postId];
+    }
+    return _idString;
 }
 
 - (NSString *)url
 {
-    return [NSString stringWithFormat:@"%@%@", kURLPostBase, self.filename];
+    if (!_url)
+    {
+        _url = [[JYFilename sharedInstance] urlForPostWithRegion:self.region filename:self.filename];
+    }
+    return _url;
 }
 
 @end

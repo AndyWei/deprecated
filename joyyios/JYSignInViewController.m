@@ -37,7 +37,6 @@
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 - (void)_signIn
@@ -59,6 +58,7 @@
             [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
             [KVNProgress dismiss];
             [[JYCredential mine] save:responseObject];
+
             [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationDidSignIn object:nil];
         }
         failure:^(AFHTTPRequestOperation *operation, NSError *error) {

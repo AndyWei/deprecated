@@ -6,8 +6,8 @@
 //  Copyright (c) 2015 Joyy Inc. All rights reserved.
 //
 
-#import <CoreTelephony/CTTelephonyNetworkInfo.h>
 #import <CoreTelephony/CTCarrier.h>
+#import <CoreTelephony/CTTelephonyNetworkInfo.h>
 #import <TTTAttributedLabel/TTTAttributedLabel.h>
 #import <VMaskTextField/VMaskTextField.h>
 

@@ -16,7 +16,7 @@
 #import "JYPhotoCaptionViewController.h"
 #import "JYComment.h"
 #import "JYCommentViewController.h"
-#import "JYFile.h"
+#import "JYFilename.h"
 #import "JYMasqueradeViewController.h"
 #import "JYPost.h"
 #import "JYPostViewCell.h"
@@ -367,7 +367,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
     NSURL *fileURL = [NSURL fileURLWithPath:[NSTemporaryDirectory() stringByAppendingPathComponent:@"masquerade"]];
     [data writeToURL:fileURL atomically:YES];
 
-    NSString *s3filename = [JYFile filenameWithHttpContentType:contentType];
+    NSString *s3filename = [[JYFilename sharedInstance] randomFilenameWithHttpContentType:contentType];
 
     AWSS3TransferManager *transferManager = [AWSS3TransferManager defaultS3TransferManager];
     if (!transferManager)
@@ -377,11 +377,10 @@ static NSString *const kPostCellIdentifier = @"postCell";
     }
 
     AWSS3TransferManagerUploadRequest *request = [AWSS3TransferManagerUploadRequest new];
-    request.bucket = kPostBucket;
+    request.bucket = [JYFilename sharedInstance].postBucketName;
     request.key = s3filename;
     request.body = fileURL;
     request.contentType = contentType;
-    request.ACL = AWSS3ObjectCannedACLPublicRead;
 
     __weak typeof(self) weakSelf = self;
     [[transferManager upload:request] continueWithBlock:^id(AWSTask *task) {
@@ -454,7 +453,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     [parameters setObject:@(appDelegate.currentCoordinate.latitude) forKey:@"lat"];
     [parameters setObject:@(appDelegate.currentCoordinate.longitude) forKey:@"lon"];
-    [parameters setObject:appDelegate.cellId forKey:@"cell"];
+    [parameters setObject:appDelegate.zip forKey:@"cell"];
 
     [parameters setObject:filename forKey:@"filename"];
     [parameters setObject:caption forKey:@"caption"];
@@ -579,7 +578,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
     NSMutableDictionary *parameters = [NSMutableDictionary new];
 
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [parameters setObject:appDelegate.cellId forKey:@"cell"];
+    [parameters setObject:appDelegate.zip forKey:@"zip"];
 
     if (self.postList.count > 0)
     {

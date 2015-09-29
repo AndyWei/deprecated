@@ -41,9 +41,6 @@ UInt16 const kMessagePort = 5222;
 // AWS
 NSString *const kAuthProviderName = @"joyy"; // the provider name configured in the Cognito console.
 NSString *const kCognitoIdentityPoolId = @"us-east-1:a9366287-4298-443f-aa0b-d4d6ee43fa67";
-NSString *const kAvatarBucket   = @"joyyavatar";
-NSString *const kMessagesBucket = @"joyyim";
-NSString *const kPostBucket     = @"joyypost";
 AWSRegionType const kCognitoRegionType = AWSRegionUSEast1;
 // AWS end
 
@@ -65,6 +62,7 @@ NSString *const kMessageBodyTypeVideo    = @"v:";
 NSString *const kNotificationAppDidStart = @"appDidStart";
 NSString *const kNotificationAppDidStop  = @"appDidStop";
 NSString *const kNotificationDidChangeCountryCode = @"didChangeCountryCode";
+NSString *const kNotificationDidCreateProfile = @"didCreateProfile";
 NSString *const kNotificationDidSignIn = @"didSignIn";
 NSString *const kNotificationDidSignUp = @"didSignUp";
 NSString *const kNotificationNeedGeoInfo = @"needGeoInfo";
@@ -74,9 +72,6 @@ NSString *const kNotificationWillLikePost = @"willLikePost";
 NSString *const kTableNameLikedPost = @"liked_post";
 NSString *const kTableNamePerson = @"person";
 
-NSString *const kURLAPIBase = @"http://api.joyyapp.com:8000/v1/";
-//NSString *const kURLAPIBase = @"http://192.168.1.106:8000/v1/";
+//NSString *const kURLAPIBase = @"http://api.joyyapp.com:8000/v1/";
+NSString *const kURLAPIBase = @"http://192.168.1.104:8000/v1/";
 
-NSString *const kURLAvatarBase = @"http://avatar.joyyapp.com/";
-NSString *const kURLMessageMediaBase = @"http://media.joyy.im/";
-NSString *const kURLPostBase = @"http://post.joyyapp.com/";

@@ -6,15 +6,16 @@
 //  Copyright (c) 2015 Joyy Inc. All rights reserved.
 //
 
+#import "JYFilename.h"
 
 @interface JYPerson ()
+@property (nonatomic) NSString *idString;
+@property (nonatomic) NSString *ageString;
+@property (nonatomic) NSString *region;
+@property (nonatomic) NSString *avatarFilename;
 @end
 
 @implementation JYPerson
-@synthesize ageString = _ageString;
-@synthesize idString = _idString;
-@synthesize avatarURL = _avatarURL;
-@synthesize fullAvatarURL = _fullAvatarURL;
 
 + (JYPerson *)me
 {
@@ -33,18 +34,46 @@
     self = [super init];
     if (self)
     {
-        _bio  = [dict objectForKey:@"bio"];
-        _username = [dict objectForKey:@"username"];
-        _org  = [dict objectForKey:@"org"];
-        _friendCount = [dict unsignedIntegerValueForKey:@"friends"];
-        _gender      = [dict unsignedIntegerValueForKey:@"gender"];
-        _heartCount  = [dict unsignedIntegerValueForKey:@"hearts"];
-        _orgType     = [dict unsignedIntegerValueForKey:@"orgtype"];
+        _username       = [dict objectForKey:@"username"];
+        _sex            = [dict objectForKey:@"sex"];
+        _region         = [dict objectForKey:@"reg"];
+        _avatarFilename = [dict objectForKey:@"fn"];
+        _bio            = [dict objectForKey:@"bio"];
         _personId    = [dict unsignedIntegerValueForKey:@"id"];
+        _friendCount = [dict unsignedIntegerValueForKey:@"fcnt"];
+        _winkCount   = [dict unsignedIntegerValueForKey:@"wcnt"];
         _score       = [dict unsignedIntegerValueForKey:@"score"];
         _yearOfBirth = [dict unsignedIntegerValueForKey:@"yob"];
     }
     return self;
+}
+
+- (void)save:(NSDictionary *)dict
+{
+    if ([dict valueForKey:@"username"])
+    {
+        self.username = [dict valueForKey:@"username"];
+    }
+
+    if ([dict valueForKey:@"reg"])
+    {
+        self.region = [dict valueForKey:@"reg"];
+    }
+
+    if ([dict valueForKey:@"fn"])
+    {
+        self.avatarFilename = [dict valueForKey:@"fn"];
+    }
+
+    if ([dict valueForKey:@"sex"])
+    {
+        self.sex = [dict valueForKey:@"sex"];
+    }
+
+    if ([dict valueForKey:@"yob"])
+    {
+        self.yearOfBirth = [dict unsignedIntegerValueForKey:@"yob"];
+    }
 }
 
 - (NSString *)ageString
@@ -75,16 +104,32 @@
 
 - (NSString *)avatarURL
 {
-    if (!_avatarURL)
-    {
-        _avatarURL = [NSString stringWithFormat:@"%@%@_s.jpg", kURLAvatarBase, self.username];
-    }
-    return _avatarURL;
+    return [[JYFilename sharedInstance] urlForAvatarWithRegion:self.region filename:self.avatarFilename];
 }
 
-- (NSString *)fullAvatarURL
+- (NSString *)sexualOrientation
 {
-    return [NSString stringWithFormat:@"%@%@.jpg", kURLAvatarBase, self.username];
+    if (!self.sex)
+    {
+        return @"X";
+    }
+
+    if (!_sexualOrientation)
+    {
+        if ([self.sex isEqualToString:@"M"])
+        {
+            _sexualOrientation = @"F";
+        }
+        else if ([self.sex isEqualToString:@"F"])
+        {
+            _sexualOrientation = @"M";
+        }
+        else
+        {
+            _sexualOrientation = @"X";
+        }
+    }
+    return _sexualOrientation;
 }
 
 @end

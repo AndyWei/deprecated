@@ -38,9 +38,6 @@ extern CGFloat const kFooterHeight;
 // AWS
 extern NSString *const kAuthProviderName;
 extern NSString *const kCognitoIdentityPoolId;
-extern NSString *const kAvatarBucket;
-extern NSString *const kMessagesBucket;
-extern NSString *const kPostBucket;
 extern AWSRegionType const kCognitoRegionType;
 // AWS end
 
@@ -60,6 +57,7 @@ extern NSString *const kMessageBodyTypeVideo;
 extern NSString *const kNotificationAppDidStart;
 extern NSString *const kNotificationAppDidStop;
 extern NSString *const kNotificationDidChangeCountryCode;
+extern NSString *const kNotificationDidCreateProfile;
 extern NSString *const kNotificationDidSignIn;
 extern NSString *const kNotificationDidSignUp;
 extern NSString *const kNotificationNeedGeoInfo;
@@ -68,9 +66,6 @@ extern NSString *const kNotificationWillLikePost;
 extern NSString *const kTableNameLikedPost;
 extern NSString *const kTableNamePerson;
 extern NSString *const kURLAPIBase;
-extern NSString *const kURLAvatarBase;
-extern NSString *const kURLPostBase;
-extern NSString *const kURLMessageBase;
 
 extern NSInteger const kSignInRetryInSeconds;
 extern NSTimeInterval const k15Minutes;

@@ -9,12 +9,12 @@
 #import <AFNetworking/AFNetworking.h>
 #import <AKPickerView/AKPickerView.h>
 #import <AWSS3/AWSS3.h>
-#import <MJRefresh/MJRefresh.h>
+#import <KVNProgress/KVNProgress.h>
 #import <RKDropdownAlert/RKDropdownAlert.h>
 #import <TTTAttributedLabel/TTTAttributedLabel.h>
 
 #import "JYButton.h"
-#import "JYFile.h"
+#import "JYFilename.h"
 #import "JYFloatLabeledTextField.h"
 #import "JYProfileViewController.h"
 #import "TGCameraColor.h"
@@ -34,9 +34,9 @@
 @property (nonatomic) UIImage *avatarImage;
 @property (nonatomic) UIView *avatarContainerView;
 
-@property (nonatomic) TTTAttributedLabel *genderLabel;
-@property (nonatomic) AKPickerView *genderPickerView;
-@property (nonatomic) NSUInteger gender;
+@property (nonatomic) TTTAttributedLabel *sexLabel;
+@property (nonatomic) AKPickerView *sexPickerView;
+@property (nonatomic) NSString *sex;
 
 @property (nonatomic) UITextField *yobTextField;
 @property (nonatomic) BOOL hasYobProvided;
@@ -55,7 +55,6 @@ const CGFloat kAvatarButtonWidth = kAvatarButtonHeight;
 
     self.title = NSLocalizedString(@"Profile", nil);
 
-    self.gender = 0;
     self.hasYobProvided = NO;
     self.avatarImage = nil;
 
@@ -167,34 +166,34 @@ const CGFloat kAvatarButtonWidth = kAvatarButtonHeight;
     return _headerLabel;
 }
 
-- (TTTAttributedLabel *)genderLabel
+- (TTTAttributedLabel *)sexLabel
 {
-    if (!_genderLabel)
+    if (!_sexLabel)
     {
         CGRect frame = CGRectMake(kMarginLeft, 0, 100, kCellHeight);
         TTTAttributedLabel *label = [[TTTAttributedLabel alloc] initWithFrame:frame];
         label.font = [UIFont systemFontOfSize:16];
         label.textAlignment = NSTextAlignmentLeft;
         label.text = NSLocalizedString(@"Gender", nil);
-        _genderLabel = label;
+        _sexLabel = label;
     }
-    return _genderLabel;
+    return _sexLabel;
 }
 
-- (AKPickerView *)genderPickerView
+- (AKPickerView *)sexPickerView
 {
-    if (!_genderPickerView)
+    if (!_sexPickerView)
     {
         CGRect frame = CGRectMake(0, 0, 120, kCellHeight);
-        _genderPickerView = [[AKPickerView alloc] initWithFrame:frame];
-        _genderPickerView.dataSource = self;
-        _genderPickerView.delegate = self;
-        [_genderPickerView reloadData];
+        _sexPickerView = [[AKPickerView alloc] initWithFrame:frame];
+        _sexPickerView.dataSource = self;
+        _sexPickerView.delegate = self;
+        [_sexPickerView reloadData];
 
         // Selecte the item in the middle, which makes user realize this is a picker
-        [_genderPickerView selectItem:1 animated:NO];
+        [_sexPickerView selectItem:1 animated:NO];
     }
-    return _genderPickerView;
+    return _sexPickerView;
 }
 
 - (UITextField *)yobTextField
@@ -293,7 +292,19 @@ const CGFloat kAvatarButtonWidth = kAvatarButtonHeight;
 
 - (void)pickerView:(AKPickerView *)pickerView didSelectItem:(NSInteger)item
 {
-    self.gender = item;
+    switch (item) {
+        case 0:
+            self.sex = @"M";
+            break;
+        case 1:
+            self.sex = @"F";
+            break;
+        case 2:
+            self.sex = @"X";
+            break;
+        default:
+            break;
+    }
 }
 
 #pragma mark - UITableViewDataSource
@@ -329,11 +340,11 @@ const CGFloat kAvatarButtonWidth = kAvatarButtonHeight;
     }
     else if (indexPath.row == 1)
     {
-        [cell.contentView addSubview:self.genderLabel];
-        self.genderLabel.x = kMarginLeft;
+        [cell.contentView addSubview:self.sexLabel];
+        self.sexLabel.x = kMarginLeft;
 
-        [cell.contentView addSubview:self.genderPickerView];
-        self.genderPickerView.x = CGRectGetMaxX(self.genderLabel.frame) + 50;
+        [cell.contentView addSubview:self.sexPickerView];
+        self.sexPickerView.x = CGRectGetMaxX(self.sexLabel.frame) + 50;
     }
     else
     {
@@ -446,6 +457,7 @@ const CGFloat kAvatarButtonWidth = kAvatarButtonHeight;
 
 - (void)_didTapSaveButton
 {
+    [self _enableButtons:NO];
     [self _updateProfile];
 }
 
@@ -495,14 +507,33 @@ const CGFloat kAvatarButtonWidth = kAvatarButtonHeight;
     [picker dismissViewControllerAnimated:YES completion:nil];
 }
 
+#pragma mark - Indicators
+
+- (void)_showNetworkIndicator:(BOOL)show
+{
+    if (show)
+    {
+        [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+        [KVNProgress show];
+    }
+    else
+    {
+        [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+        [KVNProgress dismiss];
+    }
+}
+
 #pragma mark - AWS S3
 
 - (void)_updateProfileWithMediaData:(NSData *)data contentType:(NSString *)contentType
 {
+    [self _showNetworkIndicator:YES];
+
     NSURL *fileURL = [NSURL fileURLWithPath:[NSTemporaryDirectory() stringByAppendingPathComponent:@"profile"]];
     [data writeToURL:fileURL atomically:YES];
 
-    NSString *s3filename = [JYFile filenameWithHttpContentType:contentType];
+    NSString *filename = [[JYFilename sharedInstance] newAvatarFilename];
+    NSString *s3filename = [filename stringByAppendingString:@".jpg"];
 
     AWSS3TransferManager *transferManager = [AWSS3TransferManager defaultS3TransferManager];
     if (!transferManager)
@@ -512,14 +543,14 @@ const CGFloat kAvatarButtonWidth = kAvatarButtonHeight;
     }
 
     AWSS3TransferManagerUploadRequest *request = [AWSS3TransferManagerUploadRequest new];
-    request.bucket = kAvatarBucket;
+    request.bucket = [JYFilename sharedInstance].avatarBucketName;
     request.key = s3filename;
     request.body = fileURL;
     request.contentType = contentType;
-    request.ACL = AWSS3ObjectCannedACLPublicRead;
 
     __weak typeof(self) weakSelf = self;
     [[transferManager upload:request] continueWithBlock:^id(AWSTask *task) {
+        [weakSelf _showNetworkIndicator:NO];
         if (task.error)
         {
             if ([task.error.domain isEqualToString:AWSS3TransferManagerErrorDomain])
@@ -539,12 +570,13 @@ const CGFloat kAvatarButtonWidth = kAvatarButtonHeight;
                 // Unknown error.
                 NSLog(@"Error: AWSS3TransferManager upload error = %@", task.error);
             }
+
         }
         if (task.result)
         {
             AWSS3TransferManagerUploadOutput *uploadOutput = task.result;
             NSLog(@"Success: AWSS3TransferManager upload task.result = %@", uploadOutput);
-            [weakSelf _updateProfileWithFilename:s3filename];
+            [weakSelf _updateProfileWithFilename:filename];
         }
         return nil;
     }];
@@ -552,34 +584,78 @@ const CGFloat kAvatarButtonWidth = kAvatarButtonHeight;
 
 #pragma mark - Network
 
-- (void)_updateProfileWithFilename:(NSString *)s3filename
+- (void)_updateProfileWithFilename:(NSString *)filename
 {
-//    self.button.enabled = NO;
-//
-//    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-//    NSString *url = [NSString apiURLWithPath:@"credential/vcode"];
-//
-//    NSString *phoneNumber = nil;
-//    NSString * language = [[[NSLocale preferredLanguages] objectAtIndex:0] substringToIndex:2];
-//
-//    NSDictionary *parameters = @{ @"phone": phoneNumber, @"language": language };
-//
-//    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
-//
-//    __weak typeof(self) weakSelf = self;
-//    [manager GET:url
-//      parameters:parameters
-//         success:^(AFHTTPRequestOperation *operation, id responseObject) {
-//             NSLog(@"Success: GET credential/vcode");
-//             [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-//
-//         }
-//         failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-//             NSLog(@"Error: GET credential/vcode error: %@", error);
-//
-//             [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-//             weakSelf.button.enabled = YES;
-//         }];
+    [self _showNetworkIndicator:YES];
+
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager managerWithToken];
+    NSString *url = [NSString apiURLWithPath:@"person/me"];
+    NSDictionary *parameters = [self _parametersForUpdatingProfileWithFilename:filename];
+
+    __weak typeof(self) weakSelf = self;
+    [manager POST:url
+      parameters:parameters
+         success:^(AFHTTPRequestOperation *operation, id responseObject) {
+             NSLog(@"Success: POST person/me");
+             [weakSelf _showNetworkIndicator:NO];
+             [[JYPerson me] save:responseObject];
+              [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationDidCreateProfile object:nil];
+         }
+         failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+             NSLog(@"Error: POST person/me error = %@", error);
+
+             [weakSelf _showNetworkIndicator:NO];
+             weakSelf.saveButton.enabled = YES;
+
+             NSString *errorMessage = nil;
+             errorMessage = [error.userInfo valueForKey:NSLocalizedDescriptionKey];
+
+             [RKDropdownAlert title:NSLocalizedString(kErrorTitle, nil)
+                            message:errorMessage
+                    backgroundColor:FlatYellow
+                          textColor:FlatBlack
+                               time:5];
+         }];
+}
+
+- (NSDictionary *)_parametersForUpdatingProfileWithFilename:(NSString *)filename
+{
+    NSMutableDictionary *parameters = [NSMutableDictionary new];
+
+    [parameters setValue:filename forKey:@"filename"];
+
+    NSString *region = [JYFilename sharedInstance].region;
+    [parameters setValue:region forKey:@"region"];
+
+    NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
+    [parameters setValue:language forKey:@"language"];
+
+    [parameters setValue:self.sex forKey:@"sex"];
+    [parameters setValue:self.yobTextField.text forKey:@"yob"];
+
+    return parameters;
+}
+
+- (void)_fetchProfile
+{
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager managerWithToken];
+    NSString *url = [NSString apiURLWithPath:@"person/me"];
+
+    [self _showNetworkIndicator:YES];
+
+    __weak typeof(self) weakSelf = self;
+    [manager GET:url
+      parameters:nil
+         success:^(AFHTTPRequestOperation *operation, id responseObject) {
+             NSLog(@"Success: Fetch profile  responseObject: %@", responseObject);
+             [weakSelf _showNetworkIndicator:NO];
+
+             [[JYPerson me] save:responseObject];
+         }
+         failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+             NSLog(@"Error: Fetch profile get error: %@", error);
+             [weakSelf _showNetworkIndicator:NO];
+         }];
 }
 
 @end
