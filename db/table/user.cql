@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS user_by_name (
     name             text    , -- unique username
     password         text    , -- bcrypt hashed password, it always 60 bytes, however text makes it flexible
     id               bigint  ,
-    phone            bigint  , -- phone number
+    phone            bigint  , -- phone number in E.164 format, but the leading '+' has been dropped
     deleted          boolean , -- a deleted username means it can be take by another user
 
     -- profile fields updated in post profile
