@@ -1,6 +1,7 @@
 /*
  * wink.cql
  * 
+* The setup file for production
  * Copyright (c) 2015 Joyy Inc. All rights reserved.
  */
  
@@ -15,11 +16,8 @@ CREATE KEYSPACE IF NOT EXISTS wink WITH REPLICATION = {
     'datacenter1': 3
  };
 
-USE wink;
-
-
 /*
- * DB roles and premissions
+ * DB users and premissions
  */
 CREATE USER IF NOT EXISTS api_server WITH PASSWORD 'password' NOSUPERUSER;
 

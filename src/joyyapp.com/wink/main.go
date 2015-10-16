@@ -1,3 +1,9 @@
+/*
+ * main.go
+ *
+ * Copyright (c) 2015 Joyy Inc. All rights reserved.
+ */
+
 package main
 
 import (
@@ -7,19 +13,6 @@ import (
 )
 
 func main() {
-
-    // err, idGenerator := SharedIdGenerator(0)
-    // if err != nil {
-    //     return
-    // }
-
-    // err, id := idGenerator.NextId()
-
-    // if err != nil {
-    //     return
-    // }
-
-    // fmt.Println("id =", id)
 
     router := gin.New()
 
@@ -31,16 +24,10 @@ func main() {
     {
         v1.GET("/ping", pong)
         v1.GET("/post/timeline", post.GetTimeline)
-        v1.POST("/user/singup", user.Signup)
+        v1.POST("/user/signup", user.Signup)
     }
 
     router.Run(":8000")
-}
-
-func panicOnError(err error) {
-    if err != nil {
-        panic(err)
-    }
 }
 
 func pong(c *gin.Context) {

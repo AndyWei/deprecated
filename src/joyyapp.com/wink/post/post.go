@@ -1,4 +1,9 @@
-// Implementation of all post related endpoints
+/*
+ * post.go
+ * post related endpoints
+ *
+ * Copyright (c) 2015 Joyy Inc. All rights reserved.
+ */
 
 package post
 
