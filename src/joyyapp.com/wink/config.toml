@@ -1,0 +1,31 @@
+# The dev config for wink
+purpose = "development"
+
+[cassandra]
+hosts = ["127.0.0.1"]
+keyspace = "wink"
+username = "dev"
+password = "password"
+
+[redis]
+host = "127.0.0.1"
+port = 6379
+password = ""
+database = 0
+
+
+# The production config for wink
+#purpose = "production"
+#
+#[cassandra]
+#hosts = ["127.0.0.1"]
+#keyspace = "wink"
+#username = "api_server"
+#password = "password"
+
+#
+#[redis]
+#host = "127.0.0.1"
+#port = 6379
+#password = ""
+#database = 0

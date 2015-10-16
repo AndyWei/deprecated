@@ -1,13 +1,13 @@
-// The cassandra DB client singleton provieding config and global shared DB client instance
+// The global cassandra DB session singleton
 
 package db
 
 import (
-// cs "github.com/gocql/gocql"
-// viper "github.com/spf13/viper"
+    gocql "github.com/gocql/gocql"
+    viper "github.com/spf13/viper"
 )
 
-// var sharedClient *cs.Client = nil
+var sharedSession *gocql.Session = nil
 
 func panicOnError(err error) {
     if err != nil {
@@ -17,23 +17,29 @@ func panicOnError(err error) {
 
 func init() {
 
-    // viper.SetConfigName("config")
-    // viper.AddConfigPath("$HOME")
-    // err := viper.ReadInConfig()
-    // panicOnError(err)
+    viper.SetConfigName("config")
+    viper.SetConfigType("toml")
+    viper.AddConfigPath("../")
+    err := viper.ReadInConfig()
+    panicOnError(err)
 
-    // clientPolicy := cs.NewClientPolicy()
-    // clientPolicy.ConnectionQueueSize = 64
-    // clientPolicy.LimitConnectionsToQueueSize = true
-    // clientPolicy.Timeout = 50 * time.Millisecond
+    hosts := viper.GetStringSlice("cassandra.hosts")
+    keyspace := viper.GetString("cassandra.keyspace")
+    username := viper.GetString("cassandra.username")
+    password := viper.GetString("cassandra.password")
 
-    // client, err := cs.NewClientWithPolicy(clientPolicy,
-    //     viper.GetString("aerospike.host"),
-    //     viper.GetString("aerospike.port")
-    // )
-    // panicOnError(err)
+    cluster := gocql.NewCluster(hosts)
+    cluster.Keyspace = keyspace
+    cluster.Consistency = gocql.Quorum
+    cluster.Authenticator = gocql.PasswordAuthenticator{
+        Username: username,
+        Password: password,
+    }
+
+    sharedSession, err := cluster.CreateSession()
+    panicOnError(err)
 }
 
-// func SharedClient() *as.Client {
-//     return sharedClient
-// }
+func SharedSession() *gocql.Session {
+    return sharedSession
+}

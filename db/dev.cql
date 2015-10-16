@@ -1,6 +1,7 @@
 /*
- * wink.cql
+ * dev.cql
  * 
+ * The setup file for local dev only
  * Copyright (c) 2015 Joyy Inc. All rights reserved.
  */
  
@@ -11,16 +12,13 @@
  * @Discussion: only need run it once
 */
 CREATE KEYSPACE IF NOT EXISTS wink WITH REPLICATION = {
-    'class': 'NetworkTopologyStrategy',
-    'datacenter1': 3
+    'class': 'SimpleStrategy',
+    'replication_factor': '1'
  };
 
-USE wink;
-
-
 /*
- * DB roles and premissions
+ * DB users and premissions
  */
-CREATE USER IF NOT EXISTS api_server WITH PASSWORD 'password' NOSUPERUSER;
+CREATE USER IF NOT EXISTS dev WITH PASSWORD 'password' NOSUPERUSER;
 
-GRANT MODIFY ON KEYSPACE wink TO api_server;
+GRANT MODIFY ON KEYSPACE wink TO dev;

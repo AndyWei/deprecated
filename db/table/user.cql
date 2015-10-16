@@ -4,6 +4,7 @@
  * Copyright (c) 2015 Joyy Inc. All rights reserved.
  */
 
+USE wink;
 
 /*
  * Description: the main user table
@@ -14,7 +15,7 @@
  *
  * @Discussion:
  */
-CREATE TABLE IF NOT EXISTS wink.user (
+CREATE TABLE IF NOT EXISTS user (
     id                 bigint       ,
     name               list<text>   , -- all the usernames have been used
     phone              list<bigint> , -- all the phone numbers have been used
@@ -35,15 +36,15 @@ CREATE TABLE IF NOT EXISTS wink.user (
  *
  * @Discussion:
  */
-CREATE TABLE IF NOT EXISTS wink.user_by_name (
+CREATE TABLE IF NOT EXISTS user_by_name (
     -- account fields created in post user/signup
     name             text    , -- unique username
     id               bigint  ,
     password         text    , -- bcrypt hashed password, it always 60 bytes, however text makes it flexible
-    phone            bigint  , -- phone number
     deleted          boolean , -- a deleted username means it can be take by another user
 
     -- profile fields updated in post profile
+    phone            bigint  , -- phone number
     language         text    , -- the language of the user's phone locale
     avatar           text    , -- This field is used for client to generate avatar url. It contains two parts, the region and the filename, in form of regioncode:filename, e.g., "eu:jfk_1064.jpg". Region could be "na", "eu" or "as"
     sex              text    , -- 'm' - male, 'f' - female, 'x' - other
@@ -69,12 +70,12 @@ CREATE TABLE IF NOT EXISTS wink.user_by_name (
  *
  * @Discussion:
 */
-CREATE TABLE IF NOT EXISTS wink.username_by_phone (
+CREATE TABLE IF NOT EXISTS username_by_phone (
     phone            bigint     ,
     name             list<text> , -- all the usernames have been used this phone
 
     PRIMARY KEY (phone)
-)
+);
 
 
 /*
@@ -92,7 +93,7 @@ CREATE TABLE IF NOT EXISTS wink.username_by_phone (
  *                   3. As time goes, the next slot will become the new current slot, and a new next slot will be created
  *                   4. Any time we create a new slot, the 24-hours-old slot of the same area will be deleted to save disk space.
  */
-CREATE TABLE IF NOT EXISTS wink.user_by_area (
+CREATE TABLE IF NOT EXISTS user_by_area (
     areaid         text      , -- defined in winking.user_area
     hour           int       , -- the number of hours since joyy epoch (01 Jan 2015 00:00:00 GMT)
     userid         bigint    ,
@@ -101,7 +102,7 @@ CREATE TABLE IF NOT EXISTS wink.user_by_area (
     sex            text      ,
     yob            int       ,
 
-    PRIMARY KEY ((areaid, hour) userid)
+    PRIMARY KEY ((areaid, hour), userid)
 ) WITH COMPACTION = {'class': 'LeveledCompactionStrategy', 'enabled': 'true'};
 
 
@@ -112,7 +113,7 @@ CREATE TABLE IF NOT EXISTS wink.user_by_area (
  *
  * @Discussion:
  */
-CREATE TABLE IF NOT EXISTS wink.following (
+CREATE TABLE IF NOT EXISTS following (
     userid            bigint , -- the follower's user id
     followeeid        bigint , -- the followee's user id
     name              text   ,
@@ -133,7 +134,7 @@ CREATE TABLE IF NOT EXISTS wink.following (
  *
  * @Discussion:
  */
-CREATE TABLE IF NOT EXISTS wink.following_vip (
+CREATE TABLE IF NOT EXISTS following_vip (
     userid            bigint  , -- the follower's user id
     vipid             bigint  , -- the vip followee's user id
 
@@ -149,7 +150,7 @@ CREATE TABLE IF NOT EXISTS wink.following_vip (
  *
  * @Discussion:
  */
-CREATE TABLE IF NOT EXISTS wink.follower (
+CREATE TABLE IF NOT EXISTS follower (
     userid         bigint     , -- the followee's user id
     followerid     bigint     , -- the follower's user id
     name           text       ,
@@ -159,4 +160,3 @@ CREATE TABLE IF NOT EXISTS wink.follower (
 
     PRIMARY KEY (userid, followerid)
 ) WITH COMPACTION = {'class': 'LeveledCompactionStrategy', 'enabled': 'true'};
-

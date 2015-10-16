@@ -4,6 +4,7 @@
  * Copyright (c) 2015 Joyy Inc. All rights reserved.
  */
 
+USE wink;
 
 /*
  * DSE In-Memory table for sczip -> areaid mapping of user areas
@@ -12,7 +13,7 @@
  * @Discussion: this table is for the dynamic area use case. When the product got to GA, there will be only two areas for each country,
  *              and the api server will dynamically spict the area into small ones to make sure not too much users are in the same area
  */
-CREATE TABLE IF NOT EXISTS wink.area (
+CREATE TABLE IF NOT EXISTS area (
     sczip     text, -- the users' sex-country-zip code where the user last stayed. The format is Sex + CountryCode + OriginalZipcode. E.g., "MUS94555"
     areaid    text, -- the current area id of the sczip. The areaid  should be a prefix of sczip. E.g., "MUS945". Note areaid could be the same as sczip
 

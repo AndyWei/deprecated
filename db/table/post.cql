@@ -4,13 +4,14 @@
  * Copyright (c) 2015 Joyy Inc. All rights reserved.
  */
 
+USE wink;
 
 /*
  * Feature: Activity
  * The table to store the post objects
  * @Discussion: The user own posts is in userline_per_month
  */
-CREATE TABLE IF NOT EXISTS wink.post (
+CREATE TABLE IF NOT EXISTS post (
     id             bigint ,
     brief          text   ,
     url            text   ,
@@ -27,7 +28,7 @@ CREATE TABLE IF NOT EXISTS wink.post (
  * The table for the user query the posts from his followees
  * @Discussion: The user own posts is in userline_per_month
  */
-CREATE TABLE IF NOT EXISTS wink.timeline (
+CREATE TABLE IF NOT EXISTS timeline (
     userid         bigint ,
     day            int    , -- the number of days since joyy epoch
     postid         bigint ,
@@ -43,7 +44,7 @@ CREATE TABLE IF NOT EXISTS wink.timeline (
  * The table for the user query his own posts
  * @Discussion: The user's follower will read the posts from timeline_per_day
  */
-CREATE TABLE IF NOT EXISTS wink.userline (
+CREATE TABLE IF NOT EXISTS userline (
     userid         bigint , -- owner userid
     day            int    , -- the number of days since joyy epoch
     postid         bigint ,
@@ -59,7 +60,7 @@ CREATE TABLE IF NOT EXISTS wink.userline (
  * The table for the user query the comments of a post
  * @Discussion:
  */
-CREATE TABLE IF NOT EXISTS wink.comment (
+CREATE TABLE IF NOT EXISTS comment (
     postid         bigint ,
     commentid      bigint ,
     content        text   ,
@@ -73,7 +74,7 @@ CREATE TABLE IF NOT EXISTS wink.comment (
  * The table for the user query the comments of a post
  * @Discussion:
  */
-CREATE TABLE IF NOT EXISTS wink.like (
+CREATE TABLE IF NOT EXISTS like (
     postid         bigint ,
     userid         bigint , -- the user who liked this post
 
