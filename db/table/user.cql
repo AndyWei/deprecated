@@ -11,20 +11,18 @@ USE wink;
  * Write      : when a user sign up, a row is created
  * TTL        : none
  * Cardinality: equals the number of signedup users 
- * Workload   : both write-heavy and read-heavy
+ * Workload   : low
  *
  * @Discussion:
  */
 CREATE TABLE IF NOT EXISTS user (
     id                 bigint       ,
-    name               list<text>   , -- all the usernames have been used
-    phone              list<bigint> , -- all the phone numbers have been used
-    deleted            boolean      ,
+    username           text         , -- every used name will be recorded
+    deleted            boolean      , -- set to true only if the user deleted the account 
+    n_follower         bigint       , -- the number of followers this user have
+    n_following        bigint       , -- the number of users being followed by this user
 
-    followers_count    bigint       , -- the number of followers this user have
-    followings_count   bigint       , -- the number of users being followed by this user
-
-    PRIMARY KEY (id)
+    PRIMARY KEY (id, username)
 ) WITH COMPACTION = {'class': 'LeveledCompactionStrategy', 'enabled': 'true'};
 
 
@@ -38,10 +36,10 @@ CREATE TABLE IF NOT EXISTS user (
  */
 CREATE TABLE IF NOT EXISTS user_by_name (
     -- account fields created in post user/signup
-    name             text    , -- unique username
-    password         text    , -- bcrypt hashed password, it always 60 bytes, however text makes it flexible
+    username         text    , -- unique username
+    deleted          boolean , -- a deleted username can be taken by another user
     id               bigint  ,
-    deleted          boolean , -- a deleted username means it can be take by another user
+    password         text    , -- bcrypt hashed password, it always 60 bytes, however text makes it flexible
 
     -- profile fields updated in post profile
     phone            bigint  , -- phone number in E.164 format, but the leading '+' has been dropped
@@ -58,7 +56,7 @@ CREATE TABLE IF NOT EXISTS user_by_name (
     service          text    , -- the push service of the user equipment. Allowed values are {"apn", "gcm", "mpn"}
     device           text    , -- the device token that identify an user equipment
 
-    PRIMARY KEY (name)
+    PRIMARY KEY (username, deleted)
 ) WITH COMPACTION = {'class': 'LeveledCompactionStrategy', 'enabled': 'true'};
 
 
@@ -70,11 +68,12 @@ CREATE TABLE IF NOT EXISTS user_by_name (
  *
  * @Discussion:
 */
-CREATE TABLE IF NOT EXISTS username_by_phone (
+CREATE TABLE IF NOT EXISTS user_by_phone (
     phone            bigint     ,
-    name             list<text> , -- all the usernames have been used this phone
+    username         text       , -- all the usernames have been used this phone
+    id               bigint     ,
 
-    PRIMARY KEY (phone)
+    PRIMARY KEY (phone, username)
 );
 
 
@@ -97,7 +96,7 @@ CREATE TABLE IF NOT EXISTS user_by_area (
     areaid         text      , -- defined in winking.user_area
     hour           int       , -- the number of hours since joyy epoch (01 Jan 2015 00:00:00 GMT)
     userid         bigint    ,
-    name           text      ,
+    username       text      ,
     avatar         text      ,
     sex            text      ,
     yob            int       ,
@@ -116,7 +115,7 @@ CREATE TABLE IF NOT EXISTS user_by_area (
 CREATE TABLE IF NOT EXISTS following (
     userid            bigint , -- the follower's user id
     followeeid        bigint , -- the followee's user id
-    name              text   ,
+    username          text   ,
     avatar            text   ,
     sex               text   ,
     yob               int    ,
@@ -153,7 +152,7 @@ CREATE TABLE IF NOT EXISTS following_vip (
 CREATE TABLE IF NOT EXISTS follower (
     userid         bigint     , -- the followee's user id
     followerid     bigint     , -- the follower's user id
-    name           text       ,
+    username       text       ,
     avatar         text       ,
     sex            text       ,
     yob            int        ,

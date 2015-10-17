@@ -18,13 +18,19 @@ func LogError(err error) {
     }
 }
 
+func LogErrorf(format string, err error) {
+    if err != nil {
+        log.Printf(format, err)
+    }
+}
+
 func LogFatal(err error) {
     if err != nil {
         log.Fatal(err)
     }
 }
 
-func LogInfo(format string, v ...interface{}) {
+func LogInfof(format string, v ...interface{}) {
     log.Printf(format, v)
 }
 

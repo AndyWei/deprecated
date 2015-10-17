@@ -14,13 +14,13 @@ import (
     "golang.org/x/crypto/bcrypt"
     "joyyapp.com/wink/cassandra"
     . "joyyapp.com/wink/util"
-    "log"
     "net/http"
     "time"
 )
 
 var bcryptCost int = 0
 var jwtKey []byte = nil
+var jwtPeriodInMinutes int = 0
 
 func init() {
 
@@ -31,17 +31,18 @@ func init() {
     PanicOnError(err)
 
     bcryptCost = GetInt("bcrypt.cost")
+
     key := GetString("jwt.key")
     jwtKey = []byte(key)
-    log.Print(jwtKey)
+    jwtPeriodInMinutes = GetInt("jwt.period_in_minutes")
 }
 
-func jwtToken(name string, id int64) (error, string) {
+func jwtToken(username string, id int64) (error, string) {
 
     token := jwt.New(jwt.SigningMethodHS256)
     token.Claims["id"] = id
-    token.Claims["name"] = name
-    token.Claims["exp"] = time.Now().Add(time.Hour * 1).Unix()
+    token.Claims["username"] = username
+    token.Claims["exp"] = time.Now().Add(time.Duration(jwtPeriodInMinutes) * time.Minute).Unix()
     signedString, err := token.SignedString(jwtKey)
     LogFatal(err)
 
@@ -49,7 +50,7 @@ func jwtToken(name string, id int64) (error, string) {
 }
 
 type CredentialJson struct {
-    Name     string `json:"name" binding:"required"`
+    Username string `json:"username" binding:"required"`
     Password string `json:"password" binding:"required"`
 }
 
@@ -63,18 +64,27 @@ func Signup(c *gin.Context) {
 
     // generate userid
     id := NewID()
-    LogInfo("New user signup start. id = %d", id)
+    LogInfof("New user signup start. id = %d", id)
 
     // encrypt password
     encryptedPassword, err := bcrypt.GenerateFromPassword([]byte(json.Password), bcryptCost)
 
-    // write db
-    err = db.Query(`INSERT INTO user_by_name (name, password, id) VALUES (?, ?, ?)`,
-        json.Name, encryptedPassword, id).Exec()
+    // write db. note lightweight transaction is used to make sure the username is unique
+    applied, err := db.Query(`INSERT INTO user_by_name (username, deleted, id, password) VALUES (?, false, ?, ?) IF NOT EXISTS`,
+        json.Username, id, encryptedPassword).ScanCAS()
+    LogError(err)
+    if !applied {
+        LogInfof("username already exist. username = %s", json.Username)
+        c.JSON(http.StatusBadRequest, gin.H{"error": "user already exist"})
+        return
+    }
+
+    err = db.Query(`INSERT INTO user (id, username, deleted, n_follower, n_following) VALUES (?, ?, false, 0, 0)`,
+        id, json.Username).Exec()
     LogFatal(err)
 
     // create JWT token
-    token, _ := jwtToken(json.Name, id)
+    token, _ := jwtToken(json.Username, id)
 
     c.JSON(http.StatusOK, gin.H{"id": id, "token": token})
 }
@@ -90,19 +100,24 @@ func Signin(c *gin.Context) {
     // read db
     var id int64
     var encryptedPassword string
-    err = db.Query(`SELECT id, password FROM user_by_name WHERE name = ? LIMIT 1`,
-        json.Name).Scan(&id, &encryptedPassword)
-    LogFatal(err)
+    err = db.Query(`SELECT id, password FROM user_by_name WHERE username = ? AND deleted = false LIMIT 1`,
+        json.Username).Scan(&id, &encryptedPassword)
+    LogError(err)
+
+    if err != nil {
+        c.JSON(http.StatusUnauthorized, gin.H{"error": "user does not exist"})
+        return
+    }
 
     // check password
     err = bcrypt.CompareHashAndPassword([]byte(encryptedPassword), []byte(json.Password))
     if err != nil {
-        c.JSON(http.StatusUnauthorized, gin.H{"error": "incorrect name or password"})
+        c.JSON(http.StatusUnauthorized, gin.H{"error": "incorrect password"})
         return
     }
 
     // create JWT token
-    token, _ := jwtToken(json.Name, id)
+    token, _ := jwtToken(json.Username, id)
 
     c.JSON(http.StatusOK, gin.H{"id": id, "token": token})
 }
