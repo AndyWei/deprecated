@@ -12,21 +12,15 @@ import (
     "log"
 )
 
-func PanicOnError(err error) {
+func LogError(err error) {
     if err != nil {
-        log.Panic(err)
+        log.Print(err)
     }
 }
 
 func LogFatal(err error) {
     if err != nil {
         log.Fatal(err)
-    }
-}
-
-func LogError(err error) {
-    if err != nil {
-        log.Print(err)
     }
 }
 
@@ -39,4 +33,10 @@ func NewID() int64 {
     err, id := idGenerator.NewId()
     PanicOnError(err)
     return id
+}
+
+func PanicOnError(err error) {
+    if err != nil {
+        log.Panic(err)
+    }
 }

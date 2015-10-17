@@ -1,7 +1,7 @@
 package idgen
 
 import (
-    "github.com/smartystreets/goconvey/convey"
+    . "github.com/smartystreets/goconvey/convey"
     "testing"
     "time"
 )
@@ -11,7 +11,7 @@ func Now() string {
 }
 
 func TestNotErr(t *testing.T) {
-    convey.Convey("should not err", t, func() {
+    Convey("should not err", t, func() {
 
         err, idgen := newIdGen(1)
         if err != nil {
@@ -20,14 +20,14 @@ func TestNotErr(t *testing.T) {
 
         for i := 0; i < 10; i++ {
             err, _ := idgen.NewId()
-            convey.So(err, convey.ShouldBeNil)
+            So(err, ShouldBeNil)
         }
     })
 
 }
 
 func TestContainsMachineId(t *testing.T) {
-    convey.Convey("generated id should contains the `workerId`", t, func() {
+    Convey("generated id should contains the `workerId`", t, func() {
 
         var workerId int
         for workerId = 0; workerId < 1024; workerId++ {
@@ -42,14 +42,14 @@ func TestContainsMachineId(t *testing.T) {
                 newId2 := uint(newId << 42)
                 newId3 := uint(newId2 >> 54)
 
-                convey.So(newId3, convey.ShouldEqual, workerId)
+                So(newId3, ShouldEqual, workerId)
             }
         }
     })
 }
 
 func TestMachineId(t *testing.T) {
-    convey.Convey("method 'MachineId' should return the right workerId", t, func() {
+    Convey("method 'MachineId' should return the right workerId", t, func() {
 
         var workerId int
         for workerId = 0; workerId < 1024; workerId++ {
@@ -64,7 +64,7 @@ func TestMachineId(t *testing.T) {
                 _, newId := idgen.NewId()
 
                 wId := idgen.MachineId(newId)
-                convey.So(wId, convey.ShouldEqual, workerId)
+                So(wId, ShouldEqual, workerId)
             }
         }
     })

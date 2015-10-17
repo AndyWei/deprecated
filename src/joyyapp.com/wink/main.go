@@ -24,6 +24,7 @@ func main() {
     {
         v1.GET("/ping", pong)
         v1.GET("/post/timeline", post.GetTimeline)
+        v1.POST("/user/signin", user.Signin)
         v1.POST("/user/signup", user.Signup)
     }
 
