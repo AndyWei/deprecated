@@ -41,10 +41,10 @@ CREATE TABLE IF NOT EXISTS user_by_name (
     name             text    , -- unique username
     password         text    , -- bcrypt hashed password, it always 60 bytes, however text makes it flexible
     id               bigint  ,
-    phone            bigint  , -- phone number in E.164 format, but the leading '+' has been dropped
     deleted          boolean , -- a deleted username means it can be take by another user
 
     -- profile fields updated in post profile
+    phone            bigint  , -- phone number in E.164 format, but the leading '+' has been dropped
     language         text    , -- the language of the user's phone locale
     avatar           text    , -- This field is used for client to generate avatar url. It contains two parts, the region and the filename, in form of regioncode:filename, e.g., "eu:jfk_1064.jpg". Region could be "na", "eu" or "as"
     sex              text    , -- 'm' - male, 'f' - female, 'x' - other
