@@ -8,6 +8,7 @@
 package user
 
 import (
+    "fmt"
     "github.com/dgrijalva/jwt-go"
     "github.com/gin-gonic/gin"
     . "github.com/spf13/viper"
@@ -43,8 +44,9 @@ func init() {
 
 func jwtToken(username string, id int64) (string, error) {
 
-    token := jwt.New(jwt.SigningMethodHS256)
-    token.Claims["id"] = id
+    token := jwt.New(jwt.SigningMethodHS256) // SigningMethodHS256 is a var of type *SigningMethodHMAC
+    idString := strconv.FormatInt(id, 10)
+    token.Claims["id"] = idString
     token.Claims["username"] = username
     token.Claims["exp"] = time.Now().Add(time.Duration(kJwtPeriodInMinutes) * time.Minute).Unix()
     signedString, err := token.SignedString(kJwtKey)
@@ -53,6 +55,42 @@ func jwtToken(username string, id int64) (string, error) {
     return signedString, err
 }
 
+func DecodeJwtToken(tokenString string) (int64, string, error) {
+
+    decoded, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+        // must check alg field to confirm the encrypting method, otherwise JWT is not safe
+        if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+            return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+        }
+        return kJwtKey, nil
+    })
+
+    if err != nil || !decoded.Valid {
+        return 0, "", err
+    }
+
+    idString, ok := decoded.Claims["id"].(string)
+    if !ok {
+        return 0, "", fmt.Errorf("Invalid id inside token claims")
+    }
+
+    id, err := strconv.ParseInt(idString, 10, 64)
+    if err != nil {
+        return 0, "", fmt.Errorf("Invalid id inside token claims")
+    }
+
+    username, ok := decoded.Claims["username"].(string)
+    if !ok {
+        return 0, "", fmt.Errorf("Invalid username inside token claims")
+    }
+
+    // finally we got a good one
+    return id, username, nil
+}
+
+/*
+ * Signup endpoint
+ */
 type CredentialJson struct {
     Username string `json:"username" binding:"required"`
     Password string `json:"password" binding:"required"`
@@ -67,7 +105,7 @@ func Signup(c *gin.Context) {
 
     // generate userid
     id := NewID()
-    LogInfof("New user signup start. id = %d", id)
+    LogInfof("New user signup. userid = %v", id)
 
     // encrypt password
     encryptedPassword, err := bcrypt.GenerateFromPassword([]byte(json.Password), kBcryptCost)
@@ -98,6 +136,10 @@ func Signup(c *gin.Context) {
     })
     return
 }
+
+/*
+ * Signin endpoint
+ */
 
 func Signin(c *gin.Context) {
     db := cassandra.SharedSession()
@@ -136,6 +178,10 @@ func Signin(c *gin.Context) {
     })
     return
 }
+
+/*
+ * CheckExistence endpoint
+ */
 
 type XmppUserForm struct {
     Userid string `form:"user" binding:"required"`
@@ -178,12 +224,44 @@ func CheckExistence(c *gin.Context) {
     return
 }
 
+/*
+ * VerifyToken endpoint
+ */
+
 type XmppCredentialForm struct {
-    Userid int64  `form:"user" binding:"required"`
+    Userid string `form:"user" binding:"required"`
     Server string `form:"server" binding:"required"`
     Token  string `form:"pass" binding:"required"`
 }
 
 func VerifyToken(c *gin.Context) {
 
+    var form XmppCredentialForm
+    err := c.Bind(&form)
+    LogError(err)
+
+    // check server
+    if form.Server != kImDomain {
+        c.String(http.StatusConflict, "incorrect im server")
+        return
+    }
+
+    id, err := strconv.ParseInt(form.Userid, 10, 64)
+
+    LogError(err)
+    if err != nil {
+        c.String(http.StatusNotFound, "user does not exist")
+        return
+    }
+
+    idInToken, _, err := DecodeJwtToken(form.Token)
+    LogError(err)
+
+    if err != nil || id != idInToken {
+        c.String(http.StatusUnauthorized, "the token is not valid or not matched")
+        return
+    }
+
+    c.String(http.StatusOK, "true")
+    return
 }
