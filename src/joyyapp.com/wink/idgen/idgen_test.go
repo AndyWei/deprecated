@@ -1,7 +1,7 @@
 package idgen
 
 import (
-    . "github.com/smartystreets/goconvey/convey"
+    "github.com/stretchr/testify/assert"
     "testing"
     "time"
 )
@@ -11,61 +11,51 @@ func Now() string {
 }
 
 func TestNotErr(t *testing.T) {
-    Convey("should not err", t, func() {
+    assert := assert.New(t)
 
-        err, idgen := newIdGen(1)
-        if err != nil {
-            t.Fatal("can not initialize")
-        }
+    err, idgen := newIdGen(1)
+    assert.Nil(err)
 
-        for i := 0; i < 10; i++ {
-            err, _ := idgen.NewId()
-            So(err, ShouldBeNil)
-        }
-    })
-
+    for i := 0; i < 10; i++ {
+        err, _ := idgen.NewId()
+        assert.Nil(err)
+    }
 }
 
 func TestContainsMachineId(t *testing.T) {
-    Convey("generated id should contains the `workerId`", t, func() {
+    assert := assert.New(t)
 
-        var workerId int
-        for workerId = 0; workerId < 1024; workerId++ {
-            err, idgen := newIdGen(workerId)
+    var workerId int
+    for workerId = 0; workerId < 1024; workerId++ {
+        err, idgen := newIdGen(workerId)
 
-            if err != nil {
-                t.Fatal("can not initialize")
-            }
+        assert.Nil(err)
 
-            for i := 0; i < 1; i++ {
-                _, newId := idgen.NewId()
-                newId2 := uint(newId << 42)
-                newId3 := uint(newId2 >> 54)
-
-                So(newId3, ShouldEqual, workerId)
-            }
+        for i := 0; i < 1; i++ {
+            _, newId := idgen.NewId()
+            newId2 := uint(newId << 42)
+            machineId := uint(newId2 >> 54)
+            assert.Equal(uint(workerId), machineId, "id should contain worker id")
         }
-    })
+    }
 }
 
 func TestMachineId(t *testing.T) {
-    Convey("method 'MachineId' should return the right workerId", t, func() {
+    assert := assert.New(t)
 
-        var workerId int
-        for workerId = 0; workerId < 1024; workerId++ {
+    var workerId int
+    for workerId = 0; workerId < 1024; workerId++ {
 
-            err, idgen := newIdGen(workerId)
+        err, idgen := newIdGen(workerId)
 
-            if err != nil {
-                t.Fatal("can not initialize")
-            }
+        assert.Nil(err)
 
-            for i := 0; i < 1; i++ {
-                _, newId := idgen.NewId()
+        for i := 0; i < 1; i++ {
+            _, newId := idgen.NewId()
 
-                wId := idgen.MachineId(newId)
-                So(wId, ShouldEqual, workerId)
-            }
+            machineId := idgen.MachineId(newId)
+            assert.Equal(int64(workerId), machineId, "machineId should equal to the workerId field")
         }
-    })
+    }
+
 }

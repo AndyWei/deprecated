@@ -16,10 +16,21 @@ USE wink;
  * @Discussion:
  */
 CREATE TABLE IF NOT EXISTS user (
-    id                 bigint       ,
-    username           text         , -- only the last used username will be kept
-    deleted            boolean      , -- set to true only if the user deleted the account 
-    n_friend           bigint       , -- the number of followers this user have
+    id               bigint  ,
+    username         text    , -- only the last used username will be kept
+    deleted          boolean , -- set to true only if the user deleted the account 
+    n_friend         bigint  , -- the number of followers this user have
+
+    -- profile fields updated in post profile
+    phone            bigint  , -- phone number in E.164 format, but the leading '+' has been dropped
+    avatar           text    , -- This field is used for client to generate avatar url. It contains two parts, the region and the filename, in form of regioncode:filename, e.g., "eu:jfk_1064.jpg". Region could be "na", "eu" or "as"
+    sex              text    , -- 'm' - male, 'f' - female, 'x' - other
+    yob              int     , -- year of birth
+    bio              text    ,
+ 
+    -- device fields
+    service          text    , -- the push service of the user equipment. Allowed values are {"apn", "gcm", "mpn"}
+    device           text    , -- the device token that identify an user equipment
 
     PRIMARY KEY (id)
 ) WITH COMPACTION = {'class': 'LeveledCompactionStrategy', 'enabled': 'true'};
@@ -39,21 +50,6 @@ CREATE TABLE IF NOT EXISTS user_by_name (
     id               bigint  ,
     password         text    , -- bcrypt hashed password, it always 60 bytes long, however text makes it flexible
 
-    -- profile fields updated in post profile
-    phone            bigint  , -- phone number in E.164 format, but the leading '+' has been dropped
-    language         text    , -- the language of the user's phone locale
-    avatar           text    , -- This field is used for client to generate avatar url. It contains two parts, the region and the filename, in form of regioncode:filename, e.g., "eu:jfk_1064.jpg". Region could be "na", "eu" or "as"
-    sex              text    , -- 'm' - male, 'f' - female, 'x' - other
-    yob              int     , -- year of birth
-    bio              text    ,
- 
-    -- geo fields
-    sczip            text    , -- the user's sex-country-zip code where the user last stayed. the format is sex + countrycode + originalzipcode. e.g. "mus94555"
-
-    -- device fields
-    service          text    , -- the push service of the user equipment. Allowed values are {"apn", "gcm", "mpn"}
-    device           text    , -- the device token that identify an user equipment
-
     PRIMARY KEY (username)
 ) WITH COMPACTION = {'class': 'LeveledCompactionStrategy', 'enabled': 'true'};
 
@@ -72,7 +68,7 @@ CREATE TABLE IF NOT EXISTS user_by_phone (
     id               bigint     ,
 
     PRIMARY KEY (phone)
-);
+) WITH COMPACTION = {'class': 'LeveledCompactionStrategy', 'enabled': 'true'};
 
 
 /*
@@ -84,14 +80,14 @@ CREATE TABLE IF NOT EXISTS user_by_phone (
  *                   If the count is greater than the defined threshold, an area split will happen. TODO: consider move the counter to redis
  * 
  *               to handle the users leave/join an area, below rules need to be followed:
- *                   define a row identified by <area_id, hour> as the current slot, <area_id, hour + 1> as the next slot, and the rules for access will be:
+ *                   define a row identified by <areaid, hour> as the current slot, <areaid, hour + 1> as the next slot, and the rules for access will be:
  *                   1. All reads only happen on the current slot
  *                   2. All writes will happen on both the current slot and the next slot. Here write means inserting a <timestamp, user> pair into the slot's user map
  *                   3. As time goes, the next slot will become the new current slot, and a new next slot will be created
  *                   4. Any time we create a new slot, the 24-hours-old slot of the same area will be deleted to save disk space.
  */
 CREATE TABLE IF NOT EXISTS user_by_area (
-    areaid         text      , -- defined in winking.user_area
+    areaid         text      , -- defined in area.cql area
     hour           int       , -- the number of hours since joyy epoch (01 Jan 2015 00:00:00 GMT)
     userid         bigint    ,
     username       text      ,
@@ -157,3 +153,4 @@ CREATE TABLE IF NOT EXISTS follower (
 
     PRIMARY KEY (userid, followerid)
 ) WITH COMPACTION = {'class': 'LeveledCompactionStrategy', 'enabled': 'true'};
+
