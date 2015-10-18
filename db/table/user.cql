@@ -17,12 +17,11 @@ USE wink;
  */
 CREATE TABLE IF NOT EXISTS user (
     id                 bigint       ,
-    username           text         , -- every used name will be recorded
+    username           text         , -- only the last used username will be kept
     deleted            boolean      , -- set to true only if the user deleted the account 
-    n_follower         bigint       , -- the number of followers this user have
-    n_following        bigint       , -- the number of users being followed by this user
+    n_friend           bigint       , -- the number of followers this user have
 
-    PRIMARY KEY (id, username)
+    PRIMARY KEY (id)
 ) WITH COMPACTION = {'class': 'LeveledCompactionStrategy', 'enabled': 'true'};
 
 
@@ -36,10 +35,9 @@ CREATE TABLE IF NOT EXISTS user (
  */
 CREATE TABLE IF NOT EXISTS user_by_name (
     -- account fields created in post user/signup
-    username         text    , -- unique username
-    deleted          boolean , -- a deleted username can be taken by another user
+    username         text    ,
     id               bigint  ,
-    password         text    , -- bcrypt hashed password, it always 60 bytes, however text makes it flexible
+    password         text    , -- bcrypt hashed password, it always 60 bytes long, however text makes it flexible
 
     -- profile fields updated in post profile
     phone            bigint  , -- phone number in E.164 format, but the leading '+' has been dropped
@@ -56,7 +54,7 @@ CREATE TABLE IF NOT EXISTS user_by_name (
     service          text    , -- the push service of the user equipment. Allowed values are {"apn", "gcm", "mpn"}
     device           text    , -- the device token that identify an user equipment
 
-    PRIMARY KEY (username, deleted)
+    PRIMARY KEY (username)
 ) WITH COMPACTION = {'class': 'LeveledCompactionStrategy', 'enabled': 'true'};
 
 
@@ -70,10 +68,10 @@ CREATE TABLE IF NOT EXISTS user_by_name (
 */
 CREATE TABLE IF NOT EXISTS user_by_phone (
     phone            bigint     ,
-    username         text       , -- all the usernames have been used this phone
+    username         text       ,
     id               bigint     ,
 
-    PRIMARY KEY (phone, username)
+    PRIMARY KEY (phone)
 );
 
 

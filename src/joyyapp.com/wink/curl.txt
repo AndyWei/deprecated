@@ -2,7 +2,7 @@
 
 ## credential
 # signup
-curl -H "Content-Type: application/json" -X POST -d '{"username":"ping","password":"password", "phone":14257850318}' http://localhost:8000/v1/user/signup
+curl -H "Content-Type: application/json" -X POST -d '{"username":"ping","password":"password"}' http://localhost:8000/v1/user/signup
 
 
 # signin

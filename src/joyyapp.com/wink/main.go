@@ -26,6 +26,8 @@ func main() {
         v1.GET("/post/timeline", post.GetTimeline)
         v1.POST("/user/signin", user.Signin)
         v1.POST("/user/signup", user.Signup)
+        // v1.GET("/xmpp/check_password", user.VerifyToken)
+        v1.GET("/xmpp/user_exists", user.CheckExistence)
     }
 
     router.Run(":8000")

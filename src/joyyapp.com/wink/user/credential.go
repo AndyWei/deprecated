@@ -15,12 +15,14 @@ import (
     "joyyapp.com/wink/cassandra"
     . "joyyapp.com/wink/util"
     "net/http"
+    "strconv"
     "time"
 )
 
-var bcryptCost int = 0
-var jwtKey []byte = nil
-var jwtPeriodInMinutes int = 0
+var kBcryptCost int = 0
+var kImDomain string = ""
+var kJwtKey []byte = nil
+var kJwtPeriodInMinutes int = 0
 
 func init() {
 
@@ -30,23 +32,25 @@ func init() {
     err := ReadInConfig()
     PanicOnError(err)
 
-    bcryptCost = GetInt("bcrypt.cost")
+    kBcryptCost = GetInt("bcrypt.cost")
+
+    kImDomain = GetString("im.domain")
 
     key := GetString("jwt.key")
-    jwtKey = []byte(key)
-    jwtPeriodInMinutes = GetInt("jwt.period_in_minutes")
+    kJwtKey = []byte(key)
+    kJwtPeriodInMinutes = GetInt("jwt.period_in_minutes")
 }
 
-func jwtToken(username string, id int64) (error, string) {
+func jwtToken(username string, id int64) (string, error) {
 
     token := jwt.New(jwt.SigningMethodHS256)
     token.Claims["id"] = id
     token.Claims["username"] = username
-    token.Claims["exp"] = time.Now().Add(time.Duration(jwtPeriodInMinutes) * time.Minute).Unix()
-    signedString, err := token.SignedString(jwtKey)
+    token.Claims["exp"] = time.Now().Add(time.Duration(kJwtPeriodInMinutes) * time.Minute).Unix()
+    signedString, err := token.SignedString(kJwtKey)
     LogFatal(err)
 
-    return err, signedString
+    return signedString, err
 }
 
 type CredentialJson struct {
@@ -55,7 +59,6 @@ type CredentialJson struct {
 }
 
 func Signup(c *gin.Context) {
-
     db := cassandra.SharedSession()
 
     var json CredentialJson
@@ -67,30 +70,36 @@ func Signup(c *gin.Context) {
     LogInfof("New user signup start. id = %d", id)
 
     // encrypt password
-    encryptedPassword, err := bcrypt.GenerateFromPassword([]byte(json.Password), bcryptCost)
+    encryptedPassword, err := bcrypt.GenerateFromPassword([]byte(json.Password), kBcryptCost)
 
     // write db. note lightweight transaction is used to make sure the username is unique
-    applied, err := db.Query(`INSERT INTO user_by_name (username, deleted, id, password) VALUES (?, false, ?, ?) IF NOT EXISTS`,
+    applied, err := db.Query(`INSERT INTO user_by_name (username, id, password) VALUES (?, ?, ?) IF NOT EXISTS`,
         json.Username, id, encryptedPassword).ScanCAS()
     LogError(err)
+
     if !applied {
         LogInfof("username already exist. username = %s", json.Username)
         c.JSON(http.StatusBadRequest, gin.H{"error": "user already exist"})
         return
     }
 
-    err = db.Query(`INSERT INTO user (id, username, deleted, n_follower, n_following) VALUES (?, ?, false, 0, 0)`,
+    err = db.Query(`INSERT INTO user (id, username, deleted, n_friend) VALUES (?, ?, false, 0)`,
         id, json.Username).Exec()
     LogFatal(err)
 
     // create JWT token
-    token, _ := jwtToken(json.Username, id)
+    token, err := jwtToken(json.Username, id)
+    LogError(err)
 
-    c.JSON(http.StatusOK, gin.H{"id": id, "token": token})
+    idString := strconv.FormatInt(id, 10)
+    c.JSON(http.StatusOK, gin.H{
+        "id":    idString,
+        "token": token,
+    })
+    return
 }
 
 func Signin(c *gin.Context) {
-
     db := cassandra.SharedSession()
 
     var json CredentialJson
@@ -100,7 +109,7 @@ func Signin(c *gin.Context) {
     // read db
     var id int64
     var encryptedPassword string
-    err = db.Query(`SELECT id, password FROM user_by_name WHERE username = ? AND deleted = false LIMIT 1`,
+    err = db.Query(`SELECT id, password FROM user_by_name WHERE username = ? LIMIT 1`,
         json.Username).Scan(&id, &encryptedPassword)
     LogError(err)
 
@@ -117,7 +126,64 @@ func Signin(c *gin.Context) {
     }
 
     // create JWT token
-    token, _ := jwtToken(json.Username, id)
+    token, err := jwtToken(json.Username, id)
+    LogError(err)
 
-    c.JSON(http.StatusOK, gin.H{"id": id, "token": token})
+    idString := strconv.FormatInt(id, 10)
+    c.JSON(http.StatusOK, gin.H{
+        "id":    idString,
+        "token": token,
+    })
+    return
+}
+
+type XmppUserForm struct {
+    Userid string `form:"user" binding:"required"`
+    Server string `form:"server" binding:"required"`
+}
+
+func CheckExistence(c *gin.Context) {
+
+    db := cassandra.SharedSession()
+
+    var form XmppUserForm
+    err := c.Bind(&form)
+    LogError(err)
+
+    // check server
+    if form.Server != kImDomain {
+        c.String(http.StatusConflict, "incorrect im server")
+        return
+    }
+
+    id, err := strconv.ParseInt(form.Userid, 10, 64)
+    LogError(err)
+    if err != nil {
+        c.String(http.StatusNotFound, "user does not exist")
+        return
+    }
+
+    // read db
+    var deleted bool
+    err = db.Query(`SELECT deleted FROM user WHERE id = ? LIMIT 1`,
+        id).Scan(&deleted)
+    LogError(err)
+
+    if err != nil || deleted {
+        c.String(http.StatusNotFound, "user does not exist")
+        return
+    }
+
+    c.String(http.StatusOK, "true")
+    return
+}
+
+type XmppCredentialForm struct {
+    Userid int64  `form:"user" binding:"required"`
+    Server string `form:"server" binding:"required"`
+    Token  string `form:"pass" binding:"required"`
+}
+
+func VerifyToken(c *gin.Context) {
+
 }
