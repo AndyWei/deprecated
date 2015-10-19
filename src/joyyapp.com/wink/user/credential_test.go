@@ -40,7 +40,6 @@ func sendSignRequest(method, username, password string) (resp *http.Response, er
 
     // send
     resp, err = client.Do(req)
-    req.Close = true
     return
 }
 
@@ -52,7 +51,6 @@ func sendCheckExistenceRequest(idString, domain string) (resp *http.Response, er
 
     // send
     resp, err = client.Do(req)
-    req.Close = true
     return
 }
 
@@ -64,7 +62,6 @@ func sendVerifyTokenRequest(idString, token, domain string) (resp *http.Response
 
     // send
     resp, err = client.Do(req)
-    req.Close = true
     return
 }
 
@@ -89,15 +86,15 @@ func TestSignup(t *testing.T) {
     assert.Equal(http.StatusOK, resp.StatusCode, "should response StatusOK")
 
     body, err := ioutil.ReadAll(resp.Body)
+    defer resp.Body.Close()
     assert.Nil(err)
 
     responseData := new(SignResponse)
     err = json.Unmarshal(body, responseData)
-    resp.Body.Close()
+
     assert.Nil(err)
     assert.NotNil(responseData.Id)
     assert.NotNil(responseData.Token)
-    resp.Body.Close()
 
     // conflict username should be rejected
     resp, err = sendSignRequest("signup", "andy", "password")

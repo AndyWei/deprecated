@@ -31,12 +31,12 @@ func main() {
     }
 
     jwtAuth := router.Group("/v1")
+    jwtAuth.Use(user.JwtAuthMiddleWare())
     {
         jwtAuth.GET("/post/timeline", post.GetTimeline)
         jwtAuth.GET("/user/profile", user.GetProfile)
         jwtAuth.POST("/user/profile", user.SetProfile)
     }
-    jwtAuth.Use(user.JwtAuthMiddleWare())
 
     router.Run(":8000")
 }

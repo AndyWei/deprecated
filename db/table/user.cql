@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS user (
 
     -- profile fields updated in post profile
     phone            bigint  , -- phone number in E.164 format, but the leading '+' has been dropped
-    avatar           text    , -- This field is used for client to generate avatar url. It contains two parts, the region and the filename, in form of regioncode:filename, e.g., "eu:jfk_1064.jpg". Region could be "na", "eu" or "as"
+    avatar           text    , -- This field is used for client to generate avatar url. It contains two parts, the region and the filename, in form of regioncode:filename, e.g., "eu:jfk_1064". Region could be "na", "eu" or "as"
     sex              text    , -- 'm' - male, 'f' - female, 'x' - other
     yob              int     , -- year of birth
     bio              text    ,
