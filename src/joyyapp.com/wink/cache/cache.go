@@ -21,11 +21,11 @@ type Store struct {
 }
 
 type User struct {
-    Id       int64  `redis:"i"`
-    Username string `redis:"n"`
-    Avatar   string `redis:"a"`
-    Sex      string `redis:"s"`
-    Yob      int    `redis:"y"`
+    Id       int64  `redis:"i" json:"id"`
+    Username string `redis:"n" json:"username"`
+    Avatar   string `redis:"a" json:"avatar"`
+    Sex      string `redis:"s" json:"sex"`
+    Yob      int    `redis:"y" json:"yob"`
 }
 
 var sharedPool *Pool = nil
@@ -65,13 +65,17 @@ func init() {
     }
 }
 
+func makeKey(pk, lk string) string {
+    return pk + ":" + lk
+}
+
 func SetUserStruct(user *User) error {
 
     conn := sharedPool.Get()
     defer conn.Close()
 
     idString36 := strconv.FormatInt(user.Id, 36)
-    key := UserStore.Key + idString36
+    key := makeKey(UserStore.Key, idString36)
 
     conn.Send("HMSET", Args{}.Add(key).AddFlat(user)...)
     conn.Send("EXPIRE", key, UserStore.Ttl)
@@ -98,7 +102,7 @@ func GetUserStruct(id interface{}) (*User, error) {
     }
 
     idString36 := strconv.FormatInt(idInt64, 36)
-    key := UserStore.Key + ":" + idString36
+    key := makeKey(UserStore.Key, idString36)
 
     conn := sharedPool.Get()
     defer conn.Close()

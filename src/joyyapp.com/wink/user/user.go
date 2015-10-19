@@ -8,6 +8,7 @@
 package user
 
 import (
+    "encoding/json"
     "github.com/gin-gonic/gin"
     "joyyapp.com/wink/cache"
     "joyyapp.com/wink/cassandra"
@@ -62,4 +63,15 @@ func SetProfile(c *gin.Context) {
 
 func GetProfile(c *gin.Context) {
 
+    userid, _ := c.Keys["userid"].(int64)
+    u, err := cache.GetUserStruct(userid)
+    LogError(err)
+    if err != nil {
+        c.AbortWithError(http.StatusNotFound, err)
+        return
+    }
+
+    // Note json marshaler is used instead of gin.H{}
+    jsondata, _ := json.Marshal(u)
+    c.Data(http.StatusOK, "application/json", jsondata)
 }
