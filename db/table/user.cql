@@ -19,12 +19,11 @@ CREATE TABLE IF NOT EXISTS user (
     id               bigint  ,
     username         text    , -- only the last used username will be kept
     deleted          boolean , -- set to true only if the user deleted the account 
-    n_friend         bigint  , -- the number of followers this user have
 
     -- profile fields updated in post profile
     phone            bigint  , -- phone number in E.164 format, but the leading '+' has been dropped
-    avatar           text    , -- This field is used for client to generate avatar url. It contains two parts, the region and the filename, in form of regioncode:filename, e.g., "eu:jfk_1064". Region could be "na", "eu" or "as"
-    sex              text    , -- 'm' - male, 'f' - female, 'x' - other
+    region           int     , -- the avatar photo stored region of the friend. Currently 3 values are available: 0: North America, 1: Asia, 2: Europe. 
+    sex              int     , -- 0: female, 1: male, 2: other
     yob              int     , -- year of birth
     bio              text    ,
  
@@ -90,67 +89,23 @@ CREATE TABLE IF NOT EXISTS user_by_area (
     areaid         text      , -- defined in area.cql area
     hour           int       , -- the number of hours since joyy epoch (01 Jan 2015 00:00:00 GMT)
     userid         bigint    ,
-    username       text      ,
-    avatar         text      ,
-    sex            text      ,
-    yob            int       ,
 
     PRIMARY KEY ((areaid, hour), userid)
 ) WITH COMPACTION = {'class': 'LeveledCompactionStrategy', 'enabled': 'true'};
 
 
 /*
- * Description: the table stores following relationship, which is used to get celebrity ids on pulling timeline
- * Query:     : SELECT followeeid FROM wink.following WHERE userid = $followerid AND isvip = true
- * Write      : when a user follows another user, a column is created
+ * Description: the table stores friendship, which is used to get the friend timeline ids for pushing new post
+ * Query:     : SELECT friendid FROM friend WHERE userid = $current_userid
+ * Write      : when 2 users become friends, 2 columns will be created
  *
  * @Discussion:
  */
-CREATE TABLE IF NOT EXISTS following (
-    userid            bigint , -- the follower's user id
-    followeeid        bigint , -- the followee's user id
-    username          text   ,
-    avatar            text   ,
-    sex               text   ,
-    yob               int    ,
+CREATE TABLE IF NOT EXISTS friend (
+    userid            bigint ,
+    fuserid           bigint , -- friend userid
+    fusername         text   , -- friend username
+    fregion           int    , -- the avatar photo stored region of the friend. Currently 3 values are available: 0: North America, 1: Asia, 2: Europe. 
 
-    PRIMARY KEY (userid, followeeid)
+    PRIMARY KEY (userid, fuserid)
 ) WITH COMPACTION = {'class': 'LeveledCompactionStrategy', 'enabled': 'true'};
-
-
-/*
- * Description: the table stores following relationship, which is used to get celebrity ids on pulling timeline
- * Query:     : SELECT followeeid FROM wink.following WHERE userid = $followerid AND isvip = true
- * Write      : when a user follows another user, a column is created when a follow relationship is created
- * TTL        : none
- * Workload   : read-heavy
- *
- * @Discussion:
- */
-CREATE TABLE IF NOT EXISTS following_vip (
-    userid            bigint  , -- the follower's user id
-    vipid             bigint  , -- the vip followee's user id
-
-    PRIMARY KEY (userid, vipid)
-) WITH COMPACTION = {'class': 'LeveledCompactionStrategy', 'enabled': 'true'};
-
-/*
- * Description: the table stores be followed relationship, which is used for an user to query his own follower information
- * Query:     : SELECT follower FROM wink.followed WHERE userid = $followeeid
- * Write      : when a user follows another user, a column is created when a follow relationship is created
- * TTL        : none
- * Workload   : write-heavy for celebrity followees 
- *
- * @Discussion:
- */
-CREATE TABLE IF NOT EXISTS follower (
-    userid         bigint     , -- the followee's user id
-    followerid     bigint     , -- the follower's user id
-    username       text       ,
-    avatar         text       ,
-    sex            text       ,
-    yob            int        ,
-
-    PRIMARY KEY (userid, followerid)
-) WITH COMPACTION = {'class': 'LeveledCompactionStrategy', 'enabled': 'true'};
-

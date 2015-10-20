@@ -15,8 +15,8 @@ type SetResponse struct {
     Updated string `json:"updated"`
 }
 
-func createProfileJson(phone int64, yob int, avatar, sex, bio string) *ProfileJson {
-    return &ProfileJson{phone, avatar, sex, yob, bio}
+func createProfileJson(phone int64, yob, region, sex int, bio string) *ProfileJson {
+    return &ProfileJson{phone, region, sex, yob, bio}
 }
 
 func TestSetProfile(t *testing.T) {
@@ -27,7 +27,7 @@ func TestSetProfile(t *testing.T) {
     idString, tokenString := signup(dummyUsername, "profile")
 
     // payload
-    profile := createProfileJson(14257850318, 1995, "na:and_1064", "m", "let's make a miracle")
+    profile := createProfileJson(14257850318, 1995, 0, 1, "let's make a miracle")
     jsondata, _ := json.Marshal(profile)
     post_data := strings.NewReader(string(jsondata))
 
@@ -70,11 +70,11 @@ func TestGetProfile(t *testing.T) {
 
     // set profile first
     phone := int64(14008009000)
-    avatar := "as:jjww_8384.jpg"
-    sex := "f"
+    region := 1
+    sex := 2
     yob := 1990
 
-    profile := createProfileJson(phone, yob, avatar, sex, "")
+    profile := createProfileJson(phone, yob, region, sex, "")
     jsondata, _ := json.Marshal(profile)
     post_data := strings.NewReader(string(jsondata))
 
@@ -105,7 +105,7 @@ func TestGetProfile(t *testing.T) {
     userid, _ := strconv.ParseInt(idString, 10, 64)
     assert.Equal(userid, responseData.Id, "should store correct userid in cache")
     assert.Equal(dummyUsername, responseData.Username, "should store correct username in cache")
-    assert.Equal(avatar, responseData.Avatar, "should store correct avatar in cache")
+    assert.Equal(region, responseData.Region, "should store correct region in cache")
     assert.Equal(sex, responseData.Sex, "should store correct sex in cache")
     assert.Equal(yob, responseData.Yob, "should store correct yob in cache")
 }

@@ -23,8 +23,8 @@ type Store struct {
 type User struct {
     Id       int64  `redis:"i" json:"id"`
     Username string `redis:"n" json:"username"`
-    Avatar   string `redis:"a" json:"avatar"`
-    Sex      string `redis:"s" json:"sex"`
+    Region   int    `redis:"a" json:"region"`
+    Sex      int    `redis:"s" json:"sex"`
     Yob      int    `redis:"y" json:"yob"`
 }
 

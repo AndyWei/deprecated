@@ -143,7 +143,6 @@ func Signup(c *gin.Context) {
 
     // generate userid
     id := NewID()
-    LogInfof("New user signup. userid = %v", id)
 
     // encrypt password
     encryptedPassword, err := bcrypt.GenerateFromPassword([]byte(json.Password), kBcryptCost)
@@ -157,7 +156,7 @@ func Signup(c *gin.Context) {
         return
     }
 
-    if err := db.Query(`INSERT INTO user (id, username, deleted, n_friend) VALUES (?, ?, false, 0)`,
+    if err := db.Query(`INSERT INTO user (id, username, deleted) VALUES (?, ?, false)`,
         id, json.Username).Exec(); err != nil {
         LogError(err)
         c.AbortWithError(http.StatusBadGateway, err)
@@ -167,6 +166,8 @@ func Signup(c *gin.Context) {
     // create JWT token
     token, err := newJwtToken(json.Username, id)
     LogError(err)
+
+    LogInfof("New user signedup. userid = %v", id)
 
     idString := strconv.FormatInt(id, 10)
     c.JSON(http.StatusOK, gin.H{
