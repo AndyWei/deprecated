@@ -21,14 +21,14 @@ func init() {
     client = &http.Client{}
 }
 
-func createCredentialJson(username, password string) *CredentialJson {
-    return &CredentialJson{username, password}
+func createCredentialParams(username, password string) *CredentialParams {
+    return &CredentialParams{username, password}
 }
 
 func sendSignRequest(method, username, password string) (resp *http.Response, err error) {
 
     // payload
-    credential := createCredentialJson(username, password)
+    credential := createCredentialParams(username, password)
     jsondata, _ := json.Marshal(credential)
     post_data := strings.NewReader(string(jsondata))
 

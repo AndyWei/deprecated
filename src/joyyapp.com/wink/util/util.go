@@ -12,6 +12,10 @@ import (
     "log"
 )
 
+type DefaultPostResponse struct {
+    Error int `json:"error"`
+}
+
 func LogError(err error) {
     if err != nil {
         log.Print(err)

@@ -11,6 +11,7 @@ import (
     "fmt"
     "github.com/dgrijalva/jwt-go"
     "github.com/gin-gonic/gin"
+    "github.com/gocql/gocql"
     . "github.com/spf13/viper"
     "golang.org/x/crypto/bcrypt"
     "joyyapp.com/wink/cassandra"
@@ -129,15 +130,15 @@ func JwtAuthMiddleWare() gin.HandlerFunc {
 /*
  * Signup endpoint
  */
-type CredentialJson struct {
+type CredentialParams struct {
     Username string `json:"username" binding:"required"`
     Password string `json:"password" binding:"required"`
 }
 
 func Signup(c *gin.Context) {
-    db := cassandra.SharedSession()
+    session := cassandra.SharedSession()
 
-    var json CredentialJson
+    var json CredentialParams
     err := c.BindJSON(&json)
     LogError(err)
 
@@ -147,8 +148,8 @@ func Signup(c *gin.Context) {
     // encrypt password
     encryptedPassword, err := bcrypt.GenerateFromPassword([]byte(json.Password), kBcryptCost)
 
-    // write db. note lightweight transaction is used to make sure the username is unique
-    applied, err := db.Query(`INSERT INTO user_by_name (username, id, password) VALUES (?, ?, ?) IF NOT EXISTS`,
+    // write DB. note lightweight transaction is used to make sure the username is unique
+    applied, err := session.Query(`INSERT INTO user_by_name (username, id, password) VALUES (?, ?, ?) IF NOT EXISTS`,
         json.Username, id, encryptedPassword).ScanCAS()
     if err != nil || !applied {
         LogError(err)
@@ -156,7 +157,7 @@ func Signup(c *gin.Context) {
         return
     }
 
-    if err := db.Query(`INSERT INTO user (id, username, deleted) VALUES (?, ?, false)`,
+    if err := session.Query(`INSERT INTO user (id, username, deleted) VALUES (?, ?, false)`,
         id, json.Username).Exec(); err != nil {
         LogError(err)
         c.AbortWithError(http.StatusBadGateway, err)
@@ -182,17 +183,17 @@ func Signup(c *gin.Context) {
  */
 
 func Signin(c *gin.Context) {
-    db := cassandra.SharedSession()
+    session := cassandra.SharedSession()
 
-    var json CredentialJson
+    var json CredentialParams
     err := c.BindJSON(&json)
     LogError(err)
 
-    // read db
+    // read encrypted password from DB
     var id int64
     var encryptedPassword string
-    if err := db.Query(`SELECT id, password FROM user_by_name WHERE username = ? LIMIT 1`,
-        json.Username).Scan(&id, &encryptedPassword); err != nil {
+    if err := session.Query(`SELECT id, password FROM user_by_name WHERE username = ? LIMIT 1`,
+        json.Username).Consistency(gocql.One).Scan(&id, &encryptedPassword); err != nil {
         LogError(err)
         c.JSON(http.StatusUnauthorized, gin.H{"error": "user does not exist"})
         return
@@ -227,7 +228,7 @@ type XmppUserForm struct {
 
 func CheckExistence(c *gin.Context) {
 
-    db := cassandra.SharedSession()
+    session := cassandra.SharedSession()
 
     var form XmppUserForm
     err := c.Bind(&form)
@@ -246,10 +247,10 @@ func CheckExistence(c *gin.Context) {
         return
     }
 
-    // read db
+    // read DB
     var deleted bool
-    err = db.Query(`SELECT deleted FROM user WHERE id = ? LIMIT 1`,
-        id).Scan(&deleted)
+    err = session.Query(`SELECT deleted FROM user WHERE id = ? LIMIT 1`,
+        id).Consistency(gocql.One).Scan(&deleted)
     LogError(err)
 
     if err != nil || deleted {
@@ -264,7 +265,6 @@ func CheckExistence(c *gin.Context) {
 /*
  * VerifyToken endpoint
  */
-
 type XmppCredentialForm struct {
     Userid string `form:"user" binding:"required"`
     Server string `form:"server" binding:"required"`

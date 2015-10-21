@@ -29,11 +29,13 @@ func init() {
     password := GetString("cassandra.password")
 
     cluster := gocql.NewCluster(hosts...)
-    cluster.Keyspace = keyspace
     cluster.Authenticator = gocql.PasswordAuthenticator{
         Username: username,
         Password: password,
     }
+    cluster.DiscoverHosts = true
+    cluster.Keyspace = keyspace
+    cluster.RetryPolicy = &gocql.SimpleRetryPolicy{NumRetries: 3}
 
     session, err := cluster.CreateSession()
     sharedSession = session

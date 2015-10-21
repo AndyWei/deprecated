@@ -86,26 +86,33 @@ CREATE TABLE IF NOT EXISTS user_by_phone (
  *                   4. Any time we create a new slot, the 24-hours-old slot of the same area will be deleted to save disk space.
  */
 CREATE TABLE IF NOT EXISTS user_by_area (
-    areaid         text      , -- defined in area.cql area
-    hour           int       , -- the number of hours since joyy epoch (01 Jan 2015 00:00:00 GMT)
-    userid         bigint    ,
+    areaid       text   , -- defined in area.cql area
+    hour         int    , -- the number of hours since joyy epoch (01 Jan 2015 00:00:00 GMT)
+    userid       bigint ,
+    username     text   ,
+    region       int    ,
+    sex          int    , -- 0: female, 1: male, 2: other
+    yob          int    , -- year of birth
+    bio          text   ,
 
     PRIMARY KEY ((areaid, hour), userid)
-) WITH COMPACTION = {'class': 'LeveledCompactionStrategy', 'enabled': 'true'};
+) WITH CLUSTERING ORDER BY (userid DESC)
+   AND COMPACTION = {'class': 'LeveledCompactionStrategy', 'enabled': 'true'};
 
 
 /*
  * Description: the table stores friendship, which is used to get the friend timeline ids for pushing new post
- * Query:     : SELECT friendid FROM friend WHERE userid = $current_userid
+ * Query:     : all_my_friends = SELECT fid FROM friendship WHERE uid = $my_userid
  * Write      : when 2 users become friends, 2 columns will be created
  *
  * @Discussion:
  */
-CREATE TABLE IF NOT EXISTS friend (
-    userid            bigint ,
-    fuserid           bigint , -- friend userid
-    fusername         text   , -- friend username
-    fregion           int    , -- the avatar photo stored region of the friend. Currently 3 values are available: 0: North America, 1: Asia, 2: Europe. 
+CREATE TABLE IF NOT EXISTS friendship (
+    userid       bigint , -- userid
+    fid          bigint , -- friend userid
+    fname        text   , -- friend username
+    fregion      int    , -- the region where friend's avatar photo stored. Currently 3 values are available: 0: North America, 1: Asia, 2: Europe. 
 
-    PRIMARY KEY (userid, fuserid)
+    PRIMARY KEY (userid, fid)
 ) WITH COMPACTION = {'class': 'LeveledCompactionStrategy', 'enabled': 'true'};
+

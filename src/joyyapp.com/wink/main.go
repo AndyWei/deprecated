@@ -36,6 +36,10 @@ func main() {
         jwtAuth.GET("/post/timeline", post.GetTimeline)
         jwtAuth.GET("/user/profile", user.GetProfile)
         jwtAuth.POST("/user/profile", user.SetProfile)
+        jwtAuth.GET("/user/friends", user.GetFriends)
+        jwtAuth.POST("/user/friendship/create", user.CreateFriendship)
+        jwtAuth.POST("/user/friendship/update", user.UpdateFriendship)
+        jwtAuth.POST("/user/friendship/destroy", user.DestroyFriendship)
     }
 
     router.Run(":8000")
