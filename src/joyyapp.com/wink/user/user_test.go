@@ -1,159 +1,132 @@
 package user
 
 import (
-    "encoding/json"
-    "github.com/stretchr/testify/assert"
-    "io/ioutil"
-    "joyyapp.com/wink/cache"
-    . "joyyapp.com/wink/util"
-    "net/http"
-    "strconv"
-    "strings"
-    "testing"
+// "encoding/json"
+// "github.com/stretchr/testify/assert"
+// "io/ioutil"
+// "joyyapp.com/wink/cache"
+// "joyyapp.com/wink/cassandra"
+// . "joyyapp.com/wink/util"
+// "net/http"
+// "strconv"
+// "strings"
+// "testing"
 )
 
-func createProfileParams(phone int64, yob, region, sex int, bio string) *ProfileParams {
-    return &ProfileParams{Phone: phone, Region: region, Sex: sex, Yob: yob, Bio: bio}
-}
+// var ProfileTests = []struct {
+//     phone  int64
+//     region int
+//     sex    int
+//     yob    int
+//     bio    string
+// }{
+//     {int64(16509001234), 0, 0, 1990, "good man in us"},
+//     {int64(14258009876), 3, 1, 1991, "good girl in eu"},
+//     {int64(8613612341234), 1, 0, 1992, "good man in china"},
+// }
 
-func createFriendshipParams(fid int64, fname string, fregion, region int) *FriendshipParams {
-    return &FriendshipParams{Fid: fid, Fname: fname, Fregion: fregion, Region: region}
-}
+// func createProfileParams(phone int64, yob, region, sex int, bio string) *ProfileParams {
+//     return &ProfileParams{Phone: phone, Region: region, Sex: sex, Yob: yob, Bio: bio}
+// }
 
-func TestSetProfile(t *testing.T) {
+// func TestSetProfile(t *testing.T) {
 
-    assert := assert.New(t)
-    dummyUsername := "dummy_for_set"
+//     assert := assert.New(t)
 
-    idString, tokenString := signup(dummyUsername, "profile")
+//     db := cassandra.DB()
+//     u := &user.Handler{db}
 
-    // payload
-    payload := createProfileParams(int64(14257850318), 1995, 0, 1, "let's make a miracle")
-    jsondata, _ := json.Marshal(payload)
-    post_data := strings.NewReader(string(jsondata))
+//     for i, test := range ProfileTests {
 
-    // request
-    url := "http://localhost:8000/v1/user/profile"
-    req, _ := http.NewRequest("POST", url, post_data)
-    req.Header.Set("Content-Type", "application/json")
-    req.Header.Set("Authorization", "Bearer "+tokenString)
+//         c * gin.Context =
+//             u.SetProfile(c)
+//         if useProxy(test.host+":80") != test.match {
+//             t.Errorf("useProxy(%v) = %v, want %v", test.host, !test.match, test.match)
+//         }
+//     }
+//     dummyUsername := "dummy_for_set"
 
-    // send
-    resp, err := client.Do(req)
-    assert.Nil(err)
+//     idString, tokenString := signup(dummyUsername, "profile")
 
-    // check response
-    assert.Equal(http.StatusOK, resp.StatusCode, "should response StatusOK")
-    body, err := ioutil.ReadAll(resp.Body)
-    defer resp.Body.Close()
-    assert.Nil(err)
+//     // payload
+//     payload := createProfileParams(int64(14257850318), 1995, 0, 1, "let's make a miracle")
+//     bytes, _ := json.Marshal(payload)
+//     body := strings.NewReader(string(bytes))
 
-    responseData := new(DefaultPostResponse)
-    err = json.Unmarshal(body, responseData)
-    assert.Nil(err)
-    assert.Equal(0, responseData.Error, "should contain error code in response")
+//     // request
+//     url := "http://localhost:8000/v1/user/profile"
+//     req, _ := http.NewRequest("POST", url, body)
+//     req.Header.Set("Content-Type", "application/json")
+//     req.Header.Set("Authorization", "Bearer "+tokenString)
 
-    // check cache
-    u, err := cache.GetUserStruct(idString)
-    assert.Nil(err)
-    assert.Equal(dummyUsername, u.Username, "should store correct username in cache")
-    id, _ := strconv.ParseInt(idString, 10, 64)
-    assert.Equal(id, u.Id, "should store correct userid in cache")
-}
+//     // send
+//     resp, err := client.Do(req)
+//     assert.Nil(err)
 
-func TestGetProfile(t *testing.T) {
+//     // check response
+//     assert.Equal(http.StatusOK, resp.StatusCode, "should response StatusOK")
+//     body, err := ioutil.ReadAll(resp.Body)
+//     defer resp.Body.Close()
+//     assert.Nil(err)
 
-    assert := assert.New(t)
+//     responseData := new(DefaultPostResponse)
+//     err = json.Unmarshal(body, responseData)
+//     assert.Nil(err)
+//     assert.Equal(0, responseData.Error, "should contain error code in response")
 
-    dummyUsername := "dummy_for_get"
-    idString, tokenString := signup(dummyUsername, "profile")
+//     // check cache
+//     u, err := cache.GetUserStruct(idString)
+//     assert.Nil(err)
+//     assert.Equal(dummyUsername, u.Username, "should store correct username in cache")
+//     id, _ := strconv.ParseInt(idString, 10, 64)
+//     assert.Equal(id, u.Id, "should store correct userid in cache")
+// }
 
-    // set profile first
-    phone := int64(14008009000)
-    region := 1
-    sex := 2
-    yob := 1990
+// func TestGetProfile(t *testing.T) {
 
-    payload := createProfileParams(phone, yob, region, sex, "")
-    jsondata, _ := json.Marshal(payload)
-    post_data := strings.NewReader(string(jsondata))
+//     assert := assert.New(t)
 
-    // request
-    url := "http://localhost:8000/v1/user/profile"
-    req, _ := http.NewRequest("POST", url, post_data)
-    req.Header.Set("Content-Type", "application/json")
-    req.Header.Set("Authorization", "Bearer "+tokenString)
+//     dummyUsername := "dummy_for_get"
+//     idString, tokenString := signup(dummyUsername, "profile")
 
-    // send
-    resp, err := client.Do(req)
-    assert.Nil(err)
+//     // set profile first
+//     phone := int64(14008009000)
+//     region := 1
+//     sex := 2
+//     yob := 1990
 
-    // get profile
-    req, _ = http.NewRequest("GET", url, nil)
-    req.Header.Set("Authorization", "Bearer "+tokenString)
-    resp, err = client.Do(req)
-    assert.Nil(err)
-    assert.Equal(http.StatusOK, resp.StatusCode, "should response StatusOK")
-    body, err := ioutil.ReadAll(resp.Body)
-    defer resp.Body.Close()
-    assert.Nil(err)
+//     payload := createProfileParams(phone, yob, region, sex, "")
+//     bytes, _ := json.Marshal(payload)
+//     body := strings.NewReader(string(bytes))
 
-    responseData := new(cache.User)
-    err = json.Unmarshal(body, responseData)
-    assert.Nil(err)
+//     // request
+//     url := "http://localhost:8000/v1/user/profile"
+//     req, _ := http.NewRequest("POST", url, body)
+//     req.Header.Set("Content-Type", "application/json")
+//     req.Header.Set("Authorization", "Bearer "+tokenString)
 
-    userid, _ := strconv.ParseInt(idString, 10, 64)
-    assert.Equal(userid, responseData.Id, "should store correct userid in cache")
-    assert.Equal(dummyUsername, responseData.Username, "should store correct username in cache")
-    assert.Equal(region, responseData.Region, "should store correct region in cache")
-    assert.Equal(sex, responseData.Sex, "should store correct sex in cache")
-    assert.Equal(yob, responseData.Yob, "should store correct yob in cache")
-}
+//     // send
+//     resp, err := client.Do(req)
+//     assert.Nil(err)
 
-func TestCreateFriendship(t *testing.T) {
+//     // get profile
+//     req, _ = http.NewRequest("GET", url, nil)
+//     req.Header.Set("Authorization", "Bearer "+tokenString)
+//     resp, err = client.Do(req)
+//     assert.Nil(err)
+//     assert.Equal(http.StatusOK, resp.StatusCode, "should response StatusOK")
+//     body, err := ioutil.ReadAll(resp.Body)
+//     defer resp.Body.Close()
+//     assert.Nil(err)
 
-    assert := assert.New(t)
+//     u := new(cache.User)
+//     err = json.Unmarshal(body, u)
+//     assert.Nil(err)
 
-    dummyUsername := "dummy_for_friendship"
-    _, tokenString := signup(dummyUsername, "profile")
-
-    // set profile first
-    fid := int64(14008009000)
-    fname := "bff"
-    fregion := 0
-    region := 1
-
-    payload := createFriendshipParams(fid, fname, fregion, region)
-    jsondata, _ := json.Marshal(payload)
-    post_data := strings.NewReader(string(jsondata))
-
-    // request
-    url := "http://localhost:8000/v1/user/friendship/create"
-    req, _ := http.NewRequest("POST", url, post_data)
-    req.Header.Set("Content-Type", "application/json")
-    req.Header.Set("Authorization", "Bearer "+tokenString)
-
-    // send
-    resp, err := client.Do(req)
-    assert.Nil(err)
-
-    // get friends
-    url = "http://localhost:8000/v1/user/friends"
-    req, _ = http.NewRequest("GET", url, nil)
-    req.Header.Set("Authorization", "Bearer "+tokenString)
-    resp, err = client.Do(req)
-    assert.Nil(err)
-    assert.Equal(http.StatusOK, resp.StatusCode, "should response StatusOK")
-    body, err := ioutil.ReadAll(resp.Body)
-    defer resp.Body.Close()
-    assert.Nil(err)
-
-    var friends []Friend
-    err = json.Unmarshal(body, &friends)
-    assert.Nil(err)
-
-    var friend Friend = friends[0]
-    assert.Equal(fid, friend.Id, "should store correct userid in DB")
-    assert.Equal(fname, friend.Username, "should store correct username in DB")
-    assert.Equal(fregion, friend.Region, "should store correct region in DB")
-}
+//     userid, _ := strconv.ParseInt(idString, 10, 64)
+//     assert.Equal(userid, u.Id, "should store correct userid in cache")
+//     assert.Equal(dummyUsername, u.Username, "should store correct username in cache")
+//     assert.Equal(region, u.Region, "should store correct region in cache")
+//     assert.Equal(sex, u.Sex, "should store correct sex in cache")
+//     assert.Equal(yob, u.Yob, "should store correct yob in cache")
+// }

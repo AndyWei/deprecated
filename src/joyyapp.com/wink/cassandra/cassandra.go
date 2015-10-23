@@ -13,7 +13,7 @@ import (
     . "joyyapp.com/wink/util"
 )
 
-var sharedSession *gocql.Session = nil
+var sharedDB *gocql.Session = nil
 
 func init() {
 
@@ -38,10 +38,10 @@ func init() {
     cluster.RetryPolicy = &gocql.SimpleRetryPolicy{NumRetries: 3}
 
     session, err := cluster.CreateSession()
-    sharedSession = session
+    sharedDB = session
     PanicOnError(err)
 }
 
-func SharedSession() *gocql.Session {
-    return sharedSession
+func DB() *gocql.Session {
+    return sharedDB
 }

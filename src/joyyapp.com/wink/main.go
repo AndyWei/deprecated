@@ -7,44 +7,55 @@
 package main
 
 import (
-    "github.com/gin-gonic/gin"
-    "joyyapp.com/wink/post"
+    "github.com/julienschmidt/httprouter"
+    "joyyapp.com/wink/cassandra"
+    // "joyyapp.com/wink/friendship"
+    // "joyyapp.com/wink/post"
     "joyyapp.com/wink/user"
+    . "joyyapp.com/wink/util"
+    "net/http"
     "runtime"
 )
 
 func main() {
     runtime.GOMAXPROCS(runtime.NumCPU())
-    router := gin.New()
 
-    // Global middleware
-    router.Use(gin.Logger())
-    router.Use(gin.Recovery())
+    router := httprouter.New()
 
-    nonAuth := router.Group("/v1")
-    {
-        nonAuth.GET("/ping", pong)
-        nonAuth.POST("/user/signin", user.Signin)
-        nonAuth.POST("/user/signup", user.Signup)
-        nonAuth.GET("/xmpp/check_password", user.VerifyToken)
-        nonAuth.GET("/xmpp/user_exists", user.CheckExistence)
-    }
+    db := cassandra.DB()
+    userHandler := &user.Handler{DB: db}
 
-    jwtAuth := router.Group("/v1")
-    jwtAuth.Use(user.JwtAuthMiddleWare())
-    {
-        jwtAuth.GET("/post/timeline", post.GetTimeline)
-        jwtAuth.GET("/user/profile", user.GetProfile)
-        jwtAuth.POST("/user/profile", user.SetProfile)
-        jwtAuth.GET("/user/friends", user.GetFriends)
-        jwtAuth.POST("/user/friendship/create", user.CreateFriendship)
-        jwtAuth.POST("/user/friendship/update", user.UpdateFriendship)
-        jwtAuth.POST("/user/friendship/destroy", user.DestroyFriendship)
-    }
+    router.GET("/v1/ping", pong)
+    router.GET("/v1/xmpp/check_password", userHandler.CheckPassword)
+    router.GET("/v1/xmpp/user_exists", userHandler.CheckExistence)
 
-    router.Run(":8000")
+    router.POST("/v1/user/signin", userHandler.SignIn)
+    router.POST("/v1/user/signup", userHandler.SignUp)
+
+    // nonAuth := router.Group("/v1")
+    // {
+    //     nonAuth.GET("/ping", pong)
+    //     nonAuth.POST("/user/signin", u.SignIn)
+    //     nonAuth.POST("/user/signup", u.SignUp)
+    //     nonAuth.GET("/xmpp/check_password", u.CheckPassword)
+    //     nonAuth.GET("/xmpp/user_exists", u.CheckExistence)
+    // }
+
+    // jwtAuth := router.Group("/v1")
+    // jwtAuth.Use(user.JwtAuthMiddleWare())
+    // {
+    //     jwtAuth.GET("/post/timeline", p.GetTimeline)
+    //     jwtAuth.GET("/user/profile", u.GetProfile)
+    //     jwtAuth.POST("/user/profile", u.SetProfile)
+    //     jwtAuth.GET("/friendship", f.GetAll)
+    //     jwtAuth.POST("/friendship/create", f.Create)
+    //     jwtAuth.POST("/friendship/update", f.Update)
+    //     jwtAuth.POST("/friendship/destroy", f.Destroy)
+    // }
+
+    LogFatal(http.ListenAndServe(":8000", router))
 }
 
-func pong(c *gin.Context) {
-    c.String(200, "pong")
+func pong(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+    w.Write([]byte("pong"))
 }

@@ -8,31 +8,15 @@
 package post
 
 import (
-    // "fmt"
-    "github.com/gin-gonic/gin"
-    // "joyyapp.com/wink/db"
-    // "fmt"
-    // . "joyyapp.com/wink/idgen"
+    "github.com/gocql/gocql"
+    "github.com/julienschmidt/httprouter"
+    "net/http"
 )
 
-func GetTimeline(c *gin.Context) {
-
-    // redis := cache.SharedRedis()
-
-    // pipeline := redis.Pipeline()
-
-    // process
-
-    // fmt.Println("key", val)
-    // c.String(200, val)
+type Handler struct {
+    DB *gocql.Session
 }
 
-// func getPostidsByVipids(vipids, sincePostid) []int64 {
+func (h *Handler) GetTimeline(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 
-//     redis := cache.SharedRedis()
-//     pipeline := redis.Pipeline()
-
-//     for i := 0; i < count; i++ {
-
-//     }
-// }
+}
