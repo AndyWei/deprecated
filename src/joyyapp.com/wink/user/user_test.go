@@ -4,7 +4,6 @@ import (
 // "encoding/json"
 // "github.com/stretchr/testify/assert"
 // "io/ioutil"
-// "joyyapp.com/wink/cache"
 // "joyyapp.com/wink/cassandra"
 // . "joyyapp.com/wink/util"
 // "net/http"

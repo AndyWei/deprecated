@@ -42,6 +42,16 @@ func TestSignUp(t *testing.T) {
         h.SignUp(resp, r, nil)
 
         assert.Equal(test.code, resp.Code, "should response correct status code")
+
+        if test.code == http.StatusOK {
+            bytes := resp.Body.Bytes()
+            reply := &AuthReply{}
+            err := json.Unmarshal(bytes, reply)
+
+            assert.Nil(err)
+            assert.NotNil(reply.Id)
+            assert.NotNil(reply.Token)
+        }
     }
 }
 
@@ -75,6 +85,16 @@ func TestSignIn(t *testing.T) {
         h.SignIn(resp, r, nil)
 
         assert.Equal(test.code, resp.Code, "should response correct status code")
+
+        if test.code == http.StatusOK {
+            bytes := resp.Body.Bytes()
+            reply := &AuthReply{}
+            err := json.Unmarshal(bytes, reply)
+
+            assert.Nil(err)
+            assert.NotNil(reply.Id)
+            assert.NotNil(reply.Token)
+        }
     }
 }
 
@@ -86,7 +106,7 @@ var checkExistenceTests = []struct {
     code     int
 }{
     {"dummy_user", "dummy_user", 0, "joyy.im", http.StatusOK},
-    {"dummy_user", "dummy_user", 1, "jjjj.im", http.StatusConflict},
+    {"dummy_user", "dummy_user", 1, "jjjj.im", http.StatusBadRequest},
     {"dummy_user", "dummy_user", 1, "joyy.im", http.StatusNotFound},
 }
 
@@ -106,7 +126,7 @@ func TestCheckExistence(t *testing.T) {
         }
         v.Set("user", strconv.FormatInt(userid, 10))
         v.Set("server", test.server)
-        r, _ := http.NewRequest("POST", "/xmpp/user_exists", nil)
+        r, _ := http.NewRequest("GET", "/xmpp/user_exists", nil)
         r.Header.Set("Content-Type", "application/x-www-form-urlencoded; param=value")
         r.PostForm = v
         resp := httptest.NewRecorder()
@@ -124,7 +144,7 @@ var checkPasswordTests = []struct {
     code     int
 }{
     {"dummy_user", "dummy_user", "good_token", "joyy.im", http.StatusOK},
-    {"dummy_user", "dummy_user", "good_token", "jjjj.im", http.StatusConflict},
+    {"dummy_user", "dummy_user", "good_token", "jjjj.im", http.StatusBadRequest},
     {"dummy_user", "dummy_user", "bad_token", "joyy.im", http.StatusUnauthorized},
 }
 
@@ -145,7 +165,7 @@ func TestCheckPassword(t *testing.T) {
         v.Set("user", strconv.FormatInt(userid, 10))
         v.Set("server", test.server)
         v.Set("pass", pass)
-        r, _ := http.NewRequest("POST", "/xmpp/check_password", nil)
+        r, _ := http.NewRequest("GET", "/xmpp/check_password", nil)
         r.Header.Set("Content-Type", "application/x-www-form-urlencoded; param=value")
         r.PostForm = v
         resp := httptest.NewRecorder()
@@ -171,10 +191,10 @@ func (h *Handler) signin(username, password string) (id int64, token string, err
     }
 
     bytes := resp.Body.Bytes()
-    rb := &AuthReplyBody{}
-    if err := json.Unmarshal(bytes, rb); err != nil {
+    reply := &AuthReply{}
+    if err := json.Unmarshal(bytes, reply); err != nil {
         return 0, "", errors.New(ErrPasswordInvalid)
     }
 
-    return rb.Id, rb.Token, nil
+    return reply.Id, reply.Token, nil
 }

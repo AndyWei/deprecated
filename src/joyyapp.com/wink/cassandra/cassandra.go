@@ -1,6 +1,6 @@
 /*
  * cassandra.go
- * The global cassandra DB session singleton
+ * The global cassandra DB session
  *
  * Copyright (c) 2015 Joyy Inc. All rights reserved.
  */
