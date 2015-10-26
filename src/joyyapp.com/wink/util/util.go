@@ -1,5 +1,5 @@
 /*
- * cassandra.go
+ * util.go
  * The collection of utility functions
  *
  * Copyright (c) 2015 Joyy Inc. All rights reserved.

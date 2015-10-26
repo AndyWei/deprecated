@@ -6,6 +6,8 @@ curl --data "username=andy&password=good" http://localhost:8000/v1/auth/signup
 
 # signin
 curl --data "username=andy&password=good" http://localhost:8000/v1/auth/signin
+curl --data "username=sign_up_user&password=dummy_password" http://localhost:8000/v1/auth/signin
+
 
 # check_existance
 curl -i "http://localhost:8000/v1/xmpp/user_exists?user=108004831012061184&server=joyy.im"
@@ -18,9 +20,9 @@ curl -i "http://localhost:8000/v1/xmpp/check_password?user=108004831012061184&se
 curl -i -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE0NDU4Mjc5NTgsImlkIjoiMTA4MDA0ODMxMDEyMDYxMTg0IiwidXNlcm5hbWUiOiJhbmR5In0.uguXBBlPSuZ0EpYSYJ66DMs7E0-WzdqV9pNNMKyChTI" --data "phone=123&region=1&sex=1&yob=1990&bio=what" http://localhost:8000/v1/user/profile
 
 
-
 # GET a person's own profile
-curl -i -H "Authorization: Bearer XtLn28StytiaIavlMymz" "http://localhost:8000/v1/person/profile"
+curl -i -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE0NDU4NDc1ODIsImlkIjoiMTA4MDgzMzYxMzMwNzU3NjMyIiwidXNlcm5hbWUiOiJzaWduX3VwX3VzZXIifQ.M_veZIdghZRlRXEt6ptKR4KtAHmUGH8HyeD6UZriRdM" http://localhost:8000/v1/user/profile
+
 
 # GET a list of people's profile
 curl -i -H "Authorization: Bearer WiYdpKAfwDOAd5BKDGqx" "http://localhost:8000/v1/person?id=1&id=2&id=3&id=4&cell=94555"

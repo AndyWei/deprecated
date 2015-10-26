@@ -1,6 +1,7 @@
 package user
 
 import (
+    "encoding/json"
     "fmt"
     "github.com/stretchr/testify/assert"
     "joyyapp.com/wink/cassandra"
@@ -23,9 +24,9 @@ var UpdateProfileTests = []struct {
     code     int
 }{
     {1234567890001, "user1", 16509001234, 0, 0, 1990, "good man in us", http.StatusOK},
-    // {1234567890002, "user2", 14258009876, 3, 1, 1991, "bad girl in unknown region", http.StatusBadRequest},
-    // {1234567890003, "user3", 86136123412, 1, 0, 1992, "good man in china", http.StatusOK},
-    // {1234567890004, "user4", 86136123412, 1, 0, 1992, "", http.StatusOK},
+    {1234567890002, "user2", 14258009876, 3, 1, 1991, "bad girl in unknown region", http.StatusBadRequest},
+    {1234567890003, "user3", 86136123412, 1, 0, 1992, "good man in china", http.StatusOK},
+    {1234567890004, "user4", 86136123412, 1, 0, 1992, "", http.StatusOK},
 }
 
 func TestSetProfile(test *testing.T) {
@@ -35,8 +36,12 @@ func TestSetProfile(test *testing.T) {
 
     for _, t := range UpdateProfileTests {
 
-        body := fmt.Sprintf("phone=%v&region=%v&sex=%v&yob=%v&bio=%v", t.phone, t.region, t.sex, t.yob, url.QueryEscape(t.bio))
+        body := fmt.Sprintf("phone=%v&region=%v&sex=%v&yob=%v", t.phone, t.region, t.sex, t.yob)
+        if len(t.bio) > 0 {
+            body += fmt.Sprintf("&bio=%v", url.QueryEscape(t.bio))
+        }
         LogInfof("TestSetProfile body = %v", body)
+
         req, _ := http.NewRequest("POST", "/v1/user/profile", strings.NewReader(body))
         req.Header.Set("Content-Type", "application/x-www-form-urlencoded; param=value")
         resp := httptest.NewRecorder()
@@ -47,51 +52,64 @@ func TestSetProfile(test *testing.T) {
     }
 }
 
-// func TestGetProfile(t *testing.T) {
+var GetProfileTests = []struct {
+    userid   int64
+    username string
+    phone    int64
+    region   int
+    sex      int
+    yob      int
+    bio      string
+    code     int
+}{
+    {1234567891111, "get_profile_user1", 16509001234, 0, 0, 1990, "good man in us", http.StatusOK},
+    {1234567892222, "get_profile_user2", 86136123412, 1, 0, 1992, "ddd", http.StatusOK},
+}
 
-//     assert := assert.New(t)
+type GetProfileReply struct {
+    Username string `json:"username"`
+    Phone    int64  `json:"phone"`
+    Region   int    `json:"region"`
+    Sex      int    `json:"sex"`
+    Yob      int    `json:"yob"`
+    Bio      string `json:"bio"`
+}
 
-//     dummyUsername := "dummy_for_get"
-//     idString, tokenString := signup(dummyUsername, "profile")
+func TestGetProfile(test *testing.T) {
+    assert := assert.New(test)
+    db := cassandra.DB()
+    h := Handler{DB: db}
 
-//     // set profile first
-//     phone := int64(14008009000)
-//     region := 1
-//     sex := 2
-//     yob := 1990
+    for _, t := range GetProfileTests {
 
-//     payload := createProfileParams(phone, yob, region, sex, "")
-//     bytes, _ := json.Marshal(payload)
-//     body := strings.NewReader(string(bytes))
+        body := fmt.Sprintf("phone=%v&region=%v&sex=%v&yob=%v", t.phone, t.region, t.sex, t.yob)
+        if len(t.bio) > 0 {
+            body += fmt.Sprintf("&bio=%v", url.QueryEscape(t.bio))
+        }
 
-//     // request
-//     url := "http://localhost:8000/v1/user/profile"
-//     req, _ := http.NewRequest("POST", url, body)
-//     req.Header.Set("Content-Type", "application/json")
-//     req.Header.Set("Authorization", "Bearer "+tokenString)
+        req, _ := http.NewRequest("POST", "/v1/user/profile", strings.NewReader(body))
+        req.Header.Set("Content-Type", "application/x-www-form-urlencoded; param=value")
+        resp := httptest.NewRecorder()
 
-//     // send
-//     resp, err := client.Do(req)
-//     assert.Nil(err)
+        h.SetProfile(resp, req, t.userid, t.username)
+        assert.Equal(t.code, resp.Code, "should response correct status code")
 
-//     // get profile
-//     req, _ = http.NewRequest("GET", url, nil)
-//     req.Header.Set("Authorization", "Bearer "+tokenString)
-//     resp, err = client.Do(req)
-//     assert.Nil(err)
-//     assert.Equal(http.StatusOK, resp.StatusCode, "should response StatusOK")
-//     body, err := ioutil.ReadAll(resp.Body)
-//     defer resp.Body.Close()
-//     assert.Nil(err)
+        req2, _ := http.NewRequest("GET", "/v1/user/profile", nil)
+        resp2 := httptest.NewRecorder()
+        h.GetProfile(resp2, req2, t.userid, t.username)
 
-//     u := new(cache.User)
-//     err = json.Unmarshal(body, u)
-//     assert.Nil(err)
+        bytes := resp2.Body.Bytes()
+        jsonstr := string(bytes)
+        LogInfof("jsonstr = %v", jsonstr)
 
-//     userid, _ := strconv.ParseInt(idString, 10, 64)
-//     assert.Equal(userid, u.Id, "should store correct userid in cache")
-//     assert.Equal(dummyUsername, u.Username, "should store correct username in cache")
-//     assert.Equal(region, u.Region, "should store correct region in cache")
-//     assert.Equal(sex, u.Sex, "should store correct sex in cache")
-//     assert.Equal(yob, u.Yob, "should store correct yob in cache")
-// }
+        var r GetProfileReply
+        err := json.Unmarshal(bytes, &r)
+        LogError(err)
+
+        assert.Nil(err)
+        assert.Equal(t.phone, r.Phone, "should store correct region in DB")
+        assert.Equal(t.sex, r.Sex, "should store correct sex in DB")
+        assert.Equal(t.yob, r.Yob, "should store correct yob in DB")
+        assert.Equal(t.bio, r.Bio, "should store correct bio in DB")
+    }
+}

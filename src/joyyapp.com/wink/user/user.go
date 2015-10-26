@@ -8,7 +8,7 @@
 package user
 
 import (
-    // "encoding/json"
+    "encoding/json"
     "github.com/gocql/gocql"
     . "joyyapp.com/wink/util"
     "net/http"
@@ -57,21 +57,21 @@ func (h *Handler) SetProfile(w http.ResponseWriter, req *http.Request, userid in
 
 func (h *Handler) GetProfile(w http.ResponseWriter, req *http.Request, userid int64, username string) {
 
-    //     m := make(map[string]interface{})
-    //     if err := h.DB.Query(`SELECT username, deleted, phone, region, sex, yob, bio FROM user WHERE id = ? LIMIT 1`,
-    //         userid).Consistency(gocql.One).MapScan(m); err != nil {
-    //         LogError(err)
-    //         ReplyError(w, ErrUserNotExist, http.StatusNotFound)
-    //         return
-    //     }
+    m := make(map[string]interface{})
+    if err := h.DB.Query(`SELECT username, phone, region, sex, yob, bio FROM user WHERE id = ? LIMIT 1`,
+        userid).Consistency(gocql.One).MapScan(m); err != nil {
+        LogError(err)
+        ReplyError(w, ErrUserNotExist, http.StatusNotFound)
+        return
+    }
 
-    //     body, err := json.Marshal(m)
-    //     if err != nil {
-    //         LogError(err)
-    //         ReplyError(w, err.Error(), http.StatusBadGateway)
-    //         return
-    //     }
+    body, err := json.Marshal(m)
+    if err != nil {
+        LogError(err)
+        ReplyError(w, err.Error(), http.StatusBadGateway)
+        return
+    }
 
-    //     ReplyData(w, body)
-    //     return
+    ReplyData(w, body)
+    return
 }
