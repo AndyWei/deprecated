@@ -5,22 +5,26 @@
  * Copyright (c) 2015 Joyy Inc. All rights reserved.
  */
 
-package user
+package auth
 
 import (
     "encoding/json"
     "github.com/gocql/gocql"
-    "github.com/julienschmidt/httprouter"
-    . "github.com/mholt/binding"
     "github.com/spf13/viper"
     "golang.org/x/crypto/bcrypt"
-    "joyyapp.com/wink/jwt"
+    "joyyapp.com/wink/idgen"
     . "joyyapp.com/wink/util"
     "net/http"
 )
 
-var kBcryptCost int = 0
-var kImDomain string = ""
+type Handler struct {
+    DB *gocql.Session
+}
+
+var (
+    kBcryptCost int    = 0
+    kImDomain   string = ""
+)
 
 func init() {
 
@@ -28,7 +32,7 @@ func init() {
     viper.SetConfigType("toml")
     viper.AddConfigPath("/etc/wink/")
     err := viper.ReadInConfig()
-    PanicOnError(err)
+    LogPanic(err)
 
     kBcryptCost = viper.GetInt("bcrypt.cost")
     kImDomain = viper.GetString("im.domain")
@@ -38,26 +42,8 @@ func init() {
  * Signup/Signin request and reply structure
  */
 type AuthRequest struct {
-    Username string
-    Password string
-}
-
-func (r *AuthRequest) FieldMap(req *http.Request) FieldMap {
-    return FieldMap{
-        &r.Username: Field{Form: "username", Required: true},
-        &r.Password: Field{Form: "password", Required: true},
-    }
-}
-
-func (r AuthRequest) Validate(req *http.Request, errs Errors) Errors {
-    if len(r.Username) < 2 {
-        errs.Add([]string{"username"}, "ComplaintError", ErrUsernameTooShort)
-    }
-
-    if len(r.Password) < 2 {
-        errs.Add([]string{"password"}, "ComplaintError", ErrPasswordTooShort)
-    }
-    return errs
+    Username string `param:"username" validate:"min=2,max=40,required"`
+    Password string `param:"password" validate:"min=2,max=40,required"`
 }
 
 type AuthReply struct {
@@ -65,15 +51,16 @@ type AuthReply struct {
     Token string `json:"token"`
 }
 
-func (h *Handler) SignUp(w http.ResponseWriter, req *http.Request, _ httprouter.Params) {
+func (h *Handler) SignUp(w http.ResponseWriter, req *http.Request) {
 
-    r := new(AuthRequest)
-    if Bind(req, r).Handle(w) {
+    var r AuthRequest
+    if err := ParseAndCheck(req, &r); err != nil {
+        ReplyError(w, err.Error(), http.StatusBadRequest)
         return
     }
 
-    userid := NewID()
     epassword, err := bcrypt.GenerateFromPassword([]byte(r.Password), kBcryptCost)
+    userid := idgen.NewID()
 
     // write DB. note lightweight transaction is used to make sure the username is unique
     applied, err := h.DB.Query(`INSERT INTO user_by_name (username, id, password) VALUES (?, ?, ?) IF NOT EXISTS`,
@@ -91,7 +78,7 @@ func (h *Handler) SignUp(w http.ResponseWriter, req *http.Request, _ httprouter.
     }
 
     // create JWT token
-    token, err := jwt.NewToken(r.Username, userid)
+    token, err := NewToken(userid, r.Username)
     if err != nil {
         LogError(err)
         ReplyError(w, err.Error(), http.StatusBadGateway)
@@ -111,10 +98,11 @@ func (h *Handler) SignUp(w http.ResponseWriter, req *http.Request, _ httprouter.
  * Signin endpoint
  */
 
-func (h *Handler) SignIn(w http.ResponseWriter, req *http.Request, _ httprouter.Params) {
+func (h *Handler) SignIn(w http.ResponseWriter, req *http.Request) {
 
-    r := new(AuthRequest)
-    if Bind(req, r).Handle(w) {
+    var r AuthRequest
+    if err := ParseAndCheck(req, &r); err != nil {
+        ReplyError(w, err.Error(), http.StatusBadRequest)
         return
     }
 
@@ -123,7 +111,6 @@ func (h *Handler) SignIn(w http.ResponseWriter, req *http.Request, _ httprouter.
     var epassword string
     if err := h.DB.Query(`SELECT id, password FROM user_by_name WHERE username = ? LIMIT 1`,
         r.Username).Consistency(gocql.One).Scan(&userid, &epassword); err != nil {
-
         LogError(err)
         ReplyError(w, ErrUserNotExist, http.StatusBadRequest)
         return
@@ -136,7 +123,7 @@ func (h *Handler) SignIn(w http.ResponseWriter, req *http.Request, _ httprouter.
     }
 
     // success
-    token, err := jwt.NewToken(r.Username, userid)
+    token, err := NewToken(userid, r.Username)
     if err != nil {
         LogError(err)
         ReplyError(w, err.Error(), http.StatusBadGateway)
@@ -153,28 +140,20 @@ func (h *Handler) SignIn(w http.ResponseWriter, req *http.Request, _ httprouter.
  * XMPP CheckExistence request structure
  */
 type CheckExistenceRequest struct {
-    Userid int64
-    Server string
+    Userid int64  `param:"user" validate:"required"`
+    Server string `param:"server" validate:"required"`
 }
 
-func (r *CheckExistenceRequest) FieldMap(req *http.Request) FieldMap {
-    return FieldMap{
-        &r.Userid: Field{Form: "user", Required: true},
-        &r.Server: Field{Form: "server", Required: true},
+func (h *Handler) CheckExistence(w http.ResponseWriter, req *http.Request) {
+
+    var r CheckExistenceRequest
+    if err := ParseAndCheck(req, &r); err != nil {
+        ReplyError(w, err.Error(), http.StatusBadRequest)
+        return
     }
-}
 
-func (r CheckExistenceRequest) Validate(req *http.Request, errs Errors) Errors {
     if r.Server != kImDomain {
-        errs.Add([]string{"username"}, "ComplaintError", ErrIMServerInvalid)
-    }
-    return errs
-}
-
-func (h *Handler) CheckExistence(w http.ResponseWriter, req *http.Request, _ httprouter.Params) {
-
-    r := new(CheckExistenceRequest)
-    if Bind(req, r).Handle(w) {
+        ReplyError(w, ErrIMServerInvalid, http.StatusBadRequest)
         return
     }
 
@@ -198,36 +177,26 @@ func (h *Handler) CheckExistence(w http.ResponseWriter, req *http.Request, _ htt
  * XMPP CheckPassword request structure
  */
 type CheckPasswordRequest struct {
-    Userid int64
-    Server string
-    Token  string
+    Userid int64  `param:"user" validate:"required"`
+    Server string `param:"server" validate:"required"`
+    Token  string `param:"pass" validate:"required"`
 }
 
-func (r *CheckPasswordRequest) FieldMap(req *http.Request) FieldMap {
-    return FieldMap{
-        &r.Userid: Field{Form: "user", Required: true},
-        &r.Server: Field{Form: "server", Required: true},
-        &r.Token:  Field{Form: "pass", Required: true},
-    }
-}
+func (h *Handler) CheckPassword(w http.ResponseWriter, req *http.Request) {
 
-func (r CheckPasswordRequest) Validate(req *http.Request, errs Errors) Errors {
-    if r.Server != kImDomain {
-        errs.Add([]string{"username"}, "ComplaintError", ErrIMServerInvalid)
-    }
-    return errs
-}
-
-func (h *Handler) CheckPassword(w http.ResponseWriter, req *http.Request, _ httprouter.Params) {
-
-    r := new(CheckPasswordRequest)
-    if Bind(req, r).Handle(w) {
+    var r CheckPasswordRequest
+    if err := ParseAndCheck(req, &r); err != nil {
+        ReplyError(w, err.Error(), http.StatusBadRequest)
         return
     }
 
-    id, _, err := jwt.ExtractToken(r.Token)
-    LogError(err)
+    if r.Server != kImDomain {
+        ReplyError(w, ErrIMServerInvalid, http.StatusBadRequest)
+        return
+    }
 
+    id, _, err := ExtractToken(r.Token)
+    LogError(err)
     if err != nil || r.Userid != id {
         ReplyError(w, ErrTokenInvalid, http.StatusUnauthorized)
         return

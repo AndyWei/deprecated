@@ -8,25 +8,22 @@
 package util
 
 import (
-    "errors"
     "fmt"
-    "github.com/julienschmidt/httprouter"
-    "joyyapp.com/wink/idgen"
+    "github.com/goji/param"
+    "gopkg.in/go-playground/validator.v8"
     "log"
     "net/http"
     "runtime"
-    "strconv"
 )
 
-type DefaultPostResponse struct {
-    Error int `json:"error"`
-}
+type HandlerFunc func(http.ResponseWriter, *http.Request, int64, string)
 
 const (
     ErrIMServerInvalid  = "im server is invalid"
     ErrPasswordInvalid  = "password is invalid"
     ErrPasswordTooShort = "password is too short"
     ErrRegionInvalid    = "region is invalid"
+    ErrResponseInvalid  = "response is invalid"
     ErrSexInvalid       = "sex is invalid"
     ErrTokenInvalid     = "token is invalid"
     ErrTokenInvalidAlg  = "token encoding algorithm is invalid"
@@ -36,6 +33,16 @@ const (
     ErrYobInvalid       = "yob is invalid"
 )
 
+var validate *validator.Validate
+
+func init() {
+    config := &validator.Config{TagName: "validate"}
+    validate = validator.New(config)
+}
+
+/*
+ * Log
+ */
 func LogError(err error) {
     if err != nil {
         _, fn, line, _ := runtime.Caller(1)
@@ -50,39 +57,24 @@ func LogFatal(err error) {
     }
 }
 
+func LogInfo(v ...interface{}) {
+    log.Println(v...)
+}
+
 func LogInfof(format string, v ...interface{}) {
     log.Printf(format, v...)
 }
 
-func PanicOnError(err error) {
+func LogPanic(err error) {
     if err != nil {
         _, fn, line, _ := runtime.Caller(1)
-        log.Panicf("[error] %s:%d %v", fn, line, err)
+        log.Panicf("[ERROR] %s:%d %v", fn, line, err)
     }
 }
 
-func NewID() int64 {
-    idGenerator := idgen.SharedInstance()
-    err, id := idGenerator.NewId()
-    PanicOnError(err)
-    return id
-}
-
-func Parse(ps httprouter.Params) (userid int64, username string, err error) {
-    idstr := ps.ByName("userid")
-    userid, err = strconv.ParseInt(idstr, 10, 64)
-    if err != nil {
-        return 0, "", err
-    }
-
-    username = ps.ByName("username")
-    if len(username) == 0 {
-        return 0, "", errors.New(ErrTokenInvalid)
-    }
-
-    return userid, username, nil
-}
-
+/*
+ * reply
+ */
 func ReplyData(w http.ResponseWriter, body []byte) {
     w.Header().Set("Content-Type", "application/json; charset=utf-8")
     w.WriteHeader(http.StatusOK)
@@ -96,11 +88,32 @@ func ReplyError(w http.ResponseWriter, err string, code int) {
 }
 
 func ReplyOK(w http.ResponseWriter) {
-    w.Header().Set("Content-Type", "application/json; charset=utf-8")
     w.WriteHeader(http.StatusOK)
 }
 
 func ReplyTrue(w http.ResponseWriter) {
     w.WriteHeader(http.StatusOK)
     w.Write([]byte("true"))
+}
+
+/*
+ * request
+ */
+func ParseAndCheck(req *http.Request, target interface{}) (err error) {
+
+    req.ParseForm()
+    if err = param.Parse(req.Form, target); err != nil {
+        LogError(err)
+        return err
+    }
+
+    // LogInfof("struct = %v", target)
+    errs := validate.Struct(target)
+    if errs != nil {
+        err = errs.(validator.ValidationErrors)
+        LogError(err)
+        return err
+    }
+
+    return nil
 }

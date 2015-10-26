@@ -13,11 +13,11 @@ func Now() string {
 func TestNotErr(t *testing.T) {
     assert := assert.New(t)
 
-    err, idgen := newIdGen(1)
+    err, idgen := newIdGenerator(1)
     assert.Nil(err)
 
     for i := 0; i < 10; i++ {
-        err, _ := idgen.NewId()
+        err, _ := idgen.newId()
         assert.Nil(err)
     }
 }
@@ -27,12 +27,12 @@ func TestContainsMachineId(t *testing.T) {
 
     var workerId int
     for workerId = 0; workerId < 1024; workerId++ {
-        err, idgen := newIdGen(workerId)
+        err, idgen := newIdGenerator(workerId)
 
         assert.Nil(err)
 
         for i := 0; i < 1; i++ {
-            _, newId := idgen.NewId()
+            _, newId := idgen.newId()
             newId2 := uint(newId << 42)
             machineId := uint(newId2 >> 54)
             assert.Equal(uint(workerId), machineId, "id should contain worker id")
@@ -46,12 +46,12 @@ func TestMachineId(t *testing.T) {
     var workerId int
     for workerId = 0; workerId < 1024; workerId++ {
 
-        err, idgen := newIdGen(workerId)
+        err, idgen := newIdGenerator(workerId)
 
         assert.Nil(err)
 
         for i := 0; i < 1; i++ {
-            _, newId := idgen.NewId()
+            _, newId := idgen.newId()
 
             machineId := idgen.MachineId(newId)
             assert.Equal(int64(workerId), machineId, "machineId should equal to the workerId field")

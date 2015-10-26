@@ -9,7 +9,6 @@ package post
 
 import (
     "github.com/gocql/gocql"
-    "github.com/julienschmidt/httprouter"
     "net/http"
 )
 
@@ -17,6 +16,6 @@ type Handler struct {
     DB *gocql.Session
 }
 
-func (h *Handler) GetTimeline(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+func (h *Handler) GetTimeline(w http.ResponseWriter, r *http.Request, userid int64, username string) {
 
 }

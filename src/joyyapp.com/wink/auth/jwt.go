@@ -5,12 +5,11 @@
  * Copyright (c) 2015 Joyy Inc. All rights reserved.
  */
 
-package jwt
+package auth
 
 import (
     "errors"
     jwt_lib "github.com/dgrijalva/jwt-go"
-    "github.com/julienschmidt/httprouter"
     "github.com/spf13/viper"
     . "joyyapp.com/wink/util"
     "net/http"
@@ -18,8 +17,10 @@ import (
     "time"
 )
 
-var kJwtKey []byte = nil
-var kJwtPeriodInMinutes int = 0
+var (
+    kJwtKey             []byte = nil
+    kJwtPeriodInMinutes int    = 0
+)
 
 func init() {
 
@@ -27,7 +28,7 @@ func init() {
     viper.SetConfigType("toml")
     viper.AddConfigPath("/etc/wink/")
     err := viper.ReadInConfig()
-    PanicOnError(err)
+    LogPanic(err)
 
     key := viper.GetString("jwt.key")
     kJwtKey = []byte(key)
@@ -37,9 +38,9 @@ func init() {
 /*
  * JWT auth middleware
  */
-func AuthMiddleware(next httprouter.Handle) httprouter.Handle {
+func JWTMiddleware(next HandlerFunc) http.HandlerFunc {
 
-    return func(w http.ResponseWriter, req *http.Request, ps httprouter.Params) {
+    return func(w http.ResponseWriter, req *http.Request) {
 
         parsedToken, err := jwt_lib.ParseFromRequest(req, keyFunc)
 
@@ -59,16 +60,20 @@ func AuthMiddleware(next httprouter.Handle) httprouter.Handle {
             return
         }
 
-        ps = append(ps, httprouter.Param{Key: "userid", Value: idstr})
-        ps = append(ps, httprouter.Param{Key: "username", Value: username})
-        next(w, req, ps)
+        userid, err := strconv.ParseInt(idstr, 10, 64)
+        if err != nil {
+            ReplyError(w, err.Error(), http.StatusUnauthorized)
+            return
+        }
+
+        next(w, req, userid, username)
     }
 }
 
-func NewToken(username string, id int64) (signedToken string, err error) {
+func NewToken(userid int64, username string) (signedToken string, err error) {
 
     token := jwt_lib.New(jwt_lib.SigningMethodHS256) // SigningMethodHS256 is a var of type *SigningMethodHMAC
-    idstr := strconv.FormatInt(id, 10)
+    idstr := strconv.FormatInt(userid, 10)
     token.Claims["id"] = idstr
     token.Claims["username"] = username
     token.Claims["exp"] = time.Now().Add(time.Duration(kJwtPeriodInMinutes) * time.Minute).Unix()
@@ -77,7 +82,7 @@ func NewToken(username string, id int64) (signedToken string, err error) {
     return signedToken, err
 }
 
-func ExtractToken(tokenString string) (id int64, username string, err error) {
+func ExtractToken(tokenString string) (userid int64, username string, err error) {
 
     parsedToken, err := jwt_lib.Parse(tokenString, keyFunc)
 
@@ -90,12 +95,12 @@ func ExtractToken(tokenString string) (id int64, username string, err error) {
         return 0, "", err
     }
 
-    id, err = strconv.ParseInt(idstr, 10, 64)
+    userid, err = strconv.ParseInt(idstr, 10, 64)
     if err != nil {
         return 0, "", err
     }
 
-    return id, username, err
+    return userid, username, err
 }
 
 func keyFunc(token *jwt_lib.Token) (interface{}, error) {

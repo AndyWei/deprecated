@@ -7,13 +7,12 @@
 package main
 
 import (
-    "github.com/julienschmidt/httprouter"
+    router "github.com/zenazn/goji"
     "joyyapp.com/wink/cassandra"
     // "joyyapp.com/wink/friendship"
     // "joyyapp.com/wink/post"
-    "joyyapp.com/wink/jwt"
+    "joyyapp.com/wink/auth"
     "joyyapp.com/wink/user"
-    . "joyyapp.com/wink/util"
     "net/http"
     "runtime"
 )
@@ -21,31 +20,29 @@ import (
 func main() {
     runtime.GOMAXPROCS(runtime.NumCPU())
 
-    router := httprouter.New()
-
     db := cassandra.DB()
+    authHandler := &auth.Handler{DB: db}
     userHandler := &user.Handler{DB: db}
 
-    router.GET("/v1/ping", pong)
-    router.GET("/v1/xmpp/check_password", userHandler.CheckPassword)
-    router.GET("/v1/xmpp/user_exists", userHandler.CheckExistence)
+    router.Get("/v1/ping", pong)
+    router.Get("/v1/xmpp/check_password", authHandler.CheckPassword)
+    router.Get("/v1/xmpp/user_exists", authHandler.CheckExistence)
+    router.Post("/v1/auth/signin", authHandler.SignIn)
+    router.Post("/v1/auth/signup", authHandler.SignUp)
 
-    router.POST("/v1/user/signin", userHandler.SignIn)
-    router.POST("/v1/user/signup", userHandler.SignUp)
+    auth := auth.JWTMiddleware
+    // router.Get("/v1/post/timeline", auth(p.GetTimeline))
+    router.Get("/v1/user/profile", auth(userHandler.GetProfile))
+    // router.Get("/v1/friendship", auth(f.GetAll))
 
-    auth := jwt.AuthMiddleware
-    // router.GET("/v1/post/timeline", auth(p.GetTimeline))
-    router.GET("/v1/user/profile", auth(userHandler.GetProfile))
-    // router.GET("/v1/friendship", auth(f.GetAll))
+    router.Post("/v1/user/profile", auth(userHandler.SetProfile))
+    // router.Post("/v1/friendship/create", auth(f.Create))
+    // router.Post("/v1/friendship/update", auth(f.Update))
+    // router.Post("/v1/friendship/destroy", auth(f.Destroy)
 
-    router.POST("/v1/user/profile", auth(userHandler.SetProfile))
-    // router.POST("/v1/friendship/create", auth(f.Create))
-    // router.POST("/v1/friendship/update", auth(f.Update))
-    // router.POST("/v1/friendship/destroy", auth(f.Destroy)
-
-    LogFatal(http.ListenAndServe(":8000", router))
+    router.Serve()
 }
 
-func pong(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+func pong(w http.ResponseWriter, r *http.Request) {
     w.Write([]byte("pong"))
 }

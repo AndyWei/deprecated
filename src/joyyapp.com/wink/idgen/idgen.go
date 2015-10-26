@@ -18,7 +18,7 @@ import (
     "errors"
     "fmt"
     . "github.com/spf13/viper"
-    "log"
+    . "joyyapp.com/wink/util"
     "sync"
     "time"
 )
@@ -47,10 +47,19 @@ type IdGen struct {
 
 var sharedInstance *IdGen = nil
 
-func panicOnError(err error) {
-    if err != nil {
-        log.Panic(err)
-    }
+/*
+ * Public functions
+ */
+func NewID() int64 {
+    err, id := sharedInstance.newId()
+    LogPanic(err)
+    return id
+}
+
+// Return which machine generated the given id
+func (id *IdGen) MachineId(genId int64) int64 {
+    machineId := uint(uint(genId<<42) >> 54)
+    return int64(machineId)
 }
 
 func init() {
@@ -59,13 +68,13 @@ func init() {
     SetConfigType("toml")
     AddConfigPath("/etc/wink/")
     err := ReadInConfig()
-    panicOnError(err)
+    LogFatal(err)
 
     machineId := GetInt("idgen.machine_id")
 
-    err, instance := newIdGen(machineId)
+    err, instance := newIdGenerator(machineId)
     sharedInstance = instance
-    panicOnError(err)
+    LogFatal(err)
 }
 
 func timeInMillis() int64 {
@@ -80,7 +89,7 @@ func tilNextMillis(lastTimestamp int64) int64 {
     return timestamp
 }
 
-func newIdGen(machineId int) (error, *IdGen) {
+func newIdGenerator(machineId int) (error, *IdGen) {
     generator := &IdGen{}
     if machineId > maxMachineId || machineId < 0 {
         return errors.New(fmt.Sprintf("illegal machine id: %d. A machine id must be in [0, 1023]", machineId)), nil
@@ -94,15 +103,7 @@ func newIdGen(machineId int) (error, *IdGen) {
     return nil, generator
 }
 
-/*
- * Public functions
- */
-
-func SharedInstance() *IdGen {
-    return sharedInstance
-}
-
-func (id *IdGen) NewId() (error, int64) {
+func (id *IdGen) newId() (error, int64) {
     id.mutex.Lock()
     defer id.mutex.Unlock()
 
@@ -121,10 +122,4 @@ func (id *IdGen) NewId() (error, int64) {
     }
     id.lastTimestamp = timestamp
     return nil, ((timestamp - idgenEpoch) << timestampLeftShift) | (id.machineId << machineIdShift) | id.sequence
-}
-
-// Return which machine generated the given id
-func (id *IdGen) MachineId(genId int64) int64 {
-    machineId := uint(uint(genId<<42) >> 54)
-    return int64(machineId)
 }

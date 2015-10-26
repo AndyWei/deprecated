@@ -21,7 +21,7 @@ func init() {
     SetConfigType("toml")
     AddConfigPath("/etc/wink/")
     err := ReadInConfig()
-    PanicOnError(err)
+    LogFatal(err)
 
     hosts := GetStringSlice("cassandra.hosts")
     keyspace := GetString("cassandra.keyspace")
@@ -39,7 +39,7 @@ func init() {
 
     session, err := cluster.CreateSession()
     sharedDB = session
-    PanicOnError(err)
+    LogFatal(err)
 }
 
 func DB() *gocql.Session {
