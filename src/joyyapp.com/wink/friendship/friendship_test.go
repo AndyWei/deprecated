@@ -7,62 +7,97 @@
 package friendship
 
 import (
-// "encoding/json"
-// "github.com/stretchr/testify/assert"
-// "io/ioutil"
-// "net/http"
-// "strings"
-// "testing"
+    "encoding/json"
+    "fmt"
+    "github.com/stretchr/testify/assert"
+    "joyyapp.com/wink/cassandra"
+    . "joyyapp.com/wink/util"
+    "net/http"
+    "net/http/httptest"
+    "strings"
+    "testing"
 )
 
-// func createFriendshipParams(fid int64, fname string, fregion, region int) *FriendshipParams {
-//     return &FriendshipParams{Fid: fid, Fname: fname, Fregion: fregion, Region: region}
-// }
+var CreateFriendshipTests = []struct {
+    userid   int64
+    username string
+    region   int
+    fid      int64
+    fname    string
+    fregion  int
+}{
+    {1234567890000, "user0", 0, 1234567890002, "user1", 0},
+    {1234567890000, "user0", 0, 1234567890003, "user2", 1},
+    {1234567890000, "user0", 0, 1234567890004, "user3", 2},
+    {1234567890000, "user0", 0, 1234567890005, "user4", 2},
+}
 
-// func TestCreate(t *testing.T) {
+func TestCreateFriendship(test *testing.T) {
+    assert := assert.New(test)
+    db := cassandra.DB()
+    h := Handler{DB: db}
 
-//     assert := assert.New(t)
+    for _, t := range CreateFriendshipTests {
 
-//     dummyUsername := "dummy_for_friendship"
-//     _, tokenString := signup(dummyUsername, "profile")
+        body := fmt.Sprintf("region=%v&fid=%v&fname=%v&fregion=%v", t.region, t.fid, t.fname, t.fregion)
+        req, _ := http.NewRequest("POST", "/v1/friendship/create", strings.NewReader(body))
+        req.Header.Set("Content-Type", "application/x-www-form-urlencoded; param=value")
+        resp := httptest.NewRecorder()
 
-//     // set profile first
-//     fid := int64(14008009000)
-//     fname := "bff"
-//     fregion := 0
-//     region := 1
+        h.Create(resp, req, t.userid, t.username)
 
-//     payload := createFriendshipParams(fid, fname, fregion, region)
-//     jsondata, _ := json.Marshal(payload)
-//     post_data := strings.NewReader(string(jsondata))
+        assert.Equal(http.StatusOK, resp.Code, "should response correct status code")
+    }
+}
 
-//     // request
-//     url := "http://localhost:8000/v1/user/friendship/create"
-//     req, _ := http.NewRequest("POST", url, post_data)
-//     req.Header.Set("Content-Type", "application/json")
-//     req.Header.Set("Authorization", "Bearer "+tokenString)
+var GetFriendshipTests = []struct {
+    fid     int64
+    fname   string
+    fregion int
+}{
+    {1234567890002, "user1", 0},
+    {1234567890003, "user2", 1},
+    {1234567890004, "user3", 2},
+    {1234567890005, "user4", 2},
+}
 
-//     // send
-//     resp, err := client.Do(req)
-//     assert.Nil(err)
+type Friend struct {
+    Fid     int64  `json:"fid"`
+    Fname   string `json:"fname"`
+    Fregion int    `json:"fregion"`
+}
 
-//     // get friends
-//     url = "http://localhost:8000/v1/user/friends"
-//     req, _ = http.NewRequest("GET", url, nil)
-//     req.Header.Set("Authorization", "Bearer "+tokenString)
-//     resp, err = client.Do(req)
-//     assert.Nil(err)
-//     assert.Equal(http.StatusOK, resp.StatusCode, "should response StatusOK")
-//     body, err := ioutil.ReadAll(resp.Body)
-//     defer resp.Body.Close()
-//     assert.Nil(err)
+func TestGetFriendship(test *testing.T) {
+    assert := assert.New(test)
+    db := cassandra.DB()
+    h := Handler{DB: db}
 
-//     var friends []Friend
-//     err = json.Unmarshal(body, &friends)
-//     assert.Nil(err)
+    userid := int64(1234567890000)
+    username := "user0"
+    region := 0
 
-//     var friend Friend = friends[0]
-//     assert.Equal(fid, friend.Id, "should store correct userid in DB")
-//     assert.Equal(fname, friend.Username, "should store correct username in DB")
-//     assert.Equal(fregion, friend.Region, "should store correct region in DB")
-// }
+    for _, t := range GetFriendshipTests {
+
+        body := fmt.Sprintf("region=%v&fid=%v&fname=%v&fregion=%v", region, t.fid, t.fname, t.fregion)
+        req, _ := http.NewRequest("POST", "/v1/friendship/create", strings.NewReader(body))
+        req.Header.Set("Content-Type", "application/x-www-form-urlencoded; param=value")
+        resp := httptest.NewRecorder()
+
+        h.Create(resp, req, userid, username)
+
+        assert.Equal(http.StatusOK, resp.Code, "should response correct status code")
+    }
+
+    req, _ := http.NewRequest("GET", "/v1/friendship", nil)
+    resp := httptest.NewRecorder()
+    h.GetAll(resp, req, userid, username)
+
+    bytes := resp.Body.Bytes()
+
+    var r []Friend
+    err := json.Unmarshal(bytes, &r)
+    LogError(err)
+
+    assert.Nil(err)
+    assert.Equal(4, len(r), "should store friends in DB")
+}

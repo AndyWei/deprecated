@@ -50,6 +50,13 @@ func LogError(err error) {
     }
 }
 
+func LogOutsideError(err string) {
+    if len(err) > 0 {
+        _, fn, line, _ := runtime.Caller(2)
+        log.Printf("[error] %s:%d %v", fn, line, err)
+    }
+}
+
 func LogFatal(err error) {
     if err != nil {
         _, fn, line, _ := runtime.Caller(1)
@@ -82,6 +89,7 @@ func ReplyData(w http.ResponseWriter, body []byte) {
 }
 
 func ReplyError(w http.ResponseWriter, err string, code int) {
+    LogOutsideError(err)
     w.Header().Set("Content-Type", "application/json; charset=utf-8")
     w.WriteHeader(code)
     fmt.Fprintf(w, "{error: %v}\r\n", err)
@@ -103,7 +111,6 @@ func ParseAndCheck(req *http.Request, target interface{}) (err error) {
 
     req.ParseForm()
     if err = param.Parse(req.Form, target); err != nil {
-        LogError(err)
         return err
     }
 
@@ -111,7 +118,6 @@ func ParseAndCheck(req *http.Request, target interface{}) (err error) {
     errs := validate.Struct(target)
     if errs != nil {
         err = errs.(validator.ValidationErrors)
-        LogError(err)
         return err
     }
 

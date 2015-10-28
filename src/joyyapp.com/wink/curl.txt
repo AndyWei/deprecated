@@ -16,22 +16,23 @@ curl -i "http://localhost:8000/v1/xmpp/user_exists?user=108004831012061184&serve
 curl -i "http://localhost:8000/v1/xmpp/check_password?user=108004831012061184&server=joyy.im&pass=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE0NDU4Mjc5NTgsImlkIjoiMTA4MDA0ODMxMDEyMDYxMTg0IiwidXNlcm5hbWUiOiJhbmR5In0.uguXBBlPSuZ0EpYSYJ66DMs7E0-WzdqV9pNNMKyChTI"
 
 ## user
-# Update a person's profile
-curl -i -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE0NDU4Mjc5NTgsImlkIjoiMTA4MDA0ODMxMDEyMDYxMTg0IiwidXNlcm5hbWUiOiJhbmR5In0.uguXBBlPSuZ0EpYSYJ66DMs7E0-WzdqV9pNNMKyChTI" --data "phone=123&region=1&sex=1&yob=1990&bio=what" http://localhost:8000/v1/user/profile
+# Update a user's profile
+curl -i --data "phone=123&region=1&sex=1&yob=1990&bio=what" "http://localhost:8000/v1/user/profile" -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE0NDU4Mjc5NTgsImlkIjoiMTA4MDA0ODMxMDEyMDYxMTg0IiwidXNlcm5hbWUiOiJhbmR5In0.uguXBBlPSuZ0EpYSYJ66DMs7E0-WzdqV9pNNMKyChTI"
+
+# GET a user's own profile
+curl -i http://localhost:8000/v1/user/profile -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE0NDU4NDc1ODIsImlkIjoiMTA4MDgzMzYxMzMwNzU3NjMyIiwidXNlcm5hbWUiOiJzaWduX3VwX3VzZXIifQ.M_veZIdghZRlRXEt6ptKR4KtAHmUGH8HyeD6UZriRdM"
+
+# GET user nearby
+curl -i -H "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6ImFuZHkiLCJpYXQiOjE0NDI5MDkyMTQsImV4cCI6MTQ0MjkxMjgxNH0.XYdeN2Fvkj9BW_2Q_xq6E-a4_pWhrJNquBxXp_94uLQ" "http://localhost:8000/v1/user/nearby?zip=US94102&max=5000"
 
 
-# GET a person's own profile
-curl -i -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE0NDU4NDc1ODIsImlkIjoiMTA4MDgzMzYxMzMwNzU3NjMyIiwidXNlcm5hbWUiOiJzaWduX3VwX3VzZXIifQ.M_veZIdghZRlRXEt6ptKR4KtAHmUGH8HyeD6UZriRdM" http://localhost:8000/v1/user/profile
+## friendship
 
+# create friendship
+curl -i --data "fid=123&fname=jack&fregion=1&region=0" "http://localhost:8000/v1/friendship/create" -H "Authorization: Bearer "
 
-# GET a list of people's profile
-curl -i -H "Authorization: Bearer WiYdpKAfwDOAd5BKDGqx" "http://localhost:8000/v1/person?id=1&id=2&id=3&id=4&cell=94555"
-
-# GET person nearby
-curl -i -H "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6ImFuZHkiLCJpYXQiOjE0NDI5MDkyMTQsImV4cCI6MTQ0MjkxMjgxNH0.XYdeN2Fvkj9BW_2Q_xq6E-a4_pWhrJNquBxXp_94uLQ" "http://localhost:8000/v1/person/nearby?zip=US94102&max=5000"
-
-# Update a person's profile
-
+# get all of current user's friendship
+curl -i "http://localhost:8000/v1/friendship" -H "Authorization: Bearer "
 
 
 ## comment

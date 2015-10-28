@@ -9,7 +9,7 @@ package main
 import (
     router "github.com/zenazn/goji"
     "joyyapp.com/wink/cassandra"
-    // "joyyapp.com/wink/friendship"
+    "joyyapp.com/wink/friendship"
     // "joyyapp.com/wink/post"
     "joyyapp.com/wink/auth"
     "joyyapp.com/wink/user"
@@ -23,6 +23,7 @@ func main() {
     db := cassandra.DB()
     authHandler := &auth.Handler{DB: db}
     userHandler := &user.Handler{DB: db}
+    friendshipHandler := &friendship.Handler{DB: db}
 
     router.Get("/v1/ping", pong)
     router.Get("/v1/xmpp/check_password", authHandler.CheckPassword)
@@ -33,12 +34,11 @@ func main() {
     auth := auth.JWTMiddleware
     // router.Get("/v1/post/timeline", auth(p.GetTimeline))
     router.Get("/v1/user/profile", auth(userHandler.GetProfile))
-    // router.Get("/v1/friendship", auth(f.GetAll))
+    router.Get("/v1/friendship", auth(friendshipHandler.GetAll))
 
     router.Post("/v1/user/profile", auth(userHandler.SetProfile))
-    // router.Post("/v1/friendship/create", auth(f.Create))
-    // router.Post("/v1/friendship/update", auth(f.Update))
-    // router.Post("/v1/friendship/destroy", auth(f.Destroy)
+    router.Post("/v1/friendship/create", auth(friendshipHandler.Create))
+    router.Post("/v1/friendship/destroy", auth(friendshipHandler.Destroy))
 
     router.Serve()
 }

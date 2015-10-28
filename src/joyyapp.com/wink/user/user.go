@@ -39,14 +39,12 @@ func (h *Handler) SetProfile(w http.ResponseWriter, req *http.Request, userid in
 
     if err := h.DB.Query(`INSERT INTO user (id, phone, region, sex, yob, bio) VALUES (?, ?, ?, ?, ?, ?)`,
         userid, r.Phone, r.Region, r.Sex, r.Yob, r.Bio).Exec(); err != nil {
-        LogError(err)
         ReplyError(w, err.Error(), http.StatusBadGateway)
         return
     }
 
     if err := h.DB.Query(`INSERT INTO user_by_phone (phone, username, id) VALUES (?, ?, ?)`,
         r.Phone, username, userid).Exec(); err != nil {
-        LogError(err)
         ReplyError(w, err.Error(), http.StatusBadGateway)
         return
     }
@@ -58,20 +56,19 @@ func (h *Handler) SetProfile(w http.ResponseWriter, req *http.Request, userid in
 func (h *Handler) GetProfile(w http.ResponseWriter, req *http.Request, userid int64, username string) {
 
     m := make(map[string]interface{})
+
     if err := h.DB.Query(`SELECT username, phone, region, sex, yob, bio FROM user WHERE id = ? LIMIT 1`,
         userid).Consistency(gocql.One).MapScan(m); err != nil {
-        LogError(err)
         ReplyError(w, ErrUserNotExist, http.StatusNotFound)
         return
     }
 
-    body, err := json.Marshal(m)
+    bytes, err := json.Marshal(m)
     if err != nil {
-        LogError(err)
         ReplyError(w, err.Error(), http.StatusBadGateway)
         return
     }
 
-    ReplyData(w, body)
+    ReplyData(w, bytes)
     return
 }

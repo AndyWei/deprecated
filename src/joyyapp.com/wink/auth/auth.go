@@ -42,8 +42,8 @@ func init() {
  * Signup/Signin request and reply structure
  */
 type AuthRequest struct {
-    Username string `param:"username" validate:"min=2,max=40,required"`
-    Password string `param:"password" validate:"min=2,max=40,required"`
+    Username string `param:"username" validate:"min=2,max=40"`
+    Password string `param:"password" validate:"min=2,max=40"`
 }
 
 type AuthReply struct {
@@ -72,7 +72,6 @@ func (h *Handler) SignUp(w http.ResponseWriter, req *http.Request) {
 
     if err := h.DB.Query(`INSERT INTO user (id, username, deleted) VALUES (?, ?, false)`,
         userid, r.Username).Exec(); err != nil {
-        LogError(err)
         ReplyError(w, err.Error(), http.StatusBadGateway)
         return
     }
@@ -80,7 +79,6 @@ func (h *Handler) SignUp(w http.ResponseWriter, req *http.Request) {
     // create JWT token
     token, err := NewToken(userid, r.Username)
     if err != nil {
-        LogError(err)
         ReplyError(w, err.Error(), http.StatusBadGateway)
         return
     }
@@ -111,7 +109,6 @@ func (h *Handler) SignIn(w http.ResponseWriter, req *http.Request) {
     var epassword string
     if err := h.DB.Query(`SELECT id, password FROM user_by_name WHERE username = ? LIMIT 1`,
         r.Username).Consistency(gocql.One).Scan(&userid, &epassword); err != nil {
-        LogError(err)
         ReplyError(w, ErrUserNotExist, http.StatusBadRequest)
         return
     }
@@ -125,7 +122,6 @@ func (h *Handler) SignIn(w http.ResponseWriter, req *http.Request) {
     // success
     token, err := NewToken(userid, r.Username)
     if err != nil {
-        LogError(err)
         ReplyError(w, err.Error(), http.StatusBadGateway)
         return
     }
@@ -163,7 +159,6 @@ func (h *Handler) CheckExistence(w http.ResponseWriter, req *http.Request) {
         r.Userid).Consistency(gocql.One).Scan(&deleted)
 
     if err != nil || deleted {
-        LogError(err)
         ReplyError(w, ErrUserNotExist, http.StatusNotFound)
         return
     }
@@ -196,7 +191,6 @@ func (h *Handler) CheckPassword(w http.ResponseWriter, req *http.Request) {
     }
 
     id, _, err := ExtractToken(r.Token)
-    LogError(err)
     if err != nil || r.Userid != id {
         ReplyError(w, ErrTokenInvalid, http.StatusUnauthorized)
         return

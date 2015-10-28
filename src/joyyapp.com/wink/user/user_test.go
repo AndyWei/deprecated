@@ -40,7 +40,6 @@ func TestSetProfile(test *testing.T) {
         if len(t.bio) > 0 {
             body += fmt.Sprintf("&bio=%v", url.QueryEscape(t.bio))
         }
-        LogInfof("TestSetProfile body = %v", body)
 
         req, _ := http.NewRequest("POST", "/v1/user/profile", strings.NewReader(body))
         req.Header.Set("Content-Type", "application/x-www-form-urlencoded; param=value")
@@ -99,8 +98,6 @@ func TestGetProfile(test *testing.T) {
         h.GetProfile(resp2, req2, t.userid, t.username)
 
         bytes := resp2.Body.Bytes()
-        jsonstr := string(bytes)
-        LogInfof("jsonstr = %v", jsonstr)
 
         var r GetProfileReply
         err := json.Unmarshal(bytes, &r)

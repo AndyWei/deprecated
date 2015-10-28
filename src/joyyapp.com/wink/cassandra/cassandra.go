@@ -15,6 +15,10 @@ import (
 
 var sharedDB *gocql.Session = nil
 
+func DB() *gocql.Session {
+    return sharedDB
+}
+
 func init() {
 
     SetConfigName("config")
@@ -40,8 +44,4 @@ func init() {
     session, err := cluster.CreateSession()
     sharedDB = session
     LogFatal(err)
-}
-
-func DB() *gocql.Session {
-    return sharedDB
 }
