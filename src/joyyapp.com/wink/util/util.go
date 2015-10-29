@@ -14,6 +14,7 @@ import (
     "log"
     "net/http"
     "runtime"
+    "time"
 )
 
 type HandlerFunc func(http.ResponseWriter, *http.Request, int64, string)
@@ -33,11 +34,78 @@ const (
     ErrYobInvalid       = "yob is invalid"
 )
 
+const (
+    epoch = int64(1420070400000) // 01 Jan 2015 00:00:00 GMT
+)
+
 var validate *validator.Validate
 
 func init() {
     config := &validator.Config{TagName: "validate"}
     validate = validator.New(config)
+}
+
+/*
+ * Time
+ */
+func Epoch() int64 {
+    return epoch
+}
+
+func TimeInMillis() int64 {
+    return int64(time.Nanosecond) * time.Now().UnixNano() / int64(time.Millisecond)
+}
+
+func Millis() int64 {
+    timestamp := TimeInMillis()
+    return timestamp - epoch
+}
+
+// All the years start from year 2000. E.g., 2015 -> 15
+// return value is in form of yymmddhh
+func Hour(t time.Time) int {
+    year := t.Year() - 2000
+    month := int(t.Month())
+    return (year * 1000000) + (month * 10000) + (t.Day() * 100) + t.Hour()
+}
+
+// return value is in form of yymmdd
+func Day(t time.Time) int {
+    year := t.Year() - 2000
+    month := int(t.Month())
+    return (year * 10000) + (month * 100) + t.Day()
+}
+
+// return value is in form of yymm
+func Month(t time.Time) int {
+    year := t.Year() - 2000
+    month := int(t.Month())
+    return (year * 100) + month
+}
+
+// return value is in form of yy
+func Year(t time.Time) int {
+    return t.Year() - 2000
+}
+
+// return value is in form of yymmddhh
+func ThisHour() int {
+    return Hour(time.Now())
+}
+
+// return value is in form of yymmdd
+func ThisDay() int {
+    return Day(time.Now())
+}
+
+// return value is in form of yymm
+func ThisMonth() int {
+    return Month(time.Now())
+}
+
+// return value is in form of yy
+func ThisYear() int {
+    return Year(time.Now())
 }
 
 /*
@@ -82,10 +150,10 @@ func LogPanic(err error) {
 /*
  * reply
  */
-func ReplyData(w http.ResponseWriter, body []byte) {
+func ReplyData(w http.ResponseWriter, bytes []byte) {
     w.Header().Set("Content-Type", "application/json; charset=utf-8")
     w.WriteHeader(http.StatusOK)
-    w.Write(body)
+    w.Write(bytes)
 }
 
 func ReplyError(w http.ResponseWriter, err string, code int) {

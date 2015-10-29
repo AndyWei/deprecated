@@ -53,7 +53,7 @@ type DestroyFriendshipRequest struct {
     Fid int64 `param:"fid" validate:"required"`
 }
 
-func (h *Handler) Destroy(w http.ResponseWriter, req *http.Request, userid int64, username string) {
+func (h *Handler) Delete(w http.ResponseWriter, req *http.Request, userid int64, username string) {
     var r DestroyFriendshipRequest
     if err := ParseAndCheck(req, &r); err != nil {
         ReplyError(w, err.Error(), http.StatusBadRequest)

@@ -7,77 +7,48 @@
 USE wink;
 
 /*
- * Feature: Activity
- * The table to store the post objects
- * @Discussion: The user own posts is in userline_per_month
- */
-CREATE TABLE IF NOT EXISTS post (
-    id             bigint ,
-    brief          text   ,
-    url            text   ,
-    userid         bigint ,  -- the owner user id
-    like_count     int    ,
-    comment_count  int    ,
-
-    PRIMARY KEY (id)
-) WITH COMPACTION = {'class': 'LeveledCompactionStrategy', 'enabled': 'true'};
-
-
-/*
  * Feature: timeline
- * The table for the user query the posts from his followees
- * @Discussion: The user own posts is in userline_per_month
+ * The table for the user query the posts from his friends
+ * @Discussion: The user's own posts is in userline, while the comments of the timeline posts are in the commentline
  */
 CREATE TABLE IF NOT EXISTS timeline (
     userid         bigint ,
-    day            int    , -- the number of days since joyy epoch
+    day            int    , -- the number of days in form of yyyymmdd
     postid         bigint ,
-    brief          text   ,
     url            text   ,
+    caption        text   ,
 
     PRIMARY KEY ((userid, day), postid)
 ) WITH COMPACTION = {'class': 'LeveledCompactionStrategy', 'enabled': 'true'};
 
+/*
+ * Feature: comment
+ * The table for the user query all the comments
+ * @Discussion:
+ */
+CREATE TABLE IF NOT EXISTS commentline (
+    userid         bigint ,
+    commentid      bigint ,
+    postid         bigint ,
+    replytoid      bigint , -- the userid this comment replies to
+    content        text   ,
+
+    PRIMARY KEY (userid, commentid)
+) WITH COMPACTION = {'class': 'LeveledCompactionStrategy', 'enabled': 'true'};
 
 /*
  * Feature: userline
- * The table for the user query his own posts
- * @Discussion: The user's follower will read the posts from timeline_per_day
+ * The table contains a user's own posts
+ * @Discussion: The user's follower will read the posts from timeline
  */
 CREATE TABLE IF NOT EXISTS userline (
     userid         bigint , -- owner userid
-    day            int    , -- the number of days since joyy epoch
+    month          int    , -- the number of month in form of yymm
     postid         bigint ,
-    brief          text   ,
-    url            text   ,     
+    url            text   ,
+    caption        text   ,
 
     PRIMARY KEY ((userid, month), postid)
-) WITH COMPACTION = {'class': 'LeveledCompactionStrategy', 'enabled': 'true'};
+);
 
-
-/*
- * Feature: comment
- * The table for the user query the comments of a post
- * @Discussion:
- */
-CREATE TABLE IF NOT EXISTS comment (
-    postid         bigint ,
-    commentid      bigint ,
-    content        text   ,
-
-    PRIMARY KEY (postid, commentid)
-) WITH COMPACTION = {'class': 'LeveledCompactionStrategy', 'enabled': 'true'};
-
-
-/*
- * Feature: like
- * The table for the user query the comments of a post
- * @Discussion:
- */
-CREATE TABLE IF NOT EXISTS like (
-    postid         bigint ,
-    userid         bigint , -- the user who liked this post
-
-    PRIMARY KEY (postid, userid)
-) WITH COMPACTION = {'class': 'LeveledCompactionStrategy', 'enabled': 'true'};
 

@@ -53,7 +53,7 @@ func TestMachineId(t *testing.T) {
         for i := 0; i < 1; i++ {
             _, newId := idgen.newId()
 
-            machineId := idgen.MachineId(newId)
+            machineId := MachineId(newId)
             assert.Equal(int64(workerId), machineId, "machineId should equal to the workerId field")
         }
     }
