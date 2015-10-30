@@ -53,7 +53,7 @@ func (h *Handler) SetProfile(w http.ResponseWriter, req *http.Request, userid in
     return
 }
 
-func (h *Handler) GetProfile(w http.ResponseWriter, req *http.Request, userid int64, username string) {
+func (h *Handler) Profile(w http.ResponseWriter, req *http.Request, userid int64, username string) {
 
     m := make(map[string]interface{})
 

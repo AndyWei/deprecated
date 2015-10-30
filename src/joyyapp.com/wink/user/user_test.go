@@ -95,7 +95,7 @@ func TestGetProfile(test *testing.T) {
 
         req2, _ := http.NewRequest("GET", "/v1/user/profile", nil)
         resp2 := httptest.NewRecorder()
-        h.GetProfile(resp2, req2, t.userid, t.username)
+        h.Profile(resp2, req2, t.userid, t.username)
 
         bytes := resp2.Body.Bytes()
 

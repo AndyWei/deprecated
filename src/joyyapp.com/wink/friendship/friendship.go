@@ -77,7 +77,7 @@ func (h *Handler) Delete(w http.ResponseWriter, req *http.Request, userid int64,
     return
 }
 
-func (h *Handler) GetAll(w http.ResponseWriter, req *http.Request, userid int64, username string) {
+func (h *Handler) Friendship(w http.ResponseWriter, req *http.Request, userid int64, username string) {
 
     iter := h.DB.Query(`SELECT fid, fname, fregion FROM friendship WHERE userid = ?`, userid).Iter()
     friends, err := iter.SliceMap()

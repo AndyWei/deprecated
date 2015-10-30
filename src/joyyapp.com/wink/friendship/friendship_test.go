@@ -90,7 +90,7 @@ func TestGetFriendship(test *testing.T) {
 
     req, _ := http.NewRequest("GET", "/v1/friendship", nil)
     resp := httptest.NewRecorder()
-    h.GetAll(resp, req, userid, username)
+    h.Friendship(resp, req, userid, username)
 
     bytes := resp.Body.Bytes()
 
