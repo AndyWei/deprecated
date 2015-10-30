@@ -2,11 +2,15 @@
 
 ## credential
 # signup
-curl --data "username=andy&password=good" http://localhost:8000/v1/auth/signup
+curl -i --data "username=andy&password=good" http://localhost:8000/v1/auth/signup
+curl -i --data "username=user0&password=password" http://localhost:8000/v1/auth/signup
+
 
 # signin
-curl --data "username=andy&password=good" http://localhost:8000/v1/auth/signin
-curl --data "username=sign_up_user&password=dummy_password" http://localhost:8000/v1/auth/signin
+curl -i --data "username=andy&password=good" http://localhost:8000/v1/auth/signin
+
+curl -i --data "username=andy&password=good" http://localhost:8000/v1/auth/signin -H "Accept-Encoding: gzip,deflate"
+curl -i --data "username=sign_up_user&password=dummy_password" http://localhost:8000/v1/auth/signin
 
 
 # check_existance
@@ -35,7 +39,7 @@ curl -i -H "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6I
 curl -i --data "fid=123&fname=jack&fregion=1&region=0" "http://localhost:8000/v1/friendship/create" -H "Authorization: Bearer "
 
 # get all of current user's friendship
-curl -i "http://localhost:8000/v1/friendship" -H "Authorization: Bearer "
+curl -i "http://localhost:8000/v1/friendship" -H "Accept-Encoding: gzip,deflate" -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE0NDYxODcyOTQsImlkIjoiMTA5NTExOTk2MzM1OTgwNTQ0IiwidXNlcm5hbWUiOiJ1c2VyMCJ9.-b4lWRBOqE-dnD9OtVXuZ8mnBTk1sWaGacUkxAZH2w0"
 
 
 ## comment

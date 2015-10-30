@@ -7,6 +7,7 @@
 package main
 
 import (
+    "github.com/lidashuang/goji_gzip"
     router "github.com/zenazn/goji"
     "joyyapp.com/wink/auth"
     "joyyapp.com/wink/cassandra"
@@ -27,6 +28,8 @@ func main() {
     friendshipHandler := &friendship.Handler{DB: db}
     postHandler := &post.Handler{DB: db}
     userHandler := &user.Handler{DB: db}
+
+    router.Use(gzip.GzipHandler)
 
     router.Get("/v1/ping", pong)
     router.Get("/v1/auth/cognito", authenticate(authHandler.Cognito))

@@ -19,7 +19,7 @@ import (
     "testing"
 )
 
-var userid int64 = int64(1234567890000)
+var userid int64 = int64(109511996335980544)
 var username string = "user0"
 
 var Friends = []struct {
