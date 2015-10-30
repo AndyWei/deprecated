@@ -12,8 +12,11 @@ curl --data "username=sign_up_user&password=dummy_password" http://localhost:800
 # check_existance
 curl -i "http://localhost:8000/v1/xmpp/user_exists?user=108004831012061184&server=joyy.im"
 
-#check_password
+# check_password
 curl -i "http://localhost:8000/v1/xmpp/check_password?user=108004831012061184&server=joyy.im&pass=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE0NDU4Mjc5NTgsImlkIjoiMTA4MDA0ODMxMDEyMDYxMTg0IiwidXNlcm5hbWUiOiJhbmR5In0.uguXBBlPSuZ0EpYSYJ66DMs7E0-WzdqV9pNNMKyChTI"
+
+# Get cognito id
+curl -i http://localhost:8000/v1/auth/cognito -H "Authorization: Bearer "
 
 ## user
 # Update a user's profile

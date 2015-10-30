@@ -81,7 +81,7 @@ func init() {
     err := ReadInConfig()
     LogFatal(err)
 
-    machineId := GetInt("idgen.machine_id")
+    machineId := GetInt("idgen.machineID")
 
     err, instance := newIdGenerator(machineId)
     sharedInstance = instance

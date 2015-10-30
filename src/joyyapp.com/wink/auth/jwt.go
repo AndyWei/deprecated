@@ -32,7 +32,7 @@ func init() {
 
     key := viper.GetString("jwt.key")
     kJwtKey = []byte(key)
-    kJwtPeriodInMinutes = viper.GetInt("jwt.period_in_minutes")
+    kJwtPeriodInMinutes = viper.GetInt("jwt.tokenExpiresInMins")
 }
 
 /*

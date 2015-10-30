@@ -24,6 +24,7 @@ type Handler struct {
 var (
     kBcryptCost int    = 0
     kImDomain   string = ""
+    kTokenTtl   int    = 0
 )
 
 func init() {
@@ -36,6 +37,7 @@ func init() {
 
     kBcryptCost = viper.GetInt("bcrypt.cost")
     kImDomain = viper.GetString("im.domain")
+    kTokenTtl = viper.GetInt("jwt.tokenExpiresInMins") * 60
 }
 
 /*
@@ -47,8 +49,9 @@ type AuthRequest struct {
 }
 
 type AuthReply struct {
-    Id    int64  `json:"id"`
-    Token string `json:"token"`
+    Id       int64  `json:"id"`
+    Token    string `json:"token"`
+    TokenTtl int    `json:"token_ttl"`
 }
 
 func (h *Handler) SignUp(w http.ResponseWriter, req *http.Request) {
@@ -86,7 +89,7 @@ func (h *Handler) SignUp(w http.ResponseWriter, req *http.Request) {
     // success
     LogInfof("New user signed up. userid = %v, username = %v\n\r", userid, r.Username)
 
-    reply := &AuthReply{Id: userid, Token: token}
+    reply := &AuthReply{Id: userid, Token: token, TokenTtl: kTokenTtl}
     body, _ := json.Marshal(reply)
     ReplyData(w, body)
     return
@@ -126,7 +129,7 @@ func (h *Handler) SignIn(w http.ResponseWriter, req *http.Request) {
         return
     }
 
-    reply := &AuthReply{Id: userid, Token: token}
+    reply := &AuthReply{Id: userid, Token: token, TokenTtl: kTokenTtl}
     body, _ := json.Marshal(reply)
     ReplyData(w, body)
     return

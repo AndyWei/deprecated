@@ -34,6 +34,7 @@ func main() {
 
     auth := auth.JWTMiddleware
 
+    router.Get("/v1/auth/cognito", auth(authHandler.Cognito))
     router.Get("/v1/friendship", auth(friendshipHandler.GetAll))
     router.Post("/v1/friendship/create", auth(friendshipHandler.Create))
     router.Post("/v1/friendship/delete", auth(friendshipHandler.Delete))
