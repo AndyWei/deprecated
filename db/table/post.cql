@@ -13,7 +13,7 @@ USE wink;
  */
 CREATE TABLE IF NOT EXISTS timeline (
     userid         bigint ,
-    day            int    , -- the number of days in form of yyyymmdd
+    day            int    , -- the number of days in form of yymmdd
     postid         bigint ,
     url            text   ,
     caption        text   ,

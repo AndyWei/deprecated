@@ -28,20 +28,20 @@ type CreateFriendshipRequest struct {
 func (h *Handler) Create(w http.ResponseWriter, req *http.Request, userid int64, username string) {
     var r CreateFriendshipRequest
     if err := ParseAndCheck(req, &r); err != nil {
-        ReplyError(w, err.Error(), http.StatusBadRequest)
+        ReplyError(w, err, http.StatusBadRequest)
         return
     }
 
     // add edge
     query := h.DB.Query(`INSERT INTO friendship (userid, fid, fname, fregion) VALUES (?, ?, ?, ?)`, userid, r.Fid, r.Fname, r.Fregion)
     if err := query.Exec(); err != nil {
-        ReplyError(w, err.Error(), http.StatusBadGateway)
+        ReplyError(w, err, http.StatusBadGateway)
         return
     }
 
     // add reverse edge
     if err := query.Bind(r.Fid, userid, username, r.Region).Exec(); err != nil {
-        ReplyError(w, err.Error(), http.StatusBadGateway)
+        ReplyError(w, err, http.StatusBadGateway)
         return
     }
 
@@ -56,20 +56,20 @@ type DestroyFriendshipRequest struct {
 func (h *Handler) Delete(w http.ResponseWriter, req *http.Request, userid int64, username string) {
     var r DestroyFriendshipRequest
     if err := ParseAndCheck(req, &r); err != nil {
-        ReplyError(w, err.Error(), http.StatusBadRequest)
+        ReplyError(w, err, http.StatusBadRequest)
         return
     }
 
     // delete edge
     query := h.DB.Query(`DELETE FROM friendship WHERE userid = ? AND fid = ?`, userid, r.Fid)
     if err := query.Exec(); err != nil {
-        ReplyError(w, err.Error(), http.StatusBadGateway)
+        ReplyError(w, err, http.StatusBadGateway)
         return
     }
 
     // delete reverse edge
     if err := query.Bind(r.Fid, userid).Exec(); err != nil {
-        ReplyError(w, err.Error(), http.StatusBadGateway)
+        ReplyError(w, err, http.StatusBadGateway)
         return
     }
 
@@ -79,16 +79,16 @@ func (h *Handler) Delete(w http.ResponseWriter, req *http.Request, userid int64,
 
 func (h *Handler) Friendship(w http.ResponseWriter, req *http.Request, userid int64, username string) {
 
-    iter := h.DB.Query(`SELECT fid, fname, fregion FROM friendship WHERE userid = ?`, userid).Iter()
+    iter := h.DB.Query(`SELECT fid, fname, fregion FROM friendship WHERE userid = ?`, userid).Consistency(gocql.One).Iter()
     friends, err := iter.SliceMap()
     if err != nil {
-        ReplyError(w, err.Error(), http.StatusBadGateway)
+        ReplyError(w, err, http.StatusBadGateway)
         return
     }
 
     bytes, err := json.Marshal(friends)
     if err != nil {
-        ReplyError(w, err.Error(), http.StatusBadGateway)
+        ReplyError(w, err, http.StatusBadGateway)
         return
     }
 

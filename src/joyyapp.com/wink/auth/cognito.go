@@ -55,7 +55,7 @@ func (h *Handler) Cognito(w http.ResponseWriter, req *http.Request, userid int64
     resp, err := cognito.GetOpenIdTokenForDeveloperIdentity(params)
 
     if err != nil {
-        ReplyError(w, err.Error(), http.StatusBadGateway)
+        ReplyError(w, err, http.StatusBadGateway)
         return
     }
 

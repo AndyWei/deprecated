@@ -32,13 +32,13 @@ type CreatePostRequest struct {
 func (h *Handler) Create(w http.ResponseWriter, req *http.Request, userid int64, username string) {
     var r CreatePostRequest
     if err := ParseAndCheck(req, &r); err != nil {
-        ReplyError(w, err.Error(), http.StatusBadRequest)
+        ReplyError(w, err, http.StatusBadRequest)
         return
     }
 
     fids, err := h.getFriendIds(userid)
     if err != nil {
-        ReplyError(w, err.Error(), http.StatusBadGateway)
+        ReplyError(w, err, http.StatusBadGateway)
         return
     }
 
@@ -73,7 +73,7 @@ type DeletePostRequest struct {
 func (h *Handler) Delete(w http.ResponseWriter, req *http.Request, userid int64, username string) {
     var r DeletePostRequest
     if err := ParseAndCheck(req, &r); err != nil {
-        ReplyError(w, err.Error(), http.StatusBadRequest)
+        ReplyError(w, err, http.StatusBadRequest)
         return
     }
 
@@ -83,13 +83,13 @@ func (h *Handler) Delete(w http.ResponseWriter, req *http.Request, userid int64,
 
     // delete failure may due to DB failure or incorrect postid
     if err := query.Exec(); err != nil {
-        ReplyError(w, err.Error(), http.StatusBadGateway)
+        ReplyError(w, err, http.StatusBadGateway)
         return
     }
 
     fids, err := h.getFriendIds(userid)
     if err != nil {
-        ReplyError(w, err.Error(), http.StatusBadGateway)
+        ReplyError(w, err, http.StatusBadGateway)
         return
     }
 
@@ -119,13 +119,13 @@ type CreateCommentRequest struct {
 func (h *Handler) CreateComment(w http.ResponseWriter, req *http.Request, userid int64, username string) {
     var r CreateCommentRequest
     if err := ParseAndCheck(req, &r); err != nil {
-        ReplyError(w, err.Error(), http.StatusBadRequest)
+        ReplyError(w, err, http.StatusBadRequest)
         return
     }
 
     fids, err := h.getMutualFriendIds(userid, r.PosterID)
     if err != nil {
-        ReplyError(w, err.Error(), http.StatusBadGateway)
+        ReplyError(w, err, http.StatusBadGateway)
         return
     }
 
@@ -154,13 +154,13 @@ type DeleteCommentRequest struct {
 func (h *Handler) DeleteComment(w http.ResponseWriter, req *http.Request, userid int64, username string) {
     var r DeleteCommentRequest
     if err := ParseAndCheck(req, &r); err != nil {
-        ReplyError(w, err.Error(), http.StatusBadRequest)
+        ReplyError(w, err, http.StatusBadRequest)
         return
     }
 
     fids, err := h.getMutualFriendIds(userid, r.PosterID)
     if err != nil {
-        ReplyError(w, err.Error(), http.StatusBadGateway)
+        ReplyError(w, err, http.StatusBadGateway)
         return
     }
 
@@ -187,20 +187,20 @@ type TimelineRequest struct {
 func (h *Handler) Timeline(w http.ResponseWriter, req *http.Request, userid int64, username string) {
     var r TimelineRequest
     if err := ParseAndCheck(req, &r); err != nil {
-        ReplyError(w, err.Error(), http.StatusBadRequest)
+        ReplyError(w, err, http.StatusBadRequest)
         return
     }
 
-    iter := h.DB.Query(`SELECT postid, url, caption FROM timeline WHERE userid = ? AND day = ?`, userid, r.Day).Iter()
+    iter := h.DB.Query(`SELECT postid, url, caption FROM timeline WHERE userid = ? AND day = ?`, userid, r.Day).Consistency(gocql.One).Iter()
     posts, err := iter.SliceMap()
     if err != nil {
-        ReplyError(w, err.Error(), http.StatusBadGateway)
+        ReplyError(w, err, http.StatusBadGateway)
         return
     }
 
     bytes, err := json.Marshal(posts)
     if err != nil {
-        ReplyError(w, err.Error(), http.StatusBadGateway)
+        ReplyError(w, err, http.StatusBadGateway)
         return
     }
 
@@ -218,20 +218,20 @@ type UserlineRequest struct {
 func (h *Handler) Userline(w http.ResponseWriter, req *http.Request, userid int64, username string) {
     var r UserlineRequest
     if err := ParseAndCheck(req, &r); err != nil {
-        ReplyError(w, err.Error(), http.StatusBadRequest)
+        ReplyError(w, err, http.StatusBadRequest)
         return
     }
 
-    iter := h.DB.Query(`SELECT postid, url, caption FROM userline WHERE userid = ? AND month = ?`, userid, r.Month).Iter()
+    iter := h.DB.Query(`SELECT postid, url, caption FROM userline WHERE userid = ? AND month = ?`, userid, r.Month).Consistency(gocql.One).Iter()
     posts, err := iter.SliceMap()
     if err != nil {
-        ReplyError(w, err.Error(), http.StatusBadGateway)
+        ReplyError(w, err, http.StatusBadGateway)
         return
     }
 
     bytes, err := json.Marshal(posts)
     if err != nil {
-        ReplyError(w, err.Error(), http.StatusBadGateway)
+        ReplyError(w, err, http.StatusBadGateway)
         return
     }
 
@@ -249,20 +249,20 @@ type CommentlineRequest struct {
 func (h *Handler) Commentline(w http.ResponseWriter, req *http.Request, userid int64, username string) {
     var r CommentlineRequest
     if err := ParseAndCheck(req, &r); err != nil {
-        ReplyError(w, err.Error(), http.StatusBadRequest)
+        ReplyError(w, err, http.StatusBadRequest)
         return
     }
 
-    iter := h.DB.Query(`SELECT commentid, postid, replytoid, content FROM commentline WHERE userid = ? AND commentid > ?`, userid, r.SinceID).Iter()
+    iter := h.DB.Query(`SELECT commentid, postid, replytoid, content FROM commentline WHERE userid = ? AND commentid > ?`, userid, r.SinceID).Consistency(gocql.One).Iter()
     comments, err := iter.SliceMap()
     if err != nil {
-        ReplyError(w, err.Error(), http.StatusBadGateway)
+        ReplyError(w, err, http.StatusBadGateway)
         return
     }
 
     bytes, err := json.Marshal(comments)
     if err != nil {
-        ReplyError(w, err.Error(), http.StatusBadGateway)
+        ReplyError(w, err, http.StatusBadGateway)
         return
     }
 

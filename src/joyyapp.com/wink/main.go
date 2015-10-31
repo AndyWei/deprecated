@@ -38,6 +38,7 @@ func main() {
     router.Get("/v1/post/userline", authenticate(postHandler.Userline))
     router.Get("/v1/post/commentline", authenticate(postHandler.Commentline))
     router.Get("/v1/user/profile", authenticate(userHandler.Profile))
+    router.Get("/v1/user/nearby", authenticate(userHandler.Nearby))
     router.Get("/v1/xmpp/check_password", authHandler.CheckPassword)
     router.Get("/v1/xmpp/user_exists", authHandler.CheckExistence)
 
@@ -50,6 +51,7 @@ func main() {
     router.Post("/v1/post/create", authenticate(postHandler.Create))
     router.Post("/v1/post/delete", authenticate(postHandler.Delete))
     router.Post("/v1/user/profile", authenticate(userHandler.SetProfile))
+    router.Post("/v1/user/occur", authenticate(userHandler.Occur))
 
     router.Serve()
 }

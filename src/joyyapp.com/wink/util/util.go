@@ -108,6 +108,30 @@ func ThisYear() int {
     return Year(time.Now())
 }
 
+// return value is in form of yymmddhh
+func NextHour() int {
+    now := time.Now()
+    t := now.Add(time.Duration(1) * time.Hour)
+    return Hour(t)
+}
+
+// return value is in form of yymmddhh
+func NextMonth() int {
+    now := time.Now()
+    month := int(now.Month())
+    if month == 12 {
+        year := now.Year() - 2000
+        return (year+1)*100 + 1
+    }
+    return ThisMonth() + 1
+}
+
+func IsLastDayOfThisMonth() bool {
+    today := time.Now()
+    tomorrow := today.Add(time.Duration(24) * time.Hour)
+    return Month(today) != Month(tomorrow)
+}
+
 /*
  * Log
  */
@@ -156,11 +180,18 @@ func ReplyData(w http.ResponseWriter, bytes []byte) {
     w.Write(bytes)
 }
 
-func ReplyError(w http.ResponseWriter, err string, code int) {
-    LogOutsideError(err)
+func ReplyError(w http.ResponseWriter, err interface{}, code int) {
+    var msg string
+    switch v := err.(type) {
+    case error:
+        msg = v.Error()
+    default:
+        msg = v.(string)
+    }
+    LogOutsideError(msg)
     w.Header().Set("Content-Type", "application/json; charset=utf-8")
     w.WriteHeader(code)
-    fmt.Fprintf(w, "{error: %v}\r\n", err)
+    fmt.Fprintf(w, "{error: %v}\r\n", msg)
 }
 
 func ReplyOK(w http.ResponseWriter) {

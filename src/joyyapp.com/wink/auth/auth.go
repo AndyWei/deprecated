@@ -58,7 +58,7 @@ func (h *Handler) SignUp(w http.ResponseWriter, req *http.Request) {
 
     var r AuthRequest
     if err := ParseAndCheck(req, &r); err != nil {
-        ReplyError(w, err.Error(), http.StatusBadRequest)
+        ReplyError(w, err, http.StatusBadRequest)
         return
     }
 
@@ -75,14 +75,14 @@ func (h *Handler) SignUp(w http.ResponseWriter, req *http.Request) {
 
     if err := h.DB.Query(`INSERT INTO user (id, username, deleted) VALUES (?, ?, false)`,
         userid, r.Username).Exec(); err != nil {
-        ReplyError(w, err.Error(), http.StatusBadGateway)
+        ReplyError(w, err, http.StatusBadGateway)
         return
     }
 
     // create JWT token
     token, err := NewToken(userid, r.Username)
     if err != nil {
-        ReplyError(w, err.Error(), http.StatusBadGateway)
+        ReplyError(w, err, http.StatusBadGateway)
         return
     }
 
@@ -103,7 +103,7 @@ func (h *Handler) SignIn(w http.ResponseWriter, req *http.Request) {
 
     var r AuthRequest
     if err := ParseAndCheck(req, &r); err != nil {
-        ReplyError(w, err.Error(), http.StatusBadRequest)
+        ReplyError(w, err, http.StatusBadRequest)
         return
     }
 
@@ -125,7 +125,7 @@ func (h *Handler) SignIn(w http.ResponseWriter, req *http.Request) {
     // success
     token, err := NewToken(userid, r.Username)
     if err != nil {
-        ReplyError(w, err.Error(), http.StatusBadGateway)
+        ReplyError(w, err, http.StatusBadGateway)
         return
     }
 
@@ -147,7 +147,7 @@ func (h *Handler) CheckExistence(w http.ResponseWriter, req *http.Request) {
 
     var r CheckExistenceRequest
     if err := ParseAndCheck(req, &r); err != nil {
-        ReplyError(w, err.Error(), http.StatusBadRequest)
+        ReplyError(w, err, http.StatusBadRequest)
         return
     }
 
@@ -184,7 +184,7 @@ func (h *Handler) CheckPassword(w http.ResponseWriter, req *http.Request) {
 
     var r CheckPasswordRequest
     if err := ParseAndCheck(req, &r); err != nil {
-        ReplyError(w, err.Error(), http.StatusBadRequest)
+        ReplyError(w, err, http.StatusBadRequest)
         return
     }
 

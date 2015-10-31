@@ -71,36 +71,6 @@ CREATE TABLE IF NOT EXISTS user_by_phone (
 
 
 /*
- * Write       : happens when a user occurs in a area (via POST user/location endpoint)
- * Read        : happens when a client GET user/nearby  
- * Workload    : both write-heavy and read-heavy, until the area is splited to smaller areas and then abandoned by winking.dynamic_area feature
- *
- * @Discussion : to make an area has a resaonable number of users, we need to track how many users in the user map. 
- *                   If the count is greater than the defined threshold, an area split will happen. TODO: consider move the counter to redis
- * 
- *               to handle the users leave/join an area, below rules need to be followed:
- *                   define a row identified by <areaid, hour> as the current slot, <areaid, hour + 1> as the next slot, and the rules for access will be:
- *                   1. All reads only happen on the current slot
- *                   2. All writes will happen on both the current slot and the next slot. Here write means inserting a <timestamp, user> pair into the slot's user map
- *                   3. As time goes, the next slot will become the new current slot, and a new next slot will be created
- *                   4. Any time we create a new slot, the 24-hours-old slot of the same area will be deleted to save disk space.
- */
-CREATE TABLE IF NOT EXISTS user_by_area (
-    areaid       text   , -- defined in area.cql area
-    hour         int    , -- the number of hours since joyy epoch (01 Jan 2015 00:00:00 GMT)
-    userid       bigint ,
-    username     text   ,
-    region       int    ,
-    sex          int    , -- 0: female, 1: male, 2: other
-    yob          int    , -- year of birth
-    bio          text   ,
-
-    PRIMARY KEY ((areaid, hour), userid)
-) WITH CLUSTERING ORDER BY (userid DESC)
-   AND COMPACTION = {'class': 'LeveledCompactionStrategy', 'enabled': 'true'};
-
-
-/*
  * Description: the table stores friendship, which is used to get the friend timeline ids for pushing new post
  * Query:     : all_my_friends = SELECT fid FROM friendship WHERE uid = $my_userid
  * Write      : when 2 users become friends, 2 columns will be created
@@ -115,4 +85,78 @@ CREATE TABLE IF NOT EXISTS friendship (
 
     PRIMARY KEY (userid, fid)
 ) WITH COMPACTION = {'class': 'LeveledCompactionStrategy', 'enabled': 'true'};
+
+/*
+ * Write       : happens when a user occurs in a area (via POST user/occur endpoint)
+ * Read        : happens when a client GET user/nearby  
+ * Workload    : both write-heavy and read-heavy
+ *
+ * @Discussion : to handle the users leave/join an area, below rules need to be followed:
+ *                   define a row identified by <area, month> as the current slot, <areaid, month + 1> as the next slot, and the rules for access will be:
+ *                   1. All reads only happen on the current slot
+ *                   2. All writes happen on the current slot, and if it's the last day of the month, then also write into the next slot.
+ *                   3. As time goes, the next slot will become the new current slot, and a new next slot will be created
+ *                   4. The old slots will be deleted to save disk space.
+ */
+CREATE TABLE IF NOT EXISTS user_csz1 (
+    area         text   , -- a man in US 94536 will have csz1 area "USM9"
+    month        int    , -- months in form of yymm
+    userid       bigint ,
+    username     text   ,
+    region       int    ,
+    yob          int    ,
+
+    PRIMARY KEY ((area, month), userid)
+) WITH CLUSTERING ORDER BY (userid DESC);
+
+
+CREATE TABLE IF NOT EXISTS user_csz2 (
+    area         text   , -- a man in US 94536 will have csz2 area "USM94"
+    month        int    , -- months in form of yymm
+    userid       bigint ,
+    username     text   ,
+    region       int    ,
+    yob          int    ,
+
+    PRIMARY KEY ((area, month), userid)
+) WITH CLUSTERING ORDER BY (userid DESC);
+
+
+CREATE TABLE IF NOT EXISTS user_csz3 (
+    area         text   , -- a man in US 94536 will have csz3 area code "USM945"
+    month        int    , -- months in form of yymm
+    userid       bigint ,
+    username     text   ,
+    region       int    ,
+    yob          int    ,
+
+    PRIMARY KEY ((area, month), userid)
+) WITH CLUSTERING ORDER BY (userid DESC)
+   AND COMPACTION = {'class': 'LeveledCompactionStrategy', 'enabled': 'true'};
+
+
+CREATE TABLE IF NOT EXISTS user_csz4 (
+    area         text   , -- a man in US 94536 will have csz4 area code "USM9453"
+    month        int    , -- months in form of yymm
+    userid       bigint ,
+    username     text   ,
+    region       int    ,
+    yob          int    ,
+
+    PRIMARY KEY ((area, month), userid)
+) WITH CLUSTERING ORDER BY (userid DESC)
+   AND COMPACTION = {'class': 'LeveledCompactionStrategy', 'enabled': 'true'};
+
+
+CREATE TABLE IF NOT EXISTS user_csz5 (
+    area         text   , -- a man in US 94536 will have csz5 area code "USM94536"
+    month        int    , -- months in form of yymm
+    userid       bigint ,
+    username     text   ,
+    region       int    ,
+    yob          int    ,
+
+    PRIMARY KEY ((area, month), userid)
+) WITH CLUSTERING ORDER BY (userid DESC)
+   AND COMPACTION = {'class': 'LeveledCompactionStrategy', 'enabled': 'true'};
 
