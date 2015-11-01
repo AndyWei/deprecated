@@ -11,7 +11,7 @@ import (
     router "github.com/zenazn/goji"
     "joyyapp.com/wink/auth"
     "joyyapp.com/wink/cassandra"
-    "joyyapp.com/wink/friendship"
+    "joyyapp.com/wink/edge"
     "joyyapp.com/wink/post"
     "joyyapp.com/wink/user"
     "net/http"
@@ -25,33 +25,43 @@ func main() {
     authenticate := auth.JWTMiddleware
 
     authHandler := &auth.Handler{DB: db}
-    friendshipHandler := &friendship.Handler{DB: db}
+    edgeHandler := &edge.Handler{DB: db}
     postHandler := &post.Handler{DB: db}
     userHandler := &user.Handler{DB: db}
 
     router.Use(gzip.GzipHandler)
 
     router.Get("/v1/ping", pong)
-    router.Get("/v1/auth/cognito", authenticate(authHandler.Cognito))
-    router.Get("/v1/friendship", authenticate(friendshipHandler.Friendship))
-    router.Get("/v1/post/timeline", authenticate(postHandler.Timeline))
-    router.Get("/v1/post/userline", authenticate(postHandler.Userline))
-    router.Get("/v1/post/commentline", authenticate(postHandler.Commentline))
-    router.Get("/v1/user/profile", authenticate(userHandler.Profile))
-    router.Get("/v1/user/nearby", authenticate(userHandler.Nearby))
-    router.Get("/v1/xmpp/check_password", authHandler.CheckPassword)
-    router.Get("/v1/xmpp/user_exists", authHandler.CheckExistence)
 
+    router.Get("/v1/auth/cognito", authenticate(authHandler.Cognito))
     router.Post("/v1/auth/signin", authHandler.SignIn)
     router.Post("/v1/auth/signup", authHandler.SignUp)
-    router.Post("/v1/comment/create", authenticate(postHandler.CreateComment))
-    router.Post("/v1/comment/delete", authenticate(postHandler.DeleteComment))
-    router.Post("/v1/friendship/create", authenticate(friendshipHandler.Create))
-    router.Post("/v1/friendship/delete", authenticate(friendshipHandler.Delete))
-    router.Post("/v1/post/create", authenticate(postHandler.Create))
-    router.Post("/v1/post/delete", authenticate(postHandler.Delete))
-    router.Post("/v1/user/profile", authenticate(userHandler.SetProfile))
-    router.Post("/v1/user/occur", authenticate(userHandler.Occur))
+
+    router.Get("/v1/friendship", authenticate(edgeHandler.ReadFriendships))
+    router.Post("/v1/friendship/create", authenticate(edgeHandler.CreateFriendship))
+    router.Post("/v1/friendship/delete", authenticate(edgeHandler.DeleteFriendship))
+
+    router.Get("/v1/invite", authenticate(edgeHandler.ReadInvites))
+    router.Post("/v1/invite/create", authenticate(edgeHandler.CreateInvite))
+    router.Post("/v1/invite/delete", authenticate(edgeHandler.DeleteInvite))
+
+    router.Get("/v1/post/timeline", authenticate(postHandler.ReadTimeline))
+    router.Get("/v1/post/userline", authenticate(postHandler.ReadUserline))
+    router.Post("/v1/post/create", authenticate(postHandler.CreatePost))
+    router.Post("/v1/post/delete", authenticate(postHandler.DeletePost))
+
+    router.Get("/v1/post/commentline", authenticate(postHandler.ReadCommentline))
+    router.Post("/v1/post/comment/create", authenticate(postHandler.CreateComment))
+    router.Post("/v1/post/comment/delete", authenticate(postHandler.DeleteComment))
+
+    router.Get("/v1/user/profile", authenticate(userHandler.ReadProfile))
+    router.Post("/v1/user/profile", authenticate(userHandler.CreateProfile))
+
+    router.Get("/v1/user", authenticate(userHandler.ReadUsers))
+    router.Post("/v1/user/appear", authenticate(userHandler.Appear))
+
+    router.Get("/v1/xmpp/check_password", authHandler.CheckPassword)
+    router.Get("/v1/xmpp/user_exists", authHandler.CheckExistence)
 
     router.Serve()
 }

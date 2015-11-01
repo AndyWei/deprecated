@@ -43,12 +43,12 @@ func TestSignUp(test *testing.T) {
 
         if t.code == http.StatusOK {
             bytes := resp.Body.Bytes()
-            var reply AuthReply
-            err := json.Unmarshal(bytes, &reply)
+            var r AuthResponse
+            err := json.Unmarshal(bytes, &r)
 
             assert.Nil(err)
-            assert.NotNil(reply.Id)
-            assert.NotNil(reply.Token)
+            assert.NotNil(r.Id)
+            assert.NotNil(r.Token)
         }
     }
 }
@@ -83,12 +83,12 @@ func TestSignIn(test *testing.T) {
 
         if t.code == http.StatusOK {
             bytes := resp.Body.Bytes()
-            var reply AuthReply
-            err := json.Unmarshal(bytes, &reply)
+            var r AuthResponse
+            err := json.Unmarshal(bytes, &r)
 
             assert.Nil(err)
-            assert.NotNil(reply.Id)
-            assert.NotNil(reply.Token)
+            assert.NotNil(r.Id)
+            assert.NotNil(r.Token)
         }
     }
 }
@@ -173,7 +173,7 @@ func (h *Handler) signIn(username, password string) (id int64, token string, err
         return 0, "", errors.New(string(bytes))
     }
 
-    var reply AuthReply
+    var reply AuthResponse
     if err := json.Unmarshal(bytes, &reply); err != nil {
         return 0, "", errors.New(ErrResponseInvalid)
     }
@@ -194,7 +194,7 @@ func (h *Handler) signUp(username, password string) (id int64, token string, err
         return 0, "", errors.New(string(bytes))
     }
 
-    var reply AuthReply
+    var reply AuthResponse
     if err := json.Unmarshal(bytes, &reply); err != nil {
         return 0, "", errors.New(ErrResponseInvalid)
     }

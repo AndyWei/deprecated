@@ -24,21 +24,21 @@ type Handler struct {
 /*
  * Create a post
  */
-type CreatePostRequest struct {
+type CreatePostParams struct {
     URL     string `param:"url" validate:"required"`
     Caption string `param:"caption"`
 }
 
-func (h *Handler) Create(w http.ResponseWriter, req *http.Request, userid int64, username string) {
-    var r CreatePostRequest
-    if err := ParseAndCheck(req, &r); err != nil {
-        ReplyError(w, err, http.StatusBadRequest)
+func (h *Handler) CreatePost(w http.ResponseWriter, req *http.Request, userid int64, username string) {
+    var p CreatePostParams
+    if err := ParseAndCheck(req, &p); err != nil {
+        RespondError(w, err, http.StatusBadRequest)
         return
     }
 
     fids, err := h.getFriendIds(userid)
     if err != nil {
-        ReplyError(w, err, http.StatusBadGateway)
+        RespondError(w, err, http.StatusBadGateway)
         return
     }
 
@@ -50,82 +50,82 @@ func (h *Handler) Create(w http.ResponseWriter, req *http.Request, userid int64,
     query := h.DB.Query(`INSERT INTO timeline (userid, day, postid, url, caption) VALUES (?, ?, ?, ?, ?)`, 0, 0, 0, "", "")
 
     for _, fid := range fids {
-        query.Bind(fid, day, postid, r.URL, r.Caption).Exec()
+        query.Bind(fid, day, postid, p.URL, p.Caption).Exec()
     }
 
     // write to userline, ignore write failures if any
     month := ThisMonth()
-    query = h.DB.Query(`INSERT INTO userline (userid, month, postid, url, caption) VALUES (?, ?, ?, ?, ?)`, userid, month, postid, r.URL, r.Caption)
+    query = h.DB.Query(`INSERT INTO userline (userid, month, postid, url, caption) VALUES (?, ?, ?, ?, ?)`, userid, month, postid, p.URL, p.Caption)
     query.Exec()
 
     message := fmt.Sprintf("{postid:%v}", postid)
-    ReplyData(w, []byte(message))
+    RespondData(w, []byte(message))
     return
 }
 
 /*
  * Delete a post
  */
-type DeletePostRequest struct {
-    PostID int64 `param:"postid" validate:"required"`
+type DeletePostParams struct {
+    PostId int64 `param:"postid" validate:"required"`
 }
 
-func (h *Handler) Delete(w http.ResponseWriter, req *http.Request, userid int64, username string) {
-    var r DeletePostRequest
-    if err := ParseAndCheck(req, &r); err != nil {
-        ReplyError(w, err, http.StatusBadRequest)
+func (h *Handler) DeletePost(w http.ResponseWriter, req *http.Request, userid int64, username string) {
+    var p DeletePostParams
+    if err := ParseAndCheck(req, &p); err != nil {
+        RespondError(w, err, http.StatusBadRequest)
         return
     }
 
     // delete from userline
-    month := idgen.MonthOf(r.PostID)
-    query := h.DB.Query(`DELETE FROM userline WHERE userid = ? AND month = ? AND postid = ?`, userid, month, r.PostID)
+    month := idgen.MonthOf(p.PostId)
+    query := h.DB.Query(`DELETE FROM userline WHERE userid = ? AND month = ? AND postid = ?`, userid, month, p.PostId)
 
     // delete failure may due to DB failure or incorrect postid
     if err := query.Exec(); err != nil {
-        ReplyError(w, err, http.StatusBadGateway)
+        RespondError(w, err, http.StatusBadGateway)
         return
     }
 
     fids, err := h.getFriendIds(userid)
     if err != nil {
-        ReplyError(w, err, http.StatusBadGateway)
+        RespondError(w, err, http.StatusBadGateway)
         return
     }
 
     // delete post from all the friends timelines, including the owner. ignore write failures if any
     fids = append(fids, userid)
-    day := idgen.DayOf(r.PostID)
+    day := idgen.DayOf(p.PostId)
     query = h.DB.Query(`DELETE FROM timeline WHERE userid = ? AND day = ? AND postid = ?`, 0, 0, 0)
 
     for _, fid := range fids {
-        query.Bind(fid, day, r.PostID).Exec()
+        query.Bind(fid, day, p.PostId).Exec()
     }
 
-    ReplyOK(w)
+    RespondOK(w)
     return
 }
 
 /*
  * Create a comment
  */
-type CreateCommentRequest struct {
-    PostID    int64  `param:"postid" validate:"required"`
-    PosterID  int64  `param:"posterid" validate:"required"`
-    ReplyToID int64  `param:"replytoid"`
+type CreateCommentParams struct {
+    PostId    int64  `param:"postid" validate:"required"`
+    PosterId  int64  `param:"posterid" validate:"required"`
+    ReplyToId int64  `param:"replytoid"`
     Content   string `param:"content" validate:"required"`
 }
 
 func (h *Handler) CreateComment(w http.ResponseWriter, req *http.Request, userid int64, username string) {
-    var r CreateCommentRequest
-    if err := ParseAndCheck(req, &r); err != nil {
-        ReplyError(w, err, http.StatusBadRequest)
+    var p CreateCommentParams
+    if err := ParseAndCheck(req, &p); err != nil {
+        RespondError(w, err, http.StatusBadRequest)
         return
     }
 
-    fids, err := h.getMutualFriendIds(userid, r.PosterID)
+    fids, err := h.getMutualFriendIds(userid, p.PosterId)
     if err != nil {
-        ReplyError(w, err, http.StatusBadGateway)
+        RespondError(w, err, http.StatusBadGateway)
         return
     }
 
@@ -135,138 +135,138 @@ func (h *Handler) CreateComment(w http.ResponseWriter, req *http.Request, userid
     // write the comment to all the mutal friends' commentlines, including the owner. ignore write failures if any
     query := h.DB.Query(`INSERT INTO commentline (userid, commentid, postid, replytoid, content) VALUES (?, ?, ?, ?, ?)`, 0, 0, 0, "", "")
     for _, fid := range fids {
-        query.Bind(fid, commentid, r.PostID, r.ReplyToID, r.Content).Exec()
+        query.Bind(fid, commentid, p.PostId, p.ReplyToId, p.Content).Exec()
     }
 
     message := fmt.Sprintf("{commentid:%v}", commentid)
-    ReplyData(w, []byte(message))
+    RespondData(w, []byte(message))
     return
 }
 
 /*
  * Delete a comment
  */
-type DeleteCommentRequest struct {
-    CommentID int64 `param:"postid" validate:"required"`
-    PosterID  int64 `param:"posterid" validate:"required"`
+type DeleteCommentParams struct {
+    CommentId int64 `param:"postid" validate:"required"`
+    PosterId  int64 `param:"posterid" validate:"required"`
 }
 
 func (h *Handler) DeleteComment(w http.ResponseWriter, req *http.Request, userid int64, username string) {
-    var r DeleteCommentRequest
-    if err := ParseAndCheck(req, &r); err != nil {
-        ReplyError(w, err, http.StatusBadRequest)
+    var p DeleteCommentParams
+    if err := ParseAndCheck(req, &p); err != nil {
+        RespondError(w, err, http.StatusBadRequest)
         return
     }
 
-    fids, err := h.getMutualFriendIds(userid, r.PosterID)
+    fids, err := h.getMutualFriendIds(userid, p.PosterId)
     if err != nil {
-        ReplyError(w, err, http.StatusBadGateway)
+        RespondError(w, err, http.StatusBadGateway)
         return
     }
 
     fids = append(fids, userid)
 
-    // delete post from all the friends timelines, including the owner. ignore write failures if any
+    // delete comment from all the friends timelines, including the owner. ignore write failures if any
     query := h.DB.Query(`DELETE FROM commentline WHERE userid = ? AND commentid = ?`, 0, 0)
 
     for _, fid := range fids {
-        query.Bind(fid, r.CommentID).Exec()
+        query.Bind(fid, p.CommentId).Exec()
     }
 
-    ReplyOK(w)
+    RespondOK(w)
     return
 }
 
 /*
  * Read timeline
  */
-type TimelineRequest struct {
+type TimelineParams struct {
     Day int `param:"day" validate:"min=150101"`
 }
 
-func (h *Handler) Timeline(w http.ResponseWriter, req *http.Request, userid int64, username string) {
-    var r TimelineRequest
-    if err := ParseAndCheck(req, &r); err != nil {
-        ReplyError(w, err, http.StatusBadRequest)
+func (h *Handler) ReadTimeline(w http.ResponseWriter, req *http.Request, userid int64, username string) {
+    var p TimelineParams
+    if err := ParseAndCheck(req, &p); err != nil {
+        RespondError(w, err, http.StatusBadRequest)
         return
     }
 
-    iter := h.DB.Query(`SELECT postid, url, caption FROM timeline WHERE userid = ? AND day = ?`, userid, r.Day).Consistency(gocql.One).Iter()
+    iter := h.DB.Query(`SELECT postid, url, caption FROM timeline WHERE userid = ? AND day = ?`, userid, p.Day).Consistency(gocql.One).Iter()
     posts, err := iter.SliceMap()
     if err != nil {
-        ReplyError(w, err, http.StatusBadGateway)
+        RespondError(w, err, http.StatusBadGateway)
         return
     }
 
     bytes, err := json.Marshal(posts)
     if err != nil {
-        ReplyError(w, err, http.StatusBadGateway)
+        RespondError(w, err, http.StatusBadGateway)
         return
     }
 
-    ReplyData(w, bytes)
+    RespondData(w, bytes)
     return
 }
 
 /*
  * Read userline
  */
-type UserlineRequest struct {
+type UserlineParams struct {
     Month int `param:"month" validate:"min=1501"`
 }
 
-func (h *Handler) Userline(w http.ResponseWriter, req *http.Request, userid int64, username string) {
-    var r UserlineRequest
-    if err := ParseAndCheck(req, &r); err != nil {
-        ReplyError(w, err, http.StatusBadRequest)
+func (h *Handler) ReadUserline(w http.ResponseWriter, req *http.Request, userid int64, username string) {
+    var p UserlineParams
+    if err := ParseAndCheck(req, &p); err != nil {
+        RespondError(w, err, http.StatusBadRequest)
         return
     }
 
-    iter := h.DB.Query(`SELECT postid, url, caption FROM userline WHERE userid = ? AND month = ?`, userid, r.Month).Consistency(gocql.One).Iter()
+    iter := h.DB.Query(`SELECT postid, url, caption FROM userline WHERE userid = ? AND month = ?`, userid, p.Month).Consistency(gocql.One).Iter()
     posts, err := iter.SliceMap()
     if err != nil {
-        ReplyError(w, err, http.StatusBadGateway)
+        RespondError(w, err, http.StatusBadGateway)
         return
     }
 
     bytes, err := json.Marshal(posts)
     if err != nil {
-        ReplyError(w, err, http.StatusBadGateway)
+        RespondError(w, err, http.StatusBadGateway)
         return
     }
 
-    ReplyData(w, bytes)
+    RespondData(w, bytes)
     return
 }
 
 /*
  * Read commentline
  */
-type CommentlineRequest struct {
+type CommentlineParams struct {
     SinceID int `param:"sinceid"`
 }
 
-func (h *Handler) Commentline(w http.ResponseWriter, req *http.Request, userid int64, username string) {
-    var r CommentlineRequest
-    if err := ParseAndCheck(req, &r); err != nil {
-        ReplyError(w, err, http.StatusBadRequest)
+func (h *Handler) ReadCommentline(w http.ResponseWriter, req *http.Request, userid int64, username string) {
+    var p CommentlineParams
+    if err := ParseAndCheck(req, &p); err != nil {
+        RespondError(w, err, http.StatusBadRequest)
         return
     }
 
-    iter := h.DB.Query(`SELECT commentid, postid, replytoid, content FROM commentline WHERE userid = ? AND commentid > ?`, userid, r.SinceID).Consistency(gocql.One).Iter()
+    iter := h.DB.Query(`SELECT commentid, postid, replytoid, content FROM commentline WHERE userid = ? AND commentid > ?`, userid, p.SinceID).Consistency(gocql.One).Iter()
     comments, err := iter.SliceMap()
     if err != nil {
-        ReplyError(w, err, http.StatusBadGateway)
+        RespondError(w, err, http.StatusBadGateway)
         return
     }
 
     bytes, err := json.Marshal(comments)
     if err != nil {
-        ReplyError(w, err, http.StatusBadGateway)
+        RespondError(w, err, http.StatusBadGateway)
         return
     }
 
-    ReplyData(w, bytes)
+    RespondData(w, bytes)
     return
 }
 

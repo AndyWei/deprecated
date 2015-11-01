@@ -41,14 +41,14 @@ func init() {
 }
 
 /*
- * Signup/Signin request and reply structure
+ * Signup/Signin request and response structure
  */
-type AuthRequest struct {
+type AuthParams struct {
     Username string `param:"username" validate:"min=2,max=40"`
     Password string `param:"password" validate:"min=2,max=40"`
 }
 
-type AuthReply struct {
+type AuthResponse struct {
     Id       int64  `json:"id"`
     Token    string `json:"token"`
     TokenTtl int    `json:"token_ttl"`
@@ -56,42 +56,42 @@ type AuthReply struct {
 
 func (h *Handler) SignUp(w http.ResponseWriter, req *http.Request) {
 
-    var r AuthRequest
-    if err := ParseAndCheck(req, &r); err != nil {
-        ReplyError(w, err, http.StatusBadRequest)
+    var p AuthParams
+    if err := ParseAndCheck(req, &p); err != nil {
+        RespondError(w, err, http.StatusBadRequest)
         return
     }
 
-    epassword, err := bcrypt.GenerateFromPassword([]byte(r.Password), kBcryptCost)
+    epassword, err := bcrypt.GenerateFromPassword([]byte(p.Password), kBcryptCost)
     userid := idgen.NewID()
 
     // write DB. note lightweight transaction is used to make sure the username is unique
     applied, err := h.DB.Query(`INSERT INTO user_by_name (username, id, password) VALUES (?, ?, ?) IF NOT EXISTS`,
-        r.Username, userid, epassword).ScanCAS()
+        p.Username, userid, epassword).ScanCAS()
     if err != nil || !applied {
-        ReplyError(w, ErrUsernameConflict, http.StatusBadRequest)
+        RespondError(w, ErrUsernameConflict, http.StatusBadRequest)
         return
     }
 
     if err := h.DB.Query(`INSERT INTO user (id, username, deleted) VALUES (?, ?, false)`,
-        userid, r.Username).Exec(); err != nil {
-        ReplyError(w, err, http.StatusBadGateway)
+        userid, p.Username).Exec(); err != nil {
+        RespondError(w, err, http.StatusBadGateway)
         return
     }
 
     // create JWT token
-    token, err := NewToken(userid, r.Username)
+    token, err := NewToken(userid, p.Username)
     if err != nil {
-        ReplyError(w, err, http.StatusBadGateway)
+        RespondError(w, err, http.StatusBadGateway)
         return
     }
 
     // success
-    LogInfof("New user signed up. userid = %v, username = %v\n\r", userid, r.Username)
+    LogInfof("New user signed up. userid = %v, username = %v\n\r", userid, p.Username)
 
-    reply := &AuthReply{Id: userid, Token: token, TokenTtl: kTokenTtl}
-    body, _ := json.Marshal(reply)
-    ReplyData(w, body)
+    response := &AuthResponse{Id: userid, Token: token, TokenTtl: kTokenTtl}
+    bytes, _ := json.Marshal(response)
+    RespondData(w, bytes)
     return
 }
 
@@ -101,9 +101,9 @@ func (h *Handler) SignUp(w http.ResponseWriter, req *http.Request) {
 
 func (h *Handler) SignIn(w http.ResponseWriter, req *http.Request) {
 
-    var r AuthRequest
-    if err := ParseAndCheck(req, &r); err != nil {
-        ReplyError(w, err, http.StatusBadRequest)
+    var p AuthParams
+    if err := ParseAndCheck(req, &p); err != nil {
+        RespondError(w, err, http.StatusBadRequest)
         return
     }
 
@@ -111,95 +111,95 @@ func (h *Handler) SignIn(w http.ResponseWriter, req *http.Request) {
     var userid int64
     var epassword string
     if err := h.DB.Query(`SELECT id, password FROM user_by_name WHERE username = ? LIMIT 1`,
-        r.Username).Consistency(gocql.One).Scan(&userid, &epassword); err != nil {
-        ReplyError(w, ErrUserNotExist, http.StatusBadRequest)
+        p.Username).Consistency(gocql.One).Scan(&userid, &epassword); err != nil {
+        RespondError(w, ErrUserNotExist, http.StatusBadRequest)
         return
     }
 
     // check password
-    if err := bcrypt.CompareHashAndPassword([]byte(epassword), []byte(r.Password)); err != nil {
-        ReplyError(w, ErrPasswordInvalid, http.StatusUnauthorized)
+    if err := bcrypt.CompareHashAndPassword([]byte(epassword), []byte(p.Password)); err != nil {
+        RespondError(w, ErrPasswordInvalid, http.StatusUnauthorized)
         return
     }
 
     // success
-    token, err := NewToken(userid, r.Username)
+    token, err := NewToken(userid, p.Username)
     if err != nil {
-        ReplyError(w, err, http.StatusBadGateway)
+        RespondError(w, err, http.StatusBadGateway)
         return
     }
 
-    reply := &AuthReply{Id: userid, Token: token, TokenTtl: kTokenTtl}
-    body, _ := json.Marshal(reply)
-    ReplyData(w, body)
+    response := &AuthResponse{Id: userid, Token: token, TokenTtl: kTokenTtl}
+    bytes, _ := json.Marshal(response)
+    RespondData(w, bytes)
     return
 }
 
 /*
  * XMPP CheckExistence request structure
  */
-type CheckExistenceRequest struct {
-    Userid int64  `param:"user" validate:"required"`
+type CheckExistenceParams struct {
+    UserId int64  `param:"user" validate:"required"`
     Server string `param:"server" validate:"required"`
 }
 
 func (h *Handler) CheckExistence(w http.ResponseWriter, req *http.Request) {
 
-    var r CheckExistenceRequest
-    if err := ParseAndCheck(req, &r); err != nil {
-        ReplyError(w, err, http.StatusBadRequest)
+    var p CheckExistenceParams
+    if err := ParseAndCheck(req, &p); err != nil {
+        RespondError(w, err, http.StatusBadRequest)
         return
     }
 
-    if r.Server != kImDomain {
-        ReplyError(w, ErrIMServerInvalid, http.StatusBadRequest)
+    if p.Server != kImDomain {
+        RespondError(w, ErrIMServerInvalid, http.StatusBadRequest)
         return
     }
 
     // read DB
     var deleted bool
     err := h.DB.Query(`SELECT deleted FROM user WHERE id = ? LIMIT 1`,
-        r.Userid).Consistency(gocql.One).Scan(&deleted)
+        p.UserId).Consistency(gocql.One).Scan(&deleted)
 
     if err != nil || deleted {
-        ReplyError(w, ErrUserNotExist, http.StatusNotFound)
+        RespondError(w, ErrUserNotExist, http.StatusNotFound)
         return
     }
 
     // success
-    ReplyTrue(w)
+    RespondTrue(w)
     return
 }
 
 /*
  * XMPP CheckPassword request structure
  */
-type CheckPasswordRequest struct {
-    Userid int64  `param:"user" validate:"required"`
+type CheckPasswordParams struct {
+    UserId int64  `param:"user" validate:"required"`
     Server string `param:"server" validate:"required"`
     Token  string `param:"pass" validate:"required"`
 }
 
 func (h *Handler) CheckPassword(w http.ResponseWriter, req *http.Request) {
 
-    var r CheckPasswordRequest
-    if err := ParseAndCheck(req, &r); err != nil {
-        ReplyError(w, err, http.StatusBadRequest)
+    var p CheckPasswordParams
+    if err := ParseAndCheck(req, &p); err != nil {
+        RespondError(w, err, http.StatusBadRequest)
         return
     }
 
-    if r.Server != kImDomain {
-        ReplyError(w, ErrIMServerInvalid, http.StatusBadRequest)
+    if p.Server != kImDomain {
+        RespondError(w, ErrIMServerInvalid, http.StatusBadRequest)
         return
     }
 
-    id, _, err := ExtractToken(r.Token)
-    if err != nil || r.Userid != id {
-        ReplyError(w, ErrTokenInvalid, http.StatusUnauthorized)
+    id, _, err := ExtractToken(p.Token)
+    if err != nil || p.UserId != id {
+        RespondError(w, ErrTokenInvalid, http.StatusUnauthorized)
         return
     }
 
     // success
-    ReplyTrue(w)
+    RespondTrue(w)
     return
 }

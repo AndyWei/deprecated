@@ -45,24 +45,24 @@ func JWTMiddleware(next HandlerFunc) http.HandlerFunc {
         parsedToken, err := jwt_lib.ParseFromRequest(req, keyFunc)
 
         if err != nil {
-            ReplyError(w, err, http.StatusUnauthorized)
+            RespondError(w, err, http.StatusUnauthorized)
             return
         }
 
         if !parsedToken.Valid {
-            ReplyError(w, ErrTokenInvalid, http.StatusUnauthorized)
+            RespondError(w, ErrTokenInvalid, http.StatusUnauthorized)
             return
         }
 
         idstr, username, err := extractParsedToken(parsedToken)
         if err != nil {
-            ReplyError(w, err, http.StatusUnauthorized)
+            RespondError(w, err, http.StatusUnauthorized)
             return
         }
 
         userid, err := strconv.ParseInt(idstr, 10, 64)
         if err != nil {
-            ReplyError(w, err, http.StatusUnauthorized)
+            RespondError(w, err, http.StatusUnauthorized)
             return
         }
 

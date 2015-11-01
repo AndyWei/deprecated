@@ -174,13 +174,13 @@ func LogPanic(err error) {
 /*
  * reply
  */
-func ReplyData(w http.ResponseWriter, bytes []byte) {
+func RespondData(w http.ResponseWriter, bytes []byte) {
     w.Header().Set("Content-Type", "application/json; charset=utf-8")
     w.WriteHeader(http.StatusOK)
     w.Write(bytes)
 }
 
-func ReplyError(w http.ResponseWriter, err interface{}, code int) {
+func RespondError(w http.ResponseWriter, err interface{}, code int) {
     var msg string
     switch v := err.(type) {
     case error:
@@ -194,11 +194,11 @@ func ReplyError(w http.ResponseWriter, err interface{}, code int) {
     fmt.Fprintf(w, "{error: %v}\r\n", msg)
 }
 
-func ReplyOK(w http.ResponseWriter) {
+func RespondOK(w http.ResponseWriter) {
     w.WriteHeader(http.StatusOK)
 }
 
-func ReplyTrue(w http.ResponseWriter) {
+func RespondTrue(w http.ResponseWriter) {
     w.WriteHeader(http.StatusOK)
     w.Write([]byte("true"))
 }

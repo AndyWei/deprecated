@@ -1,10 +1,10 @@
 /*
- * friendship_test.go
+ * edge_test.go
  *
  * Copyright (c) 2015 Joyy Inc. All rights reserved.
  */
 
-package friendship
+package edge
 
 import (
     "encoding/json"
@@ -21,15 +21,15 @@ import (
 var CreateFriendshipTests = []struct {
     userid   int64
     username string
-    region   int
+    yrs      int
     fid      int64
     fname    string
-    fregion  int
+    fyrs     int
 }{
-    {1234567890000, "user0", 0, 1234567890001, "user1", 0},
-    {1234567890000, "user0", 0, 1234567890002, "user2", 1},
-    {1234567890000, "user0", 0, 1234567890003, "user3", 2},
-    {1234567890000, "user0", 0, 1234567890004, "user4", 2},
+    {1234567890000, "user0", 1, 1234567890001, "user1", 1},
+    {1234567890000, "user0", 1, 1234567890002, "user2", 1},
+    {1234567890000, "user0", 1, 1234567890003, "user3", 2},
+    {1234567890000, "user0", 1, 1234567890004, "user4", 2},
 }
 
 func TestCreateFriendship(test *testing.T) {
@@ -39,58 +39,58 @@ func TestCreateFriendship(test *testing.T) {
 
     for _, t := range CreateFriendshipTests {
 
-        body := fmt.Sprintf("region=%v&fid=%v&fname=%v&fregion=%v", t.region, t.fid, t.fname, t.fregion)
+        body := fmt.Sprintf("yrs=%v&fid=%v&fname=%v&fyrs=%v", t.yrs, t.fid, t.fname, t.fyrs)
         req, _ := http.NewRequest("POST", "/v1/friendship/create", strings.NewReader(body))
         req.Header.Set("Content-Type", "application/x-www-form-urlencoded; param=value")
         resp := httptest.NewRecorder()
 
-        h.Create(resp, req, t.userid, t.username)
+        h.CreateFriendship(resp, req, t.userid, t.username)
 
         assert.Equal(http.StatusOK, resp.Code, "should response correct status code")
     }
 }
 
-var GetFriendshipTests = []struct {
-    fid     int64
-    fname   string
-    fregion int
+var ReadFriendshipsTests = []struct {
+    fid   int64
+    fname string
+    fyrs  int
 }{
-    {1234567890001, "user1", 0},
+    {1234567890001, "user1", 1},
     {1234567890002, "user2", 1},
     {1234567890003, "user3", 2},
     {1234567890004, "user4", 2},
 }
 
 type Friend struct {
-    Fid     int64  `json:"fid"`
-    Fname   string `json:"fname"`
-    Fregion int    `json:"fregion"`
+    Fid   int64  `json:"fid"`
+    Fname string `json:"fname"`
+    Fyrs  int    `json:"fyrs"`
 }
 
-func TestGetFriendship(test *testing.T) {
+func TestReadFriendships(test *testing.T) {
     assert := assert.New(test)
     db := cassandra.DB()
     h := Handler{DB: db}
 
     userid := int64(1234567890000)
     username := "user0"
-    region := 0
+    yrs := 1
 
-    for _, t := range GetFriendshipTests {
+    for _, t := range ReadFriendshipsTests {
 
-        body := fmt.Sprintf("region=%v&fid=%v&fname=%v&fregion=%v", region, t.fid, t.fname, t.fregion)
+        body := fmt.Sprintf("yrs=%v&fid=%v&fname=%v&fyrs=%v", yrs, t.fid, t.fname, t.fyrs)
         req, _ := http.NewRequest("POST", "/v1/friendship/create", strings.NewReader(body))
         req.Header.Set("Content-Type", "application/x-www-form-urlencoded; param=value")
         resp := httptest.NewRecorder()
 
-        h.Create(resp, req, userid, username)
+        h.CreateFriendship(resp, req, userid, username)
 
         assert.Equal(http.StatusOK, resp.Code, "should response correct status code")
     }
 
     req, _ := http.NewRequest("GET", "/v1/friendship", nil)
     resp := httptest.NewRecorder()
-    h.Friendship(resp, req, userid, username)
+    h.ReadFriendships(resp, req, userid, username)
 
     bytes := resp.Body.Bytes()
 
