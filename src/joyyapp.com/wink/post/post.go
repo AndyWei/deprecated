@@ -274,7 +274,7 @@ func (h *Handler) getFriendIds(userid int64) ([]interface{}, error) {
 
     var fids = make([]interface{}, 0, 128) // an empty slice, with default capacity 128
     var fid int64
-    iter := h.DB.Query(`SELECT fid FROM friendship WHERE userid = ? LIMIT 500`, userid).Consistency(gocql.One).Iter()
+    iter := h.DB.Query(`SELECT fid FROM friend WHERE userid = ? LIMIT 500`, userid).Consistency(gocql.One).Iter()
     for iter.Scan(&fid) {
         fids = append(fids, fid)
     }
@@ -288,7 +288,7 @@ func (h *Handler) getFriendIdSet(userid int64) (mapset.Set, error) {
     s := mapset.NewThreadUnsafeSet()
     var fid int64
 
-    iter := h.DB.Query(`SELECT fid FROM friendship WHERE userid = ? LIMIT 500`, userid).Consistency(gocql.One).Iter()
+    iter := h.DB.Query(`SELECT fid FROM friend WHERE userid = ? LIMIT 500`, userid).Consistency(gocql.One).Iter()
     for iter.Scan(&fid) {
         s.Add(fid)
     }
@@ -305,7 +305,7 @@ func (h *Handler) getMutualFriendIds(userid1, userid2 int64) ([]interface{}, err
 
     mutual := make([]interface{}, 16)
     var fid int64
-    iter := h.DB.Query(`SELECT fid FROM friendship WHERE userid = ? LIMIT 500`, userid2).Consistency(gocql.One).Iter()
+    iter := h.DB.Query(`SELECT fid FROM friend WHERE userid = ? LIMIT 500`, userid2).Consistency(gocql.One).Iter()
     for iter.Scan(&fid) {
         if s1.Contains(fid) {
             mutual = append(mutual, fid)

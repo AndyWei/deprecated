@@ -98,7 +98,7 @@ CREATE TABLE IF NOT EXISTS invite (
  *
  * @Discussion:
  */
-CREATE TABLE IF NOT EXISTS friendship (
+CREATE TABLE IF NOT EXISTS friend (
     userid       bigint , -- userid
     fid          bigint , -- friend userid
     fname        text   , -- friend username

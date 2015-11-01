@@ -185,7 +185,7 @@ func (h *Handler) prepareUsers() {
 
         body := fmt.Sprintf("country=%v&zip=%v&yrs=%v", url.QueryEscape(t.country), url.QueryEscape(t.zip), t.yrs)
 
-        req, _ := http.NewRequest("POST", "/v1/user/occur", strings.NewReader(body))
+        req, _ := http.NewRequest("POST", "/v1/user/appear", strings.NewReader(body))
         req.Header.Set("Content-Type", "application/x-www-form-urlencoded; param=value")
         resp := httptest.NewRecorder()
 
@@ -199,7 +199,7 @@ type User struct {
     YRS      int    `json:"yrs"`
 }
 
-var UserTests = []struct {
+var ReadUsersTests = []struct {
     zip   string
     count int
 }{
@@ -219,15 +219,15 @@ var UserTests = []struct {
     {"9", 20},
 }
 
-func TestUser(test *testing.T) {
+func TestReadUsers(test *testing.T) {
     assert := assert.New(test)
     db := cassandra.DB()
     h := Handler{DB: db}
     h.prepareUsers()
 
     sex := 1 // the same as the users in Users, whose sex are all 1
-    for _, t := range UserTests {
-        query := fmt.Sprintf("/v1/user?country=%v&sex=%v&zip=%v", url.QueryEscape("US"), sex, url.QueryEscape(t.zip))
+    for _, t := range ReadUsersTests {
+        query := fmt.Sprintf("/v1/users?country=%v&sex=%v&zip=%v", url.QueryEscape("US"), sex, url.QueryEscape(t.zip))
         req, _ := http.NewRequest("GET", query, nil)
         resp := httptest.NewRecorder()
         h.ReadUsers(resp, req, int64(1), "username")

@@ -37,11 +37,11 @@ func main() {
     router.Post("/v1/auth/signin", authHandler.SignIn)
     router.Post("/v1/auth/signup", authHandler.SignUp)
 
-    router.Get("/v1/friendship", authenticate(edgeHandler.ReadFriendships))
-    router.Post("/v1/friendship/create", authenticate(edgeHandler.CreateFriendship))
-    router.Post("/v1/friendship/delete", authenticate(edgeHandler.DeleteFriendship))
+    router.Get("/v1/friends", authenticate(edgeHandler.ReadFriends))
+    router.Post("/v1/friend/add", authenticate(edgeHandler.AddFriend))
+    router.Post("/v1/friend/remove", authenticate(edgeHandler.RemoveFriend))
 
-    router.Get("/v1/invite", authenticate(edgeHandler.ReadInvites))
+    router.Get("/v1/invites", authenticate(edgeHandler.ReadInvites))
     router.Post("/v1/invite/create", authenticate(edgeHandler.CreateInvite))
     router.Post("/v1/invite/delete", authenticate(edgeHandler.DeleteInvite))
 
@@ -57,7 +57,7 @@ func main() {
     router.Get("/v1/user/profile", authenticate(userHandler.ReadProfile))
     router.Post("/v1/user/profile", authenticate(userHandler.CreateProfile))
 
-    router.Get("/v1/user", authenticate(userHandler.ReadUsers))
+    router.Get("/v1/users", authenticate(userHandler.ReadUsers))
     router.Post("/v1/user/appear", authenticate(userHandler.Appear))
 
     router.Get("/v1/xmpp/check_password", authHandler.CheckPassword)

@@ -18,7 +18,7 @@ import (
     "testing"
 )
 
-var CreateFriendshipTests = []struct {
+var AddFriendTests = []struct {
     userid   int64
     username string
     yrs      int
@@ -32,25 +32,25 @@ var CreateFriendshipTests = []struct {
     {1234567890000, "user0", 1, 1234567890004, "user4", 2},
 }
 
-func TestCreateFriendship(test *testing.T) {
+func TestAddFriend(test *testing.T) {
     assert := assert.New(test)
     db := cassandra.DB()
     h := Handler{DB: db}
 
-    for _, t := range CreateFriendshipTests {
+    for _, t := range AddFriendTests {
 
         body := fmt.Sprintf("yrs=%v&fid=%v&fname=%v&fyrs=%v", t.yrs, t.fid, t.fname, t.fyrs)
-        req, _ := http.NewRequest("POST", "/v1/friendship/create", strings.NewReader(body))
+        req, _ := http.NewRequest("POST", "/v1/friend/add", strings.NewReader(body))
         req.Header.Set("Content-Type", "application/x-www-form-urlencoded; param=value")
         resp := httptest.NewRecorder()
 
-        h.CreateFriendship(resp, req, t.userid, t.username)
+        h.AddFriend(resp, req, t.userid, t.username)
 
         assert.Equal(http.StatusOK, resp.Code, "should response correct status code")
     }
 }
 
-var ReadFriendshipsTests = []struct {
+var ReadFriendsTests = []struct {
     fid   int64
     fname string
     fyrs  int
@@ -67,7 +67,7 @@ type Friend struct {
     Fyrs  int    `json:"fyrs"`
 }
 
-func TestReadFriendships(test *testing.T) {
+func TestReadFriends(test *testing.T) {
     assert := assert.New(test)
     db := cassandra.DB()
     h := Handler{DB: db}
@@ -76,21 +76,21 @@ func TestReadFriendships(test *testing.T) {
     username := "user0"
     yrs := 1
 
-    for _, t := range ReadFriendshipsTests {
+    for _, t := range ReadFriendsTests {
 
         body := fmt.Sprintf("yrs=%v&fid=%v&fname=%v&fyrs=%v", yrs, t.fid, t.fname, t.fyrs)
-        req, _ := http.NewRequest("POST", "/v1/friendship/create", strings.NewReader(body))
+        req, _ := http.NewRequest("POST", "/v1/friend/add", strings.NewReader(body))
         req.Header.Set("Content-Type", "application/x-www-form-urlencoded; param=value")
         resp := httptest.NewRecorder()
 
-        h.CreateFriendship(resp, req, userid, username)
+        h.AddFriend(resp, req, userid, username)
 
         assert.Equal(http.StatusOK, resp.Code, "should response correct status code")
     }
 
-    req, _ := http.NewRequest("GET", "/v1/friendship", nil)
+    req, _ := http.NewRequest("GET", "/v1/friend", nil)
     resp := httptest.NewRecorder()
-    h.ReadFriendships(resp, req, userid, username)
+    h.ReadFriends(resp, req, userid, username)
 
     bytes := resp.Body.Bytes()
 

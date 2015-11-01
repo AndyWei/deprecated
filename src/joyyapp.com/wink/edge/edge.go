@@ -20,35 +20,43 @@ type Handler struct {
 }
 
 const (
-    kInviteTable     = "invite"
-    kFriendshipTable = "friendship"
+    kFriend           = "friend"
+    kAddFriendStmt    = "INSERT INTO friend (userid, fid, fname, fyrs) VALUES (?, ?, ?, ?)"
+    kRemoveFriendStmt = "DELETE FROM friend WHERE userid = ? AND fid = ?"
+    kReadFriendsStmt  = "SELECT fid, fname, fyrs FROM friend WHERE userid = ?"
+
+    kInvite           = "invite"
+    kCreateInviteStmt = "INSERT INTO invite (userid, fid, fname, fyrs) VALUES (?, ?, ?, ?)"
+    kDeleteInviteStmt = "DELETE FROM invite WHERE userid = ? AND fid = ?"
+    kReadInvitesStmt  = "SELECT fid, fname, fyrs FROM invite WHERE userid = ?"
+    kCheckInviteStmt  = "SELECT fid FROM invite WHERE userid = ? AND fid = ? LIMIT 1"
 )
 
-/* Invite */
-type CreateInviteParams struct {
-    YRS          int   `param:"yrs" validate:"required"`
-    FriendUserId int64 `param:"fid" validate:"required"`
+type CreateEdgeParams struct {
+    FriendUserId   int64  `param:"fid" validate:"required"`
+    FriendUsername string `param:"fname" validate:"min=2,max=40"`
+    FriendYRS      int    `param:"fyrs" validate:"required"`
+    UserYRS        int    `param:"yrs" validate:"required"`
 }
 
+/* Invite */
 func (h *Handler) CreateInvite(w http.ResponseWriter, req *http.Request, userid int64, username string) {
-    var p CreateInviteParams
+    var p CreateEdgeParams
     if err := ParseAndCheck(req, &p); err != nil {
         RespondError(w, err, http.StatusBadRequest)
         return
     }
 
-    // check if the friend has already invited the user. If he has, then the friendship can be created directly
-    // m, err := h.readEdge(kInviteTable, r.FriendUserId, userid)
-    // if err != nil {
-    //     RespondError(w, err, http.StatusBadGateway)
-    //     return
-    // }
+    // If the friend has already invited the user, then the friendship can be created directly
+    // otherwise create an invite edge
+    if h.EdgeExist(kInvite, p.FriendUserId, userid) {
+        // delete the invite since the relationship is upgraded to friendship
+        h.DB.Query(kDeleteInviteStmt, p.FriendUserId, userid).Exec()
+        h.addFriendAndRespond(w, userid, p.FriendUserId, username, p.FriendUsername, p.UserYRS, p.FriendYRS)
+        return
+    }
 
-    // if m is not empty {
-
-    // }
-
-    if err := h.createEdge(kInviteTable, p.FriendUserId, userid, username, p.YRS); err != nil {
+    if err := h.DB.Query(kCreateInviteStmt, p.FriendUserId, userid, username, p.UserYRS).Exec(); err != nil {
         RespondError(w, err, http.StatusBadGateway)
         return
     }
@@ -68,7 +76,7 @@ func (h *Handler) DeleteInvite(w http.ResponseWriter, req *http.Request, userid 
         return
     }
 
-    if err := h.deleteEdge(kInviteTable, false, userid, p.FriendUserId); err != nil {
+    if err := h.DB.Query(kDeleteInviteStmt, userid, p.FriendUserId).Exec(); err != nil {
         RespondError(w, err, http.StatusBadGateway)
         return
     }
@@ -77,47 +85,36 @@ func (h *Handler) DeleteInvite(w http.ResponseWriter, req *http.Request, userid 
     return
 }
 
-/* Friendship*/
-type CreateFriendshipParams struct {
-    FriendUserId   int64  `param:"fid" validate:"required"`
-    FriendUsername string `param:"fname" validate:"min=2,max=40"`
-    FriendYRS      int    `param:"fyrs" validate:"required"`
-    UserYRS        int    `param:"yrs" validate:"required"`
-}
-
-func (h *Handler) CreateFriendship(w http.ResponseWriter, req *http.Request, userid int64, username string) {
-    var p CreateFriendshipParams
+/* Friend*/
+func (h *Handler) AddFriend(w http.ResponseWriter, req *http.Request, userid int64, username string) {
+    var p CreateEdgeParams
     if err := ParseAndCheck(req, &p); err != nil {
         RespondError(w, err, http.StatusBadRequest)
         return
     }
 
-    if err := h.createEdge(kFriendshipTable, userid, p.FriendUserId, p.FriendUsername, p.FriendYRS); err != nil {
-        RespondError(w, err, http.StatusBadGateway)
-        return
-    }
-
-    if err := h.createEdge(kFriendshipTable, p.FriendUserId, userid, username, p.UserYRS); err != nil {
-        RespondError(w, err, http.StatusBadGateway)
-        return
-    }
-
-    RespondOK(w)
+    h.addFriendAndRespond(w, userid, p.FriendUserId, username, p.FriendUsername, p.UserYRS, p.FriendYRS)
     return
 }
 
-type DeleteFriendshipParams struct {
+type RemoveFriendParams struct {
     FriendUserId int64 `param:"fid" validate:"required"`
 }
 
-func (h *Handler) DeleteFriendship(w http.ResponseWriter, req *http.Request, userid int64, username string) {
-    var p DeleteFriendshipParams
+func (h *Handler) RemoveFriend(w http.ResponseWriter, req *http.Request, userid int64, username string) {
+    var p RemoveFriendParams
     if err := ParseAndCheck(req, &p); err != nil {
         RespondError(w, err, http.StatusBadRequest)
         return
     }
 
-    if err := h.deleteEdge(kFriendshipTable, true, userid, p.FriendUserId); err != nil {
+    query := h.DB.Query(kRemoveFriendStmt, userid, p.FriendUserId)
+    if err := query.Exec(); err != nil {
+        RespondError(w, err, http.StatusBadGateway)
+        return
+    }
+
+    if err := query.Bind(p.FriendUserId, userid).Exec(); err != nil {
         RespondError(w, err, http.StatusBadGateway)
         return
     }
@@ -127,55 +124,27 @@ func (h *Handler) DeleteFriendship(w http.ResponseWriter, req *http.Request, use
 }
 
 func (h *Handler) ReadInvites(w http.ResponseWriter, req *http.Request, userid int64, username string) {
-    h.readEdgesAndRespond(w, kInviteTable, userid)
+    h.readEdgesAndRespond(w, kReadInvitesStmt, userid)
 }
 
-func (h *Handler) ReadFriendships(w http.ResponseWriter, req *http.Request, userid int64, username string) {
-    h.readEdgesAndRespond(w, kFriendshipTable, userid)
+func (h *Handler) ReadFriends(w http.ResponseWriter, req *http.Request, userid int64, username string) {
+    h.readEdgesAndRespond(w, kReadFriendsStmt, userid)
 }
 
-func (h *Handler) createEdge(table string, values ...interface{}) (err error) {
-    format := "INSERT INTO %v (userid, fid, fname, fyrs) VALUES (?, ?, ?, ?)"
-    stmt := fmt.Sprintf(format, table)
-    if err := h.DB.Query(stmt, values...).Exec(); err != nil {
-        return err
-    }
-    return nil
-}
-
-func (h *Handler) deleteEdge(table string, bidi bool, src, dest int64) (err error) {
-    format := "DELETE FROM %v WHERE userid = ? AND fid = ?"
-    stmt := fmt.Sprintf(format, table)
-    query := h.DB.Query(stmt, src, dest)
-
-    if err := query.Exec(); err != nil {
-        return err
-    }
-
-    if bidi {
-        if err := query.Bind(dest, src).Exec(); err != nil {
-            return err
-        }
-    }
-    return nil
-}
-
-func (h *Handler) readEdge(table string, userid, fid int64) (row map[string]interface{}, err error) {
+func (h *Handler) EdgeExist(table string, src, dest int64) (exist bool) {
     format := "SELECT fid, fname, fyrs FROM %v WHERE userid = ? AND fid = ?"
     stmt := fmt.Sprintf(format, table)
-    m := make(map[string]interface{})
 
-    if err := h.DB.Query(stmt, userid, fid).Consistency(gocql.One).MapScan(m); err != nil {
-        return nil, err
+    var fid int64 = 0
+    if err := h.DB.Query(stmt, src, dest).Consistency(gocql.One).Scan(&fid); err != nil {
+        return false
     }
 
-    return m, nil
+    return fid > 0
 }
 
-func (h *Handler) readEdgesAndRespond(w http.ResponseWriter, table string, userid int64) {
-    format := "SELECT fid, fname, fyrs FROM %v WHERE userid = ?"
-    stmt := fmt.Sprintf(format, table)
-    iter := h.DB.Query(stmt, userid).Consistency(gocql.One).Iter()
+func (h *Handler) readEdgesAndRespond(w http.ResponseWriter, stmt string, src int64) {
+    iter := h.DB.Query(stmt, src).Consistency(gocql.One).Iter()
     results, err := iter.SliceMap()
     if err != nil {
         RespondError(w, err, http.StatusBadGateway)
@@ -189,4 +158,20 @@ func (h *Handler) readEdgesAndRespond(w http.ResponseWriter, table string, useri
     }
 
     RespondData(w, bytes)
+}
+
+func (h *Handler) addFriendAndRespond(w http.ResponseWriter, userid, fid int64, username, fname string, userYRS, fYRS int) {
+    query := h.DB.Query(kAddFriendStmt, userid, fid, fname, fYRS)
+    if err := query.Exec(); err != nil {
+        RespondError(w, err, http.StatusBadGateway)
+        return
+    }
+
+    if err := query.Bind(fid, userid, username, userYRS).Exec(); err != nil {
+        RespondError(w, err, http.StatusBadGateway)
+        return
+    }
+
+    RespondOK(w)
+    return
 }

@@ -50,7 +50,7 @@ var Friends = []struct {
 }
 
 func (h *Handler) prepareFriends() {
-    query := h.DB.Query(`INSERT INTO friendship (userid, fid, fname, fyrs) VALUES (?, ?, ?, ?)`, 0, 0, 0, 0)
+    query := h.DB.Query(`INSERT INTO friend (userid, fid, fname, fyrs) VALUES (?, ?, ?, ?)`, 0, 0, 0, 0)
 
     for _, r := range Friends {
         query.Bind(userid, r.fid, r.fname, r.fyrs).Exec()
