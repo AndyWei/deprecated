@@ -12,9 +12,11 @@ import (
     "github.com/aws/aws-sdk-go/aws"
     "github.com/aws/aws-sdk-go/aws/session"
     "github.com/aws/aws-sdk-go/service/sns"
+    "github.com/gocql/gocql"
     "github.com/spf13/viper"
     "joyyapp.com/winkrock/cassandra"
     . "joyyapp.com/winkrock/util"
+    "net/http"
 )
 
 type Handler struct {
@@ -30,8 +32,8 @@ var (
  * Device endpoints
  */
 type RegisterDeviceParams struct {
-    PNS   int    `param:"pns" validate:"min=1,max=3"`
-    Token string `param:"token" validate:"required"`
+    PNS    int    `param:"pns" validate:"min=1,max=3"`
+    DToken string `param:"dtoken" validate:"required"`
 }
 
 func (h *Handler) RegisterDevice(w http.ResponseWriter, req *http.Request, userid int64, username string) {
@@ -42,18 +44,31 @@ func (h *Handler) RegisterDevice(w http.ResponseWriter, req *http.Request, useri
         return
     }
 
-    arn, err := endpointARN()
+    arn, err := h.endpointARN(userid)
     if err != nil {
-        doRegisterDeviceAtSNS
+        h.registerAndRespond(w, userid, p.PNS, p.DToken)
+        return
     }
 
-    arn, err := RegisterDeviceAtSNS(p.PNS, p.Token)
+    dtoken, enabled, err := getAttributes(arn)
     if err != nil {
-        RespondError(w, err, http.StatusBadGateway)
+        h.registerAndRespond(w, userid, p.PNS, p.DToken)
+        return
     }
 
-    if err := h.DB.Query(`INSERT INTO user (id, pns, token, arn) VALUES (?, ?, ?, ?)`,
-        userid, p.PNS, p.Token, arn).Exec(); err != nil {
+    if dtoken != p.DToken || !enabled {
+        if err := setAttributes(arn, dtoken); err != nil {
+            RespondError(w, err, http.StatusBadGateway)
+        }
+    }
+
+    RespondOK(w)
+    return
+}
+
+func (h *Handler) RemoveDevice(w http.ResponseWriter, req *http.Request, userid int64, username string) {
+
+    if err := h.DB.Query(`DELETE FROM user_device WHERE userid = ?`, userid).Exec(); err != nil {
         RespondError(w, err, http.StatusBadGateway)
         return
     }
@@ -62,9 +77,9 @@ func (h *Handler) RegisterDevice(w http.ResponseWriter, req *http.Request, useri
     return
 }
 
-func Send(userid int64, message string) {
+func (h *Handler) Send(userid int64, message string) {
 
-    arn, err := endpointARN(userid)
+    arn, err := h.endpointARN(userid)
     if err != nil {
         return // the receiver didn't register for receiving push notification, so do nothing
     }
@@ -104,7 +119,61 @@ func init() {
     svc = sns.New(session.New(), aws.NewConfig().WithRegion("us-east-1"))
 }
 
-func doRegisterDeviceAtSNS(pns int, token string) (arn string, err error) {
+func (h *Handler) registerAndRespond(w http.ResponseWriter, userid int64, pns int, dtoken string) {
+    arn, err := doRegister(pns, dtoken)
+    if err != nil {
+        RespondError(w, err, http.StatusBadGateway)
+    }
+
+    if err := h.DB.Query(`INSERT INTO user_device (userid, pns, dtoken, arn) VALUES (?, ?, ?, ?)`,
+        userid, pns, dtoken, arn).Exec(); err != nil {
+        RespondError(w, err, http.StatusBadGateway)
+        return
+    }
+
+    RespondOK(w)
+    return
+}
+
+func (h *Handler) endpointARN(userid int64) (arn string, err error) {
+    stmt := "SELECT arn FROM user_device where userid = ?"
+    if err = cassandra.DB().Query(stmt, userid).Scan(&arn); err != nil {
+        return "", err
+    }
+
+    return arn, nil
+}
+
+func getAttributes(arn string) (dtoken string, enabled bool, err error) {
+
+    params := &sns.GetEndpointAttributesInput{
+        EndpointArn: aws.String(arn),
+    }
+
+    resp, err := svc.GetEndpointAttributes(params)
+    if err != nil {
+        return "", false, err
+    }
+
+    dtoken = *resp.Attributes["Token"]
+    enabled = (*resp.Attributes["Enabled"] == "true")
+    return dtoken, enabled, nil
+}
+
+func setAttributes(arn, dtoken string) (err error) {
+
+    params := &sns.SetEndpointAttributesInput{
+        Attributes: map[string]*string{
+            "Enabled": aws.String("true"),
+            "Token":   aws.String(dtoken),
+        },
+        EndpointArn: aws.String(arn),
+    }
+    _, err = svc.SetEndpointAttributes(params)
+    return err
+}
+
+func doRegister(pns int, dtoken string) (arn string, err error) {
 
     appArn, err := applicationARN(pns)
     if err != nil {
@@ -113,7 +182,7 @@ func doRegisterDeviceAtSNS(pns int, token string) (arn string, err error) {
 
     params := &sns.CreatePlatformEndpointInput{
         PlatformApplicationArn: aws.String(appArn),
-        Token: aws.String(token),
+        Token: aws.String(dtoken),
         Attributes: map[string]*string{
             "Enabled": aws.String("true"),
         },
@@ -137,13 +206,4 @@ func applicationARN(pns int) (arn string, err error) {
         err = errors.New(ErrPnsInvalid)
     }
     return arn, err
-}
-
-func endpointARN(userid int64) (arn string, err error) {
-    stmt := "SELECT arn FROM user where id = ?"
-    if err = cassandra.DB().Query(stmt, userid).Scan(&arn); err != nil {
-        return "", err
-    }
-
-    return arn, nil
 }

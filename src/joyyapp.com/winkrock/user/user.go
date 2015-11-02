@@ -12,7 +12,7 @@ import (
     "fmt"
     "github.com/gocql/gocql"
     "github.com/pkg/math"
-    "joyyapp.com/winkrock/push"
+    // "joyyapp.com/winkrock/push"
     . "joyyapp.com/winkrock/util"
     "net/http"
     "strconv"

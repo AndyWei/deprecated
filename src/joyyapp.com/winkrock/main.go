@@ -56,7 +56,8 @@ func main() {
     router.Post("/v1/post/comment/create", authenticate(postHandler.CreateComment))
     router.Post("/v1/post/comment/delete", authenticate(postHandler.DeleteComment))
 
-    router.Post("/v1/push/device", authenticate(pushHandler.RegisterDevice))
+    router.Post("/v1/device/register", authenticate(pushHandler.RegisterDevice))
+    router.Post("/v1/device/remove", authenticate(pushHandler.RemoveDevice))
 
     router.Get("/v1/user/profile", authenticate(userHandler.ReadProfile))
     router.Post("/v1/user/profile", authenticate(userHandler.CreateProfile))
