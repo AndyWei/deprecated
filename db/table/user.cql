@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS user (
  
     -- device fields, used for push notification
     pns              int     , -- the push notification service of the user equipment. Allowed values are {1: "apn", 2: "gcm", 3: "mpn"}
-    dtoken           text    , -- the string that identify a user equipment. On iOS it's called device token, while on Android it's called registration ID
+    token            text    , -- the string that identify a user equipment. On iOS it's called device token, while on Android it's called registration ID
     arn              text    , -- the AWS SNS client endpoint ARN
 
     PRIMARY KEY (id)

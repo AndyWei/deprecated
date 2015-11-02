@@ -13,6 +13,7 @@ import (
     "joyyapp.com/winkrock/cassandra"
     "joyyapp.com/winkrock/edge"
     "joyyapp.com/winkrock/post"
+    "joyyapp.com/winkrock/push"
     "joyyapp.com/winkrock/user"
     "net/http"
     "runtime"
@@ -27,6 +28,7 @@ func main() {
     authHandler := &auth.Handler{DB: db}
     edgeHandler := &edge.Handler{DB: db}
     postHandler := &post.Handler{DB: db}
+    pushHandler := &push.Handler{DB: db}
     userHandler := &user.Handler{DB: db}
 
     router.Use(gzip.GzipHandler)
@@ -53,6 +55,8 @@ func main() {
     router.Get("/v1/post/commentline", authenticate(postHandler.ReadCommentline))
     router.Post("/v1/post/comment/create", authenticate(postHandler.CreateComment))
     router.Post("/v1/post/comment/delete", authenticate(postHandler.DeleteComment))
+
+    router.Post("/v1/push/device", authenticate(pushHandler.RegisterDevice))
 
     router.Get("/v1/user/profile", authenticate(userHandler.ReadProfile))
     router.Post("/v1/user/profile", authenticate(userHandler.CreateProfile))

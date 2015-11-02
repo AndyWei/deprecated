@@ -23,6 +23,7 @@ const (
     ErrIMServerInvalid  = "im server is invalid"
     ErrPasswordInvalid  = "password is invalid"
     ErrPasswordTooShort = "password is too short"
+    ErrPnsInvalid       = "push notification service is invalid"
     ErrRegionInvalid    = "region is invalid"
     ErrResponseInvalid  = "response is invalid"
     ErrSexInvalid       = "sex is invalid"
