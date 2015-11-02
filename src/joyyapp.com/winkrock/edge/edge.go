@@ -11,7 +11,7 @@ import (
     "encoding/json"
     "fmt"
     "github.com/gocql/gocql"
-    . "joyyapp.com/wink/util"
+    . "joyyapp.com/winkrock/util"
     "net/http"
 )
 

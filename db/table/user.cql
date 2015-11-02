@@ -4,7 +4,7 @@
  * Copyright (c) 2015 Joyy Inc. All rights reserved.
  */
 
-USE wink;
+USE winkrock;
 
 /*
  * YRS Encoding Rule
@@ -33,9 +33,10 @@ CREATE TABLE IF NOT EXISTS user (
     yrs              int     , -- see YRS Encoding Rule 
     bio              text    ,
  
-    -- device fields
-    service          text    , -- the push service of the user equipment. Allowed values are {"apn", "gcm", "mpn"}
-    device           text    , -- the device token that identify an user equipment
+    -- device fields, used for push notification
+    pns              int     , -- the push notification service of the user equipment. Allowed values are {1: "apn", 2: "gcm", 3: "mpn"}
+    dtoken           text    , -- the string that identify a user equipment. On iOS it's called device token, while on Android it's called registration ID
+    arn              text    , -- the AWS SNS client endpoint ARN
 
     PRIMARY KEY (id)
 ) WITH COMPACTION = {'class': 'LeveledCompactionStrategy', 'enabled': 'true'};

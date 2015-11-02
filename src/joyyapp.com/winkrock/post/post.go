@@ -12,8 +12,8 @@ import (
     "fmt"
     "github.com/deckarep/golang-set"
     "github.com/gocql/gocql"
-    "joyyapp.com/wink/idgen"
-    . "joyyapp.com/wink/util"
+    "joyyapp.com/winkrock/idgen"
+    . "joyyapp.com/winkrock/util"
     "net/http"
 )
 
@@ -123,7 +123,13 @@ func (h *Handler) CreateComment(w http.ResponseWriter, req *http.Request, userid
         return
     }
 
-    fids, err := h.getMutualFriendIds(userid, p.PosterId)
+    // a comment can be seen by the comments author and the o's mutual friends
+    ownerid := p.PosterId
+    if p.ReplyToId > 0 {
+        ownerid = p.ReplyToId
+    }
+
+    fids, err := h.getMutualFriendIds(userid, ownerid)
     if err != nil {
         RespondError(w, err, http.StatusBadGateway)
         return
@@ -293,6 +299,7 @@ func (h *Handler) getFriendIdSet(userid int64) (mapset.Set, error) {
         s.Add(fid)
     }
     err := iter.Close()
+    s.Add(userid)
     return s, err
 }
 
@@ -303,15 +310,12 @@ func (h *Handler) getMutualFriendIds(userid1, userid2 int64) ([]interface{}, err
         return nil, err
     }
 
-    mutual := make([]interface{}, 16)
-    var fid int64
-    iter := h.DB.Query(`SELECT fid FROM friend WHERE userid = ? LIMIT 500`, userid2).Consistency(gocql.One).Iter()
-    for iter.Scan(&fid) {
-        if s1.Contains(fid) {
-            mutual = append(mutual, fid)
-        }
+    s2, err := h.getFriendIdSet(userid2)
+    if err != nil {
+        return nil, err
     }
-    err = iter.Close()
 
-    return mutual, err
+    mutual := s1.Intersect(s2)
+
+    return mutual.ToSlice(), nil
 }

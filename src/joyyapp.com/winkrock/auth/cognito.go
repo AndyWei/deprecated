@@ -13,7 +13,7 @@ import (
     "github.com/aws/aws-sdk-go/aws/session"
     cog "github.com/aws/aws-sdk-go/service/cognitoidentity"
     "github.com/spf13/viper"
-    . "joyyapp.com/wink/util"
+    . "joyyapp.com/winkrock/util"
     "net/http"
     "strconv"
 )
@@ -28,7 +28,7 @@ func init() {
 
     viper.SetConfigName("config")
     viper.SetConfigType("toml")
-    viper.AddConfigPath("/etc/wink/")
+    viper.AddConfigPath("/etc/winkrock/")
     err := viper.ReadInConfig()
     LogPanic(err)
 

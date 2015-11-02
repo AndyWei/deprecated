@@ -4,7 +4,7 @@
  * Copyright (c) 2015 Joyy Inc. All rights reserved.
  */
 
-USE wink;
+USE winkrock;
 
 /*
  * Feature: timeline

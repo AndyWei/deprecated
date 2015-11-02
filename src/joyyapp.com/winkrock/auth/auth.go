@@ -12,8 +12,8 @@ import (
     "github.com/gocql/gocql"
     "github.com/spf13/viper"
     "golang.org/x/crypto/bcrypt"
-    "joyyapp.com/wink/idgen"
-    . "joyyapp.com/wink/util"
+    "joyyapp.com/winkrock/idgen"
+    . "joyyapp.com/winkrock/util"
     "net/http"
 )
 
@@ -31,7 +31,7 @@ func init() {
 
     viper.SetConfigName("config")
     viper.SetConfigType("toml")
-    viper.AddConfigPath("/etc/wink/")
+    viper.AddConfigPath("/etc/winkrock/")
     err := viper.ReadInConfig()
     LogPanic(err)
 

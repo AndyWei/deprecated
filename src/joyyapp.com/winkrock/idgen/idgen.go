@@ -18,7 +18,7 @@ import (
     "errors"
     "fmt"
     . "github.com/spf13/viper"
-    . "joyyapp.com/wink/util"
+    . "joyyapp.com/winkrock/util"
     "sync"
     "time"
 )
@@ -77,7 +77,7 @@ func init() {
 
     SetConfigName("config")
     SetConfigType("toml")
-    AddConfigPath("/etc/wink/")
+    AddConfigPath("/etc/winkrock/")
     err := ReadInConfig()
     LogFatal(err)
 

@@ -11,7 +11,7 @@ import (
     "errors"
     jwt_lib "github.com/dgrijalva/jwt-go"
     "github.com/spf13/viper"
-    . "joyyapp.com/wink/util"
+    . "joyyapp.com/winkrock/util"
     "net/http"
     "strconv"
     "time"
@@ -26,7 +26,7 @@ func init() {
 
     viper.SetConfigName("config")
     viper.SetConfigType("toml")
-    viper.AddConfigPath("/etc/wink/")
+    viper.AddConfigPath("/etc/winkrock/")
     err := viper.ReadInConfig()
     LogPanic(err)
 

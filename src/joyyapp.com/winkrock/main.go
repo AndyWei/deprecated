@@ -9,11 +9,11 @@ package main
 import (
     "github.com/lidashuang/goji_gzip"
     router "github.com/zenazn/goji"
-    "joyyapp.com/wink/auth"
-    "joyyapp.com/wink/cassandra"
-    "joyyapp.com/wink/edge"
-    "joyyapp.com/wink/post"
-    "joyyapp.com/wink/user"
+    "joyyapp.com/winkrock/auth"
+    "joyyapp.com/winkrock/cassandra"
+    "joyyapp.com/winkrock/edge"
+    "joyyapp.com/winkrock/post"
+    "joyyapp.com/winkrock/user"
     "net/http"
     "runtime"
 )
