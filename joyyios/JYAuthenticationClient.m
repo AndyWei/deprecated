@@ -154,9 +154,8 @@ static NSString *const kAWSTokenExpiryTimeKey = @"aws_openid_token_expiry_time";
 
         weakSelf.identityId = authResponse.identityId = identityId;
         weakSelf.token = authResponse.token = token;
-        NSUInteger tokenDuration = [response unsignedIntegerValueForKey:@"tokenDuration"];
         NSUInteger now = (NSUInteger)[NSDate timeIntervalSinceReferenceDate];
-        weakSelf.tokenExpiryTime = now + tokenDuration;
+        weakSelf.tokenExpiryTime = now + 86400;
 
         NSLog(@"Success: got new token from joyyserver");
         return [AWSTask taskWithResult:authResponse];

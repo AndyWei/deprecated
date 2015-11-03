@@ -106,7 +106,7 @@ static NSString *const kAPITokenExpiryTimeKey = @"api_token_expiry_time";
     {
         self.token = [dict valueForKey:@"token"];
 
-        NSUInteger tokenDuration = [dict unsignedIntegerValueForKey:@"tokenDuration"];
+        NSUInteger tokenDuration = [dict unsignedIntegerValueForKey:@"token_ttl"];
         NSInteger now = (NSInteger)[NSDate timeIntervalSinceReferenceDate];
         self.tokenExpiryTime = now + tokenDuration;
     }

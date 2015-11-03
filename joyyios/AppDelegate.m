@@ -496,7 +496,7 @@
 
 - (void)_uploadLocation:(NSString *)newZip
 {
-    NSDictionary *parameters = @{ @"zip": newZip, @"cell": self.cell, @"sex": sex };
+    NSDictionary *parameters = @{ /*@"zip": newZip, @"cell": self.cell, @"sex": sex*/ };
     NSString *url = [NSString apiURLWithPath:@"person/location"];
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager managerWithToken];
 
@@ -506,7 +506,7 @@
           success:^(AFHTTPRequestOperation *operation, id responseObject) {
               NSLog(@"Location upload Success responseObject: %@", responseObject);
 
-              weakSelf.cell = [responseObject objectForKey:@"cell"];
+              //weakSelf.cell = [responseObject objectForKey:@"cell"];
               weakSelf.zip = newZip;
               [JYDataStore sharedInstance].lastZip = newZip;
           }
