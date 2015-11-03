@@ -137,5 +137,5 @@ func TimeOf(id int64) time.Time {
     millis := timestamp + Epoch()
     secs := millis / 1000
     nsecs := (millis % 1000) * 1000
-    return time.Unix(secs, nsecs)
+    return time.Unix(secs, nsecs).UTC()
 }

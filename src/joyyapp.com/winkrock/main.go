@@ -38,6 +38,8 @@ func main() {
     router.Get("/v1/auth/cognito", authenticate(authHandler.Cognito))
     router.Post("/v1/auth/signin", authHandler.SignIn)
     router.Post("/v1/auth/signup", authHandler.SignUp)
+    router.Post("/v1/code/send", authHandler.SendCode)
+    router.Post("/v1/code/validate", authHandler.ValidateCode)
 
     router.Get("/v1/friends", authenticate(edgeHandler.ReadFriends))
     router.Post("/v1/friend/add", authenticate(edgeHandler.AddFriend))

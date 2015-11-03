@@ -14,7 +14,6 @@ import (
     "github.com/aws/aws-sdk-go/service/sns"
     "github.com/gocql/gocql"
     "github.com/spf13/viper"
-    "joyyapp.com/winkrock/cassandra"
     . "joyyapp.com/winkrock/util"
     "net/http"
 )
@@ -58,7 +57,7 @@ func (h *Handler) RegisterDevice(w http.ResponseWriter, req *http.Request, useri
 
     if dtoken != p.DToken || !enabled {
         if err := setAttributes(arn, dtoken); err != nil {
-            RespondError(w, err, http.StatusBadGateway)
+            RespondError(w, err.Error(), http.StatusBadGateway)
         }
     }
 
@@ -99,7 +98,7 @@ func (h *Handler) Send(userid int64, message string) {
     _, err = svc.Publish(params)
 
     if err != nil {
-        LogError(err)
+        LogInfo(err.Error())
         return
     }
 
@@ -137,7 +136,7 @@ func (h *Handler) registerAndRespond(w http.ResponseWriter, userid int64, pns in
 
 func (h *Handler) endpointARN(userid int64) (arn string, err error) {
     stmt := "SELECT arn FROM user_device where userid = ?"
-    if err = cassandra.DB().Query(stmt, userid).Scan(&arn); err != nil {
+    if err = h.DB.Query(stmt, userid).Scan(&arn); err != nil {
         return "", err
     }
 

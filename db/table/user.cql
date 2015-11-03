@@ -15,7 +15,7 @@ USE winkrock;
  */
 
 /*
- * Description: the main user table
+ * Description: main user table
  * Write      : when a user sign up, a row is created
  * TTL        : none
  * Cardinality: equals the number of signedup users 
@@ -32,15 +32,24 @@ CREATE TABLE IF NOT EXISTS user (
     phone            bigint  , -- phone number in E.164 format, but the leading '+' has been dropped
     yrs              int     , -- see YRS Encoding Rule 
     bio              text    ,
- 
-    -- device fields, used for push notification
-    pns              int     , -- the push notification service of the user equipment. Allowed values are {1: "apn", 2: "gcm", 3: "mpn"}
-    token            text    , -- the string that identify a user equipment. On iOS it's called device token, while on Android it's called registration ID
-    arn              text    , -- the AWS SNS client endpoint ARN
 
     PRIMARY KEY (id)
 ) WITH COMPACTION = {'class': 'LeveledCompactionStrategy', 'enabled': 'true'};
 
+
+/*
+ * Description: user device table
+ *
+ * @Discussion:
+ */
+CREATE TABLE IF NOT EXISTS user_device (
+    userid           bigint  ,
+    pns              int     , -- the push notification service of the user device. Allowed values are: 1 - APNS, 2 - GCM, 3 - MPN
+    dtoken           text    , -- the string that identify a user equipment. On iOS it is called device token, while on Android it is called registration ID
+    arn              text    , -- the AWS SNS client endpoint ARN
+
+    PRIMARY KEY (userid)
+) WITH COMPACTION = {'class': 'LeveledCompactionStrategy', 'enabled': 'true'};
 
 /*
  * Write      : when a user occurs in a area (via POST to user/location endpoint), a cloumn is created or updated
@@ -61,17 +70,14 @@ CREATE TABLE IF NOT EXISTS user_by_name (
 
 
 /*
- * Write      : when a user MODIFIY a phone number
- * TTL        : none
- * Cardinality: equals the number of signedup users 
- * Workload   : both write-heavy and read-heavy
  *
  * @Discussion:
 */
 CREATE TABLE IF NOT EXISTS user_by_phone (
-    phone            bigint     ,
-    username         text       ,
-    id               bigint     ,
+    phone            bigint  ,
+    username         text    ,
+    id               bigint  ,
+    code             int     ,
 
     PRIMARY KEY (phone)
 ) WITH COMPACTION = {'class': 'LeveledCompactionStrategy', 'enabled': 'true'};

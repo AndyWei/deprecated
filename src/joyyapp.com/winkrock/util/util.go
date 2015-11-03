@@ -20,19 +20,16 @@ import (
 type HandlerFunc func(http.ResponseWriter, *http.Request, int64, string)
 
 const (
-    ErrIMServerInvalid  = "im server is invalid"
-    ErrPasswordInvalid  = "password is invalid"
-    ErrPasswordTooShort = "password is too short"
-    ErrPnsInvalid       = "push notification service is invalid"
-    ErrRegionInvalid    = "region is invalid"
-    ErrResponseInvalid  = "response is invalid"
-    ErrSexInvalid       = "sex is invalid"
-    ErrTokenInvalid     = "token is invalid"
-    ErrTokenInvalidAlg  = "token encoding algorithm is invalid"
-    ErrUsernameConflict = "username has been taken"
-    ErrUsernameTooShort = "username is too short"
-    ErrUserNotExist     = "user does not exist"
-    ErrYobInvalid       = "yob is invalid"
+    ErrIMServerInvalid  = "1000: im server is invalid"
+    ErrPasswordInvalid  = "1010: password is invalid"
+    ErrPasswordTooShort = "1020: password is too short"
+    ErrPnsInvalid       = "1030: push notification service is invalid"
+    ErrTokenInvalid     = "1040: token is invalid"
+    ErrTokenInvalidAlg  = "1050: token encoding algorithm is invalid"
+    ErrUsernameConflict = "1060: username has been taken"
+    ErrUsernameTooShort = "1070: username is too short"
+    ErrUserNotExist     = "1080: user does not exist"
+    ErrSmsCodeInvalid   = "1090: sms code is invalid"
 )
 
 const (
@@ -54,7 +51,7 @@ func Epoch() int64 {
 }
 
 func TimeInMillis() int64 {
-    return int64(time.Nanosecond) * time.Now().UnixNano() / int64(time.Millisecond)
+    return int64(time.Nanosecond) * time.Now().UTC().UnixNano() / int64(time.Millisecond)
 }
 
 func Millis() int64 {
@@ -91,34 +88,34 @@ func Year(t time.Time) int {
 
 // return value is in form of yymmddhh
 func ThisHour() int {
-    return Hour(time.Now())
+    return Hour(time.Now().UTC())
 }
 
 // return value is in form of yymmdd
 func ThisDay() int {
-    return Day(time.Now())
+    return Day(time.Now().UTC())
 }
 
 // return value is in form of yymm
 func ThisMonth() int {
-    return Month(time.Now())
+    return Month(time.Now().UTC())
 }
 
 // return value is in form of yy
 func ThisYear() int {
-    return Year(time.Now())
+    return Year(time.Now().UTC())
 }
 
 // return value is in form of yymmddhh
 func NextHour() int {
-    now := time.Now()
+    now := time.Now().UTC()
     t := now.Add(time.Duration(1) * time.Hour)
     return Hour(t)
 }
 
 // return value is in form of yymmddhh
 func NextMonth() int {
-    now := time.Now()
+    now := time.Now().UTC()
     month := int(now.Month())
     if month == 12 {
         year := now.Year() - 2000
@@ -128,7 +125,7 @@ func NextMonth() int {
 }
 
 func IsLastDayOfThisMonth() bool {
-    today := time.Now()
+    today := time.Now().UTC()
     tomorrow := today.Add(time.Duration(24) * time.Hour)
     return Month(today) != Month(tomorrow)
 }

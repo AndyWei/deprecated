@@ -174,10 +174,7 @@ func (h *Handler) signIn(username, password string) (id int64, token string, err
     }
 
     var reply AuthResponse
-    if err := json.Unmarshal(bytes, &reply); err != nil {
-        return 0, "", errors.New(ErrResponseInvalid)
-    }
-
+    json.Unmarshal(bytes, &reply)
     return reply.Id, reply.Token, nil
 }
 
@@ -195,9 +192,7 @@ func (h *Handler) signUp(username, password string) (id int64, token string, err
     }
 
     var reply AuthResponse
-    if err := json.Unmarshal(bytes, &reply); err != nil {
-        return 0, "", errors.New(ErrResponseInvalid)
-    }
+    json.Unmarshal(bytes, &reply)
 
     return reply.Id, reply.Token, nil
 }
