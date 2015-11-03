@@ -1,34 +1,34 @@
 PODS:
-  - AFNetworking (2.6.0):
-    - AFNetworking/NSURLConnection (= 2.6.0)
-    - AFNetworking/NSURLSession (= 2.6.0)
-    - AFNetworking/Reachability (= 2.6.0)
-    - AFNetworking/Security (= 2.6.0)
-    - AFNetworking/Serialization (= 2.6.0)
-    - AFNetworking/UIKit (= 2.6.0)
+  - AFNetworking (2.6.1):
+    - AFNetworking/NSURLConnection (= 2.6.1)
+    - AFNetworking/NSURLSession (= 2.6.1)
+    - AFNetworking/Reachability (= 2.6.1)
+    - AFNetworking/Security (= 2.6.1)
+    - AFNetworking/Serialization (= 2.6.1)
+    - AFNetworking/UIKit (= 2.6.1)
   - AFNetworking-Synchronous/2.x (0.3.1):
     - AFNetworking (~> 2.0)
-  - AFNetworking/NSURLConnection (2.6.0):
+  - AFNetworking/NSURLConnection (2.6.1):
     - AFNetworking/Reachability
     - AFNetworking/Security
     - AFNetworking/Serialization
-  - AFNetworking/NSURLSession (2.6.0):
+  - AFNetworking/NSURLSession (2.6.1):
     - AFNetworking/Reachability
     - AFNetworking/Security
     - AFNetworking/Serialization
-  - AFNetworking/Reachability (2.6.0)
-  - AFNetworking/Security (2.6.0)
-  - AFNetworking/Serialization (2.6.0)
-  - AFNetworking/UIKit (2.6.0):
+  - AFNetworking/Reachability (2.6.1)
+  - AFNetworking/Security (2.6.1)
+  - AFNetworking/Serialization (2.6.1)
+  - AFNetworking/UIKit (2.6.1):
     - AFNetworking/NSURLConnection
     - AFNetworking/NSURLSession
   - AKPickerView (0.2.6)
-  - AWSCore (2.2.5)
-  - AWSS3 (2.2.5):
-    - AWSCore (= 2.2.5)
-  - ChameleonFramework (1.2.1):
-    - ChameleonFramework/Default (= 1.2.1)
-  - ChameleonFramework/Default (1.2.1)
+  - AWSCore (2.2.7)
+  - AWSS3 (2.2.7):
+    - AWSCore (= 2.2.7)
+  - ChameleonFramework (2.0.4):
+    - ChameleonFramework/Default (= 2.0.4)
+  - ChameleonFramework/Default (2.0.4)
   - CocoaAsyncSocket (7.4.2)
   - CocoaLumberjack (1.9.2):
     - CocoaLumberjack/Extensions (= 1.9.2)
@@ -36,9 +36,9 @@ PODS:
   - CocoaLumberjack/Extensions (1.9.2):
     - CocoaLumberjack/Core
   - Crashlytics (3.3.4)
-  - Fabric (1.5.1):
-    - Fabric/Base (= 1.5.1)
-  - Fabric/Base (1.5.1)
+  - Fabric (1.5.5):
+    - Fabric/Base (= 1.5.5)
+  - Fabric/Base (1.5.5)
   - FDFullscreenPopGesture (1.1)
   - FMDB (2.5):
     - FMDB/standard (= 2.5)
@@ -51,13 +51,13 @@ PODS:
   - JVFloatLabeledTextField (1.1.0)
   - KVNProgress (2.2.1)
   - KVOController (1.0.3)
-  - MJRefresh (2.4.7)
+  - MJRefresh (2.4.12)
   - MSWeakTimer (1.1.0)
   - Onboard (2.1.7)
   - RKDropdownAlert (0.3.0)
-  - SlackTextViewController (1.7)
+  - SlackTextViewController (1.7.1)
   - TTTAttributedLabel (1.13.4)
-  - UICKeyChainStore (2.0.6)
+  - UICKeyChainStore (2.1.0)
   - UIView+Positioning (1.1)
   - VMaskTextField (1.0.4)
   - XMPPFramework (3.6.5):
@@ -232,16 +232,16 @@ DEPENDENCIES:
   - YTKKeyValueStore
 
 SPEC CHECKSUMS:
-  AFNetworking: 79f7eb1a0fcfa7beb409332b2ca49afe9ce53b05
+  AFNetworking: 8e4e60500beb8bec644cf575beee72990a76d399
   AFNetworking-Synchronous: 29531ad341ec465a4ff9b66dea9cf7272080e12e
   AKPickerView: e31dcb9572c04d8439512315798862d9eb84b18f
-  AWSCore: 101929899cea9febd4ea4fc85774a63ff17cf809
-  AWSS3: 78a5be4417c5fe1d9a1c301b05bbfbb6719d4f18
-  ChameleonFramework: 3476f813ac1615aef0a9a958f05520dfca47e09d
+  AWSCore: d81e1e534040780deb0f3877aaa207d297e54b4c
+  AWSS3: d39bae2ebbcdc450aef30635c85e556317b92a33
+  ChameleonFramework: 5abe69b1f2a6cc79c3c435fcd9d3d855748225ee
   CocoaAsyncSocket: f5783bdedd232d91b89769bc4b5a1580aed518ad
   CocoaLumberjack: 628fca2e88ef06f7cf6817309aa405f325d9a6fa
   Crashlytics: 41c082440d2e14da444186fff65e79c0b4b35d4c
-  Fabric: 03c3b3fe77e11a2bc31421b989a9c7adaa4779a5
+  Fabric: 190bf1a6eb65f7500de1347d027d2e59a7e53db1
   FDFullscreenPopGesture: a8a620179e3d9c40e8e00256dcee1c1a27c6d0f0
   FMDB: 96e8f1bcc1329e269330f99770ad4285d9003e52
   JSQMessagesViewController: 73cab48aa92fc2d512f3b6724f3425cc47a19eb5
@@ -249,13 +249,13 @@ SPEC CHECKSUMS:
   JVFloatLabeledTextField: ea4a3d8387ddd43724c472bb2b8ab39b79af05d4
   KVNProgress: 7001d2d16a2755cee5599e8e485befe056f2197b
   KVOController: 9fd8f0343670994e4b6f9f0b31f5a45663f3e1cf
-  MJRefresh: 6eb2f61338f89f64fd628fd43debcf479381ff59
+  MJRefresh: ca8e9589895977df32d379d46e6b8a5450b3ff44
   MSWeakTimer: 9426150f933b80ed3acf3f6d228e4b61f0e303c8
   Onboard: 87648089e1b76d13b4f5bf8f7a1cdb144092f0af
   RKDropdownAlert: f4b3364c251829ad439dc666836a1f2dad26f4c7
-  SlackTextViewController: 57e28248dd38b9753277733544449519842f1ea5
+  SlackTextViewController: 139ffc5b09276ff5ac1609ac78eafab702fc974e
   TTTAttributedLabel: 0a2ac7b2dd726d32a070dafb01446026b11e624f
-  UICKeyChainStore: c5719c814e8bd69e74e4a0fc09daf8f4d6257a59
+  UICKeyChainStore: f1cbd42216a113f0165de1e733e62905b8823432
   UIView+Positioning: e93fe9e3186d1ed7d60e344aa12787911e902056
   VMaskTextField: 633dfde6182fb3ea6604abb675e05cdc108006df
   XMPPFramework: 7ae77710dd86f1826f5451dc5f3cf9f4d2a62072

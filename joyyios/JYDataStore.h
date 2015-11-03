@@ -21,8 +21,6 @@
 
 @property (nonatomic) YTKKeyValueStore *store;
 @property (nonatomic) CGFloat presentedIntroductionVersion;
-@property (nonatomic) CLLocationCoordinate2D lastCoordinate;
-@property (nonatomic) NSString *lastZip;
 @property (nonatomic) NSString *deviceToken;
 @property (nonatomic) NSInteger badgeCount;
 

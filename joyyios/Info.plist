@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-	<string>Winking</string>
+	<string>WinkRock</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -53,9 +53,9 @@
 		<true/>
 	</dict>
 	<key>NSLocationUsageDescription</key>
-	<string>Winking need your rough location to search people nearby.</string>
+	<string>WinkRock will search nearby people for you.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Winking need your rough location to search people nearby.</string>
+	<string>WinkRock will search nearby people for you.</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIRequiredDeviceCapabilities</key>

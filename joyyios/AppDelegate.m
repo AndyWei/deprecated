@@ -22,6 +22,7 @@
 #import "JYButton.h"
 #import "JYFilename.h"
 #import "JYMasqueradeViewController.h"
+#import "JYLocationManager.h"
 #import "JYPeopleViewController.h"
 #import "JYSessionListViewController.h"
 #import "JYPhoneNumberViewController.h"
@@ -49,11 +50,11 @@
 
     // Fabric crashlytics
     [Fabric with:@[[Crashlytics class]]];
-    [Flurry startSession:@"YOUR_FLURRY_API_KEY"];
+    [Flurry startSession:@"3RRHRXVTX38ZCW3QRHV6"];
 
     // Init zip
     // For those who refuse give us zip, just make some zip for them
-    self.zip = [JYDataStore sharedInstance].lastZip;
+    self.zip = [JYLocationManager sharedInstance].lastZip;
     if (!self.zip)
     {
         CTTelephonyNetworkInfo *netInfo = [[CTTelephonyNetworkInfo alloc] init];
@@ -195,7 +196,7 @@
 - (void)_setupLocationManager
 {
     // use last location before we get current one
-    self.currentCoordinate = [JYDataStore sharedInstance].lastCoordinate;
+    self.currentCoordinate = [JYLocationManager sharedInstance].lastCoordinate;
 
     self.locationManager = [CLLocationManager new];
     self.locationManager.delegate = self;
@@ -508,7 +509,7 @@
 
               //weakSelf.cell = [responseObject objectForKey:@"cell"];
               weakSelf.zip = newZip;
-              [JYDataStore sharedInstance].lastZip = newZip;
+              [JYLocationManager sharedInstance].lastZip = newZip;
           }
           failure:^(AFHTTPRequestOperation *operation, NSError *error) {
               NSLog(@"Location Upload Error: %@", error);
@@ -522,7 +523,7 @@
 {
     CLLocation *currentLocation = [locations lastObject];
     self.currentCoordinate = currentLocation.coordinate;
-    [JYDataStore sharedInstance].lastCoordinate = self.currentCoordinate;
+    [JYLocationManager sharedInstance].lastCoordinate = self.currentCoordinate;
     [self _updateGeoInfo];
 }
 
