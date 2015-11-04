@@ -2,7 +2,7 @@
 //  JYLocationManager.h
 //  joyyios
 //
-//  Created by Andy Wei on 11/2/15.
+//  Created by Ping Yang on 11/2/15.
 //  Copyright © 2015 Joyy Inc. All rights reserved.
 //
 
@@ -12,8 +12,9 @@
 
 + (JYLocationManager *)sharedInstance;
 
-@property (nonatomic) CGFloat presentedIntroductionVersion;
-@property (nonatomic) CLLocationCoordinate2D lastCoordinate;
-@property (nonatomic) NSString *lastZip;
+@property (nonatomic) NSString *countryCode;
+@property (nonatomic) NSString *zip;
+
+- (void)start;
 
 @end

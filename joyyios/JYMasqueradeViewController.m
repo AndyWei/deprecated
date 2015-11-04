@@ -11,7 +11,6 @@
 #import <MJRefresh/MJRefresh.h>
 #import <RKDropdownAlert/RKDropdownAlert.h>
 
-#import "AppDelegate.h"
 #import "JYButton.h"
 #import "JYPhotoCaptionViewController.h"
 #import "JYComment.h"
@@ -450,11 +449,6 @@ static NSString *const kPostCellIdentifier = @"postCell";
 {
     NSMutableDictionary *parameters = [NSMutableDictionary new];
 
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [parameters setObject:@(appDelegate.currentCoordinate.latitude) forKey:@"lat"];
-    [parameters setObject:@(appDelegate.currentCoordinate.longitude) forKey:@"lon"];
-    [parameters setObject:appDelegate.zip forKey:@"cell"];
-
     [parameters setObject:filename forKey:@"filename"];
     [parameters setObject:caption forKey:@"caption"];
 
@@ -576,9 +570,6 @@ static NSString *const kPostCellIdentifier = @"postCell";
 - (NSDictionary *)_parametersForPostNearby:(BOOL)toEnd
 {
     NSMutableDictionary *parameters = [NSMutableDictionary new];
-
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [parameters setObject:appDelegate.zip forKey:@"zip"];
 
     if (self.postList.count > 0)
     {

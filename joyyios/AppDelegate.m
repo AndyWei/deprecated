@@ -9,8 +9,6 @@
 #import <AFNetworking/AFNetworking.h>
 #import <AWSCore/AWSCore.h>
 #import <AWSS3/AWSS3.h>
-#import <CoreTelephony/CTCarrier.h>
-#import <CoreTelephony/CTTelephonyNetworkInfo.h>
 #import <Crashlytics/Crashlytics.h>
 #import <Fabric/Fabric.h>
 #import <KVNProgress/KVNProgress.h>
@@ -52,18 +50,6 @@
     [Fabric with:@[[Crashlytics class]]];
     [Flurry startSession:@"3RRHRXVTX38ZCW3QRHV6"];
 
-    // Init zip
-    // For those who refuse give us zip, just make some zip for them
-    self.zip = [JYLocationManager sharedInstance].lastZip;
-    if (!self.zip)
-    {
-        CTTelephonyNetworkInfo *netInfo = [[CTTelephonyNetworkInfo alloc] init];
-        CTCarrier *carrier = [netInfo subscriberCellularProvider];
-        NSString *countryCode = [carrier.isoCountryCode uppercaseString];
-        NSString *randomCode = [[JYFilename sharedInstance] randomFourDigits];
-        self.zip = [countryCode stringByAppendingString:randomCode]; // random zip of the country
-    }
-
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_didSignInManually) name:kNotificationDidSignIn object:nil];
@@ -71,7 +57,6 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_didCreateProfile) name:kNotificationDidCreateProfile object:nil];
 
     [self _setupGlobalAppearance];
-    [self _setupLocationManager];
     [self _launchViewController];
     [self.window makeKeyAndVisible];
 
@@ -191,55 +176,6 @@
 
     [[UINavigationBar appearance] setTintColor:JoyyBlue];
     [[UITabBar appearance] setTintColor:JoyyBlue];
-}
-
-- (void)_setupLocationManager
-{
-    // use last location before we get current one
-    self.currentCoordinate = [JYLocationManager sharedInstance].lastCoordinate;
-
-    self.locationManager = [CLLocationManager new];
-    self.locationManager.delegate = self;
-    self.locationManager.distanceFilter = kCLDistanceFilterNone;
-    self.locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters;
-
-    if ([CLLocationManager locationServicesEnabled])
-    {
-        if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusDenied ||
-            [CLLocationManager authorizationStatus] == kCLAuthorizationStatusNotDetermined)
-        {
-            if ([self.locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)])
-            {
-                [self.locationManager requestWhenInUseAuthorization];
-            }
-            else
-            {
-                NSString *title = NSLocalizedString(@"Hey, Joyy need your location", nil);
-                NSString *message = NSLocalizedString(@"You can allow it in 'Settings -> Privacy -> Location Services'", nil);
-
-                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:title
-                                                                    message:message
-                                                                   delegate:self
-                                                          cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
-                                                          otherButtonTitles:NSLocalizedString(@"Settings", nil), nil];
-                [alertView show];
-            }
-        }
-        else
-        {
-            [self.locationManager startUpdatingLocation];
-        }
-    }
-}
-
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    if (buttonIndex == 1)
-    {
-        // Send the user to the Settings for this app
-        NSURL *settingsURL = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
-        [[UIApplication sharedApplication] openURL:settingsURL];
-    }
 }
 
 - (void)_launchViewController
@@ -464,77 +400,6 @@
               NSLog(@"DeviceToken Upload Error: %@", error);
           }];
     
-}
-
-- (void)_updateGeoInfo
-{
-    CLLocation *location = [[CLLocation alloc] initWithLatitude:self.currentCoordinate.latitude longitude:self.currentCoordinate.longitude];
-    CLGeocoder *geocoder = [[CLGeocoder alloc] init];
-    __weak typeof(self) weakSelf = self;
-    [geocoder reverseGeocodeLocation:location
-                   completionHandler:^(NSArray *placemarks, NSError *error) {
-                       if (error)
-                       {
-                           NSLog(@"Geocode failed with error %@", error);
-                       }
-                       else
-                       {
-                           CLPlacemark *placemark = [placemarks lastObject];
-                           [weakSelf _updateZipWithPlacemark:placemark];
-                       }
-                   }];
-}
-
-- (void)_updateZipWithPlacemark:(CLPlacemark *)placemark
-{
-    NSString *newZip = [NSString stringWithFormat:@"%@%@", placemark.ISOcountryCode, placemark.postalCode];;
-
-    if (![newZip isEqualToString:self.zip])
-    {
-        [self _uploadLocation:newZip];
-    }
-}
-
-- (void)_uploadLocation:(NSString *)newZip
-{
-    NSDictionary *parameters = @{ /*@"zip": newZip, @"cell": self.cell, @"sex": sex*/ };
-    NSString *url = [NSString apiURLWithPath:@"person/location"];
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager managerWithToken];
-
-    __weak typeof(self) weakSelf = self;
-    [manager POST:url
-       parameters:parameters
-          success:^(AFHTTPRequestOperation *operation, id responseObject) {
-              NSLog(@"Location upload Success responseObject: %@", responseObject);
-
-              //weakSelf.cell = [responseObject objectForKey:@"cell"];
-              weakSelf.zip = newZip;
-              [JYLocationManager sharedInstance].lastZip = newZip;
-          }
-          failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-              NSLog(@"Location Upload Error: %@", error);
-          }];
-    
-}
-
-#pragma mark - CLLocationManagerDelegate
-
-- (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations
-{
-    CLLocation *currentLocation = [locations lastObject];
-    self.currentCoordinate = currentLocation.coordinate;
-    [JYLocationManager sharedInstance].lastCoordinate = self.currentCoordinate;
-    [self _updateGeoInfo];
-}
-
-- (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status
-{
-    if (status == kCLAuthorizationStatusDenied || status == kCLAuthorizationStatusDenied)
-    {
-        return;
-    }
-
-    [self.locationManager startUpdatingLocation];
 }
 
 #pragma mark - Introduction Pages

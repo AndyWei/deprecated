@@ -10,9 +10,9 @@
 #import <MSWeakTimer/MSWeakTimer.h>
 #import <TTTAttributedLabel/TTTAttributedLabel.h>
 
-#import "AppDelegate.h"
 #import "JYButton.h"
 #import "JYFacialGestureDetector.h"
+#import "JYLocationManager.h"
 #import "JYPeopleViewController.h"
 #import "UIImage+Joyy.h"
 
@@ -420,8 +420,7 @@ const CGFloat kButtonWidth = 60;
 {
     NSMutableDictionary *parameters = [NSMutableDictionary new];
 
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [parameters setObject:appDelegate.zip forKey:@"zip"];
+    [parameters setObject:[JYLocationManager sharedInstance].zip forKey:@"zip"];
 
     NSString *orientation = [JYPerson me].sexualOrientation;
     [parameters setObject:orientation forKey:@"orientation"];

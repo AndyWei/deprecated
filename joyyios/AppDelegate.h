@@ -6,13 +6,8 @@
 //  Copyright (c) 2015 Joyy Inc. All rights reserved.
 //
 
-@import CoreLocation;
-
-@interface AppDelegate : UIResponder <UIApplicationDelegate, CLLocationManagerDelegate>
+@interface AppDelegate : UIResponder <UIApplicationDelegate>
 
 @property(nonatomic) UIWindow *window;
-@property(nonatomic) CLLocationManager *locationManager;
-@property(nonatomic) CLLocationCoordinate2D currentCoordinate;
-@property(nonatomic) NSString *zip;
 
 @end

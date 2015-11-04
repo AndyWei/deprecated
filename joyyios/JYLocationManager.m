@@ -2,18 +2,21 @@
 //  JYLocationManager.m
 //  joyyios
 //
-//  Created by Andy Wei on 11/2/15.
+//  Created by Ping Yang on 11/2/15.
 //  Copyright © 2015 Joyy Inc. All rights reserved.
 //
 
+#import <CoreTelephony/CTCarrier.h>
+#import <CoreTelephony/CTTelephonyNetworkInfo.h>
+
 #import "JYLocationManager.h"
 
-@interface JYDataStore ()
+@interface JYLocationManager () <CLLocationManagerDelegate, UIAlertViewDelegate>
+@property (nonatomic) CLLocationManager *manager;
 @end
 
-NSString *const kKeyLastCoordinateLat = @"LastCoordinateLat";
-NSString *const kKeyLastCoordinateLon = @"LastCoordinateLon";
-NSString *const kKeyLastZip = @"LastZip";
+NSString *const kCountryCode = @"location_country_code";
+NSString *const kZip = @"location_zip";
 
 @implementation JYLocationManager
 
@@ -29,37 +32,152 @@ NSString *const kKeyLastZip = @"LastZip";
     return _sharedInstance;
 }
 
-// lastLocation
-- (void)setLastCoordinate:(CLLocationCoordinate2D)coordinate
+- (instancetype)init
 {
-    [[NSUserDefaults standardUserDefaults] setDouble:coordinate.latitude forKey:kKeyLastCoordinateLat];
-    [[NSUserDefaults standardUserDefaults] setDouble:coordinate.longitude forKey:kKeyLastCoordinateLon];
+    self = [super init];
+    if (self)
+    {
+        // use SIM card country code as default country code
+        _countryCode = [[NSUserDefaults standardUserDefaults] stringForKey:kCountryCode];
+        if (_countryCode)
+        {
+            CTTelephonyNetworkInfo *netInfo = [[CTTelephonyNetworkInfo alloc] init];
+            CTCarrier *carrier = [netInfo subscriberCellularProvider];
+            _countryCode = [carrier.isoCountryCode uppercaseString];
+        }
+
+        _zip = [[NSUserDefaults standardUserDefaults] stringForKey:kZip];
+        if (!_zip)
+        {
+            _zip = @"AAAA";
+        }
+
+        _manager = [CLLocationManager new];
+        _manager.delegate = self;
+        _manager.distanceFilter = kCLDistanceFilterNone;
+        _manager.desiredAccuracy = kCLLocationAccuracyHundredMeters;
+    }
+    return self;
 }
 
-- (CLLocationCoordinate2D)lastCoordinate
+- (void)setCountryCode:(NSString *)countryCode
 {
-    CLLocationDegrees lat = [[NSUserDefaults standardUserDefaults] doubleForKey:kKeyLastCoordinateLat];
-    CLLocationDegrees lon = [[NSUserDefaults standardUserDefaults] doubleForKey:kKeyLastCoordinateLon];
+    _countryCode = countryCode;
+    [[NSUserDefaults standardUserDefaults] setObject:countryCode forKey:kCountryCode];
+}
 
-    // use san francisco city center as default
-    if (lat == 0.0 && lon == 0.0)
+
+- (void)setZip:(NSString *)zip
+{
+    [[NSUserDefaults standardUserDefaults] setObject:zip forKey:kZip];
+}
+
+- (void)start
+{
+    if (![CLLocationManager locationServicesEnabled])
     {
-        lat = 37.7577;
-        lon = -122.4376;
+        return;
     }
 
-    return CLLocationCoordinate2DMake(lat, lon);
+    if ([CLLocationManager authorizationStatus] != kCLAuthorizationStatusDenied &&
+        [CLLocationManager authorizationStatus] != kCLAuthorizationStatusNotDetermined)
+    {
+        [self.manager startUpdatingLocation];
+        return;
+    }
+
+
+    if ([self.manager respondsToSelector:@selector(requestWhenInUseAuthorization)])
+    {
+        [self.manager requestWhenInUseAuthorization];
+        return;
+    }
+
+    NSString *title = NSLocalizedString(@"Hey, WinkRock need your location", nil);
+    NSString *message = NSLocalizedString(@"You can allow it in 'Settings -> Privacy -> Location Services'", nil);
+
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:title
+                                                        message:message
+                                                       delegate:self
+                                              cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
+                                              otherButtonTitles:NSLocalizedString(@"Settings", nil), nil];
+    [alertView show];
 }
 
-// lastZip
-- (void)setLastZip:(NSString *)zip
+#pragma mark - UIAlertViewDelegate
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-    [[NSUserDefaults standardUserDefaults] setObject:zip forKey:kKeyLastZip];
+    if (buttonIndex == 1)
+    {
+        // Send the user to the Settings
+        NSURL *settingsURL = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
+        [[UIApplication sharedApplication] openURL:settingsURL];
+    }
 }
 
-- (NSString *)lastZip
+#pragma mark - CLLocationManagerDelegate
+
+- (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations
 {
-    return [[NSUserDefaults standardUserDefaults] stringForKey:kKeyLastZip];
+    CLLocation *location = [locations lastObject];
+    CLGeocoder *geocoder = [[CLGeocoder alloc] init];
+    __weak typeof(self) weakSelf = self;
+    [geocoder reverseGeocodeLocation:location
+                   completionHandler:^(NSArray *placemarks, NSError *error) {
+                       if (error)
+                       {
+                           NSLog(@"Geocode failed with error %@", error);
+                       }
+                       else
+                       {
+                           CLPlacemark *placemark = [placemarks lastObject];
+                           [weakSelf _updateZipWithPlacemark:placemark];
+                       }
+                   }];
+}
+
+- (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status
+{
+    if (status == kCLAuthorizationStatusDenied || status == kCLAuthorizationStatusDenied)
+    {
+        return;
+    }
+
+    [self.manager startUpdatingLocation];
+}
+
+#pragma mark - Geo
+
+- (void)_updateZipWithPlacemark:(CLPlacemark *)placemark
+{
+    NSString *countryCode = placemark.ISOcountryCode;
+    NSString *zip = placemark.postalCode;
+
+    if (![zip isEqualToString:self.zip] || ![countryCode isEqualToString:self.countryCode])
+    {
+        [self _appearInZip:zip country:countryCode];
+    }
+}
+
+- (void)_appearInZip:(NSString *)zip country:(NSString *)countryCode
+{
+    NSDictionary *parameters = @{ @"zip": zip, @"country": countryCode, @"yrs": @123 }; // TODO: need provide correct yrs
+    NSString *url = [NSString apiURLWithPath:@"user/appear"];
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager managerWithToken];
+
+    __weak typeof(self) weakSelf = self;
+    [manager POST:url
+       parameters:parameters
+          success:^(AFHTTPRequestOperation *operation, id responseObject) {
+              NSLog(@"POST user/appear Success");
+
+              weakSelf.zip = zip;
+              weakSelf.countryCode = countryCode;
+          }
+          failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+              NSLog(@"user/appear error: %@", error);
+          }];
     
 }
 
