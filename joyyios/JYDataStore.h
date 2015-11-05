@@ -21,8 +21,5 @@
 
 @property (nonatomic) YTKKeyValueStore *store;
 @property (nonatomic) CGFloat presentedIntroductionVersion;
-@property (nonatomic) NSString *deviceToken;
-@property (nonatomic) NSInteger badgeCount;
-
 
 @end

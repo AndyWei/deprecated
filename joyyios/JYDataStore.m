@@ -8,8 +8,6 @@
 
 #import "JYDataStore.h"
 
-NSString *const kKeyBadgeCount = @"BadgeCount";
-NSString *const kKeyDeviceToken = @"DeviceToken";
 NSString *const kKeyPresentedIntroductionVersion = @"PresentedIntroductionVersion";
 
 @interface JYDataStore ()
@@ -88,28 +86,6 @@ NSString *const kKeyPresentedIntroductionVersion = @"PresentedIntroductionVersio
              return failure(error);
          }
      ];
-}
-
-// DeviceToken
-- (void)setDeviceToken:(NSString *)token
-{
-    [[NSUserDefaults standardUserDefaults] setObject:token forKey:kKeyDeviceToken];
-}
-
-- (NSString *)deviceToken
-{
-    return [[NSUserDefaults standardUserDefaults] stringForKey:kKeyDeviceToken];
-}
-
-// BadgeCount
-- (void)setBadgeCount:(NSInteger)count
-{
-    [[NSUserDefaults standardUserDefaults] setInteger:count forKey:kKeyBadgeCount];
-}
-
-- (NSInteger)badgeCount
-{
-    return[[NSUserDefaults standardUserDefaults] integerForKey:kKeyBadgeCount];
 }
 
 // IntroductionVersion

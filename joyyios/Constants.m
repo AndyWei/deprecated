@@ -42,7 +42,9 @@ UInt16 const kMessagePort = 5222;
 NSString *const kAuthProviderName = @"joyy"; // the provider name configured in the Cognito console.
 NSString *const kCognitoIdentityPoolId = @"us-east-1:a9366287-4298-443f-aa0b-d4d6ee43fa67";
 AWSRegionType const kCognitoRegionType = AWSRegionUSEast1;
-// AWS end
+
+// Flurry
+NSString *const kFlurryKey = @"3RRHRXVTX38ZCW3QRHV6";
 
 NSString *const kContentTypeJPG = @"image/jpeg";
 NSString *const kDummyCaptionText = @"◦";

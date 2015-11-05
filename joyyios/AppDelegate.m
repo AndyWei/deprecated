@@ -18,6 +18,7 @@
 #import "AppDelegate.h"
 #import "JYAmazonClientManager.h"
 #import "JYButton.h"
+#import "JYDeviceManager.h"
 #import "JYFilename.h"
 #import "JYMasqueradeViewController.h"
 #import "JYLocationManager.h"
@@ -48,7 +49,7 @@
 
     // Fabric crashlytics
     [Fabric with:@[[Crashlytics class]]];
-    [Flurry startSession:@"3RRHRXVTX38ZCW3QRHV6"];
+    [Flurry startSession:kFlurryKey];
 
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 
@@ -65,18 +66,11 @@
 
 - (void)applicationWillResignActive:(UIApplication *)application
 {
-    // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as
-    // an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
-    // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the
-    // game.
     NSLog(@"applicationWillResignActive");
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
 {
-    // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your
-    // application to its current state in case it is terminated later.
-    // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
     NSLog(@"applicationDidEnterBackground");
     [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationAppDidStop object:nil];
     if (self.signInTimer)
@@ -89,16 +83,11 @@
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
 {
-    // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the
-    // background.
     NSLog(@"applicationWillEnterForeground");
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
-    // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the
-    // background, optionally refresh the user interface.
-
     NSLog(@"applicationDidBecomeActive");
     [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationAppDidStart object:nil];
 
@@ -146,8 +135,7 @@
     NSString *token = [[deviceToken description] stringByTrimmingCharactersInSet: [NSCharacterSet characterSetWithCharactersInString:@"<>"]];
     token = [token stringByReplacingOccurrencesOfString:@" " withString:@""];
 
-    [JYDataStore sharedInstance].deviceToken = token;
-    [self _uploadDeviceToken];
+    [JYDeviceManager sharedInstance].deviceToken = token;
 }
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)notification
@@ -196,19 +184,6 @@
     }
 }
 
-- (void)_registerPushNotifications
-{
-    if ([[UIApplication sharedApplication] respondsToSelector:@selector(registerUserNotificationSettings:)])
-    {
-        UIUserNotificationSettings* settings = [UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeAlert | UIUserNotificationTypeBadge | UIUserNotificationTypeSound categories:nil];
-        [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
-    }
-    else
-    {
-        [[UIApplication sharedApplication] registerForRemoteNotificationTypes:(UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
-    }
-}
-
 - (void)_introductionDidFinish
 {
     // Update introduction history
@@ -230,6 +205,7 @@
 
 - (void)_launchMainViewController
 {
+    [[JYLocationManager sharedInstance] start];
     self.window.rootViewController = self.tabBarController;
     self.onboardingViewController = nil;
 }
@@ -308,8 +284,8 @@
         return;
     }
 
-    // Register push notification now to trigger device token uploading, which is to avoid server side device token lost unexpectedly
-    [self _registerPushNotifications];
+    [[JYDeviceManager sharedInstance] start];
+
     [self _doAutoSignInAfter:seconds];
 
     if (self.shouldXmppGoOnline)
@@ -375,31 +351,6 @@
             NSLog(@"Error: autoSignIn Error: %@", error);
             [weakSelf _doAutoSignInAfter:kSignInRetryInSeconds];
         }];
-}
-
-- (void)_uploadDeviceToken
-{
-    NSString *deviceToken = [JYDataStore sharedInstance].deviceToken;
-    if (!deviceToken)
-    {
-        return;
-    }
-
-    NSInteger badgeCount = [JYDataStore sharedInstance].badgeCount;
-    NSDictionary *parameters = @{@"service": @(kAPN), @"device": deviceToken, @"badge": @(badgeCount)};
-
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager managerWithToken];
-    NSString *url = [NSString apiURLWithPath:@"person/device"];
-
-    [manager POST:url
-       parameters:parameters
-          success:^(AFHTTPRequestOperation *operation, id responseObject) {
-              NSLog(@"DeviceToken upload Success responseObject: %@", responseObject);
-          }
-          failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-              NSLog(@"DeviceToken Upload Error: %@", error);
-          }];
-    
 }
 
 #pragma mark - Introduction Pages

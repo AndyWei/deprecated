@@ -52,6 +52,7 @@
 		D62C2C681B90261000233F5B /* JYSessionListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D62C2C671B90261000233F5B /* JYSessionListViewController.m */; };
 		D6348D2F1ADB4DD60002BC35 /* NSString+Joyy.m in Sources */ = {isa = PBXBuildFile; fileRef = D6348D2E1ADB4DD60002BC35 /* NSString+Joyy.m */; };
 		D6348D371ADB7ABC0002BC35 /* NSMutableDictionary+Joyy.m in Sources */ = {isa = PBXBuildFile; fileRef = D6348D361ADB7ABC0002BC35 /* NSMutableDictionary+Joyy.m */; };
+		D63591951BEA913500BFFF82 /* JYDeviceManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D63591941BEA913500BFFF82 /* JYDeviceManager.m */; };
 		D63B69B21AC51D61005600A9 /* JYSignBaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D63B69B11AC51D61005600A9 /* JYSignBaseViewController.m */; };
 		D63B69B61AC53BB4005600A9 /* JYFloatLabeledTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = D63B69B51AC53BB4005600A9 /* JYFloatLabeledTextField.m */; };
 		D63B69BA1AC624F8005600A9 /* JYAutoCompleteDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = D63B69B91AC624F8005600A9 /* JYAutoCompleteDataSource.m */; };
@@ -196,6 +197,8 @@
 		D6348D2E1ADB4DD60002BC35 /* NSString+Joyy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Joyy.m"; sourceTree = "<group>"; };
 		D6348D351ADB7ABC0002BC35 /* NSMutableDictionary+Joyy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableDictionary+Joyy.h"; sourceTree = "<group>"; };
 		D6348D361ADB7ABC0002BC35 /* NSMutableDictionary+Joyy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSMutableDictionary+Joyy.m"; sourceTree = "<group>"; };
+		D63591931BEA913500BFFF82 /* JYDeviceManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYDeviceManager.h; sourceTree = "<group>"; };
+		D63591941BEA913500BFFF82 /* JYDeviceManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYDeviceManager.m; sourceTree = "<group>"; };
 		D63B69B01AC51D61005600A9 /* JYSignBaseViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYSignBaseViewController.h; sourceTree = "<group>"; };
 		D63B69B11AC51D61005600A9 /* JYSignBaseViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYSignBaseViewController.m; sourceTree = "<group>"; };
 		D63B69B41AC53BB4005600A9 /* JYFloatLabeledTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYFloatLabeledTextField.h; sourceTree = "<group>"; };
@@ -569,6 +572,17 @@
 			name = Vendor;
 			sourceTree = "<group>";
 		};
+		D63591921BEA90FB00BFFF82 /* manager */ = {
+			isa = PBXGroup;
+			children = (
+				D6825BC51BE897F400F3695D /* JYLocationManager.h */,
+				D6825BC61BE897F400F3695D /* JYLocationManager.m */,
+				D63591931BEA913500BFFF82 /* JYDeviceManager.h */,
+				D63591941BEA913500BFFF82 /* JYDeviceManager.m */,
+			);
+			name = manager;
+			sourceTree = "<group>";
+		};
 		D63B69AB1AC5184D005600A9 /* People */ = {
 			isa = PBXGroup;
 			children = (
@@ -614,8 +628,6 @@
 				D63F0D741AC9F6F80067C5EE /* JYDataStore.m */,
 				D63B69B41AC53BB4005600A9 /* JYFloatLabeledTextField.h */,
 				D63B69B51AC53BB4005600A9 /* JYFloatLabeledTextField.m */,
-				D6825BC51BE897F400F3695D /* JYLocationManager.h */,
-				D6825BC61BE897F400F3695D /* JYLocationManager.m */,
 				D69FF6D41B94144100466FE5 /* JYSoundPlayer.h */,
 				D69FF6D51B94144100466FE5 /* JYSoundPlayer.m */,
 				D6C6BBAA1B62DF6B00FFFAC7 /* NSDictionary+Joyy.h */,
@@ -690,6 +702,7 @@
 				D68DAF991AC4CD0800838E7E /* Common */,
 				D68DAF9A1AC4CD1800838E7E /* Credential */,
 				D6F7F13A1BA8ECCC008118DA /* Detector */,
+				D63591921BEA90FB00BFFF82 /* manager */,
 				D61D1D5B1B4DBA5D00DE37DF /* Masquerade */,
 				D68486B31B8AC207005CA0C4 /* Message */,
 				D6C82B611B1252FE00876F57 /* Model */,
@@ -1006,6 +1019,7 @@
 				D67DD0EC1B75321A00333626 /* JYPerson.m in Sources */,
 				D68DAF971AC4CACD00838E7E /* JYSignInViewController.m in Sources */,
 				D61D1DB81B4E336E00DE37DF /* TGCameraShot.m in Sources */,
+				D63591951BEA913500BFFF82 /* JYDeviceManager.m in Sources */,
 				D69FF6E51B96474200466FE5 /* JYAuthenticatedIdentityProvider.m in Sources */,
 				D6E3B0511B99334900B707DF /* AFHTTPRequestOperationManager+Joyy.m in Sources */,
 				D61D1DA01B4E336E00DE37DF /* UIImage+CameraFilters.m in Sources */,

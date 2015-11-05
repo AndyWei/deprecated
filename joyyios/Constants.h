@@ -39,7 +39,9 @@ extern CGFloat const kFooterHeight;
 extern NSString *const kAuthProviderName;
 extern NSString *const kCognitoIdentityPoolId;
 extern AWSRegionType const kCognitoRegionType;
-// AWS end
+
+// Flurry
+extern NSString *const kFlurryKey;
 
 extern NSString *const kContentTypeJPG;
 extern NSString *const kDummyCaptionText;
