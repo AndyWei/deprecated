@@ -24,6 +24,32 @@ type Handler struct {
 }
 
 /*
+ * Check if an username is available
+ */
+type CheckUsername struct {
+    Username string `param:"username" validate:"min=2,max=40"`
+}
+
+func (h *Handler) CheckUsername(w http.ResponseWriter, req *http.Request) {
+
+    var p CheckUsername
+    if err := ParseAndCheck(req, &p); err != nil {
+        RespondError(w, err, http.StatusBadRequest)
+        return
+    }
+
+    var userid int64
+    if err := h.DB.Query(`SELECT id FROM user_by_name WHERE username = ? LIMIT 1`,
+        p.Username).Consistency(gocql.One).Scan(&userid); err != nil {
+        RespondKV(w, "existence", 0)
+        return
+    }
+
+    RespondKV(w, "existence", 1)
+    return
+}
+
+/*
  * Profile endpoints
  */
 type CreateProfileParams struct {

@@ -8,8 +8,10 @@
 package auth
 
 import (
+    "encoding/json"
     "errors"
     twilio "github.com/carlosdp/twiliogo"
+    "github.com/gocql/gocql"
     plivo "github.com/micrypt/go-plivo/plivo"
     "github.com/spf13/viper"
     . "joyyapp.com/winkrock/util"
@@ -55,7 +57,7 @@ type SendCodeParams struct {
     Phone int64 `param:"phone" validate:"required"`
 }
 
-func (h *Handler) SendCode(w http.ResponseWriter, req *http.Request) {
+func (h *Handler) RequestCode(w http.ResponseWriter, req *http.Request) {
     var p SendCodeParams
     if err := ParseAndCheck(req, &p); err != nil {
         RespondError(w, err, http.StatusBadRequest)
@@ -106,8 +108,8 @@ func (h *Handler) ValidateCode(w http.ResponseWriter, req *http.Request) {
     }
 
     var code int
-    stmt := "SELECT code FROM user_by_phone where phone = ?"
-    if err := h.DB.Query(stmt, p.Phone).Scan(&code); err != nil {
+    stmt := "SELECT code FROM code_by_phone where phone = ?"
+    if err := h.DB.Query(stmt, p.Phone).Consistency(gocql.One).Scan(&code); err != nil {
         RespondError(w, err, http.StatusBadRequest)
     }
 
@@ -115,13 +117,26 @@ func (h *Handler) ValidateCode(w http.ResponseWriter, req *http.Request) {
         RespondError(w, errors.New(ErrSmsCodeInvalid), http.StatusBadRequest)
     }
 
-    RespondOK(w)
+    stmt = "SELECT username FROM user_by_phone where phone = ?"
+    iter := h.DB.Query(stmt, p.Phone).Consistency(gocql.One).Iter()
+    usernames, err := iter.SliceMap()
+    if err != nil {
+        RespondError(w, err, http.StatusBadGateway)
+    }
+
+    bytes, err := json.Marshal(usernames)
+    if err != nil {
+        RespondError(w, err, http.StatusBadGateway)
+        return
+    }
+
+    RespondData(w, bytes)
     return
 }
 
 func (h *Handler) saveCodeAndRespond(w http.ResponseWriter, phone int64, code int) {
 
-    if err := h.DB.Query(`INSERT INTO user_by_phone (phone, code) VALUES (?, ?)`,
+    if err := h.DB.Query(`INSERT INTO code_by_phone (phone, code) VALUES (?, ?)`,
         phone, code).Exec(); err != nil {
         RespondError(w, err, http.StatusBadGateway)
         return

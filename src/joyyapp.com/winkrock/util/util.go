@@ -8,6 +8,7 @@
 package util
 
 import (
+    "encoding/json"
     "fmt"
     "github.com/goji/param"
     "gopkg.in/go-playground/validator.v8"
@@ -190,6 +191,18 @@ func RespondError(w http.ResponseWriter, err interface{}, code int) {
     w.Header().Set("Content-Type", "application/json; charset=utf-8")
     w.WriteHeader(code)
     fmt.Fprintf(w, "{error: %v}\r\n", msg)
+}
+
+func RespondKV(w http.ResponseWriter, key string, value interface{}) {
+    w.Header().Set("Content-Type", "application/json; charset=utf-8")
+    w.WriteHeader(http.StatusOK)
+
+    m := map[string]interface{}{
+        key: value,
+    }
+
+    bytes, _ := json.Marshal(m)
+    w.Write(bytes)
 }
 
 func RespondOK(w http.ResponseWriter) {

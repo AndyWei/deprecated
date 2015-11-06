@@ -71,17 +71,24 @@ CREATE TABLE IF NOT EXISTS user_by_name (
 
 /*
  *
- * @Discussion:
-*/
+ */
 CREATE TABLE IF NOT EXISTS user_by_phone (
     phone            bigint  ,
     username         text    ,
     id               bigint  ,
-    code             int     ,
 
     PRIMARY KEY (phone)
 ) WITH COMPACTION = {'class': 'LeveledCompactionStrategy', 'enabled': 'true'};
 
+/*
+ *
+ */
+CREATE TABLE IF NOT EXISTS code_by_phone (
+    phone            bigint  ,
+    code             int     ,
+
+    PRIMARY KEY (phone)
+);
 
 /*
  * Description: the table stores friendship invite

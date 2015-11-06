@@ -38,7 +38,7 @@ func main() {
     router.Get("/v1/auth/cognito", authenticate(authHandler.Cognito))
     router.Post("/v1/auth/signin", authHandler.SignIn)
     router.Post("/v1/auth/signup", authHandler.SignUp)
-    router.Post("/v1/code/send", authHandler.SendCode)
+    router.Post("/v1/code/request", authHandler.RequestCode)
     router.Post("/v1/code/validate", authHandler.ValidateCode)
 
     router.Get("/v1/friends", authenticate(edgeHandler.ReadFriends))
@@ -65,6 +65,7 @@ func main() {
     router.Post("/v1/user/profile", authenticate(userHandler.CreateProfile))
 
     router.Get("/v1/users", authenticate(userHandler.ReadUsers))
+    router.Get("/v1/username/existence", userHandler.CheckUsername)
     router.Post("/v1/user/appear", authenticate(userHandler.Appear))
 
     router.Get("/v1/xmpp/check_password", authHandler.CheckPassword)
