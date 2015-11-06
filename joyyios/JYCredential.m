@@ -127,8 +127,7 @@ static NSString *const kAPITokenExpiryTimeKey = @"api_token_expiry_time";
 
 - (BOOL)isEmpty
 {
-//    return (!self.username || !self.password || !self.idString);
-    return YES;
+    return (!self.username || !self.password || !self.idString);
 }
 
 @end

@@ -44,7 +44,7 @@
         if (task.error)
         {
             NSLog(@"Error: getToken returned with error = %@", task.error);
-            return task;
+            return nil; // must return nil to end the execution
         }
 
         if (task.result)

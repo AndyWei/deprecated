@@ -134,7 +134,7 @@
 - (void)_apiTokenReady
 {
     self.apiTokenReady = YES;
-    AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication];
+    AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
     if (appDelegate.shouldXmppGoOnline)
     {
         [self _xmppUserLogin:nil];

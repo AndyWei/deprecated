@@ -167,7 +167,7 @@
 
 - (void)_introductionDidFinish
 {
-    // Update introduction history
+    // Update introduction history to avoid duplicated presenting
     [JYDataStore sharedInstance].presentedIntroductionVersion = kIntroductionVersion;
     [self _launchViewController];
 }
@@ -199,10 +199,10 @@
 
     _tabBarController = [UITabBarController new];
 
-    UIViewController *vc1 = [JYPeopleViewController new];
+    UIViewController *vc1 = [JYMasqueradeViewController new];
     UINavigationController *nc1 = [[UINavigationController alloc] initWithRootViewController:vc1];
 
-    UIViewController *vc2 = [JYMasqueradeViewController new];
+    UIViewController *vc2 = [JYPeopleViewController new];
     UINavigationController *nc2 = [[UINavigationController alloc] initWithRootViewController:vc2];
 
     UIViewController *vc3 = [JYSessionListViewController new];
@@ -219,13 +219,13 @@
     UITabBarItem *tabBarItem3 = [tabBar.items objectAtIndex:2];
     UITabBarItem *tabBarItem4 = [tabBar.items objectAtIndex:3];
 
-    tabBarItem1.selectedImage = [[UIImage imageNamed:@"people_selected"]imageWithRenderingMode:UIImageRenderingModeAutomatic];
-    tabBarItem1.image = [[UIImage imageNamed:@"people"]imageWithRenderingMode:UIImageRenderingModeAutomatic];
-    tabBarItem1.title = NSLocalizedString(@"Radar", nil);
+    tabBarItem1.selectedImage = [[UIImage imageNamed:@"mask_selected"] imageWithRenderingMode:UIImageRenderingModeAutomatic];
+    tabBarItem1.image = [[UIImage imageNamed:@"mask"] imageWithRenderingMode:UIImageRenderingModeAutomatic];
+    tabBarItem1.title = NSLocalizedString(@"Masquerade", nil);
 
-    tabBarItem2.selectedImage = [[UIImage imageNamed:@"mask_selected"] imageWithRenderingMode:UIImageRenderingModeAutomatic];
-    tabBarItem2.image = [[UIImage imageNamed:@"mask"] imageWithRenderingMode:UIImageRenderingModeAutomatic];
-    tabBarItem2.title = NSLocalizedString(@"Masquerade", nil);
+    tabBarItem2.selectedImage = [[UIImage imageNamed:@"people_selected"]imageWithRenderingMode:UIImageRenderingModeAutomatic];
+    tabBarItem2.image = [[UIImage imageNamed:@"people"]imageWithRenderingMode:UIImageRenderingModeAutomatic];
+    tabBarItem2.title = NSLocalizedString(@"Radar", nil);
 
     tabBarItem3.selectedImage = [[UIImage imageNamed:@"chat_selected"]imageWithRenderingMode:UIImageRenderingModeAutomatic];
     tabBarItem3.image = [[UIImage imageNamed:@"chat"]imageWithRenderingMode:UIImageRenderingModeAutomatic];

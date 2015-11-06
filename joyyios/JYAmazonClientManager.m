@@ -46,7 +46,9 @@
 
 - (void)_apiTokenReady
 {
-    [self _completeLogin:@{ kAuthProviderName: [JYCredential current].idString }];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+        [self _completeLogin:@{ kAuthProviderName: [JYCredential current].idString }];
+    });
 }
 
 - (void)dealloc

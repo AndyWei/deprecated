@@ -94,12 +94,12 @@ static NSString *const kAWSTokenExpiryTimeKey = @"aws_openid_token_expiry_time";
     self.keychain[kAWSTokenExpiryTimeKey] = [NSString stringWithFormat:@"%tu", tokenExpiryTime];
 }
 
-// call gettoken and set our values from returned result
+// call getToken and set our values from returned result
 - (AWSTask *)getToken
 {
     if (![self isAuthenticated])
     {
-        NSLog(@"Error: not authenticated by joyyserver, cannot get IdentityId and OpenID token");
+        NSLog(@"Error: not authenticated by winkrock server, cannot get IdentityId and OpenID token");
         return [AWSTask taskWithError:[NSError errorWithDomain:kJYAuthenticationClientDomain
                                                          code:JYAuthenticationErrorLoginFailed
                                                      userInfo:nil]];
@@ -119,13 +119,13 @@ static NSString *const kAWSTokenExpiryTimeKey = @"aws_openid_token_expiry_time";
     return [[AWSTask taskWithResult:nil] continueWithBlock:^id(AWSTask *task) {
 
         AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager managerWithToken];
-        NSString *url = [NSString apiURLWithPath:@"credential/cognito"];
+        NSString *url = [NSString apiURLWithPath:@"auth/cognito"];
         NSError *error = nil;
         NSDictionary *response = [manager syncGET:url parameters:nil operation:NULL error:&error];
 
         if (!response)
         {
-            NSLog(@"Error: no cognito response from joyy server");
+            NSLog(@"Error: no cognito response from winkrock server");
             return [AWSTask taskWithError:[NSError errorWithDomain:kJYAuthenticationClientDomain
                                                              code:JYAuthenticationErrorNoCognitoResponse
                                                          userInfo:nil]];
