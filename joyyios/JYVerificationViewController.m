@@ -240,8 +240,9 @@ static NSString *const kVerificationCellIdentifier = @"verificationCell";
                                                destructiveButtonTitle:nil
                                                     otherButtonTitles:nil];
 
-    for (NSString *username in self.usernameList)
+    for (NSDictionary *dict in self.usernameList)
     {
+        NSString *username = [dict objectForKey:@"username"];
         [actionSheet addButtonWithTitle:username];
     }
 
@@ -253,7 +254,6 @@ static NSString *const kVerificationCellIdentifier = @"verificationCell";
 - (void)_showSignupView
 {
     JYSignUpViewController *vc = [JYSignUpViewController new];
-    vc.phoneNumber = self.phoneNumber;
     [self.navigationController pushViewController:vc animated:YES];
 }
 
@@ -276,6 +276,7 @@ static NSString *const kVerificationCellIdentifier = @"verificationCell";
 {
     if (buttonIndex == actionSheet.cancelButtonIndex)
     {
+        [JYCredential current].phoneNumber = self.phoneNumber;
         [self _showSignupView];
         return;
     }
@@ -300,19 +301,19 @@ static NSString *const kVerificationCellIdentifier = @"verificationCell";
     [self.textField resignFirstResponder];
 
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    NSString *url = [NSString apiURLWithPath:@"credential/username"];
+    NSString *url = [NSString apiURLWithPath:@"code/validate"];
 
-    NSString *vcode = [self.textField.text substringToIndex:4];
-    NSDictionary *parameters = @{ @"phone": self.phoneNumber, @"vcode": vcode };
+    NSString *code = [self.textField.text substringToIndex:4];
+    NSDictionary *parameters = @{ @"phone": self.phoneNumber, @"code": code };
 
     [KVNProgress show];
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
 
     __weak typeof(self) weakSelf = self;
-    [manager GET:url
+    [manager POST:url
       parameters:parameters
          success:^(AFHTTPRequestOperation *operation, id responseObject) {
-             NSLog(@"Success: GET credential/username. responseObject = %@", responseObject);
+             NSLog(@"Success: POST code/validate. responseObject = %@", responseObject);
              [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
              [KVNProgress dismiss];
 
@@ -320,7 +321,7 @@ static NSString *const kVerificationCellIdentifier = @"verificationCell";
              [weakSelf _receivedUsenames:usernameList];
          }
          failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-             NSLog(@"Error: GET credential/username error: %@", error);
+             NSLog(@"Error: POST code/validate error: %@", error);
              [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
              [KVNProgress dismiss];
 

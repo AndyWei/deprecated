@@ -14,8 +14,9 @@
 @end
 
 // KeyChain -- DO NOT MODIFY!!!
-static NSString *const kKeyChainStoreAPI = @"com.joyyapp.api";
+static NSString *const kKeyChainStoreAPI = @"com.winkrock.api";
 static NSString *const kAPIPasswordKey = @"api_password";
+static NSString *const kAPIPhoneNumberKey = @"api_phone_number";
 static NSString *const kAPIUserIdKey   = @"api_user_id";
 static NSString *const kAPIUsernameKey = @"api_username";
 static NSString *const kAPITokenKey    = @"api_token";
@@ -39,8 +40,9 @@ static NSString *const kAPITokenExpiryTimeKey = @"api_token_expiry_time";
     {
         self.keychain = [UICKeyChainStore keyChainStoreWithService:kKeyChainStoreAPI];
 
-        _password = self.keychain[kAPIPasswordKey];
         _username = self.keychain[kAPIUsernameKey];
+        _password = self.keychain[kAPIPasswordKey];
+        _phoneNumber = self.keychain[kAPIPhoneNumberKey];
         _idString = self.keychain[kAPIUserIdKey];
         _token    = self.keychain[kAPITokenKey];
 
@@ -53,10 +55,16 @@ static NSString *const kAPITokenExpiryTimeKey = @"api_token_expiry_time";
     return self;
 }
 
-- (void)setPassword:(NSString *)password
+- (void)setUserId:(NSUInteger)userId
 {
-    _password = password;
-    self.keychain[kAPIPasswordKey] = _password;
+    _userId = userId;
+    self.idString = [NSString stringWithFormat:@"%tu", _userId];
+}
+
+- (void)setIdString:(NSString *)idString
+{
+    _idString = idString;
+    self.keychain[kAPIUserIdKey] = _idString;
 }
 
 - (void)setUsername:(NSString *)username
@@ -65,11 +73,16 @@ static NSString *const kAPITokenExpiryTimeKey = @"api_token_expiry_time";
     self.keychain[kAPIUsernameKey] = _username;
 }
 
-- (void)setIdString:(NSString *)idString
+- (void)setPassword:(NSString *)password
 {
-    _idString = idString;
-    self.keychain[kAPIUserIdKey] = _idString;
-    _userId = _idString? [_idString unsignedIntegerValue] : 0;
+    _password = password;
+    self.keychain[kAPIPasswordKey] = _password;
+}
+
+- (void)setPhoneNumber:(NSString *)phoneNumber
+{
+    _phoneNumber = phoneNumber;
+    self.keychain[kAPIPhoneNumberKey] = _phoneNumber;
 }
 
 - (void)setToken:(NSString *)token
@@ -94,7 +107,7 @@ static NSString *const kAPITokenExpiryTimeKey = @"api_token_expiry_time";
 {
     if ([dict valueForKey:@"id"])
     {
-        self.idString = [dict valueForKey:@"id"];
+        self.userId = [[dict objectForKey:@"id"] intValue];
     }
 
     if ([dict valueForKey:@"username"])
@@ -106,7 +119,7 @@ static NSString *const kAPITokenExpiryTimeKey = @"api_token_expiry_time";
     {
         self.token = [dict valueForKey:@"token"];
 
-        NSUInteger tokenDuration = [dict unsignedIntegerValueForKey:@"token_ttl"];
+        NSUInteger tokenDuration = [[dict objectForKey:@"token_ttl"] intValue];
         NSInteger now = (NSInteger)[NSDate timeIntervalSinceReferenceDate];
         self.tokenExpiryTime = now + tokenDuration;
     }

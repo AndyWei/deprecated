@@ -10,6 +10,4 @@
 
 @interface JYSignUpViewController : JYSignBaseViewController
 
-@property (nonatomic) NSString *phoneNumber;
-
 @end

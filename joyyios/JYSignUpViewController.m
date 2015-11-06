@@ -93,8 +93,8 @@
 
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
 
-    NSString *url = [NSString apiURLWithPath:@"credential/signup"];
-    NSDictionary *parameters = @{ @"username":username, @"password":password, @"phone":self.phoneNumber };
+    NSString *url = [NSString apiURLWithPath:@"auth/signup"];
+    NSDictionary *parameters = @{ @"username":username, @"password":password };
 
     [KVNProgress show];
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
@@ -133,7 +133,7 @@
 {
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
 
-    NSString *url = [NSString apiURLWithPath:@"credential/existence"];
+    NSString *url = [NSString apiURLWithPath:@"username/existence"];
     NSDictionary *parameters = @{ @"username":username };
 
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
@@ -142,14 +142,14 @@
     [manager GET:url
        parameters:parameters
           success:^(AFHTTPRequestOperation *operation, id responseObject) {
-              NSLog(@"Success: credential/existence responseObject: %@", responseObject);
+              NSLog(@"Success: username/existence responseObject: %@", responseObject);
               [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
 
               BOOL doesExist = [[responseObject objectForKey:@"existence"] boolValue];
               [weakSelf _usernameExist:doesExist];
           }
           failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-              NSLog(@"Error: credential/existence error = %@", error);
+              NSLog(@"Error: username/existence error = %@", error);
               [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
           }];
 }

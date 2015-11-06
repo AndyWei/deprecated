@@ -340,31 +340,30 @@ CGFloat const kCountryNumberWidth = 60;
 - (void)_didTapVerifyButton
 {
     [self _enableButtons:NO];
-    [self _fetchVerificationCode];
+    [self _fetchValidationCode];
 }
 
-- (void)_fetchVerificationCode
+- (void)_fetchValidationCode
 {
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    NSString *url = [NSString apiURLWithPath:@"credential/vcode"];
+    NSString *url = [NSString apiURLWithPath:@"code/request"];
 
     NSString *phoneNumber = [self _userPhoneNumberDigits];
-    NSString * language = [[[NSLocale preferredLanguages] objectAtIndex:0] substringToIndex:2];
 
-    NSDictionary *parameters = @{ @"phone": phoneNumber, @"language": language };
+    NSDictionary *parameters = @{@"phone": phoneNumber};
 
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
 
     __weak typeof(self) weakSelf = self;
-    [manager GET:url
+    [manager POST:url
       parameters:parameters
          success:^(AFHTTPRequestOperation *operation, id responseObject) {
-             NSLog(@"Success: GET credential/vcode");
+             NSLog(@"Success: POST code/request");
              [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
              
          }
          failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-             NSLog(@"Error: GET credential/vcode error: %@", error);
+             NSLog(@"Error: POST code/request error: %@", error);
 
              [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
              [weakSelf _enableButtons:YES];
