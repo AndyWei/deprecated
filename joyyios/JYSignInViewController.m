@@ -41,8 +41,8 @@
 
 - (void)_signIn
 {
-    [JYCredential mine].username = self.username;
-    [JYCredential mine].password = self.passwordField.text;
+    [JYCredential current].username = self.username;
+    [JYCredential current].password = self.passwordField.text;
 
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager managerWithPassword];
     NSString *url = [NSString apiURLWithPath:@"credential/signin"];
@@ -57,7 +57,7 @@
 
             [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
             [KVNProgress dismiss];
-            [[JYCredential mine] save:responseObject];
+            [[JYCredential current] save:responseObject];
 
             [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationDidSignIn object:nil];
         }

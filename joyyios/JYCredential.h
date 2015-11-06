@@ -8,7 +8,7 @@
 
 @interface JYCredential : NSObject
 
-+ (JYCredential *)mine;
++ (JYCredential *)current;
 
 @property (nonatomic) NSString *username;
 @property (nonatomic) NSString *password;

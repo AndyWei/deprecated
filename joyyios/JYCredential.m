@@ -23,7 +23,7 @@ static NSString *const kAPITokenExpiryTimeKey = @"api_token_expiry_time";
 
 @implementation JYCredential
 
-+ (JYCredential *)mine
++ (JYCredential *)current
 {
     static JYCredential *_current;
     static dispatch_once_t done;

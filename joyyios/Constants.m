@@ -51,7 +51,7 @@ NSString *const kDummyCaptionText = @"◦";
 NSString *const kErrorSignInFailed = @"Incorrect password";
 NSString *const kErrorTitle = @"😜: oops!";
 
-NSString *const kMessageDomain = @"joyy.im";
+NSString *const kMessageDomain = @"winkrock.com";
 NSString *const kMessageResource = @"iPhone";
 NSString *const kMessageBodyTypeAudio    = @"a:";
 NSString *const kMessageBodyTypeEmoji    = @"e:";
@@ -61,6 +61,7 @@ NSString *const kMessageBodyTypeLocation = @"l:";
 NSString *const kMessageBodyTypeText     = @"t:";
 NSString *const kMessageBodyTypeVideo    = @"v:";
 
+NSString *const kNotificationAPITokenReady = @"apiTokenReady";
 NSString *const kNotificationAppDidStart = @"appDidStart";
 NSString *const kNotificationAppDidStop  = @"appDidStop";
 NSString *const kNotificationDidChangeCountryCode = @"didChangeCountryCode";
@@ -74,6 +75,6 @@ NSString *const kNotificationWillLikePost = @"willLikePost";
 NSString *const kTableNameLikedPost = @"liked_post";
 NSString *const kTableNamePerson = @"person";
 
-//NSString *const kURLAPIBase = @"http://api.joyyapp.com:8000/v1/";
+//NSString *const kURLAPIBase = @"http://api.winkrock.com:8000/v1/";
 NSString *const kURLAPIBase = @"http://192.168.1.104:8000/v1/";
 

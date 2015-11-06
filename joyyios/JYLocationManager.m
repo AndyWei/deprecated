@@ -56,23 +56,28 @@ NSString *const kZip = @"location_zip";
         _manager.delegate = self;
         _manager.distanceFilter = kCLDistanceFilterNone;
         _manager.desiredAccuracy = kCLLocationAccuracyHundredMeters;
+
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_apiTokenReady) name:kNotificationAPITokenReady object:nil];
     }
     return self;
 }
 
-- (void)setCountryCode:(NSString *)countryCode
-{
-    _countryCode = countryCode;
-    [[NSUserDefaults standardUserDefaults] setObject:countryCode forKey:kCountryCode];
-}
-
-
-- (void)setZip:(NSString *)zip
-{
-    [[NSUserDefaults standardUserDefaults] setObject:zip forKey:kZip];
-}
-
 - (void)start
+{
+    NSLog(@"LocationManager started");
+}
+
+- (void)_apiTokenReady
+{
+    [self _readLocation];
+}
+
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)_readLocation
 {
     if (![CLLocationManager locationServicesEnabled])
     {
@@ -102,6 +107,18 @@ NSString *const kZip = @"location_zip";
                                               cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
                                               otherButtonTitles:NSLocalizedString(@"Settings", nil), nil];
     [alertView show];
+}
+
+- (void)setCountryCode:(NSString *)countryCode
+{
+    _countryCode = countryCode;
+    [[NSUserDefaults standardUserDefaults] setObject:countryCode forKey:kCountryCode];
+}
+
+
+- (void)setZip:(NSString *)zip
+{
+    [[NSUserDefaults standardUserDefaults] setObject:zip forKey:kZip];
 }
 
 #pragma mark - UIAlertViewDelegate

@@ -12,7 +12,7 @@
 
 + (JYAmazonClientManager *)sharedInstance;
 
-- (void)goActiveWithCompletionHandler:(AWSContinuationBlock)completionHandler;
+- (void)start;
 
 @end
 

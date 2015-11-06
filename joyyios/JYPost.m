@@ -50,7 +50,7 @@
 {
     if (isLiked)
     {
-        NSDictionary *value = @{ @"personId": [JYCredential mine].idString };
+        NSDictionary *value = @{ @"personId": [JYCredential current].idString };
         [[JYDataStore sharedInstance].store putObject:value withId:self.idString intoTable:kTableNameLikedPost];
     }
 
@@ -66,7 +66,7 @@
     }
 
     NSUInteger likedByPerson = [liked unsignedIntegerValueForKey:@"personId"];
-    return (likedByPerson == [JYCredential mine].userId);
+    return (likedByPerson == [JYCredential current].userId);
 }
 
 - (NSString *)idString

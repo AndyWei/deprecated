@@ -6,10 +6,12 @@
 //  Copyright (c) 2015 Joyy Inc. All rights reserved.
 //
 
+#import "AppDelegate.h"
 #import "JYSoundPlayer.h"
 #import "JYXmppManager.h"
 
 @interface JYXmppManager() <XMPPStreamDelegate>
+@property(nonatomic) BOOL apiTokenReady;
 @property(nonatomic) JYXmppStatus xmppStatus;
 @property(nonatomic) XMPPReconnect *reconnect;
 @property(nonatomic, copy) JYXmppStatusHandler statusHandler;
@@ -58,7 +60,7 @@
     NSString *prefix = [deviceId substringToIndex:3];
     NSString *resource = [NSString stringWithFormat:@"%@_%@", kMessageResource, prefix];
 
-    return [XMPPJID jidWithUser:[JYCredential mine].username domain:kMessageDomain resource:resource];
+    return [XMPPJID jidWithUser:[JYCredential current].username domain:kMessageDomain resource:resource];
 }
 
 + (NSFetchedResultsController *)fetcherOfSessions
@@ -106,7 +108,10 @@
     self = [super init];
     if (self)
     {
+        self.apiTokenReady = NO;
         [self setupStream];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_apiTokenReady) name:kNotificationAPITokenReady object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_appStop) name:kNotificationAppDidStop object:nil];
     }
     return self;
 }
@@ -114,6 +119,31 @@
 - (void)dealloc
 {
     [self destoyStream];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)start
+{
+    NSLog(@"XMPP Manager started");
+    if (self.apiTokenReady)
+    {
+        [self _xmppUserLogin:nil];
+    }
+}
+
+- (void)_apiTokenReady
+{
+    self.apiTokenReady = YES;
+    AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication];
+    if (appDelegate.shouldXmppGoOnline)
+    {
+        [self _xmppUserLogin:nil];
+    }
+}
+
+- (void)_appStop
+{
+    [self goOffline];
 }
 
 - (void)setupStream
@@ -194,7 +224,7 @@
 // Authenticate should be called after connect success
 - (void)authenticate
 {
-    NSString *password = [JYCredential mine].token;
+    NSString *password = [JYCredential current].token;
     XMPPPlainAuthentication *auth = [[XMPPPlainAuthentication alloc] initWithStream:self.xmppStream password:password];
 
     // Invoke the async auth method
@@ -331,20 +361,13 @@
     NSLog(@"Failure: xmpp sendPresence failed with error = %@", error);
 }
 
-#pragma mark - public methods
-
-- (void)xmppUserLogin:(JYXmppStatusHandler)statusHandler
+- (void)_xmppUserLogin:(JYXmppStatusHandler)statusHandler
 {
     self.statusHandler = statusHandler;
 
     // disconnect and reconnect to make sure we get a new connection
     [_xmppStream disconnect];
     [self connect];
-}
-
-- (void)xmppUserLogout
-{
-    [self goOffline];
 }
 
 @end

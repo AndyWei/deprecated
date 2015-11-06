@@ -26,9 +26,7 @@ typedef void(^JYXmppStatusHandler)(JYXmppStatus type, NSError *error);
 + (NSFetchedResultsController *)fetcherForRemoteJid:(XMPPJID *)remoteJid;
 + (XMPPJID *)jidWithUsername:(NSString *)username;
 + (XMPPJID *)myJID;
-
-- (void)xmppUserLogin:(JYXmppStatusHandler)statusBlock;
-- (void)xmppUserLogout;
+- (void)start;
 
 @property(nonatomic) XMPPJID *currentRemoteJid;
 @property(nonatomic, readonly) XMPPStream *xmppStream;

@@ -46,7 +46,7 @@ CGFloat const kEdgeInset = 10.f;
 
     XMPPJID *myJID = [JYXmppManager myJID];
     self.senderId = myJID.bare;
-    self.senderDisplayName = [JYCredential mine].username;
+    self.senderDisplayName = [JYCredential current].username;
     self.thatJID = [JYXmppManager jidWithUsername:self.thatPerson.username];
 
     [self configCollectionView];

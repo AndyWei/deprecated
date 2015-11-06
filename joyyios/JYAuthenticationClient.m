@@ -57,7 +57,7 @@ static NSString *const kAWSTokenExpiryTimeKey = @"aws_openid_token_expiry_time";
 
 - (BOOL)isAuthenticated
 {
-    return [JYCredential mine].tokenValidInSeconds > 0;
+    return [JYCredential current].tokenValidInSeconds > 0;
 }
 
 - (BOOL)_isTokenValid

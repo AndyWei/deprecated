@@ -13,7 +13,6 @@
 
 @interface JYAmazonClientManager()
 @property (nonatomic) AWSCognitoCredentialsProvider *credentialsProvider;
-@property (atomic, copy) AWSContinuationBlock completionHandler;
 @property (nonatomic) JYAuthenticationClient *authClient;
 @end
 
@@ -25,19 +24,34 @@
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         sharedInstance = [JYAmazonClientManager new];
-        sharedInstance.authClient = [JYAuthenticationClient new];
     });
     return sharedInstance;
 }
 
-- (void)goActiveWithCompletionHandler:(AWSContinuationBlock)completionHandler
+- (instancetype)init
 {
-    self.completionHandler = completionHandler;
-
-    if ([JYCredential mine].tokenValidInSeconds > 0)
+    self = [super init];
+    if (self)
     {
-        [self _completeLogin:@{ kAuthProviderName: [JYCredential mine].idString }];
+         self.authClient = [JYAuthenticationClient new];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_apiTokenReady) name:kNotificationAPITokenReady object:nil];
     }
+    return self;
+}
+
+- (void)start
+{
+    NSLog(@"AmazonClientManager started");
+}
+
+- (void)_apiTokenReady
+{
+    [self _completeLogin:@{ kAuthProviderName: [JYCredential current].idString }];
+}
+
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)_completeLogin:(NSDictionary *)logins
@@ -52,13 +66,7 @@
         task = [self.credentialsProvider refresh];
     }
 
-    if (!self.completionHandler)
-    {
-        self.completionHandler = ^id(AWSTask *task) {
-            return nil;
-        };
-    }
-    [task continueWithBlock:self.completionHandler];
+    [task continueWithBlock:nil];
 }
 
 - (AWSTask *)_initializeProviders:(NSDictionary *)logins

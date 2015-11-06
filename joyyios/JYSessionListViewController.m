@@ -29,7 +29,7 @@ static NSString *const kContactCellIdentifier = @"contactCell";
     self.tableView.backgroundColor = JoyyWhite;
 
     // Connect to Message server
-    [[JYXmppManager sharedInstance] xmppUserLogin:nil];
+    [[JYXmppManager sharedInstance] start];
 
     // Hide the "Back" text on the pushed view navigation bar
     self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:self.navigationItem.backBarButtonItem.style target:nil action:nil];

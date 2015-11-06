@@ -88,8 +88,8 @@
 {
     NSString *username = self.usernameField.text;
     NSString *password = self.passwordField.text;
-    [JYCredential mine].username = username;
-    [JYCredential mine].password = password;
+    [JYCredential current].username = username;
+    [JYCredential current].password = password;
 
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
 
@@ -108,7 +108,7 @@
              [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
              [KVNProgress dismiss];
 
-             [[JYCredential mine] save:responseObject];
+             [[JYCredential current] save:responseObject];
              [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationDidSignUp object:nil];
              [weakSelf _showProfileView];
          }

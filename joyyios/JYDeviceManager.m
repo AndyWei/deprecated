@@ -36,13 +36,25 @@ NSString *const kBadgeCount = @"badge_count";
     {
         _deviceToken = [[NSUserDefaults standardUserDefaults] stringForKey:kDeviceToken];
         _badgeCount = [[NSUserDefaults standardUserDefaults] integerForKey:kBadgeCount];
+
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_apiTokenReady) name:kNotificationAPITokenReady object:nil];
     }
     return self;
 }
 
 - (void)start
 {
+    NSLog(@"DeviceManager started");
+}
+
+- (void)_apiTokenReady
+{
     [self _registerPushNotification];
+}
+
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)setDeviceToken:(NSString *)deviceToken

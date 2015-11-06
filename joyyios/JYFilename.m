@@ -62,7 +62,7 @@
 
 - (NSString *)randomFilenameWithSuffix:(NSString *)suffix
 {
-    NSString *first = [[JYCredential mine].username substringToIndex:1];  // "j" for jack
+    NSString *first = [[JYCredential current].username substringToIndex:1];  // "j" for jack
     NSString *randString = [self randomFourDigits];              // "0176"
     NSString *timestamp = [self timeInMiliSeconds];              // 458354045799
 

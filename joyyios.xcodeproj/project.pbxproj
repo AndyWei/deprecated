@@ -102,6 +102,7 @@
 		D6E3B0551B996F5400B707DF /* JYSessionListViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D6E3B0541B996F5400B707DF /* JYSessionListViewCell.m */; };
 		D6E3B0611B9A38F500B707DF /* JYMessageDateFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = D6E3B0601B9A38F500B707DF /* JYMessageDateFormatter.m */; };
 		D6E3B0651B9A7C6D00B707DF /* NSIndexPath+Joyy.m in Sources */ = {isa = PBXBuildFile; fileRef = D6E3B0641B9A7C6D00B707DF /* NSIndexPath+Joyy.m */; };
+		D6E8ABAA1BEB3A4E0040228C /* JYCredentialManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D6E8ABA91BEB3A4E0040228C /* JYCredentialManager.m */; };
 		D6F7F1381BA71ADF008118DA /* JYVerificationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F7F1371BA71ADF008118DA /* JYVerificationViewController.m */; };
 		D6F7F1491BA8ED76008118DA /* JYFacialGestureCamera.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F7F1401BA8ED76008118DA /* JYFacialGestureCamera.m */; };
 		D6F7F14B1BA8ED76008118DA /* JYFacialGestureDetector.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F7F1421BA8ED76008118DA /* JYFacialGestureDetector.m */; };
@@ -297,6 +298,8 @@
 		D6E3B0601B9A38F500B707DF /* JYMessageDateFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYMessageDateFormatter.m; sourceTree = "<group>"; };
 		D6E3B0631B9A7C6D00B707DF /* NSIndexPath+Joyy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSIndexPath+Joyy.h"; sourceTree = "<group>"; };
 		D6E3B0641B9A7C6D00B707DF /* NSIndexPath+Joyy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSIndexPath+Joyy.m"; sourceTree = "<group>"; };
+		D6E8ABA81BEB3A4E0040228C /* JYCredentialManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYCredentialManager.h; sourceTree = "<group>"; };
+		D6E8ABA91BEB3A4E0040228C /* JYCredentialManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYCredentialManager.m; sourceTree = "<group>"; };
 		D6F7F1361BA71ADF008118DA /* JYVerificationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYVerificationViewController.h; sourceTree = "<group>"; };
 		D6F7F1371BA71ADF008118DA /* JYVerificationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYVerificationViewController.m; sourceTree = "<group>"; };
 		D6F7F13F1BA8ED76008118DA /* JYFacialGestureCamera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYFacialGestureCamera.h; sourceTree = "<group>"; };
@@ -575,10 +578,16 @@
 		D63591921BEA90FB00BFFF82 /* manager */ = {
 			isa = PBXGroup;
 			children = (
-				D6825BC51BE897F400F3695D /* JYLocationManager.h */,
-				D6825BC61BE897F400F3695D /* JYLocationManager.m */,
+				D69FF6D91B96471600466FE5 /* JYAmazonClientManager.h */,
+				D69FF6DA1B96471600466FE5 /* JYAmazonClientManager.m */,
+				D6E8ABA81BEB3A4E0040228C /* JYCredentialManager.h */,
+				D6E8ABA91BEB3A4E0040228C /* JYCredentialManager.m */,
 				D63591931BEA913500BFFF82 /* JYDeviceManager.h */,
 				D63591941BEA913500BFFF82 /* JYDeviceManager.m */,
+				D6825BC51BE897F400F3695D /* JYLocationManager.h */,
+				D6825BC61BE897F400F3695D /* JYLocationManager.m */,
+				D62C2C5E1B8E887200233F5B /* JYXmppManager.h */,
+				D62C2C5F1B8E887200233F5B /* JYXmppManager.m */,
 			);
 			name = manager;
 			sourceTree = "<group>";
@@ -607,8 +616,6 @@
 				D62C2C671B90261000233F5B /* JYSessionListViewController.m */,
 				D68486B41B8AC267005CA0C4 /* JYSessionViewController.h */,
 				D68486B51B8AC267005CA0C4 /* JYSessionViewController.m */,
-				D62C2C5E1B8E887200233F5B /* JYXmppManager.h */,
-				D62C2C5F1B8E887200233F5B /* JYXmppManager.m */,
 			);
 			name = Message;
 			sourceTree = "<group>";
@@ -650,7 +657,7 @@
 			name = Common;
 			sourceTree = "<group>";
 		};
-		D68DAF9A1AC4CD1800838E7E /* Credential */ = {
+		D68DAF9A1AC4CD1800838E7E /* Sign */ = {
 			isa = PBXGroup;
 			children = (
 				D63F0D7B1ACA5E260067C5EE /* JYPhoneNumberViewController.h */,
@@ -668,7 +675,7 @@
 				D63F0D531AC7ACB70067C5EE /* JYSignUpViewController.h */,
 				D63F0D541AC7ACB70067C5EE /* JYSignUpViewController.m */,
 			);
-			name = Credential;
+			name = Sign;
 			sourceTree = "<group>";
 		};
 		D69202A31AC4C7C0001C1C3D = {
@@ -700,7 +707,7 @@
 				D62C2C6A1B917FE500233F5B /* Vendor */,
 				D69FF6D81B9646CF00466FE5 /* AWS */,
 				D68DAF991AC4CD0800838E7E /* Common */,
-				D68DAF9A1AC4CD1800838E7E /* Credential */,
+				D68DAF9A1AC4CD1800838E7E /* Sign */,
 				D6F7F13A1BA8ECCC008118DA /* Detector */,
 				D63591921BEA90FB00BFFF82 /* manager */,
 				D61D1D5B1B4DBA5D00DE37DF /* Masquerade */,
@@ -749,8 +756,6 @@
 				D69FF6E01B96474200466FE5 /* JYAuthenticatedIdentityProvider.m */,
 				D69FF6E11B96474200466FE5 /* JYAuthenticationClient.h */,
 				D69FF6E21B96474200466FE5 /* JYAuthenticationClient.m */,
-				D69FF6D91B96471600466FE5 /* JYAmazonClientManager.h */,
-				D69FF6DA1B96471600466FE5 /* JYAmazonClientManager.m */,
 			);
 			name = AWS;
 			sourceTree = "<group>";
@@ -976,6 +981,7 @@
 				D6C82B551B0D9FAE00876F57 /* JYCommentViewController.m in Sources */,
 				D6B2F05B1ACE630F009601B0 /* JYAutoCompleteTextField.m in Sources */,
 				D6E3B0651B9A7C6D00B707DF /* NSIndexPath+Joyy.m in Sources */,
+				D6E8ABAA1BEB3A4E0040228C /* JYCredentialManager.m in Sources */,
 				D6E3B0611B9A38F500B707DF /* JYMessageDateFormatter.m in Sources */,
 				D61D1D4F1B4A65F200DE37DF /* MDCSwipeOptions.m in Sources */,
 				D62C2C601B8E887200233F5B /* JYXmppManager.m in Sources */,

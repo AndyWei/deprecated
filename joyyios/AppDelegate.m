@@ -11,13 +11,12 @@
 #import <AWSS3/AWSS3.h>
 #import <Crashlytics/Crashlytics.h>
 #import <Fabric/Fabric.h>
-#import <KVNProgress/KVNProgress.h>
-#import <MSWeakTimer/MSWeakTimer.h>
 #import <RKDropdownAlert/RKDropdownAlert.h>
 
 #import "AppDelegate.h"
 #import "JYAmazonClientManager.h"
 #import "JYButton.h"
+#import "JYCredentialManager.h"
 #import "JYDeviceManager.h"
 #import "JYFilename.h"
 #import "JYMasqueradeViewController.h"
@@ -32,8 +31,6 @@
 #import "OnboardingContentViewController.h"
 
 @interface AppDelegate ()
-@property(nonatomic) BOOL shouldXmppGoOnline;
-@property(nonatomic) MSWeakTimer *signInTimer;
 @property(nonatomic) OnboardingContentViewController *page1;
 @property(nonatomic) OnboardingContentViewController *page2;
 @property(nonatomic) OnboardingContentViewController *page3;
@@ -53,8 +50,8 @@
 
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_didSignInManually) name:kNotificationDidSignIn object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_didSignUpManually) name:kNotificationDidSignUp object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_didManuallySignIn) name:kNotificationDidSignIn object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_didManuallySignUp) name:kNotificationDidSignUp object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_didCreateProfile) name:kNotificationDidCreateProfile object:nil];
 
     [self _setupGlobalAppearance];
@@ -73,12 +70,6 @@
 {
     NSLog(@"applicationDidEnterBackground");
     [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationAppDidStop object:nil];
-    if (self.signInTimer)
-    {
-        [self.signInTimer invalidate];
-        self.signInTimer = nil;
-    }
-    [[JYXmppManager sharedInstance] xmppUserLogout];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
@@ -94,31 +85,21 @@
     // TODO: Implement clear badge number logic in the right places.
     application.applicationIconBadgeNumber = 0;
 
-    JYCredential *credential = [JYCredential mine];
-    if(credential.isEmpty)
-    {
-        return;
-    }
-
-    self.shouldXmppGoOnline = [self _isPresentingMessageViewController];
-
-    NSInteger seconds = credential.tokenValidInSeconds;
-    [self _autoSignInAfter:seconds];
+    [[JYDeviceManager sharedInstance] start];
+    [[JYLocationManager sharedInstance] start];
+    [[JYAmazonClientManager sharedInstance] start];
+    [[JYXmppManager sharedInstance] start];
+    [[JYCredentialManager sharedInstance] start];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application
 {
     NSLog(@"applicationWillTerminate");
-    if (self.signInTimer)
-    {
-        [self.signInTimer invalidate];
-        self.signInTimer = nil;
-    }
-    [[JYXmppManager sharedInstance] xmppUserLogout];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationAppDidStop object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (BOOL)_isPresentingMessageViewController
+- (BOOL)shouldXmppGoOnline
 {
     return self.tabBarController.selectedIndex == 2;
 }
@@ -174,7 +155,7 @@
     {
         [self _launchIntroductionViewController];
     }
-    else if ([JYCredential mine].isEmpty)
+    else if ([JYCredential current].isEmpty)
     {
         [self _launchSignViewController];
     }
@@ -205,7 +186,6 @@
 
 - (void)_launchMainViewController
 {
-    [[JYLocationManager sharedInstance] start];
     self.window.rootViewController = self.tabBarController;
     self.onboardingViewController = nil;
 }
@@ -258,17 +238,15 @@
     return _tabBarController;
 }
 
-- (void)_didSignInManually
+- (void)_didManuallySignIn
 {
-    NSInteger seconds = [JYCredential mine].tokenValidInSeconds;
-    [self _autoSignInAfter:seconds];
+    [[JYCredentialManager sharedInstance] start];
     [self _launchMainViewController];
 }
 
-- (void)_didSignUpManually
+- (void)_didManuallySignUp
 {
-    NSInteger seconds = [JYCredential mine].tokenValidInSeconds;
-    [self _autoSignInAfter:seconds];
+    [[JYCredentialManager sharedInstance] start];
 }
 
 - (void)_didCreateProfile
@@ -276,82 +254,6 @@
     [self _launchMainViewController];
 }
 
-- (void)_autoSignInAfter:(NSInteger)seconds
-{
-    if (seconds < 0)
-    {
-        [self _autoSignInNow];
-        return;
-    }
-
-    [[JYDeviceManager sharedInstance] start];
-
-    [self _doAutoSignInAfter:seconds];
-
-    if (self.shouldXmppGoOnline)
-    {
-        [[JYXmppManager sharedInstance] xmppUserLogin:nil];
-        self.shouldXmppGoOnline = NO;
-    }
-
-    [self _refreshAWSAccess];
-}
-
-- (void)_doAutoSignInAfter:(NSInteger)seconds
-{
-    if (self.signInTimer)
-    {
-        [self.signInTimer invalidate];
-    }
-
-    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-    self.signInTimer = [MSWeakTimer scheduledTimerWithTimeInterval:seconds
-                                                            target:self
-                                                          selector:@selector(_autoSignInNow)
-                                                          userInfo:nil
-                                                           repeats:NO
-                                                     dispatchQueue:queue];
-}
-
-- (void)_refreshAWSAccess
-{
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-        [[JYAmazonClientManager sharedInstance] goActiveWithCompletionHandler:nil];
-    });
-}
-
-#pragma mark - Network
-
-- (void)_autoSignInNow
-{
-    if (self.signInTimer)
-    {
-        [self.signInTimer invalidate];
-        self.signInTimer = nil;
-    }
-
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager managerWithPassword];
-    NSString *url = [NSString apiURLWithPath:@"credential/signin"];
-
-    NSLog(@"autoSignIn start");
-
-    __weak typeof(self) weakSelf = self;
-    [manager GET:url
-        parameters:nil
-        success:^(AFHTTPRequestOperation *operation, id responseObject) {
-
-            NSLog(@"Success: autoSignIn responseObject = %@", responseObject);
-
-            [[JYCredential mine] save:responseObject];
-
-            NSInteger seconds = [JYCredential mine].tokenValidInSeconds;
-            [weakSelf _autoSignInAfter:seconds];
-        }
-        failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-            NSLog(@"Error: autoSignIn Error: %@", error);
-            [weakSelf _doAutoSignInAfter:kSignInRetryInSeconds];
-        }];
-}
 
 #pragma mark - Introduction Pages
 
