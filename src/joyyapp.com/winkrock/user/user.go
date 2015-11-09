@@ -26,13 +26,18 @@ type Handler struct {
 /*
  * Check if an username is available
  */
-type CheckUsername struct {
+type CheckUsernameParams struct {
     Username string `param:"username" validate:"min=2,max=40"`
+}
+
+type CheckUsernameResponse struct {
+    Username string `json:"username"`
+    Exist    int    `json:"exist"`
 }
 
 func (h *Handler) CheckUsername(w http.ResponseWriter, req *http.Request) {
 
-    var p CheckUsername
+    var p CheckUsernameParams
     if err := ParseAndCheck(req, &p); err != nil {
         RespondError(w, err, http.StatusBadRequest)
         return
@@ -41,26 +46,39 @@ func (h *Handler) CheckUsername(w http.ResponseWriter, req *http.Request) {
     var userid int64
     if err := h.DB.Query(`SELECT id FROM user_by_name WHERE username = ? LIMIT 1`,
         p.Username).Consistency(gocql.One).Scan(&userid); err != nil {
-        RespondKV(w, "existence", 0)
+
+        response := &CheckUsernameResponse{
+            Username: p.Username,
+            Exist:    0,
+        }
+
+        bytes, _ := json.Marshal(response)
+        RespondData(w, bytes)
         return
     }
 
-    RespondKV(w, "existence", 1)
+    response := &CheckUsernameResponse{
+        Username: p.Username,
+        Exist:    1,
+    }
+
+    bytes, _ := json.Marshal(response)
+    RespondData(w, bytes)
     return
 }
 
 /*
  * Profile endpoints
  */
-type CreateProfileParams struct {
+type WriteProfileParams struct {
     Phone int64  `param:"phone" validate:"required"`
     YRS   int    `param:"yrs" validate:"required"`
     Bio   string `param:"bio"`
 }
 
-func (h *Handler) CreateProfile(w http.ResponseWriter, req *http.Request, userid int64, username string) {
+func (h *Handler) WriteProfile(w http.ResponseWriter, req *http.Request, userid int64, username string) {
 
-    var p CreateProfileParams
+    var p WriteProfileParams
     if err := ParseAndCheck(req, &p); err != nil {
         RespondError(w, err, http.StatusBadRequest)
         return

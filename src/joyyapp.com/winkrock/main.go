@@ -62,7 +62,7 @@ func main() {
     router.Post("/v1/device/remove", authenticate(pushHandler.RemoveDevice))
 
     router.Get("/v1/user/profile", authenticate(userHandler.ReadProfile))
-    router.Post("/v1/user/profile", authenticate(userHandler.CreateProfile))
+    router.Post("/v1/user/profile", authenticate(userHandler.WriteProfile))
 
     router.Get("/v1/users", authenticate(userHandler.ReadUsers))
     router.Get("/v1/username/existence", userHandler.CheckUsername)

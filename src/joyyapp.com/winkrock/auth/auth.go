@@ -49,6 +49,7 @@ type AuthParams struct {
 }
 
 type AuthResponse struct {
+    Username string `json:"username"`
     Id       int64  `json:"id"`
     Token    string `json:"token"`
     TokenTtl int    `json:"token_ttl"`
@@ -89,7 +90,13 @@ func (h *Handler) SignUp(w http.ResponseWriter, req *http.Request) {
     // success
     LogInfof("New user signed up. userid = %v, username = %v\n\r", userid, p.Username)
 
-    response := &AuthResponse{Id: userid, Token: token, TokenTtl: kTokenTtl}
+    response := &AuthResponse{
+        Username: p.Username,
+        Id:       userid,
+        Token:    token,
+        TokenTtl: kTokenTtl,
+    }
+
     bytes, _ := json.Marshal(response)
     RespondData(w, bytes)
     return
@@ -129,7 +136,13 @@ func (h *Handler) SignIn(w http.ResponseWriter, req *http.Request) {
         return
     }
 
-    response := &AuthResponse{Id: userid, Token: token, TokenTtl: kTokenTtl}
+    response := &AuthResponse{
+        Username: p.Username,
+        Id:       userid,
+        Token:    token,
+        TokenTtl: kTokenTtl,
+    }
+
     bytes, _ := json.Marshal(response)
     RespondData(w, bytes)
     return

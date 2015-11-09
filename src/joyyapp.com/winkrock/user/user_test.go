@@ -14,9 +14,9 @@ import (
 )
 
 /*
- * Create Profile Test
+ * Write Profile Test
  */
-var CreateProfileTests = []struct {
+var WriteProfileTests = []struct {
     userid   int64
     username string
     phone    int64
@@ -30,12 +30,12 @@ var CreateProfileTests = []struct {
     {1234567890004, "user4", 86136123412, 2, "", http.StatusOK},
 }
 
-func TestCreateProfile(test *testing.T) {
+func TestWriteProfile(test *testing.T) {
     assert := assert.New(test)
     db := cassandra.DB()
     h := Handler{DB: db}
 
-    for _, t := range CreateProfileTests {
+    for _, t := range WriteProfileTests {
 
         body := fmt.Sprintf("phone=%v&yrs=%v", t.phone, t.yrs)
         if len(t.bio) > 0 {
@@ -46,7 +46,7 @@ func TestCreateProfile(test *testing.T) {
         req.Header.Set("Content-Type", "application/x-www-form-urlencoded; param=value")
         resp := httptest.NewRecorder()
 
-        h.CreateProfile(resp, req, t.userid, t.username)
+        h.WriteProfile(resp, req, t.userid, t.username)
 
         assert.Equal(t.code, resp.Code, "should response correct status code")
     }
@@ -90,7 +90,7 @@ func TestReadProfile(test *testing.T) {
         req.Header.Set("Content-Type", "application/x-www-form-urlencoded; param=value")
         resp := httptest.NewRecorder()
 
-        h.CreateProfile(resp, req, t.userid, t.username)
+        h.WriteProfile(resp, req, t.userid, t.username)
         assert.Equal(t.code, resp.Code, "should response correct status code")
 
         req2, _ := http.NewRequest("GET", "/v1/user/profile", nil)

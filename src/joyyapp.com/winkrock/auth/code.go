@@ -65,7 +65,7 @@ func (h *Handler) RequestCode(w http.ResponseWriter, req *http.Request) {
     }
 
     code := random(1000, 9999)
-    codestr := strconv.Itoa(code)
+    codestr := strconv.Itoa(code) + "is your WinkRock verification code"
     phone := strconv.FormatInt(p.Phone, 10)
 
     if isTwilioCountry(phone) {
