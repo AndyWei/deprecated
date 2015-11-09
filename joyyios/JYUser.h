@@ -6,14 +6,14 @@
 //  Copyright (c) 2015 Joyy Inc. All rights reserved.
 //
 
-@interface JYPerson : NSObject
+@interface JYUser : NSObject
 
-+ (JYPerson *)me;
++ (JYUser *)me;
 - (instancetype)initWithDictionary:(NSDictionary *)dict;
 - (void)save:(NSDictionary *)dict;
 
 // Identities
-@property (nonatomic) NSUInteger personId;
+@property (nonatomic) NSUInteger userId;
 @property (nonatomic) NSString *username;
 @property (nonatomic, readonly) NSString *idString;
 
@@ -26,10 +26,9 @@
 @property (nonatomic) NSString *sex;
 @property (nonatomic) NSString *sexualOrientation;
 @property (nonatomic) NSString *bio;
+@property (nonatomic) NSUInteger phoneNumber;
 @property (nonatomic) NSUInteger yearOfBirth;
-@property (nonatomic) NSUInteger friendCount;
-@property (nonatomic) NSUInteger winkCount;
-@property (nonatomic) NSUInteger score;
+@property (nonatomic) NSUInteger yrs;
 @property (nonatomic, readonly) NSString *ageString;
 
 

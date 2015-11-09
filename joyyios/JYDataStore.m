@@ -39,7 +39,7 @@ NSString *const kKeyPresentedIntroductionVersion = @"PresentedIntroductionVersio
 }
 
 - (void)getPersonWithIdString:(NSString *)idString
-                      success:(void (^)(JYPerson *person))success
+                      success:(void (^)(JYUser *person))success
                       failure:(void (^)(NSError *error))failure
 {
     // input check
@@ -53,7 +53,7 @@ NSString *const kKeyPresentedIntroductionVersion = @"PresentedIntroductionVersio
     NSDictionary *personDict = [self.store getObjectById:idString fromTable:kTableNamePerson];
     if (personDict)
     {
-        JYPerson *person = [[JYPerson alloc] initWithDictionary:personDict];
+        JYUser *person = [[JYUser alloc] initWithDictionary:personDict];
         return success(person);
     }
 
@@ -72,7 +72,7 @@ NSString *const kKeyPresentedIntroductionVersion = @"PresentedIntroductionVersio
              if (dict)
              {
                  [weakSelf.store putObject:dict withId:idString intoTable:kTableNamePerson];
-                 JYPerson *person = [[JYPerson alloc] initWithDictionary:dict];
+                 JYUser *person = [[JYUser alloc] initWithDictionary:dict];
                  return success(person);
              }
              else

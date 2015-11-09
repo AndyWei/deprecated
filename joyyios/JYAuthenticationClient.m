@@ -32,7 +32,8 @@ NSString *const kJYAuthenticationClientDomain = @"JYAuthenticationClient";
 @end
 
 // KeyChain -- DO NOT MODIFY!!!
-static NSString *const kKeyChainStoreAWS = @"com.joyyapp.aws";
+//static NSString *const kKeyChainStoreAWS = @"com.joyyapp.aws";
+static NSString *const kKeyChainStoreAWS = @"com.winkrock.aws";
 static NSString *const kAWSIdentityIdKey = @"aws_identity_id";
 static NSString *const kAWSTokenKey      = @"aws_openid_token";
 static NSString *const kAWSTokenExpiryTimeKey = @"aws_openid_token_expiry_time";
@@ -157,7 +158,7 @@ static NSString *const kAWSTokenExpiryTimeKey = @"aws_openid_token_expiry_time";
         NSUInteger now = (NSUInteger)[NSDate timeIntervalSinceReferenceDate];
         weakSelf.tokenExpiryTime = now + 86400;
 
-        NSLog(@"Success: got new token from joyyserver");
+        NSLog(@"Success: got new token from winkrock server");
         return [AWSTask taskWithResult:authResponse];
     }];
 }

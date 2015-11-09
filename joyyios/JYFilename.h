@@ -23,7 +23,7 @@
 @property (nonatomic) NSString *avatarBucketName;
 @property (nonatomic) NSString *messageBucketName;
 @property (nonatomic) NSString *postBucketName;
-@property (nonatomic) NSString *region;
+@property (nonatomic) NSUInteger region;
 
 
 @end

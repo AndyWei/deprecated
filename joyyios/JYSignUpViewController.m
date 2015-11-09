@@ -15,6 +15,7 @@
 #import "JYSignUpViewController.h"
 
 @interface JYSignUpViewController ()
+@property (nonatomic) NSMutableDictionary *usedusernameCache;
 @end
 
 @implementation JYSignUpViewController
@@ -29,6 +30,7 @@
     self.signButton.textLabel.text = NSLocalizedString(@"Sign Up", nil);
     self.headerLabel.text = NSLocalizedString(@"Username can only contain letters, numbers and underscore.", nil);
 
+    self.usedusernameCache = [NSMutableDictionary new];
     [self.usernameField becomeFirstResponder];
 }
 
@@ -37,9 +39,38 @@
     [super didReceiveMemoryWarning];
 }
 
-- (void)_usernameExist:(BOOL)exist
+- (void)_username:(NSString *)username exist:(BOOL)exist
 {
-    self.usernameField.textColor = exist? JoyyRed: FlatGreen;
+    if ([username length] == 0) {
+        return;
+    }
+
+    // update cache
+    NSString *key = [username lowercaseString];
+    [self.usedusernameCache setObject:@(exist) forKey:key];
+
+    NSString *curr = [self.usernameField.text lowercaseString];
+    if ([username isEqualToString:curr])
+    {
+        self.usernameField.textColor = exist? JoyyRed: FlatGreen;
+    }
+}
+
+- (void)_checkExistenceOfUsername:(NSString *)username
+{
+    if ([username length] == 0) {
+        return;
+    }
+
+    NSString *key = [username lowercaseString];
+    if ([self.usedusernameCache objectForKey:key])
+    {
+        BOOL inUse = [[self.usedusernameCache objectForKey:key] boolValue];
+        self.usernameField.textColor = inUse? JoyyRed: FlatGreen;
+        return;
+    }
+
+    [self _fetchExistenceOfUsername:key];
 }
 
 - (void)_showProfileView
@@ -59,7 +90,7 @@
 
     if (textField.text && [textField.text length] >= 4)
     {
-        [self _fetchExistenceOfUsername:self.usernameField.text];
+        [self _checkExistenceOfUsername:self.usernameField.text];
     }
 }
 
@@ -76,7 +107,7 @@
     
         if (newStr.length >= 4)
         {
-            [self _fetchExistenceOfUsername:newStr];
+            [self _checkExistenceOfUsername:newStr];
         }
     }
     return [super textField:textField shouldChangeCharactersInRange:range replacementString:string];
@@ -86,7 +117,7 @@
 
 - (void)_signUp
 {
-    NSString *username = self.usernameField.text;
+    NSString *username = [self.usernameField.text lowercaseString];
     NSString *password = self.passwordField.text;
     [JYCredential current].username = username;
     [JYCredential current].password = password;
@@ -145,8 +176,9 @@
               NSLog(@"Success: username/existence responseObject: %@", responseObject);
               [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
 
-              BOOL doesExist = [[responseObject objectForKey:@"existence"] boolValue];
-              [weakSelf _usernameExist:doesExist];
+              NSString *username = [responseObject objectForKey:@"username"];
+              BOOL exist = [[responseObject objectForKey:@"exist"] boolValue];
+              [weakSelf _username:username exist:exist];
           }
           failure:^(AFHTTPRequestOperation *operation, NSError *error) {
               NSLog(@"Error: username/existence error = %@", error);

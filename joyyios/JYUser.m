@@ -8,21 +8,21 @@
 
 #import "JYFilename.h"
 
-@interface JYPerson ()
+@interface JYUser ()
 @property (nonatomic) NSString *idString;
 @property (nonatomic) NSString *ageString;
 @property (nonatomic) NSString *region;
 @property (nonatomic) NSString *avatarFilename;
 @end
 
-@implementation JYPerson
+@implementation JYUser
 
-+ (JYPerson *)me
++ (JYUser *)me
 {
-    static JYPerson *_me;
+    static JYUser *_me;
     static dispatch_once_t done;
     dispatch_once(&done, ^{
-        _me = [JYPerson new];
+        _me = [JYUser new];
 
         // TODO: read from KV store and fetch from server if no local information
     });
@@ -34,45 +34,36 @@
     self = [super init];
     if (self)
     {
-        _username       = [dict objectForKey:@"username"];
-        _sex            = [dict objectForKey:@"sex"];
-        _region         = [dict objectForKey:@"reg"];
-        _avatarFilename = [dict objectForKey:@"fn"];
-        _bio            = [dict objectForKey:@"bio"];
-        _personId    = [dict unsignedIntegerValueForKey:@"id"];
-        _friendCount = [dict unsignedIntegerValueForKey:@"fcnt"];
-        _winkCount   = [dict unsignedIntegerValueForKey:@"wcnt"];
-        _score       = [dict unsignedIntegerValueForKey:@"score"];
-        _yearOfBirth = [dict unsignedIntegerValueForKey:@"yob"];
+        [self save:dict];
     }
     return self;
 }
 
 - (void)save:(NSDictionary *)dict
 {
-    if ([dict valueForKey:@"username"])
+    if ([dict valueForKey:@"fname"])
     {
-        self.username = [dict valueForKey:@"username"];
+        self.username = [dict objectForKey:@"fname"];
     }
 
-    if ([dict valueForKey:@"reg"])
+    if ([dict valueForKey:@"fid"])
     {
-        self.region = [dict valueForKey:@"reg"];
+        self.userId = [[dict objectForKey:@"fid"] unsignedIntegerValue];
     }
 
-    if ([dict valueForKey:@"fn"])
+    if ([dict valueForKey:@"fyrs"])
     {
-        self.avatarFilename = [dict valueForKey:@"fn"];
+        self.yrs = [[dict objectForKey:@"fyrs"] unsignedIntegerValue];
     }
 
-    if ([dict valueForKey:@"sex"])
+    if ([dict valueForKey:@"yrs"])
     {
-        self.sex = [dict valueForKey:@"sex"];
+        self.yrs = [[dict objectForKey:@"yrs"] unsignedIntegerValue];
     }
 
-    if ([dict valueForKey:@"yob"])
+    if ([dict valueForKey:@"phone"])
     {
-        self.yearOfBirth = [dict unsignedIntegerValueForKey:@"yob"];
+        self.phoneNumber = [[dict objectForKey:@"phone"] unsignedIntegerValue];
     }
 }
 
@@ -97,7 +88,7 @@
 {
     if (!_idString)
     {
-        _idString = [NSString stringWithFormat:@"%tu", self.personId];
+        _idString = [NSString stringWithFormat:@"%tu", self.userId];
     }
     return _idString;
 }

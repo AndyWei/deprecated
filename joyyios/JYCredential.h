@@ -12,7 +12,6 @@
 
 @property (nonatomic) NSString *username;
 @property (nonatomic) NSString *password;
-@property (nonatomic) NSString *phoneNumber;
 @property (nonatomic) NSString *token;
 @property (nonatomic) NSString *idString;
 @property (nonatomic) NSUInteger userId;

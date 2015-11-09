@@ -16,7 +16,7 @@ static const CGFloat kAvatarImageWidth = 70;
 static const CGFloat kTimeLabelWidth = 80;
 
 @interface JYSessionListViewCell ()
-@property (nonatomic) JYPerson *person;
+@property (nonatomic) JYUser *person;
 @property (nonatomic) TTTAttributedLabel *nameLabel;
 @property (nonatomic) TTTAttributedLabel *messageLabel;
 @property (nonatomic) TTTAttributedLabel *timeLabel;
@@ -50,7 +50,7 @@ static const CGFloat kTimeLabelWidth = 80;
     NSString *idString = [_contact.bareJidStr personIdString];
 
     __weak typeof(self) weakSelf = self;
-    [[JYDataStore sharedInstance] getPersonWithIdString:idString success:^(JYPerson *person) {
+    [[JYDataStore sharedInstance] getPersonWithIdString:idString success:^(JYUser *person) {
 
         weakSelf.person = person;
     } failure:^(NSError *error) {
@@ -58,7 +58,7 @@ static const CGFloat kTimeLabelWidth = 80;
     }];
 }
 
-- (void)setPerson:(JYPerson *)person
+- (void)setPerson:(JYUser *)person
 {
     _person = person;
 

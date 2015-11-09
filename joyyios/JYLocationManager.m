@@ -10,9 +10,11 @@
 #import <CoreTelephony/CTTelephonyNetworkInfo.h>
 
 #import "JYLocationManager.h"
+#import "JYUser.h"
 
 @interface JYLocationManager () <CLLocationManagerDelegate, UIAlertViewDelegate>
 @property (nonatomic) CLLocationManager *manager;
+@property (nonatomic) BOOL apiTokenReady;
 @end
 
 NSString *const kCountryCode = @"location_country_code";
@@ -57,7 +59,9 @@ NSString *const kZip = @"location_zip";
         _manager.distanceFilter = kCLDistanceFilterNone;
         _manager.desiredAccuracy = kCLLocationAccuracyHundredMeters;
 
+        _apiTokenReady = NO;
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_apiTokenReady) name:kNotificationAPITokenReady object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_userYRSReady) name:kNotificationUserYRSReady object:nil];
     }
     return self;
 }
@@ -69,7 +73,20 @@ NSString *const kZip = @"location_zip";
 
 - (void)_apiTokenReady
 {
-    [self _readLocation];
+    _apiTokenReady = YES;
+
+    if ([JYUser me].yrs > 0)
+    {
+        [self _readLocation];
+    }
+}
+
+- (void)_userYRSReady
+{
+    if (self.apiTokenReady)
+    {
+        [self _readLocation];
+    }
 }
 
 - (void)dealloc
@@ -98,7 +115,7 @@ NSString *const kZip = @"location_zip";
         return;
     }
 
-    NSString *title = NSLocalizedString(@"Hey, WinkRock need your location", nil);
+    NSString *title = NSLocalizedString(@"Hey, WinkRock need your location to search people nearby", nil);
     NSString *message = NSLocalizedString(@"You can allow it in 'Settings -> Privacy -> Location Services'", nil);
 
     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:title

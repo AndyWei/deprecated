@@ -276,7 +276,7 @@ static NSString *const kVerificationCellIdentifier = @"verificationCell";
 {
     if (buttonIndex == actionSheet.cancelButtonIndex)
     {
-        [JYCredential current].phoneNumber = self.phoneNumber;
+        [JYUser me].phoneNumber = [self.phoneNumber unsignedIntegerValue];
         [self _showSignupView];
         return;
     }

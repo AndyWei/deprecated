@@ -71,6 +71,7 @@ NSString *const kNotificationDidSignUp = @"didSignUp";
 NSString *const kNotificationNeedGeoInfo = @"needGeoInfo";
 NSString *const kNotificationWillCommentPost = @"willCommentPost";
 NSString *const kNotificationWillLikePost = @"willLikePost";
+NSString *const kNotificationUserYRSReady = @"userYRSReady";
 
 NSString *const kTableNameLikedPost = @"liked_post";
 NSString *const kTableNamePerson = @"person";

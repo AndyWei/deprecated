@@ -66,6 +66,7 @@ extern NSString *const kNotificationDidSignUp;
 extern NSString *const kNotificationNeedGeoInfo;
 extern NSString *const kNotificationWillCommentPost;
 extern NSString *const kNotificationWillLikePost;
+extern NSString *const kNotificationUserYRSReady;
 extern NSString *const kTableNameLikedPost;
 extern NSString *const kTableNamePerson;
 extern NSString *const kURLAPIBase;

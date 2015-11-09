@@ -422,13 +422,13 @@ const CGFloat kButtonWidth = 60;
 
     [parameters setObject:[JYLocationManager sharedInstance].zip forKey:@"zip"];
 
-    NSString *orientation = [JYPerson me].sexualOrientation;
+    NSString *orientation = [JYUser me].sexualOrientation;
     [parameters setObject:orientation forKey:@"orientation"];
 
     if (self.personList.count > 0)
     {
-        JYPerson *person = self.personList.lastObject;
-        [parameters setValue:@(person.score) forKey:@"max"];
+//        JYUser *person = self.personList.lastObject;
+//        [parameters setValue:@(person.id) forKey:@"max"];
     }
 
 //    NSLog(@"fetch person nearby parameters: %@", parameters);
@@ -451,7 +451,7 @@ const CGFloat kButtonWidth = 60;
 
              for (NSDictionary *dict in responseObject)
              {
-                 JYPerson *person = [[JYPerson alloc] initWithDictionary:dict];
+                 JYUser *person = [[JYUser alloc] initWithDictionary:dict];
                  [weakSelf.personList addObject:person];
              }
              [weakSelf _loadCards];

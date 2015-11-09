@@ -40,7 +40,7 @@
 #import "UIView+Positioning.h"
 
 #import "JYCredential.h"
-#import "JYPerson.h"
+#import "JYUser.h"
 #import "JYDataStore.h"
 #import "AFHTTPRequestOperationManager+Joyy.h"
 

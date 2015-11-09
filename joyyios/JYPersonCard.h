@@ -8,13 +8,13 @@
 
 #import "MDCSwipeToChoose.h"
 
-@class JYPerson;
+@class JYUser;
 @class JYPersonCard;
 
 @interface JYPersonCard : MDCSwipeToChooseView
 
 - (instancetype)initWithFrame:(CGRect)frame options:(MDCSwipeToChooseViewOptions *)options;
 
-@property (nonatomic) JYPerson *person;
+@property (nonatomic) JYUser *person;
 
 @end

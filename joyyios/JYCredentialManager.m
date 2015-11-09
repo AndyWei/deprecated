@@ -87,14 +87,17 @@
 {
     [self _stopAutoSignInTimer];
 
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager managerWithPassword];
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     NSString *url = [NSString apiURLWithPath:@"auth/signin"];
+    NSString *username = [JYCredential current].username;
+    NSString *password = [JYCredential current].password;
 
+    NSDictionary *parameters = @{ @"username":username, @"password":password };
     NSLog(@"autoSignIn start");
 
     __weak typeof(self) weakSelf = self;
-    [manager GET:url
-      parameters:nil
+    [manager POST:url
+      parameters:parameters
          success:^(AFHTTPRequestOperation *operation, id responseObject) {
 
              NSLog(@"Success: autoSignIn responseObject = %@", responseObject);

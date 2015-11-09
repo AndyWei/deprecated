@@ -14,7 +14,6 @@
 #import "JYSignInViewController.h"
 
 @interface JYSignInViewController ()
-
 @end
 
 @implementation JYSignInViewController
@@ -41,17 +40,20 @@
 
 - (void)_signIn
 {
-    [JYCredential current].username = self.username;
-    [JYCredential current].password = self.passwordField.text;
+    NSString *username = [self.usernameField.text lowercaseString];
+    NSString *password = self.passwordField.text;
+    [JYCredential current].username = username;
+    [JYCredential current].password = password;
 
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager managerWithPassword];
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     NSString *url = [NSString apiURLWithPath:@"auth/signin"];
 
+    NSDictionary *parameters = @{ @"username":username, @"password":password };
     [KVNProgress show];
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
 
-    [manager GET:url
-        parameters:nil
+    [manager POST:url
+        parameters:parameters
         success:^(AFHTTPRequestOperation *operation, id responseObject) {
             NSLog(@"SignIn Success responseObject: %@", responseObject);
 

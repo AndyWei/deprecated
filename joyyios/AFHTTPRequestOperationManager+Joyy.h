@@ -8,7 +8,6 @@
 
 @interface AFHTTPRequestOperationManager (Joyy)
 
-+ (AFHTTPRequestOperationManager *)managerWithPassword;
 + (AFHTTPRequestOperationManager *)managerWithToken;
 
 @end

@@ -91,7 +91,7 @@ static const CGFloat kInfoLabelWidth = 280.f;
     return label;
 }
 
-- (void)setPerson:(JYPerson *)person
+- (void)setPerson:(JYUser *)person
 {
     if (!person)
     {
@@ -145,7 +145,7 @@ static const CGFloat kInfoLabelWidth = 280.f;
 
 - (void)_updateHeartCount
 {
-    self.winkCountView.textLabel.text = [NSString stringWithFormat:@"%tu", self.person.winkCount];
+//    self.winkCountView.textLabel.text = [NSString stringWithFormat:@"%tu", self.person.winkCount];
 }
 
 @end

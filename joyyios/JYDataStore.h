@@ -7,7 +7,7 @@
 //
 
 #import <YTKKeyValueStore/YTKKeyValueStore.h>
-#import "JYPerson.h"
+#import "JYUser.h"
 
 @import CoreLocation;
 
@@ -16,7 +16,7 @@
 + (JYDataStore *)sharedInstance;
 
 - (void)getPersonWithIdString:(NSString *)idString
-                      success:(void (^)(JYPerson *person))success
+                      success:(void (^)(JYUser *person))success
                       failure:(void (^)(NSError *error))failure;
 
 @property (nonatomic) YTKKeyValueStore *store;

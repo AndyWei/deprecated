@@ -45,7 +45,7 @@
     NSLog(@"didFinishLaunchingWithOptions");
 
     // Fabric crashlytics
-    [Fabric with:@[[Crashlytics class]]];
+//    [Fabric with:@[[Crashlytics class]]];
     [Flurry startSession:kFlurryKey];
 
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];

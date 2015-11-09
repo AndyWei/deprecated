@@ -8,17 +8,6 @@
 
 @implementation AFHTTPRequestOperationManager (Joyy)
 
-+ (AFHTTPRequestOperationManager *)managerWithPassword
-{
-    NSString *username = [JYCredential current].username;
-    NSString *password = [JYCredential current].password;
-
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    [manager.requestSerializer setAuthorizationHeaderFieldWithUsername:username password:password];
-
-    return manager;
-}
-
 + (AFHTTPRequestOperationManager *)managerWithToken
 {
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];

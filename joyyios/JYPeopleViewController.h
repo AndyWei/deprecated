@@ -11,7 +11,7 @@
 
 @interface JYPeopleViewController : UIViewController
 
-@property (nonatomic) JYPerson *currentPerson;
+@property (nonatomic) JYUser *currentPerson;
 @property (nonatomic) JYPersonCard *frontCard;
 @property (nonatomic) JYPersonCard *backCard;
 

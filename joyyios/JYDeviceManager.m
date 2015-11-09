@@ -9,7 +9,6 @@
 #import "JYDeviceManager.h"
 
 @interface JYDeviceManager ()
-@property (nonatomic) NSTimeInterval deviceTokenTimestamp;
 @end
 
 NSString *const kDeviceToken = @"device_token";
@@ -59,9 +58,9 @@ NSString *const kBadgeCount = @"badge_count";
 
 - (void)setDeviceToken:(NSString *)deviceToken
 {
-    if ([_deviceToken isEqualToString:deviceToken]) {
-        return;
-    }
+//    if ([_deviceToken isEqualToString:deviceToken]) {
+//        return;
+//    }
 
     _deviceToken = deviceToken;
     [[NSUserDefaults standardUserDefaults] setObject:deviceToken forKey:kDeviceToken];

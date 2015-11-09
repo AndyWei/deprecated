@@ -13,10 +13,11 @@
 #import "JYFilename.h"
 
 @interface JYFilename ()
-@property (nonatomic) NSDictionary *countryDict;
 @property (nonatomic) NSDictionary *bucketPrefixDict;
-@property (nonatomic) NSDictionary *regionDict;
+@property (nonatomic) NSDictionary *countryContinetDict;
+@property (nonatomic) NSDictionary *continetRegionDict;
 @property (nonatomic) NSString *bucketPrefix;
+@property (nonatomic) NSString *continent;
 @end
 
 
@@ -145,47 +146,57 @@
     return _postBucketName;
 }
 
-- (NSString *)region
+//- (NSString *)region
+//{
+//    if (!_region)
+//    {
+//        _region = [self.continetRegionDict objectForKey:self.bucketPrefix];
+//    }
+//    return _region;
+//}
+//
+//// Mapping bucket name prefix to region
+//- (NSDictionary *)continetRegionDict
+//{
+//    if (!_continetRegionDict)
+//    {
+//        _continetRegionDict = @{ @"as-jy-":@"as",
+//                            @"eu-jy-":@"eu",
+//                            @"joyy":@"na" };
+//    }
+//    return _continetRegionDict;
+//}
+
+- (NSUInteger)region
 {
     if (!_region)
     {
-        _region = [self.regionDict objectForKey:self.bucketPrefix];
+        _region = [[self.continetRegionDict objectForKey:self.continent] unsignedIntValue];
     }
     return _region;
 }
 
-// Mapping bucket name prefix to region
-- (NSDictionary *)regionDict
+// Mapping continent code to region value
+- (NSDictionary *)continetRegionDict
 {
-    if (!_regionDict)
+    if (!_continetRegionDict)
     {
-        _regionDict = @{ @"as-jy-":@"as",
-                            @"eu-jy-":@"eu",
-                            @"joyy":@"na" };
+        _continetRegionDict = @{ @"na":@0,
+                                 @"sa":@0,
+                                 @"as":@1,
+                                 @"oc":@1,
+                                 @"eu":@2,
+                                 @"af":@2
+                              };
     }
-    return _regionDict;
+    return _continetRegionDict;
 }
 
 - (NSString *)bucketPrefix
 {
     if (!_bucketPrefix)
     {
-        NSString *continent = [self.countryDict objectForKey:self.countryCode];
-        NSString *prefix = nil;
-        if (!continent)
-        {
-            prefix = @"joyy";
-        }
-        else
-        {
-            prefix = [self.bucketPrefixDict objectForKey:continent];
-            if (!prefix)
-            {
-                prefix = @"joyy";
-            }
-        }
-
-        _bucketPrefix = prefix;
+        _bucketPrefix = [self.bucketPrefixDict objectForKey:self.continent];
     }
     return _bucketPrefix;
 }
@@ -202,13 +213,28 @@
     return _bucketPrefixDict;
 }
 
+
 // Mapping country code to continent code
-// Note: All middle East counties are mapped to "eu" for speed optimization
-- (NSDictionary *)countryDict
+// Note: All middle East counties are mapped to "eu" for network speed optimization
+
+- (NSString *)continent
 {
-    if (!_countryDict)
+    if (!_continent)
     {
-        _countryDict = [NSDictionary dictionaryWithObjectsAndKeys:
+        _continent = [self.countryContinetDict objectForKey:self.countryCode];
+        if (!_continent)
+        {
+            _continent = @"na";
+        }
+    }
+    return _continent;
+}
+
+- (NSDictionary *)countryContinetDict
+{
+    if (!_countryContinetDict)
+    {
+        _countryContinetDict = [NSDictionary dictionaryWithObjectsAndKeys:
                         @"eu", @"AD", @"eu", @"AE", @"as", @"AF", @"na", @"AG", @"na", @"AI", @"eu", @"AL", @"as", @"AM", @"na", @"AN",
                         @"af", @"AO", @"as", @"AP", @"an", @"AQ", @"sa", @"AR", @"oc", @"AS", @"eu", @"AT", @"oc", @"AU", @"na", @"AW",
                         @"eu", @"AX", @"as", @"AZ", @"eu", @"BA", @"na", @"BB", @"as", @"BD", @"eu", @"BE", @"af", @"BF", @"eu", @"BG",
@@ -242,7 +268,7 @@
                         @"as", @"VN", @"oc", @"VU", @"oc", @"WF", @"oc", @"WS", @"eu", @"YE", @"af", @"YT", @"af", @"ZA", @"af", @"ZM",
                         @"af", @"ZW", nil];
     }
-    return _countryDict;
+    return _countryContinetDict;
 }
 
 @end

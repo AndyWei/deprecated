@@ -16,7 +16,6 @@
 // KeyChain -- DO NOT MODIFY!!!
 static NSString *const kKeyChainStoreAPI = @"com.winkrock.api";
 static NSString *const kAPIPasswordKey = @"api_password";
-static NSString *const kAPIPhoneNumberKey = @"api_phone_number";
 static NSString *const kAPIUserIdKey   = @"api_user_id";
 static NSString *const kAPIUsernameKey = @"api_username";
 static NSString *const kAPITokenKey    = @"api_token";
@@ -42,7 +41,6 @@ static NSString *const kAPITokenExpiryTimeKey = @"api_token_expiry_time";
 
         _username = self.keychain[kAPIUsernameKey];
         _password = self.keychain[kAPIPasswordKey];
-        _phoneNumber = self.keychain[kAPIPhoneNumberKey];
         _idString = self.keychain[kAPIUserIdKey];
         _token    = self.keychain[kAPITokenKey];
 
@@ -79,12 +77,6 @@ static NSString *const kAPITokenExpiryTimeKey = @"api_token_expiry_time";
     self.keychain[kAPIPasswordKey] = _password;
 }
 
-- (void)setPhoneNumber:(NSString *)phoneNumber
-{
-    _phoneNumber = phoneNumber;
-    self.keychain[kAPIPhoneNumberKey] = _phoneNumber;
-}
-
 - (void)setToken:(NSString *)token
 {
     _token = token;
@@ -107,7 +99,7 @@ static NSString *const kAPITokenExpiryTimeKey = @"api_token_expiry_time";
 {
     if ([dict valueForKey:@"id"])
     {
-        self.userId = [[dict objectForKey:@"id"] intValue];
+        self.userId = [[dict objectForKey:@"id"] unsignedIntegerValue];
     }
 
     if ([dict valueForKey:@"username"])
@@ -128,6 +120,7 @@ static NSString *const kAPITokenExpiryTimeKey = @"api_token_expiry_time";
 - (BOOL)isEmpty
 {
     return (!self.username || !self.password || !self.idString);
+//    return YES;
 }
 
 @end
