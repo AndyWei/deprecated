@@ -33,6 +33,10 @@
 
 - (AWSTask *)getIdentityId
 {
+//    if (self.identityId) {
+//        return [AWSTask taskWithResult:nil];
+//    }
+
     return [self refresh];
 }
 
@@ -57,6 +61,8 @@
         }
 
         return [AWSTask taskWithResult:self.identityId];
+//        return task;
+//        return nil;
     }];
 }
 

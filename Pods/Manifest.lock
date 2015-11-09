@@ -1,31 +1,31 @@
 PODS:
-  - AFNetworking (2.6.1):
-    - AFNetworking/NSURLConnection (= 2.6.1)
-    - AFNetworking/NSURLSession (= 2.6.1)
-    - AFNetworking/Reachability (= 2.6.1)
-    - AFNetworking/Security (= 2.6.1)
-    - AFNetworking/Serialization (= 2.6.1)
-    - AFNetworking/UIKit (= 2.6.1)
+  - AFNetworking (2.6.2):
+    - AFNetworking/NSURLConnection (= 2.6.2)
+    - AFNetworking/NSURLSession (= 2.6.2)
+    - AFNetworking/Reachability (= 2.6.2)
+    - AFNetworking/Security (= 2.6.2)
+    - AFNetworking/Serialization (= 2.6.2)
+    - AFNetworking/UIKit (= 2.6.2)
   - AFNetworking-Synchronous/2.x (0.3.1):
     - AFNetworking (~> 2.0)
-  - AFNetworking/NSURLConnection (2.6.1):
+  - AFNetworking/NSURLConnection (2.6.2):
     - AFNetworking/Reachability
     - AFNetworking/Security
     - AFNetworking/Serialization
-  - AFNetworking/NSURLSession (2.6.1):
+  - AFNetworking/NSURLSession (2.6.2):
     - AFNetworking/Reachability
     - AFNetworking/Security
     - AFNetworking/Serialization
-  - AFNetworking/Reachability (2.6.1)
-  - AFNetworking/Security (2.6.1)
-  - AFNetworking/Serialization (2.6.1)
-  - AFNetworking/UIKit (2.6.1):
+  - AFNetworking/Reachability (2.6.2)
+  - AFNetworking/Security (2.6.2)
+  - AFNetworking/Serialization (2.6.2)
+  - AFNetworking/UIKit (2.6.2):
     - AFNetworking/NSURLConnection
     - AFNetworking/NSURLSession
   - AKPickerView (0.2.6)
-  - AWSCore (2.2.7)
-  - AWSS3 (2.2.7):
-    - AWSCore (= 2.2.7)
+  - AWSCore (2.3.0)
+  - AWSS3 (2.3.0):
+    - AWSCore (= 2.3.0)
   - ChameleonFramework (2.0.4):
     - ChameleonFramework/Default (= 2.0.4)
   - ChameleonFramework/Default (2.0.4)
@@ -35,10 +35,11 @@ PODS:
   - CocoaLumberjack/Core (1.9.2)
   - CocoaLumberjack/Extensions (1.9.2):
     - CocoaLumberjack/Core
-  - Crashlytics (3.3.4)
-  - Fabric (1.5.5):
-    - Fabric/Base (= 1.5.5)
-  - Fabric/Base (1.5.5)
+  - Crashlytics (3.4.0):
+    - Fabric (~> 1.6.0)
+  - Fabric (1.6.0):
+    - Fabric/Base (= 1.6.0)
+  - Fabric/Base (1.6.0)
   - FDFullscreenPopGesture (1.1)
   - FMDB (2.5):
     - FMDB/standard (= 2.5)
@@ -51,11 +52,11 @@ PODS:
   - JVFloatLabeledTextField (1.1.0)
   - KVNProgress (2.2.1)
   - KVOController (1.0.3)
-  - MJRefresh (2.4.12)
+  - MJRefresh (3.0.1)
   - MSWeakTimer (1.1.0)
   - Onboard (2.1.7)
   - RKDropdownAlert (0.3.0)
-  - SlackTextViewController (1.7.1)
+  - SlackTextViewController (1.7.2)
   - TTTAttributedLabel (1.13.4)
   - UICKeyChainStore (2.1.0)
   - UIView+Positioning (1.1)
@@ -232,16 +233,16 @@ DEPENDENCIES:
   - YTKKeyValueStore
 
 SPEC CHECKSUMS:
-  AFNetworking: 8e4e60500beb8bec644cf575beee72990a76d399
+  AFNetworking: 7f317038a9710cabfa43ec56396b307b45df72ab
   AFNetworking-Synchronous: 29531ad341ec465a4ff9b66dea9cf7272080e12e
   AKPickerView: e31dcb9572c04d8439512315798862d9eb84b18f
-  AWSCore: d81e1e534040780deb0f3877aaa207d297e54b4c
-  AWSS3: d39bae2ebbcdc450aef30635c85e556317b92a33
+  AWSCore: dc200c885c9799f9f5d3ab9ec38a9c4b44d680f9
+  AWSS3: 0185482a8136da9c7542a767567ee18106b38bca
   ChameleonFramework: 5abe69b1f2a6cc79c3c435fcd9d3d855748225ee
   CocoaAsyncSocket: f5783bdedd232d91b89769bc4b5a1580aed518ad
   CocoaLumberjack: 628fca2e88ef06f7cf6817309aa405f325d9a6fa
-  Crashlytics: 41c082440d2e14da444186fff65e79c0b4b35d4c
-  Fabric: 190bf1a6eb65f7500de1347d027d2e59a7e53db1
+  Crashlytics: 1ee87895c37472eb3f01f409ea1654a464d2f8d4
+  Fabric: d737eda3a26ac940a5430230eedb35f16b226131
   FDFullscreenPopGesture: a8a620179e3d9c40e8e00256dcee1c1a27c6d0f0
   FMDB: 96e8f1bcc1329e269330f99770ad4285d9003e52
   JSQMessagesViewController: 73cab48aa92fc2d512f3b6724f3425cc47a19eb5
@@ -249,11 +250,11 @@ SPEC CHECKSUMS:
   JVFloatLabeledTextField: ea4a3d8387ddd43724c472bb2b8ab39b79af05d4
   KVNProgress: 7001d2d16a2755cee5599e8e485befe056f2197b
   KVOController: 9fd8f0343670994e4b6f9f0b31f5a45663f3e1cf
-  MJRefresh: ca8e9589895977df32d379d46e6b8a5450b3ff44
+  MJRefresh: ca22bb7197c4a17a0491763773cd5cb106b2a810
   MSWeakTimer: 9426150f933b80ed3acf3f6d228e4b61f0e303c8
   Onboard: 87648089e1b76d13b4f5bf8f7a1cdb144092f0af
   RKDropdownAlert: f4b3364c251829ad439dc666836a1f2dad26f4c7
-  SlackTextViewController: 139ffc5b09276ff5ac1609ac78eafab702fc974e
+  SlackTextViewController: 1f4e8f68c156ef93de73fd422db2b8d5d5b0f4e7
   TTTAttributedLabel: 0a2ac7b2dd726d32a070dafb01446026b11e624f
   UICKeyChainStore: f1cbd42216a113f0165de1e733e62905b8823432
   UIView+Positioning: e93fe9e3186d1ed7d60e344aa12787911e902056
