@@ -47,7 +47,7 @@
 - (void)_apiTokenReady
 {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-        [self _completeLogin:@{ kAuthProviderName: [JYCredential current].idString }];
+        [self _getCognitoToken:@{ kAuthProviderName: [JYCredential current].idString }];
     });
 }
 
@@ -56,19 +56,16 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (void)_completeLogin:(NSDictionary *)logins
+- (void)_getCognitoToken:(NSDictionary *)logins
 {
-    AWSTask *task;
     if (self.credentialsProvider == nil)
     {
-        task = [self _initializeProviders:logins];
+        [self _initializeProviders:logins];
     }
     else
     {
-        task = [self.credentialsProvider refresh];
+        [self.credentialsProvider refresh];
     }
-
-    [task continueWithBlock:nil];
 }
 
 - (AWSTask *)_initializeProviders:(NSDictionary *)logins
@@ -85,6 +82,8 @@
 
     AWSServiceManager.defaultServiceManager.defaultServiceConfiguration = configuration;
 
+//    AWSTask *task = [self.credentialsProvider refresh];
+//    return [task continueWithBlock:nil];
     return [self.credentialsProvider refresh];
 }
 

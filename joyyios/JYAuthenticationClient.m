@@ -34,23 +34,20 @@ NSString *const kJYAuthenticationClientDomain = @"JYAuthenticationClient";
 // KeyChain -- DO NOT MODIFY!!!
 //static NSString *const kKeyChainStoreAWS = @"com.joyyapp.aws";
 static NSString *const kKeyChainStoreAWS = @"com.winkrock.aws";
-static NSString *const kAWSIdentityIdKey = @"aws_identity_id";
-static NSString *const kAWSTokenKey      = @"aws_openid_token";
-static NSString *const kAWSTokenExpiryTimeKey = @"aws_openid_token_expiry_time";
+static NSString *const kAWSIdentityIdKeyPrefix = @"aws_identity_id";
+static NSString *const kAWSTokenKeyPrefix      = @"aws_openid_token";
+static NSString *const kAWSTokenExpiryTimeKeyPrefix = @"aws_openid_token_expiry_time";
 
 @implementation JYAuthenticationClient
+@synthesize identityId = _identityId;
+@synthesize token = _token;
+@synthesize tokenExpiryTime = _tokenExpiryTime;
 
 - (instancetype)init
 {
     if (self = [super init])
     {
         self.keychain = [UICKeyChainStore keyChainStoreWithService:kKeyChainStoreAWS];
-        
-        _identityId = self.keychain[kAWSIdentityIdKey];
-        _token = self.keychain[kAWSTokenKey];
-
-        NSString *expiryTimeStr = self.keychain[kAWSTokenExpiryTimeKey];
-        _tokenExpiryTime = expiryTimeStr ? [expiryTimeStr unsignedIntegerValue] : 0;
     }
     
     return self;
@@ -77,22 +74,68 @@ static NSString *const kAWSTokenExpiryTimeKey = @"aws_openid_token_expiry_time";
     return (now < self.tokenExpiryTime);
 }
 
+- (NSString *)identityIdKey
+{
+    NSString *userid = [JYCredential current].idString;
+    return [NSString stringWithFormat:@"%@_%@", kAWSIdentityIdKeyPrefix, userid];
+}
+
 - (void)setIdentityId:(NSString *)identityId
 {
     _identityId = identityId;
-    self.keychain[kAWSIdentityIdKey] = identityId;
+    self.keychain[self.identityIdKey] = identityId;
+}
+
+- (NSString *)identityId
+{
+    if (!_identityId)
+    {
+        _identityId = self.keychain[self.identityIdKey];
+    }
+    return _identityId;
+}
+
+- (NSString *)tokenKey
+{
+    NSString *userid = [JYCredential current].idString;
+    return [NSString stringWithFormat:@"%@_%@", kAWSTokenKeyPrefix, userid];
 }
 
 - (void)setToken:(NSString *)token
 {
     _token = token;
-    self.keychain[kAWSTokenKey] = token;
+    self.keychain[self.tokenKey] = token;
+}
+
+- (NSString *)token
+{
+    if (!_token)
+    {
+        _token = self.keychain[self.tokenKey];
+    }
+    return _token;
+}
+
+- (NSString *)tokenExpiryTimeKey
+{
+    NSString *userid = [JYCredential current].idString;
+    return [NSString stringWithFormat:@"%@_%@", kAWSTokenExpiryTimeKeyPrefix, userid];
 }
 
 - (void)setTokenExpiryTime:(NSUInteger)tokenExpiryTime
 {
     _tokenExpiryTime = tokenExpiryTime;
-    self.keychain[kAWSTokenExpiryTimeKey] = [NSString stringWithFormat:@"%tu", tokenExpiryTime];
+    self.keychain[self.tokenExpiryTimeKey] = [NSString stringWithFormat:@"%tu", tokenExpiryTime];
+}
+
+- (NSUInteger)tokenExpiryTime
+{
+    if (_tokenExpiryTime == 0)
+    {
+        NSString *expiryTimeStr = self.keychain[self.tokenExpiryTimeKey];
+        _tokenExpiryTime = expiryTimeStr ? [expiryTimeStr unsignedIntegerValue] : 0;
+    }
+    return _tokenExpiryTime;
 }
 
 // call getToken and set our values from returned result
