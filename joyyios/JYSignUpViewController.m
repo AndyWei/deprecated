@@ -11,7 +11,6 @@
 #import <RKDropdownAlert/RKDropdownAlert.h>
 
 #import "JYButton.h"
-#import "JYProfileViewController.h"
 #import "JYSignUpViewController.h"
 
 @interface JYSignUpViewController ()
@@ -73,12 +72,6 @@
     [self _fetchExistenceOfUsername:key];
 }
 
-- (void)_showProfileView
-{
-    UIViewController *viewController = [JYProfileViewController new];
-    [self.navigationController pushViewController:viewController animated:YES];
-}
-
 #pragma mark - UITextFieldDelegate methods
 
 - (void)textFieldDidEndEditing:(UITextField *)textField
@@ -130,7 +123,6 @@
     [KVNProgress show];
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
 
-    __weak typeof(self) weakSelf = self;
     [manager POST:url
       parameters:parameters
          success:^(AFHTTPRequestOperation *operation, id responseObject) {
@@ -141,7 +133,6 @@
 
              [[JYCredential current] save:responseObject];
              [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationDidSignUp object:nil];
-             [weakSelf _showProfileView];
          }
          failure:^(AFHTTPRequestOperation *operation, NSError *error) {
              NSLog(@"SignUp Error: %@", error);

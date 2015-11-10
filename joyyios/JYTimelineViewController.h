@@ -6,6 +6,6 @@
 //  Copyright (c) 2015 Joyy Inc. All rights reserved.
 //
 
-@interface JYMasqueradeViewController : UIViewController
+@interface JYTimelineViewController : UIViewController
 
 @end

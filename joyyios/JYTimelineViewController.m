@@ -16,14 +16,14 @@
 #import "JYComment.h"
 #import "JYCommentViewController.h"
 #import "JYFilename.h"
-#import "JYMasqueradeViewController.h"
+#import "JYTimelineViewController.h"
 #import "JYPost.h"
 #import "JYPostViewCell.h"
 #import "TGCameraColor.h"
 #import "TGCameraViewController.h"
 #import "UIImage+Joyy.h"
 
-@interface JYMasqueradeViewController () <TGCameraDelegate, UITableViewDataSource, UITableViewDelegate>
+@interface JYTimelineViewController () <TGCameraDelegate, UITableViewDataSource, UITableViewDelegate>
 @property(nonatomic) CABasicAnimation *colorPulse;
 @property(nonatomic) JYButton *cameraButton;
 @property(nonatomic) JYPost *currentPost;
@@ -37,12 +37,12 @@
 static const CGFloat kCameraButtonWidth = 50;
 static NSString *const kPostCellIdentifier = @"postCell";
 
-@implementation JYMasqueradeViewController
+@implementation JYTimelineViewController
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.title = NSLocalizedString(@"Masquerade", nil);
+    self.title = NSLocalizedString(@"Home", nil);
     // Do not use UIBarStyleBlack in the next line, because it will make the status bar text white
     // self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
 
@@ -70,7 +70,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
 {
     if (!_titleButton)
     {
-        NSString *title = NSLocalizedString(@"Masquerade", nil);
+        NSString *title = NSLocalizedString(@"Home", nil);
         _titleButton = [UIButton buttonWithType:UIButtonTypeCustom];
         _titleButton.frame = CGRectMake(0, 0, 70, 44);
         _titleButton.titleLabel.font = [UIFont boldSystemFontOfSize:16];
@@ -135,13 +135,13 @@ static NSString *const kPostCellIdentifier = @"postCell";
         MJRefreshNormalHeader *header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(_fetchNewPost)];
         header.lastUpdatedTimeLabel.hidden = YES;
         header.stateLabel.hidden = YES;
-        _tableView.header = header;
+        _tableView.mj_header = header;
 
         // Setup the pull-up-to-refresh footer
         MJRefreshAutoNormalFooter *footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(_fetchOldPost)];
         footer.refreshingTitleHidden = YES;
         footer.stateLabel.hidden = YES;
-        _tableView.footer = footer;
+        _tableView.mj_footer = footer;
     }
     return _tableView;
 }
@@ -193,8 +193,8 @@ static NSString *const kPostCellIdentifier = @"postCell";
     if (self.networkThreadCount <= 0)
     {
         [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-        [self.tableView.header endRefreshing];
-        [self.tableView.footer endRefreshing];
+        [self.tableView.mj_header endRefreshing];
+        [self.tableView.mj_footer endRefreshing];
     }
 }
 
@@ -325,7 +325,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
 
 #pragma mark - Maintain table
 
-- (void)_updateTableWithPostList:(NSArray *)list toEnd:(BOOL)toEnd
+- (void)_updateTableWithPostList:(NSArray *)list old:(BOOL)old
 {
     if (!list.count)
     {
@@ -333,12 +333,12 @@ static NSString *const kPostCellIdentifier = @"postCell";
     }
 
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self _addPostFromList:list toEnd:toEnd];
+        [self _addPostFromList:list old:old];
         [self.tableView reloadData];
     });
 }
 
-- (void)_addPostFromList:(NSArray *)list toEnd:(BOOL)toEnd
+- (void)_addPostFromList:(NSArray *)list old:(BOOL)old
 {
     if (!list.count || list == self.postList)
     {
@@ -346,7 +346,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
     }
 
     // The items in postList are DESC sorted by post_id
-    if (toEnd)
+    if (old)
     {
         [self.postList addObjectsFromArray:list];
     }
@@ -430,7 +430,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
 
         NSLog(@"Success: createPostRecord response = %@", responseObject);
         JYPost *post = [[JYPost alloc] initWithDictionary:responseObject];
-        [weakSelf _updateTableWithPostList:@[post] toEnd:NO];
+        [weakSelf _updateTableWithPostList:@[post] old:NO];
         [weakSelf _networkThreadEnd];
 
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
@@ -482,15 +482,15 @@ static NSString *const kPostCellIdentifier = @"postCell";
 
 - (void)_fetchNewPost
 {
-    [self _fetchPostToEnd:NO];
+    [self _fetchTimeline:NO];
 }
 
 - (void)_fetchOldPost
 {
-    [self _fetchPostToEnd:YES];
+    [self _fetchTimeline:YES];
 }
 
-- (void)_fetchPostToEnd:(BOOL)toEnd
+- (void)_fetchTimeline:(BOOL)old
 {
     if (self.networkThreadCount > 0)
     {
@@ -500,14 +500,14 @@ static NSString *const kPostCellIdentifier = @"postCell";
 
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
 
-    NSString *url = [NSString apiURLWithPath:@"post/nearby"];
-    NSDictionary *parameters = [self _parametersForPostNearby:toEnd];
+    NSString *url = [NSString apiURLWithPath:@"post/timeline"];
+    NSDictionary *parameters = [self _parametersForFetchTimeline:old];
 
     __weak typeof(self) weakSelf = self;
     [manager GET:url
       parameters:parameters
          success:^(AFHTTPRequestOperation *operation, id responseObject) {
-             NSLog(@"post/nearby fetch success responseObject: %@", responseObject);
+             NSLog(@"post/timeline fetch success responseObject: %@", responseObject);
 
              NSMutableArray *postList = [NSMutableArray new];
              for (NSDictionary *dict in responseObject)
@@ -515,7 +515,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
                  JYPost *post = [[JYPost alloc] initWithDictionary:dict];
                  [postList addObject:post];
              }
-             [weakSelf _fetchRecentCommentsForPostList:postList toEnd:toEnd];
+             [weakSelf _fetchRecentCommentsForPostList:postList old:old];
              [weakSelf _networkThreadEnd];
          }
          failure:^(AFHTTPRequestOperation *operation, NSError *error) {
@@ -524,7 +524,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
      ];
 }
 
-- (void)_fetchRecentCommentsForPostList:(NSArray *)list toEnd:(BOOL)toEnd
+- (void)_fetchRecentCommentsForPostList:(NSArray *)list old:(BOOL)old
 {
     if (!list.count)
     {
@@ -558,7 +558,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
                  }
                  post.commentList = commentList;
              }
-             [weakSelf _updateTableWithPostList:list toEnd:toEnd];
+             [weakSelf _updateTableWithPostList:list old:old];
              [weakSelf _networkThreadEnd];
          }
          failure:^(AFHTTPRequestOperation *operation, NSError *error) {
@@ -567,13 +567,13 @@ static NSString *const kPostCellIdentifier = @"postCell";
      ];
 }
 
-- (NSDictionary *)_parametersForPostNearby:(BOOL)toEnd
+- (NSDictionary *)_parametersForFetchTimeline:(BOOL)old
 {
     NSMutableDictionary *parameters = [NSMutableDictionary new];
 
     if (self.postList.count > 0)
     {
-        if (toEnd)
+        if (old)
         {
             JYPost *post = self.postList.lastObject;
             [parameters setValue:@(post.timestamp) forKey:@"before"];

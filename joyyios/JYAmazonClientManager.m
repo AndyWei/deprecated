@@ -70,8 +70,8 @@
 
 - (AWSTask *)_initializeProviders:(NSDictionary *)logins
 {
-    NSLog(@"initializing providers...");
-    [AWSLogger defaultLogger].logLevel = AWSLogLevelDebug;
+    NSLog(@"AWSClientManager: initializing providers");
+    [AWSLogger defaultLogger].logLevel = AWSLogLevelInfo;
 
     id<AWSCognitoIdentityProvider> identityProvider = [[JYAuthenticatedIdentityProvider alloc] initWithRegionType:kCognitoRegionType identityId:nil identityPoolId:kCognitoIdentityPoolId logins:logins providerName:kAuthProviderName authClient:self.authClient];
 
@@ -82,8 +82,6 @@
 
     AWSServiceManager.defaultServiceManager.defaultServiceConfiguration = configuration;
 
-//    AWSTask *task = [self.credentialsProvider refresh];
-//    return [task continueWithBlock:nil];
     return [self.credentialsProvider refresh];
 }
 

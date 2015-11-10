@@ -63,7 +63,7 @@
 		D63F0D7D1ACA5E260067C5EE /* JYPhoneNumberViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D63F0D7C1ACA5E260067C5EE /* JYPhoneNumberViewController.m */; };
 		D63F0DA21ACD08260067C5EE /* UIColor+Joyy.m in Sources */ = {isa = PBXBuildFile; fileRef = D63F0DA11ACD08260067C5EE /* UIColor+Joyy.m */; };
 		D63F0DA51ACD16190067C5EE /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D63F0DA41ACD16190067C5EE /* CoreLocation.framework */; };
-		D65AFA5E1AEC715D007867D0 /* JYMasqueradeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D65AFA5D1AEC715D007867D0 /* JYMasqueradeViewController.m */; };
+		D65AFA5E1AEC715D007867D0 /* JYTimelineViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D65AFA5D1AEC715D007867D0 /* JYTimelineViewController.m */; };
 		D65F37461B04807D007B534C /* JYCommentViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D65F37451B04807D007B534C /* JYCommentViewCell.m */; };
 		D679B3011B97B1E5004EBA61 /* JYFilename.m in Sources */ = {isa = PBXBuildFile; fileRef = D679B3001B97B1E5004EBA61 /* JYFilename.m */; };
 		D67DD0E01B744D1C00333626 /* JYCommentView.m in Sources */ = {isa = PBXBuildFile; fileRef = D67DD0DF1B744D1C00333626 /* JYCommentView.m */; };
@@ -219,8 +219,8 @@
 		D63F0DA01ACD08260067C5EE /* UIColor+Joyy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+Joyy.h"; sourceTree = "<group>"; };
 		D63F0DA11ACD08260067C5EE /* UIColor+Joyy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Joyy.m"; sourceTree = "<group>"; };
 		D63F0DA41ACD16190067C5EE /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
-		D65AFA5C1AEC715D007867D0 /* JYMasqueradeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYMasqueradeViewController.h; sourceTree = "<group>"; };
-		D65AFA5D1AEC715D007867D0 /* JYMasqueradeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYMasqueradeViewController.m; sourceTree = "<group>"; };
+		D65AFA5C1AEC715D007867D0 /* JYTimelineViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYTimelineViewController.h; sourceTree = "<group>"; };
+		D65AFA5D1AEC715D007867D0 /* JYTimelineViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYTimelineViewController.m; sourceTree = "<group>"; };
 		D65F37441B04807D007B534C /* JYCommentViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYCommentViewCell.h; sourceTree = "<group>"; };
 		D65F37451B04807D007B534C /* JYCommentViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYCommentViewCell.m; sourceTree = "<group>"; };
 		D679B2FF1B97B1E5004EBA61 /* JYFilename.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYFilename.h; sourceTree = "<group>"; };
@@ -417,11 +417,11 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
-		D61D1D5B1B4DBA5D00DE37DF /* Masquerade */ = {
+		D61D1D5B1B4DBA5D00DE37DF /* Timeline */ = {
 			isa = PBXGroup;
 			children = (
-				D65AFA5C1AEC715D007867D0 /* JYMasqueradeViewController.h */,
-				D65AFA5D1AEC715D007867D0 /* JYMasqueradeViewController.m */,
+				D65AFA5C1AEC715D007867D0 /* JYTimelineViewController.h */,
+				D65AFA5D1AEC715D007867D0 /* JYTimelineViewController.m */,
 				D693798B1B54E8BC00E64F3A /* JYPhotoCaptionViewController.h */,
 				D693798C1B54E8BC00E64F3A /* JYPhotoCaptionViewController.m */,
 				D61D1DE41B536B2700DE37DF /* JYPostViewCell.h */,
@@ -439,7 +439,7 @@
 				D67DD0F61B7728E300333626 /* JYAvatar.h */,
 				D67DD0F71B7728E300333626 /* JYAvatar.m */,
 			);
-			name = Masquerade;
+			name = Timeline;
 			sourceTree = "<group>";
 		};
 		D61D1D601B4E336E00DE37DF /* TGCameraViewController */ = {
@@ -710,7 +710,7 @@
 				D68DAF9A1AC4CD1800838E7E /* Sign */,
 				D6F7F13A1BA8ECCC008118DA /* Detector */,
 				D63591921BEA90FB00BFFF82 /* manager */,
-				D61D1D5B1B4DBA5D00DE37DF /* Masquerade */,
+				D61D1D5B1B4DBA5D00DE37DF /* Timeline */,
 				D68486B31B8AC207005CA0C4 /* Message */,
 				D6C82B611B1252FE00876F57 /* Model */,
 				D63B69AB1AC5184D005600A9 /* People */,
@@ -998,7 +998,7 @@
 				D63F0D7D1ACA5E260067C5EE /* JYPhoneNumberViewController.m in Sources */,
 				D6966B321BA2BB2B00AAD8D5 /* UITextField+Joyy.m in Sources */,
 				D63B69B61AC53BB4005600A9 /* JYFloatLabeledTextField.m in Sources */,
-				D65AFA5E1AEC715D007867D0 /* JYMasqueradeViewController.m in Sources */,
+				D65AFA5E1AEC715D007867D0 /* JYTimelineViewController.m in Sources */,
 				D61D1DB21B4E336E00DE37DF /* TGCameraFlash.m in Sources */,
 				D61D1DA61B4E336E00DE37DF /* TGCameraViewController.m in Sources */,
 				D67DD0F41B77187000333626 /* JYCaptionTextView.m in Sources */,

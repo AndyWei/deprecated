@@ -587,6 +587,7 @@ const CGFloat kAvatarButtonWidth = kAvatarButtonHeight;
          success:^(AFHTTPRequestOperation *operation, id responseObject) {
              NSLog(@"Success: POST user/profile");
              [weakSelf _showNetworkIndicator:NO];
+
              [[JYUser me] save:responseObject];
              [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationDidCreateProfile object:nil];
              [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationUserYRSReady object:nil];

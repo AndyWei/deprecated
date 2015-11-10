@@ -253,12 +253,20 @@ static NSString *const kVerificationCellIdentifier = @"verificationCell";
 
 - (void)_showSignupView
 {
+    [JYUser me].phoneNumber = [self.phoneNumber unsignedIntegerValue];
+    NSLog(@"self.phoneNumber = %@", self.phoneNumber);
+    NSLog(@"[JYUser me].phoneNumber = %tu", [JYUser me].phoneNumber);
+
     JYSignUpViewController *vc = [JYSignUpViewController new];
     [self.navigationController pushViewController:vc animated:YES];
 }
 
 - (void)_showSigninViewWithUsername:(NSString *)username
 {
+    [JYUser me].phoneNumber = [self.phoneNumber unsignedIntegerValue];
+    NSLog(@"self.phoneNumber = %@", self.phoneNumber);
+    NSLog(@"[JYUser me].phoneNumber = %tu", [JYUser me].phoneNumber);
+    
     JYSignInViewController *vc = [JYSignInViewController new];
     vc.username = username;
     [self.navigationController pushViewController:vc animated:YES];
@@ -276,7 +284,6 @@ static NSString *const kVerificationCellIdentifier = @"verificationCell";
 {
     if (buttonIndex == actionSheet.cancelButtonIndex)
     {
-        [JYUser me].phoneNumber = [self.phoneNumber unsignedIntegerValue];
         [self _showSignupView];
         return;
     }

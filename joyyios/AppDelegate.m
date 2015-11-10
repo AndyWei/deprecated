@@ -19,12 +19,13 @@
 #import "JYCredentialManager.h"
 #import "JYDeviceManager.h"
 #import "JYFilename.h"
-#import "JYMasqueradeViewController.h"
 #import "JYLocationManager.h"
 #import "JYPeopleViewController.h"
-#import "JYSessionListViewController.h"
 #import "JYPhoneNumberViewController.h"
+#import "JYProfileViewController.h"
+#import "JYSessionListViewController.h"
 #import "JYSoundPlayer.h"
+#import "JYTimelineViewController.h"
 #import "JYXmppManager.h"
 #import "Flurry.h"
 #import "OnboardingViewController.h"
@@ -179,6 +180,13 @@
     self.window.rootViewController = navigationController;
 }
 
+- (void)_launchProfileViewController
+{
+    UIViewController *viewController = [JYProfileViewController new];
+    UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:viewController];
+    self.window.rootViewController = navigationController;
+}
+
 - (void)_launchIntroductionViewController
 {
     self.window.rootViewController = self.onboardingViewController;
@@ -199,7 +207,7 @@
 
     _tabBarController = [UITabBarController new];
 
-    UIViewController *vc1 = [JYMasqueradeViewController new];
+    UIViewController *vc1 = [JYTimelineViewController new];
     UINavigationController *nc1 = [[UINavigationController alloc] initWithRootViewController:vc1];
 
     UIViewController *vc2 = [JYPeopleViewController new];
@@ -221,7 +229,7 @@
 
     tabBarItem1.selectedImage = [[UIImage imageNamed:@"mask_selected"] imageWithRenderingMode:UIImageRenderingModeAutomatic];
     tabBarItem1.image = [[UIImage imageNamed:@"mask"] imageWithRenderingMode:UIImageRenderingModeAutomatic];
-    tabBarItem1.title = NSLocalizedString(@"Masquerade", nil);
+    tabBarItem1.title = NSLocalizedString(@"Home", nil);
 
     tabBarItem2.selectedImage = [[UIImage imageNamed:@"people_selected"]imageWithRenderingMode:UIImageRenderingModeAutomatic];
     tabBarItem2.image = [[UIImage imageNamed:@"people"]imageWithRenderingMode:UIImageRenderingModeAutomatic];
@@ -247,6 +255,7 @@
 - (void)_didManuallySignUp
 {
     [[JYCredentialManager sharedInstance] start];
+    [self _launchProfileViewController];
 }
 
 - (void)_didCreateProfile

@@ -190,24 +190,23 @@ NSString *const kZip = @"location_zip";
 
     if (![zip isEqualToString:self.zip] || ![countryCode isEqualToString:self.countryCode])
     {
+        self.zip = zip;
+        self.countryCode = countryCode;
         [self _appearInZip:zip country:countryCode];
     }
 }
 
 - (void)_appearInZip:(NSString *)zip country:(NSString *)countryCode
 {
-    NSDictionary *parameters = @{ @"zip": zip, @"country": countryCode, @"yrs": @123 }; // TODO: need provide correct yrs
+    NSUInteger yrs = [JYUser me].yrs;
+    NSDictionary *parameters = @{ @"zip": zip, @"country": countryCode, @"yrs": @(yrs) };
     NSString *url = [NSString apiURLWithPath:@"user/appear"];
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager managerWithToken];
 
-    __weak typeof(self) weakSelf = self;
     [manager POST:url
        parameters:parameters
           success:^(AFHTTPRequestOperation *operation, id responseObject) {
               NSLog(@"POST user/appear Success");
-
-              weakSelf.zip = zip;
-              weakSelf.countryCode = countryCode;
           }
           failure:^(AFHTTPRequestOperation *operation, NSError *error) {
               NSLog(@"user/appear error: %@", error);
