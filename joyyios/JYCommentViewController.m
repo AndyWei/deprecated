@@ -81,8 +81,8 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
     [self _showBackgroundImage];
     [self _fetchNewComments];
 
-    self.tableView.header = self.header;
-    self.tableView.footer = self.footer;
+    self.tableView.mj_header = self.header;
+    self.tableView.mj_footer = self.footer;
 
     self.captionView.caption = self.post.caption;
     self.tableView.tableHeaderView = self.captionView;
@@ -195,8 +195,8 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
     if (self.networkThreadCount <= 0)
     {
         [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-        [self.tableView.header endRefreshing];
-        [self.tableView.footer endRefreshing];
+        [self.tableView.mj_header endRefreshing];
+        [self.tableView.mj_footer endRefreshing];
     }
 }
 

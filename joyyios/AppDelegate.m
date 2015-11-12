@@ -86,6 +86,9 @@
     // TODO: Implement clear badge number logic in the right places.
     application.applicationIconBadgeNumber = 0;
 
+    // test only
+//    [[JYCredential current] clear];
+
     [[JYDeviceManager sharedInstance] start];
     [[JYLocationManager sharedInstance] start];
     [[JYAmazonClientManager sharedInstance] start];
@@ -155,15 +158,22 @@
     if (needIntroduction)
     {
         [self _launchIntroductionViewController];
+        return;
     }
-    else if ([JYCredential current].isEmpty)
+
+    if ([[JYCredential current] isInvalid])
     {
         [self _launchSignViewController];
+        return;
     }
-    else
+
+    if ([JYCredential current].yrs == 0)
     {
-        [self _launchMainViewController];
+        [self _launchProfileViewController];
+        return;
     }
+
+    [self _launchMainViewController];
 }
 
 - (void)_introductionDidFinish
@@ -227,8 +237,8 @@
     UITabBarItem *tabBarItem3 = [tabBar.items objectAtIndex:2];
     UITabBarItem *tabBarItem4 = [tabBar.items objectAtIndex:3];
 
-    tabBarItem1.selectedImage = [[UIImage imageNamed:@"mask_selected"] imageWithRenderingMode:UIImageRenderingModeAutomatic];
-    tabBarItem1.image = [[UIImage imageNamed:@"mask"] imageWithRenderingMode:UIImageRenderingModeAutomatic];
+    tabBarItem1.selectedImage = [[UIImage imageNamed:@"home_selected"] imageWithRenderingMode:UIImageRenderingModeAutomatic];
+    tabBarItem1.image = [[UIImage imageNamed:@"home"] imageWithRenderingMode:UIImageRenderingModeAutomatic];
     tabBarItem1.title = NSLocalizedString(@"Home", nil);
 
     tabBarItem2.selectedImage = [[UIImage imageNamed:@"people_selected"]imageWithRenderingMode:UIImageRenderingModeAutomatic];

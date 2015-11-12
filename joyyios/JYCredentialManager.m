@@ -46,7 +46,7 @@
 - (void)start
 {
     JYCredential *credential = [JYCredential current];
-    if(credential.isEmpty)
+    if([credential isInvalid])
     {
         return;
     }

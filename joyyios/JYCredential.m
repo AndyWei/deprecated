@@ -18,8 +18,10 @@ static NSString *const kKeyChainStoreAPI = @"com.winkrock.api";
 static NSString *const kAPIPasswordKey = @"api_password";
 static NSString *const kAPIUserIdKey   = @"api_user_id";
 static NSString *const kAPIUsernameKey = @"api_username";
+static NSString *const kAPIPhoneNumberKey = @"api_phone_number";
 static NSString *const kAPITokenKey    = @"api_token";
 static NSString *const kAPITokenExpiryTimeKey = @"api_token_expiry_time";
+static NSString *const kAPIYrsKey = @"api_yrs";
 
 @implementation JYCredential
 
@@ -41,13 +43,17 @@ static NSString *const kAPITokenExpiryTimeKey = @"api_token_expiry_time";
 
         _username = self.keychain[kAPIUsernameKey];
         _password = self.keychain[kAPIPasswordKey];
+        _phoneNumber = self.keychain[kAPIPhoneNumberKey];
         _idString = self.keychain[kAPIUserIdKey];
         _token    = self.keychain[kAPITokenKey];
+
+        _userId = _idString? [_idString unsignedIntegerValue] : 0;
 
         NSString *expiryTimeStr = self.keychain[kAPITokenExpiryTimeKey];
         _tokenExpiryTime = expiryTimeStr ? [expiryTimeStr unsignedIntegerValue] : 0;
 
-        _userId = _idString? [_idString unsignedIntegerValue] : 0;
+        NSString *yrsStr = self.keychain[kAPIYrsKey];
+        _yrs = yrsStr ? [yrsStr unsignedIntegerValue] : 0;
     }
 
     return self;
@@ -56,7 +62,14 @@ static NSString *const kAPITokenExpiryTimeKey = @"api_token_expiry_time";
 - (void)setUserId:(NSUInteger)userId
 {
     _userId = userId;
-    self.idString = [NSString stringWithFormat:@"%tu", _userId];
+    if (userId == 0)
+    {
+        self.idString = nil;
+    }
+    else
+    {
+        self.idString = [NSString stringWithFormat:@"%tu", _userId];
+    }
 }
 
 - (void)setIdString:(NSString *)idString
@@ -77,6 +90,12 @@ static NSString *const kAPITokenExpiryTimeKey = @"api_token_expiry_time";
     self.keychain[kAPIPasswordKey] = _password;
 }
 
+- (void)setPhoneNumber:(NSString *)phoneNumber
+{
+    _phoneNumber = phoneNumber;
+    self.keychain[kAPIPhoneNumberKey] = _phoneNumber;
+}
+
 - (void)setToken:(NSString *)token
 {
     _token = token;
@@ -86,7 +105,27 @@ static NSString *const kAPITokenExpiryTimeKey = @"api_token_expiry_time";
 - (void)setTokenExpiryTime:(NSUInteger)tokenExpiryTime
 {
     _tokenExpiryTime = tokenExpiryTime;
-    self.keychain[kAPITokenExpiryTimeKey] = [NSString stringWithFormat:@"%tu", tokenExpiryTime];
+    if (tokenExpiryTime == 0)
+    {
+        self.keychain[kAPITokenExpiryTimeKey] = nil;
+    }
+    else
+    {
+        self.keychain[kAPITokenExpiryTimeKey] = [NSString stringWithFormat:@"%tu", tokenExpiryTime];
+    }
+}
+
+- (void)setYrs:(NSUInteger)yrs
+{
+    _yrs = yrs;
+    if (yrs == 0)
+    {
+        self.keychain[kAPIYrsKey] = nil;
+    }
+    else
+    {
+        self.keychain[kAPIYrsKey] = [NSString stringWithFormat:@"%tu", yrs];
+    }
 }
 
 - (NSInteger)tokenValidInSeconds
@@ -97,19 +136,19 @@ static NSString *const kAPITokenExpiryTimeKey = @"api_token_expiry_time";
 
 - (void)save:(NSDictionary *)dict
 {
-    if ([dict valueForKey:@"id"])
+    if ([dict objectForKey:@"id"])
     {
         self.userId = [[dict objectForKey:@"id"] unsignedIntegerValue];
     }
 
-    if ([dict valueForKey:@"username"])
+    if ([dict objectForKey:@"username"])
     {
-        self.username = [dict valueForKey:@"username"];
+        self.username = [dict objectForKey:@"username"];
     }
 
-    if ([dict valueForKey:@"token"])
+    if ([dict objectForKey:@"token"])
     {
-        self.token = [dict valueForKey:@"token"];
+        self.token = [dict objectForKey:@"token"];
 
         NSUInteger tokenDuration = [[dict objectForKey:@"token_ttl"] intValue];
         NSInteger now = (NSInteger)[NSDate timeIntervalSinceReferenceDate];
@@ -117,10 +156,20 @@ static NSString *const kAPITokenExpiryTimeKey = @"api_token_expiry_time";
     }
 }
 
-- (BOOL)isEmpty
+- (BOOL)isInvalid
 {
-    return (!self.username || !self.password || !self.idString);
-//    return YES;
+    BOOL invalid = ((self.username == nil) || (self.password == nil) || (self.idString == nil));
+    return invalid;
+}
+
+- (void)clear
+{
+    self.username = nil;
+    self.password = nil;
+    self.phoneNumber = nil;
+    self.token = nil;
+    self.userId = 0;
+    self.tokenExpiryTime = 0;
 }
 
 @end

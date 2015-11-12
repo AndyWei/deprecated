@@ -75,7 +75,8 @@ NSString *const kZip = @"location_zip";
 {
     _apiTokenReady = YES;
 
-    if ([JYUser me].yrs > 0)
+    // The sequence must be profile ready (yrs > 0) ->  read location -> update user apperence
+    if ([JYCredential current].yrs > 0)
     {
         [self _readLocation];
     }
@@ -198,7 +199,7 @@ NSString *const kZip = @"location_zip";
 
 - (void)_appearInZip:(NSString *)zip country:(NSString *)countryCode
 {
-    NSUInteger yrs = [JYUser me].yrs;
+    NSUInteger yrs = [JYCredential current].yrs;
     NSDictionary *parameters = @{ @"zip": zip, @"country": countryCode, @"yrs": @(yrs) };
     NSString *url = [NSString apiURLWithPath:@"user/appear"];
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager managerWithToken];

@@ -422,8 +422,8 @@ const CGFloat kButtonWidth = 60;
 
     [parameters setObject:[JYLocationManager sharedInstance].zip forKey:@"zip"];
 
-    NSString *orientation = [JYUser me].sexualOrientation;
-    [parameters setObject:orientation forKey:@"orientation"];
+//    NSString *orientation = [JYUser me].sexualOrientation;
+//    [parameters setObject:orientation forKey:@"orientation"];
 
     if (self.personList.count > 0)
     {

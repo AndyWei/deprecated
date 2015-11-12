@@ -76,6 +76,7 @@ NSString *const kNotificationUserYRSReady = @"userYRSReady";
 NSString *const kTableNameLikedPost = @"liked_post";
 NSString *const kTableNamePerson = @"person";
 
+NSString *const kURLAPIBase = @"http://dev.winkrock.com:8000/v1/";
 //NSString *const kURLAPIBase = @"http://api.winkrock.com:8000/v1/";
-NSString *const kURLAPIBase = @"http://192.168.1.104:8000/v1/";
+//NSString *const kURLAPIBase = @"http://192.168.1.104:8000/v1/";
 

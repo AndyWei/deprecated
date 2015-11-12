@@ -8,7 +8,7 @@
 
 @interface JYUser : NSObject
 
-+ (JYUser *)me;
+//+ (JYUser *)me;
 - (instancetype)initWithDictionary:(NSDictionary *)dict;
 - (void)save:(NSDictionary *)dict;
 

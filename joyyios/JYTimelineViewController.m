@@ -498,7 +498,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
     }
     [self _networkThreadBegin];
 
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager managerWithToken];
 
     NSString *url = [NSString apiURLWithPath:@"post/timeline"];
     NSDictionary *parameters = [self _parametersForFetchTimeline:old];

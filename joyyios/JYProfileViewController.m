@@ -588,7 +588,6 @@ const CGFloat kAvatarButtonWidth = kAvatarButtonHeight;
              NSLog(@"Success: POST user/profile");
              [weakSelf _showNetworkIndicator:NO];
 
-             [[JYUser me] save:responseObject];
              [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationDidCreateProfile object:nil];
              [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationUserYRSReady object:nil];
          }
@@ -614,40 +613,40 @@ const CGFloat kAvatarButtonWidth = kAvatarButtonHeight;
     NSMutableDictionary *parameters = [NSMutableDictionary new];
 
     // phone
-    NSUInteger phoneNumber = [JYUser me].phoneNumber;
-    [parameters setObject:@(phoneNumber) forKey:@"phone"];
+    NSString *phoneNumber = [JYCredential current].phoneNumber;
+    [parameters setObject:phoneNumber forKey:@"phone"];
 
     // YRS
     NSUInteger region = [JYFilename sharedInstance].region;
     NSUInteger yob = [self.yobTextField.text unsignedIntegerValue];
     NSUInteger yrs = ((yob & 0xFFFF) << 16) | ((region & 0xFF) << 8) | (self.sex & 0xFF);
-    [JYUser me].yrs = yrs;
+    [JYCredential current].yrs = yrs;
     [parameters setObject:@(yrs) forKey:@"yrs"];
 
     return parameters;
 }
 
-- (void)_fetchProfile
-{
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager managerWithToken];
-    NSString *url = [NSString apiURLWithPath:@"user/profile"];
-
-    [self _showNetworkIndicator:YES];
-
-    __weak typeof(self) weakSelf = self;
-    [manager GET:url
-      parameters:nil
-         success:^(AFHTTPRequestOperation *operation, id responseObject) {
-             NSLog(@"Success: GET user/profile responseObject: %@", responseObject);
-             [weakSelf _showNetworkIndicator:NO];
-
-             [[JYUser me] save:responseObject];
-             [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationUserYRSReady object:nil];
-         }
-         failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-             NSLog(@"Error: GET user/profile: %@", error);
-             [weakSelf _showNetworkIndicator:NO];
-         }];
-}
+//- (void)_fetchProfile
+//{
+//    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager managerWithToken];
+//    NSString *url = [NSString apiURLWithPath:@"user/profile"];
+//
+//    [self _showNetworkIndicator:YES];
+//
+//    __weak typeof(self) weakSelf = self;
+//    [manager GET:url
+//      parameters:nil
+//         success:^(AFHTTPRequestOperation *operation, id responseObject) {
+//             NSLog(@"Success: GET user/profile responseObject: %@", responseObject);
+//             [weakSelf _showNetworkIndicator:NO];
+//
+//             [[JYUser me] save:responseObject];
+//             [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationUserYRSReady object:nil];
+//         }
+//         failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+//             NSLog(@"Error: GET user/profile: %@", error);
+//             [weakSelf _showNetworkIndicator:NO];
+//         }];
+//}
 
 @end
