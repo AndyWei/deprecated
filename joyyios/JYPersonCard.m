@@ -108,8 +108,8 @@ static const CGFloat kInfoLabelWidth = 280.f;
 - (void)_updateImage
 {
     // Get network image
-    NSURL *avatarURL = [NSURL URLWithString:self.person.avatarURL];
-    NSURLRequest *request = [NSURLRequest requestWithURL:avatarURL];
+    NSURL *url = [NSURL URLWithString:self.person.avatarURL];
+    NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestReturnCacheDataElseLoad timeoutInterval:5];
 
     __weak typeof(self) weakSelf = self;
     [self.imageView setImageWithURLRequest:request

@@ -614,6 +614,11 @@ const CGFloat kAvatarButtonWidth = kAvatarButtonHeight;
 
     // phone
     NSString *phoneNumber = [JYCredential current].phoneNumber;
+    if (!phoneNumber)
+    {
+        return nil;
+    }
+    
     [parameters setObject:phoneNumber forKey:@"phone"];
 
     // YRS

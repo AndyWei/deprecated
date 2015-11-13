@@ -159,7 +159,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 {
     // Fetch network image
     NSURL *url = [NSURL URLWithString:_post.url];
-    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+    NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestReturnCacheDataElseLoad timeoutInterval:5];
 
     __weak typeof(self) weakSelf = self;
     [self.photoView setImageWithURLRequest:request

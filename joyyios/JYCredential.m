@@ -169,6 +169,7 @@ static NSString *const kAPIYrsKey = @"api_yrs";
     self.phoneNumber = nil;
     self.token = nil;
     self.userId = 0;
+    self.yrs = 0;
     self.tokenExpiryTime = 0;
 }
 

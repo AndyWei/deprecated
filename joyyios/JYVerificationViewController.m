@@ -205,15 +205,22 @@ static NSString *const kVerificationCellIdentifier = @"verificationCell";
 
 #pragma mark - Handlers
 
-- (void)_receivedUsenames:(NSArray *)usernameList
+- (void)_receivedUsenames:(NSArray *)dictList
 {
-    self.usernameList = usernameList;
+    NSMutableArray *usernameList = [NSMutableArray new];
+    for (NSDictionary *dict in dictList)
+    {
+        NSString *username = [dict objectForKey:@"username"];
+        [usernameList addObject:username];
+    }
+
     if ([usernameList count] == 0)
     {
         [self _showSignupView];
     }
     else
     {
+        self.usernameList = usernameList;
         [self _showUsernames];
     }
 }
@@ -240,9 +247,8 @@ static NSString *const kVerificationCellIdentifier = @"verificationCell";
                                                destructiveButtonTitle:nil
                                                     otherButtonTitles:nil];
 
-    for (NSDictionary *dict in self.usernameList)
+    for (NSString *username in self.usernameList)
     {
-        NSString *username = [dict objectForKey:@"username"];
         [actionSheet addButtonWithTitle:username];
     }
 

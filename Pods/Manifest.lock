@@ -1,25 +1,25 @@
 PODS:
-  - AFNetworking (2.6.2):
-    - AFNetworking/NSURLConnection (= 2.6.2)
-    - AFNetworking/NSURLSession (= 2.6.2)
-    - AFNetworking/Reachability (= 2.6.2)
-    - AFNetworking/Security (= 2.6.2)
-    - AFNetworking/Serialization (= 2.6.2)
-    - AFNetworking/UIKit (= 2.6.2)
+  - AFNetworking (2.6.3):
+    - AFNetworking/NSURLConnection (= 2.6.3)
+    - AFNetworking/NSURLSession (= 2.6.3)
+    - AFNetworking/Reachability (= 2.6.3)
+    - AFNetworking/Security (= 2.6.3)
+    - AFNetworking/Serialization (= 2.6.3)
+    - AFNetworking/UIKit (= 2.6.3)
   - AFNetworking-Synchronous/2.x (0.3.1):
     - AFNetworking (~> 2.0)
-  - AFNetworking/NSURLConnection (2.6.2):
+  - AFNetworking/NSURLConnection (2.6.3):
     - AFNetworking/Reachability
     - AFNetworking/Security
     - AFNetworking/Serialization
-  - AFNetworking/NSURLSession (2.6.2):
+  - AFNetworking/NSURLSession (2.6.3):
     - AFNetworking/Reachability
     - AFNetworking/Security
     - AFNetworking/Serialization
-  - AFNetworking/Reachability (2.6.2)
-  - AFNetworking/Security (2.6.2)
-  - AFNetworking/Serialization (2.6.2)
-  - AFNetworking/UIKit (2.6.2):
+  - AFNetworking/Reachability (2.6.3)
+  - AFNetworking/Security (2.6.3)
+  - AFNetworking/Serialization (2.6.3)
+  - AFNetworking/UIKit (2.6.3):
     - AFNetworking/NSURLConnection
     - AFNetworking/NSURLSession
   - AKPickerView (0.2.6)
@@ -52,7 +52,7 @@ PODS:
   - JVFloatLabeledTextField (1.1.0)
   - KVNProgress (2.2.1)
   - KVOController (1.0.3)
-  - MJRefresh (3.0.1)
+  - MJRefresh (3.0.2)
   - MSWeakTimer (1.1.0)
   - Onboard (2.1.7)
   - RKDropdownAlert (0.3.0)
@@ -216,6 +216,7 @@ DEPENDENCIES:
   - Crashlytics
   - Fabric
   - FDFullscreenPopGesture
+  - FMDB
   - JSQMessagesViewController
   - JVFloatLabeledTextField
   - KVNProgress
@@ -233,7 +234,7 @@ DEPENDENCIES:
   - YTKKeyValueStore
 
 SPEC CHECKSUMS:
-  AFNetworking: 7f317038a9710cabfa43ec56396b307b45df72ab
+  AFNetworking: cb8d14a848e831097108418f5d49217339d4eb60
   AFNetworking-Synchronous: 29531ad341ec465a4ff9b66dea9cf7272080e12e
   AKPickerView: e31dcb9572c04d8439512315798862d9eb84b18f
   AWSCore: dc200c885c9799f9f5d3ab9ec38a9c4b44d680f9
@@ -250,7 +251,7 @@ SPEC CHECKSUMS:
   JVFloatLabeledTextField: ea4a3d8387ddd43724c472bb2b8ab39b79af05d4
   KVNProgress: 7001d2d16a2755cee5599e8e485befe056f2197b
   KVOController: 9fd8f0343670994e4b6f9f0b31f5a45663f3e1cf
-  MJRefresh: ca22bb7197c4a17a0491763773cd5cb106b2a810
+  MJRefresh: 85377dc8c70395cf329e102a5c55505ef387c2e1
   MSWeakTimer: 9426150f933b80ed3acf3f6d228e4b61f0e303c8
   Onboard: 87648089e1b76d13b4f5bf8f7a1cdb144092f0af
   RKDropdownAlert: f4b3364c251829ad439dc666836a1f2dad26f4c7

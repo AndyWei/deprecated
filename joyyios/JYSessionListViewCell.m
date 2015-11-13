@@ -66,7 +66,7 @@ static const CGFloat kTimeLabelWidth = 80;
 
     // Fetch avatar image via network
     NSURL *url = [NSURL URLWithString:person.avatarURL];
-    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+    NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestReturnCacheDataElseLoad timeoutInterval:5];
 
     __weak typeof(self) weakSelf = self;
     [self.avatarView setImageWithURLRequest:request

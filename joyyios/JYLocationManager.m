@@ -14,7 +14,7 @@
 
 @interface JYLocationManager () <CLLocationManagerDelegate, UIAlertViewDelegate>
 @property (nonatomic) CLLocationManager *manager;
-@property (nonatomic) BOOL apiTokenReady;
+@property (nonatomic) CLPlacemark *lastPlacemark;
 @end
 
 NSString *const kCountryCode = @"location_country_code";
@@ -59,7 +59,6 @@ NSString *const kZip = @"location_zip";
         _manager.distanceFilter = kCLDistanceFilterNone;
         _manager.desiredAccuracy = kCLLocationAccuracyHundredMeters;
 
-        _apiTokenReady = NO;
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_apiTokenReady) name:kNotificationAPITokenReady object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_userYRSReady) name:kNotificationUserYRSReady object:nil];
     }
@@ -73,21 +72,12 @@ NSString *const kZip = @"location_zip";
 
 - (void)_apiTokenReady
 {
-    _apiTokenReady = YES;
-
-    // The sequence must be profile ready (yrs > 0) ->  read location -> update user apperence
-    if ([JYCredential current].yrs > 0)
-    {
-        [self _readLocation];
-    }
+    [self _readLocation];
 }
 
 - (void)_userYRSReady
 {
-    if (self.apiTokenReady)
-    {
-        [self _readLocation];
-    }
+    [self _updateZipWithPlacemark:self.lastPlacemark];
 }
 
 - (void)dealloc
@@ -166,8 +156,8 @@ NSString *const kZip = @"location_zip";
                        }
                        else
                        {
-                           CLPlacemark *placemark = [placemarks lastObject];
-                           [weakSelf _updateZipWithPlacemark:placemark];
+                           weakSelf.lastPlacemark = [placemarks lastObject];
+                           [weakSelf _updateZipWithPlacemark:weakSelf.lastPlacemark];
                        }
                    }];
 }
@@ -186,6 +176,16 @@ NSString *const kZip = @"location_zip";
 
 - (void)_updateZipWithPlacemark:(CLPlacemark *)placemark
 {
+    if (!placemark)
+    {
+        return;
+    }
+
+    if ([JYCredential current].yrs == 0 || [JYCredential current].tokenValidInSeconds <= 0)
+    {
+        return;
+    }
+
     NSString *countryCode = placemark.ISOcountryCode;
     NSString *zip = placemark.postalCode;
 

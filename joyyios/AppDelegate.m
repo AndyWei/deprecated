@@ -45,6 +45,9 @@
 {
     NSLog(@"didFinishLaunchingWithOptions");
 
+    // test only
+//    [[JYCredential current] clear];
+
     // Fabric crashlytics
 //    [Fabric with:@[[Crashlytics class]]];
     [Flurry startSession:kFlurryKey];
@@ -85,9 +88,6 @@
 
     // TODO: Implement clear badge number logic in the right places.
     application.applicationIconBadgeNumber = 0;
-
-    // test only
-//    [[JYCredential current] clear];
 
     [[JYDeviceManager sharedInstance] start];
     [[JYLocationManager sharedInstance] start];
