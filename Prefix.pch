@@ -42,7 +42,7 @@
 #import "JYCredential.h"
 #import "JYUser.h"
 #import "JYDataStore.h"
-#import "AFHTTPRequestOperationManager+Joyy.h"
+#import "AFHTTPSessionManager+Joyy.h"
 
 #endif
 

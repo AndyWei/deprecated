@@ -115,7 +115,7 @@
     [JYCredential current].username = username;
     [JYCredential current].password = password;
 
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
 
     NSString *url = [NSString apiURLWithPath:@"auth/signup"];
     NSDictionary *parameters = @{ @"username":username, @"password":password };
@@ -125,7 +125,7 @@
 
     [manager POST:url
       parameters:parameters
-         success:^(AFHTTPRequestOperation *operation, id responseObject) {
+         success:^(NSURLSessionTask *operation, id responseObject) {
              NSLog(@"SignUp Success responseObject: %@", responseObject);
 
              [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
@@ -134,7 +134,7 @@
              [[JYCredential current] save:responseObject];
              [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationDidSignUp object:nil];
          }
-         failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+         failure:^(NSURLSessionTask *operation, NSError *error) {
              NSLog(@"SignUp Error: %@", error);
 
              [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
@@ -153,7 +153,7 @@
 
 - (void)_fetchExistenceOfUsername:(NSString *)username
 {
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
 
     NSString *url = [NSString apiURLWithPath:@"username/existence"];
     NSDictionary *parameters = @{ @"username":username };
@@ -163,7 +163,7 @@
     __weak typeof(self) weakSelf = self;
     [manager GET:url
        parameters:parameters
-          success:^(AFHTTPRequestOperation *operation, id responseObject) {
+          success:^(NSURLSessionTask *operation, id responseObject) {
               NSLog(@"Success: username/existence responseObject: %@", responseObject);
               [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
 
@@ -171,7 +171,7 @@
               BOOL exist = [[responseObject objectForKey:@"exist"] boolValue];
               [weakSelf _username:username exist:exist];
           }
-          failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+          failure:^(NSURLSessionTask *operation, NSError *error) {
               NSLog(@"Error: username/existence error = %@", error);
               [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
           }];

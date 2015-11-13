@@ -6,10 +6,10 @@
 //  Copyright (c) 2015 Joyy Inc. All rights reserved.
 //
 
+#import <AFNetworking/AFNetworking.h>
 #import <AWSCore/AWSCore.h>
 #import <UICKeychainStore/UICKeychainStore.h>
 
-#import "AFHTTPRequestOperationManager+Synchronous.h"
 #import "JYAuthenticationClient.h"
 
 NSString *const kJYAuthenticationClientDomain = @"JYAuthenticationClient";
@@ -162,7 +162,7 @@ static NSString *const kAWSTokenExpiryTimeKeyPrefix = @"aws_openid_token_expiry_
     __weak typeof(self) weakSelf = self;
     return [[AWSTask taskWithResult:nil] continueWithBlock:^id(AWSTask *task) {
 
-        AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager managerWithToken];
+        AFHTTPSessionManager *manager = [AFHTTPSessionManager managerWithToken];
         NSString *url = [NSString apiURLWithPath:@"auth/cognito"];
         NSError *error = nil;
         NSDictionary *response = [manager syncGET:url parameters:nil operation:NULL error:&error];

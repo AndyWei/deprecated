@@ -45,7 +45,7 @@
     [JYCredential current].username = username;
     [JYCredential current].password = password;
 
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     NSString *url = [NSString apiURLWithPath:@"auth/signin"];
 
     NSDictionary *parameters = @{ @"username":username, @"password":password };
@@ -54,7 +54,7 @@
 
     [manager POST:url
         parameters:parameters
-        success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        success:^(NSURLSessionTask *operation, id responseObject) {
             NSLog(@"SignIn Success responseObject: %@", responseObject);
 
             [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
@@ -63,7 +63,7 @@
 
             [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationDidSignIn object:nil];
         }
-        failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        failure:^(NSURLSessionTask *operation, NSError *error) {
             NSLog(@"SignIn Error: %@", error);
 
             [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;

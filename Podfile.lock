@@ -6,8 +6,6 @@ PODS:
     - AFNetworking/Security (= 2.6.3)
     - AFNetworking/Serialization (= 2.6.3)
     - AFNetworking/UIKit (= 2.6.3)
-  - AFNetworking-Synchronous/2.x (0.3.1):
-    - AFNetworking (~> 2.0)
   - AFNetworking/NSURLConnection (2.6.3):
     - AFNetworking/Reachability
     - AFNetworking/Security
@@ -207,8 +205,7 @@ PODS:
     - FMDB (~> 2.0)
 
 DEPENDENCIES:
-  - AFNetworking (~> 2.5)
-  - AFNetworking-Synchronous/2.x
+  - AFNetworking
   - AKPickerView
   - AWSCore
   - AWSS3
@@ -235,7 +232,6 @@ DEPENDENCIES:
 
 SPEC CHECKSUMS:
   AFNetworking: cb8d14a848e831097108418f5d49217339d4eb60
-  AFNetworking-Synchronous: 29531ad341ec465a4ff9b66dea9cf7272080e12e
   AKPickerView: e31dcb9572c04d8439512315798862d9eb84b18f
   AWSCore: dc200c885c9799f9f5d3ab9ec38a9c4b44d680f9
   AWSS3: 0185482a8136da9c7542a767567ee18106b38bca
@@ -263,4 +259,4 @@ SPEC CHECKSUMS:
   XMPPFramework: 7ae77710dd86f1826f5451dc5f3cf9f4d2a62072
   YTKKeyValueStore: 4d002941540dd5108fa23009b71e0f2f937f7a0f
 
-COCOAPODS: 0.38.2
+COCOAPODS: 0.39.0

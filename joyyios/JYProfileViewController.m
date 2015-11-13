@@ -577,21 +577,21 @@ const CGFloat kAvatarButtonWidth = kAvatarButtonHeight;
 {
     [self _showNetworkIndicator:YES];
 
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager managerWithToken];
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager managerWithToken];
     NSString *url = [NSString apiURLWithPath:@"user/profile"];
     NSDictionary *parameters = [self _parametersForUpdatingProfile];
 
     __weak typeof(self) weakSelf = self;
     [manager POST:url
       parameters:parameters
-         success:^(AFHTTPRequestOperation *operation, id responseObject) {
+         success:^(NSURLSessionTask *operation, id responseObject) {
              NSLog(@"Success: POST user/profile");
              [weakSelf _showNetworkIndicator:NO];
 
              [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationDidCreateProfile object:nil];
              [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationUserYRSReady object:nil];
          }
-         failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+         failure:^(NSURLSessionTask *operation, NSError *error) {
              NSLog(@"Error: POST user/profile error = %@", error);
 
              [weakSelf _showNetworkIndicator:NO];
@@ -633,7 +633,7 @@ const CGFloat kAvatarButtonWidth = kAvatarButtonHeight;
 
 //- (void)_fetchProfile
 //{
-//    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager managerWithToken];
+//    AFHTTPSessionManager *manager = [AFHTTPSessionManager managerWithToken];
 //    NSString *url = [NSString apiURLWithPath:@"user/profile"];
 //
 //    [self _showNetworkIndicator:YES];
@@ -641,14 +641,14 @@ const CGFloat kAvatarButtonWidth = kAvatarButtonHeight;
 //    __weak typeof(self) weakSelf = self;
 //    [manager GET:url
 //      parameters:nil
-//         success:^(AFHTTPRequestOperation *operation, id responseObject) {
+//         success:^(NSURLSessionTask *operation, id responseObject) {
 //             NSLog(@"Success: GET user/profile responseObject: %@", responseObject);
 //             [weakSelf _showNetworkIndicator:NO];
 //
 //             [[JYUser me] save:responseObject];
 //             [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationUserYRSReady object:nil];
 //         }
-//         failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+//         failure:^(NSURLSessionTask *operation, NSError *error) {
 //             NSLog(@"Error: GET user/profile: %@", error);
 //             [weakSelf _showNetworkIndicator:NO];
 //         }];

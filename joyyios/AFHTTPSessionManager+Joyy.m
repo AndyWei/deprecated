@@ -1,16 +1,16 @@
 //
-//  AFHTTPRequestOperationManager+Joyy.m
+//  AFHTTPSessionManager+Joyy.m
 //  joyyios
 //
 //  Created by Ping Yang on 9/3/15.
 //  Copyright (c) 2015 Joyy Inc. All rights reserved.
 //
 
-@implementation AFHTTPRequestOperationManager (Joyy)
+@implementation AFHTTPSessionManager (Joyy)
 
-+ (AFHTTPRequestOperationManager *)managerWithToken
++ (AFHTTPSessionManager *)managerWithToken
 {
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     NSString *token = [NSString stringWithFormat:@"Bearer %@", [JYCredential current].token];
     [manager.requestSerializer setValue:token forHTTPHeaderField:@"Authorization"];
 

@@ -419,21 +419,21 @@ static NSString *const kPostCellIdentifier = @"postCell";
 {
     [self _networkThreadBegin];
 
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager managerWithToken];
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager managerWithToken];
     NSString *url = [NSString apiURLWithPath:@"post"];
     NSMutableDictionary *parameters = [self _parametersForPostWithFilename:filename caption:caption];
 
     __weak typeof(self) weakSelf = self;
     [manager POST:url
        parameters:parameters
-          success:^(AFHTTPRequestOperation *operation, id responseObject) {
+          success:^(NSURLSessionTask *operation, id responseObject) {
 
         NSLog(@"Success: createPostRecord response = %@", responseObject);
         JYPost *post = [[JYPost alloc] initWithDictionary:responseObject];
         [weakSelf _updateTableWithPostList:@[post] old:NO];
         [weakSelf _networkThreadEnd];
 
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+    } failure:^(NSURLSessionTask *operation, NSError *error) {
         NSLog(@"Failure: createPostRecord error = %@", error);
         [weakSelf _networkThreadEnd];
 
@@ -459,14 +459,14 @@ static NSString *const kPostCellIdentifier = @"postCell";
 {
     [self _networkThreadBegin];
 
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager managerWithToken];
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager managerWithToken];
     NSString *url = [NSString apiURLWithPath:@"post/like"];
     NSDictionary *parameters = @{@"id": @(post.postId)};
 
     __weak typeof(self) weakSelf = self;
     [manager POST:url
        parameters:parameters
-          success:^(AFHTTPRequestOperation *operation, id responseObject) {
+          success:^(NSURLSessionTask *operation, id responseObject) {
               //             NSLog(@"post/like POST success responseObject: %@", responseObject);
 
               NSDictionary *dict = (NSDictionary *)responseObject;
@@ -474,7 +474,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
               post.isLiked = YES;
               [weakSelf _networkThreadEnd];
           }
-          failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+          failure:^(NSURLSessionTask *operation, NSError *error) {
               [weakSelf _networkThreadEnd];
           }
      ];
@@ -498,7 +498,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
     }
     [self _networkThreadBegin];
 
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager managerWithToken];
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager managerWithToken];
 
     NSString *url = [NSString apiURLWithPath:@"post/timeline"];
     NSDictionary *parameters = [self _parametersForFetchTimeline:old];
@@ -506,7 +506,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
     __weak typeof(self) weakSelf = self;
     [manager GET:url
       parameters:parameters
-         success:^(AFHTTPRequestOperation *operation, id responseObject) {
+         success:^(NSURLSessionTask *operation, id responseObject) {
              NSLog(@"post/timeline fetch success responseObject: %@", responseObject);
 
              NSMutableArray *postList = [NSMutableArray new];
@@ -518,7 +518,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
              [weakSelf _fetchRecentCommentsForPostList:postList old:old];
              [weakSelf _networkThreadEnd];
          }
-         failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+         failure:^(NSURLSessionTask *operation, NSError *error) {
              [weakSelf _networkThreadEnd];
          }
      ];
@@ -533,7 +533,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
 
     [self _networkThreadBegin];
 
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
 
     NSString *url = [NSString apiURLWithPath:@"comment/recent"];
     NSDictionary *parameters = [self _parametersForRecentCommentsOfPosts:list];
@@ -541,7 +541,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
     __weak typeof(self) weakSelf = self;
     [manager GET:url
       parameters:parameters
-         success:^(AFHTTPRequestOperation *operation, id responseObject) {
+         success:^(NSURLSessionTask *operation, id responseObject) {
 //             NSLog(@"comment/recent fetch success responseObject: %@", responseObject);
 
              NSDictionary *comments = (NSDictionary *)responseObject;
@@ -561,7 +561,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
              [weakSelf _updateTableWithPostList:list old:old];
              [weakSelf _networkThreadEnd];
          }
-         failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+         failure:^(NSURLSessionTask *operation, NSError *error) {
              [weakSelf _networkThreadEnd];
          }
      ];

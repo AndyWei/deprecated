@@ -58,14 +58,14 @@ NSString *const kKeyPresentedIntroductionVersion = @"PresentedIntroductionVersio
     }
 
     // fetch from server
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager managerWithToken];
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager managerWithToken];
     NSString *url = [NSString apiURLWithPath:@"person"];
     NSDictionary *parameters =  @{ @"id": @[idString] };
 
     __weak typeof(self) weakSelf = self;
     [manager GET:url
       parameters:parameters
-         success:^(AFHTTPRequestOperation *operation, id responseObject) {
+         success:^(NSURLSessionTask *operation, id responseObject) {
              NSLog(@"Success: JYDataStore fetch person responseObject: %@", responseObject);
 
              NSDictionary *dict = [responseObject firstObject];
@@ -81,7 +81,7 @@ NSString *const kKeyPresentedIntroductionVersion = @"PresentedIntroductionVersio
                  return failure(error);
              }
          }
-         failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+         failure:^(NSURLSessionTask *operation, NSError *error) {
              NSLog(@"Failure: JYDataStore fetch person error: %@", error);
              return failure(error);
          }

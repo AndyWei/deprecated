@@ -345,7 +345,7 @@ CGFloat const kCountryNumberWidth = 60;
 
 - (void)_fetchValidationCode
 {
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     NSString *url = [NSString apiURLWithPath:@"code/request"];
 
     NSString *phoneNumber = [self _userPhoneNumberDigits];
@@ -357,12 +357,12 @@ CGFloat const kCountryNumberWidth = 60;
     __weak typeof(self) weakSelf = self;
     [manager POST:url
       parameters:parameters
-         success:^(AFHTTPRequestOperation *operation, id responseObject) {
+         success:^(NSURLSessionTask *operation, id responseObject) {
              NSLog(@"Success: POST code/request");
              [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
              
          }
-         failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+         failure:^(NSURLSessionTask *operation, NSError *error) {
              NSLog(@"Error: POST code/request error: %@", error);
 
              [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;

@@ -202,14 +202,14 @@ NSString *const kZip = @"location_zip";
     NSUInteger yrs = [JYCredential current].yrs;
     NSDictionary *parameters = @{ @"zip": zip, @"country": countryCode, @"yrs": @(yrs) };
     NSString *url = [NSString apiURLWithPath:@"user/appear"];
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager managerWithToken];
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager managerWithToken];
 
     [manager POST:url
        parameters:parameters
-          success:^(AFHTTPRequestOperation *operation, id responseObject) {
+          success:^(NSURLSessionTask *operation, id responseObject) {
               NSLog(@"POST user/appear Success");
           }
-          failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+          failure:^(NSURLSessionTask *operation, NSError *error) {
               NSLog(@"user/appear error: %@", error);
           }];
     

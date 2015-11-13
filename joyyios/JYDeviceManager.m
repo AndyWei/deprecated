@@ -90,14 +90,14 @@ NSString *const kBadgeCount = @"badge_count";
 {
     NSDictionary *parameters = @{ @"dtoken": deviceToken, @"pns": @1 };
     NSString *url = [NSString apiURLWithPath:@"device/register"];
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager managerWithToken];
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager managerWithToken];
 
     [manager POST:url
        parameters:parameters
-          success:^(AFHTTPRequestOperation *operation, id responseObject) {
+          success:^(NSURLSessionTask *operation, id responseObject) {
               NSLog(@"POST device/register Success");
           }
-          failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+          failure:^(NSURLSessionTask *operation, NSError *error) {
               NSLog(@"POST device/register error: %@", error);
           }];
     

@@ -309,7 +309,7 @@ static NSString *const kVerificationCellIdentifier = @"verificationCell";
 {
     [self.textField resignFirstResponder];
 
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     NSString *url = [NSString apiURLWithPath:@"code/validate"];
 
     NSString *code = [self.textField.text substringToIndex:4];
@@ -321,7 +321,7 @@ static NSString *const kVerificationCellIdentifier = @"verificationCell";
     __weak typeof(self) weakSelf = self;
     [manager POST:url
       parameters:parameters
-         success:^(AFHTTPRequestOperation *operation, id responseObject) {
+         success:^(NSURLSessionTask *operation, id responseObject) {
              NSLog(@"Success: POST code/validate. responseObject = %@", responseObject);
              [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
              [KVNProgress dismiss];
@@ -329,7 +329,7 @@ static NSString *const kVerificationCellIdentifier = @"verificationCell";
              NSArray *usernameList = (NSArray *)responseObject;
              [weakSelf _receivedUsenames:usernameList];
          }
-         failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+         failure:^(NSURLSessionTask *operation, NSError *error) {
              NSLog(@"Error: POST code/validate error: %@", error);
              [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
              [KVNProgress dismiss];

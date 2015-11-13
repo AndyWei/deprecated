@@ -348,7 +348,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 {
     [self _networkThreadBegin];
 
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager managerWithToken];
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager managerWithToken];
     NSString *url = [NSString apiURLWithPath:@"comment"];
 
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
@@ -356,7 +356,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
     __weak typeof(self) weakSelf = self;
     [manager POST:url
        parameters:[self _parametersForCreatingComment]
-          success:^(AFHTTPRequestOperation *operation, id responseObject) {
+          success:^(NSURLSessionTask *operation, id responseObject) {
               NSLog(@"Comment POST Success responseObject: %@", responseObject);
 
               [weakSelf _networkThreadEnd];
@@ -365,7 +365,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 
               [weakSelf _fetchNewComments];
           }
-          failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+          failure:^(NSURLSessionTask *operation, NSError *error) {
 
               [weakSelf _networkThreadEnd];
 
@@ -386,19 +386,19 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
     }
     [self _networkThreadBegin];
 
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     NSString *url = [NSString apiURLWithPath:@"comment"];
 
     __weak typeof(self) weakSelf = self;
     [manager GET:url
       parameters:[self _parametersForCommentOfPost:toEnd]
-         success:^(AFHTTPRequestOperation *operation, id responseObject) {
+         success:^(NSURLSessionTask *operation, id responseObject) {
 
              NSLog(@"comment GET success responseObject: %@", responseObject);
              [weakSelf _updateTableWithComments:responseObject toEnd:toEnd];
              [weakSelf _networkThreadEnd];
          }
-         failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+         failure:^(NSURLSessionTask *operation, NSError *error) {
              [weakSelf _networkThreadEnd];
          }
      ];

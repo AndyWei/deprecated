@@ -397,20 +397,20 @@ const CGFloat kButtonWidth = 60;
     }
     [self _networkThreadBegin];
 
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager managerWithToken];
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager managerWithToken];
     NSString *url = [NSString apiURLWithPath:@"person/nearby"];
     NSDictionary *parameters = [self _parametersForPersonNearby];
 
     __weak typeof(self) weakSelf = self;
     [manager GET:url
       parameters:parameters
-         success:^(AFHTTPRequestOperation *operation, id responseObject) {
+         success:^(NSURLSessionTask *operation, id responseObject) {
 //             NSLog(@"person/nearby fetch success responseObject: %@", responseObject);
 
              [weakSelf _handleNearbyPersonIds:responseObject];
              [weakSelf _networkThreadEnd];
          }
-         failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+         failure:^(NSURLSessionTask *operation, NSError *error) {
              [weakSelf _networkThreadEnd];
          }
      ];
@@ -439,14 +439,14 @@ const CGFloat kButtonWidth = 60;
 {
     [self _networkThreadBegin];
 
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager managerWithToken];
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager managerWithToken];
     NSString *url = [NSString apiURLWithPath:@"person"];
     NSDictionary *parameters = @{@"id": personIds};
 
     __weak typeof(self) weakSelf = self;
     [manager GET:url
       parameters:parameters
-         success:^(AFHTTPRequestOperation *operation, id responseObject) {
+         success:^(NSURLSessionTask *operation, id responseObject) {
 //             NSLog(@"fetch person by ids success responseObject: %@", responseObject);
 
              for (NSDictionary *dict in responseObject)
@@ -457,7 +457,7 @@ const CGFloat kButtonWidth = 60;
              [weakSelf _loadCards];
              [weakSelf _networkThreadEnd];
          }
-         failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+         failure:^(NSURLSessionTask *operation, NSError *error) {
              [weakSelf _networkThreadEnd];
          }
      ];
