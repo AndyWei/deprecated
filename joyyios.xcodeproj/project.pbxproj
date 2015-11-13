@@ -102,6 +102,7 @@
 		D6E3B0551B996F5400B707DF /* JYSessionListViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D6E3B0541B996F5400B707DF /* JYSessionListViewCell.m */; };
 		D6E3B0611B9A38F500B707DF /* JYMessageDateFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = D6E3B0601B9A38F500B707DF /* JYMessageDateFormatter.m */; };
 		D6E3B0651B9A7C6D00B707DF /* NSIndexPath+Joyy.m in Sources */ = {isa = PBXBuildFile; fileRef = D6E3B0641B9A7C6D00B707DF /* NSIndexPath+Joyy.m */; };
+		D6E7BCCA1BF66C4500954A1D /* JYLocalDataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D6E7BCC91BF66C4500954A1D /* JYLocalDataManager.m */; };
 		D6E8ABAA1BEB3A4E0040228C /* JYCredentialManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D6E8ABA91BEB3A4E0040228C /* JYCredentialManager.m */; };
 		D6F7F1381BA71ADF008118DA /* JYVerificationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F7F1371BA71ADF008118DA /* JYVerificationViewController.m */; };
 		D6F7F1491BA8ED76008118DA /* JYFacialGestureCamera.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F7F1401BA8ED76008118DA /* JYFacialGestureCamera.m */; };
@@ -298,6 +299,8 @@
 		D6E3B0601B9A38F500B707DF /* JYMessageDateFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYMessageDateFormatter.m; sourceTree = "<group>"; };
 		D6E3B0631B9A7C6D00B707DF /* NSIndexPath+Joyy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSIndexPath+Joyy.h"; sourceTree = "<group>"; };
 		D6E3B0641B9A7C6D00B707DF /* NSIndexPath+Joyy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSIndexPath+Joyy.m"; sourceTree = "<group>"; };
+		D6E7BCC81BF66C4500954A1D /* JYLocalDataManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYLocalDataManager.h; sourceTree = "<group>"; };
+		D6E7BCC91BF66C4500954A1D /* JYLocalDataManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYLocalDataManager.m; sourceTree = "<group>"; };
 		D6E8ABA81BEB3A4E0040228C /* JYCredentialManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYCredentialManager.h; sourceTree = "<group>"; };
 		D6E8ABA91BEB3A4E0040228C /* JYCredentialManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYCredentialManager.m; sourceTree = "<group>"; };
 		D6F7F1361BA71ADF008118DA /* JYVerificationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYVerificationViewController.h; sourceTree = "<group>"; };
@@ -575,7 +578,7 @@
 			name = Vendor;
 			sourceTree = "<group>";
 		};
-		D63591921BEA90FB00BFFF82 /* manager */ = {
+		D63591921BEA90FB00BFFF82 /* Manager */ = {
 			isa = PBXGroup;
 			children = (
 				D69FF6D91B96471600466FE5 /* JYAmazonClientManager.h */,
@@ -584,12 +587,14 @@
 				D6E8ABA91BEB3A4E0040228C /* JYCredentialManager.m */,
 				D63591931BEA913500BFFF82 /* JYDeviceManager.h */,
 				D63591941BEA913500BFFF82 /* JYDeviceManager.m */,
+				D6E7BCC81BF66C4500954A1D /* JYLocalDataManager.h */,
+				D6E7BCC91BF66C4500954A1D /* JYLocalDataManager.m */,
 				D6825BC51BE897F400F3695D /* JYLocationManager.h */,
 				D6825BC61BE897F400F3695D /* JYLocationManager.m */,
 				D62C2C5E1B8E887200233F5B /* JYXmppManager.h */,
 				D62C2C5F1B8E887200233F5B /* JYXmppManager.m */,
 			);
-			name = manager;
+			name = Manager;
 			sourceTree = "<group>";
 		};
 		D63B69AB1AC5184D005600A9 /* People */ = {
@@ -709,7 +714,7 @@
 				D68DAF991AC4CD0800838E7E /* Common */,
 				D68DAF9A1AC4CD1800838E7E /* Sign */,
 				D6F7F13A1BA8ECCC008118DA /* Detector */,
-				D63591921BEA90FB00BFFF82 /* manager */,
+				D63591921BEA90FB00BFFF82 /* Manager */,
 				D61D1D5B1B4DBA5D00DE37DF /* Timeline */,
 				D68486B31B8AC207005CA0C4 /* Message */,
 				D6C82B611B1252FE00876F57 /* Model */,
@@ -1005,6 +1010,7 @@
 				D61D1DC01B4E336E00DE37DF /* TGCameraFocusView.m in Sources */,
 				D69202B21AC4C7C0001C1C3D /* main.m in Sources */,
 				D6C82B691B12553D00876F57 /* JYComment.m in Sources */,
+				D6E7BCCA1BF66C4500954A1D /* JYLocalDataManager.m in Sources */,
 				D61D1DCA1B4E336E00DE37DF /* TGTintedButton.m in Sources */,
 				D6C82B5C1B0EFDEA00876F57 /* JYCommentTextView.m in Sources */,
 				D6348D2F1ADB4DD60002BC35 /* NSString+Joyy.m in Sources */,

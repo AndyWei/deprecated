@@ -19,6 +19,7 @@
 #import "JYCredentialManager.h"
 #import "JYDeviceManager.h"
 #import "JYFilename.h"
+#import "JYLocalDataManager.h"
 #import "JYLocationManager.h"
 #import "JYPeopleViewController.h"
 #import "JYPhoneNumberViewController.h"
@@ -90,6 +91,7 @@
     application.applicationIconBadgeNumber = 0;
 
     [[JYDeviceManager sharedInstance] start];
+    [[JYLocalDataManager sharedInstance] start];
     [[JYLocationManager sharedInstance] start];
     [[JYAmazonClientManager sharedInstance] start];
     [[JYXmppManager sharedInstance] start];
