@@ -80,6 +80,7 @@
 		D68DAF961AC4CACD00838E7E /* Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = D68DAF931AC4CACD00838E7E /* Constants.m */; };
 		D68DAF971AC4CACD00838E7E /* JYSignInViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D68DAF951AC4CACD00838E7E /* JYSignInViewController.m */; };
 		D6903CFA1BF6A38700CDC64F /* AFHTTPSessionManager+Joyy.m in Sources */ = {isa = PBXBuildFile; fileRef = D6903CF91BF6A38700CDC64F /* AFHTTPSessionManager+Joyy.m */; };
+		D6903CFD1BF6BB6300CDC64F /* NSURLSession+SynchronousTask.m in Sources */ = {isa = PBXBuildFile; fileRef = D6903CFC1BF6BB6300CDC64F /* NSURLSession+SynchronousTask.m */; };
 		D69202B21AC4C7C0001C1C3D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = D69202B11AC4C7C0001C1C3D /* main.m */; };
 		D69202B51AC4C7C0001C1C3D /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D69202B41AC4C7C0001C1C3D /* AppDelegate.m */; };
 		D69202C01AC4C7C0001C1C3D /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D69202BF1AC4C7C0001C1C3D /* Images.xcassets */; };
@@ -255,6 +256,8 @@
 		D68DAF981AC4CB0900838E7E /* Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Prefix.pch; path = ../Prefix.pch; sourceTree = "<group>"; };
 		D6903CF81BF6A38700CDC64F /* AFHTTPSessionManager+Joyy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AFHTTPSessionManager+Joyy.h"; sourceTree = "<group>"; };
 		D6903CF91BF6A38700CDC64F /* AFHTTPSessionManager+Joyy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "AFHTTPSessionManager+Joyy.m"; sourceTree = "<group>"; };
+		D6903CFB1BF6BB6300CDC64F /* NSURLSession+SynchronousTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURLSession+SynchronousTask.h"; sourceTree = "<group>"; };
+		D6903CFC1BF6BB6300CDC64F /* NSURLSession+SynchronousTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSURLSession+SynchronousTask.m"; sourceTree = "<group>"; };
 		D69202AC1AC4C7C0001C1C3D /* winkrock.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = winkrock.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D69202B01AC4C7C0001C1C3D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D69202B11AC4C7C0001C1C3D /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -658,6 +661,8 @@
 				D6966B311BA2BB2B00AAD8D5 /* UITextField+Joyy.m */,
 				D689ED681AE42C8300CB4D2B /* UIView+Joyy.h */,
 				D689ED691AE42C8300CB4D2B /* UIView+Joyy.m */,
+				D6903CFB1BF6BB6300CDC64F /* NSURLSession+SynchronousTask.h */,
+				D6903CFC1BF6BB6300CDC64F /* NSURLSession+SynchronousTask.m */,
 			);
 			name = Common;
 			sourceTree = "<group>";
@@ -1005,6 +1010,7 @@
 				D6E3B0651B9A7C6D00B707DF /* NSIndexPath+Joyy.m in Sources */,
 				D6E8ABAA1BEB3A4E0040228C /* JYCredentialManager.m in Sources */,
 				D6E3B0611B9A38F500B707DF /* JYMessageDateFormatter.m in Sources */,
+				D6903CFD1BF6BB6300CDC64F /* NSURLSession+SynchronousTask.m in Sources */,
 				D61D1D4F1B4A65F200DE37DF /* MDCSwipeOptions.m in Sources */,
 				D62C2C601B8E887200233F5B /* JYXmppManager.m in Sources */,
 				D61D1DBE1B4E336E00DE37DF /* TGCameraFilterView.m in Sources */,

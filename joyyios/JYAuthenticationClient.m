@@ -6,11 +6,11 @@
 //  Copyright (c) 2015 Joyy Inc. All rights reserved.
 //
 
-#import <AFNetworking/AFNetworking.h>
 #import <AWSCore/AWSCore.h>
 #import <UICKeychainStore/UICKeychainStore.h>
 
 #import "JYAuthenticationClient.h"
+#import "NSURLSession+SynchronousTask.h"
 
 NSString *const kJYAuthenticationClientDomain = @"JYAuthenticationClient";
 
@@ -138,6 +138,68 @@ static NSString *const kAWSTokenExpiryTimeKeyPrefix = @"aws_openid_token_expiry_
     return _tokenExpiryTime;
 }
 
+- (AWSTask *)_getTokenFromWinkRock
+{
+    NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
+    [config setHTTPAdditionalHeaders:@{@"Authorization": [NSString stringWithFormat:@"Bearer %@",[JYCredential current].token]}];
+    NSURLSession *session = [NSURLSession sessionWithConfiguration:config];
+
+    NSURL *url = [NSURL URLWithString:[NSString apiURLWithPath:@"auth/cognito"]];
+    NSError *error = nil;
+    NSURLResponse *response = nil;
+    NSData *data = [session sendSynchronousDataTaskWithURL:url returningResponse:&response error:&error];
+
+    if (error || !data)
+    {
+        NSLog(@"Error: no cognito response from winkrock server");
+        return [AWSTask taskWithError:[NSError errorWithDomain:kJYAuthenticationClientDomain
+                                                          code:JYAuthenticationErrorNoCognitoResponse
+                                                      userInfo:nil]];
+    }
+
+    NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data
+                                                         options:kNilOptions
+                                                           error:&error];
+
+    if (error)
+    {
+        NSLog(@"Error: the response from winkrock server is not json");
+        return [AWSTask taskWithError:[NSError errorWithDomain:kJYAuthenticationClientDomain
+                                                          code:JYAuthenticationErrorNoCognitoResponse
+                                                      userInfo:nil]];
+    }
+
+    NSString *identityId = [json objectForKey:@"IdentityId"];
+    NSString *token = [json objectForKey:@"Token"];
+
+    if (!identityId)
+    {
+        NSLog(@"Error: no IdentityId");
+        return [AWSTask taskWithError:[NSError errorWithDomain:kJYAuthenticationClientDomain
+                                                          code:JYAuthenticationErrorNoIdentityId
+                                                      userInfo:nil]];
+    }
+
+    if (!token)
+    {
+        NSLog(@"Error: No Token");
+        return [AWSTask taskWithError:[NSError errorWithDomain:kJYAuthenticationClientDomain
+                                                          code:JYAuthenticationErrorNoToken
+                                                      userInfo:nil]];
+    }
+
+    JYAuthenticationResponse *authResponse = [JYAuthenticationResponse new];
+
+    self.identityId = authResponse.identityId = identityId;
+    self.token = authResponse.token = token;
+    NSUInteger now = (NSUInteger)[NSDate timeIntervalSinceReferenceDate];
+    self.tokenExpiryTime = now + 86400;
+
+    NSLog(@"Success: got new token from winkrock server");
+
+    return [AWSTask taskWithResult:authResponse];
+}
+
 // call getToken and set our values from returned result
 - (AWSTask *)getToken
 {
@@ -159,51 +221,8 @@ static NSString *const kAWSTokenExpiryTimeKeyPrefix = @"aws_openid_token_expiry_
         return [AWSTask taskWithResult:authResponse];
     }
 
-    __weak typeof(self) weakSelf = self;
-    return [[AWSTask taskWithResult:nil] continueWithBlock:^id(AWSTask *task) {
+    return [self _getTokenFromWinkRock];
 
-        AFHTTPSessionManager *manager = [AFHTTPSessionManager managerWithToken];
-        NSString *url = [NSString apiURLWithPath:@"auth/cognito"];
-        NSError *error = nil;
-        NSDictionary *response = [manager syncGET:url parameters:nil operation:NULL error:&error];
-
-        if (!response)
-        {
-            NSLog(@"Error: no cognito response from winkrock server");
-            return [AWSTask taskWithError:[NSError errorWithDomain:kJYAuthenticationClientDomain
-                                                             code:JYAuthenticationErrorNoCognitoResponse
-                                                         userInfo:nil]];
-        }
-        
-        NSString *identityId = [response objectForKey:@"IdentityId"];
-        NSString *token = [response objectForKey:@"Token"];
-
-        if (!identityId)
-        {
-            NSLog(@"Error: no IdentityId");
-            return [AWSTask taskWithError:[NSError errorWithDomain:kJYAuthenticationClientDomain
-                                                             code:JYAuthenticationErrorNoIdentityId
-                                                         userInfo:nil]];
-        }
-
-        if (!token)
-        {
-            NSLog(@"Error: No Token");
-            return [AWSTask taskWithError:[NSError errorWithDomain:kJYAuthenticationClientDomain
-                                                              code:JYAuthenticationErrorNoToken
-                                                          userInfo:nil]];
-        }
-
-        JYAuthenticationResponse *authResponse = [JYAuthenticationResponse new];
-
-        weakSelf.identityId = authResponse.identityId = identityId;
-        weakSelf.token = authResponse.token = token;
-        NSUInteger now = (NSUInteger)[NSDate timeIntervalSinceReferenceDate];
-        weakSelf.tokenExpiryTime = now + 86400;
-
-        NSLog(@"Success: got new token from winkrock server");
-        return [AWSTask taskWithResult:authResponse];
-    }];
 }
 
 @end
