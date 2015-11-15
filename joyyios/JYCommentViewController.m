@@ -158,7 +158,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 - (void)_showBackgroundImage
 {
     // Fetch network image
-    NSURL *url = [NSURL URLWithString:_post.url];
+    NSURL *url = [NSURL URLWithString:_post.URL];
     NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestReturnCacheDataElseLoad timeoutInterval:5];
 
     __weak typeof(self) weakSelf = self;
@@ -360,8 +360,8 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
               NSLog(@"Comment POST Success responseObject: %@", responseObject);
 
               [weakSelf _networkThreadEnd];
-              NSUInteger commentCount = [responseObject unsignedIntegerValueForKey:@"comments"];
-              weakSelf.post.commentCount = commentCount;
+//              NSUInteger commentCount = [responseObject unsignedIntegerValueForKey:@"comments"];
+//              weakSelf.post.commentCount = commentCount;
 
               [weakSelf _fetchNewComments];
           }

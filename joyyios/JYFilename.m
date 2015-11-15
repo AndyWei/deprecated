@@ -16,6 +16,7 @@
 @property (nonatomic) NSDictionary *bucketPrefixDict;
 @property (nonatomic) NSDictionary *countryContinetDict;
 @property (nonatomic) NSDictionary *continetRegionDict;
+@property (nonatomic) NSDictionary *regionURLDict;
 @property (nonatomic) NSString *bucketPrefix;
 @property (nonatomic) NSString *continent;
 @end
@@ -146,32 +147,30 @@
     return _postBucketName;
 }
 
-//- (NSString *)region
-//{
-//    if (!_region)
-//    {
-//        _region = [self.continetRegionDict objectForKey:self.bucketPrefix];
-//    }
-//    return _region;
-//}
-//
-//// Mapping bucket name prefix to region
-//- (NSDictionary *)continetRegionDict
-//{
-//    if (!_continetRegionDict)
-//    {
-//        _continetRegionDict = @{ @"as-jy-":@"as",
-//                            @"eu-jy-":@"eu",
-//                            @"joyy":@"na" };
-//    }
-//    return _continetRegionDict;
-//}
+- (NSString *)URLPrefixOfRegionValue:(NSString *)regionValue
+{
+    return self.regionURLDict[regionValue];
+}
 
-- (NSUInteger)region
+// Mapping region value to URL prefix
+- (NSDictionary *)regionURLDict
+{
+    if (!_regionURLDict)
+    {
+        _regionURLDict = @{
+                           @"0": @"http://joyypost-1d98.kxcdn.com/", // north america keyCDN zone
+                           @"1": @"http://asjypost-1d98.kxcdn.com/", // asia keyCDN zone
+                           @"2": @"http://eujypost-1d98.kxcdn.com/"  // europe keyCDN zone
+                          };
+    }
+    return _regionURLDict;
+}
+
+- (NSInteger)region
 {
     if (!_region)
     {
-        _region = [[self.continetRegionDict objectForKey:self.continent] unsignedIntValue];
+        _region = [[self.continetRegionDict objectForKey:self.continent] intValue];
     }
     return _region;
 }

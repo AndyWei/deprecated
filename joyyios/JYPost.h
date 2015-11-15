@@ -6,19 +6,24 @@
 //  Copyright (c) 2015 Joyy Inc. All rights reserved.
 //
 
-@interface JYPost : NSObject
+#import <Mantle/Mantle.h>
+#import <MTLFMDBAdapter/MTLFMDBAdapter.h>
 
-- (instancetype)initWithDictionary:(NSDictionary *)dict;
+@interface JYPost : MTLModel <MTLJSONSerializing, MTLFMDBSerializing>
 
-@property(nonatomic) BOOL isLiked;
-@property(nonatomic) NSUInteger commentCount;
-@property(nonatomic) NSUInteger likeCount;
-@property(nonatomic) NSUInteger ownerId;
-@property(nonatomic) NSUInteger postId;
-@property(nonatomic) NSUInteger timestamp;
-@property(nonatomic) NSString *caption;
-@property(nonatomic, readonly) NSString *url;
-@property(nonatomic, readonly) NSString *idString;
++ (instancetype)postWithDictionary:(NSDictionary *)dict;
+- (instancetype)initWithDictionary:(NSDictionary *)dict error:(NSError **)error;
+
+@property(nonatomic, readonly) NSUInteger postId;
+@property(nonatomic, readonly) NSUInteger ownerId;
+@property(nonatomic, readonly) NSUInteger timestamp;
+
+@property(nonatomic, readonly, copy) NSString *idString;
+@property(nonatomic, readonly, copy) NSString *caption;
+@property(nonatomic, readonly, copy) NSString *shortURL;
+@property(nonatomic, readonly, copy) NSString *URL;
+
 @property(nonatomic) NSMutableArray *commentList;
+@property(nonatomic) BOOL isLiked;
 
 @end

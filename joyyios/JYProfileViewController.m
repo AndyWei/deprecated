@@ -539,9 +539,10 @@ const CGFloat kAvatarButtonWidth = kAvatarButtonHeight;
 
     __weak typeof(self) weakSelf = self;
     [[transferManager upload:request] continueWithBlock:^id(AWSTask *task) {
-        [weakSelf _showNetworkIndicator:NO];
         if (task.error)
         {
+            [weakSelf _showNetworkIndicator:NO];
+
             if ([task.error.domain isEqualToString:AWSS3TransferManagerErrorDomain])
             {
                 switch (task.error.code)
@@ -556,11 +557,11 @@ const CGFloat kAvatarButtonWidth = kAvatarButtonHeight;
             }
             else
             {
-                // Unknown error.
                 NSLog(@"Error: AWSS3TransferManager upload error = %@", task.error);
             }
-
+            return nil;
         }
+
         if (task.result)
         {
             AWSS3TransferManagerUploadOutput *uploadOutput = task.result;
@@ -575,8 +576,6 @@ const CGFloat kAvatarButtonWidth = kAvatarButtonHeight;
 
 - (void)_updateProfileRecord
 {
-    [self _showNetworkIndicator:YES];
-
     AFHTTPSessionManager *manager = [AFHTTPSessionManager managerWithToken];
     NSString *url = [NSString apiURLWithPath:@"user/profile"];
     NSDictionary *parameters = [self _parametersForUpdatingProfile];

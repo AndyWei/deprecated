@@ -189,12 +189,19 @@ NSString *const kZip = @"location_zip";
     NSString *countryCode = placemark.ISOcountryCode;
     NSString *zip = placemark.postalCode;
 
-    if (![zip isEqualToString:self.zip] || ![countryCode isEqualToString:self.countryCode])
+    if (!countryCode || [countryCode isEqualToString:self.countryCode])
     {
-        self.zip = zip;
-        self.countryCode = countryCode;
-        [self _appearInZip:zip country:countryCode];
+        return;
     }
+
+    if (!zip || [zip isEqualToString:self.zip])
+    {
+        return;
+    }
+
+    self.zip = zip;
+    self.countryCode = countryCode;
+    [self _appearInZip:zip country:countryCode];
 }
 
 - (void)_appearInZip:(NSString *)zip country:(NSString *)countryCode
@@ -207,7 +214,7 @@ NSString *const kZip = @"location_zip";
     [manager POST:url
        parameters:parameters
           success:^(NSURLSessionTask *operation, id responseObject) {
-              NSLog(@"POST user/appear Success");
+              NSLog(@"POST user/appear Success. zip = %@", zip);
           }
           failure:^(NSURLSessionTask *operation, NSError *error) {
               NSLog(@"user/appear error: %@", error);

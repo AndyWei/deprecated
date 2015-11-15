@@ -176,7 +176,7 @@ static const CGFloat kLikeCountLabelWidth = 80;
 - (void)_updateImage
 {
     // Fetch network image
-    NSURL *url = [NSURL URLWithString:_post.url];
+    NSURL *url = [NSURL URLWithString:_post.URL];
     NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestReturnCacheDataElseLoad timeoutInterval:5];
 
     __weak typeof(self) weakSelf = self;
@@ -218,14 +218,14 @@ static const CGFloat kLikeCountLabelWidth = 80;
 
 - (void)_updateLikeCount
 {
-    NSString *likes = NSLocalizedString(@"likes", nil);
-    self.likeCountLabel.text = [NSString stringWithFormat:@"%tu %@   ·", self.post.likeCount, likes];
+//    NSString *likes = NSLocalizedString(@"likes", nil);
+//    self.likeCountLabel.text = [NSString stringWithFormat:@"%tu %@   ·", self.post.likeCount, likes];
 }
 
 - (void)_updateCommentCount
 {
-    NSString *comments = NSLocalizedString(@"comments", nil);
-    self.commentCountButton.textLabel.text = [NSString stringWithFormat:@"%tu %@", self.post.commentCount, comments];
+//    NSString *comments = NSLocalizedString(@"comments", nil);
+//    self.commentCountButton.textLabel.text = [NSString stringWithFormat:@"%tu %@", self.post.commentCount, comments];
 }
 
 - (void)_updateCaption

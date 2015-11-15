@@ -429,7 +429,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
           success:^(NSURLSessionTask *operation, id responseObject) {
 
         NSLog(@"Success: createPostRecord response = %@", responseObject);
-        JYPost *post = [[JYPost alloc] initWithDictionary:responseObject];
+        JYPost *post = [JYPost postWithDictionary:responseObject];
         [weakSelf _updateTableWithPostList:@[post] old:NO];
         [weakSelf _networkThreadEnd];
 
@@ -469,8 +469,8 @@ static NSString *const kPostCellIdentifier = @"postCell";
           success:^(NSURLSessionTask *operation, id responseObject) {
               //             NSLog(@"post/like POST success responseObject: %@", responseObject);
 
-              NSDictionary *dict = (NSDictionary *)responseObject;
-              post.likeCount = [[dict objectForKey:@"likes"] unsignedIntegerValue];
+//              NSDictionary *dict = (NSDictionary *)responseObject;
+//              post.likeCount = [[dict objectForKey:@"likes"] unsignedIntegerValue];
               post.isLiked = YES;
               [weakSelf _networkThreadEnd];
           }
@@ -512,7 +512,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
              NSMutableArray *postList = [NSMutableArray new];
              for (NSDictionary *dict in responseObject)
              {
-                 JYPost *post = [[JYPost alloc] initWithDictionary:dict];
+                 JYPost *post = [JYPost postWithDictionary:dict];
                  [postList addObject:post];
              }
              [weakSelf _fetchRecentCommentsForPostList:postList old:old];
