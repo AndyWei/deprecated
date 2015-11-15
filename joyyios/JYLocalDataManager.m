@@ -8,10 +8,10 @@
 
 #import <FMDB/FMDB.h>
 #import <Mantle/Mantle.h>
-#import <MTLFMDBAdapter/MTLFMDBAdapter.h>
 
 #import "JYLocalDataManager.h"
 #import "JYPost.h"
+#import "MTLFMDBAdapter.h"
 
 @interface JYLocalDataManager ()
 @property (nonatomic) FMDatabaseQueue * dbQueue;
@@ -37,6 +37,7 @@ PRIMARY KEY(id)) ";
 static NSString *const CREATE_COMMENT_TABLE_SQL =
 @"CREATE TABLE IF NOT EXISTS comment ( \
     id        INTEGER NOT NULL, \
+    ownerid   INTEGER NOT NULL, \
     postid    INTEGER NOT NULL, \
     replytoid INTEGER NOT NULL, \
     content   TEXT    NOT NULL, \
@@ -88,22 +89,21 @@ PRIMARY KEY(id)) ";
     _dbQueue = nil;
 }
 
-- (void)savePosts:(NSArray *)jsonList
+- (void)saveJsonArray:(NSArray *)array ofClass:(Class)modelClass
 {
-    JYPost *post = [JYPost new];
-    NSString *stmt = [MTLFMDBAdapter insertStatementForModel:post];
+    NSString *stmt = [MTLFMDBAdapter insertStatementForModelClass:modelClass];
 
     NSError *error = nil;
-    for (NSDictionary *dict in jsonList)
+    for (NSDictionary *dict in array)
     {
-        post = [MTLJSONAdapter modelOfClass:[JYPost class] fromJSONDictionary:dict error:&error];
+        id obj = [MTLJSONAdapter modelOfClass:modelClass fromJSONDictionary:dict error:&error];
         if (error)
         {
-            NSLog(@"Fail to decode post dict = %@, error = %@", dict, error);
+            NSLog(@"Fail to decode object dict. modelClass = %@, dict = %@, error = %@", modelClass, dict, error);
             continue;
         }
 
-        NSArray *params = [MTLFMDBAdapter columnValues:post];
+        NSArray *params = [MTLFMDBAdapter columnValues:obj];
         [self _executeUpdate:stmt withArgumentsInArray:params];
     }
 }

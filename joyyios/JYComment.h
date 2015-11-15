@@ -6,14 +6,18 @@
 //  Copyright (c) 2015 Joyy Inc. All rights reserved.
 //
 
-@interface JYComment : NSObject
+#import <Mantle/Mantle.h>
+#import "MTLFMDBAdapter.h"
 
-- (instancetype)initWithDictionary:(NSDictionary *)dict;
+@interface JYComment : MTLModel <MTLJSONSerializing, MTLFMDBSerializing>
 
-@property(nonatomic) NSString *content;
-@property(nonatomic) NSUInteger commentId;
-@property(nonatomic) NSUInteger ownerId;
-@property(nonatomic) NSUInteger postId;
-@property(nonatomic) NSUInteger timestamp;
++ (instancetype)commentWithDictionary:(NSDictionary *)dict;
+- (instancetype)initWithDictionary:(NSDictionary *)dict error:(NSError **)error;
+
+@property(nonatomic, readonly, copy) NSString *content;
+@property(nonatomic, readonly) NSUInteger commentId;
+@property(nonatomic, readonly) NSUInteger ownerId;
+@property(nonatomic, readonly) NSUInteger postId;
+@property(nonatomic, readonly) NSUInteger replyToId;
 
 @end

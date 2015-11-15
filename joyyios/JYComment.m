@@ -13,20 +13,54 @@
 
 @implementation JYComment
 
-- (instancetype)initWithDictionary:(NSDictionary *)dict
+#pragma mark - MTLJSONSerializing methods
+
++ (NSDictionary *)JSONKeyPathsByPropertyKey
 {
-    self = [super init];
-    if (self)
-    {
-        if (dict)
-        {
-            _content   = [dict objectForKey:@"content"];
-            _commentId = [dict unsignedIntegerValueForKey:@"id"];
-            _postId    = [dict unsignedIntegerValueForKey:@"post"];
-            _ownerId   = [dict unsignedIntegerValueForKey:@"owner"];
-            _timestamp = [dict unsignedIntegerValueForKey:@"ct"];
-        }
-    }
+    return @{
+             @"commentId": @"commentid",
+             @"ownerId": @"ownerid",
+             @"postId": @"postid",
+             @"replyToId": @"replytoid",
+             @"content": @"content"
+             };
+}
+
+#pragma mark - MTLFMDBSerializing methods
+
++ (NSDictionary *)FMDBColumnsByPropertyKey
+{
+    return @{
+             @"commentId": @"id",
+             @"ownerId": @"ownerid",
+             @"postId": @"postid",
+             @"replyToId": @"replytoid",
+             @"content": @"content"
+             };
+}
+
++ (NSArray *)FMDBPrimaryKeys
+{
+    return @[@"id"];
+}
+
++ (NSString *)FMDBTableName
+{
+    return @"comment";
+}
+
+#pragma mark - Life Cycle
+
++ (instancetype)commentWithDictionary:(NSDictionary *)dict
+{
+    NSError *error;
+    return [[JYComment alloc] initWithDictionary:dict error:&error];
+}
+
+- (instancetype)initWithDictionary:(NSDictionary *)dict error:(NSError **)error
+{
+    self = [super initWithDictionary:dict error:error];
+
     return self;
 }
 

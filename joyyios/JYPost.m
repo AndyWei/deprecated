@@ -6,8 +6,6 @@
 //  Copyright (c) 2015 Joyy Inc. All rights reserved.
 //
 
-#import <YTKKeyValueStore/YTKKeyValueStore.h>
-
 #import "JYFilename.h"
 #import "JYPost.h"
 
@@ -47,7 +45,7 @@
 
 + (NSArray *)FMDBPrimaryKeys
 {
-    return @[@"postid"];
+    return @[@"id"];
 }
 
 + (NSString *)FMDBTableName

@@ -306,7 +306,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
     {
         for (NSDictionary *dict in [list reverseObjectEnumerator])
         {
-            JYComment *comment = [[JYComment alloc] initWithDictionary:dict];
+            JYComment *comment = [JYComment commentWithDictionary:dict];
             [self.commentList addObject:comment];
         }
     }
@@ -314,7 +314,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
     {
         for (NSDictionary *dict in list)
         {
-            JYComment *comment = [[JYComment alloc] initWithDictionary:dict];
+            JYComment *comment = [JYComment commentWithDictionary:dict];
             [self.commentList insertObject:comment atIndex:0];
         }
     }
@@ -420,19 +420,19 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 
     [parameters setObject:@(self.post.postId) forKey:@"post"];
 
-    if (self.commentList.count > 0)
-    {
-        if (toEnd)
-        {
-            JYComment *comment = self.commentList.lastObject;
-            [parameters setValue:@(comment.timestamp) forKey:@"after"];
-        }
-        else
-        {
-            JYComment *comment = self.commentList.firstObject;
-            [parameters setValue:@(comment.timestamp) forKey:@"before"];
-        }
-    }
+//    if (self.commentList.count > 0)
+//    {
+//        if (toEnd)
+//        {
+//            JYComment *comment = self.commentList.lastObject;
+//            [parameters setValue:@(comment.timestamp) forKey:@"after"];
+//        }
+//        else
+//        {
+//            JYComment *comment = self.commentList.firstObject;
+//            [parameters setValue:@(comment.timestamp) forKey:@"before"];
+//        }
+//    }
 
     return parameters;
 }

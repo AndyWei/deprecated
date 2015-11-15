@@ -553,7 +553,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
                  NSMutableArray *commentList = [NSMutableArray new];
                  for (NSDictionary *dict in commentDictList)
                  {
-                     JYComment *comment = [[JYComment alloc] initWithDictionary:dict];
+                     JYComment *comment = [JYComment commentWithDictionary:dict];
                      [commentList addObject:comment];
                  }
                  post.commentList = commentList;

@@ -10,5 +10,6 @@
 
 + (JYLocalDataManager *)sharedInstance;
 - (void)start;
+- (void)saveJsonArray:(NSArray *)array ofClass:(Class)modelClass;
 
 @end

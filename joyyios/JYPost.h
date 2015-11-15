@@ -7,7 +7,7 @@
 //
 
 #import <Mantle/Mantle.h>
-#import <MTLFMDBAdapter/MTLFMDBAdapter.h>
+#import "MTLFMDBAdapter.h"
 
 @interface JYPost : MTLModel <MTLJSONSerializing, MTLFMDBSerializing>
 

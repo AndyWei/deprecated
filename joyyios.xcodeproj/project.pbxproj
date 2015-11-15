@@ -81,6 +81,7 @@
 		D68DAF971AC4CACD00838E7E /* JYSignInViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D68DAF951AC4CACD00838E7E /* JYSignInViewController.m */; };
 		D6903CFA1BF6A38700CDC64F /* AFHTTPSessionManager+Joyy.m in Sources */ = {isa = PBXBuildFile; fileRef = D6903CF91BF6A38700CDC64F /* AFHTTPSessionManager+Joyy.m */; };
 		D6903CFD1BF6BB6300CDC64F /* NSURLSession+SynchronousTask.m in Sources */ = {isa = PBXBuildFile; fileRef = D6903CFC1BF6BB6300CDC64F /* NSURLSession+SynchronousTask.m */; };
+		D6903D021BF9175400CDC64F /* MTLFMDBAdapter.m in Sources */ = {isa = PBXBuildFile; fileRef = D6903D011BF9175400CDC64F /* MTLFMDBAdapter.m */; };
 		D69202B21AC4C7C0001C1C3D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = D69202B11AC4C7C0001C1C3D /* main.m */; };
 		D69202B51AC4C7C0001C1C3D /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D69202B41AC4C7C0001C1C3D /* AppDelegate.m */; };
 		D69202C01AC4C7C0001C1C3D /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D69202BF1AC4C7C0001C1C3D /* Images.xcassets */; };
@@ -258,6 +259,8 @@
 		D6903CF91BF6A38700CDC64F /* AFHTTPSessionManager+Joyy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "AFHTTPSessionManager+Joyy.m"; sourceTree = "<group>"; };
 		D6903CFB1BF6BB6300CDC64F /* NSURLSession+SynchronousTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURLSession+SynchronousTask.h"; sourceTree = "<group>"; };
 		D6903CFC1BF6BB6300CDC64F /* NSURLSession+SynchronousTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSURLSession+SynchronousTask.m"; sourceTree = "<group>"; };
+		D6903D001BF9175400CDC64F /* MTLFMDBAdapter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MTLFMDBAdapter.h; sourceTree = "<group>"; };
+		D6903D011BF9175400CDC64F /* MTLFMDBAdapter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MTLFMDBAdapter.m; sourceTree = "<group>"; };
 		D69202AC1AC4C7C0001C1C3D /* winkrock.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = winkrock.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D69202B01AC4C7C0001C1C3D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D69202B11AC4C7C0001C1C3D /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -574,6 +577,8 @@
 		D62C2C6A1B917FE500233F5B /* Vendor */ = {
 			isa = PBXGroup;
 			children = (
+				D6903CFF1BF9173200CDC64F /* MTLFMDBAdapter */,
+				D6903CFE1BF916DB00CDC64F /* NSURLSession+SynchronousTask */,
 				D6B9B7401BAE9831001F9500 /* Flurry */,
 				D61D1D601B4E336E00DE37DF /* TGCameraViewController */,
 				D61D1D281B4A65F200DE37DF /* MDCSwipeToChoose */,
@@ -661,8 +666,6 @@
 				D6966B311BA2BB2B00AAD8D5 /* UITextField+Joyy.m */,
 				D689ED681AE42C8300CB4D2B /* UIView+Joyy.h */,
 				D689ED691AE42C8300CB4D2B /* UIView+Joyy.m */,
-				D6903CFB1BF6BB6300CDC64F /* NSURLSession+SynchronousTask.h */,
-				D6903CFC1BF6BB6300CDC64F /* NSURLSession+SynchronousTask.m */,
 			);
 			name = Common;
 			sourceTree = "<group>";
@@ -686,6 +689,24 @@
 				D63F0D541AC7ACB70067C5EE /* JYSignUpViewController.m */,
 			);
 			name = Sign;
+			sourceTree = "<group>";
+		};
+		D6903CFE1BF916DB00CDC64F /* NSURLSession+SynchronousTask */ = {
+			isa = PBXGroup;
+			children = (
+				D6903CFB1BF6BB6300CDC64F /* NSURLSession+SynchronousTask.h */,
+				D6903CFC1BF6BB6300CDC64F /* NSURLSession+SynchronousTask.m */,
+			);
+			name = "NSURLSession+SynchronousTask";
+			sourceTree = "<group>";
+		};
+		D6903CFF1BF9173200CDC64F /* MTLFMDBAdapter */ = {
+			isa = PBXGroup;
+			children = (
+				D6903D001BF9175400CDC64F /* MTLFMDBAdapter.h */,
+				D6903D011BF9175400CDC64F /* MTLFMDBAdapter.m */,
+			);
+			name = MTLFMDBAdapter;
 			sourceTree = "<group>";
 		};
 		D69202A31AC4C7C0001C1C3D = {
@@ -1034,6 +1055,7 @@
 				D69202B21AC4C7C0001C1C3D /* main.m in Sources */,
 				D6C82B691B12553D00876F57 /* JYComment.m in Sources */,
 				D6E7BCCA1BF66C4500954A1D /* JYLocalDataManager.m in Sources */,
+				D6903D021BF9175400CDC64F /* MTLFMDBAdapter.m in Sources */,
 				D61D1DCA1B4E336E00DE37DF /* TGTintedButton.m in Sources */,
 				D6C82B5C1B0EFDEA00876F57 /* JYCommentTextView.m in Sources */,
 				D6348D2F1ADB4DD60002BC35 /* NSString+Joyy.m in Sources */,
