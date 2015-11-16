@@ -43,7 +43,7 @@ NSString *const kKeyPresentedIntroductionVersion = @"PresentedIntroductionVersio
                       failure:(void (^)(NSError *error))failure
 {
     // input check
-    if (!idString || [idString unsignedIntegerValue] == 0)
+    if (!idString || [idString uint64Value] == 0)
     {
         NSError *error = [NSError errorWithDomain:@"JYDataStore" code:0 userInfo:nil];
         return failure(error);

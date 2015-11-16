@@ -15,14 +15,14 @@ static NSArray *symbolMap = nil;
 
 @implementation JYAvatar
 
-+ (JYAvatar *)avatarOfCode:(NSUInteger)code
++ (JYAvatar *)avatarOfCode:(uint64_t)code
 {
-    NSUInteger hash = [JYAvatar hashOfCode:code];
+    uint64_t hash = [JYAvatar hashOfCode:code];
     JYAvatar *avatar = [[JYAvatar alloc] initWithHash:hash];
     return avatar;
 }
 
-+ (UIColor *)colorOfHash:(NSUInteger)hash
++ (UIColor *)colorOfHash:(uint64_t)hash
 {
     if (!colorMap)
     {
@@ -33,7 +33,7 @@ static NSArray *symbolMap = nil;
     return colorMap[index];
 }
 
-+ (NSString *)symbolOfHash:(NSUInteger)hash
++ (NSString *)symbolOfHash:(uint64_t)hash
 {
     if (!symbolMap)
     {
@@ -46,7 +46,7 @@ static NSArray *symbolMap = nil;
     return symbolMap[index];
 }
 
-+ (NSUInteger)hashOfCode:(NSUInteger)code
++ (uint64_t)hashOfCode:(uint64_t)code
 {
     // md5 hash
     NSString *str = [NSString stringWithFormat:@"%020tu", code];
@@ -54,7 +54,7 @@ static NSArray *symbolMap = nil;
     unsigned char md5[CC_MD5_DIGEST_LENGTH];
     CC_MD5(cstr, (CC_LONG)strlen(cstr), md5);
 
-    NSUInteger hash = 0;
+    uint64_t hash = 0;
     for (NSUInteger i = 0; i < CC_MD5_DIGEST_LENGTH; ++i)
     {
         hash += md5[i];
@@ -63,7 +63,7 @@ static NSArray *symbolMap = nil;
     return hash;
 }
 
-- (instancetype)initWithHash:(NSUInteger)hash
+- (instancetype)initWithHash:(uint64_t)hash
 {
     self = [super init];
     if (self)

@@ -166,11 +166,11 @@
     return _regionURLDict;
 }
 
-- (NSInteger)region
+- (NSUInteger)region
 {
     if (!_region)
     {
-        _region = [[self.continetRegionDict objectForKey:self.continent] intValue];
+        _region = [[self.continetRegionDict objectForKey:self.continent] unsignedIntValue];
     }
     return _region;
 }

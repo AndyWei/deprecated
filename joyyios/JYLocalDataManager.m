@@ -9,6 +9,7 @@
 #import <FMDB/FMDB.h>
 #import <Mantle/Mantle.h>
 
+#import "JYComment.h"
 #import "JYLocalDataManager.h"
 #import "JYPost.h"
 #import "MTLFMDBAdapter.h"
@@ -42,6 +43,11 @@ static NSString *const CREATE_COMMENT_TABLE_SQL =
     replytoid INTEGER NOT NULL, \
     content   TEXT    NOT NULL, \
 PRIMARY KEY(id)) ";
+
+static NSString *const CREATE_COMMENT_INDEX_SQL = @"CREATE INDEX postid_index ON comment(postid)";
+static NSString *const SELECT_RANGE_SQL = @"SELECT * FROM %@ WHERE id > ? AND id < ? ORDER BY id DESC";
+static NSString *const SELECT_KEY_SQL = @"SELECT * FROM %@ WHERE %@ = ? ORDER BY id ASC";
+
 
 @implementation JYLocalDataManager
 
@@ -77,9 +83,10 @@ PRIMARY KEY(id)) ";
 
 - (void)start
 {
-    [self _createTableWithSQL:CREATE_USER_TABLE_SQL];
-    [self _createTableWithSQL:CREATE_POST_TABLE_SQL];
-    [self _createTableWithSQL:CREATE_COMMENT_TABLE_SQL];
+    [self _executeUpdateSQL:CREATE_USER_TABLE_SQL];
+    [self _executeUpdateSQL:CREATE_POST_TABLE_SQL];
+    [self _executeUpdateSQL:CREATE_COMMENT_TABLE_SQL];
+    [self _executeUpdateSQL:CREATE_COMMENT_INDEX_SQL];
 
     NSLog(@"LocalDataManager started");
 }
@@ -108,7 +115,59 @@ PRIMARY KEY(id)) ";
     }
 }
 
-- (void)_createTableWithSQL:(NSString *)sql
+- (NSMutableArray *)selectPostsSinceId:(uint64_t)minId beforeId:(uint64_t)maxId
+{
+    NSString *sql = [NSString stringWithFormat:SELECT_RANGE_SQL, @"post"];
+    NSMutableArray *result = [self _executeSelect:sql minId:minId maxId:maxId ofClass:JYPost.class];
+    return result;
+}
+
+- (NSMutableArray *)selectCommentsOfPostId:(uint64_t)postId
+{
+    NSString *sql = [NSString stringWithFormat:SELECT_KEY_SQL, @"comment", @"postid"];
+    NSMutableArray *result = [self _executeSelect:sql keyId:postId ofClass: JYComment.class];
+    return result;
+}
+
+- (NSMutableArray *)_executeSelect:(NSString *)sql minId:(uint64_t)minId maxId:(uint64_t)maxId ofClass:(Class)modelClass
+{
+    __block NSMutableArray * result = [NSMutableArray array];
+    [_dbQueue inDatabase:^(FMDatabase *db) {
+        FMResultSet * rs = [db executeQuery:sql, [NSNumber numberWithUnsignedLongLong:minId], [NSNumber numberWithUnsignedLongLong:maxId]];
+        while ([rs next]) {
+            NSError *error = nil;
+            id item = [MTLFMDBAdapter modelOfClass:modelClass fromFMResultSet:rs error:&error];
+            if (!error)
+            {
+                [result addObject:item];
+            }
+        }
+        [rs close];
+    }];
+
+    return result;
+}
+
+- (NSMutableArray *)_executeSelect:(NSString *)sql keyId:(uint64_t)keyId ofClass:(Class)modelClass
+{
+    __block NSMutableArray * result = [NSMutableArray array];
+    [_dbQueue inDatabase:^(FMDatabase *db) {
+        FMResultSet * rs = [db executeQuery:sql, [NSNumber numberWithUnsignedLongLong:keyId]];
+        while ([rs next]) {
+            NSError *error = nil;
+            id item = [MTLFMDBAdapter modelOfClass:modelClass fromFMResultSet:rs error:&error];
+            if (!error)
+            {
+                [result addObject:item];
+            }
+        }
+        [rs close];
+    }];
+
+    return result;
+}
+
+- (void)_executeUpdateSQL:(NSString *)sql
 {
     __block BOOL result;
     [_dbQueue inDatabase:^(FMDatabase *db) {
@@ -117,7 +176,7 @@ PRIMARY KEY(id)) ";
 
     if (!result)
     {
-        NSLog(@"ERROR, failed to create table with sql: %@", sql);
+        NSLog(@"ERROR, failed to execute update sql: %@", sql);
     }
 }
 

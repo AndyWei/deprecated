@@ -8,6 +8,6 @@
 
 @interface NSDictionary (Joyy)
 
-- (NSUInteger)unsignedIntegerValueForKey:(id)aKey;
+- (uint64_t)uint64ValueForKey:(id)key;
 
 @end

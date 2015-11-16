@@ -206,7 +206,7 @@ NSString *const kZip = @"location_zip";
 
 - (void)_appearInZip:(NSString *)zip country:(NSString *)countryCode
 {
-    NSUInteger yrs = [JYCredential current].yrs;
+    uint64_t yrs = [JYCredential current].yrs;
     NSDictionary *parameters = @{ @"zip": zip, @"country": countryCode, @"yrs": @(yrs) };
     NSString *url = [NSString apiURLWithPath:@"user/appear"];
     AFHTTPSessionManager *manager = [AFHTTPSessionManager managerWithToken];

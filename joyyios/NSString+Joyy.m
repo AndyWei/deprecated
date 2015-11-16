@@ -150,10 +150,10 @@
     return [predicate evaluateWithObject:self];
 }
 
-- (NSUInteger)unsignedIntegerValue
+- (uint64_t)uint64Value
 {
     NSNumber *number = [NSNumber numberWithLongLong: self.longLongValue];
-    return number.unsignedIntegerValue;
+    return number.unsignedLongLongValue;
 }
 
 - (NSString *)personIdString

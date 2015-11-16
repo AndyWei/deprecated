@@ -14,9 +14,9 @@
 + (instancetype)postWithDictionary:(NSDictionary *)dict;
 - (instancetype)initWithDictionary:(NSDictionary *)dict error:(NSError **)error;
 
-@property(nonatomic, readonly) NSUInteger postId;
-@property(nonatomic, readonly) NSUInteger ownerId;
-@property(nonatomic, readonly) NSUInteger timestamp;
+@property(nonatomic, readonly) uint64_t postId;
+@property(nonatomic, readonly) uint64_t ownerId;
+@property(nonatomic, readonly) uint64_t timestamp;
 
 @property(nonatomic, readonly, copy) NSString *idString;
 @property(nonatomic, readonly, copy) NSString *caption;

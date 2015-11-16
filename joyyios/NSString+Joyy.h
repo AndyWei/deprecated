@@ -21,7 +21,7 @@
 - (NSString *)messageMediaURL;
 - (NSString *)personIdString;
 - (NSString *)pureNumberString;
-- (NSUInteger)unsignedIntegerValue;
+- (uint64_t)uint64Value;
 
 
 @end

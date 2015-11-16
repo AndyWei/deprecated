@@ -132,7 +132,7 @@ static const CGFloat kSpaceV = kSpaceH / 2;
 - (void)_updateAvatar
 {
     // calculate image and backgorund color
-    NSUInteger code = self.comment.ownerId + self.comment.postId;
+    uint64_t code = self.comment.ownerId + self.comment.postId;
 
     JYAvatar *avatar = [JYAvatar avatarOfCode:code];
     self.avatar.text = avatar.symbol;

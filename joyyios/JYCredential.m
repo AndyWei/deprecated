@@ -10,7 +10,7 @@
 
 @interface JYCredential()
 @property (nonatomic) UICKeyChainStore *keychain;
-@property (nonatomic) NSUInteger tokenExpiryTime;
+@property (nonatomic) NSInteger tokenExpiryTime;
 @end
 
 // KeyChain -- DO NOT MODIFY!!!
@@ -47,19 +47,19 @@ static NSString *const kAPIYrsKey = @"api_yrs";
         _idString = self.keychain[kAPIUserIdKey];
         _token    = self.keychain[kAPITokenKey];
 
-        _userId = _idString? [_idString unsignedIntegerValue] : 0;
+        _userId = _idString? [_idString uint64Value] : 0;
 
         NSString *expiryTimeStr = self.keychain[kAPITokenExpiryTimeKey];
-        _tokenExpiryTime = expiryTimeStr ? [expiryTimeStr unsignedIntegerValue] : 0;
+        _tokenExpiryTime = expiryTimeStr ? [expiryTimeStr integerValue] : 0;
 
         NSString *yrsStr = self.keychain[kAPIYrsKey];
-        _yrs = yrsStr ? [yrsStr unsignedIntegerValue] : 0;
+        _yrs = yrsStr ? [yrsStr uint64Value] : 0;
     }
 
     return self;
 }
 
-- (void)setUserId:(NSUInteger)userId
+- (void)setUserId:(uint64_t)userId
 {
     _userId = userId;
     if (userId == 0)
@@ -102,7 +102,7 @@ static NSString *const kAPIYrsKey = @"api_yrs";
     self.keychain[kAPITokenKey] = _token;
 }
 
-- (void)setTokenExpiryTime:(NSUInteger)tokenExpiryTime
+- (void)setTokenExpiryTime:(NSInteger)tokenExpiryTime
 {
     _tokenExpiryTime = tokenExpiryTime;
     if (tokenExpiryTime == 0)
@@ -115,7 +115,7 @@ static NSString *const kAPIYrsKey = @"api_yrs";
     }
 }
 
-- (void)setYrs:(NSUInteger)yrs
+- (void)setYrs:(uint64_t)yrs
 {
     _yrs = yrs;
     if (yrs == 0)

@@ -12,4 +12,6 @@
 - (void)start;
 - (void)saveJsonArray:(NSArray *)array ofClass:(Class)modelClass;
 
+- (NSMutableArray *)selectPostsSinceId:(uint64_t)minId beforeId:(uint64_t)maxId;
+- (NSMutableArray *)selectCommentsOfPostId:(uint64_t)postId;
 @end

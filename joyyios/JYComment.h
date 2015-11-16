@@ -15,9 +15,9 @@
 - (instancetype)initWithDictionary:(NSDictionary *)dict error:(NSError **)error;
 
 @property(nonatomic, readonly, copy) NSString *content;
-@property(nonatomic, readonly) NSUInteger commentId;
-@property(nonatomic, readonly) NSUInteger ownerId;
-@property(nonatomic, readonly) NSUInteger postId;
-@property(nonatomic, readonly) NSUInteger replyToId;
+@property(nonatomic, readonly) uint64_t commentId;
+@property(nonatomic, readonly) uint64_t ownerId;
+@property(nonatomic, readonly) uint64_t postId;
+@property(nonatomic, readonly) uint64_t replyToId;
 
 @end

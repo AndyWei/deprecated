@@ -395,7 +395,7 @@ const CGFloat kAvatarButtonWidth = kAvatarButtonHeight;
 
     if ([newStr length] == 4)
     {
-        NSUInteger yob = [newStr unsignedIntegerValue];
+        uint64_t yob = [newStr uint64Value];
         if (1900 < yob && yob < 2005)
         {
             self.hasYobProvided = YES;
@@ -622,7 +622,7 @@ const CGFloat kAvatarButtonWidth = kAvatarButtonHeight;
 
     // YRS
     NSUInteger region = [JYFilename sharedInstance].region;
-    NSUInteger yob = [self.yobTextField.text unsignedIntegerValue];
+    NSUInteger yob = (NSUInteger)[self.yobTextField.text integerValue];
     NSUInteger yrs = ((yob & 0xFFFF) << 16) | ((region & 0xFF) << 8) | (self.sex & 0xFF);
     [JYCredential current].yrs = yrs;
     [parameters setObject:@(yrs) forKey:@"yrs"];

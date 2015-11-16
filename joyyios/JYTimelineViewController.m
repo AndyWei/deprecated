@@ -16,11 +16,13 @@
 #import "JYComment.h"
 #import "JYCommentViewController.h"
 #import "JYFilename.h"
+#import "JYLocalDataManager.h"
 #import "JYTimelineViewController.h"
 #import "JYPost.h"
 #import "JYPostViewCell.h"
 #import "TGCameraColor.h"
 #import "TGCameraViewController.h"
+#import "NSDate+Joyy.h"
 #import "UIImage+Joyy.h"
 
 @interface JYTimelineViewController () <TGCameraDelegate, UITableViewDataSource, UITableViewDelegate>
@@ -29,11 +31,16 @@
 @property(nonatomic) JYPost *currentPost;
 @property(nonatomic) NSInteger networkThreadCount;
 @property(nonatomic) NSMutableArray *postList;
+@property(nonatomic) uint64_t lastPostId;
+@property(nonatomic) NSDate *firstDate;
 @property(nonatomic) UIButton *titleButton;
 @property(nonatomic) UIColor *originalTabBarTintColor;
 @property(nonatomic) UITableView *tableView;
 @end
 
+typedef void(^VoidHandler)();
+
+static const NSInteger OFFSET_DAYS = -3;
 static const CGFloat kCameraButtonWidth = 50;
 static NSString *const kPostCellIdentifier = @"postCell";
 
@@ -55,10 +62,15 @@ static NSString *const kPostCellIdentifier = @"postCell";
     self.networkThreadCount = 0;
     self.currentPost = nil;
     self.postList = [NSMutableArray new];
+    self.lastPostId = 0;
 
     [self.view addSubview:self.tableView];
     [self.view addSubview:self.cameraButton];
-    [self _fetchNewPost];
+
+    __weak typeof(self) weakSelf = self;
+    [self _fetchPostsFromDBWithCompleteHandler:^{
+        [weakSelf _fetchNewPost];
+    }];
 
     self.originalTabBarTintColor = self.tabBarController.tabBar.barTintColor;
 
@@ -480,17 +492,49 @@ static NSString *const kPostCellIdentifier = @"postCell";
      ];
 }
 
+- (void)_fetchPostsFromDBWithCompleteHandler:(VoidHandler)handler
+{
+    uint64_t minId = [NSDate minIdWithOffsetInDays:OFFSET_DAYS];
+    uint64_t maxId = [NSDate idOfNow];
+
+
+    self.postList = [[JYLocalDataManager sharedInstance] selectPostsSinceId:minId beforeId:maxId];
+    if ([self.postList count] > 0)
+    {
+        JYPost *lastPost = self.postList[0];
+        self.lastPostId = lastPost.postId;
+
+        JYPost *firstPost = [self.postList lastObject];
+        self.firstDate = [NSDate dateOfId:firstPost.postId];
+
+        for (JYPost *post in self.postList)
+        {
+            post.commentList = [[JYLocalDataManager sharedInstance] selectCommentsOfPostId:post.postId];
+        }
+
+        [self.tableView reloadData];
+    }
+
+    if (handler)
+    {
+        handler();
+    }
+}
+
 - (void)_fetchNewPost
 {
-    [self _fetchTimeline:NO];
+    uint64_t day = [[NSDate date] joyyDay];
+    [self _fetchTimelineOfDay:day sinceId:self.lastPostId];
 }
 
 - (void)_fetchOldPost
 {
-    [self _fetchTimeline:YES];
+    self.firstDate = [self.firstDate dateByAddingTimeInterval:60 * 60 * 24 * (-1)];
+    uint64_t day = [self.firstDate joyyDay];
+    [self _fetchTimelineOfDay:day sinceId:0];
 }
 
-- (void)_fetchTimeline:(BOOL)old
+- (void)_fetchTimelineOfDay:(uint64_t)day sinceId:(uint64_t)minId
 {
     if (self.networkThreadCount > 0)
     {
@@ -501,7 +545,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
     AFHTTPSessionManager *manager = [AFHTTPSessionManager managerWithToken];
 
     NSString *url = [NSString apiURLWithPath:@"post/timeline"];
-    NSDictionary *parameters = [self _parametersForFetchTimeline:old];
+    NSDictionary *parameters = @{@"day": @(day), @"sinceid": @(minId)};
 
     __weak typeof(self) weakSelf = self;
     [manager GET:url
@@ -515,7 +559,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
                  JYPost *post = [JYPost postWithDictionary:dict];
                  [postList addObject:post];
              }
-             [weakSelf _fetchRecentCommentsForPostList:postList old:old];
+//             [weakSelf _fetchCommentsSinceId:0];
              [weakSelf _networkThreadEnd];
          }
          failure:^(NSURLSessionTask *operation, NSError *error) {
@@ -524,84 +568,42 @@ static NSString *const kPostCellIdentifier = @"postCell";
      ];
 }
 
-- (void)_fetchRecentCommentsForPostList:(NSArray *)list old:(BOOL)old
+- (void)_fetchCommentsSinceId:(uint64_t)minId
 {
-    if (!list.count)
-    {
-        list = self.postList; // in case no new post, we get new commentList for the existing post
-    }
-
     [self _networkThreadBegin];
 
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
 
     NSString *url = [NSString apiURLWithPath:@"comment/recent"];
-    NSDictionary *parameters = [self _parametersForRecentCommentsOfPosts:list];
+    NSDictionary *parameters = @{@"sinceid": @(minId)};
 
-    __weak typeof(self) weakSelf = self;
+//    __weak typeof(self) weakSelf = self;
     [manager GET:url
       parameters:parameters
          success:^(NSURLSessionTask *operation, id responseObject) {
 //             NSLog(@"comment/recent fetch success responseObject: %@", responseObject);
 
-             NSDictionary *comments = (NSDictionary *)responseObject;
-             NSUInteger count = list.count;
-             for (NSUInteger i = 0; i < count; i++)
-             {
-                 JYPost *post = (JYPost *)list[i];
-                 NSMutableArray *commentDictList = [comments objectForKey:post.idString];
-                 NSMutableArray *commentList = [NSMutableArray new];
-                 for (NSDictionary *dict in commentDictList)
-                 {
-                     JYComment *comment = [JYComment commentWithDictionary:dict];
-                     [commentList addObject:comment];
-                 }
-                 post.commentList = commentList;
-             }
-             [weakSelf _updateTableWithPostList:list old:old];
-             [weakSelf _networkThreadEnd];
+//             NSDictionary *comments = (NSDictionary *)responseObject;
+//             NSUInteger count = list.count;
+//             for (NSUInteger i = 0; i < count; i++)
+//             {
+//                 JYPost *post = (JYPost *)list[i];
+//                 NSMutableArray *commentDictList = [comments objectForKey:post.idString];
+//                 NSMutableArray *commentList = [NSMutableArray new];
+//                 for (NSDictionary *dict in commentDictList)
+//                 {
+//                     JYComment *comment = [JYComment commentWithDictionary:dict];
+//                     [commentList addObject:comment];
+//                 }
+//                 post.commentList = commentList;
+//             }
+//             [weakSelf _updateTableWithPostList:list old:old];
+//             [weakSelf _networkThreadEnd];
          }
          failure:^(NSURLSessionTask *operation, NSError *error) {
-             [weakSelf _networkThreadEnd];
+//             [weakSelf _networkThreadEnd];
          }
      ];
-}
-
-- (NSDictionary *)_parametersForFetchTimeline:(BOOL)old
-{
-    NSMutableDictionary *parameters = [NSMutableDictionary new];
-
-    if (self.postList.count > 0)
-    {
-        if (old)
-        {
-            JYPost *post = self.postList.lastObject;
-            [parameters setValue:@(post.timestamp) forKey:@"before"];
-        }
-        else
-        {
-            JYPost *post = self.postList.firstObject;
-            [parameters setValue:@(post.timestamp) forKey:@"after"];
-        }
-    }
-
-//    NSLog(@"fetchPost parameters: %@", parameters);
-    return parameters;
-}
-
-- (NSDictionary *)_parametersForRecentCommentsOfPosts:(NSArray *)list
-{
-    NSMutableArray *postIds = [NSMutableArray new];
-    for (JYPost *post in list)
-    {
-        [postIds addObject:@(post.postId)];
-    }
-
-    NSMutableDictionary *parameters = [NSMutableDictionary new];
-
-    [parameters setValue:postIds forKey:@"post"];
-
-    return parameters;
 }
 
 @end

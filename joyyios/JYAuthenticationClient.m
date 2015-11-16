@@ -27,7 +27,7 @@ NSString *const kJYAuthenticationClientDomain = @"JYAuthenticationClient";
 @interface JYAuthenticationClient()
 @property (nonatomic) NSString *identityId;
 @property (nonatomic) NSString *token;
-@property (nonatomic) NSUInteger tokenExpiryTime;
+@property (nonatomic) uint64_t tokenExpiryTime;
 @property (nonatomic) UICKeyChainStore *keychain;
 @end
 
@@ -122,18 +122,18 @@ static NSString *const kAWSTokenExpiryTimeKeyPrefix = @"aws_openid_token_expiry_
     return [NSString stringWithFormat:@"%@_%@", kAWSTokenExpiryTimeKeyPrefix, userid];
 }
 
-- (void)setTokenExpiryTime:(NSUInteger)tokenExpiryTime
+- (void)setTokenExpiryTime:(uint64_t)tokenExpiryTime
 {
     _tokenExpiryTime = tokenExpiryTime;
     self.keychain[self.tokenExpiryTimeKey] = [NSString stringWithFormat:@"%tu", tokenExpiryTime];
 }
 
-- (NSUInteger)tokenExpiryTime
+- (uint64_t)tokenExpiryTime
 {
     if (_tokenExpiryTime == 0)
     {
         NSString *expiryTimeStr = self.keychain[self.tokenExpiryTimeKey];
-        _tokenExpiryTime = expiryTimeStr ? [expiryTimeStr unsignedIntegerValue] : 0;
+        _tokenExpiryTime = expiryTimeStr ? [expiryTimeStr uint64Value] : 0;
     }
     return _tokenExpiryTime;
 }

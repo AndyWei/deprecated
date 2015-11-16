@@ -13,7 +13,7 @@
 - (void)save:(NSDictionary *)dict;
 
 // Identities
-@property (nonatomic) NSUInteger userId;
+@property (nonatomic) uint64_t userId;
 @property (nonatomic) NSString *username;
 @property (nonatomic, readonly) NSString *idString;
 
@@ -28,7 +28,7 @@
 @property (nonatomic) NSString *bio;
 @property (nonatomic) NSUInteger phoneNumber;
 @property (nonatomic) NSUInteger yearOfBirth;
-@property (nonatomic) NSUInteger yrs;
+@property (nonatomic) uint64_t yrs;
 @property (nonatomic, readonly) NSString *ageString;
 
 

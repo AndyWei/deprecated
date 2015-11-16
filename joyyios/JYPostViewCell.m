@@ -118,7 +118,7 @@ static const CGFloat kLikeCountLabelWidth = 80;
 
 - (NSString *)_displayTextOfComment:(JYComment *)comment
 {
-    NSUInteger code = self.post.postId + comment.ownerId;
+    uint64_t code = self.post.postId + comment.ownerId;
     JYAvatar *avatar = [JYAvatar avatarOfCode:code];
     return [NSString stringWithFormat:@"%@: %@", avatar.symbol, comment.content];
 }

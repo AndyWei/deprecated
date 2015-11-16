@@ -8,7 +8,7 @@
 
 @interface JYAvatar : NSObject 
 
-+ (JYAvatar *)avatarOfCode:(NSUInteger)code;
++ (JYAvatar *)avatarOfCode:(uint64_t)code;
 
 @property(nonatomic) UIColor *color;
 @property(nonatomic) NSString *symbol;

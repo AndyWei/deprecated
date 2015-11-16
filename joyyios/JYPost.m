@@ -116,9 +116,9 @@
     return (likedByPerson == [JYCredential current].userId);
 }
 
-- (NSUInteger)timestamp
+- (uint64_t)timestamp
 {
-    unsigned long long postid = self.postId;
+    uint64_t postid = self.postId;
     return (postid >> 32);
 }
 

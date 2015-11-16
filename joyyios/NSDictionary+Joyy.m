@@ -10,10 +10,10 @@
 
 @implementation NSDictionary (Joyy)
 
-- (NSUInteger)unsignedIntegerValueForKey:(id)aKey
+- (uint64_t)uint64ValueForKey:(id)key
 {
-    id obj = [self objectForKey:aKey];
-    return (obj == [NSNull null]) ? 0 : [(NSString *)obj unsignedIntegerValue];
+    id obj = [self objectForKey:key];
+    return (obj == [NSNull null]) ? 0 : [(NSString *)obj uint64Value];
 }
 
 @end
