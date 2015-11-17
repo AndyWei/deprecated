@@ -128,7 +128,7 @@ CREATE TABLE IF NOT EXISTS invite (
     fyrs         int    , -- friend yrs, see YRS Encoding Rule. 
 
     PRIMARY KEY (userid, fid)
-) WITH COMPACTION = {'class': 'LeveledCompactionStrategy', 'enabled': 'true'};
+);
 
 /*
  * Description: the table stores friendship, which is used to get the friend timeline ids for pushing new post
@@ -215,7 +215,6 @@ CREATE TABLE IF NOT EXISTS user_csz5 (
 ) WITH CLUSTERING ORDER BY (userid DESC)
    AND COMPACTION = {'class': 'LeveledCompactionStrategy', 'enabled': 'true'};
 
-
 /*
  * Feature: timeline
  * The table for the user query the posts from his friends
@@ -225,11 +224,12 @@ CREATE TABLE IF NOT EXISTS timeline (
     userid         bigint ,
     day            int    , -- the number of days in form of yymmdd
     postid         bigint ,
+    ownerid        bigint ,
     url            text   ,
     caption        text   ,
 
     PRIMARY KEY ((userid, day), postid)
-) WITH COMPACTION = {'class': 'LeveledCompactionStrategy', 'enabled': 'true'};
+);
 
 /*
  * Feature: comment
@@ -239,12 +239,13 @@ CREATE TABLE IF NOT EXISTS timeline (
 CREATE TABLE IF NOT EXISTS commentline (
     userid         bigint ,
     commentid      bigint ,
+    ownerid        bigint ,
     postid         bigint ,
     replytoid      bigint , -- the userid this comment replies to
     content        text   ,
 
     PRIMARY KEY (userid, commentid)
-) WITH COMPACTION = {'class': 'LeveledCompactionStrategy', 'enabled': 'true'};
+);
 
 /*
  * Feature: userline
@@ -260,3 +261,13 @@ CREATE TABLE IF NOT EXISTS userline (
 
     PRIMARY KEY ((userid, month), postid)
 );
+
+/*
+ * Test data
+ */
+
+-- user
+INSERT INTO user (id, username, deleted, phone, yrs) VALUES (114269549829816320, 'andy', false, 14257850318, 130416641);
+INSERT INTO user_by_name (username, id, password) VALUES ('andy', 114269549829816320, '$2a$10$.pJOlEZ/hMZRyw3CoFDHm.IBAV6nek6PWAtseFdgKIlDfDUVP23cG');
+INSERT INTO user_by_phone (phone, id, username) VALUES (14257850318, 114269549829816320, 'andy');
+

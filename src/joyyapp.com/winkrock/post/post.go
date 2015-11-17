@@ -47,10 +47,10 @@ func (h *Handler) CreatePost(w http.ResponseWriter, req *http.Request, userid in
 
     // write to all the friends timelines, including the owner. ignore write failures if any
     fids = append(fids, userid)
-    query := h.DB.Query(`INSERT INTO timeline (userid, day, postid, url, caption) VALUES (?, ?, ?, ?, ?)`, 0, 0, 0, "", "")
+    query := h.DB.Query(`INSERT INTO timeline (userid, day, postid, ownerid, url, caption) VALUES (?, ?, ?, ?, ?, ?)`, 0, 0, 0, 0, "", "")
 
     for _, fid := range fids {
-        query.Bind(fid, day, postid, p.URL, p.Caption).Exec()
+        query.Bind(fid, day, postid, userid, p.URL, p.Caption).Exec()
     }
 
     // write to userline, ignore write failures if any
@@ -124,12 +124,12 @@ func (h *Handler) CreateComment(w http.ResponseWriter, req *http.Request, userid
     }
 
     // a comment can be seen by the comments author and the o's mutual friends
-    ownerid := p.PosterId
+    peerid := p.PosterId
     if p.ReplyToId > 0 {
-        ownerid = p.ReplyToId
+        peerid = p.ReplyToId
     }
 
-    fids, err := h.getMutualFriendIds(userid, ownerid)
+    fids, err := h.getMutualFriendIds(userid, peerid)
     if err != nil {
         RespondError(w, err, http.StatusBadGateway)
         return
@@ -139,9 +139,9 @@ func (h *Handler) CreateComment(w http.ResponseWriter, req *http.Request, userid
     commentid := idgen.NewID()
 
     // write the comment to all the mutal friends' commentlines, including the owner. ignore write failures if any
-    query := h.DB.Query(`INSERT INTO commentline (userid, commentid, postid, replytoid, content) VALUES (?, ?, ?, ?, ?)`, 0, 0, 0, "", "")
+    query := h.DB.Query(`INSERT INTO commentline (userid, commentid, ownerid, postid, replytoid, content) VALUES (?, ?, ?, ?, ?)`, 0, 0, 0, 0, "", "")
     for _, fid := range fids {
-        query.Bind(fid, commentid, p.PostId, p.ReplyToId, p.Content).Exec()
+        query.Bind(fid, commentid, userid, p.PostId, p.ReplyToId, p.Content).Exec()
     }
 
     message := fmt.Sprintf("{commentid:%v}", commentid)
@@ -187,7 +187,8 @@ func (h *Handler) DeleteComment(w http.ResponseWriter, req *http.Request, userid
  * Read timeline
  */
 type TimelineParams struct {
-    Day int `param:"day" validate:"min=150101"`
+    Day     int   `param:"day" validate:"min=150101"`
+    SinceId int64 `param:"sinceid"`
 }
 
 func (h *Handler) ReadTimeline(w http.ResponseWriter, req *http.Request, userid int64, username string) {
@@ -197,7 +198,14 @@ func (h *Handler) ReadTimeline(w http.ResponseWriter, req *http.Request, userid 
         return
     }
 
-    iter := h.DB.Query(`SELECT postid, url, caption FROM timeline WHERE userid = ? AND day = ?`, userid, p.Day).Consistency(gocql.One).Iter()
+    var query *gocql.Query
+    if p.SinceId == 0 {
+        query = h.DB.Query(`SELECT postid, ownerid, url, caption FROM timeline WHERE userid = ? AND day = ?`, userid, p.Day)
+    } else {
+        query = h.DB.Query(`SELECT postid, ownerid, url, caption FROM timeline WHERE userid = ? AND day = ? AND postid > ?`, userid, p.Day, p.SinceId)
+    }
+
+    iter := query.Consistency(gocql.One).Iter()
     posts, err := iter.SliceMap()
     if err != nil {
         RespondError(w, err, http.StatusBadGateway)
@@ -249,7 +257,8 @@ func (h *Handler) ReadUserline(w http.ResponseWriter, req *http.Request, userid 
  * Read commentline
  */
 type CommentlineParams struct {
-    SinceID int `param:"sinceid"`
+    SinceId  int64 `param:"sinceid"`
+    BeforeId int64 `param:"beforeid"`
 }
 
 func (h *Handler) ReadCommentline(w http.ResponseWriter, req *http.Request, userid int64, username string) {
@@ -259,7 +268,8 @@ func (h *Handler) ReadCommentline(w http.ResponseWriter, req *http.Request, user
         return
     }
 
-    iter := h.DB.Query(`SELECT commentid, postid, replytoid, content FROM commentline WHERE userid = ? AND commentid > ?`, userid, p.SinceID).Consistency(gocql.One).Iter()
+    stmt := `SELECT commentid, postid, replytoid, content FROM commentline WHERE userid = ? AND commentid > ? AND commentid < ?`
+    iter := h.DB.Query(stmt, userid, p.SinceId, p.BeforeId).Consistency(gocql.One).Iter()
     comments, err := iter.SliceMap()
     if err != nil {
         RespondError(w, err, http.StatusBadGateway)

@@ -103,7 +103,7 @@ CREATE TABLE IF NOT EXISTS invite (
     fyrs         int    , -- friend yrs, see YRS Encoding Rule. 
 
     PRIMARY KEY (userid, fid)
-) WITH COMPACTION = {'class': 'LeveledCompactionStrategy', 'enabled': 'true'};
+);
 
 /*
  * Description: the table stores friendship, which is used to get the friend timeline ids for pushing new post

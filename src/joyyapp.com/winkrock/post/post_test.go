@@ -58,7 +58,8 @@ func (h *Handler) prepareFriends() {
 }
 
 type Post struct {
-    Postid  int64  `json:"postid"`
+    PostId  int64  `json:"postid"`
+    OwnerId int64  `json:"ownerid"`
     URL     string `json:"url"`
     Caption string `json:"caption"`
 }

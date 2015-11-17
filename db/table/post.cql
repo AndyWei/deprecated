@@ -15,11 +15,12 @@ CREATE TABLE IF NOT EXISTS timeline (
     userid         bigint ,
     day            int    , -- the number of days in form of yymmdd
     postid         bigint ,
+    ownerid        bigint ,
     url            text   ,
     caption        text   ,
 
     PRIMARY KEY ((userid, day), postid)
-) WITH COMPACTION = {'class': 'LeveledCompactionStrategy', 'enabled': 'true'};
+);
 
 /*
  * Feature: comment
@@ -29,12 +30,13 @@ CREATE TABLE IF NOT EXISTS timeline (
 CREATE TABLE IF NOT EXISTS commentline (
     userid         bigint ,
     commentid      bigint ,
+    ownerid        bigint ,
     postid         bigint ,
     replytoid      bigint , -- the userid this comment replies to
     content        text   ,
 
     PRIMARY KEY (userid, commentid)
-) WITH COMPACTION = {'class': 'LeveledCompactionStrategy', 'enabled': 'true'};
+);
 
 /*
  * Feature: userline
