@@ -88,7 +88,7 @@
 {
     if (!_idString)
     {
-        _idString = [NSString stringWithFormat:@"%tu", self.userId];
+        _idString = [NSString stringWithFormat:@"%llu", self.userId];
     }
     return _idString;
 }

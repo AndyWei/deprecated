@@ -11,9 +11,6 @@
 
 @interface JYPost : MTLModel <MTLJSONSerializing, MTLFMDBSerializing>
 
-+ (instancetype)postWithDictionary:(NSDictionary *)dict;
-- (instancetype)initWithDictionary:(NSDictionary *)dict error:(NSError **)error;
-
 @property(nonatomic, readonly) uint64_t postId;
 @property(nonatomic, readonly) uint64_t ownerId;
 @property(nonatomic, readonly) uint64_t timestamp;

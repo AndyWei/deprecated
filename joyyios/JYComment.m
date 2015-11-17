@@ -49,19 +49,4 @@
     return @"comment";
 }
 
-#pragma mark - Life Cycle
-
-+ (instancetype)commentWithDictionary:(NSDictionary *)dict
-{
-    NSError *error;
-    return [[JYComment alloc] initWithDictionary:dict error:&error];
-}
-
-- (instancetype)initWithDictionary:(NSDictionary *)dict error:(NSError **)error
-{
-    self = [super initWithDictionary:dict error:error];
-
-    return self;
-}
-
 @end

@@ -11,9 +11,6 @@
 
 @interface JYComment : MTLModel <MTLJSONSerializing, MTLFMDBSerializing>
 
-+ (instancetype)commentWithDictionary:(NSDictionary *)dict;
-- (instancetype)initWithDictionary:(NSDictionary *)dict error:(NSError **)error;
-
 @property(nonatomic, readonly, copy) NSString *content;
 @property(nonatomic, readonly) uint64_t commentId;
 @property(nonatomic, readonly) uint64_t ownerId;

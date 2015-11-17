@@ -10,7 +10,7 @@
 
 @interface JYCredential()
 @property (nonatomic) UICKeyChainStore *keychain;
-@property (nonatomic) NSInteger tokenExpiryTime;
+@property (nonatomic) uint64_t tokenExpiryTime;
 @end
 
 // KeyChain -- DO NOT MODIFY!!!
@@ -68,7 +68,7 @@ static NSString *const kAPIYrsKey = @"api_yrs";
     }
     else
     {
-        self.idString = [NSString stringWithFormat:@"%tu", _userId];
+        self.idString = [NSString stringWithFormat:@"%llu", _userId];
     }
 }
 
@@ -102,7 +102,7 @@ static NSString *const kAPIYrsKey = @"api_yrs";
     self.keychain[kAPITokenKey] = _token;
 }
 
-- (void)setTokenExpiryTime:(NSInteger)tokenExpiryTime
+- (void)setTokenExpiryTime:(uint64_t)tokenExpiryTime
 {
     _tokenExpiryTime = tokenExpiryTime;
     if (tokenExpiryTime == 0)
@@ -111,7 +111,7 @@ static NSString *const kAPIYrsKey = @"api_yrs";
     }
     else
     {
-        self.keychain[kAPITokenExpiryTimeKey] = [NSString stringWithFormat:@"%tu", tokenExpiryTime];
+        self.keychain[kAPITokenExpiryTimeKey] = [NSString stringWithFormat:@"%llu", tokenExpiryTime];
     }
 }
 
@@ -124,14 +124,15 @@ static NSString *const kAPIYrsKey = @"api_yrs";
     }
     else
     {
-        self.keychain[kAPIYrsKey] = [NSString stringWithFormat:@"%tu", yrs];
+        self.keychain[kAPIYrsKey] = [NSString stringWithFormat:@"%llu", yrs];
     }
 }
 
 - (NSInteger)tokenValidInSeconds
 {
-    NSInteger now = (NSInteger)[NSDate timeIntervalSinceReferenceDate];
-    return self.tokenExpiryTime - now;
+    uint64_t now = (uint64_t)[NSDate timeIntervalSinceReferenceDate];
+    int64_t secsLeft = (self.tokenExpiryTime > now) ? (self.tokenExpiryTime - now): (-1)*(now - self.tokenExpiryTime);
+    return (NSInteger)secsLeft;
 }
 
 - (void)save:(NSDictionary *)dict
@@ -150,8 +151,8 @@ static NSString *const kAPIYrsKey = @"api_yrs";
     {
         self.token = [dict objectForKey:@"token"];
 
-        NSUInteger tokenDuration = [[dict objectForKey:@"token_ttl"] intValue];
-        NSInteger now = (NSInteger)[NSDate timeIntervalSinceReferenceDate];
+        uint64_t tokenDuration = [[dict objectForKey:@"token_ttl"] uint64Value];
+        uint64_t now = (uint64_t)[NSDate timeIntervalSinceReferenceDate];
         self.tokenExpiryTime = now + tokenDuration;
     }
 }

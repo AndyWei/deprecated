@@ -296,28 +296,28 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 
 - (void)_addCommentsFromList:(NSArray *)list toEnd:(BOOL)toEnd
 {
-    if (!list.count)
-    {
-        return;
-    }
-
-    // The items in commentsList are DESC sorted by id
-    if (toEnd)
-    {
-        for (NSDictionary *dict in [list reverseObjectEnumerator])
-        {
-            JYComment *comment = [JYComment commentWithDictionary:dict];
-            [self.commentList addObject:comment];
-        }
-    }
-    else
-    {
-        for (NSDictionary *dict in list)
-        {
-            JYComment *comment = [JYComment commentWithDictionary:dict];
-            [self.commentList insertObject:comment atIndex:0];
-        }
-    }
+//    if (!list.count)
+//    {
+//        return;
+//    }
+//
+//    // The items in commentsList are DESC sorted by id
+//    if (toEnd)
+//    {
+//        for (NSDictionary *dict in [list reverseObjectEnumerator])
+//        {
+//            JYComment *comment = [JYComment commentWithDictionary:dict];
+//            [self.commentList addObject:comment];
+//        }
+//    }
+//    else
+//    {
+//        for (NSDictionary *dict in list)
+//        {
+//            JYComment *comment = [JYComment commentWithDictionary:dict];
+//            [self.commentList insertObject:comment atIndex:0];
+//        }
+//    }
 }
 
 #pragma mark - Overriden Method

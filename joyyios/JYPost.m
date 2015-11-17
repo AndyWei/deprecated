@@ -10,6 +10,9 @@
 #import "JYPost.h"
 
 @interface JYPost ()
+@property(nonatomic) NSString *idString;
+@property(nonatomic) NSString *caption;
+@property(nonatomic) NSString *URL;
 @end
 
 @implementation JYPost
@@ -53,67 +56,45 @@
     return @"post";
 }
 
-#pragma mark - Life Cycle
+#pragma mark - properties
 
-+ (instancetype)postWithDictionary:(NSDictionary *)dict
+- (NSString *)idString
 {
-    NSError *error;
-    return [[JYPost alloc] initWithDictionary:dict error:&error];
+    if (!_idString)
+    {
+        _idString = [NSString stringWithFormat:@"%llu", _postId];
+
+    }
+    return _idString;
 }
 
-- (instancetype)initWithDictionary:(NSDictionary *)dict error:(NSError **)error
+- (NSString *)caption
 {
-    self = [super initWithDictionary:dict error:error];
-    if (self == nil || dict == nil)
-    {
-        return self;
-    }
-
-    _idString = [NSString stringWithFormat:@"%tu", _postId];
-
-    _isLiked = [self _isInLikedStore];
-
     if ([kDummyCaptionText isEqualToString:_caption])
     {
         _caption = @"";
     }
 
-    NSArray *array = [_shortURL componentsSeparatedByString:@":"];
-
-    if ([array count] != 2)
-    {
-        return nil;
-    }
-
-    NSString *regionValue = array[0];
-    NSString *prefix = [[JYFilename sharedInstance] URLPrefixOfRegionValue:regionValue];
-    NSString *filename = array[1];
-    _URL = [prefix stringByAppendingString:filename];
-
-    return self;
+    return _caption;
 }
 
-- (void)setIsLiked:(BOOL)isLiked
+- (NSString *)URL
 {
-    if (isLiked)
+    if (!_URL)
     {
-        NSDictionary *value = @{ @"userid": [JYCredential current].idString };
-        [[JYDataStore sharedInstance].store putObject:value withId:self.idString intoTable:kTableNameLikedPost];
+        NSArray *array = [_shortURL componentsSeparatedByString:@":"];
+
+        if ([array count] != 2)
+        {
+            return nil;
+        }
+
+        NSString *regionValue = array[0];
+        NSString *prefix = [[JYFilename sharedInstance] URLPrefixOfRegionValue:regionValue];
+        NSString *filename = array[1];
+        _URL = [prefix stringByAppendingString:filename];
     }
-
-    _isLiked = isLiked;
-}
-
-- (BOOL)_isInLikedStore
-{
-    NSDictionary *liked = [[JYDataStore sharedInstance].store getObjectById:self.idString fromTable:kTableNameLikedPost];
-    if (!liked)
-    {
-        return NO;
-    }
-
-    NSUInteger likedByPerson = [[liked objectForKey:@"userid"] unsignedIntegerValue];
-    return (likedByPerson == [JYCredential current].userId);
+    return _URL;
 }
 
 - (uint64_t)timestamp
@@ -121,5 +102,30 @@
     uint64_t postid = self.postId;
     return (postid >> 32);
 }
+
+
+
+//- (void)setIsLiked:(BOOL)isLiked
+//{
+//    if (isLiked)
+//    {
+//        NSDictionary *value = @{ @"userid": [JYCredential current].idString };
+//        [[JYDataStore sharedInstance].store putObject:value withId:self.idString intoTable:kTableNameLikedPost];
+//    }
+//
+//    _isLiked = isLiked;
+//}
+
+//- (BOOL)_isInLikedStore
+//{
+//    NSDictionary *liked = [[JYDataStore sharedInstance].store getObjectById:self.idString fromTable:kTableNameLikedPost];
+//    if (!liked)
+//    {
+//        return NO;
+//    }
+//
+//    NSUInteger likedByPerson = [[liked objectForKey:@"userid"] unsignedIntegerValue];
+//    return (likedByPerson == [JYCredential current].userId);
+//}
 
 @end

@@ -19,6 +19,8 @@
 @end
 
 NSString *const kDBName = @"winkrock.db";
+NSString *const kMinCommentIdKey = @"min_comment_id_in_db";
+NSString *const kMaxCommentIdKey = @"max_comment_id_in_db";
 
 static NSString *const CREATE_USER_TABLE_SQL =
 @"CREATE TABLE IF NOT EXISTS post ( \
@@ -115,6 +117,19 @@ static NSString *const SELECT_KEY_SQL = @"SELECT * FROM %@ WHERE %@ = ? ORDER BY
     }
 }
 
+- (void)saveObjects:(NSArray *)objectList ofClass:(Class)modelClass
+{
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+
+        NSString *stmt = [MTLFMDBAdapter insertStatementForModelClass:modelClass];
+        for (id obj in objectList)
+        {
+            NSArray *params = [MTLFMDBAdapter columnValues:obj];
+            [self _executeUpdate:stmt withArgumentsInArray:params];
+        }
+    });
+}
+
 - (NSMutableArray *)selectPostsSinceId:(uint64_t)minId beforeId:(uint64_t)maxId
 {
     NSString *sql = [NSString stringWithFormat:SELECT_RANGE_SQL, @"post"];
@@ -127,6 +142,38 @@ static NSString *const SELECT_KEY_SQL = @"SELECT * FROM %@ WHERE %@ = ? ORDER BY
     NSString *sql = [NSString stringWithFormat:SELECT_KEY_SQL, @"comment", @"postid"];
     NSMutableArray *result = [self _executeSelect:sql keyId:postId ofClass: JYComment.class];
     return result;
+}
+
+- (void)setMinCommentIdInDB:(uint64_t)minCommentIdInDB
+{
+    NSNumber *minId = [NSNumber numberWithUnsignedLongLong:minCommentIdInDB];
+    [[NSUserDefaults standardUserDefaults] setObject:minId forKey:kMinCommentIdKey];
+}
+
+- (uint64_t)minCommentIdInDB
+{
+    NSNumber *minId = [[NSUserDefaults standardUserDefaults] objectForKey:kMinCommentIdKey];
+    if (!minId)
+    {
+        return LLONG_MAX; // note it's not ULLONG_MAX as the DB is in Java 
+    }
+    return minId.unsignedLongLongValue;
+}
+
+- (void)setMaxCommentIdInDB:(uint64_t)maxCommentIdInDB
+{
+    NSNumber *maxId = [NSNumber numberWithUnsignedLongLong:maxCommentIdInDB];
+    [[NSUserDefaults standardUserDefaults] setObject:maxId forKey:kMaxCommentIdKey];
+}
+
+- (uint64_t)maxCommentIdInDB
+{
+    NSNumber *maxId = [[NSUserDefaults standardUserDefaults] objectForKey:kMinCommentIdKey];
+    if (!maxId)
+    {
+        return 0;
+    }
+    return maxId.unsignedLongLongValue;
 }
 
 - (NSMutableArray *)_executeSelect:(NSString *)sql minId:(uint64_t)minId maxId:(uint64_t)maxId ofClass:(Class)modelClass

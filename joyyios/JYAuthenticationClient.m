@@ -125,7 +125,7 @@ static NSString *const kAWSTokenExpiryTimeKeyPrefix = @"aws_openid_token_expiry_
 - (void)setTokenExpiryTime:(uint64_t)tokenExpiryTime
 {
     _tokenExpiryTime = tokenExpiryTime;
-    self.keychain[self.tokenExpiryTimeKey] = [NSString stringWithFormat:@"%tu", tokenExpiryTime];
+    self.keychain[self.tokenExpiryTimeKey] = [NSString stringWithFormat:@"%llu", tokenExpiryTime];
 }
 
 - (uint64_t)tokenExpiryTime
