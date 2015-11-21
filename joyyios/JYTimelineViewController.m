@@ -33,7 +33,6 @@
 @property(nonatomic) NSMutableArray *postList;
 @property(nonatomic) NSDate *firstDate;
 @property(nonatomic) UIButton *titleButton;
-@property(nonatomic) UIColor *originalTabBarTintColor;
 @property(nonatomic) UITableView *tableView;
 @property(nonatomic) uint64_t newestPostId;
 @end
@@ -50,11 +49,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
 {
     [super viewDidLoad];
     self.title = NSLocalizedString(@"Home", nil);
-    // Do not use UIBarStyleBlack in the next line, because it will make the status bar text white
-    // self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
 
-    // Setup the navigationBar appearence and function
-    self.navigationController.navigationBar.barTintColor = JoyyBlack;
     self.navigationController.navigationBar.translucent = YES;
     self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:self.navigationItem.backBarButtonItem.style target:nil action:nil];
     self.navigationItem.titleView = self.titleButton;
@@ -72,8 +67,6 @@ static NSString *const kPostCellIdentifier = @"postCell";
         [weakSelf _fetchNewPost];
     }];
 
-    self.originalTabBarTintColor = self.tabBarController.tabBar.barTintColor;
-
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_like:) name:kNotificationWillLikePost object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_comment:) name:kNotificationWillCommentPost object:nil];
 }
@@ -87,7 +80,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
         _titleButton.frame = CGRectMake(0, 0, 70, 44);
         _titleButton.titleLabel.font = [UIFont boldSystemFontOfSize:16];
         [_titleButton setTitle:title forState:UIControlStateNormal];
-        [_titleButton setTitleColor:JoyyGray forState:UIControlStateNormal];
+        [_titleButton setTitleColor:JoyyBlack forState:UIControlStateNormal];
         [_titleButton addTarget:self action:@selector(_scrollToTop) forControlEvents:UIControlEventTouchUpInside];
     }
     return _titleButton;
@@ -107,17 +100,10 @@ static NSString *const kPostCellIdentifier = @"postCell";
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    self.tabBarController.tabBar.barTintColor = JoyyBlack;
 
     [self.cameraButton.imageLayer.layer removeAllAnimations];
     [self.cameraButton.imageLayer.layer addAnimation:self.colorPulse forKey:@"ColorPulse"];
     [self _reloadCurrentCell];
-}
-
-- (void)viewDidDisappear:(BOOL)animated
-{
-    [super viewDidDisappear:animated];
-    self.tabBarController.tabBar.barTintColor = self.originalTabBarTintColor;
 }
 
 - (void)didReceiveMemoryWarning
@@ -137,7 +123,6 @@ static NSString *const kPostCellIdentifier = @"postCell";
         _tableView = [[UITableView alloc] initWithFrame:self.view.frame style:UITableViewStylePlain];
         _tableView.dataSource = self;
         _tableView.delegate = self;
-        _tableView.backgroundColor = JoyyBlack;
         _tableView.separatorColor = ClearColor;
         _tableView.showsHorizontalScrollIndicator = NO;
         _tableView.showsVerticalScrollIndicator = NO;
@@ -259,6 +244,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
     [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 
+// TODO: create comment without nav to new view controller
 - (void) _presentCommentViewForPost:(JYPost *)post showKeyBoard:(BOOL)edit
 {
     JYCommentViewController *viewController = [[JYCommentViewController alloc] initWithPost:post withKeyboard:edit];
@@ -270,7 +256,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
     JYPhotoCaptionViewController *captionVC = [[JYPhotoCaptionViewController alloc] initWithDelegate:self];
 
     [TGCameraColor setTintColor:JoyyBlue];
-    TGCameraNavigationController *camera = [TGCameraNavigationController cameraWithCaptionViewController:captionVC];
+    TGCameraNavigationController *camera = [TGCameraNavigationController cameraWithDelegate:self captionViewController:captionVC];
     camera.title = self.title;
 
     [self presentViewController:camera animated:NO completion:nil];
@@ -295,6 +281,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
     UIImage *image = [UIImage imageWithImage:photo scaledToSize:CGSizeMake(kPhotoWidth, kPhotoWidth)];
     NSData *imageData = UIImageJPEGRepresentation(image, kPhotoQuality);
 
+    [self _fetchNewPost]; // make sure timeline is refreshed before create new post
     [self _createPostWithMediaData:imageData contentType:kContentTypeJPG caption:caption];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
@@ -337,6 +324,21 @@ static NSString *const kPostCellIdentifier = @"postCell";
 
 #pragma mark - Maintain table
 
+- (void)_createdNewPost:(JYPost *)post
+{
+    if (!post)
+    {
+        return;
+    }
+    
+    [[JYLocalDataManager sharedInstance] saveObjects:@[post] ofClass:JYPost.class];
+
+    self.newestPostId = post.postId;
+
+    [self.postList insertObject:post atIndex:0];
+    [self.tableView reloadData];
+}
+
 - (void)_receivedNewPosts:(NSMutableArray *)postList
 {
     if ([postList count] == 0) // no new post, continue to fetch new comments
@@ -348,6 +350,8 @@ static NSString *const kPostCellIdentifier = @"postCell";
         }
         return;
     }
+
+    [[JYLocalDataManager sharedInstance] saveObjects:postList ofClass:JYPost.class];
 
     JYPost *newestPost = self.postList[0];
     self.newestPostId = newestPost.postId;
@@ -372,6 +376,8 @@ static NSString *const kPostCellIdentifier = @"postCell";
         return;
     }
 
+    [[JYLocalDataManager sharedInstance] saveObjects:postList ofClass:JYPost.class];
+
     uint64_t sinceId = ((JYPost *)[postList lastObject]).postId;
     uint64_t beforeId = [JYLocalDataManager sharedInstance].minCommentIdInDB;
     if (sinceId < beforeId)
@@ -387,10 +393,12 @@ static NSString *const kPostCellIdentifier = @"postCell";
 
 - (void)_createPostWithMediaData:(NSData *)data contentType:(NSString *)contentType caption:(NSString *)caption
 {
-    NSURL *fileURL = [NSURL fileURLWithPath:[NSTemporaryDirectory() stringByAppendingPathComponent:@"masquerade"]];
+    NSURL *fileURL = [NSURL fileURLWithPath:[NSTemporaryDirectory() stringByAppendingPathComponent:@"timeline"]];
     [data writeToURL:fileURL atomically:YES];
 
     NSString *s3filename = [[JYFilename sharedInstance] randomFilenameWithHttpContentType:contentType];
+    NSString *s3region = [JYFilename sharedInstance].region;
+    NSString *s3url = [NSString stringWithFormat:@"%@:%@", s3region, s3filename];
 
     AWSS3TransferManager *transferManager = [AWSS3TransferManager defaultS3TransferManager];
     if (!transferManager)
@@ -431,7 +439,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
         {
             AWSS3TransferManagerUploadOutput *uploadOutput = task.result;
             NSLog(@"Success: AWSS3TransferManager upload task.result = %@", uploadOutput);
-            [weakSelf _createPostRecordWithFilename:s3filename caption:caption];
+            [weakSelf _createPostRecordWithS3URL:s3url caption:caption];
         }
         return nil;
     }];
@@ -439,26 +447,27 @@ static NSString *const kPostCellIdentifier = @"postCell";
 
 #pragma mark - Network
 
-- (void)_createPostRecordWithFilename:(NSString *)filename caption:(NSString *)caption
+- (void)_createPostRecordWithS3URL:(NSString *)s3url caption:(NSString *)caption
 {
     [self _networkThreadBegin];
 
     AFHTTPSessionManager *manager = [AFHTTPSessionManager managerWithToken];
-    NSString *url = [NSString apiURLWithPath:@"post"];
-    NSMutableDictionary *parameters = [self _parametersForPostWithFilename:filename caption:caption];
+    NSString *url = [NSString apiURLWithPath:@"post/create"];
+    NSMutableDictionary *parameters = [self _parametersForPostWithURL:s3url caption:caption];
 
     __weak typeof(self) weakSelf = self;
     [manager POST:url
        parameters:parameters
           success:^(NSURLSessionTask *operation, id responseObject) {
 
-        NSLog(@"Success: createPostRecord response = %@", responseObject);
-//        JYPost *post = [JYPost postWithDictionary:responseObject];
-//        [weakSelf _updateTableWithPostList:@[post] old:NO];
+        NSLog(@"Success: post/create response = %@", responseObject);
+        NSError *error = nil;
+        JYPost *post = (JYPost *)[MTLJSONAdapter modelOfClass:JYPost.class fromJSONDictionary:responseObject error:&error];
+        [weakSelf _createdNewPost:post];
         [weakSelf _networkThreadEnd];
 
     } failure:^(NSURLSessionTask *operation, NSError *error) {
-        NSLog(@"Failure: createPostRecord error = %@", error);
+        NSLog(@"Failure: post/create error = %@", error);
         [weakSelf _networkThreadEnd];
 
         [RKDropdownAlert title:NSLocalizedString(kErrorTitle, nil)
@@ -469,11 +478,11 @@ static NSString *const kPostCellIdentifier = @"postCell";
     }];
 }
 
-- (NSMutableDictionary *)_parametersForPostWithFilename:(NSString *)filename caption:(NSString *)caption
+- (NSMutableDictionary *)_parametersForPostWithURL:(NSString *)url caption:(NSString *)caption
 {
     NSMutableDictionary *parameters = [NSMutableDictionary new];
 
-    [parameters setObject:filename forKey:@"filename"];
+    [parameters setObject:url forKey:@"url"];
     [parameters setObject:caption forKey:@"caption"];
 
     return parameters;

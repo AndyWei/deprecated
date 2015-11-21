@@ -147,9 +147,9 @@
     return _postBucketName;
 }
 
-- (NSString *)URLPrefixOfRegionValue:(NSString *)regionValue
+- (NSString *)URLPrefixOfRegion:(NSString *)region
 {
-    return self.regionURLDict[regionValue];
+    return self.regionURLDict[region];
 }
 
 // Mapping region value to URL prefix
@@ -166,11 +166,11 @@
     return _regionURLDict;
 }
 
-- (NSUInteger)region
+- (NSString *)region
 {
     if (!_region)
     {
-        _region = [[self.continetRegionDict objectForKey:self.continent] unsignedIntValue];
+        _region = [self.continetRegionDict objectForKey:self.continent];
     }
     return _region;
 }
@@ -180,12 +180,12 @@
 {
     if (!_continetRegionDict)
     {
-        _continetRegionDict = @{ @"na":@0,
-                                 @"sa":@0,
-                                 @"as":@1,
-                                 @"oc":@1,
-                                 @"eu":@2,
-                                 @"af":@2
+        _continetRegionDict = @{ @"na":@"0",
+                                 @"sa":@"0",
+                                 @"as":@"1",
+                                 @"oc":@"1",
+                                 @"eu":@"2",
+                                 @"af":@"2"
                               };
     }
     return _continetRegionDict;

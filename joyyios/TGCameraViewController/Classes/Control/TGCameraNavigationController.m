@@ -40,11 +40,6 @@
     return [TGCameraNavigationController cameraWithDelegate:delegate captionViewController:nil];
 }
 
-+ (instancetype)cameraWithCaptionViewController:(id<TGCaptionViewControllerInterface>)vc
-{
-    return [TGCameraNavigationController cameraWithDelegate:nil captionViewController:vc];
-}
-
 + (instancetype)cameraWithDelegate:(id<TGCameraDelegate>)delegate captionViewController:(id<TGCaptionViewControllerInterface>)vc
 {
     AVAuthorizationStatus status = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];

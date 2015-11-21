@@ -18,12 +18,12 @@
 @property (nonatomic) FMDatabaseQueue * dbQueue;
 @end
 
-NSString *const kDBName = @"winkrock.db";
+NSString *const kDBName = @"/winkrock.db";
 NSString *const kMinCommentIdKey = @"min_comment_id_in_db";
 NSString *const kMaxCommentIdKey = @"max_comment_id_in_db";
 
 static NSString *const CREATE_USER_TABLE_SQL =
-@"CREATE TABLE IF NOT EXISTS post ( \
+@"CREATE TABLE IF NOT EXISTS user ( \
     id       INTEGER NOT NULL, \
     username TEXT    NOT NULL, \
     yrs      INTEGER NOT NULL, \
@@ -46,7 +46,7 @@ static NSString *const CREATE_COMMENT_TABLE_SQL =
     content   TEXT    NOT NULL, \
 PRIMARY KEY(id)) ";
 
-static NSString *const CREATE_COMMENT_INDEX_SQL = @"CREATE INDEX postid_index ON comment(postid)";
+static NSString *const CREATE_COMMENT_INDEX_SQL = @"CREATE INDEX IF NOT EXISTS postid_index ON comment(postid)";
 static NSString *const SELECT_RANGE_SQL = @"SELECT * FROM %@ WHERE id > ? AND id < ? ORDER BY id DESC";
 static NSString *const SELECT_KEY_SQL = @"SELECT * FROM %@ WHERE %@ = ? ORDER BY id ASC";
 

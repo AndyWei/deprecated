@@ -10,7 +10,7 @@
 
 + (JYFilename *)sharedInstance;
 
-- (NSString *)URLPrefixOfRegionValue:(NSString *)regionValue;
+- (NSString *)URLPrefixOfRegion:(NSString *)region;
 
 - (NSString *)newAvatarFilename;
 - (NSString *)randomFourDigits;
@@ -25,7 +25,7 @@
 @property (nonatomic) NSString *avatarBucketName;
 @property (nonatomic) NSString *messageBucketName;
 @property (nonatomic) NSString *postBucketName;
-@property (nonatomic) NSUInteger region;
+@property (nonatomic) NSString *region;
 
 
 @end

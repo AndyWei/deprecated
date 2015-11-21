@@ -86,11 +86,12 @@
 
         if ([array count] != 2)
         {
+            NSLog(@"Illegal shortURL: %@", _shortURL);
             return nil;
         }
 
-        NSString *regionValue = array[0];
-        NSString *prefix = [[JYFilename sharedInstance] URLPrefixOfRegionValue:regionValue];
+        NSString *region = array[0];
+        NSString *prefix = [[JYFilename sharedInstance] URLPrefixOfRegion:region];
         NSString *filename = array[1];
         _URL = [prefix stringByAppendingString:filename];
     }

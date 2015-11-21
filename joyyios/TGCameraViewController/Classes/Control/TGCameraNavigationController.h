@@ -47,6 +47,6 @@
 ((unavailable("[-initWithRootViewController:] is not allowed, use [+cameraWithDelegate:]")));
 
 + (instancetype)cameraWithDelegate:(id<TGCameraDelegate>)delegate;
-+ (instancetype)cameraWithCaptionViewController:(id<TGCaptionViewControllerInterface>)vc;
++ (instancetype)cameraWithDelegate:(id<TGCameraDelegate>)delegate captionViewController:(id<TGCaptionViewControllerInterface>)vc;
 
 @end

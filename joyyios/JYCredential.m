@@ -139,7 +139,7 @@ static NSString *const kAPIYrsKey = @"api_yrs";
 {
     if ([dict objectForKey:@"id"])
     {
-        self.userId = [[dict objectForKey:@"id"] unsignedIntegerValue];
+        self.userId = [[dict objectForKey:@"id"] unsignedLongLongValue];
     }
 
     if ([dict objectForKey:@"username"])
@@ -151,7 +151,7 @@ static NSString *const kAPIYrsKey = @"api_yrs";
     {
         self.token = [dict objectForKey:@"token"];
 
-        uint64_t tokenDuration = [[dict objectForKey:@"token_ttl"] uint64Value];
+        uint64_t tokenDuration = [[dict objectForKey:@"token_ttl"] unsignedLongLongValue];
         uint64_t now = (uint64_t)[NSDate timeIntervalSinceReferenceDate];
         self.tokenExpiryTime = now + tokenDuration;
     }
