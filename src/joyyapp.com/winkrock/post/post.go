@@ -9,7 +9,6 @@ package post
 
 import (
     "encoding/json"
-    "fmt"
     "github.com/deckarep/golang-set"
     "github.com/gocql/gocql"
     "joyyapp.com/winkrock/idgen"
@@ -27,6 +26,13 @@ type Handler struct {
 type CreatePostParams struct {
     URL     string `param:"url" validate:"required"`
     Caption string `param:"caption"`
+}
+
+type CreatePostResponse struct {
+    PostId  int64  `json:"postid"`
+    OwnerId int64  `json:"ownerid"`
+    URL     string `json:"url"`
+    Caption string `json:"caption"`
 }
 
 func (h *Handler) CreatePost(w http.ResponseWriter, req *http.Request, userid int64, username string) {
@@ -58,8 +64,15 @@ func (h *Handler) CreatePost(w http.ResponseWriter, req *http.Request, userid in
     query = h.DB.Query(`INSERT INTO userline (userid, month, postid, url, caption) VALUES (?, ?, ?, ?, ?)`, userid, month, postid, p.URL, p.Caption)
     query.Exec()
 
-    message := fmt.Sprintf("{postid:%v}", postid)
-    RespondData(w, []byte(message))
+    response := &CreatePostResponse{
+        PostId:  postid,
+        OwnerId: userid,
+        URL:     p.URL,
+        Caption: p.Caption,
+    }
+
+    bytes, _ := json.Marshal(response)
+    RespondData(w, bytes)
     return
 }
 
@@ -116,6 +129,14 @@ type CreateCommentParams struct {
     Content   string `param:"content" validate:"required"`
 }
 
+type CreateCommentResponse struct {
+    CommentId int64  `json:"commentid"`
+    OwnerId   int64  `json:"ownerid"`
+    PostId    int64  `json:"postid"`
+    ReplyToId int64  `json:"replytoid"`
+    Content   string `json:"content"`
+}
+
 func (h *Handler) CreateComment(w http.ResponseWriter, req *http.Request, userid int64, username string) {
     var p CreateCommentParams
     if err := ParseAndCheck(req, &p); err != nil {
@@ -144,8 +165,17 @@ func (h *Handler) CreateComment(w http.ResponseWriter, req *http.Request, userid
         query.Bind(fid, commentid, userid, p.PostId, p.ReplyToId, p.Content).Exec()
     }
 
-    message := fmt.Sprintf("{commentid:%v}", commentid)
-    RespondData(w, []byte(message))
+    response := &CreateCommentResponse{
+        CommentId: commentid,
+        OwnerId:   userid,
+        PostId:    p.PostId,
+        ReplyToId: p.ReplyToId,
+        Content:   p.Content,
+    }
+
+    bytes, _ := json.Marshal(response)
+    RespondData(w, bytes)
+    return
     return
 }
 
