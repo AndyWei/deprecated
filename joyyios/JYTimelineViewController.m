@@ -25,19 +25,20 @@
 #import "NSDate+Joyy.h"
 #import "UIImage+Joyy.h"
 
-@interface JYTimelineViewController () <TGCameraDelegate, UITableViewDataSource, UITableViewDelegate>
-@property(nonatomic) CABasicAnimation *colorPulse;
-@property(nonatomic) JYButton *cameraButton;
-@property(nonatomic) JYPost *currentPost;
-@property(nonatomic) NSInteger networkThreadCount;
-@property(nonatomic) NSMutableArray *postList;
-@property(nonatomic) NSDate *firstDate;
-@property(nonatomic) UIButton *titleButton;
-@property(nonatomic) UITableView *tableView;
-@property(nonatomic) uint64_t newestPostId;
-@end
+typedef void(^Action)();
 
-typedef void(^VoidHandler)();
+@interface JYTimelineViewController () <TGCameraDelegate, UITableViewDataSource, UITableViewDelegate>
+@property (nonatomic) CABasicAnimation *colorPulse;
+@property (nonatomic) JYButton *cameraButton;
+@property (nonatomic) JYPost *currentPost;
+@property (nonatomic) NSInteger networkThreadCount;
+@property (nonatomic) NSMutableArray *postList;
+@property (nonatomic) NSDate *firstDate;
+@property (nonatomic) UIButton *titleButton;
+@property (nonatomic) UITableView *tableView;
+@property (nonatomic) uint64_t newestPostId;
+@property (nonatomic, copy) Action pendingAction;
+@end
 
 static const NSInteger OFFSET_DAYS = -3;
 static const CGFloat kCameraButtonWidth = 50;
@@ -62,13 +63,24 @@ static NSString *const kPostCellIdentifier = @"postCell";
     [self.view addSubview:self.tableView];
     [self.view addSubview:self.cameraButton];
 
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_apiTokenReady) name:kNotificationAPITokenReady object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_like:) name:kNotificationWillLikePost object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_comment:) name:kNotificationWillCommentPost object:nil];
+
     __weak typeof(self) weakSelf = self;
-    [self _fetchPostsFromDBWithCompleteHandler:^{
+    [self _fetchPostsFromDBWithAction:^{
         [weakSelf _fetchNewPost];
     }];
 
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_like:) name:kNotificationWillLikePost object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_comment:) name:kNotificationWillCommentPost object:nil];
+
+}
+
+- (void)_apiTokenReady
+{
+    if (self.pendingAction)
+    {
+        self.pendingAction();
+    }
 }
 
 - (UIButton *)titleButton
@@ -528,7 +540,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
     [self.tableView reloadData];
 }
 
-- (void)_fetchPostsFromDBWithCompleteHandler:(VoidHandler)handler
+- (void)_fetchPostsFromDBWithAction:(Action)action
 {
     uint64_t minId = [NSDate minIdWithOffsetInDays:OFFSET_DAYS];
     uint64_t maxId = [NSDate idOfNow];
@@ -536,7 +548,12 @@ static NSString *const kPostCellIdentifier = @"postCell";
     self.postList = [[JYLocalDataManager sharedInstance] selectPostsSinceId:minId beforeId:maxId];
     [self _refreshComments];
 
-    if ([self.postList count] > 0)
+    if ([self.postList count] == 0)
+    {
+        self.newestPostId = 0;
+        self.firstDate = [NSDate date];
+    }
+    else
     {
         JYPost *newestPost = self.postList[0];
         self.newestPostId = newestPost.postId;
@@ -545,20 +562,40 @@ static NSString *const kPostCellIdentifier = @"postCell";
         self.firstDate = [NSDate dateOfId:oldestPost.postId];
     }
 
-    if (handler)
+    if (action)
     {
-        handler();
+        action();
     }
 }
 
 - (void)_fetchNewPost
 {
+    if ([JYCredential current].tokenValidInSeconds <= 0)
+    {
+        __weak typeof(self) weakSelf = self;
+        self.pendingAction = ^{
+            [weakSelf _fetchNewPost];
+        };
+        return;
+    }
+    self.pendingAction = nil;
+
     uint64_t day = [[NSDate date] joyyDay];
     [self _fetchTimelineOfDay:day sinceId:self.newestPostId];
 }
 
 - (void)_fetchOldPost
 {
+    if ([JYCredential current].tokenValidInSeconds <= 0)
+    {
+        __weak typeof(self) weakSelf = self;
+        self.pendingAction = ^{
+            [weakSelf _fetchOldPost];
+        };
+        return;
+    }
+    self.pendingAction = nil;
+
     self.firstDate = [self.firstDate dateByAddingTimeInterval:60 * 60 * 24 * (-1)];
     uint64_t day = [self.firstDate joyyDay];
     [self _fetchTimelineOfDay:day sinceId:0];
@@ -607,6 +644,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
              [weakSelf _networkThreadEnd];
          }
          failure:^(NSURLSessionTask *operation, NSError *error) {
+             NSLog(@"Error: post/timeline fetch failed with error: %@", error);
              [weakSelf _networkThreadEnd];
          }
      ];
@@ -616,7 +654,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
 {
     [self _networkThreadBegin];
 
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager managerWithToken];
 
     NSString *url = [NSString apiURLWithPath:@"post/commentline"];
     NSDictionary *parameters = @{@"sinceid": @(minId), @"beforeid": @(maxId)};

@@ -58,9 +58,10 @@ NSString *const kBadgeCount = @"badge_count";
 
 - (void)setDeviceToken:(NSString *)deviceToken
 {
-//    if ([_deviceToken isEqualToString:deviceToken]) {
-//        return;
-//    }
+    if ([deviceToken isEqualToString:_deviceToken])
+    {
+        return;
+    }
 
     _deviceToken = deviceToken;
     [[NSUserDefaults standardUserDefaults] setObject:deviceToken forKey:kDeviceToken];
@@ -88,7 +89,7 @@ NSString *const kBadgeCount = @"badge_count";
 
 - (void)_registerDeviceToken:(NSString *)deviceToken
 {
-    NSDictionary *parameters = @{ @"dtoken": deviceToken, @"pns": @1 };
+    NSDictionary *parameters = @{ @"dtoken": deviceToken, @"pns": @(kAPN) };
     NSString *url = [NSString apiURLWithPath:@"device/register"];
     AFHTTPSessionManager *manager = [AFHTTPSessionManager managerWithToken];
 

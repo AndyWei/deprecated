@@ -9,6 +9,8 @@
 #import "JYDataStore.h"
 
 NSString *const kKeyPresentedIntroductionVersion = @"PresentedIntroductionVersion";
+NSString *const kTableNameLikedPost = @"liked_post";
+NSString *const kTableNameUser = @"user_table";
 
 @interface JYDataStore ()
 @end
@@ -33,13 +35,13 @@ NSString *const kKeyPresentedIntroductionVersion = @"PresentedIntroductionVersio
     {
         _store = [[YTKKeyValueStore alloc] initDBWithName:@"joyy_kv.db"];
         [_store createTableWithName:kTableNameLikedPost];
-        [_store createTableWithName:kTableNamePerson];
+        [_store createTableWithName:kTableNameUser];
     }
     return _store;
 }
 
-- (void)getPersonWithIdString:(NSString *)idString
-                      success:(void (^)(JYUser *person))success
+- (void)getUserWithIdString:(NSString *)idString
+                      success:(void (^)(JYUser *user))success
                       failure:(void (^)(NSError *error))failure
 {
     // input check
@@ -50,30 +52,30 @@ NSString *const kKeyPresentedIntroductionVersion = @"PresentedIntroductionVersio
     }
 
     // local lookup
-    NSDictionary *personDict = [self.store getObjectById:idString fromTable:kTableNamePerson];
-    if (personDict)
+    NSDictionary *userDict = [self.store getObjectById:idString fromTable:kTableNameUser];
+    if (userDict)
     {
-        JYUser *person = [[JYUser alloc] initWithDictionary:personDict];
-        return success(person);
+        JYUser *user = [[JYUser alloc] initWithDictionary:userDict];
+        return success(user);
     }
 
     // fetch from server
     AFHTTPSessionManager *manager = [AFHTTPSessionManager managerWithToken];
-    NSString *url = [NSString apiURLWithPath:@"person"];
+    NSString *url = [NSString apiURLWithPath:@"user"];
     NSDictionary *parameters =  @{ @"id": @[idString] };
 
     __weak typeof(self) weakSelf = self;
     [manager GET:url
       parameters:parameters
          success:^(NSURLSessionTask *operation, id responseObject) {
-             NSLog(@"Success: JYDataStore fetch person responseObject: %@", responseObject);
+             NSLog(@"Success: JYDataStore fetch user responseObject: %@", responseObject);
 
              NSDictionary *dict = [responseObject firstObject];
              if (dict)
              {
-                 [weakSelf.store putObject:dict withId:idString intoTable:kTableNamePerson];
-                 JYUser *person = [[JYUser alloc] initWithDictionary:dict];
-                 return success(person);
+                 [weakSelf.store putObject:dict withId:idString intoTable:kTableNameUser];
+                 JYUser *user = [[JYUser alloc] initWithDictionary:dict];
+                 return success(user);
              }
              else
              {
@@ -82,7 +84,7 @@ NSString *const kKeyPresentedIntroductionVersion = @"PresentedIntroductionVersio
              }
          }
          failure:^(NSURLSessionTask *operation, NSError *error) {
-             NSLog(@"Failure: JYDataStore fetch person error: %@", error);
+             NSLog(@"Failure: JYDataStore fetch user error: %@", error);
              return failure(error);
          }
      ];
@@ -97,6 +99,13 @@ NSString *const kKeyPresentedIntroductionVersion = @"PresentedIntroductionVersio
 - (CGFloat)presentedIntroductionVersion
 {
     return[[NSUserDefaults standardUserDefaults] floatForKey:kKeyPresentedIntroductionVersion];
+}
+
+- (NSString *)usernameOfId:(uint64_t)userid
+{
+    NSString *uidStr = [NSString stringWithFormat:@"%llu", userid];
+    NSDictionary *userDict = [self.store getObjectById:uidStr fromTable:kTableNameUser];
+    return [userDict objectForKey:@"username"];
 }
 
 @end

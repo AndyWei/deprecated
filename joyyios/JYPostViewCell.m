@@ -67,7 +67,7 @@ static const CGFloat kLikeCountLabelWidth = 80;
     CGFloat commentsHeight = 0;
     for (JYComment *comment in post.commentList)
     {
-        NSString *text = [JYPostViewCell dummyTextOfString:comment.content];
+        NSString *text = comment.displayText;
         CGFloat height = [JYPostViewCell labelHeightForText:text withFontSize:kFontSizeComment textAlignment:NSTextAlignmentLeft andWidth:[JYPostViewCell textAreaWidth]];
         commentsHeight += (height + 5);
     }
@@ -78,11 +78,6 @@ static const CGFloat kLikeCountLabelWidth = 80;
 + (CGFloat)textAreaWidth
 {
     return (SCREEN_WIDTH - kMarginLeft - kMarginRight);
-}
-
-+ (NSString *)dummyTextOfString:(NSString *)original
-{
-    return [NSString stringWithFormat:@"🐨: %@", original];
 }
 
 + (UIImage *)sharedPlaceholderImage
@@ -114,13 +109,6 @@ static const CGFloat kLikeCountLabelWidth = 80;
 {
     [self.observer unobserveAll];
     self.observer = nil;
-}
-
-- (NSString *)_displayTextOfComment:(JYComment *)comment
-{
-    uint64_t code = self.post.postId + comment.ownerId;
-    JYAvatar *avatar = [JYAvatar avatarOfCode:code];
-    return [NSString stringWithFormat:@"%@: %@", avatar.symbol, comment.content];
 }
 
 - (void)setPost:(JYPost *)post
@@ -242,31 +230,33 @@ static const CGFloat kLikeCountLabelWidth = 80;
 
 - (void)_updateComments
 {
+    [self _resetCommentlabels];
+
     CGFloat y = CGRectGetMaxY(self.actionBar.frame);
-
-    for (NSUInteger i = 0; i < kRecentCommentsLimit; ++i)
+    for (JYComment *comment in self.post.commentList)
     {
-        TTTAttributedLabel *label = self.commentLabels[i];
-        if (i < _post.commentList.count)
-        {
-            JYComment *comment = _post.commentList[i];
-            NSString *text = [self _displayTextOfComment:comment];
-            label.text = text;
-            NSRange range = NSMakeRange(0, text.length);
-            [label addLinkToURL:[NSURL URLWithString:@"comment://list"] withRange:range];
+        TTTAttributedLabel *label = [self _createCommentLabel];
+        [self.commentLabels addObject:label];
+        [self addSubview:label];
 
-            CGFloat height = [JYPostViewCell labelHeightForText:text withFontSize:kFontSizeComment textAlignment:NSTextAlignmentLeft andWidth:label.width];
-            label.height = height + 5;
-            label.y = y;
-            y = CGRectGetMaxY(label.frame);
-        }
-        else
-        {
-            label.y = 0;
-            label.height = 0;
-            label.text = nil;
-        }
+        NSString *text = comment.displayText;
+        label.text = text;
+
+        CGFloat height = [JYPostViewCell labelHeightForText:text withFontSize:kFontSizeComment textAlignment:NSTextAlignmentLeft andWidth:label.width];
+        label.height = height + 5;
+        label.y = y;
+        y = CGRectGetMaxY(label.frame);
     }
+}
+
+- (void)_resetCommentlabels
+{
+    for (TTTAttributedLabel *label in self.commentLabels)
+    {
+        [label removeFromSuperview];
+    }
+
+    self.commentLabels = [NSMutableArray new];
 }
 
 - (FBKVOController *)observer
@@ -408,37 +398,17 @@ static const CGFloat kLikeCountLabelWidth = 80;
     return _captionLabel;
 }
 
-- (NSMutableArray *)commentLabels
-{
-    if (!_commentLabels)
-    {
-        _commentLabels = [NSMutableArray new];
-        for (NSUInteger i = 0; i < kRecentCommentsLimit; i++)
-        {
-            TTTAttributedLabel *label = [self _createCommentLabel];
-
-            [_commentLabels addObject:label];
-            [self addSubview:label];
-        }
-    }
-    return _commentLabels;
-}
-
 - (TTTAttributedLabel *)_createCommentLabel
 {
     CGRect frame = CGRectMake(kMarginLeft, 0, [[self class] textAreaWidth], 0);
     TTTAttributedLabel *label = [[TTTAttributedLabel alloc] initWithFrame:frame];
     label.delegate = self;
-    label.backgroundColor = JoyyBlack;
+    label.backgroundColor = JoyyWhite;
     label.font = [UIFont systemFontOfSize:kFontSizeComment];
-    label.textColor = JoyyWhite;
+    label.textColor = JoyyBlack;
     label.textAlignment = NSTextAlignmentLeft;
     label.numberOfLines = 0;
     label.lineBreakMode = NSLineBreakByWordWrapping;
-    label.activeLinkAttributes = nil; // Do not change color on link is being tapped
-    label.linkAttributes =  @{ (id)kCTForegroundColorAttributeName: JoyyWhite,
-                               (id)kCTUnderlineStyleAttributeName: [NSNumber numberWithInt:NSUnderlineStyleNone]
-                             };
 
     return label;
 }
@@ -454,16 +424,6 @@ static const CGFloat kLikeCountLabelWidth = 80;
     button.foregroundColor = ClearColor;
 
     return button;
-}
-
-# pragma -mark TTTAttributedLabelDelegate
-
-- (void)attributedLabel:(TTTAttributedLabel *)label didSelectLinkWithURL:(NSURL *)url
-{
-    if ([[url scheme] hasPrefix:@"comment"])
-    {
-        [self _showAllComments];
-    }
 }
 
 @end

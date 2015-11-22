@@ -622,9 +622,9 @@ const CGFloat kAvatarButtonWidth = kAvatarButtonHeight;
 
     // YRS
     NSString *regionStr = [JYFilename sharedInstance].region;
-    NSUInteger region = [regionStr uint64Value];
-    NSUInteger yob = (NSUInteger)[self.yobTextField.text integerValue];
-    NSUInteger yrs = ((yob & 0xFFFF) << 16) | ((region & 0xFF) << 8) | (self.sex & 0xFF);
+    uint64_t region = [regionStr uint64Value];
+    uint64_t yob = [self.yobTextField.text uint64Value];
+    uint64_t yrs = ((yob & 0xFFFF) << 16) | ((region & 0xFF) << 8) | (self.sex & 0xFF);
     [JYCredential current].yrs = yrs;
     [parameters setObject:@(yrs) forKey:@"yrs"];
 

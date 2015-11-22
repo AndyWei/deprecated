@@ -50,7 +50,7 @@ static const CGFloat kTimeLabelWidth = 80;
     NSString *idString = [_contact.bareJidStr personIdString];
 
     __weak typeof(self) weakSelf = self;
-    [[JYDataStore sharedInstance] getPersonWithIdString:idString success:^(JYUser *person) {
+    [[JYDataStore sharedInstance] getUserWithIdString:idString success:^(JYUser *person) {
 
         weakSelf.person = person;
     } failure:^(NSError *error) {

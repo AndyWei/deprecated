@@ -236,7 +236,7 @@ static NSString *const SELECT_KEY_SQL = @"SELECT * FROM %@ WHERE %@ = ? ORDER BY
 
     if (!result)
     {
-        NSLog(@"ERROR, failed to update table with sql: %@", stmt);
+        NSLog(@"ERROR, failed to update table with sql = %@ and params = %@", stmt, params);
     }
 }
 @end

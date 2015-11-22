@@ -67,8 +67,6 @@ extern NSString *const kNotificationNeedGeoInfo;
 extern NSString *const kNotificationWillCommentPost;
 extern NSString *const kNotificationWillLikePost;
 extern NSString *const kNotificationUserYRSReady;
-extern NSString *const kTableNameLikedPost;
-extern NSString *const kTableNamePerson;
 extern NSString *const kURLAPIBase;
 
 extern NSInteger const kSignInRetryInSeconds;
@@ -76,7 +74,6 @@ extern NSTimeInterval const k15Minutes;
 extern NSTimeInterval const k5Minutes;
 
 extern NSUInteger const kAPN;
-extern NSUInteger const kRecentCommentsLimit;
 
 extern UInt16  const kMessagePort;
 

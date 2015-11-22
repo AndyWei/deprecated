@@ -34,7 +34,6 @@ NSInteger const kSignInRetryInSeconds = 60;
 NSTimeInterval const k5Minutes = 300;
 
 NSUInteger const kAPN = 1;
-NSUInteger const kRecentCommentsLimit = 3;
 
 UInt16 const kMessagePort = 5222;
 
@@ -72,9 +71,6 @@ NSString *const kNotificationNeedGeoInfo = @"needGeoInfo";
 NSString *const kNotificationWillCommentPost = @"willCommentPost";
 NSString *const kNotificationWillLikePost = @"willLikePost";
 NSString *const kNotificationUserYRSReady = @"userYRSReady";
-
-NSString *const kTableNameLikedPost = @"liked_post";
-NSString *const kTableNamePerson = @"person";
 
 NSString *const kURLAPIBase = @"http://dev.winkrock.com:8000/v1/";
 //NSString *const kURLAPIBase = @"http://api.winkrock.com:8000/v1/";
