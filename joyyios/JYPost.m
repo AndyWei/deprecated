@@ -10,7 +10,6 @@
 #import "JYPost.h"
 
 @interface JYPost ()
-@property(nonatomic) NSString *idString;
 @property(nonatomic) NSString *caption;
 @property(nonatomic) NSString *URL;
 @end
@@ -38,9 +37,7 @@
              @"ownerId": @"ownerid",
              @"shortURL": @"url",
              @"caption": @"caption",
-             @"idString": [NSNull null],
              @"URL": [NSNull null],
-             @"timestamp": [NSNull null],
              @"commentList": [NSNull null],
              @"isLiked": [NSNull null]
              };
@@ -57,16 +54,6 @@
 }
 
 #pragma mark - properties
-
-- (NSString *)idString
-{
-    if (!_idString)
-    {
-        _idString = [NSString stringWithFormat:@"%llu", _postId];
-
-    }
-    return _idString;
-}
 
 - (NSString *)caption
 {
@@ -100,7 +87,7 @@
 
 - (uint64_t)timestamp
 {
-    uint64_t postid = self.postId;
+    uint64_t postid = [self.postId unsignedLongLongValue];
     return (postid >> 32);
 }
 

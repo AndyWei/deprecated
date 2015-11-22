@@ -1,5 +1,5 @@
 //
-//  JYMasqueradeViewController.m
+//  JYTimelineViewController.m
 //  joyyios
 //
 //  Created by Ping Yang on 4/25/15.
@@ -36,7 +36,7 @@ typedef void(^Action)();
 @property (nonatomic) NSDate *firstDate;
 @property (nonatomic) UIButton *titleButton;
 @property (nonatomic) UITableView *tableView;
-@property (nonatomic) uint64_t newestPostId;
+@property (nonatomic) NSNumber *newestPostId;
 @property (nonatomic, copy) Action pendingAction;
 @end
 
@@ -355,10 +355,11 @@ static NSString *const kPostCellIdentifier = @"postCell";
 {
     if ([postList count] == 0) // no new post, continue to fetch new comments
     {
-        uint64_t sinceId = [JYLocalDataManager sharedInstance].maxCommentIdInDB;
+       NSNumber *sinceId = [JYLocalDataManager sharedInstance].maxCommentIdInDB;
         if (sinceId > 0)
         {
-            [self _fetchCommentsSinceId:sinceId beforeId:LLONG_MAX];
+            NSNumber *maxLongLong = [NSNumber numberWithUnsignedLongLong:LLONG_MAX];
+            [self _fetchCommentsSinceId:sinceId beforeId:maxLongLong];
         }
         return;
     }
@@ -368,8 +369,9 @@ static NSString *const kPostCellIdentifier = @"postCell";
     JYPost *newestPost = self.postList[0];
     self.newestPostId = newestPost.postId;
 
-    uint64_t sinceId = ((JYPost *)[postList lastObject]).postId;
-    [self _fetchCommentsSinceId:sinceId beforeId:LLONG_MAX];
+    NSNumber *sinceId = ((JYPost *)[postList lastObject]).postId;
+    NSNumber *maxLongLong = [NSNumber numberWithUnsignedLongLong:LLONG_MAX];
+    [self _fetchCommentsSinceId:sinceId beforeId:maxLongLong];
 
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [postList addObjectsFromArray:self.postList];
@@ -390,8 +392,8 @@ static NSString *const kPostCellIdentifier = @"postCell";
 
     [[JYLocalDataManager sharedInstance] saveObjects:postList ofClass:JYPost.class];
 
-    uint64_t sinceId = ((JYPost *)[postList lastObject]).postId;
-    uint64_t beforeId = [JYLocalDataManager sharedInstance].minCommentIdInDB;
+    NSNumber *sinceId = ((JYPost *)[postList lastObject]).postId;
+    NSNumber *beforeId = [JYLocalDataManager sharedInstance].minCommentIdInDB;
     if (sinceId < beforeId)
     {
         [self _fetchCommentsSinceId:sinceId beforeId:beforeId];
@@ -506,7 +508,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
 
     AFHTTPSessionManager *manager = [AFHTTPSessionManager managerWithToken];
     NSString *url = [NSString apiURLWithPath:@"post/like"];
-    NSDictionary *parameters = @{@"id": @(post.postId)};
+    NSDictionary *parameters = @{@"id": post.postId};
 
     __weak typeof(self) weakSelf = self;
     [manager POST:url
@@ -542,8 +544,8 @@ static NSString *const kPostCellIdentifier = @"postCell";
 
 - (void)_fetchPostsFromDBWithAction:(Action)action
 {
-    uint64_t minId = [NSDate minIdWithOffsetInDays:OFFSET_DAYS];
-    uint64_t maxId = [NSDate idOfNow];
+    NSNumber *minId = [NSDate minIdWithOffsetInDays:OFFSET_DAYS];
+    NSNumber *maxId = [NSDate idOfNow];
 
     self.postList = [[JYLocalDataManager sharedInstance] selectPostsSinceId:minId beforeId:maxId];
     [self _refreshComments];
@@ -580,7 +582,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
     }
     self.pendingAction = nil;
 
-    uint64_t day = [[NSDate date] joyyDay];
+    NSNumber *day = [[NSDate date] joyyDay];
     [self _fetchTimelineOfDay:day sinceId:self.newestPostId];
 }
 
@@ -597,11 +599,11 @@ static NSString *const kPostCellIdentifier = @"postCell";
     self.pendingAction = nil;
 
     self.firstDate = [self.firstDate dateByAddingTimeInterval:60 * 60 * 24 * (-1)];
-    uint64_t day = [self.firstDate joyyDay];
+    NSNumber *day = [self.firstDate joyyDay];
     [self _fetchTimelineOfDay:day sinceId:0];
 }
 
-- (void)_fetchTimelineOfDay:(uint64_t)day sinceId:(uint64_t)minId
+- (void)_fetchTimelineOfDay:(NSNumber *)day sinceId:(NSNumber *)minId
 {
     if (self.networkThreadCount > 0)
     {
@@ -613,7 +615,11 @@ static NSString *const kPostCellIdentifier = @"postCell";
     AFHTTPSessionManager *manager = [AFHTTPSessionManager managerWithToken];
 
     NSString *url = [NSString apiURLWithPath:@"post/timeline"];
-    NSDictionary *parameters = @{@"day": @(day), @"sinceid": @(minId)};
+
+    uint64_t dayValue = [day unsignedLongLongValue];
+    uint64_t sinceValue = [minId unsignedLongLongValue];
+    NSLog(@"post/timeline params: day = %llu, sinceid = %llu", dayValue, sinceValue);
+    NSDictionary *parameters = @{@"day": @(dayValue), @"sinceid": @(sinceValue)};
 
     __weak typeof(self) weakSelf = self;
     [manager GET:url
@@ -650,14 +656,19 @@ static NSString *const kPostCellIdentifier = @"postCell";
      ];
 }
 
-- (void)_fetchCommentsSinceId:(uint64_t)minId beforeId:(uint64_t)maxId
+- (void)_fetchCommentsSinceId:(NSNumber *)minId beforeId:(NSNumber *)maxId
 {
     [self _networkThreadBegin];
 
     AFHTTPSessionManager *manager = [AFHTTPSessionManager managerWithToken];
 
     NSString *url = [NSString apiURLWithPath:@"post/commentline"];
-    NSDictionary *parameters = @{@"sinceid": @(minId), @"beforeid": @(maxId)};
+
+    uint64_t sinceid = [minId unsignedLongLongValue];
+    uint64_t beforeid = [maxId unsignedLongLongValue];
+    NSLog(@"post/commentline params: sinceid = %llu, beforeid = %llu", sinceid, beforeid);
+
+    NSDictionary *parameters = @{@"sinceid": @(sinceid), @"beforeid": @(beforeid)};
 
     __weak typeof(self) weakSelf = self;
     [manager GET:url

@@ -132,8 +132,9 @@ static const CGFloat kSpaceV = kSpaceH / 2;
 - (void)_updateAvatar
 {
     // calculate image and backgorund color
-    uint64_t code = self.comment.ownerId + self.comment.postId;
+//    uint64_t code = self.comment.ownerId + self.comment.postId;
 
+    uint64_t code = 0;
     JYAvatar *avatar = [JYAvatar avatarOfCode:code];
     self.avatar.text = avatar.symbol;
     self.avatar.backgroundColor = avatar.color;

@@ -101,10 +101,10 @@ NSString *const kTableNameUser = @"user_table";
     return[[NSUserDefaults standardUserDefaults] floatForKey:kKeyPresentedIntroductionVersion];
 }
 
-- (NSString *)usernameOfId:(uint64_t)userid
+- (NSString *)usernameOfId:(NSNumber *)userid
 {
-    NSString *uidStr = [NSString stringWithFormat:@"%llu", userid];
-    NSDictionary *userDict = [self.store getObjectById:uidStr fromTable:kTableNameUser];
+    NSString *userIdStr = [NSString stringWithFormat:@"%llu", [userid unsignedLongLongValue]];
+    NSDictionary *userDict = [self.store getObjectById:userIdStr fromTable:kTableNameUser];
     return [userDict objectForKey:@"username"];
 }
 

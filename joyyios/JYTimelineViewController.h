@@ -1,5 +1,5 @@
 //
-//  JYMasqueradeViewController.h
+//  JYTimelineViewController.h
 //  joyyios
 //
 //  Created by Ping Yang on 4/25/15.

@@ -10,13 +10,13 @@
 
 + (JYCredential *)current;
 
+@property (nonatomic) NSNumber *userId;
+@property (nonatomic) NSNumber *yrs;
 @property (nonatomic) NSString *username;
 @property (nonatomic) NSString *password;
 @property (nonatomic) NSString *phoneNumber;
 @property (nonatomic) NSString *token;
-@property (nonatomic) NSString *idString;
-@property (nonatomic) uint64_t userId;
-@property (nonatomic) uint64_t yrs;
+
 @property (nonatomic, readonly) NSInteger tokenValidInSeconds;
 
 - (void)save:(NSDictionary *)dict;

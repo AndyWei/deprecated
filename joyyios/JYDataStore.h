@@ -19,7 +19,7 @@
                       success:(void (^)(JYUser *user))success
                       failure:(void (^)(NSError *error))failure;
 
-- (NSString *)usernameOfId:(uint64_t)userid;
+- (NSString *)usernameOfId:(NSNumber *)userid;
 
 @property (nonatomic) YTKKeyValueStore *store;
 @property (nonatomic) CGFloat presentedIntroductionVersion;

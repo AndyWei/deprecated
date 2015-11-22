@@ -59,8 +59,8 @@
 
             [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
             [KVNProgress dismiss];
-            [[JYCredential current] save:responseObject];
 
+            [[JYCredential current] save:responseObject];
             [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationDidSignIn object:nil];
         }
         failure:^(NSURLSessionTask *operation, NSError *error) {

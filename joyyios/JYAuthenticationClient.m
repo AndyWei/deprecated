@@ -76,7 +76,7 @@ static NSString *const kAWSTokenExpiryTimeKeyPrefix = @"aws_openid_token_expiry_
 
 - (NSString *)identityIdKey
 {
-    NSString *userid = [JYCredential current].idString;
+    NSNumber *userid = [JYCredential current].userId;
     return [NSString stringWithFormat:@"%@_%@", kAWSIdentityIdKeyPrefix, userid];
 }
 
@@ -97,7 +97,7 @@ static NSString *const kAWSTokenExpiryTimeKeyPrefix = @"aws_openid_token_expiry_
 
 - (NSString *)tokenKey
 {
-    NSString *userid = [JYCredential current].idString;
+    NSNumber *userid = [JYCredential current].userId;
     return [NSString stringWithFormat:@"%@_%@", kAWSTokenKeyPrefix, userid];
 }
 
@@ -118,7 +118,7 @@ static NSString *const kAWSTokenExpiryTimeKeyPrefix = @"aws_openid_token_expiry_
 
 - (NSString *)tokenExpiryTimeKey
 {
-    NSString *userid = [JYCredential current].idString;
+    NSNumber *userid = [JYCredential current].userId;
     return [NSString stringWithFormat:@"%@_%@", kAWSTokenExpiryTimeKeyPrefix, userid];
 }
 

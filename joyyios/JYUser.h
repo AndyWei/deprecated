@@ -13,9 +13,8 @@
 - (void)save:(NSDictionary *)dict;
 
 // Identities
-@property (nonatomic) uint64_t userId;
+@property (nonatomic) NSNumber *userId;
 @property (nonatomic) NSString *username;
-@property (nonatomic, readonly) NSString *idString;
 
 // Avatar
 @property (nonatomic) UIImage *avatarImage;

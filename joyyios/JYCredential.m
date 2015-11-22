@@ -44,38 +44,34 @@ static NSString *const kAPIYrsKey = @"api_yrs";
         _username = self.keychain[kAPIUsernameKey];
         _password = self.keychain[kAPIPasswordKey];
         _phoneNumber = self.keychain[kAPIPhoneNumberKey];
-        _idString = self.keychain[kAPIUserIdKey];
         _token    = self.keychain[kAPITokenKey];
-
-        _userId = _idString? [_idString uint64Value] : 0;
 
         NSString *expiryTimeStr = self.keychain[kAPITokenExpiryTimeKey];
         _tokenExpiryTime = expiryTimeStr ? [expiryTimeStr integerValue] : 0;
 
+        NSNumberFormatter *f = [[NSNumberFormatter alloc] init];
+        f.numberStyle = NSNumberFormatterDecimalStyle;
+
+        NSString *userIdStr = self.keychain[kAPIUserIdKey];
+        _userId = userIdStr? [f numberFromString:userIdStr]: 0;
+
         NSString *yrsStr = self.keychain[kAPIYrsKey];
-        _yrs = yrsStr ? [yrsStr uint64Value] : 0;
+        _yrs = yrsStr ? [f numberFromString:yrsStr]: 0;
     }
 
     return self;
 }
 
-- (void)setUserId:(uint64_t)userId
+- (void)setYrs:(NSNumber *)yrs
 {
-    _userId = userId;
-    if (userId == 0)
-    {
-        self.idString = nil;
-    }
-    else
-    {
-        self.idString = [NSString stringWithFormat:@"%llu", _userId];
-    }
+    _yrs = yrs;
+    self.keychain[kAPIYrsKey] = [NSString stringWithFormat:@"%llu", [yrs unsignedLongLongValue]];
 }
 
-- (void)setIdString:(NSString *)idString
+- (void)setUserId:(NSNumber *)userId
 {
-    _idString = idString;
-    self.keychain[kAPIUserIdKey] = _idString;
+    _userId = userId;
+    self.keychain[kAPIUserIdKey] = [NSString stringWithFormat:@"%llu", [userId unsignedLongLongValue]];
 }
 
 - (void)setUsername:(NSString *)username
@@ -115,19 +111,6 @@ static NSString *const kAPIYrsKey = @"api_yrs";
     }
 }
 
-- (void)setYrs:(uint64_t)yrs
-{
-    _yrs = yrs;
-    if (yrs == 0)
-    {
-        self.keychain[kAPIYrsKey] = nil;
-    }
-    else
-    {
-        self.keychain[kAPIYrsKey] = [NSString stringWithFormat:@"%llu", yrs];
-    }
-}
-
 - (NSInteger)tokenValidInSeconds
 {
     uint64_t now = (uint64_t)[NSDate timeIntervalSinceReferenceDate];
@@ -139,7 +122,7 @@ static NSString *const kAPIYrsKey = @"api_yrs";
 {
     if ([dict objectForKey:@"id"])
     {
-        self.userId = [[dict objectForKey:@"id"] unsignedLongLongValue];
+        self.userId = [dict objectForKey:@"id"];
     }
 
     if ([dict objectForKey:@"username"])
@@ -159,7 +142,7 @@ static NSString *const kAPIYrsKey = @"api_yrs";
 
 - (BOOL)isInvalid
 {
-    BOOL invalid = ((self.username == nil) || (self.password == nil) || (self.idString == nil));
+    BOOL invalid = ((self.username == nil) || (self.password == nil) || (self.userId == nil) || ([self.userId unsignedLongLongValue] == 0));
     return invalid;
 }
 

@@ -13,9 +13,9 @@
 
 @property(nonatomic, readonly, copy) NSString *content;
 @property(nonatomic, readonly, copy) NSString *displayText;
-@property(nonatomic, readonly) uint64_t commentId;
-@property(nonatomic, readonly) uint64_t ownerId;
-@property(nonatomic, readonly) uint64_t postId;
-@property(nonatomic, readonly) uint64_t replyToId;
+@property(nonatomic, readonly) NSNumber *commentId;
+@property(nonatomic, readonly) NSNumber *ownerId;
+@property(nonatomic, readonly) NSNumber *postId;
+@property(nonatomic, readonly) NSNumber *replyToId;
 
 @end

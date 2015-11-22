@@ -57,7 +57,7 @@
     if (!_displayText)
     {
         NSString *username = [[JYDataStore sharedInstance] usernameOfId:self.ownerId];
-        NSString *replyToUser = (self.replyToId == 0) ? nil: [[JYDataStore sharedInstance] usernameOfId:self.replyToId];
+        NSString *replyToUser = ([self.replyToId unsignedLongLongValue] == 0) ? nil: [[JYDataStore sharedInstance] usernameOfId:self.replyToId];
         NSString *reply = NSLocalizedString(@"reply", nil);
         if (replyToUser)
         {

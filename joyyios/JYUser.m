@@ -9,7 +9,6 @@
 #import "JYFilename.h"
 
 @interface JYUser ()
-@property (nonatomic) NSString *idString;
 @property (nonatomic) NSString *ageString;
 @property (nonatomic) NSString *region;
 @property (nonatomic) NSString *avatarFilename;
@@ -48,7 +47,7 @@
 
     if ([dict valueForKey:@"fid"])
     {
-        self.userId = [[dict objectForKey:@"fid"] unsignedIntegerValue];
+        self.userId = [dict objectForKey:@"fid"];
     }
 
     if ([dict valueForKey:@"fyrs"])
@@ -82,15 +81,6 @@
         _ageString = [NSString stringWithFormat:@"%ld", (long)age];
     }
     return _ageString;
-}
-
-- (NSString *)idString
-{
-    if (!_idString)
-    {
-        _idString = [NSString stringWithFormat:@"%llu", self.userId];
-    }
-    return _idString;
 }
 
 - (NSString *)avatarURL

@@ -8,11 +8,11 @@
 
 @interface NSDate (Joyy)
 
-+ (uint64_t)idOfNow;
-+ (uint64_t)minIdWithOffsetInDays:(uint64_t)days;
-+ (uint64_t)minIdOfDay:(NSDate *)date;
-+ (NSDate *)dateOfId:(uint64_t)objId;
++ (NSNumber *)idOfNow;
++ (NSNumber *)minIdWithOffsetInDays:(NSInteger)days;
++ (NSNumber *)minIdOfDay:(NSDate *)date;
++ (NSDate *)dateOfId:(NSNumber *)objId;
 
-- (uint64_t)joyyDay;
+- (NSNumber *)joyyDay;
 
 @end

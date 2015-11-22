@@ -408,7 +408,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 {
     NSMutableDictionary *parameters = [NSMutableDictionary new];
 
-    [parameters setObject:@(self.post.postId) forKey:@"post"];
+    [parameters setObject:self.post.postId forKey:@"post"];
     [parameters setValue:self.textView.text forKey:@"content"];
 
     return parameters;
@@ -418,7 +418,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 {
     NSMutableDictionary *parameters = [NSMutableDictionary new];
 
-    [parameters setObject:@(self.post.postId) forKey:@"post"];
+    [parameters setObject:self.post.postId forKey:@"post"];
 
 //    if (self.commentList.count > 0)
 //    {

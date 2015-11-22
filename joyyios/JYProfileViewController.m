@@ -521,7 +521,7 @@ const CGFloat kAvatarButtonWidth = kAvatarButtonHeight;
     NSURL *fileURL = [NSURL fileURLWithPath:[NSTemporaryDirectory() stringByAppendingPathComponent:@"profile"]];
     [data writeToURL:fileURL atomically:YES];
 
-    NSString *filename = [[JYCredential current] idString];
+    NSString *filename = [NSString stringWithFormat:@"%llu", [[JYCredential current].userId unsignedLongLongValue]];
     NSString *s3filename = [filename stringByAppendingString:@".jpg"];
 
     AWSS3TransferManager *transferManager = [AWSS3TransferManager defaultS3TransferManager];
@@ -625,7 +625,7 @@ const CGFloat kAvatarButtonWidth = kAvatarButtonHeight;
     uint64_t region = [regionStr uint64Value];
     uint64_t yob = [self.yobTextField.text uint64Value];
     uint64_t yrs = ((yob & 0xFFFF) << 16) | ((region & 0xFF) << 8) | (self.sex & 0xFF);
-    [JYCredential current].yrs = yrs;
+    [JYCredential current].yrs = [NSNumber numberWithUnsignedLongLong:yrs];
     [parameters setObject:@(yrs) forKey:@"yrs"];
 
     return parameters;

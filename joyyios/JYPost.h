@@ -11,11 +11,10 @@
 
 @interface JYPost : MTLModel <MTLJSONSerializing, MTLFMDBSerializing>
 
-@property(nonatomic, readonly) uint64_t postId;
-@property(nonatomic, readonly) uint64_t ownerId;
+@property(nonatomic, readonly) NSNumber *postId;
+@property(nonatomic, readonly) NSNumber *ownerId;
 @property(nonatomic, readonly) uint64_t timestamp;
 
-@property(nonatomic, readonly, copy) NSString *idString;
 @property(nonatomic, readonly, copy) NSString *caption;
 @property(nonatomic, readonly, copy) NSString *shortURL;
 @property(nonatomic, readonly, copy) NSString *URL;

@@ -47,7 +47,7 @@ static NSString *const CREATE_COMMENT_TABLE_SQL =
 PRIMARY KEY(id)) ";
 
 static NSString *const CREATE_COMMENT_INDEX_SQL = @"CREATE INDEX IF NOT EXISTS postid_index ON comment(postid)";
-static NSString *const SELECT_RANGE_SQL = @"SELECT * FROM %@ WHERE id > ? AND id < ? ORDER BY id DESC";
+static NSString *const SELECT_RANGE_SQL = @"SELECT * FROM %@ WHERE id > (?) AND id < (?) ORDER BY id DESC";
 static NSString *const SELECT_KEY_SQL = @"SELECT * FROM %@ WHERE %@ = ? ORDER BY id ASC";
 
 
@@ -130,57 +130,55 @@ static NSString *const SELECT_KEY_SQL = @"SELECT * FROM %@ WHERE %@ = ? ORDER BY
     });
 }
 
-- (NSMutableArray *)selectPostsSinceId:(uint64_t)minId beforeId:(uint64_t)maxId
+- (NSMutableArray *)selectPostsSinceId:(NSNumber *)minId beforeId:(NSNumber *)maxId
 {
     NSString *sql = [NSString stringWithFormat:SELECT_RANGE_SQL, @"post"];
     NSMutableArray *result = [self _executeSelect:sql minId:minId maxId:maxId ofClass:JYPost.class];
     return result;
 }
 
-- (NSMutableArray *)selectCommentsOfPostId:(uint64_t)postId
+- (NSMutableArray *)selectCommentsOfPostId:(NSNumber *)postId
 {
     NSString *sql = [NSString stringWithFormat:SELECT_KEY_SQL, @"comment", @"postid"];
     NSMutableArray *result = [self _executeSelect:sql keyId:postId ofClass: JYComment.class];
     return result;
 }
 
-- (void)setMinCommentIdInDB:(uint64_t)minCommentIdInDB
+- (void)setMinCommentIdInDB:(NSNumber *)minCommentIdInDB
 {
-    NSNumber *minId = [NSNumber numberWithUnsignedLongLong:minCommentIdInDB];
-    [[NSUserDefaults standardUserDefaults] setObject:minId forKey:kMinCommentIdKey];
+    [[NSUserDefaults standardUserDefaults] setObject:minCommentIdInDB forKey:kMinCommentIdKey];
 }
 
-- (uint64_t)minCommentIdInDB
+- (NSNumber *)minCommentIdInDB
 {
     NSNumber *minId = [[NSUserDefaults standardUserDefaults] objectForKey:kMinCommentIdKey];
     if (!minId)
     {
-        return LLONG_MAX; // note it's not ULLONG_MAX as the DB is in Java 
+        return [NSNumber numberWithUnsignedLongLong:LLONG_MAX]; // note it's not ULLONG_MAX as the DB is in Java
     }
-    return minId.unsignedLongLongValue;
+    return minId;
 }
 
-- (void)setMaxCommentIdInDB:(uint64_t)maxCommentIdInDB
+- (void)setMaxCommentIdInDB:(NSNumber *)maxCommentIdInDB
 {
-    NSNumber *maxId = [NSNumber numberWithUnsignedLongLong:maxCommentIdInDB];
-    [[NSUserDefaults standardUserDefaults] setObject:maxId forKey:kMaxCommentIdKey];
+    [[NSUserDefaults standardUserDefaults] setObject:maxCommentIdInDB forKey:kMaxCommentIdKey];
 }
 
-- (uint64_t)maxCommentIdInDB
+- (NSNumber *)maxCommentIdInDB
 {
     NSNumber *maxId = [[NSUserDefaults standardUserDefaults] objectForKey:kMinCommentIdKey];
     if (!maxId)
     {
         return 0;
     }
-    return maxId.unsignedLongLongValue;
+    return maxId;
 }
 
-- (NSMutableArray *)_executeSelect:(NSString *)sql minId:(uint64_t)minId maxId:(uint64_t)maxId ofClass:(Class)modelClass
+- (NSMutableArray *)_executeSelect:(NSString *)sql minId:(NSNumber *)minId maxId:(NSNumber *)maxId ofClass:(Class)modelClass
 {
     __block NSMutableArray * result = [NSMutableArray array];
     [_dbQueue inDatabase:^(FMDatabase *db) {
-        FMResultSet * rs = [db executeQuery:sql, [NSNumber numberWithUnsignedLongLong:minId], [NSNumber numberWithUnsignedLongLong:maxId]];
+        FMResultSet * rs = [db executeQuery:sql, minId, maxId];
         while ([rs next]) {
             NSError *error = nil;
             id item = [MTLFMDBAdapter modelOfClass:modelClass fromFMResultSet:rs error:&error];
@@ -195,11 +193,11 @@ static NSString *const SELECT_KEY_SQL = @"SELECT * FROM %@ WHERE %@ = ? ORDER BY
     return result;
 }
 
-- (NSMutableArray *)_executeSelect:(NSString *)sql keyId:(uint64_t)keyId ofClass:(Class)modelClass
+- (NSMutableArray *)_executeSelect:(NSString *)sql keyId:(NSNumber *)keyId ofClass:(Class)modelClass
 {
     __block NSMutableArray * result = [NSMutableArray array];
     [_dbQueue inDatabase:^(FMDatabase *db) {
-        FMResultSet * rs = [db executeQuery:sql, [NSNumber numberWithUnsignedLongLong:keyId]];
+        FMResultSet * rs = [db executeQuery:sql, keyId];
         while ([rs next]) {
             NSError *error = nil;
             id item = [MTLFMDBAdapter modelOfClass:modelClass fromFMResultSet:rs error:&error];
