@@ -6,6 +6,8 @@
 //  Copyright © 2015 Joyy Inc. All rights reserved.
 //
 
+#import "JYUser.h"
+
 @interface JYLocalDataManager : NSObject
 
 + (JYLocalDataManager *)sharedInstance;
@@ -15,6 +17,7 @@
 
 - (NSMutableArray *)selectPostsSinceId:(NSNumber *)minId beforeId:(NSNumber *)maxId;
 - (NSMutableArray *)selectCommentsOfPostId:(NSNumber *)postId;
+- (JYUser *)userOfId:(NSNumber *)userid;
 
 @property (nonatomic) NSNumber *minCommentIdInDB;
 @property (nonatomic) NSNumber *maxCommentIdInDB;

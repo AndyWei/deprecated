@@ -13,27 +13,32 @@
 #import "JYAvatar.h"
 #import "JYButton.h"
 #import "JYComment.h"
+#import "JYLocalDataManager.h"
 #import "JYPost.h"
 #import "JYPostViewCell.h"
+#import "NSDate+Joyy.h"
 
+static const CGFloat kPosterBarHeight = 40;
 static const CGFloat kActionBarHeight = 40;
 static const CGFloat kButtonWidth = kActionBarHeight;
 static const CGFloat kButtonDistance = 20;
-static const CGFloat kCommentCountButtonWidth = 100;
-static const CGFloat kLikeCountLabelWidth = 80;
+static const CGFloat kPostTimeLabelWidth = 50;
 
 @interface JYPostViewCell () <TTTAttributedLabelDelegate>
 @property(nonatomic) BOOL likeButtonPressed;
 @property(nonatomic) FBKVOController *observer;
+@property(nonatomic) JYButton *avatarButton;
 @property(nonatomic) JYButton *commentButton;
-@property(nonatomic) JYButton *commentCountButton;
 @property(nonatomic) JYButton *likeButton;
-@property(nonatomic) NSMutableArray *commentLabels;
 @property(nonatomic) TTTAttributedLabel *captionLabel;
+@property(nonatomic) TTTAttributedLabel *likesLabel;
+@property(nonatomic) TTTAttributedLabel *posterNameLabel;
+@property(nonatomic) TTTAttributedLabel *postTimeLabel;
 @property(nonatomic) UIImageView *photoView;
-@property(nonatomic) UILabel *likeCountLabel;
 @property(nonatomic) UITapGestureRecognizer *tapGestureRecognizer;
 @property(nonatomic) UIView *actionBar;
+@property(nonatomic) UIView *posterBar;
+@property(nonatomic) NSMutableArray *commentLabels;
 @end
 
 
@@ -72,7 +77,7 @@ static const CGFloat kLikeCountLabelWidth = 80;
         commentsHeight += (height + 5);
     }
 
-    return imageHeight + commentsHeight + kActionBarHeight;
+    return imageHeight + commentsHeight + kActionBarHeight + kPosterBarHeight;
 }
 
 + (CGFloat)textAreaWidth
@@ -131,6 +136,7 @@ static const CGFloat kLikeCountLabelWidth = 80;
 
     _post = post;
     [self _updateImage];
+    [self _updatePosterBar];
     [self _updateActionBar];
     [self _updateCaption];
     [self _updateComments];
@@ -147,12 +153,12 @@ static const CGFloat kLikeCountLabelWidth = 80;
 
     [self.observer observe:post keyPath:@"likeCount" options:NSKeyValueObservingOptionNew block:^(JYPostViewCell *cell, JYPost *post, NSDictionary *change) {
 
-        [weakSelf _updateLikeCount];
+//        [weakSelf _updateLikeCount];
     }];
 
     [self.observer observe:post keyPath:@"commentCount" options:NSKeyValueObservingOptionNew block:^(JYPostViewCell *cell, JYPost *post, NSDictionary *change) {
 
-        [weakSelf _updateCommentCount];
+//        [weakSelf _updateCommentCount];
     }];
 }
 
@@ -181,13 +187,48 @@ static const CGFloat kLikeCountLabelWidth = 80;
      }];
 }
 
+- (void)_updatePosterBar
+{
+    [self _updateAvatarButtonImage];
+    [self _updatePosterName];
+    [self _updatePostTime];
+}
+
+- (void)_updateAvatarButtonImage
+{
+    JYUser *owner = [[JYLocalDataManager sharedInstance] userOfId:self.post.ownerId];
+    NSURL *url = [NSURL URLWithString:owner.avatarURL];
+    NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestReturnCacheDataElseLoad timeoutInterval:5];
+
+    __weak typeof(self) weakSelf = self;
+    [self.avatarButton.imageView setImageWithURLRequest:request
+                          placeholderImage:nil
+                                   success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
+                                       weakSelf.avatarButton.imageView.image = image;
+
+                                   } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
+                                       NSLog(@"setImageWithURLRequest failed with response = %@", response);
+                                   }];
+}
+
+- (void)_updatePosterName
+{
+    self.posterNameLabel.text = [[JYDataStore sharedInstance] usernameOfId:self.post.ownerId];
+}
+
+- (void)_updatePostTime
+{
+    NSDate *date = [NSDate dateOfId:self.post.postId];
+    self.postTimeLabel.text = [date ageString];
+}
+
 - (void)_updateActionBar
 {
     _likeButtonPressed = NO;
 
     [self _updateLikeButtonImage];
-    [self _updateLikeCount];
-    [self _updateCommentCount];
+//    [self _updateLikeCount];
+//    [self _updateCommentCount];
 }
 
 - (void)_updateLikeButtonImage
@@ -204,16 +245,10 @@ static const CGFloat kLikeCountLabelWidth = 80;
     }
 }
 
-- (void)_updateLikeCount
+- (void)_updateLikes
 {
 //    NSString *likes = NSLocalizedString(@"likes", nil);
 //    self.likeCountLabel.text = [NSString stringWithFormat:@"%tu %@   ·", self.post.likeCount, likes];
-}
-
-- (void)_updateCommentCount
-{
-//    NSString *comments = NSLocalizedString(@"comments", nil);
-//    self.commentCountButton.textLabel.text = [NSString stringWithFormat:@"%tu %@", self.post.commentCount, comments];
 }
 
 - (void)_updateCaption
@@ -268,11 +303,72 @@ static const CGFloat kLikeCountLabelWidth = 80;
     return _observer;
 }
 
+- (UIView *)posterBar
+{
+    if (!_posterBar)
+    {
+        _posterBar = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, kPosterBarHeight)];
+        _posterBar.opaque = YES;
+        _posterBar.backgroundColor = JoyyWhitePure;
+
+        [_posterBar addSubview:self.avatarButton];
+        [_posterBar addSubview:self.posterNameLabel];
+        [_posterBar addSubview:self.postTimeLabel];
+
+        [self addSubview:_posterBar];
+    }
+    return _posterBar;
+}
+
+- (JYButton *)avatarButton
+{
+    if (!_avatarButton)
+    {
+        CGRect frame = CGRectMake(kMarginLeft, 0, kButtonWidth, kActionBarHeight);
+        JYButton *button = [JYButton buttonWithFrame:frame buttonStyle:JYButtonStyleCentralImage shouldMaskImage:NO];
+        button.imageView.image = [UIImage imageNamed:@"wink"];
+        button.contentAnimateToColor = JoyyBlue;
+        button.foregroundColor = ClearColor;
+        button.cornerRadius = kButtonWidth/2;
+        _avatarButton = button;
+        [_avatarButton addTarget:self action:@selector(_showProfile) forControlEvents:UIControlEventTouchUpInside];
+    }
+    return _avatarButton;
+}
+
+- (TTTAttributedLabel *)posterNameLabel
+{
+    if (!_posterNameLabel)
+    {
+        CGFloat x = CGRectGetMaxX(self.avatarButton.frame) + kMarginLeft;
+        CGFloat width = CGRectGetMinX(self.postTimeLabel.frame) - kMarginRight;
+        CGRect frame = CGRectMake(x, 0, width, kPosterBarHeight);
+        _posterNameLabel = [self _createLabelWithFrame:frame];
+        _posterNameLabel.font = [UIFont systemFontOfSize:kFontSizeDetail];
+        _posterNameLabel.textColor = JoyyBlue;
+    }
+    return _posterNameLabel;
+}
+
+- (TTTAttributedLabel *)postTimeLabel
+{
+    if (!_postTimeLabel)
+    {
+        CGFloat x = SCREEN_WIDTH - kPostTimeLabelWidth;
+        CGRect frame = CGRectMake(x, 0, kPostTimeLabelWidth, kPosterBarHeight);
+        _postTimeLabel = [self _createLabelWithFrame:frame];
+        _postTimeLabel.font = [UIFont systemFontOfSize:kFontSizeDetail];
+        _postTimeLabel.textColor = JoyyGray;
+    }
+    return _postTimeLabel;
+}
+
 - (UIImageView *)photoView
 {
     if (!_photoView)
     {
-        _photoView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_WIDTH)];
+        CGFloat y = CGRectGetMaxY(self.posterBar.frame);
+        _photoView = [[UIImageView alloc] initWithFrame:CGRectMake(0, y, SCREEN_WIDTH, SCREEN_WIDTH)];
         _photoView.contentMode = UIViewContentModeScaleAspectFit;
         [self addSubview:_photoView];
     }
@@ -286,12 +382,7 @@ static const CGFloat kLikeCountLabelWidth = 80;
         CGFloat y = CGRectGetMaxY(self.photoView.frame);
         _actionBar = [[UIView alloc] initWithFrame:CGRectMake(0, y, SCREEN_WIDTH, kActionBarHeight)];
         _actionBar.opaque = YES;
-        _actionBar.backgroundColor = JoyyBlack;
-
-        [_actionBar addSubview:self.likeCountLabel];
-
-        [_actionBar addSubview:self.commentCountButton];
-        self.commentCountButton.x = CGRectGetMaxX(self.likeCountLabel.frame);
+        _actionBar.backgroundColor = JoyyWhitePure;
 
         [_actionBar addSubview:self.likeButton];
         self.likeButton.x =  SCREEN_WIDTH - 2 * kButtonWidth - 2 * kButtonDistance;
@@ -305,38 +396,28 @@ static const CGFloat kLikeCountLabelWidth = 80;
     return _actionBar;
 }
 
-- (UILabel *)likeCountLabel
+- (TTTAttributedLabel *)likesLabel
 {
-    if (!_likeCountLabel)
+    if (!_likesLabel)
     {
-        _likeCountLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, kLikeCountLabelWidth, kActionBarHeight)];
-        _likeCountLabel.backgroundColor = JoyyBlack;
-        _likeCountLabel.font = [UIFont systemFontOfSize:kFontSizeDetail];
-        _likeCountLabel.textColor = JoyyGray;
-        _likeCountLabel.textAlignment = NSTextAlignmentRight;
+        CGRect frame = CGRectMake(kMarginLeft, 0, [[self class] textAreaWidth], kActionBarHeight);
+        _likesLabel = [self _createLabelWithFrame:frame];
+        _likesLabel.font = [UIFont systemFontOfSize:kFontSizeDetail];
+        _likesLabel.backgroundColor = JoyyWhite;
+        _likesLabel.textColor = JoyyBlue;
     }
-    return _likeCountLabel;
-}
-
-- (JYButton *)commentCountButton
-{
-    if (!_commentCountButton)
-    {
-        CGRect frame = CGRectMake(0, 0, kCommentCountButtonWidth, kActionBarHeight);
-        _commentCountButton = [JYButton buttonWithFrame:frame buttonStyle:JYButtonStyleTitle shouldMaskImage:NO];
-        _commentCountButton.contentColor = JoyyGray;
-        _commentCountButton.contentAnimateToColor = JoyyBlue;
-        _commentCountButton.foregroundColor = JoyyBlack;
-        _commentCountButton.textLabel.font = [UIFont systemFontOfSize:kFontSizeDetail];
-        [_commentCountButton addTarget:self action:@selector(_showAllComments) forControlEvents:UIControlEventTouchUpInside];
-    }
-    return _commentCountButton;
+    return _likesLabel;
 }
 
 - (void)_showAllComments
 {
     NSDictionary *info = @{@"post": self.post, @"edit":@(NO)};
     [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationWillCommentPost object:nil userInfo:info];
+}
+
+- (void)_showProfile
+{
+
 }
 
 - (JYButton *)commentButton
@@ -383,13 +464,10 @@ static const CGFloat kLikeCountLabelWidth = 80;
     if (!_captionLabel)
     {
         CGRect frame = CGRectMake(0, 0, SCREEN_WIDTH, 0);
-        _captionLabel = [[TTTAttributedLabel alloc] initWithFrame:frame];
+        _captionLabel = [self _createLabelWithFrame:frame];
         _captionLabel.backgroundColor = JoyyBlack80;
         _captionLabel.font = [UIFont systemFontOfSize:kFontSizeCaption];
-        _captionLabel.textColor = JoyyWhite;
         _captionLabel.textAlignment = NSTextAlignmentCenter;
-        _captionLabel.numberOfLines = 0;
-        _captionLabel.lineBreakMode = NSLineBreakByWordWrapping;
 
         _captionLabel.layer.cornerRadius = 4;
         _captionLabel.clipsToBounds = YES;
@@ -401,10 +479,17 @@ static const CGFloat kLikeCountLabelWidth = 80;
 - (TTTAttributedLabel *)_createCommentLabel
 {
     CGRect frame = CGRectMake(kMarginLeft, 0, [[self class] textAreaWidth], 0);
+    TTTAttributedLabel *label = [self _createLabelWithFrame:frame];
+    label.font = [UIFont systemFontOfSize:kFontSizeComment];
+    label.backgroundColor = JoyyWhite;
+    return label;
+}
+
+- (TTTAttributedLabel *)_createLabelWithFrame:(CGRect)frame
+{
     TTTAttributedLabel *label = [[TTTAttributedLabel alloc] initWithFrame:frame];
     label.delegate = self;
-    label.backgroundColor = JoyyWhite;
-    label.font = [UIFont systemFontOfSize:kFontSizeComment];
+    label.backgroundColor = JoyyWhitePure;
     label.textColor = JoyyBlack;
     label.textAlignment = NSTextAlignmentLeft;
     label.numberOfLines = 0;

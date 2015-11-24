@@ -8,7 +8,6 @@
 
 @interface JYCredentialManager : NSObject
 
-+ (JYCredentialManager *)sharedInstance;
 - (void)start;
 
 @end

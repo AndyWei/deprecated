@@ -22,18 +22,6 @@ NSString *const kZip = @"location_zip";
 
 @implementation JYLocationManager
 
-+ (JYLocationManager *)sharedInstance
-{
-    static JYLocationManager *_sharedInstance = nil;
-    static dispatch_once_t done;
-
-    dispatch_once(&done, ^{
-        _sharedInstance = [JYLocationManager new];
-    });
-
-    return _sharedInstance;
-}
-
 - (instancetype)init
 {
     self = [super init];
@@ -61,13 +49,9 @@ NSString *const kZip = @"location_zip";
 
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_apiTokenReady) name:kNotificationAPITokenReady object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_userYRSReady) name:kNotificationUserYRSReady object:nil];
+         NSLog(@"LocationManager created");
     }
     return self;
-}
-
-- (void)start
-{
-    NSLog(@"LocationManager started");
 }
 
 - (void)_apiTokenReady

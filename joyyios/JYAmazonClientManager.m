@@ -18,16 +18,6 @@
 
 @implementation JYAmazonClientManager
 
-+ (JYAmazonClientManager *)sharedInstance
-{
-    static JYAmazonClientManager *sharedInstance = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        sharedInstance = [JYAmazonClientManager new];
-    });
-    return sharedInstance;
-}
-
 - (instancetype)init
 {
     self = [super init];
@@ -35,13 +25,10 @@
     {
          self.authClient = [JYAuthenticationClient new];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_apiTokenReady) name:kNotificationAPITokenReady object:nil];
+
+        NSLog(@"AmazonClientManager created");
     }
     return self;
-}
-
-- (void)start
-{
-    NSLog(@"AmazonClientManager started");
 }
 
 - (void)_apiTokenReady

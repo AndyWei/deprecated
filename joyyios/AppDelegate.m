@@ -20,7 +20,6 @@
 #import "JYDeviceManager.h"
 #import "JYFilename.h"
 #import "JYLocalDataManager.h"
-#import "JYLocationManager.h"
 #import "JYPeopleViewController.h"
 #import "JYPhoneNumberViewController.h"
 #import "JYProfileViewController.h"
@@ -33,11 +32,15 @@
 #import "OnboardingContentViewController.h"
 
 @interface AppDelegate ()
-@property(nonatomic) OnboardingContentViewController *page1;
-@property(nonatomic) OnboardingContentViewController *page2;
-@property(nonatomic) OnboardingContentViewController *page3;
-@property(nonatomic) OnboardingViewController *onboardingViewController;
-@property(nonatomic) UITabBarController *tabBarController;
+@property (nonatomic) OnboardingContentViewController *page1;
+@property (nonatomic) OnboardingContentViewController *page2;
+@property (nonatomic) OnboardingContentViewController *page3;
+@property (nonatomic) OnboardingViewController *onboardingViewController;
+@property (nonatomic) UITabBarController *tabBarController;
+
+@property (nonatomic) JYAmazonClientManager *amazonClientManager;
+@property (nonatomic) JYCredentialManager *credentialManager;
+@property (nonatomic) JYDeviceManager *deviceManager;
 @end
 
 @implementation AppDelegate
@@ -90,12 +93,15 @@
     // TODO: Implement clear badge number logic in the right places.
     application.applicationIconBadgeNumber = 0;
 
-    [[JYDeviceManager sharedInstance] start];
     [[JYLocalDataManager sharedInstance] start];
-    [[JYLocationManager sharedInstance] start];
-    [[JYAmazonClientManager sharedInstance] start];
     [[JYXmppManager sharedInstance] start];
-    [[JYCredentialManager sharedInstance] start];
+
+    self.deviceManager =[JYDeviceManager new];
+    self.locationManager = [JYLocationManager new];
+    self.amazonClientManager = [JYAmazonClientManager new];
+
+    self.credentialManager = [JYCredentialManager new];
+    [self.credentialManager start];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application
@@ -122,7 +128,7 @@
     NSString *token = [[deviceToken description] stringByTrimmingCharactersInSet: [NSCharacterSet characterSetWithCharactersInString:@"<>"]];
     token = [token stringByReplacingOccurrencesOfString:@" " withString:@""];
 
-    [JYDeviceManager sharedInstance].deviceToken = token;
+    self.deviceManager.deviceToken = token;
 }
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)notification
@@ -260,13 +266,13 @@
 
 - (void)_didManuallySignIn
 {
-    [[JYCredentialManager sharedInstance] start];
+    [self.credentialManager start];
     [self _launchMainViewController];
 }
 
 - (void)_didManuallySignUp
 {
-    [[JYCredentialManager sharedInstance] start];
+    [self.credentialManager start];
     [self _launchProfileViewController];
 }
 

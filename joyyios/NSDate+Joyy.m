@@ -73,4 +73,37 @@ const uint64_t JOYY_EPOCH = 1420070400000; // 01 Jan 2015 00:00:00 GMT
     return [NSNumber numberWithUnsignedLongLong:value];
 }
 
+- (NSString *)ageString
+{
+    NSTimeInterval interval = (-1) * [self timeIntervalSinceNow];
+
+    int numberOfDays = interval / 86400;
+    if (numberOfDays > 0)
+    {
+        NSString *days = NSLocalizedString(@"d", nil);
+
+        return [NSString stringWithFormat:@"%d%@", numberOfDays, days];
+    }
+
+    int numberOfHours = interval / 3600;
+    if (numberOfHours > 0)
+    {
+        NSString *hours = NSLocalizedString(@"h", nil);
+
+        return [NSString stringWithFormat:@"%d%@", numberOfHours, hours];
+    }
+
+    int numberOfMinutes = interval / 60;
+    if (numberOfMinutes > 0)
+    {
+        NSString *minutes = NSLocalizedString(@"m", nil);
+
+        return [NSString stringWithFormat:@"%d%@", numberOfMinutes, minutes];
+    }
+
+    int numberOfSeconds = (int)interval;
+    NSString *seconds = NSLocalizedString(@"s", nil);
+    return [NSString stringWithFormat:@"%d%@", numberOfSeconds, seconds];
+}
+
 @end

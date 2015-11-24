@@ -144,6 +144,12 @@ static NSString *const SELECT_KEY_SQL = @"SELECT * FROM %@ WHERE %@ = ? ORDER BY
     return result;
 }
 
+- (JYUser *)userOfId:(NSNumber *)userid
+{
+    NSArray *array = [self _executeSelect:@"" keyId:userid ofClass:JYUser.class];
+    return [array count] == 0? nil: array[0];
+}
+
 - (void)setMinCommentIdInDB:(NSNumber *)minCommentIdInDB
 {
     [[NSUserDefaults standardUserDefaults] setObject:minCommentIdInDB forKey:kMinCommentIdKey];

@@ -16,18 +16,6 @@ NSString *const kBadgeCount = @"badge_count";
 
 @implementation JYDeviceManager
 
-+ (JYDeviceManager *)sharedInstance
-{
-    static JYDeviceManager *_sharedInstance = nil;
-    static dispatch_once_t done;
-
-    dispatch_once(&done, ^{
-        _sharedInstance = [JYDeviceManager new];
-    });
-
-    return _sharedInstance;
-}
-
 - (instancetype)init
 {
     self = [super init];
@@ -37,13 +25,10 @@ NSString *const kBadgeCount = @"badge_count";
         _badgeCount = [[NSUserDefaults standardUserDefaults] integerForKey:kBadgeCount];
 
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_apiTokenReady) name:kNotificationAPITokenReady object:nil];
+
+        NSLog(@"DeviceManager created");
     }
     return self;
-}
-
-- (void)start
-{
-    NSLog(@"DeviceManager started");
 }
 
 - (void)_apiTokenReady

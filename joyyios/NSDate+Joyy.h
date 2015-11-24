@@ -14,5 +14,5 @@
 + (NSDate *)dateOfId:(NSNumber *)objId;
 
 - (NSNumber *)joyyDay;
-
+- (NSString *)ageString;
 @end

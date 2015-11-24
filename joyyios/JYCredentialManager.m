@@ -16,18 +16,6 @@
 
 @implementation JYCredentialManager
 
-+ (JYCredentialManager *)sharedInstance
-{
-    static JYCredentialManager *_sharedInstance = nil;
-    static dispatch_once_t done;
-
-    dispatch_once(&done, ^{
-        _sharedInstance = [JYCredentialManager new];
-    });
-
-    return _sharedInstance;
-}
-
 - (instancetype)init
 {
     self = [super init];

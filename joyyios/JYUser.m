@@ -16,18 +16,6 @@
 
 @implementation JYUser
 
-//+ (JYUser *)me
-//{
-//    static JYUser *_me;
-//    static dispatch_once_t done;
-//    dispatch_once(&done, ^{
-//        _me = [JYUser new];
-//
-//        // TODO: read from KV store and fetch from server if no local information
-//    });
-//    return _me;
-//}
-
 - (instancetype)initWithDictionary:(NSDictionary *)dict
 {
     self = [super init];

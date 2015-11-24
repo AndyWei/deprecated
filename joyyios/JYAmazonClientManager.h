@@ -10,9 +10,5 @@
 
 @interface JYAmazonClientManager: NSObject
 
-+ (JYAmazonClientManager *)sharedInstance;
-
-- (void)start;
-
 @end
 

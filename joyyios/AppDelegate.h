@@ -6,8 +6,11 @@
 //  Copyright (c) 2015 Joyy Inc. All rights reserved.
 //
 
+#import "JYLocationManager.h"
+
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 
-@property(nonatomic) UIWindow *window;
-@property(nonatomic) BOOL shouldXmppGoOnline;
+@property (nonatomic) UIWindow *window;
+@property (nonatomic) BOOL shouldXmppGoOnline;
+@property (nonatomic) JYLocationManager *locationManager;
 @end
