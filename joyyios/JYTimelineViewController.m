@@ -31,12 +31,13 @@ typedef void(^Action)();
 @property (nonatomic) CABasicAnimation *colorPulse;
 @property (nonatomic) JYButton *cameraButton;
 @property (nonatomic) JYPost *currentPost;
+@property (nonatomic) JYPostViewCell *dummyCell;
 @property (nonatomic) NSInteger networkThreadCount;
-@property (nonatomic) NSMutableArray *postList;
 @property (nonatomic) NSDate *firstDate;
+@property (nonatomic) NSMutableArray *postList;
+@property (nonatomic) NSNumber *newestPostId;
 @property (nonatomic) UIButton *titleButton;
 @property (nonatomic) UITableView *tableView;
-@property (nonatomic) NSNumber *newestPostId;
 @property (nonatomic, copy) Action pendingAction;
 @end
 
@@ -138,6 +139,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
         _tableView.separatorColor = ClearColor;
         _tableView.showsHorizontalScrollIndicator = NO;
         _tableView.showsVerticalScrollIndicator = NO;
+        _tableView.estimatedRowHeight = UITableViewAutomaticDimension;
         [_tableView registerClass:[JYPostViewCell class] forCellReuseIdentifier:kPostCellIdentifier];
 
         // Setup the pull-down-to-refresh header
@@ -318,6 +320,9 @@ static NSString *const kPostCellIdentifier = @"postCell";
     JYPost *post = self.postList[indexPath.row];
     cell.post = post;
 
+    [cell setNeedsUpdateConstraints];
+    [cell updateConstraintsIfNeeded];
+
     return cell;
 }
 
@@ -325,8 +330,31 @@ static NSString *const kPostCellIdentifier = @"postCell";
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    JYPost *post = self.postList[indexPath.row];
-    return [JYPostViewCell heightForPost:post];
+    if (!self.dummyCell)
+    {
+        self.dummyCell = [[JYPostViewCell alloc] init];
+    }
+
+    // Configure the cell for this indexPath
+    self.dummyCell.post = self.postList[indexPath.row];
+
+    // Make sure the constraints have been added to this cell, since it may have just been created from scratch
+    [self.dummyCell setNeedsUpdateConstraints];
+    [self.dummyCell updateConstraintsIfNeeded];
+
+    self.dummyCell.bounds = CGRectMake(0.0f, 0.0f, CGRectGetWidth(tableView.bounds), CGRectGetHeight(self.dummyCell.bounds));
+
+    [self.dummyCell setNeedsLayout];
+    [self.dummyCell layoutIfNeeded];
+
+    // Get the actual height required for the cell
+    CGFloat height = [self.dummyCell.contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize].height;
+
+    // Add an extra point to the height to account for the cell separator, which is added between the bottom
+    // of the cell's contentView and the bottom of the table view cell.
+//    height += 1;
+
+    return height;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
@@ -563,6 +591,8 @@ static NSString *const kPostCellIdentifier = @"postCell";
         JYPost *oldestPost = [self.postList lastObject];
         self.firstDate = [NSDate dateOfId:oldestPost.postId];
     }
+
+    [self.tableView reloadData];
 
     if (action)
     {

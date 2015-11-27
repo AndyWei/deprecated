@@ -83,6 +83,9 @@
 		D6903CFD1BF6BB6300CDC64F /* NSURLSession+SynchronousTask.m in Sources */ = {isa = PBXBuildFile; fileRef = D6903CFC1BF6BB6300CDC64F /* NSURLSession+SynchronousTask.m */; };
 		D6903D021BF9175400CDC64F /* MTLFMDBAdapter.m in Sources */ = {isa = PBXBuildFile; fileRef = D6903D011BF9175400CDC64F /* MTLFMDBAdapter.m */; };
 		D6903D051BF9AA4300CDC64F /* NSDate+Joyy.m in Sources */ = {isa = PBXBuildFile; fileRef = D6903D041BF9AA4300CDC64F /* NSDate+Joyy.m */; };
+		D6903D0A1C07A9C200CDC64F /* JYPosterView.m in Sources */ = {isa = PBXBuildFile; fileRef = D6903D091C07A9C200CDC64F /* JYPosterView.m */; };
+		D6903D0D1C07C84E00CDC64F /* JYPostActionView.m in Sources */ = {isa = PBXBuildFile; fileRef = D6903D0C1C07C84E00CDC64F /* JYPostActionView.m */; };
+		D6903D101C07CFE000CDC64F /* JYPostCommentView.m in Sources */ = {isa = PBXBuildFile; fileRef = D6903D0F1C07CFE000CDC64F /* JYPostCommentView.m */; };
 		D69202B21AC4C7C0001C1C3D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = D69202B11AC4C7C0001C1C3D /* main.m */; };
 		D69202B51AC4C7C0001C1C3D /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D69202B41AC4C7C0001C1C3D /* AppDelegate.m */; };
 		D69202C01AC4C7C0001C1C3D /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D69202BF1AC4C7C0001C1C3D /* Images.xcassets */; };
@@ -264,6 +267,12 @@
 		D6903D011BF9175400CDC64F /* MTLFMDBAdapter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MTLFMDBAdapter.m; sourceTree = "<group>"; };
 		D6903D031BF9AA4300CDC64F /* NSDate+Joyy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+Joyy.h"; sourceTree = "<group>"; };
 		D6903D041BF9AA4300CDC64F /* NSDate+Joyy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+Joyy.m"; sourceTree = "<group>"; };
+		D6903D081C07A9C200CDC64F /* JYPosterView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYPosterView.h; sourceTree = "<group>"; };
+		D6903D091C07A9C200CDC64F /* JYPosterView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYPosterView.m; sourceTree = "<group>"; };
+		D6903D0B1C07C84E00CDC64F /* JYPostActionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYPostActionView.h; sourceTree = "<group>"; };
+		D6903D0C1C07C84E00CDC64F /* JYPostActionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYPostActionView.m; sourceTree = "<group>"; };
+		D6903D0E1C07CFE000CDC64F /* JYPostCommentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYPostCommentView.h; sourceTree = "<group>"; };
+		D6903D0F1C07CFE000CDC64F /* JYPostCommentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYPostCommentView.m; sourceTree = "<group>"; };
 		D69202AC1AC4C7C0001C1C3D /* winkrock.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = winkrock.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D69202B01AC4C7C0001C1C3D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D69202B11AC4C7C0001C1C3D /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -432,24 +441,8 @@
 		D61D1D5B1B4DBA5D00DE37DF /* Timeline */ = {
 			isa = PBXGroup;
 			children = (
-				D65AFA5C1AEC715D007867D0 /* JYTimelineViewController.h */,
-				D65AFA5D1AEC715D007867D0 /* JYTimelineViewController.m */,
-				D693798B1B54E8BC00E64F3A /* JYPhotoCaptionViewController.h */,
-				D693798C1B54E8BC00E64F3A /* JYPhotoCaptionViewController.m */,
-				D61D1DE41B536B2700DE37DF /* JYPostViewCell.h */,
-				D61D1DE51B536B2700DE37DF /* JYPostViewCell.m */,
-				D67DD0F21B77187000333626 /* JYCaptionTextView.h */,
-				D67DD0F31B77187000333626 /* JYCaptionTextView.m */,
-				D6C82B5A1B0EFDEA00876F57 /* JYCommentTextView.h */,
-				D6C82B5B1B0EFDEA00876F57 /* JYCommentTextView.m */,
-				D67DD0DE1B744D1C00333626 /* JYCommentView.h */,
-				D67DD0DF1B744D1C00333626 /* JYCommentView.m */,
-				D65F37441B04807D007B534C /* JYCommentViewCell.h */,
-				D65F37451B04807D007B534C /* JYCommentViewCell.m */,
-				D6C82B531B0D9FAE00876F57 /* JYCommentViewController.h */,
-				D6C82B541B0D9FAE00876F57 /* JYCommentViewController.m */,
-				D67DD0F61B7728E300333626 /* JYAvatar.h */,
-				D67DD0F71B7728E300333626 /* JYAvatar.m */,
+				D6903D071C07A97500CDC64F /* ViewController */,
+				D6903D061C07A92B00CDC64F /* View */,
 			);
 			name = Timeline;
 			sourceTree = "<group>";
@@ -712,6 +705,44 @@
 				D6903D011BF9175400CDC64F /* MTLFMDBAdapter.m */,
 			);
 			name = MTLFMDBAdapter;
+			sourceTree = "<group>";
+		};
+		D6903D061C07A92B00CDC64F /* View */ = {
+			isa = PBXGroup;
+			children = (
+				D67DD0F21B77187000333626 /* JYCaptionTextView.h */,
+				D67DD0F31B77187000333626 /* JYCaptionTextView.m */,
+				D6C82B5A1B0EFDEA00876F57 /* JYCommentTextView.h */,
+				D6C82B5B1B0EFDEA00876F57 /* JYCommentTextView.m */,
+				D67DD0DE1B744D1C00333626 /* JYCommentView.h */,
+				D67DD0DF1B744D1C00333626 /* JYCommentView.m */,
+				D65F37441B04807D007B534C /* JYCommentViewCell.h */,
+				D65F37451B04807D007B534C /* JYCommentViewCell.m */,
+				D67DD0F61B7728E300333626 /* JYAvatar.h */,
+				D67DD0F71B7728E300333626 /* JYAvatar.m */,
+				D61D1DE41B536B2700DE37DF /* JYPostViewCell.h */,
+				D61D1DE51B536B2700DE37DF /* JYPostViewCell.m */,
+				D6903D081C07A9C200CDC64F /* JYPosterView.h */,
+				D6903D091C07A9C200CDC64F /* JYPosterView.m */,
+				D6903D0B1C07C84E00CDC64F /* JYPostActionView.h */,
+				D6903D0C1C07C84E00CDC64F /* JYPostActionView.m */,
+				D6903D0E1C07CFE000CDC64F /* JYPostCommentView.h */,
+				D6903D0F1C07CFE000CDC64F /* JYPostCommentView.m */,
+			);
+			name = View;
+			sourceTree = "<group>";
+		};
+		D6903D071C07A97500CDC64F /* ViewController */ = {
+			isa = PBXGroup;
+			children = (
+				D65AFA5C1AEC715D007867D0 /* JYTimelineViewController.h */,
+				D65AFA5D1AEC715D007867D0 /* JYTimelineViewController.m */,
+				D693798B1B54E8BC00E64F3A /* JYPhotoCaptionViewController.h */,
+				D693798C1B54E8BC00E64F3A /* JYPhotoCaptionViewController.m */,
+				D6C82B531B0D9FAE00876F57 /* JYCommentViewController.h */,
+				D6C82B541B0D9FAE00876F57 /* JYCommentViewController.m */,
+			);
+			name = ViewController;
 			sourceTree = "<group>";
 		};
 		D69202A31AC4C7C0001C1C3D = {
@@ -1009,6 +1040,7 @@
 				D689ED6A1AE42C8300CB4D2B /* UIView+Joyy.m in Sources */,
 				D61D1D591B4A65F200DE37DF /* UIView+MDCSwipeToChoose.m in Sources */,
 				D6903CFA1BF6A38700CDC64F /* AFHTTPSessionManager+Joyy.m in Sources */,
+				D6903D0D1C07C84E00CDC64F /* JYPostActionView.m in Sources */,
 				D61D1D511B4A65F200DE37DF /* MDCSwipeToChooseViewOptions.m in Sources */,
 				D6F7F14B1BA8ED76008118DA /* JYFacialGestureDetector.m in Sources */,
 				D61D1D471B4A65F200DE37DF /* MDCGeometry.m in Sources */,
@@ -1053,6 +1085,7 @@
 				D63F0D7D1ACA5E260067C5EE /* JYPhoneNumberViewController.m in Sources */,
 				D6966B321BA2BB2B00AAD8D5 /* UITextField+Joyy.m in Sources */,
 				D63B69B61AC53BB4005600A9 /* JYFloatLabeledTextField.m in Sources */,
+				D6903D101C07CFE000CDC64F /* JYPostCommentView.m in Sources */,
 				D65AFA5E1AEC715D007867D0 /* JYTimelineViewController.m in Sources */,
 				D61D1DB21B4E336E00DE37DF /* TGCameraFlash.m in Sources */,
 				D61D1DA61B4E336E00DE37DF /* TGCameraViewController.m in Sources */,
@@ -1081,6 +1114,7 @@
 				D68486B61B8AC267005CA0C4 /* JYSessionViewController.m in Sources */,
 				D67DD0EC1B75321A00333626 /* JYUser.m in Sources */,
 				D68DAF971AC4CACD00838E7E /* JYSignInViewController.m in Sources */,
+				D6903D0A1C07A9C200CDC64F /* JYPosterView.m in Sources */,
 				D61D1DB81B4E336E00DE37DF /* TGCameraShot.m in Sources */,
 				D63591951BEA913500BFFF82 /* JYDeviceManager.m in Sources */,
 				D69FF6E51B96474200466FE5 /* JYAuthenticatedIdentityProvider.m in Sources */,

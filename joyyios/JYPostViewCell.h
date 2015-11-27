@@ -10,7 +10,7 @@
 
 @interface JYPostViewCell : UITableViewCell
 
-+ (CGFloat)heightForPost:(JYPost *)post;
+//+ (CGFloat)heightForPost:(JYPost *)post;
 
 @property(nonatomic) JYPost *post;
 
