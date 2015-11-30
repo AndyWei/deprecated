@@ -10,17 +10,17 @@
 #import <TTTAttributedLabel/TTTAttributedLabel.h>
 
 #import "JYButton.h"
-#import "JYPersonCard.h"
+#import "JYUserCard.h"
 
 static const CGFloat kLabelHeight = 40.f;
 static const CGFloat kInfoLabelWidth = 280.f;
 
-@interface JYPersonCard ()
+@interface JYUserCard ()
 @property(nonatomic) JYButton *winkCountView;
 @property(nonatomic) TTTAttributedLabel *infoLabel;
 @end
 
-@implementation JYPersonCard
+@implementation JYUserCard
 
 + (UIImage *)winkImage
 {
@@ -91,14 +91,14 @@ static const CGFloat kInfoLabelWidth = 280.f;
     return label;
 }
 
-- (void)setPerson:(JYUser *)person
+- (void)setUser:(JYUser *)user
 {
-    if (!person)
+    if (!user)
     {
         return;
     }
 
-    _person = person;
+    _user = user;
 
     [self _updateImage];
     [self _updateInfoLabel];
@@ -108,7 +108,7 @@ static const CGFloat kInfoLabelWidth = 280.f;
 - (void)_updateImage
 {
     // Get network image
-    NSURL *url = [NSURL URLWithString:self.person.avatarURL];
+    NSURL *url = [NSURL URLWithString:self.user.avatarURL];
     NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestReturnCacheDataElseLoad timeoutInterval:5];
 
     __weak typeof(self) weakSelf = self;
@@ -116,12 +116,12 @@ static const CGFloat kInfoLabelWidth = 280.f;
                           placeholderImage:nil
                                    success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image)
      {
-//         NSLog(@"Success: get person full avatar");
+         NSLog(@"Success: get person full avatar");
          [weakSelf _didLoadImage:image];
      }
      failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error)
      {
-//         NSLog(@"Error: get person full avatar error: %@", error);
+         NSLog(@"Error: get person full avatar error: %@", error);
      }];
 }
 
@@ -133,13 +133,13 @@ static const CGFloat kInfoLabelWidth = 280.f;
 
 - (void)_updateInfoLabel
 {
-    if (self.person.age)
+    if (self.user.age)
     {
-        self.infoLabel.text = [NSString stringWithFormat:@"%@, %@", self.person.username, self.person.age];
+        self.infoLabel.text = [NSString stringWithFormat:@"%@, %@", self.user.username, self.user.age];
     }
     else
     {
-        self.infoLabel.text = [NSString stringWithFormat:@"%@", self.person.username];
+        self.infoLabel.text = [NSString stringWithFormat:@"%@", self.user.username];
     }
 }
 

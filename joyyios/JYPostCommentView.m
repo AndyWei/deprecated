@@ -9,7 +9,7 @@
 #import <TTTAttributedLabel/TTTAttributedLabel.h>
 
 #import "JYComment.h"
-#import "JYFriendsManager.h"
+#import "JYFriendManager.h"
 #import "JYPostCommentView.h"
 #import "NSDate+Joyy.h"
 
@@ -103,16 +103,16 @@
 {
     NSString *displayText = nil;
 
-    JYUser *user = [[JYFriendsManager sharedInstance] userOfId:comment.ownerId];
-    JYUser *replyTo = ([comment.replyToId unsignedLongLongValue] == 0) ? nil: [[JYFriendsManager sharedInstance] userOfId:comment.replyToId];
+    JYFriend *owner = [[JYFriendManager sharedInstance] friendOfId:comment.ownerId];
+    JYFriend *replyTo = ([comment.replyToId unsignedLongLongValue] == 0) ? nil: [[JYFriendManager sharedInstance] friendOfId:comment.replyToId];
     NSString *replyText = NSLocalizedString(@"reply", nil);
     if (replyTo)
     {
-        displayText = [NSString stringWithFormat:@"%@ %@ %@: %@", user.username, replyText, replyTo.username, comment.content];
+        displayText = [NSString stringWithFormat:@"%@ %@ %@: %@", owner.username, replyText, replyTo.username, comment.content];
     }
     else
     {
-        displayText = [NSString stringWithFormat:@"%@: %@", user.username, comment.content];
+        displayText = [NSString stringWithFormat:@"%@: %@", owner.username, comment.content];
     }
 
     return displayText;

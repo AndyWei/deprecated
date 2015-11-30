@@ -7,7 +7,7 @@
 //
 
 #import "JYComment.h"
-#import "JYFriendsManager.h"
+#import "JYFriendManager.h"
 
 @interface JYComment ()
 @property(nonatomic) NSString *displayText;

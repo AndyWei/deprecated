@@ -11,6 +11,6 @@
 
 @interface JYSessionViewController : JSQMessagesViewController
 
-@property (nonatomic) JYUser *thatPerson;
+@property (nonatomic) JYFriend *friend;
 
 @end

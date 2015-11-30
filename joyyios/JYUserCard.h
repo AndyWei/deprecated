@@ -1,5 +1,5 @@
 //
-//  JYPersonCard.h
+//  JYUserCard.h
 //  joyyios
 //
 //  Created by Ping Yang on 7/5/15.
@@ -8,13 +8,10 @@
 
 #import "MDCSwipeToChoose.h"
 
-@class JYUser;
-@class JYPersonCard;
-
-@interface JYPersonCard : MDCSwipeToChooseView
+@interface JYUserCard : MDCSwipeToChooseView
 
 - (instancetype)initWithFrame:(CGRect)frame options:(MDCSwipeToChooseViewOptions *)options;
 
-@property (nonatomic) JYUser *person;
+@property (nonatomic) JYUser *user;
 
 @end

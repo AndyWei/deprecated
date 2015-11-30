@@ -19,14 +19,14 @@
 #import "JYCredentialManager.h"
 #import "JYDeviceManager.h"
 #import "JYFilename.h"
-#import "JYFriendsManager.h"
+#import "JYFriendManager.h"
 #import "JYLocalDataManager.h"
-#import "JYPeopleViewController.h"
 #import "JYPhoneNumberViewController.h"
 #import "JYProfileViewController.h"
 #import "JYSessionListViewController.h"
 #import "JYSoundPlayer.h"
 #import "JYTimelineViewController.h"
+#import "JYUserViewController.h"
 #import "JYXmppManager.h"
 #import "Flurry.h"
 #import "OnboardingViewController.h"
@@ -95,7 +95,7 @@
     application.applicationIconBadgeNumber = 0;
 
     [[JYLocalDataManager sharedInstance] start];
-    [[JYFriendsManager sharedInstance] start];
+    [[JYFriendManager sharedInstance] start];
     [[JYXmppManager sharedInstance] start];
 
     self.deviceManager =[JYDeviceManager new];
@@ -230,7 +230,7 @@
     UIViewController *vc1 = [JYTimelineViewController new];
     UINavigationController *nc1 = [[UINavigationController alloc] initWithRootViewController:vc1];
 
-    UIViewController *vc2 = [JYPeopleViewController new];
+    UIViewController *vc2 = [JYUserViewController new];
     UINavigationController *nc2 = [[UINavigationController alloc] initWithRootViewController:vc2];
 
     UIViewController *vc3 = [JYSessionListViewController new];

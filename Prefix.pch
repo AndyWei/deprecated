@@ -42,6 +42,7 @@
 
 #import "JYCredential.h"
 #import "JYUser.h"
+#import "JYFriend.h"
 #import "JYDataStore.h"
 #import "AFHTTPSessionManager+Joyy.h"
 

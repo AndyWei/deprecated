@@ -9,7 +9,7 @@
 #import <AFNetworking/UIImageView+AFNetworking.h>
 #import <TTTAttributedLabel/TTTAttributedLabel.h>
 
-#import "JYFriendsManager.h"
+#import "JYFriendManager.h"
 #import "JYMessageDateFormatter.h"
 #import "JYSessionListViewCell.h"
 
@@ -17,7 +17,7 @@ static const CGFloat kAvatarImageWidth = 70;
 static const CGFloat kTimeLabelWidth = 80;
 
 @interface JYSessionListViewCell ()
-@property (nonatomic) JYUser *person;
+@property (nonatomic) JYFriend *friend;
 @property (nonatomic) TTTAttributedLabel *nameLabel;
 @property (nonatomic) TTTAttributedLabel *messageLabel;
 @property (nonatomic) TTTAttributedLabel *timeLabel;
@@ -47,17 +47,17 @@ static const CGFloat kTimeLabelWidth = 80;
     _contact = contact;
     self.messageLabel.text = [_contact.mostRecentMessageBody messageDisplayString];
     self.timeLabel.text = [[JYMessageDateFormatter sharedInstance] autoStringFromDate:_contact.mostRecentMessageTimestamp];
-    self.person = [[JYFriendsManager sharedInstance] userOfBareJid:_contact.bareJidStr];
+    self.friend = [[JYFriendManager sharedInstance] friendOfBareJid:_contact.bareJidStr];
 }
 
-- (void)setPerson:(JYUser *)person
+- (void)setFriend:(JYFriend *)friend
 {
-    _person = person;
+    _friend = friend;
 
-    self.nameLabel.text = person.username;
+    self.nameLabel.text = friend.username;
 
     // Fetch avatar image via network
-    NSURL *url = [NSURL URLWithString:person.avatarURL];
+    NSURL *url = [NSURL URLWithString:friend.avatarURL];
     NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestReturnCacheDataElseLoad timeoutInterval:5];
 
     __weak typeof(self) weakSelf = self;
@@ -65,7 +65,7 @@ static const CGFloat kTimeLabelWidth = 80;
                            placeholderImage:nil
                                     success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
                                         weakSelf.avatarView.image = image;
-                                        weakSelf.person.avatarImage = image;
+                                        weakSelf.friend.avatarImage = image;
 
                                    } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
                                         NSLog(@"setImageWithURLRequest response = %@", response);

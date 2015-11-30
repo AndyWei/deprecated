@@ -11,7 +11,7 @@
 #import <TTTAttributedLabel/TTTAttributedLabel.h>
 
 #import "JYComment.h"
-#import "JYFriendsManager.h"
+#import "JYFriendManager.h"
 #import "JYPost.h"
 #import "JYPostViewCell.h"
 #import "JYPostActionView.h"
@@ -161,10 +161,10 @@
     {
         if ([kLikeText isEqualToString:comment.content])
         {
-            JYUser *user = [[JYFriendsManager sharedInstance] userOfId:comment.ownerId];
-            if (user)
+            JYFriend *friend = [[JYFriendManager sharedInstance] friendOfId:comment.ownerId];
+            if (friend)
             {
-                [likedByUsernames addObject:user.username];
+                [likedByUsernames addObject:friend.username];
             }
         }
     }

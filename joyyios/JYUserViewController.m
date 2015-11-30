@@ -1,5 +1,5 @@
 //
-//  JYPeopleViewController.m
+//  JYUserViewController.m
 //  joyyios
 //
 //  Created by Ping Yang on 7/5/15.
@@ -13,10 +13,10 @@
 #import "AppDelegate.h"
 #import "JYButton.h"
 #import "JYFacialGestureDetector.h"
-#import "JYPeopleViewController.h"
+#import "JYUserViewController.h"
 #import "UIImage+Joyy.h"
 
-@interface JYPeopleViewController () <JYFacialGuestureDetectorDelegate, MDCSwipeToChooseDelegate>
+@interface JYUserViewController () <JYFacialGuestureDetectorDelegate, MDCSwipeToChooseDelegate>
 @property (nonatomic) CGRect cardFrame;
 @property (nonatomic) JYButton *nopeButton;
 @property (nonatomic) JYButton *winkButton;
@@ -26,7 +26,7 @@
 @property (nonatomic) MSWeakTimer *detectorAwakeTimer;
 @property (nonatomic) BOOL isListening;
 
-@property (nonatomic) NSMutableArray *personList;
+@property (nonatomic) NSMutableArray *userList;
 @property (nonatomic) NSInteger networkThreadCount;
 @end
 
@@ -34,7 +34,7 @@ const CGFloat kButtonSpaceH = 80;
 const CGFloat kButtonSpaceV = 40;
 const CGFloat kButtonWidth = 60;
 
-@implementation JYPeopleViewController
+@implementation JYUserViewController
 
 - (void)viewDidLoad
 {
@@ -42,7 +42,7 @@ const CGFloat kButtonWidth = 60;
     self.view.backgroundColor = JoyyWhitePure;
     self.title = NSLocalizedString(@"Radar", nil);
 
-    self.personList = [NSMutableArray new];
+    self.userList = [NSMutableArray new];
 
     _cardFrame = CGRectZero;
 
@@ -53,7 +53,7 @@ const CGFloat kButtonWidth = 60;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_appStart) name:kNotificationAppDidStart object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_appStop) name:kNotificationAppDidStop object:nil];
 
-    [self _fetchPersonNearby];
+    [self _fetchUsers];
 }
 
 - (void)dealloc
@@ -79,7 +79,7 @@ const CGFloat kButtonWidth = 60;
 - (void)_appStart
 {
     // Only turn detector on in the cases that app resume active
-    if (self.personList)
+    if (self.userList)
     {
         [self _turnOnDetector];
     }
@@ -223,7 +223,7 @@ const CGFloat kButtonWidth = 60;
         _fetchButton.cornerRadius = 5;
 
         _fetchButton.textLabel.text = NSLocalizedString(@"GET MORE PEOPLE", nil);
-        [_fetchButton addTarget:self action:@selector(_fetchPersonNearby) forControlEvents:UIControlEventTouchUpInside];
+        [_fetchButton addTarget:self action:@selector(_fetchUsers) forControlEvents:UIControlEventTouchUpInside];
     }
     return _fetchButton;
 }
@@ -299,15 +299,15 @@ const CGFloat kButtonWidth = 60;
     [self.frontCard mdc_swipe:MDCSwipeDirectionRight];
 }
 
-- (void)setFrontCard:(JYPersonCard *)frontCard
+- (void)setFrontCard:(JYUserCard *)frontCard
 {
     _frontCard = frontCard;
-    self.currentPerson = frontCard.person;
+    self.currentUser = frontCard.user;
 }
 
-- (JYPersonCard *)popCard
+- (JYUserCard *)popCard
 {
-    if ([self.personList count] == 0)
+    if ([self.userList count] == 0)
     {
         return nil;
     }
@@ -318,10 +318,10 @@ const CGFloat kButtonWidth = 60;
     options.likedText = NSLocalizedString(@"WINK", nil);
     options.nopeText = NSLocalizedString(@"NOPE", nil);
 
-    JYPersonCard *card = [[JYPersonCard alloc] initWithFrame:self.cardFrame options:options];
-    card.person = self.personList[0];
+    JYUserCard *card = [[JYUserCard alloc] initWithFrame:self.cardFrame options:options];
+    card.user = self.userList[0];
 
-    [self.personList removeObjectAtIndex:0];
+    [self.userList removeObjectAtIndex:0];
     return card;
 }
 
@@ -358,38 +358,38 @@ const CGFloat kButtonWidth = 60;
 
 #pragma mark - Maintain Data
 
-- (void)_handleNearbyPersonIds:(NSArray *)personIds
+- (void)_handleNearbyUserIds:(NSArray *)userIds
 {
-    if (!personIds || personIds.count == 0)
+    if (!userIds || userIds.count == 0)
     {
         return;
     }
 
-    NSArray *validPersonIds = [self _filterPersonIds:personIds];
-    [self _fetchPersonByIds:validPersonIds];
+    NSArray *validUserIds = [self _filterUserIds:userIds];
+    [self _fetchPersonByIds:validUserIds];
 }
 
-- (NSArray *)_filterPersonIds:(NSArray *)personIds
+- (NSArray *)_filterUserIds:(NSArray *)userIds
 {
-    NSMutableArray *validPersonIds = [NSMutableArray new];
-    for (NSString *personId in personIds)
+    NSMutableArray *validUserIds = [NSMutableArray new];
+    for (NSString *userId in userIds)
     {
-        if ([self _isValid:personId])
+        if ([self _isValid:userId])
         {
-            [validPersonIds addObject:personId];
+            [validUserIds addObject:userId];
         }
     }
-    return validPersonIds;
+    return validUserIds;
 }
 
-- (BOOL)_isValid:(NSString *)personId
+- (BOOL)_isValid:(NSString *)userId
 {
     return YES;
 }
 
 #pragma mark - Network
 
-- (void)_fetchPersonNearby
+- (void)_fetchUsers
 {
     if (self.networkThreadCount > 0)
     {
@@ -407,7 +407,7 @@ const CGFloat kButtonWidth = 60;
          success:^(NSURLSessionTask *operation, id responseObject) {
 //             NSLog(@"person/nearby fetch success responseObject: %@", responseObject);
 
-             [weakSelf _handleNearbyPersonIds:responseObject];
+             [weakSelf _handleNearbyUserIds:responseObject];
              [weakSelf _networkThreadEnd];
          }
          failure:^(NSURLSessionTask *operation, NSError *error) {
@@ -426,9 +426,9 @@ const CGFloat kButtonWidth = 60;
 //    NSString *orientation = [JYUser me].sexualOrientation;
 //    [parameters setObject:orientation forKey:@"orientation"];
 
-    if (self.personList.count > 0)
+    if (self.userList.count > 0)
     {
-//        JYUser *person = self.personList.lastObject;
+//        JYUser *person = self.userList.lastObject;
 //        [parameters setValue:@(person.id) forKey:@"max"];
     }
 
@@ -436,13 +436,13 @@ const CGFloat kButtonWidth = 60;
     return parameters;
 }
 
-- (void)_fetchPersonByIds:(NSArray *)personIds
+- (void)_fetchPersonByIds:(NSArray *)userIds
 {
     [self _networkThreadBegin];
 
     AFHTTPSessionManager *manager = [AFHTTPSessionManager managerWithToken];
     NSString *url = [NSString apiURLWithPath:@"person"];
-    NSDictionary *parameters = @{@"id": personIds};
+    NSDictionary *parameters = @{@"id": userIds};
 
     __weak typeof(self) weakSelf = self;
     [manager GET:url
@@ -454,7 +454,7 @@ const CGFloat kButtonWidth = 60;
              {
                  NSError *error = nil;
                  JYUser *user = (JYUser *)[MTLJSONAdapter modelOfClass:JYUser.class fromJSONDictionary:dict error:&error];
-                 [weakSelf.personList addObject:user];
+                 [weakSelf.userList addObject:user];
              }
              [weakSelf _loadCards];
              [weakSelf _networkThreadEnd];

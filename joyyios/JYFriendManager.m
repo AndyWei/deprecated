@@ -1,5 +1,5 @@
 //
-//  JYFriendsManager.m
+//  JYFriendManager.m
 //  joyyios
 //
 //  Created by Ping Yang on 11/29/15.
@@ -7,23 +7,23 @@
 //
 
 #import "JYFriend.h"
-#import "JYFriendsManager.h"
+#import "JYFriendManager.h"
 #import "JYLocalDataManager.h"
 
-@interface JYFriendsManager ()
+@interface JYFriendManager ()
 @property (nonatomic) NSMutableDictionary *friendDict;
 @end
 
 
-@implementation JYFriendsManager
+@implementation JYFriendManager
 
-+ (JYFriendsManager *)sharedInstance
++ (JYFriendManager *)sharedInstance
 {
-    static JYFriendsManager *_sharedInstance = nil;
+    static JYFriendManager *_sharedInstance = nil;
     static dispatch_once_t done;
 
     dispatch_once(&done, ^{
-        _sharedInstance = [JYFriendsManager new];
+        _sharedInstance = [JYFriendManager new];
     });
 
     return _sharedInstance;
@@ -71,18 +71,18 @@
     return _friendDict;
 }
 
-- (JYUser *)userOfId:(NSNumber *)userid
+- (JYFriend *)friendOfId:(NSNumber *)userid
 {
     return self.friendDict[userid];
 }
 
-- (JYUser *)userOfBareJid:(NSString *)bareJid
+- (JYFriend *)friendOfBareJid:(NSString *)bareJid
 {
     NSArray *parts = [bareJid componentsSeparatedByString:@"@"];
     NSString *idString = parts[0];
     NSNumber *userid = [NSNumber numberWithLongLong:idString.longLongValue];
 
-    return [self userOfId:userid];
+    return [self friendOfId:userid];
 }
 
 - (void)_fetchFriends

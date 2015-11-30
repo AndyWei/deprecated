@@ -101,15 +101,15 @@ static NSString *const kContactCellIdentifier = @"contactCell";
     JYSessionViewController *viewController = [JYSessionViewController new];
     JYSessionListViewCell *cell = (JYSessionListViewCell *)[tableView cellForRowAtIndexPath:indexPath];
 
-    if (cell.person)
+    if (cell.friend)
     {
-        viewController.thatPerson = cell.person;
+        viewController.friend = cell.friend;
         [self.navigationController pushViewController:viewController animated:YES];
         [tableView deselectRowAtIndexPath:indexPath animated:NO];
     }
     else
     {
-        NSLog(@"Warning: The person object is not available, cannot push message view controller");
+        NSLog(@"Warning: The friend object is not available, cannot push message view controller");
         // Use animation to tell user the table row has been selected 
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
     }

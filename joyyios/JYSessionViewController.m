@@ -41,13 +41,13 @@ CGFloat const kEdgeInset = 10.f;
 {
     [super viewDidLoad];
 
-    self.title = self.thatPerson.username;
+    self.title = self.friend.username;
     self.view.backgroundColor = JoyyWhite;
 
     XMPPJID *myJID = [JYXmppManager myJID];
     self.senderId = myJID.bare;
     self.senderDisplayName = [JYCredential current].username;
-    self.thatJID = [JYXmppManager jidWithUsername:self.thatPerson.username];
+    self.thatJID = [JYXmppManager jidWithUsername:self.friend.username];
 
     [self configCollectionView];
     [self configBubbleImage];
@@ -134,7 +134,7 @@ CGFloat const kEdgeInset = 10.f;
 {
     if (!_remoteAvatar)
     {
-        _remoteAvatar = [JSQMessagesAvatarImageFactory avatarImageWithImage:self.thatPerson.avatarImage diameter:kAvatarDiameter];
+        _remoteAvatar = [JSQMessagesAvatarImageFactory avatarImageWithImage:self.friend.avatarImage diameter:kAvatarDiameter];
     }
 
     return _remoteAvatar;

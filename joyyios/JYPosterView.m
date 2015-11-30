@@ -10,7 +10,7 @@
 #import <TTTAttributedLabel/TTTAttributedLabel.h>
 
 #import "JYButton.h"
-#import "JYFriendsManager.h"
+#import "JYFriendManager.h"
 #import "JYPost.h"
 #import "JYPosterView.h"
 #import "NSDate+Joyy.h"
@@ -83,8 +83,8 @@ static const CGFloat kPostTimeLabelWidth = 50;
 
 - (void)_updateAvatarButtonImage
 {
-    JYUser *owner = [[JYFriendsManager sharedInstance] userOfId:self.post.ownerId];
-    NSURL *url = [NSURL URLWithString:owner.avatarURL];
+    JYFriend *friend = [[JYFriendManager sharedInstance] friendOfId:self.post.ownerId];
+    NSURL *url = [NSURL URLWithString:friend.avatarURL];
     NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestReturnCacheDataElseLoad timeoutInterval:5];
 
     __weak typeof(self) weakSelf = self;
