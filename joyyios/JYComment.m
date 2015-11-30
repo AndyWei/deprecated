@@ -7,7 +7,7 @@
 //
 
 #import "JYComment.h"
-#import "JYDataStore.h"
+#import "JYFriendsManager.h"
 
 @interface JYComment ()
 @property(nonatomic) NSString *displayText;
@@ -37,8 +37,7 @@
              @"ownerId": @"ownerid",
              @"postId": @"postid",
              @"replyToId": @"replytoid",
-             @"content": @"content",
-             @"displayText": [NSNull null]
+             @"content": @"content"
              };
 }
 
@@ -50,26 +49,6 @@
 + (NSString *)FMDBTableName
 {
     return @"comment";
-}
-
-- (NSString *)displayText
-{
-    if (!_displayText)
-    {
-        NSString *username = [[JYDataStore sharedInstance] usernameOfId:self.ownerId];
-        NSString *replyToUser = ([self.replyToId unsignedLongLongValue] == 0) ? nil: [[JYDataStore sharedInstance] usernameOfId:self.replyToId];
-        NSString *reply = NSLocalizedString(@"reply", nil);
-        if (replyToUser)
-        {
-            _displayText = [NSString stringWithFormat:@"%@ %@ %@: %@", username, reply, replyToUser, self.content];
-        }
-        else
-        {
-            _displayText = [NSString stringWithFormat:@"%@: %@", username, self.content];
-        }
-
-    }
-    return _displayText;
 }
 
 @end

@@ -17,6 +17,7 @@
 #import "JYFilename.h"
 #import "JYFloatLabeledTextField.h"
 #import "JYProfileViewController.h"
+#import "JYYRS.h"
 #import "TGCameraColor.h"
 #import "TGCameraViewController.h"
 #import "UIImage+Joyy.h"
@@ -621,12 +622,11 @@ const CGFloat kAvatarButtonWidth = kAvatarButtonHeight;
     [parameters setObject:phoneNumber forKey:@"phone"];
 
     // YRS
-    NSString *regionStr = [JYFilename sharedInstance].region;
-    uint64_t region = [regionStr uint64Value];
-    uint64_t yob = [self.yobTextField.text uint64Value];
-    uint64_t yrs = ((yob & 0xFFFF) << 16) | ((region & 0xFF) << 8) | (self.sex & 0xFF);
-    [JYCredential current].yrs = [NSNumber numberWithUnsignedLongLong:yrs];
-    [parameters setObject:@(yrs) forKey:@"yrs"];
+    NSUInteger region = [[JYFilename sharedInstance].region integerValue];
+    NSUInteger yob = [self.yobTextField.text integerValue];
+    JYYRS *yrs = [JYYRS yrsWithYob:yob region:region sex:self.sex];
+    [JYCredential current].yrs = [NSNumber numberWithUnsignedLongLong:yrs.value];
+    [parameters setObject:@(yrs.value) forKey:@"yrs"];
 
     return parameters;
 }

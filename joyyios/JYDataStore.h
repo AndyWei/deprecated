@@ -15,10 +15,6 @@
 
 + (JYDataStore *)sharedInstance;
 
-- (void)getUserWithIdString:(NSString *)idString
-                      success:(void (^)(JYUser *user))success
-                      failure:(void (^)(NSError *error))failure;
-
 - (NSString *)usernameOfId:(NSNumber *)userid;
 
 @property (nonatomic) YTKKeyValueStore *store;

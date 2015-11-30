@@ -7,9 +7,11 @@
 //
 
 #import <AFNetworking/UIImageView+AFNetworking.h>
+#import <KVOController/FBKVOController.h>
 #import <TTTAttributedLabel/TTTAttributedLabel.h>
 
 #import "JYComment.h"
+#import "JYFriendsManager.h"
 #import "JYPost.h"
 #import "JYPostViewCell.h"
 #import "JYPostActionView.h"
@@ -19,6 +21,7 @@
 
 @interface JYPostViewCell ()
 @property (nonatomic) BOOL didSetupConstraints;
+@property (nonatomic) FBKVOController *observer;
 @property (nonatomic) JYPostActionView *actionView;
 @property (nonatomic) JYPosterView *posterView;
 @property (nonatomic) JYPostCommentView *commentView;
@@ -61,6 +64,27 @@
         [self.contentView addSubview:self.commentView];
     }
     return self;
+}
+
+- (void)dealloc
+{
+    [self.observer unobserveAll];
+    self.observer = nil;
+}
+
+- (void)_startObserve:(JYPost *)post
+{
+    __weak typeof(self) weakSelf = self;
+
+    [self.observer observe:post keyPath:@"commentList" options:NSKeyValueObservingOptionNew block:^(JYPostViewCell *cell, JYPost *post, NSDictionary *change) {
+
+          [weakSelf _updateCommentsAndLikes];
+    }];
+}
+
+- (void)_stopObserve:(JYPost *)post
+{
+    [self.observer unobserve:post];
 }
 
 - (void)updateConstraints
@@ -107,13 +131,47 @@
         return;
     }
 
+    if (_post)
+    {
+        [self _stopObserve:_post];
+    }
+
     _post = post;
     self.posterView.post = post;
     self.actionView.post = post;
+    [self _updateLikesLabel];
     self.commentView.commentList = post.commentList;
 
     [self _updatePhoto];
     [self _updateCaption];
+
+    [self _startObserve:post];
+}
+
+- (void)_updateCommentsAndLikes
+{
+    [self _updateLikesLabel];
+    self.commentView.commentList = self.post.commentList;
+}
+
+- (void)_updateLikesLabel
+{
+    NSMutableArray *likedByUsernames = [NSMutableArray new];
+    for (JYComment *comment in self.post.commentList)
+    {
+        if ([kLikeText isEqualToString:comment.content])
+        {
+            JYUser *user = [[JYFriendsManager sharedInstance] userOfId:comment.ownerId];
+            if (user)
+            {
+                [likedByUsernames addObject:user.username];
+            }
+        }
+    }
+
+    NSString *likedList = [likedByUsernames componentsJoinedByString:@", "];
+
+    self.likesLabel.text = [NSString stringWithFormat:@"%@ %@", kLikeText, likedList];
 }
 
 - (void)_updatePhoto
@@ -180,8 +238,7 @@
 {
     if (!_likesLabel)
     {
-        _likesLabel = [[TTTAttributedLabel alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 0)];
-        [_likesLabel configureForAutoLayout];
+        _likesLabel = [TTTAttributedLabel newAutoLayoutView];
         _likesLabel.font = [UIFont systemFontOfSize:kFontSizeDetail];
         _likesLabel.backgroundColor = FlatBlue;
         _likesLabel.textColor = JoyyBlue;
@@ -213,6 +270,15 @@
         _captionLabel.clipsToBounds = YES;
     }
     return _captionLabel;
+}
+
+- (FBKVOController *)observer
+{
+    if (!_observer)
+    {
+        _observer = [FBKVOController controllerWithObserver:self];
+    }
+    return _observer;
 }
 
 //- (void)_showAllComments

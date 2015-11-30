@@ -7,98 +7,104 @@
 //
 
 #import "JYFilename.h"
+#import "JYYRS.h"
 
 @interface JYUser ()
-@property (nonatomic) NSString *ageString;
-@property (nonatomic) NSString *region;
-@property (nonatomic) NSString *avatarFilename;
 @end
 
 @implementation JYUser
 
-- (instancetype)initWithDictionary:(NSDictionary *)dict
+#pragma mark - MTLJSONSerializing methods
+
++ (NSDictionary *)JSONKeyPathsByPropertyKey
 {
-    self = [super init];
-    if (self)
-    {
-        [self save:dict];
-    }
-    return self;
+    return @{
+             @"userId": @"userid",
+             @"username": @"username",
+             @"yrsValue": @"yrs",
+             @"bio": @"bio"
+             };
 }
 
-- (void)save:(NSDictionary *)dict
+#pragma mark - MTLFMDBSerializing methods
+
++ (NSDictionary *)FMDBColumnsByPropertyKey
 {
-    if ([dict valueForKey:@"fname"])
-    {
-        self.username = [dict objectForKey:@"fname"];
-    }
-
-    if ([dict valueForKey:@"fid"])
-    {
-        self.userId = [dict objectForKey:@"fid"];
-    }
-
-    if ([dict valueForKey:@"fyrs"])
-    {
-        self.yrs = [[dict objectForKey:@"fyrs"] unsignedIntegerValue];
-    }
-
-    if ([dict valueForKey:@"yrs"])
-    {
-        self.yrs = [[dict objectForKey:@"yrs"] unsignedIntegerValue];
-    }
-
-    if ([dict valueForKey:@"phone"])
-    {
-        self.phoneNumber = [[dict objectForKey:@"phone"] unsignedIntegerValue];
-    }
+    return @{
+             @"userId": @"id",
+             @"username": @"username",
+             @"yrsValue": @"yrs",
+             @"bio": [NSNull null],
+             @"avatarURL": [NSNull null],
+             @"sex": [NSNull null],
+             @"age": [NSNull null],
+             @"avatarImage": [NSNull null]
+             };
 }
 
-- (NSString *)ageString
++ (NSArray *)FMDBPrimaryKeys
 {
-    if (self.yearOfBirth == 0)
+    return @[@"id"];
+}
+
++ (NSString *)FMDBTableName
+{
+    return @"user";
+}
+
+#pragma mark - properties
+
+- (NSString *)age
+{
+    if (self.yrsValue == 0)
     {
         return nil;
     }
 
-    if (!_ageString)
+    if (!_age)
     {
         NSCalendar *gregorian = [NSCalendar calendarWithIdentifier:NSCalendarIdentifierGregorian];
         NSInteger year = [gregorian component:NSCalendarUnitYear fromDate:NSDate.date];
-        NSInteger age = year - self.yearOfBirth;
-        _ageString = [NSString stringWithFormat:@"%ld", (long)age];
+        JYYRS *yrs = [JYYRS yrsWithValue:self.yrsValue];
+        NSInteger age = year - yrs.yob;
+        _age = [NSString stringWithFormat:@"%ld", (long)age];
     }
-    return _ageString;
+    return _age;
 }
 
 - (NSString *)avatarURL
 {
-    return [[JYFilename sharedInstance] urlForAvatarWithRegion:self.region filename:self.avatarFilename];
+    if (!_avatarURL)
+    {
+        JYYRS *yrs = [JYYRS yrsWithValue:self.yrsValue];
+        NSString *region = [NSString stringWithFormat:@"%ld", (long)yrs.region];
+        NSString *prefix = [[JYFilename sharedInstance] avatarURLPrefixOfRegion:region];
+        uint64_t userid = [self.userId unsignedLongLongValue];
+        NSString *filename = [NSString stringWithFormat:@"%llu.jpg", userid];
+        _avatarURL = [prefix stringByAppendingString:filename];
+    }
+    return _avatarURL;
 }
 
-- (NSString *)sexualOrientation
+- (NSString *)sex
 {
-    if (!self.sex)
+    if (!_sex)
     {
-        return @"X";
-    }
-
-    if (!_sexualOrientation)
-    {
-        if ([self.sex isEqualToString:@"M"])
+        JYYRS *yrs = [JYYRS yrsWithValue:self.yrsValue];
+        switch (yrs.sex)
         {
-            _sexualOrientation = @"F";
-        }
-        else if ([self.sex isEqualToString:@"F"])
-        {
-            _sexualOrientation = @"M";
-        }
-        else
-        {
-            _sexualOrientation = @"X";
+            case 0:
+                _sex = @"F";
+                break;
+            case 1:
+                _sex = @"M";
+                break;
+            default:
+                _sex = @"X";
+                break;
         }
     }
-    return _sexualOrientation;
+    return _sex;
 }
 
 @end

@@ -15,7 +15,7 @@
 #import "MTLFMDBAdapter.h"
 
 @interface JYLocalDataManager ()
-@property (nonatomic) FMDatabaseQueue * dbQueue;
+@property (nonatomic) FMDatabaseQueue *dbQueue;
 @end
 
 NSString *const kDBName = @"/winkrock.db";
@@ -27,6 +27,15 @@ static NSString *const CREATE_USER_TABLE_SQL =
     id       INTEGER NOT NULL, \
     username TEXT    NOT NULL, \
     yrs      INTEGER NOT NULL, \
+PRIMARY KEY(id)) ";
+
+static NSString *const CREATE_FRIEND_TABLE_SQL =
+@"CREATE TABLE IF NOT EXISTS friend ( \
+    id       INTEGER NOT NULL, \
+    username TEXT    NOT NULL, \
+    yrs      INTEGER NOT NULL, \
+    phone    INTEGER         , \
+    bio      TEXT            , \
 PRIMARY KEY(id)) ";
 
 static NSString *const CREATE_POST_TABLE_SQL =
@@ -49,6 +58,7 @@ PRIMARY KEY(id)) ";
 static NSString *const CREATE_COMMENT_INDEX_SQL = @"CREATE INDEX IF NOT EXISTS postid_index ON comment(postid)";
 static NSString *const SELECT_RANGE_SQL = @"SELECT * FROM %@ WHERE id > (?) AND id < (?) ORDER BY id DESC";
 static NSString *const SELECT_KEY_SQL = @"SELECT * FROM %@ WHERE %@ = ? ORDER BY id ASC";
+static NSString *const SELECT_ALL_SQL = @"SELECT * FROM %@ ORDER BY id ASC";
 
 
 @implementation JYLocalDataManager
@@ -86,6 +96,7 @@ static NSString *const SELECT_KEY_SQL = @"SELECT * FROM %@ WHERE %@ = ? ORDER BY
 - (void)start
 {
     [self _executeUpdateSQL:CREATE_USER_TABLE_SQL];
+    [self _executeUpdateSQL:CREATE_FRIEND_TABLE_SQL];
     [self _executeUpdateSQL:CREATE_POST_TABLE_SQL];
     [self _executeUpdateSQL:CREATE_COMMENT_TABLE_SQL];
     [self _executeUpdateSQL:CREATE_COMMENT_INDEX_SQL];
@@ -98,26 +109,7 @@ static NSString *const SELECT_KEY_SQL = @"SELECT * FROM %@ WHERE %@ = ? ORDER BY
     _dbQueue = nil;
 }
 
-- (void)saveJsonArray:(NSArray *)array ofClass:(Class)modelClass
-{
-    NSString *stmt = [MTLFMDBAdapter insertStatementForModelClass:modelClass];
-
-    NSError *error = nil;
-    for (NSDictionary *dict in array)
-    {
-        id obj = [MTLJSONAdapter modelOfClass:modelClass fromJSONDictionary:dict error:&error];
-        if (error)
-        {
-            NSLog(@"Fail to decode object dict. modelClass = %@, dict = %@, error = %@", modelClass, dict, error);
-            continue;
-        }
-
-        NSArray *params = [MTLFMDBAdapter columnValues:obj];
-        [self _executeUpdate:stmt withArgumentsInArray:params];
-    }
-}
-
-- (void)saveObjects:(NSArray *)objectList ofClass:(Class)modelClass
+- (void)insertObjects:(NSArray *)objectList ofClass:(Class)modelClass
 {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
 
@@ -127,6 +119,39 @@ static NSString *const SELECT_KEY_SQL = @"SELECT * FROM %@ WHERE %@ = ? ORDER BY
             NSArray *params = [MTLFMDBAdapter columnValues:obj];
             [self _executeUpdate:stmt withArgumentsInArray:params];
         }
+    });
+}
+
+- (void)insertObject:(id)object ofClass:(Class)modelClass
+{
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+
+        NSString *stmt = [MTLFMDBAdapter insertStatementForModelClass:modelClass];
+        NSArray *params = [MTLFMDBAdapter columnValues:object];
+        [self _executeUpdate:stmt withArgumentsInArray:params];
+    });
+}
+
+- (void)updateObjects:(NSArray *)objectList ofClass:(Class)modelClass
+{
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+
+        NSString *stmt = [MTLFMDBAdapter updateStatementForModelClass:modelClass];
+        for (id obj in objectList)
+        {
+            NSArray *params = [MTLFMDBAdapter columnValues:obj];
+            [self _executeUpdate:stmt withArgumentsInArray:params];
+        }
+    });
+}
+
+- (void)updateObject:(id)object ofClass:(Class)modelClass
+{
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+
+        NSString *stmt = [MTLFMDBAdapter updateStatementForModelClass:modelClass];
+        NSArray *params = [MTLFMDBAdapter columnValues:object];
+        [self _executeUpdate:stmt withArgumentsInArray:params];
     });
 }
 
@@ -144,10 +169,11 @@ static NSString *const SELECT_KEY_SQL = @"SELECT * FROM %@ WHERE %@ = ? ORDER BY
     return result;
 }
 
-- (JYUser *)userOfId:(NSNumber *)userid
+- (NSMutableArray *)selectFriends
 {
-    NSArray *array = [self _executeSelect:@"" keyId:userid ofClass:JYUser.class];
-    return [array count] == 0? nil: array[0];
+    NSString *sql = [NSString stringWithFormat:SELECT_ALL_SQL, @"friend"];
+    NSMutableArray *result = [self _executeSelect:sql ofClass:JYUser.class];
+    return result;
 }
 
 - (void)setMinCommentIdInDB:(NSNumber *)minCommentIdInDB
@@ -204,6 +230,25 @@ static NSString *const SELECT_KEY_SQL = @"SELECT * FROM %@ WHERE %@ = ? ORDER BY
     __block NSMutableArray * result = [NSMutableArray array];
     [_dbQueue inDatabase:^(FMDatabase *db) {
         FMResultSet * rs = [db executeQuery:sql, keyId];
+        while ([rs next]) {
+            NSError *error = nil;
+            id item = [MTLFMDBAdapter modelOfClass:modelClass fromFMResultSet:rs error:&error];
+            if (!error)
+            {
+                [result addObject:item];
+            }
+        }
+        [rs close];
+    }];
+
+    return result;
+}
+
+- (NSMutableArray *)_executeSelect:(NSString *)sql ofClass:(Class)modelClass
+{
+    __block NSMutableArray * result = [NSMutableArray array];
+    [_dbQueue inDatabase:^(FMDatabase *db) {
+        FMResultSet * rs = [db executeQuery:sql];
         while ([rs next]) {
             NSError *error = nil;
             id item = [MTLFMDBAdapter modelOfClass:modelClass fromFMResultSet:rs error:&error];

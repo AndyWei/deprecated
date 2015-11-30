@@ -19,7 +19,6 @@
 
 - (NSString *)messageDisplayString;
 - (NSString *)messageMediaURL;
-- (NSString *)personIdString;
 - (NSString *)pureNumberString;
 - (uint64_t)uint64Value;
 

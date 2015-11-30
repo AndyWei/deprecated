@@ -10,9 +10,9 @@
 
 + (JYFilename *)sharedInstance;
 
-- (NSString *)URLPrefixOfRegion:(NSString *)region;
+- (NSString *)avatarURLPrefixOfRegion:(NSString *)region;
+- (NSString *)postURLPrefixOfRegion:(NSString *)region;
 
-- (NSString *)newAvatarFilename;
 - (NSString *)randomFourDigits;
 - (NSString *)randomFilenameWithHttpContentType:(NSString *)contentType;
 - (NSString *)randomFilenameWithSuffix:(NSString *)suffix;

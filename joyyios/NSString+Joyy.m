@@ -156,12 +156,6 @@
     return number.unsignedLongLongValue;
 }
 
-- (NSString *)personIdString
-{
-    NSArray *parts = [self componentsSeparatedByString:@"@"];
-    return parts[0];
-}
-
 - (NSString *)messageDisplayString
 {
     if ([self hasPrefix:kMessageBodyTypeText])

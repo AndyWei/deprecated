@@ -371,7 +371,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
         return;
     }
     
-    [[JYLocalDataManager sharedInstance] saveObjects:@[post] ofClass:JYPost.class];
+    [[JYLocalDataManager sharedInstance] insertObjects:@[post] ofClass:JYPost.class];
 
     self.newestPostId = post.postId;
 
@@ -392,7 +392,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
         return;
     }
 
-    [[JYLocalDataManager sharedInstance] saveObjects:postList ofClass:JYPost.class];
+    [[JYLocalDataManager sharedInstance] insertObjects:postList ofClass:JYPost.class];
 
     JYPost *newestPost = self.postList[0];
     self.newestPostId = newestPost.postId;
@@ -418,7 +418,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
         return;
     }
 
-    [[JYLocalDataManager sharedInstance] saveObjects:postList ofClass:JYPost.class];
+    [[JYLocalDataManager sharedInstance] insertObjects:postList ofClass:JYPost.class];
 
     NSNumber *sinceId = ((JYPost *)[postList lastObject]).postId;
     NSNumber *beforeId = [JYLocalDataManager sharedInstance].minCommentIdInDB;
@@ -535,21 +535,34 @@ static NSString *const kPostCellIdentifier = @"postCell";
     [self _networkThreadBegin];
 
     AFHTTPSessionManager *manager = [AFHTTPSessionManager managerWithToken];
-    NSString *url = [NSString apiURLWithPath:@"post/like"];
-    NSDictionary *parameters = @{@"id": post.postId};
+    NSString *url = [NSString apiURLWithPath:@"post/comment/create"];
+    NSDictionary *parameters = @{
+                                   @"postid": post.postId,
+                                   @"posterid": post.ownerId,
+                                   @"replytoid": @(0),
+                                   @"content": kLikeText
+                               };
 
     __weak typeof(self) weakSelf = self;
     [manager POST:url
        parameters:parameters
           success:^(NSURLSessionTask *operation, id responseObject) {
-              //             NSLog(@"post/like POST success responseObject: %@", responseObject);
+              NSLog(@"like post like success responseObject: %@", responseObject);
 
-//              NSDictionary *dict = (NSDictionary *)responseObject;
-//              post.likeCount = [[dict objectForKey:@"likes"] unsignedIntegerValue];
+              NSDictionary *dict = (NSDictionary *)responseObject;
+              NSError *error = nil;
+              JYComment *comment = (JYComment *)[MTLJSONAdapter modelOfClass:JYComment.class fromJSONDictionary:dict error:&error];
+
+              // FBKVObserver can only detect array change, not array elements change, so generate a new array to trigger the observer
+              NSMutableArray *commentList = [NSMutableArray arrayWithArray:post.commentList];
+              [commentList addObject:comment];
+              post.commentList = commentList;
+
               post.isLiked = YES;
               [weakSelf _networkThreadEnd];
           }
           failure:^(NSURLSessionTask *operation, NSError *error) {
+              NSLog(@"like post like failed with error: %@", error);
               [weakSelf _networkThreadEnd];
           }
      ];
@@ -717,7 +730,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
                        [commentList addObject:comment];
                   }
              }
-             [[JYLocalDataManager sharedInstance] saveObjects:commentList ofClass:JYComment.class];
+             [[JYLocalDataManager sharedInstance] insertObjects:commentList ofClass:JYComment.class];
              [weakSelf _refreshComments];
              [weakSelf _networkThreadEnd];
          }

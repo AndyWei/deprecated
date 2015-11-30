@@ -9,6 +9,7 @@
 #import <TTTAttributedLabel/TTTAttributedLabel.h>
 
 #import "JYComment.h"
+#import "JYFriendsManager.h"
 #import "JYPostCommentView.h"
 #import "NSDate+Joyy.h"
 
@@ -65,10 +66,13 @@
 
     for (JYComment *comment in commentList)
     {
-        TTTAttributedLabel *label = [self _createCommentLabel];
-        label.text = comment.displayText;
-        [self.commentLabels addObject:label];
-        [self addSubview:label];
+        if (![kLikeText isEqualToString:comment.content]) // not a like
+        {
+            TTTAttributedLabel *label = [self _createCommentLabel];
+            label.text = [self _displayTextOfComment:comment];
+            [self.commentLabels addObject:label];
+            [self addSubview:label];
+        }
     }
 }
 
@@ -93,6 +97,25 @@
     label.lineBreakMode = NSLineBreakByWordWrapping;
 
     return label;
+}
+
+- (NSString *)_displayTextOfComment:(JYComment *)comment
+{
+    NSString *displayText = nil;
+
+    JYUser *user = [[JYFriendsManager sharedInstance] userOfId:comment.ownerId];
+    JYUser *replyTo = ([comment.replyToId unsignedLongLongValue] == 0) ? nil: [[JYFriendsManager sharedInstance] userOfId:comment.replyToId];
+    NSString *replyText = NSLocalizedString(@"reply", nil);
+    if (replyTo)
+    {
+        displayText = [NSString stringWithFormat:@"%@ %@ %@: %@", user.username, replyText, replyTo.username, comment.content];
+    }
+    else
+    {
+        displayText = [NSString stringWithFormat:@"%@: %@", user.username, comment.content];
+    }
+
+    return displayText;
 }
 
 @end

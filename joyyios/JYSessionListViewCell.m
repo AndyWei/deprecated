@@ -9,8 +9,9 @@
 #import <AFNetworking/UIImageView+AFNetworking.h>
 #import <TTTAttributedLabel/TTTAttributedLabel.h>
 
-#import "JYSessionListViewCell.h"
+#import "JYFriendsManager.h"
 #import "JYMessageDateFormatter.h"
+#import "JYSessionListViewCell.h"
 
 static const CGFloat kAvatarImageWidth = 70;
 static const CGFloat kTimeLabelWidth = 80;
@@ -46,16 +47,7 @@ static const CGFloat kTimeLabelWidth = 80;
     _contact = contact;
     self.messageLabel.text = [_contact.mostRecentMessageBody messageDisplayString];
     self.timeLabel.text = [[JYMessageDateFormatter sharedInstance] autoStringFromDate:_contact.mostRecentMessageTimestamp];
-
-    NSString *idString = [_contact.bareJidStr personIdString];
-
-    __weak typeof(self) weakSelf = self;
-    [[JYDataStore sharedInstance] getUserWithIdString:idString success:^(JYUser *person) {
-
-        weakSelf.person = person;
-    } failure:^(NSError *error) {
-        NSLog(@"Failure: getPersonWithIdString error: %@", error);
-    }];
+    self.person = [[JYFriendsManager sharedInstance] userOfBareJid:_contact.bareJidStr];
 }
 
 - (void)setPerson:(JYUser *)person
@@ -72,8 +64,8 @@ static const CGFloat kTimeLabelWidth = 80;
     [self.avatarView setImageWithURLRequest:request
                            placeholderImage:nil
                                     success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
-                                        weakSelf.person.avatarImage = image;
                                         weakSelf.avatarView.image = image;
+                                        weakSelf.person.avatarImage = image;
 
                                    } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
                                         NSLog(@"setImageWithURLRequest response = %@", response);

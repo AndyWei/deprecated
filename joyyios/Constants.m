@@ -49,6 +49,8 @@ NSString *const kContentTypeJPG = @"image/jpeg";
 NSString *const kDummyCaptionText = @"◦";
 NSString *const kErrorSignInFailed = @"Incorrect password";
 NSString *const kErrorTitle = @"😜: oops!";
+NSString *const kLikeText = @"💙";
+
 
 NSString *const kMessageDomain = @"winkrock.com";
 NSString *const kMessageResource = @"iPhone";

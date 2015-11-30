@@ -7,7 +7,7 @@
 //
 
 #import <JSQMessagesViewController/JSQMessages.h>
-
+#import "JYFriend.h"
 
 @interface JYSessionViewController : JSQMessagesViewController
 

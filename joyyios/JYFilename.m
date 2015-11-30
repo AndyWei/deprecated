@@ -16,7 +16,8 @@
 @property (nonatomic) NSDictionary *bucketPrefixDict;
 @property (nonatomic) NSDictionary *countryContinetDict;
 @property (nonatomic) NSDictionary *continetRegionDict;
-@property (nonatomic) NSDictionary *regionURLDict;
+@property (nonatomic) NSDictionary *regionPostURLDict;
+@property (nonatomic) NSDictionary *regionAvatarURLDict;
 @property (nonatomic) NSString *bucketPrefix;
 @property (nonatomic) NSString *continent;
 @end
@@ -34,15 +35,6 @@
     });
 
     return _sharedInstance;
-}
-
-- (NSString *)newAvatarFilename
-{
-    NSString *timestamp = [self timeInMiliSeconds];
-
-    u_int32_t rand = arc4random_uniform(1000);                        // 176
-    NSString *randString = [NSString stringWithFormat:@"%03d", rand];  // "0176"
-    return [timestamp stringByAppendingString:randString];
 }
 
 - (NSString *)randomFilenameWithHttpContentType:(NSString *)contentType
@@ -147,23 +139,42 @@
     return _postBucketName;
 }
 
-- (NSString *)URLPrefixOfRegion:(NSString *)region
+- (NSString *)avatarURLPrefixOfRegion:(NSString *)region
 {
-    return self.regionURLDict[region];
+    return self.regionAvatarURLDict[region];
 }
 
-// Mapping region value to URL prefix
-- (NSDictionary *)regionURLDict
+- (NSString *)postURLPrefixOfRegion:(NSString *)region
 {
-    if (!_regionURLDict)
+    return self.regionPostURLDict[region];
+}
+
+// Mapping region value to post URL prefix
+- (NSDictionary *)regionAvatarURLDict
+{
+    if (!_regionAvatarURLDict)
     {
-        _regionURLDict = @{
+        _regionAvatarURLDict = @{
+                               @"0": @"http://joyyavatar-1d98.kxcdn.com/", // north america keyCDN zone
+                               @"1": @"http://asjyavatar-1d98.kxcdn.com/", // asia keyCDN zone
+                               @"2": @"http://eujyavatar-1d98.kxcdn.com/"  // europe keyCDN zone
+                               };
+    }
+    return _regionAvatarURLDict;
+}
+
+// Mapping region value to post URL prefix
+- (NSDictionary *)regionPostURLDict
+{
+    if (!_regionPostURLDict)
+    {
+        _regionPostURLDict = @{
                            @"0": @"http://joyypost-1d98.kxcdn.com/", // north america keyCDN zone
                            @"1": @"http://asjypost-1d98.kxcdn.com/", // asia keyCDN zone
                            @"2": @"http://eujypost-1d98.kxcdn.com/"  // europe keyCDN zone
                           };
     }
-    return _regionURLDict;
+    return _regionPostURLDict;
 }
 
 - (NSString *)region

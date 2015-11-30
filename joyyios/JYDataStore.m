@@ -40,56 +40,6 @@ NSString *const kTableNameUser = @"user_table";
     return _store;
 }
 
-- (void)getUserWithIdString:(NSString *)idString
-                      success:(void (^)(JYUser *user))success
-                      failure:(void (^)(NSError *error))failure
-{
-    // input check
-    if (!idString || [idString uint64Value] == 0)
-    {
-        NSError *error = [NSError errorWithDomain:@"JYDataStore" code:0 userInfo:nil];
-        return failure(error);
-    }
-
-    // local lookup
-    NSDictionary *userDict = [self.store getObjectById:idString fromTable:kTableNameUser];
-    if (userDict)
-    {
-        JYUser *user = [[JYUser alloc] initWithDictionary:userDict];
-        return success(user);
-    }
-
-    // fetch from server
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager managerWithToken];
-    NSString *url = [NSString apiURLWithPath:@"user"];
-    NSDictionary *parameters =  @{ @"id": @[idString] };
-
-    __weak typeof(self) weakSelf = self;
-    [manager GET:url
-      parameters:parameters
-         success:^(NSURLSessionTask *operation, id responseObject) {
-             NSLog(@"Success: JYDataStore fetch user responseObject: %@", responseObject);
-
-             NSDictionary *dict = [responseObject firstObject];
-             if (dict)
-             {
-                 [weakSelf.store putObject:dict withId:idString intoTable:kTableNameUser];
-                 JYUser *user = [[JYUser alloc] initWithDictionary:dict];
-                 return success(user);
-             }
-             else
-             {
-                 NSError *error = [NSError errorWithDomain:@"JYDataStore" code:1 userInfo:nil];
-                 return failure(error);
-             }
-         }
-         failure:^(NSURLSessionTask *operation, NSError *error) {
-             NSLog(@"Failure: JYDataStore fetch user error: %@", error);
-             return failure(error);
-         }
-     ];
-}
-
 // IntroductionVersion
 - (void)setPresentedIntroductionVersion:(CGFloat)version
 {

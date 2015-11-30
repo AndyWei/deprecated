@@ -12,12 +12,14 @@
 
 + (JYLocalDataManager *)sharedInstance;
 - (void)start;
-- (void)saveJsonArray:(NSArray *)array ofClass:(Class)modelClass;
-- (void)saveObjects:(NSArray *)objectList ofClass:(Class)modelClass;
+- (void)insertObjects:(NSArray *)objectList ofClass:(Class)modelClass;
+- (void)insertObject:(id)object ofClass:(Class)modelClass;
+- (void)updateObjects:(NSArray *)objectList ofClass:(Class)modelClass;
+- (void)updateObject:(id)object ofClass:(Class)modelClass;
 
 - (NSMutableArray *)selectPostsSinceId:(NSNumber *)minId beforeId:(NSNumber *)maxId;
 - (NSMutableArray *)selectCommentsOfPostId:(NSNumber *)postId;
-- (JYUser *)userOfId:(NSNumber *)userid;
+- (NSMutableArray *)selectFriends;
 
 @property (nonatomic) NSNumber *minCommentIdInDB;
 @property (nonatomic) NSNumber *maxCommentIdInDB;

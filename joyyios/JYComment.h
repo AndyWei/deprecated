@@ -12,7 +12,6 @@
 @interface JYComment : MTLModel <MTLJSONSerializing, MTLFMDBSerializing>
 
 @property(nonatomic, readonly, copy) NSString *content;
-@property(nonatomic, readonly, copy) NSString *displayText;
 @property(nonatomic, readonly) NSNumber *commentId;
 @property(nonatomic, readonly) NSNumber *ownerId;
 @property(nonatomic, readonly) NSNumber *postId;

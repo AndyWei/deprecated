@@ -78,7 +78,7 @@
         }
 
         NSString *region = array[0];
-        NSString *prefix = [[JYFilename sharedInstance] URLPrefixOfRegion:region];
+        NSString *prefix = [[JYFilename sharedInstance] postURLPrefixOfRegion:region];
         NSString *filename = array[1];
         _URL = [prefix stringByAppendingString:filename];
     }

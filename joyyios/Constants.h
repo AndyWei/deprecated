@@ -47,6 +47,7 @@ extern NSString *const kContentTypeJPG;
 extern NSString *const kDummyCaptionText;
 extern NSString *const kErrorSignInFailed;
 extern NSString *const kErrorTitle;
+extern NSString *const kLikeText;
 extern NSString *const kMessageDomain;
 extern NSString *const kMessageResource;
 extern NSString *const kMessageBodyTypeAudio;

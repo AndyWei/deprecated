@@ -11,6 +11,7 @@
 
 #import "JYLocationManager.h"
 #import "JYUser.h"
+#import "JYYRS.h"
 
 @interface JYLocationManager () <CLLocationManagerDelegate, UIAlertViewDelegate>
 @property (nonatomic) CLLocationManager *manager;
@@ -190,8 +191,8 @@ NSString *const kZip = @"location_zip";
 
 - (void)_appearInZip:(NSString *)zip country:(NSString *)countryCode
 {
-    NSNumber *yrs = [JYCredential current].yrs;
-    NSDictionary *parameters = @{ @"zip": zip, @"country": countryCode, @"yrs": yrs };
+    uint64_t yrs = [[JYCredential current].yrs unsignedIntegerValue];
+    NSDictionary *parameters = @{ @"zip": zip, @"country": countryCode, @"yrs": @(yrs) };
     NSString *url = [NSString apiURLWithPath:@"user/appear"];
     AFHTTPSessionManager *manager = [AFHTTPSessionManager managerWithToken];
 

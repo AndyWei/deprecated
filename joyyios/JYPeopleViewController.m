@@ -448,12 +448,13 @@ const CGFloat kButtonWidth = 60;
     [manager GET:url
       parameters:parameters
          success:^(NSURLSessionTask *operation, id responseObject) {
-//             NSLog(@"fetch person by ids success responseObject: %@", responseObject);
+             NSLog(@"fetch person by ids success responseObject: %@", responseObject);
 
              for (NSDictionary *dict in responseObject)
              {
-                 JYUser *person = [[JYUser alloc] initWithDictionary:dict];
-                 [weakSelf.personList addObject:person];
+                 NSError *error = nil;
+                 JYUser *user = (JYUser *)[MTLJSONAdapter modelOfClass:JYUser.class fromJSONDictionary:dict error:&error];
+                 [weakSelf.personList addObject:user];
              }
              [weakSelf _loadCards];
              [weakSelf _networkThreadEnd];
