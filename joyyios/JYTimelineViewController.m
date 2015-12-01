@@ -293,10 +293,9 @@ static NSString *const kPostCellIdentifier = @"postCell";
 
     // Handling and upload the photo
     UIImage *image = [UIImage imageWithImage:photo scaledToSize:CGSizeMake(kPhotoWidth, kPhotoWidth)];
-    NSData *imageData = UIImageJPEGRepresentation(image, kPhotoQuality);
 
     [self _fetchNewPost]; // make sure timeline is refreshed before create new post
-    [self _createPostWithMediaData:imageData contentType:kContentTypeJPG caption:caption];
+    [self _createPostWithImage:image contentType:kContentTypeJPG caption:caption];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
@@ -433,10 +432,12 @@ static NSString *const kPostCellIdentifier = @"postCell";
 
 #pragma mark - AWS S3
 
-- (void)_createPostWithMediaData:(NSData *)data contentType:(NSString *)contentType caption:(NSString *)caption
+- (void)_createPostWithImage:(UIImage *)image contentType:(NSString *)contentType caption:(NSString *)caption
 {
     NSURL *fileURL = [NSURL fileURLWithPath:[NSTemporaryDirectory() stringByAppendingPathComponent:@"timeline"]];
-    [data writeToURL:fileURL atomically:YES];
+
+    NSData *imageData = UIImageJPEGRepresentation(image, kPhotoQuality);
+    [imageData writeToURL:fileURL atomically:YES];
 
     NSString *s3filename = [[JYFilename sharedInstance] randomFilenameWithHttpContentType:contentType];
     NSString *s3region = [JYFilename sharedInstance].region;
@@ -481,7 +482,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
         {
             AWSS3TransferManagerUploadOutput *uploadOutput = task.result;
             NSLog(@"Success: AWSS3TransferManager upload task.result = %@", uploadOutput);
-            [weakSelf _createPostRecordWithS3URL:s3url caption:caption];
+            [weakSelf _createPostRecordWithS3URL:s3url caption:caption localImage:image];
         }
         return nil;
     }];
@@ -489,7 +490,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
 
 #pragma mark - Network
 
-- (void)_createPostRecordWithS3URL:(NSString *)s3url caption:(NSString *)caption
+- (void)_createPostRecordWithS3URL:(NSString *)s3url caption:(NSString *)caption localImage:(UIImage *)image
 {
     [self _networkThreadBegin];
 
@@ -505,6 +506,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
         NSLog(@"Success: post/create response = %@", responseObject);
         NSError *error = nil;
         JYPost *post = (JYPost *)[MTLJSONAdapter modelOfClass:JYPost.class fromJSONDictionary:responseObject error:&error];
+        post.localImage = image;
         [weakSelf _createdNewPost:post];
         [weakSelf _networkThreadEnd];
 

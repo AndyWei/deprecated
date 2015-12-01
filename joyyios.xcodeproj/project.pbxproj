@@ -736,14 +736,14 @@
 				D67DD0F71B7728E300333626 /* JYAvatar.m */,
 				D61D1DE41B536B2700DE37DF /* JYPostViewCell.h */,
 				D61D1DE51B536B2700DE37DF /* JYPostViewCell.m */,
+				D6D622541C0D317E0039C4A7 /* JYMediaView.h */,
+				D6D622551C0D317E0039C4A7 /* JYMediaView.m */,
 				D6903D081C07A9C200CDC64F /* JYPosterView.h */,
 				D6903D091C07A9C200CDC64F /* JYPosterView.m */,
 				D6903D0B1C07C84E00CDC64F /* JYPostActionView.h */,
 				D6903D0C1C07C84E00CDC64F /* JYPostActionView.m */,
 				D6903D0E1C07CFE000CDC64F /* JYPostCommentView.h */,
 				D6903D0F1C07CFE000CDC64F /* JYPostCommentView.m */,
-				D6D622541C0D317E0039C4A7 /* JYMediaView.h */,
-				D6D622551C0D317E0039C4A7 /* JYMediaView.m */,
 			);
 			name = View;
 			sourceTree = "<group>";

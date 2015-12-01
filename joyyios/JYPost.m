@@ -39,6 +39,7 @@
              @"caption": @"caption",
              @"URL": [NSNull null],
              @"commentList": [NSNull null],
+             @"localImage": [NSNull null],
              @"isLiked": [NSNull null]
              };
 }

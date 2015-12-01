@@ -68,15 +68,16 @@
 - (void)_updatePhoto
 {
     // Fetch network image
-    NSURL *url = [NSURL URLWithString:_post.URL];
+    NSURL *url = [NSURL URLWithString:self.post.URL];
     NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestReturnCacheDataElseLoad timeoutInterval:5];
 
     __weak typeof(self) weakSelf = self;
     [self.photoView setImageWithURLRequest:request
-                          placeholderImage:nil
+                          placeholderImage:self.post.localImage
                                    success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
                                        weakSelf.photoView.image = image;
                                        weakSelf.photoView.alpha = 0;
+                                       weakSelf.post.localImage = nil;
                                        [UIView animateWithDuration:0.5 animations:^{
                                            weakSelf.photoView.alpha = 1;
                                        }];

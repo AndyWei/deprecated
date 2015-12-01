@@ -20,6 +20,7 @@
 @property(nonatomic, readonly, copy) NSString *URL;
 
 @property(nonatomic) NSMutableArray *commentList;
+@property(nonatomic) UIImage *localImage;
 @property(nonatomic) BOOL isLiked;
 
 @end
