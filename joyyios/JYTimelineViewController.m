@@ -537,8 +537,8 @@ static NSString *const kPostCellIdentifier = @"postCell";
     AFHTTPSessionManager *manager = [AFHTTPSessionManager managerWithToken];
     NSString *url = [NSString apiURLWithPath:@"post/comment/create"];
     NSDictionary *parameters = @{
-                                   @"postid": post.postId,
-                                   @"posterid": post.ownerId,
+                                   @"postid": @([post.postId unsignedLongLongValue]),
+                                   @"posterid": @([post.ownerId unsignedLongLongValue]),
                                    @"replytoid": @(0),
                                    @"content": kLikeText
                                };

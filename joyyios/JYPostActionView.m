@@ -80,12 +80,10 @@ static const CGFloat kButtonSpace = -20;
 {
     if (self.post.isLiked)
     {
-        self.likeButton.imageView.image = [UIImage imageNamed:@"heart_selected"];
         self.likeButton.tintColor = JoyyBlue;
     }
     else
     {
-        self.likeButton.imageView.image = [UIImage imageNamed:@"heart"];
         self.likeButton.tintColor = JoyyGray;
     }
 }
@@ -94,7 +92,7 @@ static const CGFloat kButtonSpace = -20;
 {
     if (!_commentButton)
     {
-        _commentButton = [self _createButtonWithImage:[UIImage imageNamed:@"comment"]];
+        _commentButton = [self _buttonWithImage:[UIImage imageNamed:@"comment"]];
         _commentButton.contentEdgeInsets = UIEdgeInsetsMake(9, 8, 7, 8);
         [_commentButton addTarget:self action:@selector(_comment) forControlEvents:UIControlEventTouchUpInside];
     }
@@ -105,7 +103,7 @@ static const CGFloat kButtonSpace = -20;
 {
     if (!_likeButton)
     {
-        _likeButton = [self _createButtonWithImage:[UIImage imageNamed:@"heart"]];
+        _likeButton = [self _buttonWithNormalImage:[UIImage imageNamed:@"heart"] selectedImage:[UIImage imageNamed:@"heart_selected"]];
         _likeButton.contentEdgeInsets = UIEdgeInsetsMake(8, 8, 8, 8);
         [_likeButton addTarget:self action:@selector(_like) forControlEvents:UIControlEventTouchUpInside];
     }
@@ -133,15 +131,26 @@ static const CGFloat kButtonSpace = -20;
     [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationWillLikePost object:nil userInfo:info];
 }
 
-- (UIButton *)_createButtonWithImage:(UIImage *)originalImage
+- (UIButton *)_buttonWithNormalImage:(UIImage *)normalImage selectedImage:(UIImage *)selectedImage
 {
     UIButton *button = [UIButton newAutoLayoutView];
-    UIImage *image = [originalImage imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    UIImage *image = [normalImage imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     [button setImage:image forState:UIControlStateNormal];
-    button.tintColor = JoyyGray;
-    [button configureForAutoLayout];
 
+    image = [selectedImage imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    [button setImage:image forState:UIControlStateSelected];
+
+    button.tintColor = JoyyGray;
     return button;
 }
 
+- (UIButton *)_buttonWithImage:(UIImage *)normalImage
+{
+    UIButton *button = [UIButton newAutoLayoutView];
+    UIImage *image = [normalImage imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    [button setImage:image forState:UIControlStateNormal];
+
+    button.tintColor = JoyyGray;
+    return button;
+}
 @end
