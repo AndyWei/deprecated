@@ -61,6 +61,26 @@
         [self.contentView addSubview:self.actionView];
         [self.contentView addSubview:self.likesLabel];
         [self.contentView addSubview:self.commentView];
+
+        NSDictionary *views = @{
+                                @"posterView": self.posterView,
+                                @"mediaView": self.mediaView,
+                                @"actionView": self.actionView,
+                                @"likesLabel": self.likesLabel,
+                                @"commentView": self.commentView
+                              };
+        NSDictionary *metrics = @{
+                                  @"sw":@(SCREEN_WIDTH)
+                                  };
+
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[posterView]-0-|" options:0 metrics:metrics views:views]];
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[mediaView]-0-|" options:0 metrics:metrics views:views]];
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[actionView]-0-|" options:0 metrics:metrics views:views]];
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[likesLabel]-0-|" options:0 metrics:metrics views:views]];
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[commentView]-0-|" options:0 metrics:metrics views:views]];
+
+        NSString *format = @"V:|-0@500-[posterView(40)][mediaView(sw)][actionView(40)][likesLabel][commentView]-0@500-|";
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:format options:0 metrics:metrics views:views]];
     }
     return self;
 }
@@ -86,47 +106,18 @@
     [self.observer unobserve:post];
 }
 
-- (void)updateConstraints
+- (void)layoutSubviews
 {
-    if (self.didSetupConstraints)
-    {
-        [super updateConstraints];
-        return;
-    }
+    [super layoutSubviews];
 
-    self.contentView.bounds = CGRectMake(0.0f, 0.0f, 99999.0f, 99999.0f);
+    // Make sure the contentView does a layout pass here so that its subviews have their frames set, which we
+    // need to use to set the preferredMaxLayoutWidth below.
+    [self.contentView setNeedsLayout];
+    [self.contentView layoutIfNeeded];
 
-    // size
-    [@[self.posterView, self.actionView] autoSetViewsDimension:ALDimensionHeight toSize:40];
-    [@[self.mediaView] autoSetViewsDimension:ALDimensionHeight toSize:SCREEN_WIDTH];
-
-    NSArray *views = @[self.posterView, self.mediaView, self.actionView, self.likesLabel, self.commentView];
-
-    // layout
-    [[views firstObject] autoPinEdgeToSuperviewEdge:ALEdgeTop];
-    UIView *previousView = nil;
-    for (UIView *view in views)
-    {
-        [view autoPinEdgeToSuperviewEdge:ALEdgeLeft];
-        [view autoPinEdgeToSuperviewEdge:ALEdgeRight];
-
-        if (previousView)
-        {
-            [view autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:previousView withOffset:0 relation:NSLayoutRelationGreaterThanOrEqual];
-        }
-        previousView = view;
-    }
-    [[views lastObject] autoPinEdge:ALEdgeBottom toEdge:ALEdgeBottom ofView:self.contentView withOffset:0.5 relation:NSLayoutRelationGreaterThanOrEqual];
-
-//    [self.posterView autoPinEdgeToSuperviewEdge:ALEdgeTop];
-//    [self.mediaView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.posterView withOffset:0 relation:NSLayoutRelationEqual];
-//    [self.actionView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.mediaView withOffset:0 relation:NSLayoutRelationEqual];
-//    [self.likesLabel autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.actionView withOffset:0 relation:NSLayoutRelationEqual];
-//    [self.commentView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.likesLabel withOffset:0 relation:NSLayoutRelationEqual];
-//    [self.commentView autoPinEdge:ALEdgeBottom toEdge:ALEdgeBottom ofView:self.contentView withOffset:0.5 relation:NSLayoutRelationGreaterThanOrEqual];
-
-    self.didSetupConstraints = YES;
-    [super updateConstraints];
+    // Set the preferredMaxLayoutWidth of the mutli-line bodyLabel based on the evaluated width of the label's frame,
+    // as this will allow the text to wrap correctly, and as a result allow the label to take on the correct height.
+    self.likesLabel.preferredMaxLayoutWidth = CGRectGetWidth(self.likesLabel.frame);
 }
 
 - (void)setPost:(JYPost *)post
@@ -151,8 +142,7 @@
     self.posterView.post = post;
     self.mediaView.post = post;
     self.actionView.post = post;
-    [self _updateLikesLabel];
-    self.commentView.commentList = post.commentList;
+    [self _updateCommentsAndLikes];
 
     [self _startObserve:post];
 }
@@ -193,7 +183,7 @@
 {
     if (!_posterView)
     {
-        _posterView = [JYPosterView newAutoLayoutView];
+        _posterView = [[JYPosterView alloc] init];
     }
     return _posterView;
 }
@@ -202,7 +192,7 @@
 {
     if (!_mediaView)
     {
-        _mediaView = [JYMediaView newAutoLayoutView];
+        _mediaView = [[JYMediaView alloc] init];
     }
     return _mediaView;
 }
@@ -211,7 +201,7 @@
 {
     if (!_actionView)
     {
-        _actionView = [JYPostActionView newAutoLayoutView];
+        _actionView = [[JYPostActionView alloc] init];
     }
     return _actionView;
 }
@@ -220,7 +210,8 @@
 {
     if (!_likesLabel)
     {
-        _likesLabel = [TTTAttributedLabel newAutoLayoutView];
+        _likesLabel = [[TTTAttributedLabel alloc] initWithFrame:CGRectZero];
+        _likesLabel.translatesAutoresizingMaskIntoConstraints = NO;
         _likesLabel.font = [UIFont systemFontOfSize:kFontSizeDetail];
         _likesLabel.backgroundColor = FlatBlue;
         _likesLabel.textColor = JoyyBlue;
@@ -232,7 +223,7 @@
 {
     if (!_commentView)
     {
-        _commentView = [JYPostCommentView newAutoLayoutView];
+        _commentView = [[JYPostCommentView alloc] init];
     }
     return _commentView;
 }

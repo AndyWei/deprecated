@@ -23,39 +23,30 @@
 @end
 
 
-static const CGFloat kButtonWidth = 40;
-static const CGFloat kButtonHeight = kButtonWidth;
-static const CGFloat kPostTimeLabelWidth = 50;
-
 @implementation JYPosterView
 
-+ (instancetype)newAutoLayoutView
+- (instancetype)init
 {
-    JYPosterView *view = [super newAutoLayoutView];
-    [view addSubview:view.avatarButton];
-    [view addSubview:view.posterNameLabel];
-    [view addSubview:view.postTimeLabel];
-    return view;
-}
-
-- (void)updateConstraints
-{
-    if (!self.didSetupConstraints)
+    if (self = [super init])
     {
-        // size
-        [self.avatarButton autoSetDimensionsToSize:CGSizeMake(kButtonWidth, kButtonHeight)];
-        [self.postTimeLabel autoSetDimensionsToSize:CGSizeMake(kPostTimeLabelWidth, kButtonHeight)];
-        [@[self.posterNameLabel, self.postTimeLabel] autoSetViewsDimension:ALDimensionHeight toSize:kButtonHeight];
+        self.translatesAutoresizingMaskIntoConstraints = NO;
 
-        // layout
-        [self.avatarButton autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:kMarginLeft];
-        [self.postTimeLabel autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:kMarginRight];
-        [self.posterNameLabel autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:self.avatarButton withOffset:kMarginLeft];
-        [self.posterNameLabel autoPinEdge:ALEdgeRight toEdge:ALEdgeLeft ofView:self.postTimeLabel];
+        [self addSubview:self.avatarButton];
+        [self addSubview:self.posterNameLabel];
+        [self addSubview:self.postTimeLabel];
 
-        self.didSetupConstraints = YES;
+        NSDictionary *views = @{
+                                @"avatarButton": self.avatarButton,
+                                @"posterNameLabel": self.posterNameLabel,
+                                @"postTimeLabel": self.postTimeLabel
+                              };
+
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-8-[avatarButton(40)][posterNameLabel][postTimeLabel(50)]-8-|" options:0 metrics:nil views:views]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[avatarButton]|" options:0 metrics:nil views:views]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[posterNameLabel]|" options:0 metrics:nil views:views]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[postTimeLabel]|" options:0 metrics:nil views:views]];
     }
-    [super updateConstraints];
+    return self;
 }
 
 - (void)setPost:(JYPost *)post
@@ -94,7 +85,7 @@ static const CGFloat kPostTimeLabelWidth = 50;
                                                     weakSelf.avatarButton.imageView.image = image;
 
                                                 } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
-                                                    NSLog(@"setImageWithURLRequest failed with response = %@", response);
+                                                    NSLog(@"setImageWithURLRequest failed with error = %@", error);
                                                 }];
 }
 
@@ -102,11 +93,12 @@ static const CGFloat kPostTimeLabelWidth = 50;
 {
     if (!_avatarButton)
     {
-        UIButton *button = [UIButton newAutoLayoutView];
+        UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+        button.translatesAutoresizingMaskIntoConstraints = NO;
         [button addTarget:self action:@selector(_showProfile) forControlEvents:UIControlEventTouchUpInside];
         [button setImage:[UIImage imageNamed:@"wink"] forState:UIControlStateNormal];
         button.clipsToBounds = YES;
-        button.layer.cornerRadius = kButtonWidth/2;
+        button.layer.cornerRadius = 20;
         button.contentEdgeInsets = UIEdgeInsetsMake(4, 4, 4, 4);
 
         _avatarButton = button;
@@ -118,7 +110,8 @@ static const CGFloat kPostTimeLabelWidth = 50;
 {
     if (!_posterNameLabel)
     {
-        TTTAttributedLabel *label = [TTTAttributedLabel newAutoLayoutView];
+        TTTAttributedLabel *label = [[TTTAttributedLabel alloc] initWithFrame:CGRectZero];
+        label.translatesAutoresizingMaskIntoConstraints = NO;
         label.font = [UIFont systemFontOfSize:kFontSizeDetail];
         label.textColor = JoyyBlue;
         label.backgroundColor = JoyyWhitePure;
@@ -135,7 +128,8 @@ static const CGFloat kPostTimeLabelWidth = 50;
 {
     if (!_postTimeLabel)
     {
-        TTTAttributedLabel *label = [TTTAttributedLabel newAutoLayoutView];
+        TTTAttributedLabel *label = [[TTTAttributedLabel alloc] initWithFrame:CGRectZero];
+        label.translatesAutoresizingMaskIntoConstraints = NO;
         label.font = [UIFont systemFontOfSize:kFontSizeDetail];
         label.textColor = JoyyGray;
         label.backgroundColor = JoyyWhitePure;

@@ -10,8 +10,6 @@
 
 @interface JYPostActionView : UIView
 
-+ (instancetype)newAutoLayoutView;
-
 @property(nonatomic) JYPost *post;
 
 @end

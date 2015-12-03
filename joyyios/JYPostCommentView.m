@@ -14,45 +14,60 @@
 #import "NSDate+Joyy.h"
 
 @interface JYPostCommentView ()
-@property (nonatomic) BOOL didSetupConstraints;
 @property (nonatomic) NSMutableArray *commentLabels;
 @end
 
 @implementation JYPostCommentView
 
-+ (instancetype)newAutoLayoutView
+- (instancetype)init
 {
-    JYPostCommentView *view = [super newAutoLayoutView];
-    view.backgroundColor = FlatGreen;
-    return view;
-}
-
-- (void)updateConstraints
-{
-    if (self.didSetupConstraints || [self.commentLabels count] == 0)
+    if (self = [super init])
     {
-        [super updateConstraints];
-        return;
+        self.translatesAutoresizingMaskIntoConstraints = NO;
+        self.backgroundColor = FlatGreen;
+
+//        [self addSubview:self.likeButton];
+//        [self addSubview:self.commentButton];
+//
+//        NSDictionary *views = @{
+//                                @"commentButton": self.commentButton,
+//                                @"likeButton": self.likeButton
+//                                };
+//
+//        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[likeButton(40)]-40-[commentButton(40)]-10-|" options:0 metrics:nil views:views]];
+//        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[commentButton]|" options:0 metrics:nil views:views]];
+//        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[likeButton]|" options:0 metrics:nil views:views]];
+
     }
-
-    // size
-    [self.commentLabels autoMatchViewsDimension:ALDimensionWidth];
-
-    // layout
-    // Loop over the labels, attaching the top edge to the previous label's bottom edge
-    [[self.commentLabels firstObject] autoPinEdgeToSuperviewEdge:ALEdgeLeft];
-    TTTAttributedLabel *previousLabel = nil;
-    for (TTTAttributedLabel *label in self.commentLabels) {
-        if (previousLabel) {
-            [label autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:previousLabel];
-        }
-        previousLabel = label;
-    }
-    [[self.commentLabels lastObject] autoPinEdgeToSuperviewEdge:ALEdgeBottom];
-
-    self.didSetupConstraints = YES;
-    [super updateConstraints];
+    return self;
 }
+
+//- (void)updateConstraints
+//{
+//    if (self.didSetupConstraints || [self.commentLabels count] == 0)
+//    {
+//        [super updateConstraints];
+//        return;
+//    }
+//
+//    // size
+//    [self.commentLabels autoMatchViewsDimension:ALDimensionWidth];
+//
+//    // layout
+//    // Loop over the labels, attaching the top edge to the previous label's bottom edge
+//    [[self.commentLabels firstObject] autoPinEdgeToSuperviewEdge:ALEdgeLeft];
+//    TTTAttributedLabel *previousLabel = nil;
+//    for (TTTAttributedLabel *label in self.commentLabels) {
+//        if (previousLabel) {
+//            [label autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:previousLabel];
+//        }
+//        previousLabel = label;
+//    }
+//    [[self.commentLabels lastObject] autoPinEdgeToSuperviewEdge:ALEdgeBottom];
+//
+//    self.didSetupConstraints = YES;
+//    [super updateConstraints];
+//}
 
 - (void)setCommentList:(NSArray *)commentList
 {
@@ -88,7 +103,8 @@
 
 - (TTTAttributedLabel *)_createCommentLabel
 {
-    TTTAttributedLabel *label = [TTTAttributedLabel newAutoLayoutView];
+    TTTAttributedLabel *label = [[TTTAttributedLabel alloc] initWithFrame:CGRectZero];
+    label.translatesAutoresizingMaskIntoConstraints = NO;
     label.font = [UIFont systemFontOfSize:kFontSizeComment];
     label.textColor = JoyyBlack;
     label.backgroundColor = JoyyWhite;

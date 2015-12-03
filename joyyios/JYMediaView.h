@@ -10,8 +10,6 @@
 
 @interface JYMediaView : UIView
 
-+ (instancetype)newAutoLayoutView;
-
 @property(nonatomic) JYPost *post;
 
 @end

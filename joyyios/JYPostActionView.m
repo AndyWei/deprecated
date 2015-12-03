@@ -16,45 +16,33 @@
 #import "NSDate+Joyy.h"
 
 @interface JYPostActionView ()
-@property (nonatomic) BOOL didSetupConstraints;
 @property (nonatomic) BOOL likeButtonPressed;
 @property (nonatomic) UIButton *commentButton;
 @property (nonatomic) UIButton *likeButton;
 @end
 
-static const CGFloat kButtonWidth = 40;
-static const CGFloat kButtonHeight = kButtonWidth;
-static const CGFloat kButtonSpace = -20;
-
 @implementation JYPostActionView
 
-+ (instancetype)newAutoLayoutView
+- (instancetype)init
 {
-    JYPostActionView *view = [super newAutoLayoutView];
-    [view addSubview:view.likeButton];
-    [view addSubview:view.commentButton];
-
-    return view;
-}
-
-- (void)updateConstraints
-{
-    if (!self.didSetupConstraints)
+    if (self = [super init])
     {
-        // size
-        [self.likeButton autoSetDimensionsToSize:CGSizeMake(kButtonWidth, kButtonHeight)];
-        [self.commentButton autoSetDimensionsToSize:CGSizeMake(kButtonWidth, kButtonHeight)];
+        self.translatesAutoresizingMaskIntoConstraints = NO;
 
-        // layout
-        [self.likeButton autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:0];
-        [self.commentButton autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:0];
+        [self addSubview:self.likeButton];
+        [self addSubview:self.commentButton];
 
-        [self.likeButton autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:kMarginRight];
-        [self.commentButton autoPinEdge:ALEdgeRight toEdge:ALEdgeLeft ofView:self.likeButton withOffset:kButtonSpace];
+        NSDictionary *views = @{
+                                @"commentButton": self.commentButton,
+                                @"likeButton": self.likeButton
+                                };
 
-        self.didSetupConstraints = YES;
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(>=10)-[likeButton(40)]-40-[commentButton(40)]-10-|" options:0 metrics:nil views:views]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[commentButton]|" options:0 metrics:nil views:views]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[likeButton]|" options:0 metrics:nil views:views]];
+
     }
-    [super updateConstraints];
+    return self;
 }
 
 - (void)setPost:(JYPost *)post
@@ -133,7 +121,8 @@ static const CGFloat kButtonSpace = -20;
 
 - (UIButton *)_buttonWithNormalImage:(UIImage *)normalImage selectedImage:(UIImage *)selectedImage
 {
-    UIButton *button = [UIButton newAutoLayoutView];
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+    button.translatesAutoresizingMaskIntoConstraints = NO;
     UIImage *image = [normalImage imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     [button setImage:image forState:UIControlStateNormal];
 
@@ -146,7 +135,8 @@ static const CGFloat kButtonSpace = -20;
 
 - (UIButton *)_buttonWithImage:(UIImage *)normalImage
 {
-    UIButton *button = [UIButton newAutoLayoutView];
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+    button.translatesAutoresizingMaskIntoConstraints = NO;
     UIImage *image = [normalImage imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     [button setImage:image forState:UIControlStateNormal];
 

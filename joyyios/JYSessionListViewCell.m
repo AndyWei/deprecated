@@ -68,7 +68,7 @@ static const CGFloat kTimeLabelWidth = 80;
                                         weakSelf.friend.avatarImage = image;
 
                                    } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
-                                        NSLog(@"setImageWithURLRequest response = %@", response);
+                                        NSLog(@"setImageWithURLRequest failed with error = %@", error);
                                    }];
 }
 

@@ -13,37 +13,29 @@
 #import "JYPost.h"
 
 @interface JYMediaView ()
-@property (nonatomic) BOOL didSetupConstraints;
 @property (nonatomic) TTTAttributedLabel *captionLabel;
 @property (nonatomic) UIImageView *photoView;
 @end
 
 @implementation JYMediaView
 
-+ (instancetype)newAutoLayoutView
+- (instancetype)init
 {
-    JYMediaView *view = [super newAutoLayoutView];
-    [view addSubview:view.photoView];
-    [view addSubview:view.captionLabel];
-
-    return view;
-}
-
-- (void)updateConstraints
-{
-    if (!self.didSetupConstraints)
+    if (self = [super init])
     {
-        [self.photoView autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:0];
-        [self.photoView autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:0];
-        [self.photoView autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:0];
-        [self.photoView autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:0];
+        self.translatesAutoresizingMaskIntoConstraints = NO;
 
-        [self.captionLabel autoAlignAxisToSuperviewAxis:ALAxisVertical];
-        [self.captionLabel autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:10];
+        [self addSubview:self.photoView];
+        [self addSubview:self.captionLabel];
 
-        self.didSetupConstraints = YES;
+        NSDictionary *views = @{
+                                @"photoView": self.photoView
+                              };
+
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[photoView]-0-|" options:0 metrics:nil views:views]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[photoView]-0-|" options:0 metrics:nil views:views]];
     }
-    [super updateConstraints];
+    return self;
 }
 
 - (void)setPost:(JYPost *)post
@@ -82,18 +74,18 @@
                                            weakSelf.photoView.alpha = 1;
                                        }];
                                    } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
-                                       NSLog(@"setImageWithURLRequest response = %@", response);
+                                       NSLog(@"setImageWithURLRequest failed with error = %@", error);
                                    }];
 }
 
 - (void)_updateCaption
 {
     self.captionLabel.text = self.post.caption;
-    self.captionLabel.width = SCREEN_WIDTH;
-    self.captionLabel.preferredMaxLayoutWidth = SCREEN_WIDTH - kMarginLeft - kMarginRight;
-    self.captionLabel.textInsets = UIEdgeInsetsMake(0, kMarginLeft, 0, kMarginRight);
-    
+    self.captionLabel.width = SCREEN_WIDTH - 30;
+
     [self.captionLabel sizeToFit];
+    self.captionLabel.centerX = SCREEN_WIDTH/2;
+    self.captionLabel.y = SCREEN_WIDTH - self.captionLabel.height - 10;
 }
 
 - (UIImageView *)photoView
@@ -101,7 +93,7 @@
     if (!_photoView)
     {
         _photoView = [[UIImageView alloc] init];
-        [_photoView configureForAutoLayout];
+        _photoView.translatesAutoresizingMaskIntoConstraints = NO;
         _photoView.contentMode = UIViewContentModeScaleAspectFit;
     }
     return _photoView;
@@ -111,12 +103,17 @@
 {
     if (!_captionLabel)
     {
-        CGRect frame = CGRectMake(0, 0, SCREEN_WIDTH, 0);
-        _captionLabel = [[TTTAttributedLabel alloc] initWithFrame:frame];
+        _captionLabel = [[TTTAttributedLabel alloc] initWithFrame:CGRectZero];
+        _captionLabel.preferredMaxLayoutWidth = SCREEN_WIDTH - 30;
+        _captionLabel.textInsets = UIEdgeInsetsMake(0, kMarginLeft, 0, kMarginRight);
+
         _captionLabel.backgroundColor = JoyyBlack80;
         _captionLabel.textColor = JoyyWhite;
         _captionLabel.font = [UIFont systemFontOfSize:kFontSizeCaption];
         _captionLabel.textAlignment = NSTextAlignmentCenter;
+
+        _captionLabel.lineBreakMode = NSLineBreakByWordWrapping;
+        _captionLabel.numberOfLines = 0;
 
         _captionLabel.layer.cornerRadius = 4;
         _captionLabel.clipsToBounds = YES;

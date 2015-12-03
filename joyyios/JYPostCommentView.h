@@ -8,8 +8,6 @@
 
 @interface JYPostCommentView : UIView
 
-+ (instancetype)newAutoLayoutView;
-
 @property(nonatomic) NSArray *commentList;
 
 @end
