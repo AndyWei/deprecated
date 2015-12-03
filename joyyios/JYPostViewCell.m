@@ -79,7 +79,7 @@
         [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[likesLabel]-0-|" options:0 metrics:metrics views:views]];
         [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[commentView]-0-|" options:0 metrics:metrics views:views]];
 
-        NSString *format = @"V:|-0@500-[posterView(40)][mediaView(sw)][actionView(40)][likesLabel][commentView]-0@500-|";
+        NSString *format = @"V:|-0@500-[posterView(40)][mediaView(sw)][actionView(40)][likesLabel][commentView]-40@500-|";
         [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:format options:0 metrics:metrics views:views]];
     }
     return self;
@@ -212,8 +212,9 @@
     {
         _likesLabel = [[TTTAttributedLabel alloc] initWithFrame:CGRectZero];
         _likesLabel.translatesAutoresizingMaskIntoConstraints = NO;
-        _likesLabel.font = [UIFont systemFontOfSize:kFontSizeDetail];
-        _likesLabel.backgroundColor = FlatBlue;
+        _likesLabel.font = [UIFont systemFontOfSize:kFontSizeComment];
+        _likesLabel.textInsets = UIEdgeInsetsMake(0, 20, 0, kMarginRight);
+        _likesLabel.backgroundColor = JoyyWhitePure;
         _likesLabel.textColor = JoyyBlue;
     }
     return _likesLabel;

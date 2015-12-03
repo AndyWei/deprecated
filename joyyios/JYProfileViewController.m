@@ -625,7 +625,7 @@ const CGFloat kAvatarButtonWidth = kAvatarButtonHeight;
     NSUInteger region = [[JYFilename sharedInstance].region integerValue];
     NSUInteger yob = [self.yobTextField.text integerValue];
     JYYRS *yrs = [JYYRS yrsWithYob:yob region:region sex:self.sex];
-    [JYCredential current].yrs = [NSNumber numberWithUnsignedLongLong:yrs.value];
+    [JYCredential current].yrsValue = yrs.value;
     [parameters setObject:@(yrs.value) forKey:@"yrs"];
 
     return parameters;

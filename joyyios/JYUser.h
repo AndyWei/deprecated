@@ -12,21 +12,6 @@
 
 @interface JYUser : MTLModel <MTLJSONSerializing, MTLFMDBSerializing>
 
-//+ (JYUser *)me;
-//- (instancetype)initWithDictionary:(NSDictionary *)dict;
-//- (void)save:(NSDictionary *)dict;
-
-// Avatar
-//@property (nonatomic) UIImage *avatarImage;
-//@property (nonatomic, readonly) NSString *avatarFilename;
-
-//@property (nonatomic) NSUInteger phoneNumber;
-//@property (nonatomic) NSUInteger yearOfBirth;
-
-// The fields only for "me"
-//@property (nonatomic) NSString *cell;
-//@property (nonatomic) NSString *sexCell;
-
 @property (nonatomic) NSNumber *userId;
 @property (nonatomic) NSString *username;
 @property (nonatomic) NSString *avatarURL;

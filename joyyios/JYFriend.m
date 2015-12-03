@@ -50,4 +50,17 @@
     return @"friend";
 }
 
+#pragma mark - Lifecycle
+
++ (instancetype)myself
+{
+    JYFriend *_myself = [JYFriend new];
+    _myself.userId = [JYCredential current].userId;
+    _myself.username = [JYCredential current].username;
+    _myself.yrsValue = [JYCredential current].yrsValue;
+    _myself.phoneNumber = [[JYCredential current].phoneNumber uint64Value];
+
+    return _myself;
+}
+
 @end

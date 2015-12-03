@@ -172,7 +172,7 @@ static NSString *const SELECT_ALL_SQL = @"SELECT * FROM %@ ORDER BY id ASC";
 - (NSMutableArray *)selectFriends
 {
     NSString *sql = [NSString stringWithFormat:SELECT_ALL_SQL, @"friend"];
-    NSMutableArray *result = [self _executeSelect:sql ofClass:JYUser.class];
+    NSMutableArray *result = [self _executeSelect:sql ofClass:JYFriend.class];
     return result;
 }
 

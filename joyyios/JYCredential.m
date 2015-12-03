@@ -56,16 +56,16 @@ static NSString *const kAPIYrsKey = @"api_yrs";
         _userId = userIdStr? [f numberFromString:userIdStr]: 0;
 
         NSString *yrsStr = self.keychain[kAPIYrsKey];
-        _yrs = yrsStr ? [f numberFromString:yrsStr]: 0;
+        _yrsValue = yrsStr ? [yrsStr uint64Value]: 0;
     }
 
     return self;
 }
 
-- (void)setYrs:(NSNumber *)yrs
+- (void)setYrsValue:(NSUInteger)yrsValue
 {
-    _yrs = yrs;
-    self.keychain[kAPIYrsKey] = [NSString stringWithFormat:@"%llu", [yrs unsignedLongLongValue]];
+    _yrsValue = yrsValue;
+    self.keychain[kAPIYrsKey] = [NSString stringWithFormat:@"%llu", (uint64_t)yrsValue];
 }
 
 - (void)setUserId:(NSNumber *)userId
@@ -153,7 +153,7 @@ static NSString *const kAPIYrsKey = @"api_yrs";
     self.phoneNumber = nil;
     self.token = nil;
     self.userId = 0;
-    self.yrs = 0;
+    self.yrsValue = 0;
     self.tokenExpiryTime = 0;
 }
 

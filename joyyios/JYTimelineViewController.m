@@ -559,6 +559,8 @@ static NSString *const kPostCellIdentifier = @"postCell";
           success:^(NSURLSessionTask *operation, id responseObject) {
               NSLog(@"like post like success responseObject: %@", responseObject);
 
+              post.isLiked = YES;
+              
               NSDictionary *dict = (NSDictionary *)responseObject;
               NSError *error = nil;
               JYComment *comment = (JYComment *)[MTLJSONAdapter modelOfClass:JYComment.class fromJSONDictionary:dict error:&error];
@@ -568,7 +570,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
               [commentList addObject:comment];
               post.commentList = commentList;
 
-              post.isLiked = YES;
+
               [weakSelf _networkThreadEnd];
           }
           failure:^(NSURLSessionTask *operation, NSError *error) {

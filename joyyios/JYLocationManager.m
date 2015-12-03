@@ -166,7 +166,7 @@ NSString *const kZip = @"location_zip";
         return;
     }
 
-    if ([JYCredential current].yrs == 0 || [JYCredential current].tokenValidInSeconds <= 0)
+    if ([JYCredential current].yrsValue == 0 || [JYCredential current].tokenValidInSeconds <= 0)
     {
         return;
     }
@@ -191,8 +191,7 @@ NSString *const kZip = @"location_zip";
 
 - (void)_appearInZip:(NSString *)zip country:(NSString *)countryCode
 {
-    uint64_t yrs = [[JYCredential current].yrs unsignedIntegerValue];
-    NSDictionary *parameters = @{ @"zip": zip, @"country": countryCode, @"yrs": @(yrs) };
+    NSDictionary *parameters = @{ @"zip": zip, @"country": countryCode, @"yrs": @([JYCredential current].yrsValue) };
     NSString *url = [NSString apiURLWithPath:@"user/appear"];
     AFHTTPSessionManager *manager = [AFHTTPSessionManager managerWithToken];
 

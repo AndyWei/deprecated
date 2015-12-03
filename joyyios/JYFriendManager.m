@@ -62,11 +62,14 @@
     {
         NSArray *array = [[JYLocalDataManager sharedInstance] selectFriends];
         _friendDict = [NSMutableDictionary new];
-        for (JYUser *friend in array)
+        for (JYFriend *friend in array)
         {
             NSNumber *userid = friend.userId;
             [_friendDict setObject:friend forKey:userid];
         }
+
+        JYFriend *myself = [JYFriend myself];
+        [_friendDict setObject:myself forKey:myself.userId];
     }
     return _friendDict;
 }

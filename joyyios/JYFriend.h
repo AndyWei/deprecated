@@ -10,6 +10,8 @@
 
 @interface JYFriend : JYUser
 
++ (instancetype)myself;
+
 @property (nonatomic) NSUInteger phoneNumber;
 
 @end

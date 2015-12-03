@@ -177,7 +177,7 @@
         return;
     }
 
-    if ([JYCredential current].yrs == 0)
+    if ([JYCredential current].yrsValue == 0)
     {
         [self _launchProfileViewController];
         return;

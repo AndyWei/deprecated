@@ -11,8 +11,8 @@ CGFloat const kButtonDefaultHeight = 44.0f;
 CGFloat const kButtonDefaultFontSize = 18.0f;
 CGFloat const kButtonLocateDiameter = 40;
 CGFloat const kIntroductionVersion = 1.0;
-CGFloat const kFontSizeCaption = 16.0f;
-CGFloat const kFontSizeComment = 15.0f;
+CGFloat const kFontSizeCaption = 17.0f;
+CGFloat const kFontSizeComment = 17.0f;
 CGFloat const kFontSizeDetail = 13.0f;
 CGFloat const kMarginLeft = 8.0f;
 CGFloat const kMarginRight = 8.0f;
@@ -49,7 +49,7 @@ NSString *const kContentTypeJPG = @"image/jpeg";
 NSString *const kDummyCaptionText = @"◦";
 NSString *const kErrorSignInFailed = @"Incorrect password";
 NSString *const kErrorTitle = @"😜: oops!";
-NSString *const kLikeText = @"💙";
+NSString *const kLikeText = @"♡";
 
 
 NSString *const kMessageDomain = @"winkrock.com";

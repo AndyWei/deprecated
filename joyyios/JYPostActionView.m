@@ -19,6 +19,7 @@
 @property (nonatomic) BOOL likeButtonPressed;
 @property (nonatomic) UIButton *commentButton;
 @property (nonatomic) UIButton *likeButton;
+@property (nonatomic) UIView *separator;
 @end
 
 @implementation JYPostActionView
@@ -31,15 +32,18 @@
 
         [self addSubview:self.likeButton];
         [self addSubview:self.commentButton];
+        [self addSubview:self.separator];
 
         NSDictionary *views = @{
                                 @"commentButton": self.commentButton,
-                                @"likeButton": self.likeButton
+                                @"likeButton": self.likeButton,
+                                @"separator": self.separator
                                 };
 
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(>=10)-[likeButton(40)]-40-[commentButton(40)]-10-|" options:0 metrics:nil views:views]];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[commentButton]|" options:0 metrics:nil views:views]];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[likeButton]|" options:0 metrics:nil views:views]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(>=10)-[likeButton(40)]-20-[commentButton(40)]-10-|" options:0 metrics:nil views:views]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(20)-[separator]|" options:0 metrics:nil views:views]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[commentButton][separator(0.5)]|" options:0 metrics:nil views:views]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[likeButton][separator(0.5)]|" options:0 metrics:nil views:views]];
 
     }
     return self;
@@ -96,6 +100,17 @@
         [_likeButton addTarget:self action:@selector(_like) forControlEvents:UIControlEventTouchUpInside];
     }
     return _likeButton;
+}
+
+- (UIView *)separator
+{
+    if (!_separator)
+    {
+        _separator = [[UIView alloc] initWithFrame:CGRectZero];
+        _separator.translatesAutoresizingMaskIntoConstraints = NO;
+        _separator.backgroundColor = JoyyWhite;
+    }
+    return _separator;
 }
 
 - (void)_comment
