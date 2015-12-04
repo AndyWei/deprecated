@@ -128,11 +128,6 @@
         return;
     }
 
-    if (_post == post)
-    {
-        return;
-    }
-
     if (_post)
     {
         [self _stopObserve:_post];
@@ -141,7 +136,6 @@
     _post = post;
     self.posterView.post = post;
     self.mediaView.post = post;
-    self.actionView.post = post;
     [self _updateCommentsAndLikes];
 
     [self _startObserve:post];
@@ -150,7 +144,8 @@
 - (void)_updateCommentsAndLikes
 {
     [self _updateLikesLabel];
-    self.commentView.commentList = self.post.commentList;
+    self.actionView.post = _post;
+    self.commentView.commentList = _post.commentList;
 }
 
 - (void)_updateLikesLabel
@@ -158,7 +153,7 @@
     NSMutableArray *likedByUsernames = [NSMutableArray new];
     for (JYComment *comment in self.post.commentList)
     {
-        if ([kLikeText isEqualToString:comment.content])
+        if ([comment isLike])
         {
             JYFriend *friend = [[JYFriendManager sharedInstance] friendOfId:comment.ownerId];
             if (friend)
@@ -174,7 +169,9 @@
     }
     else
     {
-        NSString *likedList = [likedByUsernames componentsJoinedByString:@", "];
+        NSOrderedSet *orderedSet = [NSOrderedSet orderedSetWithArray:likedByUsernames];
+        NSArray *dedupedUsernames = [orderedSet array];
+        NSString *likedList = [dedupedUsernames componentsJoinedByString:@", "];
         self.likesLabel.text = [NSString stringWithFormat:@"%@ %@", kLikeText, likedList];
     }
 }

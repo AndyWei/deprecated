@@ -57,16 +57,15 @@
         return;
     }
 
-    if (_post == post)
-    {
-        return;
-    }
-
     _post = post;
 
     [self _updateAvatarButtonImage];
 
-    self.posterNameLabel.text = [[JYDataStore sharedInstance] usernameOfId:self.post.ownerId];
+    JYFriend *poster = [[JYFriendManager sharedInstance] friendOfId:self.post.ownerId];
+    if (poster)
+    {
+        self.posterNameLabel.text = poster.username;
+    }
 
     NSDate *date = [NSDate dateOfId:self.post.postId];
     self.postTimeLabel.text = [date ageString];
@@ -112,7 +111,7 @@
     {
         TTTAttributedLabel *label = [[TTTAttributedLabel alloc] initWithFrame:CGRectZero];
         label.translatesAutoresizingMaskIntoConstraints = NO;
-        label.font = [UIFont systemFontOfSize:kFontSizeDetail];
+        label.font = [UIFont systemFontOfSize:kFontSizeCaption];
         label.textColor = JoyyBlue;
         label.backgroundColor = JoyyWhitePure;
         label.textAlignment = NSTextAlignmentLeft;

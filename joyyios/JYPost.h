@@ -21,6 +21,7 @@
 
 @property(nonatomic) NSMutableArray *commentList;
 @property(nonatomic) UIImage *localImage;
-@property(nonatomic) BOOL isLiked;
+
+- (BOOL)isLikedByMe;
 
 @end

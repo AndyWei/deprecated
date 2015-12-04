@@ -558,18 +558,16 @@ static NSString *const kPostCellIdentifier = @"postCell";
        parameters:parameters
           success:^(NSURLSessionTask *operation, id responseObject) {
               NSLog(@"like post like success responseObject: %@", responseObject);
-
-              post.isLiked = YES;
               
               NSDictionary *dict = (NSDictionary *)responseObject;
               NSError *error = nil;
               JYComment *comment = (JYComment *)[MTLJSONAdapter modelOfClass:JYComment.class fromJSONDictionary:dict error:&error];
+              [[JYLocalDataManager sharedInstance] insertObject:comment ofClass:JYComment.class];
 
               // FBKVObserver can only detect array change, not array elements change, so generate a new array to trigger the observer
               NSMutableArray *commentList = [NSMutableArray arrayWithArray:post.commentList];
               [commentList addObject:comment];
               post.commentList = commentList;
-
 
               [weakSelf _networkThreadEnd];
           }

@@ -17,8 +17,8 @@
 
 @interface JYPostActionView ()
 @property (nonatomic) BOOL likeButtonPressed;
-@property (nonatomic) UIButton *commentButton;
-@property (nonatomic) UIButton *likeButton;
+@property (nonatomic) JYButton *commentButton;
+@property (nonatomic) JYButton *likeButton;
 @property (nonatomic) UIView *separator;
 @end
 
@@ -57,11 +57,6 @@
         return;
     }
 
-    if (_post == post)
-    {
-        return;
-    }
-
     _post = post;
 
     self.likeButtonPressed = NO;
@@ -70,17 +65,19 @@
 
 - (void)_updateLikeButtonImage
 {
-    if (self.post.isLiked)
+    if ([self.post isLikedByMe])
     {
-        self.likeButton.tintColor = JoyyBlue;
+        self.likeButton.imageView.image = [UIImage imageNamed:@"heart_selected"];
+        self.likeButton.contentColor = JoyyBlue;
     }
     else
     {
-        self.likeButton.tintColor = JoyyGray;
+        self.likeButton.imageView.image = [UIImage imageNamed:@"heart"];
+        self.likeButton.contentColor = JoyyGray;
     }
 }
 
-- (UIButton *)commentButton
+- (JYButton *)commentButton
 {
     if (!_commentButton)
     {
@@ -91,11 +88,11 @@
     return _commentButton;
 }
 
-- (UIButton *)likeButton
+- (JYButton *)likeButton
 {
     if (!_likeButton)
     {
-        _likeButton = [self _buttonWithNormalImage:[UIImage imageNamed:@"heart"] selectedImage:[UIImage imageNamed:@"heart_selected"]];
+        _likeButton = [self _buttonWithImage:[UIImage imageNamed:@"heart"]];
         _likeButton.contentEdgeInsets = UIEdgeInsetsMake(8, 8, 8, 8);
         [_likeButton addTarget:self action:@selector(_like) forControlEvents:UIControlEventTouchUpInside];
     }
@@ -123,7 +120,7 @@
 - (void)_like
 {
     NSLog(@"_like");
-    if (!self.post || self.post.isLiked || self.likeButtonPressed)
+    if (!self.post || self.likeButtonPressed || [self.post isLikedByMe])
     {
         return;
     }
@@ -134,28 +131,15 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationWillLikePost object:nil userInfo:info];
 }
 
-- (UIButton *)_buttonWithNormalImage:(UIImage *)normalImage selectedImage:(UIImage *)selectedImage
+- (JYButton *)_buttonWithImage:(UIImage *)image
 {
-    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+    JYButton *button = [JYButton buttonWithFrame:CGRectZero buttonStyle:JYButtonStyleCentralImage shouldMaskImage:YES];
     button.translatesAutoresizingMaskIntoConstraints = NO;
-    UIImage *image = [normalImage imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-    [button setImage:image forState:UIControlStateNormal];
+    button.imageView.image = image;
+    button.contentColor = JoyyGray;
+    button.contentAnimateToColor = JoyyBlue;
+    button.foregroundColor = ClearColor;
 
-    image = [selectedImage imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-    [button setImage:image forState:UIControlStateSelected];
-
-    button.tintColor = JoyyGray;
-    return button;
-}
-
-- (UIButton *)_buttonWithImage:(UIImage *)normalImage
-{
-    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
-    button.translatesAutoresizingMaskIntoConstraints = NO;
-    UIImage *image = [normalImage imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-    [button setImage:image forState:UIControlStateNormal];
-
-    button.tintColor = JoyyGray;
     return button;
 }
 @end

@@ -17,6 +17,7 @@
 #import "JYAmazonClientManager.h"
 #import "JYButton.h"
 #import "JYCredentialManager.h"
+#import "JYDataStore.h"
 #import "JYDeviceManager.h"
 #import "JYFilename.h"
 #import "JYFriendManager.h"

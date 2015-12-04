@@ -81,7 +81,7 @@
 
     for (JYComment *comment in commentList)
     {
-        if (![kLikeText isEqualToString:comment.content]) // not a like
+        if (![comment isLike])
         {
             TTTAttributedLabel *label = [self _createCommentLabel];
             label.text = [self _displayTextOfComment:comment];

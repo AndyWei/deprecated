@@ -10,7 +10,6 @@
 #import "JYFriendManager.h"
 
 @interface JYComment ()
-@property(nonatomic) NSString *displayText;
 @end
 
 @implementation JYComment
@@ -49,6 +48,11 @@
 + (NSString *)FMDBTableName
 {
     return @"comment";
+}
+
+- (BOOL)isLike
+{
+    return [kLikeText isEqualToString:self.content];
 }
 
 @end

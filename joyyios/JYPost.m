@@ -7,7 +7,9 @@
 //
 
 #import "JYFilename.h"
+#import "JYComment.h"
 #import "JYPost.h"
+
 
 @interface JYPost ()
 @property(nonatomic) NSString *caption;
@@ -39,8 +41,7 @@
              @"caption": @"caption",
              @"URL": [NSNull null],
              @"commentList": [NSNull null],
-             @"localImage": [NSNull null],
-             @"isLiked": [NSNull null]
+             @"localImage": [NSNull null]
              };
 }
 
@@ -92,29 +93,18 @@
     return (postid >> 32);
 }
 
-
-
-//- (void)setIsLiked:(BOOL)isLiked
-//{
-//    if (isLiked)
-//    {
-//        NSDictionary *value = @{ @"userid": [JYCredential current].idString };
-//        [[JYDataStore sharedInstance].store putObject:value withId:self.idString intoTable:kTableNameLikedPost];
-//    }
-//
-//    _isLiked = isLiked;
-//}
-
-//- (BOOL)_isInLikedStore
-//{
-//    NSDictionary *liked = [[JYDataStore sharedInstance].store getObjectById:self.idString fromTable:kTableNameLikedPost];
-//    if (!liked)
-//    {
-//        return NO;
-//    }
-//
-//    NSUInteger likedByPerson = [[liked objectForKey:@"userid"] unsignedIntegerValue];
-//    return (likedByPerson == [JYCredential current].userId);
-//}
+- (BOOL)isLikedByMe
+{
+    uint64_t myUserid = [[JYCredential current].userId unsignedLongLongValue];
+    for (JYComment *comment in self.commentList)
+    {
+        uint64_t ownerid = [comment.ownerId unsignedLongLongValue];
+        if (ownerid == myUserid && [comment isLike])
+        {
+            return YES;
+        }
+    }
+    return NO;
+}
 
 @end

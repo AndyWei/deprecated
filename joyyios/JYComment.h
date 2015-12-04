@@ -17,4 +17,6 @@
 @property(nonatomic, readonly) NSNumber *postId;
 @property(nonatomic, readonly) NSNumber *replyToId;
 
+- (BOOL)isLike;
+
 @end
