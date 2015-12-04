@@ -53,7 +53,6 @@
     if (self)
     {
         self.selectionStyle = UITableViewCellSelectionStyleNone;
-
         self.contentView.backgroundColor = JoyyWhitePure;
 
         [self.contentView addSubview:self.posterView];
@@ -83,6 +82,15 @@
         [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:format options:0 metrics:metrics views:views]];
     }
     return self;
+}
+
+- (void)prepareForReuse
+{
+    [super prepareForReuse];
+
+    [self.observer unobserveAll];
+    self.observer = nil;
+    self.post = nil;
 }
 
 - (void)dealloc
@@ -122,12 +130,6 @@
 
 - (void)setPost:(JYPost *)post
 {
-    if (!post)
-    {
-        NSAssert(NO, @"post should not be nil");
-        return;
-    }
-
     if (_post)
     {
         [self _stopObserve:_post];
@@ -145,11 +147,25 @@
 {
     [self _updateLikesLabel];
     self.actionView.post = _post;
-    self.commentView.commentList = _post.commentList;
+
+    if (_post)
+    {
+        self.commentView.commentList = _post.commentList;
+    }
+    else
+    {
+        self.commentView.commentList = nil;
+    }
 }
 
 - (void)_updateLikesLabel
 {
+    if (!_post)
+    {
+        self.likesLabel.text = nil;
+        return;
+    }
+
     NSMutableArray *likedByUsernames = [NSMutableArray new];
     for (JYComment *comment in self.post.commentList)
     {

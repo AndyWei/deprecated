@@ -66,12 +66,10 @@
 		D65AFA5E1AEC715D007867D0 /* JYTimelineViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D65AFA5D1AEC715D007867D0 /* JYTimelineViewController.m */; };
 		D65F37461B04807D007B534C /* JYCommentViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D65F37451B04807D007B534C /* JYCommentViewCell.m */; };
 		D679B3011B97B1E5004EBA61 /* JYFilename.m in Sources */ = {isa = PBXBuildFile; fileRef = D679B3001B97B1E5004EBA61 /* JYFilename.m */; };
-		D67DD0E01B744D1C00333626 /* JYCommentView.m in Sources */ = {isa = PBXBuildFile; fileRef = D67DD0DF1B744D1C00333626 /* JYCommentView.m */; };
 		D67DD0E41B75302800333626 /* JYUserViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D67DD0E31B75302800333626 /* JYUserViewController.m */; };
 		D67DD0E81B7530AF00333626 /* JYUserCard.m in Sources */ = {isa = PBXBuildFile; fileRef = D67DD0E71B7530AF00333626 /* JYUserCard.m */; };
 		D67DD0EC1B75321A00333626 /* JYUser.m in Sources */ = {isa = PBXBuildFile; fileRef = D67DD0EB1B75321A00333626 /* JYUser.m */; };
 		D67DD0F41B77187000333626 /* JYCaptionTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = D67DD0F31B77187000333626 /* JYCaptionTextView.m */; };
-		D67DD0F81B7728E300333626 /* JYAvatar.m in Sources */ = {isa = PBXBuildFile; fileRef = D67DD0F71B7728E300333626 /* JYAvatar.m */; };
 		D6825BC71BE897F400F3695D /* JYLocationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D6825BC61BE897F400F3695D /* JYLocationManager.m */; };
 		D6825BCA1BE89F5A00F3695D /* libFlurry_7.3.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D6825BC91BE89F5A00F3695D /* libFlurry_7.3.0.a */; };
 		D68486B61B8AC267005CA0C4 /* JYSessionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D68486B51B8AC267005CA0C4 /* JYSessionViewController.m */; };
@@ -236,8 +234,6 @@
 		D65F37451B04807D007B534C /* JYCommentViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYCommentViewCell.m; sourceTree = "<group>"; };
 		D679B2FF1B97B1E5004EBA61 /* JYFilename.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYFilename.h; sourceTree = "<group>"; };
 		D679B3001B97B1E5004EBA61 /* JYFilename.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYFilename.m; sourceTree = "<group>"; };
-		D67DD0DE1B744D1C00333626 /* JYCommentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYCommentView.h; sourceTree = "<group>"; };
-		D67DD0DF1B744D1C00333626 /* JYCommentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYCommentView.m; sourceTree = "<group>"; };
 		D67DD0E21B75302800333626 /* JYUserViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYUserViewController.h; sourceTree = "<group>"; };
 		D67DD0E31B75302800333626 /* JYUserViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYUserViewController.m; sourceTree = "<group>"; };
 		D67DD0E61B7530AF00333626 /* JYUserCard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYUserCard.h; sourceTree = "<group>"; };
@@ -246,8 +242,6 @@
 		D67DD0EB1B75321A00333626 /* JYUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYUser.m; sourceTree = "<group>"; };
 		D67DD0F21B77187000333626 /* JYCaptionTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYCaptionTextView.h; sourceTree = "<group>"; };
 		D67DD0F31B77187000333626 /* JYCaptionTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYCaptionTextView.m; sourceTree = "<group>"; };
-		D67DD0F61B7728E300333626 /* JYAvatar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYAvatar.h; sourceTree = "<group>"; };
-		D67DD0F71B7728E300333626 /* JYAvatar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYAvatar.m; sourceTree = "<group>"; };
 		D6825BC51BE897F400F3695D /* JYLocationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYLocationManager.h; sourceTree = "<group>"; };
 		D6825BC61BE897F400F3695D /* JYLocationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYLocationManager.m; sourceTree = "<group>"; };
 		D6825BC81BE89F4700F3695D /* Flurry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Flurry.h; sourceTree = "<group>"; };
@@ -724,16 +718,6 @@
 		D6903D061C07A92B00CDC64F /* View */ = {
 			isa = PBXGroup;
 			children = (
-				D67DD0F21B77187000333626 /* JYCaptionTextView.h */,
-				D67DD0F31B77187000333626 /* JYCaptionTextView.m */,
-				D6C82B5A1B0EFDEA00876F57 /* JYCommentTextView.h */,
-				D6C82B5B1B0EFDEA00876F57 /* JYCommentTextView.m */,
-				D67DD0DE1B744D1C00333626 /* JYCommentView.h */,
-				D67DD0DF1B744D1C00333626 /* JYCommentView.m */,
-				D65F37441B04807D007B534C /* JYCommentViewCell.h */,
-				D65F37451B04807D007B534C /* JYCommentViewCell.m */,
-				D67DD0F61B7728E300333626 /* JYAvatar.h */,
-				D67DD0F71B7728E300333626 /* JYAvatar.m */,
 				D61D1DE41B536B2700DE37DF /* JYPostViewCell.h */,
 				D61D1DE51B536B2700DE37DF /* JYPostViewCell.m */,
 				D6D622541C0D317E0039C4A7 /* JYMediaView.h */,
@@ -744,6 +728,12 @@
 				D6903D0C1C07C84E00CDC64F /* JYPostActionView.m */,
 				D6903D0E1C07CFE000CDC64F /* JYPostCommentView.h */,
 				D6903D0F1C07CFE000CDC64F /* JYPostCommentView.m */,
+				D67DD0F21B77187000333626 /* JYCaptionTextView.h */,
+				D67DD0F31B77187000333626 /* JYCaptionTextView.m */,
+				D6C82B5A1B0EFDEA00876F57 /* JYCommentTextView.h */,
+				D6C82B5B1B0EFDEA00876F57 /* JYCommentTextView.m */,
+				D65F37441B04807D007B534C /* JYCommentViewCell.h */,
+				D65F37451B04807D007B534C /* JYCommentViewCell.m */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -1098,7 +1088,6 @@
 				D61D1DB01B4E336E00DE37DF /* TGCameraColor.m in Sources */,
 				D61D1DB61B4E336E00DE37DF /* TGCameraGrid.m in Sources */,
 				D63F0D711AC9EC060067C5EE /* JYCredential.m in Sources */,
-				D67DD0E01B744D1C00333626 /* JYCommentView.m in Sources */,
 				D61D1DE21B5366DC00DE37DF /* JYPost.m in Sources */,
 				D69FF6D61B94144100466FE5 /* JYSoundPlayer.m in Sources */,
 				D61D1DA21B4E336E00DE37DF /* TGCameraAuthorizationViewController.m in Sources */,
@@ -1149,7 +1138,6 @@
 				D6E3B0551B996F5400B707DF /* JYSessionListViewCell.m in Sources */,
 				D61D1D571B4A65F200DE37DF /* MDCSwipeToChooseView.m in Sources */,
 				D61D1DC81B4E336E00DE37DF /* TGCameraSlideView.m in Sources */,
-				D67DD0F81B7728E300333626 /* JYAvatar.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

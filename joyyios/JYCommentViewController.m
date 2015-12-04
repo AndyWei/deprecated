@@ -12,29 +12,25 @@
 #import <MJRefresh/MJRefresh.h>
 #import <RKDropdownAlert/RKDropdownAlert.h>
 
-#import "JYComment.h"
 #import "JYCommentTextView.h"
-#import "JYCommentView.h"
 #import "JYCommentViewCell.h"
 #import "JYCommentViewController.h"
 
 @interface JYCommentViewController ()
-@property(nonatomic) BOOL autoShowKeyboard;
-@property(nonatomic) JYCommentView *captionView;
-@property(nonatomic) JYPost *post;
-@property(nonatomic) MJRefreshNormalHeader *header;
-@property(nonatomic) MJRefreshAutoNormalFooter *footer;
-@property(nonatomic) NSInteger networkThreadCount;
-@property(nonatomic) NSMutableArray *commentList;
-@property(nonatomic) UIImageView *photoView;
-@property(nonatomic) UIView *backgroundView;
+@property (nonatomic) JYPost *post;
+@property (nonatomic) JYComment *orginalComment;
+@property (nonatomic) JYCommentViewCell *sizingCell;
+@property (nonatomic) NSInteger networkThreadCount;
+@property (nonatomic) NSMutableArray *commentList;
+@property (nonatomic) UIImageView *photoView;
+@property (nonatomic) UIView *backgroundView;
 @end
 
 static NSString *const kCommentCellIdentifier = @"commentCell";
 
 @implementation JYCommentViewController
 
-- (instancetype)initWithPost:(JYPost *)post withKeyboard:(BOOL)autoShowKeyBoard
+- (instancetype)initWithPost:(JYPost *)post comment:(JYComment *)originalComment
 {
     self = [super initWithTableViewStyle:UITableViewStylePlain];
     if (self)
@@ -42,9 +38,16 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
         [self.tableView registerClass:[JYCommentViewCell class] forCellReuseIdentifier:kCommentCellIdentifier];
         [self registerClassForTextView:[JYCommentTextView class]];
         _post = post;
-        _autoShowKeyboard = autoShowKeyBoard;
+        _orginalComment = originalComment;
         _networkThreadCount = 0;
-        _commentList = [NSMutableArray new];
+        _commentList = [NSMutableArray arrayWithArray:_post.commentList];
+
+        // enwrap the caption text as a comment
+//        if ([_post.caption length] != 0)
+//        {
+//            JYComment *captionComment = [[JYComment alloc] initWithOwnerId:_post.ownerId content:_post.caption];
+//            [_commentList insertObject:captionComment atIndex:0];
+//        }
     }
     return self;
 }
@@ -78,60 +81,17 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
     self.tableView.backgroundColor = JoyyBlack;
     self.tableView.backgroundView = self.backgroundView;
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    self.tableView.estimatedRowHeight = UITableViewAutomaticDimension;
+
     [self _showBackgroundImage];
     [self _fetchNewComments];
 
-    self.tableView.mj_header = self.header;
-    self.tableView.mj_footer = self.footer;
-
-    self.captionView.caption = self.post.caption;
-    self.tableView.tableHeaderView = self.captionView;
-
-    if (self.autoShowKeyboard)
-    {
-        [self.textView becomeFirstResponder];
-    }
-}
-
-- (void)viewWillDisappear:(BOOL)animated
-{
-    [super viewWillDisappear:animated];
-    [self _updateRecentCommentsOfPost];
+//    [self.textView becomeFirstResponder];
 }
 
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
-}
-
-- (void)dealloc
-{
-}
-
-// pull-down-to-refresh header
-- (MJRefreshNormalHeader *)header
-{
-    if (!_header)
-    {
-        _header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(_fetchOldComments)];
-        _header.lastUpdatedTimeLabel.hidden = YES;
-        _header.stateLabel.hidden = YES;
-        _header.backgroundColor = JoyyBlack50;
-    }
-    return _header;
-}
-
-// pull-up-to-refresh footer
-- (MJRefreshAutoNormalFooter *)footer
-{
-    if (!_footer)
-    {
-        _footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(_fetchNewComments)];
-        _footer.refreshingTitleHidden = YES;
-        _footer.stateLabel.hidden = YES;
-        _footer.backgroundColor = JoyyBlack50;
-    }
-    return _footer;
 }
 
 - (UIView *)backgroundView
@@ -171,15 +131,6 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
      } failure:nil];
 }
 
-- (JYCommentView *)captionView
-{
-    if (!_captionView)
-    {
-        _captionView = [[JYCommentView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 0)];
-    }
-    return _captionView;
-}
-
 - (void)_networkThreadBegin
 {
     if (self.networkThreadCount == 0)
@@ -195,8 +146,6 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
     if (self.networkThreadCount <= 0)
     {
         [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-        [self.tableView.mj_header endRefreshing];
-        [self.tableView.mj_footer endRefreshing];
     }
 }
 
@@ -209,19 +158,6 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
     }
 }
 
-- (void)_updateRecentCommentsOfPost
-{
-    NSInteger totalComment = self.commentList.count;
-    NSInteger start = MAX(0, totalComment - 3);
-    NSMutableArray *commentList = [NSMutableArray new];
-    for (NSInteger i = start; i < totalComment; ++i)
-    {
-        JYComment *comment = self.commentList[i];
-        [commentList addObject:comment];
-    }
-    self.post.commentList = commentList;
-}
-
 #pragma mark - UITableViewDataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -231,7 +167,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return self.commentList.count + 5; // Use 5 dummy cell to cover the background photo with JoyyBlack50 color
+    return self.commentList.count; // Use 1 dummy cell to cover the background photo with JoyyBlack50 color
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -248,6 +184,9 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
         cell.comment = nil;
     }
 
+    [cell setNeedsUpdateConstraints];
+    [cell updateConstraintsIfNeeded];
+    
     return cell;
 }
 
@@ -255,12 +194,45 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    JYComment *comment = nil;
-    if (indexPath.row < self.commentList.count)
+    if (indexPath.row == self.commentList.count)
     {
-        comment = self.commentList[indexPath.row];
+        return 600;
     }
-    return [JYCommentViewCell heightForComment:comment];
+
+    if ([NSProcessInfo instancesRespondToSelector:@selector(isOperatingSystemAtLeastVersion:)])
+    {
+        NSOperatingSystemVersion ios8_0_0 = (NSOperatingSystemVersion){8, 0, 0};
+        if ([[NSProcessInfo processInfo] isOperatingSystemAtLeastVersion:ios8_0_0])
+        {
+            return UITableViewAutomaticDimension;
+        }
+    }
+
+    if (!self.sizingCell)
+    {
+        self.sizingCell = [[JYCommentViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"JYCommentViewCell_sizing"];
+    }
+
+    // Configure sizing cell for this indexPath
+    self.sizingCell.comment = self.commentList[indexPath.row];
+
+    // Make sure the constraints have been added to this cell, since it may have just been created from scratch
+    [self.sizingCell setNeedsUpdateConstraints];
+    [self.sizingCell updateConstraintsIfNeeded];
+
+    self.sizingCell.bounds = CGRectMake(0.0f, 0.0f, CGRectGetWidth(tableView.bounds), CGRectGetHeight(self.sizingCell.bounds));
+
+    [self.sizingCell setNeedsLayout];
+    [self.sizingCell layoutIfNeeded];
+
+    // Get the actual height required for the cell
+    CGSize size = [self.sizingCell.contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize];
+
+    // Add an extra point to the height to account for the cell separator, which is added between the bottom
+    // of the cell's contentView and the bottom of the table view cell.
+    CGFloat height = size.height;
+    
+    return height;
 }
 
 #pragma mark - Maintain Table
@@ -334,16 +306,6 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 
 #pragma mark - Network
 
-- (void)_fetchOldComments
-{
-    [self _fetchCommentsToEnd:NO];
-}
-
-- (void)_fetchNewComments
-{
-    [self _fetchCommentsToEnd:YES];
-}
-
 - (void)_postComment
 {
     [self _networkThreadBegin];
@@ -378,30 +340,30 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
      ];
 }
 
-- (void)_fetchCommentsToEnd:(BOOL)toEnd
+- (void)_fetchNewComments
 {
-    if (self.networkThreadCount > 0)
-    {
-        return;
-    }
-    [self _networkThreadBegin];
-
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
-    NSString *url = [NSString apiURLWithPath:@"comment"];
-
-    __weak typeof(self) weakSelf = self;
-    [manager GET:url
-      parameters:[self _parametersForCommentOfPost:toEnd]
-         success:^(NSURLSessionTask *operation, id responseObject) {
-
-             NSLog(@"comment GET success responseObject: %@", responseObject);
-             [weakSelf _updateTableWithComments:responseObject toEnd:toEnd];
-             [weakSelf _networkThreadEnd];
-         }
-         failure:^(NSURLSessionTask *operation, NSError *error) {
-             [weakSelf _networkThreadEnd];
-         }
-     ];
+//    if (self.networkThreadCount > 0)
+//    {
+//        return;
+//    }
+//    [self _networkThreadBegin];
+//
+//    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+//    NSString *url = [NSString apiURLWithPath:@"comment"];
+//
+//    __weak typeof(self) weakSelf = self;
+//    [manager GET:url
+//      parameters:[self _parametersForCommentOfPost:toEnd]
+//         success:^(NSURLSessionTask *operation, id responseObject) {
+//
+//             NSLog(@"comment GET success responseObject: %@", responseObject);
+//             [weakSelf _updateTableWithComments:responseObject toEnd:toEnd];
+//             [weakSelf _networkThreadEnd];
+//         }
+//         failure:^(NSURLSessionTask *operation, NSError *error) {
+//             [weakSelf _networkThreadEnd];
+//         }
+//     ];
 }
 
 - (NSDictionary *)_parametersForCreatingComment
@@ -409,7 +371,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
     NSMutableDictionary *parameters = [NSMutableDictionary new];
 
     [parameters setObject:self.post.postId forKey:@"post"];
-    [parameters setValue:self.textView.text forKey:@"content"];
+    [parameters setObject:self.textView.text forKey:@"content"];
 
     return parameters;
 }

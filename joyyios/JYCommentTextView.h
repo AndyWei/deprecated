@@ -6,8 +6,8 @@
 //  Copyright (c) 2015 Joyy Inc. All rights reserved.
 //
 
-#import "JYCaptionTextView.h"
+#import "SLKTextView.h"
 
-@interface JYCommentTextView : JYCaptionTextView
+@interface JYCommentTextView : SLKTextView
 
 @end

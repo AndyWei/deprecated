@@ -23,18 +23,15 @@
 {
     [super willMoveToSuperview:newSuperview];
 
-    self.backgroundColor = JoyyGrayDark;
+    self.backgroundColor = JoyyWhite;
 
     self.placeholder = NSLocalizedString(@"Add caption:", nil);
     self.placeholderColor = JoyyGray;
     self.pastableMediaTypes = SLKPastableMediaTypeAll;
 
-    self.layer.borderColor = JoyyGrayDark.CGColor;
+    self.layer.borderColor = JoyyWhite.CGColor;
     self.layer.shouldRasterize = YES;
     self.layer.rasterizationScale = [UIScreen mainScreen].scale;
-
-//    self.textColor = JoyyWhite;
-    self.keyboardAppearance = UIKeyboardAppearanceDark;
 }
 
 @end

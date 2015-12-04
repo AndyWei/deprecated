@@ -51,13 +51,15 @@
 
 - (void)setPost:(JYPost *)post
 {
-    if (!post)
+    _post = post;
+
+    if (!_post)
     {
-        NSAssert(NO, @"post should not be nil");
+        self.likeButtonPressed = NO;
+        self.likeButton.imageView.image = [UIImage imageNamed:@"heart"];
+        self.likeButton.contentColor = JoyyGray;
         return;
     }
-
-    _post = post;
 
     self.likeButtonPressed = NO;
     [self _updateLikeButtonImage];
@@ -112,8 +114,7 @@
 
 - (void)_comment
 {
-    NSLog(@"_comment");
-    NSDictionary *info = @{@"post": self.post, @"edit":@(YES)};
+    NSDictionary *info = @{@"post": self.post};
     [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationWillCommentPost object:nil userInfo:info];
 }
 

@@ -40,12 +40,6 @@
 
 - (void)setPost:(JYPost *)post
 {
-    if (!post)
-    {
-        NSAssert(NO, @"post should not be nil");
-        return;
-    }
-
     if (_post == post)
     {
         return;
@@ -59,6 +53,12 @@
 
 - (void)_updatePhoto
 {
+    if (!_post)
+    {
+        self.photoView.image = nil;
+        return;
+    }
+
     // Fetch network image
     NSURL *url = [NSURL URLWithString:self.post.URL];
     NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestReturnCacheDataElseLoad timeoutInterval:5];
@@ -80,6 +80,12 @@
 
 - (void)_updateCaption
 {
+    if (!_post)
+    {
+        self.captionLabel.text = nil;
+        return;
+    }
+
     self.captionLabel.text = self.post.caption;
     self.captionLabel.width = SCREEN_WIDTH - 30;
 

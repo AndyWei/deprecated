@@ -50,6 +50,16 @@
     return @"comment";
 }
 
+- (instancetype)initWithOwnerId:(NSNumber *)ownerid content:(NSString *)content
+{
+    if (self = [super init])
+    {
+        _ownerId = ownerid;
+        _content = [content copy];
+    }
+    return self;
+}
+
 - (BOOL)isLike
 {
     return [kLikeText isEqualToString:self.content];

@@ -7,10 +7,9 @@
 //
 
 #import "JYComment.h"
+#import "JYPost.h"
 
 @interface JYCommentViewCell : UITableViewCell
-
-+ (CGFloat)heightForComment:(JYComment *)comment;
 
 @property(nonatomic) JYComment *comment;
 

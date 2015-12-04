@@ -51,13 +51,15 @@
 
 - (void)setPost:(JYPost *)post
 {
-    if (!post)
+    _post = post;
+
+    if (!_post)
     {
-        NSAssert(NO, @"post should not be nil");
+        self.avatarButton.imageView.image = nil;
+        self.posterNameLabel.text = nil;
+        self.postTimeLabel.text = nil;
         return;
     }
-
-    _post = post;
 
     [self _updateAvatarButtonImage];
 

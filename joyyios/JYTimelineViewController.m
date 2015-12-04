@@ -31,6 +31,7 @@ typedef void(^Action)();
 @property (nonatomic) CABasicAnimation *colorPulse;
 @property (nonatomic) JYButton *cameraButton;
 @property (nonatomic) JYPost *currentPost;
+@property (nonatomic) JYPostViewCell *sizingCell;
 @property (nonatomic) NSInteger networkThreadCount;
 @property (nonatomic) NSDate *firstDate;
 @property (nonatomic) NSMutableArray *postList;
@@ -71,8 +72,35 @@ static NSString *const kPostCellIdentifier = @"postCell";
     [self _fetchPostsFromDBWithAction:^{
         [weakSelf _fetchNewPost];
     }];
+}
 
+- (UITableView *)tableView
+{
+    if (!_tableView)
+    {
+        _tableView = [[UITableView alloc] initWithFrame:self.view.frame style:UITableViewStylePlain];
+        _tableView.dataSource = self;
+        _tableView.delegate = self;
+        _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+        _tableView.showsHorizontalScrollIndicator = NO;
+        _tableView.showsVerticalScrollIndicator = NO;
+        _tableView.estimatedRowHeight = UITableViewAutomaticDimension;
 
+        [_tableView registerClass:[JYPostViewCell class] forCellReuseIdentifier:kPostCellIdentifier];
+
+        // Setup the pull-down-to-refresh header
+        MJRefreshNormalHeader *header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(_fetchNewPost)];
+        header.lastUpdatedTimeLabel.hidden = YES;
+        header.stateLabel.hidden = YES;
+        _tableView.mj_header = header;
+
+        // Setup the pull-up-to-refresh footer
+        MJRefreshAutoNormalFooter *footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(_fetchOldPost)];
+        footer.refreshingTitleHidden = YES;
+        footer.stateLabel.hidden = YES;
+        _tableView.mj_footer = footer;
+    }
+    return _tableView;
 }
 
 - (void)_apiTokenReady
@@ -126,35 +154,6 @@ static NSString *const kPostCellIdentifier = @"postCell";
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
-
-- (UITableView *)tableView
-{
-    if (!_tableView)
-    {
-        _tableView = [[UITableView alloc] initWithFrame:self.view.frame style:UITableViewStylePlain];
-        _tableView.dataSource = self;
-        _tableView.delegate = self;
-        _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-        _tableView.showsHorizontalScrollIndicator = NO;
-        _tableView.showsVerticalScrollIndicator = NO;
-        _tableView.estimatedRowHeight = UITableViewAutomaticDimension;
-
-        [_tableView registerClass:[JYPostViewCell class] forCellReuseIdentifier:kPostCellIdentifier];
-
-        // Setup the pull-down-to-refresh header
-        MJRefreshNormalHeader *header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(_fetchNewPost)];
-        header.lastUpdatedTimeLabel.hidden = YES;
-        header.stateLabel.hidden = YES;
-        _tableView.mj_header = header;
-
-        // Setup the pull-up-to-refresh footer
-        MJRefreshAutoNormalFooter *footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(_fetchOldPost)];
-        footer.refreshingTitleHidden = YES;
-        footer.stateLabel.hidden = YES;
-        _tableView.mj_footer = footer;
-    }
-    return _tableView;
 }
 
 - (JYButton *)cameraButton
@@ -229,13 +228,18 @@ static NSString *const kPostCellIdentifier = @"postCell";
     if (info)
     {
         id postObj = [info objectForKey:@"post"];
-        id editObj = [info objectForKey:@"edit"];
-        if (postObj != [NSNull null] && editObj != [NSNull null])
+        id commentObj = [info objectForKey:@"comment"];
+        if (postObj != [NSNull null])
         {
             JYPost *post = (JYPost *)postObj;
             self.currentPost = post;
-            BOOL edit = [editObj boolValue];
-            [self _presentCommentViewForPost:post showKeyBoard:edit];
+            JYComment *comment = nil;
+
+            if (commentObj != [NSNull null])
+            {
+                comment = (JYComment *)commentObj;
+            }
+            [self _presentCommentViewForPost:post comment:comment];
         }
     }
 }
@@ -258,10 +262,9 @@ static NSString *const kPostCellIdentifier = @"postCell";
     [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 
-// TODO: create comment without nav to new view controller
-- (void) _presentCommentViewForPost:(JYPost *)post showKeyBoard:(BOOL)edit
+- (void) _presentCommentViewForPost:(JYPost *)post comment:(JYComment *)comment
 {
-    JYCommentViewController *viewController = [[JYCommentViewController alloc] initWithPost:post withKeyboard:edit];
+    JYCommentViewController *viewController = [[JYCommentViewController alloc] initWithPost:post comment:comment];
     [self.navigationController pushViewController:viewController animated:YES];
 }
 
@@ -330,27 +333,34 @@ static NSString *const kPostCellIdentifier = @"postCell";
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return UITableViewAutomaticDimension;
-    static JYPostViewCell *sizingCell = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        sizingCell = [[JYPostViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"JYPostViewCell_sizing"];
-    });
+    if ([NSProcessInfo instancesRespondToSelector:@selector(isOperatingSystemAtLeastVersion:)])
+    {
+        NSOperatingSystemVersion ios8_0_0 = (NSOperatingSystemVersion){8, 0, 0};
+        if ([[NSProcessInfo processInfo] isOperatingSystemAtLeastVersion:ios8_0_0])
+        {
+            return UITableViewAutomaticDimension;
+        }
+    }
+
+    if (!self.sizingCell)
+    {
+        self.sizingCell = [[JYPostViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"JYPostViewCell_sizing"];
+    }
 
     // Configure sizing cell for this indexPath
-    sizingCell.post = self.postList[indexPath.row];
+    self.sizingCell.post = self.postList[indexPath.row];
 
     // Make sure the constraints have been added to this cell, since it may have just been created from scratch
-    [sizingCell setNeedsUpdateConstraints];
-    [sizingCell updateConstraintsIfNeeded];
+    [self.sizingCell setNeedsUpdateConstraints];
+    [self.sizingCell updateConstraintsIfNeeded];
 
-    sizingCell.bounds = CGRectMake(0.0f, 0.0f, CGRectGetWidth(tableView.bounds), CGRectGetHeight(sizingCell.bounds));
+    self.sizingCell.bounds = CGRectMake(0.0f, 0.0f, CGRectGetWidth(tableView.bounds), CGRectGetHeight(self.sizingCell.bounds));
 
-    [sizingCell setNeedsLayout];
-    [sizingCell layoutIfNeeded];
+    [self.sizingCell setNeedsLayout];
+    [self.sizingCell layoutIfNeeded];
 
     // Get the actual height required for the cell
-    CGSize size = [sizingCell.contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize];
+    CGSize size = [self.sizingCell.contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize];
 
     // Add an extra point to the height to account for the cell separator, which is added between the bottom
     // of the cell's contentView and the bottom of the table view cell.

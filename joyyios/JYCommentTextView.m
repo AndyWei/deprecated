@@ -22,7 +22,16 @@
 - (void)willMoveToSuperview:(UIView *)newSuperview
 {
     [super willMoveToSuperview:newSuperview];
+
+    self.backgroundColor = JoyyWhite;
+
     self.placeholder = NSLocalizedString(@"Add comment:", nil);
+    self.placeholderColor = JoyyGray;
+    self.pastableMediaTypes = SLKPastableMediaTypeAll;
+
+    self.layer.borderColor = JoyyWhite.CGColor;
+    self.layer.shouldRasterize = YES;
+    self.layer.rasterizationScale = [UIScreen mainScreen].scale;
 }
 
 @end
