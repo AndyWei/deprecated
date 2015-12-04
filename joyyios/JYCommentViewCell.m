@@ -21,8 +21,7 @@
 
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
-    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
-    if (self)
+    if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier])
     {
         self.selectionStyle = UITableViewCellSelectionStyleNone;
         self.contentView.backgroundColor = JoyyBlack50;
@@ -35,9 +34,9 @@
                                 @"commentLabel": self.commentLabel
                                 };
 
-        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-20-[avatarView(40)]-10-[commentLabel]-20|" options:0 metrics:nil views:views]];
-        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-10-[avatarView(40)]-(>=10)-|" options:0 metrics:nil views:views]];
-        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[commentLabel]-(>=10)-|" options:0 metrics:nil views:views]];
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-20-[avatarView(40)]-10-[commentLabel]-20-|" options:0 metrics:nil views:views]];
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-10-[avatarView(40)]-10@500-|" options:0 metrics:nil views:views]];
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-10-[commentLabel(>=40@500)]-10-|" options:0 metrics:nil views:views]];
     }
     return self;
 }
@@ -61,6 +60,7 @@
 
     _comment = comment;
     self.commentLabel.text = comment.content;
+    self.commentLabel.preferredMaxLayoutWidth = SCREEN_WIDTH - 90;
     [self _updateAvatarView];
 }
 
@@ -83,11 +83,12 @@
 
 - (UIImageView *)avatarView
 {
-    if (_avatarView)
+    if (!_avatarView)
     {
         UIImageView *view = [[UIImageView alloc] init];
         view.translatesAutoresizingMaskIntoConstraints = NO;
         view.contentMode = UIViewContentModeScaleAspectFit;
+        view.layer.cornerRadius = 20;
         _avatarView = view;
     }
     return _avatarView;
@@ -100,7 +101,6 @@
         TTTAttributedLabel *label = [[TTTAttributedLabel alloc] initWithFrame:CGRectZero];
         label.translatesAutoresizingMaskIntoConstraints = NO;
         label.font = [UIFont systemFontOfSize:kFontSizeComment];
-        label.textInsets = UIEdgeInsetsMake(0, 20, 0, kMarginRight);
         label.backgroundColor = ClearColor;
         label.textColor = JoyyWhite;
         _commentLabel = label;

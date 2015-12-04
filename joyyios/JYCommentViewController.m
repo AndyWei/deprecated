@@ -26,21 +26,22 @@
 @property (nonatomic) UIView *backgroundView;
 @end
 
-static NSString *const kCommentCellIdentifier = @"commentCell";
+static NSString *const kCommentCellIdentifier = @"postCommentCell";
 
 @implementation JYCommentViewController
 
 - (instancetype)initWithPost:(JYPost *)post comment:(JYComment *)originalComment
 {
-    self = [super initWithTableViewStyle:UITableViewStylePlain];
+//    self = [super initWithTableViewStyle:UITableViewStylePlain];
+    self = [super initWithStyle:UITableViewStylePlain];
     if (self)
     {
         [self.tableView registerClass:[JYCommentViewCell class] forCellReuseIdentifier:kCommentCellIdentifier];
-        [self registerClassForTextView:[JYCommentTextView class]];
-        _post = post;
-        _orginalComment = originalComment;
-        _networkThreadCount = 0;
-        _commentList = [NSMutableArray arrayWithArray:_post.commentList];
+//        [self registerClassForTextView:[JYCommentTextView class]];
+        self.post = post;
+        self.orginalComment = originalComment;
+        self.networkThreadCount = 0;
+        self.commentList = [NSMutableArray arrayWithArray:_post.commentList];
 
         // enwrap the caption text as a comment
 //        if ([_post.caption length] != 0)
@@ -64,17 +65,17 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
     self.view.backgroundColor = JoyyBlack;
 
     // textInput view
-    self.bounces = YES;
-    self.shakeToClearEnabled = NO;
-    self.keyboardPanningEnabled = YES;
-    self.shouldScrollToBottomAfterKeyboardShows = NO;
-    self.inverted = NO;
-
-    [self.rightButton setTitle:NSLocalizedString(@"Send", nil) forState:UIControlStateNormal];
-    self.rightButton.tintColor = JoyyBlue;
-    self.textInputbar.backgroundColor = JoyyBlack;
-    self.textInputbar.autoHideRightButton = NO;
-    self.typingIndicatorView.canResignByTouch = YES;
+//    self.bounces = YES;
+//    self.shakeToClearEnabled = NO;
+//    self.keyboardPanningEnabled = YES;
+//    self.shouldScrollToBottomAfterKeyboardShows = NO;
+//    self.inverted = NO;
+//
+//    [self.rightButton setTitle:NSLocalizedString(@"Send", nil) forState:UIControlStateNormal];
+//    self.rightButton.tintColor = JoyyBlue;
+//    self.textInputbar.backgroundColor = JoyyBlack;
+//    self.textInputbar.autoHideRightButton = NO;
+//    self.typingIndicatorView.canResignByTouch = YES;
 
     // tableView
     self.tableView.allowsSelection = NO;
@@ -124,11 +125,11 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
     __weak typeof(self) weakSelf = self;
     [self.photoView setImageWithURLRequest:request
                           placeholderImage:nil
-                                   success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image)
-     {
-         weakSelf.photoView.image = image;
-
-     } failure:nil];
+                                   success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
+                                       weakSelf.photoView.image = image;
+                                   } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
+                                       NSLog(@"_showBackgroundImage failed with error = %@", error);
+                                   }];
 }
 
 - (void)_networkThreadBegin
@@ -167,7 +168,8 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return self.commentList.count; // Use 1 dummy cell to cover the background photo with JoyyBlack50 color
+    NSInteger count = self.commentList.count; // Use 1 dummy cell to cover the background photo with JoyyBlack50 color
+    return count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -196,7 +198,7 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 {
     if (indexPath.row == self.commentList.count)
     {
-        return 600;
+        return SCREEN_WIDTH;
     }
 
     if ([NSProcessInfo instancesRespondToSelector:@selector(isOperatingSystemAtLeastVersion:)])
@@ -235,36 +237,41 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
     return height;
 }
 
+-(CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return 60;
+}
+
 #pragma mark - Maintain Table
 
-- (void)_updateTableWithComments:(NSArray *)list toEnd:(BOOL)toEnd
-{
-    if (!list.count)
-    {
-        return;
-    }
-
-    BOOL firstLoad = self.commentList.count == 0;
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self _addCommentsFromList:list toEnd:toEnd];
-
-        if (firstLoad)
-        {
-            [self.tableView reloadData];
-            [self _scrollTableViewToBottom];
-        }
-        else
-        {
-            CGSize beforeContentSize = self.tableView.contentSize;
-            [self.tableView reloadData];
-            CGSize afterContentSize = self.tableView.contentSize;
-
-            CGPoint afterContentOffset = self.tableView.contentOffset;
-            CGPoint newContentOffset = CGPointMake(afterContentOffset.x, afterContentOffset.y + afterContentSize.height - beforeContentSize.height);
-            self.tableView.contentOffset = newContentOffset;
-        }
-    });
-}
+//- (void)_updateTableWithComments:(NSArray *)list toEnd:(BOOL)toEnd
+//{
+//    if (!list.count)
+//    {
+//        return;
+//    }
+//
+//    BOOL firstLoad = self.commentList.count == 0;
+//    dispatch_async(dispatch_get_main_queue(), ^{
+//        [self _addCommentsFromList:list toEnd:toEnd];
+//
+//        if (firstLoad)
+//        {
+//            [self.tableView reloadData];
+//            [self _scrollTableViewToBottom];
+//        }
+//        else
+//        {
+//            CGSize beforeContentSize = self.tableView.contentSize;
+//            [self.tableView reloadData];
+//            CGSize afterContentSize = self.tableView.contentSize;
+//
+//            CGPoint afterContentOffset = self.tableView.contentOffset;
+//            CGPoint newContentOffset = CGPointMake(afterContentOffset.x, afterContentOffset.y + afterContentSize.height - beforeContentSize.height);
+//            self.tableView.contentOffset = newContentOffset;
+//        }
+//    });
+//}
 
 - (void)_addCommentsFromList:(NSArray *)list toEnd:(BOOL)toEnd
 {
@@ -295,50 +302,50 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 #pragma mark - Overriden Method
 
 // Notifies the view controller when the right button's action has been triggered, manually or by using the keyboard return key.
-- (void)didPressRightButton:(id)sender
-{
-    // This little trick validates any pending auto-correction or auto-spelling just after hitting the 'Send' button
-    [self.textView refreshFirstResponder];
-
-    [self _postComment];
-    [super didPressRightButton:sender];
-}
+//- (void)didPressRightButton:(id)sender
+//{
+//    // This little trick validates any pending auto-correction or auto-spelling just after hitting the 'Send' button
+//    [self.textView refreshFirstResponder];
+//
+//    [self _postComment];
+//    [super didPressRightButton:sender];
+//}
 
 #pragma mark - Network
 
-- (void)_postComment
-{
-    [self _networkThreadBegin];
-
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager managerWithToken];
-    NSString *url = [NSString apiURLWithPath:@"comment"];
-
-    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
-
-    __weak typeof(self) weakSelf = self;
-    [manager POST:url
-       parameters:[self _parametersForCreatingComment]
-          success:^(NSURLSessionTask *operation, id responseObject) {
-              NSLog(@"Comment POST Success responseObject: %@", responseObject);
-
-              [weakSelf _networkThreadEnd];
-//              NSUInteger commentCount = [responseObject unsignedIntegerValueForKey:@"comments"];
-//              weakSelf.post.commentCount = commentCount;
-
-              [weakSelf _fetchNewComments];
-          }
-          failure:^(NSURLSessionTask *operation, NSError *error) {
-
-              [weakSelf _networkThreadEnd];
-
-              [RKDropdownAlert title:NSLocalizedString(kErrorTitle, nil)
-                             message:error.localizedDescription
-                     backgroundColor:FlatYellow
-                           textColor:FlatBlack
-                                time:5];
-          }
-     ];
-}
+//- (void)_postComment
+//{
+//    [self _networkThreadBegin];
+//
+//    AFHTTPSessionManager *manager = [AFHTTPSessionManager managerWithToken];
+//    NSString *url = [NSString apiURLWithPath:@"comment"];
+//
+//    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+//
+//    __weak typeof(self) weakSelf = self;
+//    [manager POST:url
+//       parameters:[self _parametersForCreatingComment]
+//          success:^(NSURLSessionTask *operation, id responseObject) {
+//              NSLog(@"Comment POST Success responseObject: %@", responseObject);
+//
+//              [weakSelf _networkThreadEnd];
+////              NSUInteger commentCount = [responseObject unsignedIntegerValueForKey:@"comments"];
+////              weakSelf.post.commentCount = commentCount;
+//
+//              [weakSelf _fetchNewComments];
+//          }
+//          failure:^(NSURLSessionTask *operation, NSError *error) {
+//
+//              [weakSelf _networkThreadEnd];
+//
+//              [RKDropdownAlert title:NSLocalizedString(kErrorTitle, nil)
+//                             message:error.localizedDescription
+//                     backgroundColor:FlatYellow
+//                           textColor:FlatBlack
+//                                time:5];
+//          }
+//     ];
+//}
 
 - (void)_fetchNewComments
 {
@@ -366,15 +373,15 @@ static NSString *const kCommentCellIdentifier = @"commentCell";
 //     ];
 }
 
-- (NSDictionary *)_parametersForCreatingComment
-{
-    NSMutableDictionary *parameters = [NSMutableDictionary new];
-
-    [parameters setObject:self.post.postId forKey:@"post"];
-    [parameters setObject:self.textView.text forKey:@"content"];
-
-    return parameters;
-}
+//- (NSDictionary *)_parametersForCreatingComment
+//{
+//    NSMutableDictionary *parameters = [NSMutableDictionary new];
+//
+//    [parameters setObject:self.post.postId forKey:@"post"];
+//    [parameters setObject:self.textView.text forKey:@"content"];
+//
+//    return parameters;
+//}
 
 - (NSDictionary *)_parametersForCommentOfPost:(BOOL)toEnd
 {

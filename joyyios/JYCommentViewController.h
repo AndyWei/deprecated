@@ -8,9 +8,10 @@
 
 #import "JYComment.h"
 #import "JYPost.h"
-#import "SLKTextViewController.h"
+//#import "SLKTextViewController.h"
 
-@interface JYCommentViewController : SLKTextViewController
+//@interface JYCommentViewController : SLKTextViewController
+@interface JYCommentViewController : UITableViewController
 
 - (instancetype)initWithPost:(JYPost *)post comment:(JYComment *)originalComment;
 

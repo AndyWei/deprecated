@@ -20,10 +20,10 @@ PODS:
   - AFNetworking/UIKit (2.6.3):
     - AFNetworking/NSURLConnection
     - AFNetworking/NSURLSession
-  - AKPickerView (0.2.6)
-  - AWSCore (2.3.0)
-  - AWSS3 (2.3.0):
-    - AWSCore (= 2.3.0)
+  - AKPickerView (0.2.7)
+  - AWSCore (2.3.1)
+  - AWSS3 (2.3.1):
+    - AWSCore (= 2.3.1)
   - ChameleonFramework (2.0.4):
     - ChameleonFramework/Default (= 2.0.4)
   - ChameleonFramework/Default (2.0.4)
@@ -33,11 +33,9 @@ PODS:
   - CocoaLumberjack/Core (1.9.2)
   - CocoaLumberjack/Extensions (1.9.2):
     - CocoaLumberjack/Core
-  - Crashlytics (3.4.0):
+  - Crashlytics (3.4.1):
     - Fabric (~> 1.6.0)
-  - Fabric (1.6.0):
-    - Fabric/Base (= 1.6.0)
-  - Fabric/Base (1.6.0)
+  - Fabric (1.6.1)
   - FDFullscreenPopGesture (1.1)
   - FMDB (2.5):
     - FMDB/standard (= 2.5)
@@ -85,10 +83,10 @@ PODS:
     - libextobjc/RuntimeExtensions
   - libextobjc/RuntimeExtensions (0.4.1)
   - libextobjc/UmbrellaHeader (0.4.1)
-  - Mantle (2.0.5):
-    - Mantle/extobjc (= 2.0.5)
-  - Mantle/extobjc (2.0.5)
-  - MJRefresh (3.0.2)
+  - Mantle (2.0.6):
+    - Mantle/extobjc (= 2.0.6)
+  - Mantle/extobjc (2.0.6)
+  - MJRefresh (3.0.7)
   - MSWeakTimer (1.1.0)
   - Onboard (2.1.7)
   - RKDropdownAlert (0.3.0)
@@ -272,14 +270,14 @@ DEPENDENCIES:
 
 SPEC CHECKSUMS:
   AFNetworking: cb8d14a848e831097108418f5d49217339d4eb60
-  AKPickerView: e31dcb9572c04d8439512315798862d9eb84b18f
-  AWSCore: dc200c885c9799f9f5d3ab9ec38a9c4b44d680f9
-  AWSS3: 0185482a8136da9c7542a767567ee18106b38bca
+  AKPickerView: 125372e36fcc372216127600a541f14dcdbb7993
+  AWSCore: 7ad34b4bc285b778a3df699cb6f00aad3d1c446f
+  AWSS3: b7f4a0ad4da6dcc172e757dcb2b2423d26b32325
   ChameleonFramework: 5abe69b1f2a6cc79c3c435fcd9d3d855748225ee
   CocoaAsyncSocket: f5783bdedd232d91b89769bc4b5a1580aed518ad
   CocoaLumberjack: 628fca2e88ef06f7cf6817309aa405f325d9a6fa
-  Crashlytics: 1ee87895c37472eb3f01f409ea1654a464d2f8d4
-  Fabric: d737eda3a26ac940a5430230eedb35f16b226131
+  Crashlytics: 41574a245bc6ae10c55d57f385ebd2004e5bee05
+  Fabric: bf0ceb04e7c924090efc5f8c55e4fbcca189e0a0
   FDFullscreenPopGesture: a8a620179e3d9c40e8e00256dcee1c1a27c6d0f0
   FMDB: 96e8f1bcc1329e269330f99770ad4285d9003e52
   JSQMessagesViewController: 73cab48aa92fc2d512f3b6724f3425cc47a19eb5
@@ -288,8 +286,8 @@ SPEC CHECKSUMS:
   KVNProgress: 7001d2d16a2755cee5599e8e485befe056f2197b
   KVOController: 9fd8f0343670994e4b6f9f0b31f5a45663f3e1cf
   libextobjc: a650fc1bf489a3d3a9bc2e621efa3e1006fc5471
-  Mantle: 1912395033f601de5adc8ee91e48f46e4c7051ad
-  MJRefresh: 85377dc8c70395cf329e102a5c55505ef387c2e1
+  Mantle: 299966b00759634931699f69cb6a30b9239b944d
+  MJRefresh: f3e1228ec3d38c7ba5208d58032631a52f39f495
   MSWeakTimer: 9426150f933b80ed3acf3f6d228e4b61f0e303c8
   Onboard: 87648089e1b76d13b4f5bf8f7a1cdb144092f0af
   RKDropdownAlert: f4b3364c251829ad439dc666836a1f2dad26f4c7

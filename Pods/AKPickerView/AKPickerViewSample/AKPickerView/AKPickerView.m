@@ -190,7 +190,7 @@
 - (CGFloat)offsetForItem:(NSUInteger)item
 {
 	NSAssert(item < [self.collectionView numberOfItemsInSection:0],
-			 @"item out of range; %tu passed, but the maximum is %lu", (unsigned long)item, (long)[self.collectionView numberOfItemsInSection:0]);
+			 @"item out of range; '%lu' passed, but the maximum is '%lu'", item, [self.collectionView numberOfItemsInSection:0]);
 
 	CGFloat offset = 0.0;
 
@@ -487,7 +487,7 @@
 
 - (UICollectionViewLayoutAttributes *)layoutAttributesForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-	UICollectionViewLayoutAttributes *attributes = [super layoutAttributesForItemAtIndexPath:indexPath];
+	UICollectionViewLayoutAttributes *attributes = [[super layoutAttributesForItemAtIndexPath:indexPath] copy];
 	switch ([self.delegate pickerViewStyleForCollectionViewLayout:self]) {
 		case AKPickerViewStyleFlat: {
 			return attributes; break;
