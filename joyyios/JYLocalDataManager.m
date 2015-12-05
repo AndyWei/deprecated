@@ -176,6 +176,24 @@ static NSString *const SELECT_ALL_SQL = @"SELECT * FROM %@ ORDER BY id ASC";
     return result;
 }
 
+- (void)receivedCommentList:(NSArray *)commentList
+{
+    if ([commentList count] == 0)
+    {
+        return;
+    }
+
+    [self insertObjects:commentList ofClass:JYComment.class];
+
+    // update maxCommentIdInDB
+    JYComment *lastComment = [commentList lastObject];
+    NSNumber *maxCommentId = lastComment.commentId;
+    if ([maxCommentId unsignedLongLongValue] > [self.maxCommentIdInDB unsignedLongLongValue])
+    {
+        self.maxCommentIdInDB = maxCommentId;
+    }
+}
+
 - (void)setMinCommentIdInDB:(NSNumber *)minCommentIdInDB
 {
     [[NSUserDefaults standardUserDefaults] setObject:minCommentIdInDB forKey:kMinCommentIdKey];

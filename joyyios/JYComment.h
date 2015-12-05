@@ -13,7 +13,8 @@
 
 - (instancetype)initWithOwnerId:(NSNumber *)ownerid content:(NSString *)content;
 
-@property(nonatomic, readonly, copy) NSString *content;
+@property(nonatomic, readonly) NSString *content;
+@property(nonatomic, readonly) NSString *displayText;
 @property(nonatomic, readonly) NSNumber *commentId;
 @property(nonatomic, readonly) NSNumber *ownerId;
 @property(nonatomic, readonly) NSNumber *postId;

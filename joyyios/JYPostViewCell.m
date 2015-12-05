@@ -12,18 +12,18 @@
 
 #import "JYComment.h"
 #import "JYFriendManager.h"
-#import "JYMediaView.h"
 #import "JYPost.h"
-#import "JYPostViewCell.h"
 #import "JYPostActionView.h"
 #import "JYPostCommentView.h"
+#import "JYPostMediaView.h"
+#import "JYPostViewCell.h"
 #import "JYPosterView.h"
 
 
 @interface JYPostViewCell ()
 @property (nonatomic) BOOL didSetupConstraints;
 @property (nonatomic) FBKVOController *observer;
-@property (nonatomic) JYMediaView *mediaView;
+@property (nonatomic) JYPostMediaView *mediaView;
 @property (nonatomic) JYPostActionView *actionView;
 @property (nonatomic) JYPosterView *posterView;
 @property (nonatomic) JYPostCommentView *commentView;
@@ -201,11 +201,11 @@
     return _posterView;
 }
 
-- (JYMediaView *)mediaView
+- (JYPostMediaView *)mediaView
 {
     if (!_mediaView)
     {
-        _mediaView = [[JYMediaView alloc] init];
+        _mediaView = [[JYPostMediaView alloc] init];
     }
     return _mediaView;
 }
@@ -229,6 +229,8 @@
         _likesLabel.textInsets = UIEdgeInsetsMake(0, 20, 0, kMarginRight);
         _likesLabel.backgroundColor = JoyyWhitePure;
         _likesLabel.textColor = JoyyBlue;
+        _likesLabel.lineBreakMode = NSLineBreakByWordWrapping;
+        _likesLabel.numberOfLines = 0;
     }
     return _likesLabel;
 }

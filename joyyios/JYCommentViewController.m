@@ -12,13 +12,15 @@
 #import <MJRefresh/MJRefresh.h>
 #import <RKDropdownAlert/RKDropdownAlert.h>
 
-#import "JYCommentTextView.h"
 #import "JYCommentViewCell.h"
 #import "JYCommentViewController.h"
+#import "JYFriendManager.h"
+#import "JYLocalDataManager.h"
+
 
 @interface JYCommentViewController ()
 @property (nonatomic) JYPost *post;
-@property (nonatomic) JYComment *orginalComment;
+@property (nonatomic) JYComment *originalComment;
 @property (nonatomic) JYCommentViewCell *sizingCell;
 @property (nonatomic) NSInteger networkThreadCount;
 @property (nonatomic) NSMutableArray *commentList;
@@ -32,25 +34,54 @@ static NSString *const kCommentCellIdentifier = @"postCommentCell";
 
 - (instancetype)initWithPost:(JYPost *)post comment:(JYComment *)originalComment
 {
-//    self = [super initWithTableViewStyle:UITableViewStylePlain];
-    self = [super initWithStyle:UITableViewStylePlain];
+    self = [super initWithTableViewStyle:UITableViewStylePlain];
     if (self)
     {
         [self.tableView registerClass:[JYCommentViewCell class] forCellReuseIdentifier:kCommentCellIdentifier];
-//        [self registerClassForTextView:[JYCommentTextView class]];
-        self.post = post;
-        self.orginalComment = originalComment;
-        self.networkThreadCount = 0;
-        self.commentList = [NSMutableArray arrayWithArray:_post.commentList];
 
-        // enwrap the caption text as a comment
-//        if ([_post.caption length] != 0)
-//        {
-//            JYComment *captionComment = [[JYComment alloc] initWithOwnerId:_post.ownerId content:_post.caption];
-//            [_commentList insertObject:captionComment atIndex:0];
-//        }
+        self.post = post;
+        self.originalComment = originalComment;
+        self.networkThreadCount = 0;
+
+        [self _updatePlaceholder];
+        [self _initDataSource];
+        [self _fetchNewComments];
     }
     return self;
+}
+
+- (void)_initDataSource
+{
+    self.commentList = [NSMutableArray new];
+
+    // enwrap the caption text as a comment
+    if ([_post.caption length] != 0)
+    {
+        JYComment *captionComment = [[JYComment alloc] initWithOwnerId:_post.ownerId content:_post.caption];
+        [_commentList addObject:captionComment];
+    }
+
+    for (JYComment *comment in self.post.commentList)
+    {
+        if (![comment isLike])
+        {
+            [self.commentList addObject:comment];
+        }
+    }
+}
+
+- (void)_updatePlaceholder
+{
+    if (self.originalComment) // comment on another comment
+    {
+        JYFriend *owner = [[JYFriendManager sharedInstance] friendOfId:self.originalComment.ownerId];
+        NSString *replyText = NSLocalizedString(@"Reply to", nil);
+        self.textInputbar.textView.placeholder = [NSString stringWithFormat:@"%@ %@:", replyText, owner.username];
+    }
+    else // comment to post
+    {
+        self.textInputbar.textView.placeholder = NSLocalizedString(@"Add comment:", nil);
+    }
 }
 
 - (BOOL)hidesBottomBarWhenPushed
@@ -65,17 +96,16 @@ static NSString *const kCommentCellIdentifier = @"postCommentCell";
     self.view.backgroundColor = JoyyBlack;
 
     // textInput view
-//    self.bounces = YES;
-//    self.shakeToClearEnabled = NO;
-//    self.keyboardPanningEnabled = YES;
-//    self.shouldScrollToBottomAfterKeyboardShows = NO;
-//    self.inverted = NO;
-//
-//    [self.rightButton setTitle:NSLocalizedString(@"Send", nil) forState:UIControlStateNormal];
-//    self.rightButton.tintColor = JoyyBlue;
-//    self.textInputbar.backgroundColor = JoyyBlack;
-//    self.textInputbar.autoHideRightButton = NO;
-//    self.typingIndicatorView.canResignByTouch = YES;
+    self.bounces = YES;
+    self.shakeToClearEnabled = NO;
+    self.keyboardPanningEnabled = YES;
+    self.shouldScrollToBottomAfterKeyboardShows = NO;
+    self.inverted = NO;
+
+    [self.rightButton setTitle:NSLocalizedString(@"Send", nil) forState:UIControlStateNormal];
+    self.rightButton.tintColor = JoyyBlue;
+    self.textInputbar.autoHideRightButton = NO;
+    self.typingIndicatorView.canResignByTouch = YES;
 
     // tableView
     self.tableView.allowsSelection = NO;
@@ -87,7 +117,7 @@ static NSString *const kCommentCellIdentifier = @"postCommentCell";
     [self _showBackgroundImage];
     [self _fetchNewComments];
 
-//    [self.textView becomeFirstResponder];
+    [self.textView becomeFirstResponder];
 }
 
 - (void)didReceiveMemoryWarning
@@ -119,17 +149,28 @@ static NSString *const kCommentCellIdentifier = @"postCommentCell";
 - (void)_showBackgroundImage
 {
     // Fetch network image
-    NSURL *url = [NSURL URLWithString:_post.URL];
+    NSURL *url = [NSURL URLWithString:self.post.URL];
     NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestReturnCacheDataElseLoad timeoutInterval:5];
 
     __weak typeof(self) weakSelf = self;
     [self.photoView setImageWithURLRequest:request
-                          placeholderImage:nil
+                          placeholderImage:self.post.localImage
                                    success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
                                        weakSelf.photoView.image = image;
+
+                                       if (!weakSelf.post.localImage)
+                                       {
+                                           weakSelf.photoView.alpha = 0;
+                                           [UIView animateWithDuration:0.5 animations:^{
+                                               weakSelf.photoView.alpha = 1;
+                                           }];
+                                       }
+                                       weakSelf.post.localImage = image;
+
                                    } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
-                                       NSLog(@"_showBackgroundImage failed with error = %@", error);
+                                       NSLog(@"setImageWithURLRequest failed with error = %@", error);
                                    }];
+
 }
 
 - (void)_networkThreadBegin
@@ -168,8 +209,7 @@ static NSString *const kCommentCellIdentifier = @"postCommentCell";
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    NSInteger count = self.commentList.count; // Use 1 dummy cell to cover the background photo with JoyyBlack50 color
-    return count;
+    return self.commentList.count + 1; // Use 1 dummy cell to cover the background photo with JoyyBlack50 color
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -244,164 +284,140 @@ static NSString *const kCommentCellIdentifier = @"postCommentCell";
 
 #pragma mark - Maintain Table
 
-//- (void)_updateTableWithComments:(NSArray *)list toEnd:(BOOL)toEnd
-//{
-//    if (!list.count)
-//    {
-//        return;
-//    }
-//
-//    BOOL firstLoad = self.commentList.count == 0;
-//    dispatch_async(dispatch_get_main_queue(), ^{
-//        [self _addCommentsFromList:list toEnd:toEnd];
-//
-//        if (firstLoad)
-//        {
-//            [self.tableView reloadData];
-//            [self _scrollTableViewToBottom];
-//        }
-//        else
-//        {
-//            CGSize beforeContentSize = self.tableView.contentSize;
-//            [self.tableView reloadData];
-//            CGSize afterContentSize = self.tableView.contentSize;
-//
-//            CGPoint afterContentOffset = self.tableView.contentOffset;
-//            CGPoint newContentOffset = CGPointMake(afterContentOffset.x, afterContentOffset.y + afterContentSize.height - beforeContentSize.height);
-//            self.tableView.contentOffset = newContentOffset;
-//        }
-//    });
-//}
-
-- (void)_addCommentsFromList:(NSArray *)list toEnd:(BOOL)toEnd
+- (void)_receivedComments:(NSArray *)commentList
 {
-//    if (!list.count)
-//    {
-//        return;
-//    }
-//
-//    // The items in commentsList are DESC sorted by id
-//    if (toEnd)
-//    {
-//        for (NSDictionary *dict in [list reverseObjectEnumerator])
-//        {
-//            JYComment *comment = [JYComment commentWithDictionary:dict];
-//            [self.commentList addObject:comment];
-//        }
-//    }
-//    else
-//    {
-//        for (NSDictionary *dict in list)
-//        {
-//            JYComment *comment = [JYComment commentWithDictionary:dict];
-//            [self.commentList insertObject:comment atIndex:0];
-//        }
-//    }
+    // update data source
+    for (JYComment *comment in commentList)
+    {
+        if ([comment.postId unsignedLongLongValue] == [self.post.postId unsignedLongLongValue] && ![comment isLike])
+        {
+            [self.commentList addObject:comment];
+        }
+    }
+
+    [self.tableView reloadData];
+
+    // update the comment list of the post
+    NSMutableArray *newCommentList = [NSMutableArray arrayWithArray:self.post.commentList];
+    [newCommentList addObjectsFromArray:commentList];
+    self.post.commentList = newCommentList;
 }
 
 #pragma mark - Overriden Method
 
 // Notifies the view controller when the right button's action has been triggered, manually or by using the keyboard return key.
-//- (void)didPressRightButton:(id)sender
-//{
-//    // This little trick validates any pending auto-correction or auto-spelling just after hitting the 'Send' button
-//    [self.textView refreshFirstResponder];
-//
-//    [self _postComment];
-//    [super didPressRightButton:sender];
-//}
+- (void)didPressRightButton:(id)sender
+{
+    // This little trick validates any pending auto-correction or auto-spelling just after hitting the 'Send' button
+    [self.textView refreshFirstResponder];
+
+    [self _postComment];
+    [super didPressRightButton:sender];
+}
 
 #pragma mark - Network
 
-//- (void)_postComment
-//{
-//    [self _networkThreadBegin];
-//
-//    AFHTTPSessionManager *manager = [AFHTTPSessionManager managerWithToken];
-//    NSString *url = [NSString apiURLWithPath:@"comment"];
-//
-//    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
-//
-//    __weak typeof(self) weakSelf = self;
-//    [manager POST:url
-//       parameters:[self _parametersForCreatingComment]
-//          success:^(NSURLSessionTask *operation, id responseObject) {
-//              NSLog(@"Comment POST Success responseObject: %@", responseObject);
-//
-//              [weakSelf _networkThreadEnd];
-////              NSUInteger commentCount = [responseObject unsignedIntegerValueForKey:@"comments"];
-////              weakSelf.post.commentCount = commentCount;
-//
-//              [weakSelf _fetchNewComments];
-//          }
-//          failure:^(NSURLSessionTask *operation, NSError *error) {
-//
-//              [weakSelf _networkThreadEnd];
-//
-//              [RKDropdownAlert title:NSLocalizedString(kErrorTitle, nil)
-//                             message:error.localizedDescription
-//                     backgroundColor:FlatYellow
-//                           textColor:FlatBlack
-//                                time:5];
-//          }
-//     ];
-//}
+- (void)_postComment
+{
+    [self _networkThreadBegin];
+
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager managerWithToken];
+    NSString *url = [NSString apiURLWithPath:@"post/comment/create"];
+
+    __weak typeof(self) weakSelf = self;
+    [manager POST:url
+       parameters:[self _parametersForCreatingComment]
+          success:^(NSURLSessionTask *operation, id responseObject) {
+              NSLog(@"Comment POST Success responseObject: %@", responseObject);
+
+              NSDictionary *dict = (NSDictionary *)responseObject;
+              NSError *error = nil;
+              JYComment *comment = (JYComment *)[MTLJSONAdapter modelOfClass:JYComment.class fromJSONDictionary:dict error:&error];
+              if (comment)
+              {
+                  NSArray *commentList = @[comment];
+                  [[JYLocalDataManager sharedInstance] receivedCommentList:commentList];
+                  [weakSelf _receivedComments:commentList];
+              }
+
+              [weakSelf _networkThreadEnd];
+          }
+          failure:^(NSURLSessionTask *operation, NSError *error) {
+
+              [weakSelf _networkThreadEnd];
+
+              [RKDropdownAlert title:NSLocalizedString(kErrorTitle, nil)
+                             message:error.localizedDescription
+                     backgroundColor:FlatYellow
+                           textColor:FlatBlack
+                                time:5];
+          }
+     ];
+}
 
 - (void)_fetchNewComments
 {
-//    if (self.networkThreadCount > 0)
-//    {
-//        return;
-//    }
-//    [self _networkThreadBegin];
-//
-//    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
-//    NSString *url = [NSString apiURLWithPath:@"comment"];
-//
-//    __weak typeof(self) weakSelf = self;
-//    [manager GET:url
-//      parameters:[self _parametersForCommentOfPost:toEnd]
-//         success:^(NSURLSessionTask *operation, id responseObject) {
-//
-//             NSLog(@"comment GET success responseObject: %@", responseObject);
-//             [weakSelf _updateTableWithComments:responseObject toEnd:toEnd];
-//             [weakSelf _networkThreadEnd];
-//         }
-//         failure:^(NSURLSessionTask *operation, NSError *error) {
-//             [weakSelf _networkThreadEnd];
-//         }
-//     ];
+    if (self.networkThreadCount > 0)
+    {
+        return;
+    }
+    [self _networkThreadBegin];
+
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager managerWithToken];
+
+    NSString *url = [NSString apiURLWithPath:@"post/commentline"];
+
+    uint64_t sinceid = [[JYLocalDataManager sharedInstance].maxCommentIdInDB unsignedLongLongValue];
+    uint64_t beforeid = LLONG_MAX;
+    
+    NSDictionary *parameters = @{@"sinceid": @(sinceid), @"beforeid": @(beforeid)};
+    NSLog(@"commentViewController post/commentline params: sinceid = %llu, beforeid = %llu", sinceid, beforeid);
+
+    __weak typeof(self) weakSelf = self;
+    [manager GET:url
+      parameters:parameters
+         success:^(NSURLSessionTask *operation, id responseObject) {
+             NSLog(@"GET post/commentline success responseObject: %@", responseObject);
+
+             NSMutableArray *commentList = [NSMutableArray new];
+
+             for (NSDictionary *dict in responseObject)
+             {
+                 NSError *error = nil;
+                 JYComment *comment = (JYComment *)[MTLJSONAdapter modelOfClass:JYComment.class fromJSONDictionary:dict error:&error];
+                 if (comment)
+                 {
+                     [commentList addObject:comment];
+                 }
+             }
+
+             if ([commentList count] > 0)
+             {
+                 [[JYLocalDataManager sharedInstance] receivedCommentList:commentList];
+                 [weakSelf _receivedComments:commentList];
+             }
+
+             [weakSelf _networkThreadEnd];
+         }
+         failure:^(NSURLSessionTask *operation, NSError *error) {
+             NSLog(@"GET post/commentline error = %@", error);
+             [weakSelf _networkThreadEnd];
+         }
+     ];
 }
 
-//- (NSDictionary *)_parametersForCreatingComment
-//{
-//    NSMutableDictionary *parameters = [NSMutableDictionary new];
-//
-//    [parameters setObject:self.post.postId forKey:@"post"];
-//    [parameters setObject:self.textView.text forKey:@"content"];
-//
-//    return parameters;
-//}
-
-- (NSDictionary *)_parametersForCommentOfPost:(BOOL)toEnd
+- (NSDictionary *)_parametersForCreatingComment
 {
     NSMutableDictionary *parameters = [NSMutableDictionary new];
 
-    [parameters setObject:self.post.postId forKey:@"post"];
+    [parameters setObject:@([self.post.postId unsignedLongLongValue]) forKey:@"postid"];
+    [parameters setObject:@([self.post.ownerId unsignedLongLongValue]) forKey:@"posterid"];
+    [parameters setObject:self.textView.text forKey:@"content"];
 
-//    if (self.commentList.count > 0)
-//    {
-//        if (toEnd)
-//        {
-//            JYComment *comment = self.commentList.lastObject;
-//            [parameters setValue:@(comment.timestamp) forKey:@"after"];
-//        }
-//        else
-//        {
-//            JYComment *comment = self.commentList.firstObject;
-//            [parameters setValue:@(comment.timestamp) forKey:@"before"];
-//        }
-//    }
+    if (self.originalComment)
+    {
+        [parameters setObject:@([self.originalComment.ownerId unsignedLongLongValue]) forKey:@"replytoid"];
+    }
 
     return parameters;
 }

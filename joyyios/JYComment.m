@@ -10,6 +10,7 @@
 #import "JYFriendManager.h"
 
 @interface JYComment ()
+@property(nonatomic) NSString *displayText;
 @end
 
 @implementation JYComment
@@ -36,7 +37,8 @@
              @"ownerId": @"ownerid",
              @"postId": @"postid",
              @"replyToId": @"replytoid",
-             @"content": @"content"
+             @"content": @"content",
+             @"displayText": [NSNull null]
              };
 }
 
@@ -63,6 +65,25 @@
 - (BOOL)isLike
 {
     return [kLikeText isEqualToString:self.content];
+}
+
+- (NSString *)displayText
+{
+    if (!_displayText)
+    {
+        JYFriend *owner = [[JYFriendManager sharedInstance] friendOfId:self.ownerId];
+        JYFriend *replyTo = ([self.replyToId unsignedLongLongValue] == 0) ? nil: [[JYFriendManager sharedInstance] friendOfId:self.replyToId];
+        NSString *replyText = NSLocalizedString(@"reply", nil);
+        if (replyTo)
+        {
+            _displayText = [NSString stringWithFormat:@"%@ %@ %@: %@", owner.username, replyText, replyTo.username, self.content];
+        }
+        else
+        {
+            _displayText = [NSString stringWithFormat:@"%@: %@", owner.username, self.content];
+        }
+    }
+    return _displayText;
 }
 
 @end

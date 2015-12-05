@@ -103,9 +103,8 @@
 		D6B9B7481BAF6E45001F9500 /* JYProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B9B7471BAF6E45001F9500 /* JYProfileViewController.m */; };
 		D6C6BBAC1B62DF6B00FFFAC7 /* NSDictionary+Joyy.m in Sources */ = {isa = PBXBuildFile; fileRef = D6C6BBAB1B62DF6B00FFFAC7 /* NSDictionary+Joyy.m */; };
 		D6C82B551B0D9FAE00876F57 /* JYCommentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6C82B541B0D9FAE00876F57 /* JYCommentViewController.m */; };
-		D6C82B5C1B0EFDEA00876F57 /* JYCommentTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = D6C82B5B1B0EFDEA00876F57 /* JYCommentTextView.m */; };
 		D6C82B691B12553D00876F57 /* JYComment.m in Sources */ = {isa = PBXBuildFile; fileRef = D6C82B681B12553D00876F57 /* JYComment.m */; };
-		D6D622561C0D317E0039C4A7 /* JYMediaView.m in Sources */ = {isa = PBXBuildFile; fileRef = D6D622551C0D317E0039C4A7 /* JYMediaView.m */; };
+		D6D622561C0D317E0039C4A7 /* JYPostMediaView.m in Sources */ = {isa = PBXBuildFile; fileRef = D6D622551C0D317E0039C4A7 /* JYPostMediaView.m */; };
 		D6E3B0551B996F5400B707DF /* JYSessionListViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D6E3B0541B996F5400B707DF /* JYSessionListViewCell.m */; };
 		D6E3B0611B9A38F500B707DF /* JYMessageDateFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = D6E3B0601B9A38F500B707DF /* JYMessageDateFormatter.m */; };
 		D6E3B0651B9A7C6D00B707DF /* NSIndexPath+Joyy.m in Sources */ = {isa = PBXBuildFile; fileRef = D6E3B0641B9A7C6D00B707DF /* NSIndexPath+Joyy.m */; };
@@ -309,12 +308,10 @@
 		D6C6BBAB1B62DF6B00FFFAC7 /* NSDictionary+Joyy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+Joyy.m"; sourceTree = "<group>"; };
 		D6C82B531B0D9FAE00876F57 /* JYCommentViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYCommentViewController.h; sourceTree = "<group>"; };
 		D6C82B541B0D9FAE00876F57 /* JYCommentViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYCommentViewController.m; sourceTree = "<group>"; };
-		D6C82B5A1B0EFDEA00876F57 /* JYCommentTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYCommentTextView.h; sourceTree = "<group>"; };
-		D6C82B5B1B0EFDEA00876F57 /* JYCommentTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYCommentTextView.m; sourceTree = "<group>"; };
 		D6C82B671B12553D00876F57 /* JYComment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYComment.h; sourceTree = "<group>"; };
 		D6C82B681B12553D00876F57 /* JYComment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYComment.m; sourceTree = "<group>"; };
-		D6D622541C0D317E0039C4A7 /* JYMediaView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYMediaView.h; sourceTree = "<group>"; };
-		D6D622551C0D317E0039C4A7 /* JYMediaView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYMediaView.m; sourceTree = "<group>"; };
+		D6D622541C0D317E0039C4A7 /* JYPostMediaView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYPostMediaView.h; sourceTree = "<group>"; };
+		D6D622551C0D317E0039C4A7 /* JYPostMediaView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYPostMediaView.m; sourceTree = "<group>"; };
 		D6E3B0531B996F5400B707DF /* JYSessionListViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYSessionListViewCell.h; sourceTree = "<group>"; };
 		D6E3B0541B996F5400B707DF /* JYSessionListViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYSessionListViewCell.m; sourceTree = "<group>"; };
 		D6E3B05F1B9A38F500B707DF /* JYMessageDateFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYMessageDateFormatter.h; sourceTree = "<group>"; };
@@ -720,8 +717,8 @@
 			children = (
 				D61D1DE41B536B2700DE37DF /* JYPostViewCell.h */,
 				D61D1DE51B536B2700DE37DF /* JYPostViewCell.m */,
-				D6D622541C0D317E0039C4A7 /* JYMediaView.h */,
-				D6D622551C0D317E0039C4A7 /* JYMediaView.m */,
+				D6D622541C0D317E0039C4A7 /* JYPostMediaView.h */,
+				D6D622551C0D317E0039C4A7 /* JYPostMediaView.m */,
 				D6903D081C07A9C200CDC64F /* JYPosterView.h */,
 				D6903D091C07A9C200CDC64F /* JYPosterView.m */,
 				D6903D0B1C07C84E00CDC64F /* JYPostActionView.h */,
@@ -730,8 +727,6 @@
 				D6903D0F1C07CFE000CDC64F /* JYPostCommentView.m */,
 				D67DD0F21B77187000333626 /* JYCaptionTextView.h */,
 				D67DD0F31B77187000333626 /* JYCaptionTextView.m */,
-				D6C82B5A1B0EFDEA00876F57 /* JYCommentTextView.h */,
-				D6C82B5B1B0EFDEA00876F57 /* JYCommentTextView.m */,
 				D65F37441B04807D007B534C /* JYCommentViewCell.h */,
 				D65F37451B04807D007B534C /* JYCommentViewCell.m */,
 			);
@@ -1046,7 +1041,7 @@
 				D693798D1B54E8BC00E64F3A /* JYPhotoCaptionViewController.m in Sources */,
 				D68DAF961AC4CACD00838E7E /* Constants.m in Sources */,
 				D61D1D551B4A65F200DE37DF /* MDCSwipeResult.m in Sources */,
-				D6D622561C0D317E0039C4A7 /* JYMediaView.m in Sources */,
+				D6D622561C0D317E0039C4A7 /* JYPostMediaView.m in Sources */,
 				D61D1D4D1B4A65F200DE37DF /* UIView+MDCBorderedLabel.m in Sources */,
 				D689ED6A1AE42C8300CB4D2B /* UIView+Joyy.m in Sources */,
 				D6903D161C0B9E4A00CDC64F /* JYFriend.m in Sources */,
@@ -1108,7 +1103,6 @@
 				D6903D021BF9175400CDC64F /* MTLFMDBAdapter.m in Sources */,
 				D61D1DCA1B4E336E00DE37DF /* TGTintedButton.m in Sources */,
 				D6FD053E1C0CD8B4008F9BF2 /* JYFriendManager.m in Sources */,
-				D6C82B5C1B0EFDEA00876F57 /* JYCommentTextView.m in Sources */,
 				D6348D2F1ADB4DD60002BC35 /* NSString+Joyy.m in Sources */,
 				D6B9B7481BAF6E45001F9500 /* JYProfileViewController.m in Sources */,
 				D61D1D531B4A65F200DE37DF /* MDCPanState.m in Sources */,

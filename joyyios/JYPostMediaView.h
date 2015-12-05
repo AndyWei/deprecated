@@ -8,7 +8,7 @@
 
 @class JYPost;
 
-@interface JYMediaView : UIView
+@interface JYPostMediaView : UIView
 
 @property(nonatomic) JYPost *post;
 

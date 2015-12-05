@@ -24,7 +24,7 @@
     if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier])
     {
         self.selectionStyle = UITableViewCellSelectionStyleNone;
-        self.contentView.backgroundColor = JoyyBlack50;
+        self.backgroundColor = JoyyBlack50;
 
         [self.contentView addSubview:self.avatarView];
         [self.contentView addSubview:self.commentLabel];
@@ -34,7 +34,7 @@
                                 @"commentLabel": self.commentLabel
                                 };
 
-        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-20-[avatarView(40)]-10-[commentLabel]-20-|" options:0 metrics:nil views:views]];
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-10-[avatarView(40)]-10-[commentLabel]-10-|" options:0 metrics:nil views:views]];
         [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-10-[avatarView(40)]-10@500-|" options:0 metrics:nil views:views]];
         [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-10-[commentLabel(>=40@500)]-10-|" options:0 metrics:nil views:views]];
     }
@@ -59,7 +59,7 @@
     }
 
     _comment = comment;
-    self.commentLabel.text = comment.content;
+    self.commentLabel.text = comment.displayText;
     self.commentLabel.preferredMaxLayoutWidth = SCREEN_WIDTH - 90;
     [self _updateAvatarView];
 }
@@ -89,6 +89,7 @@
         view.translatesAutoresizingMaskIntoConstraints = NO;
         view.contentMode = UIViewContentModeScaleAspectFit;
         view.layer.cornerRadius = 20;
+        view.layer.masksToBounds = YES;
         _avatarView = view;
     }
     return _avatarView;
@@ -103,6 +104,9 @@
         label.font = [UIFont systemFontOfSize:kFontSizeComment];
         label.backgroundColor = ClearColor;
         label.textColor = JoyyWhite;
+        label.lineBreakMode = NSLineBreakByWordWrapping;
+        label.numberOfLines = 0;
+
         _commentLabel = label;
     }
     return _commentLabel;

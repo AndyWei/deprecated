@@ -21,6 +21,8 @@
 - (NSMutableArray *)selectCommentsOfPostId:(NSNumber *)postId;
 - (NSMutableArray *)selectFriends;
 
+- (void)receivedCommentList:(NSArray *)commentList;
+
 @property (nonatomic) NSNumber *minCommentIdInDB;
 @property (nonatomic) NSNumber *maxCommentIdInDB;
 

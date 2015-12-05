@@ -9,15 +9,15 @@
 #import <AFNetworking/UIImageView+AFNetworking.h>
 #import <TTTAttributedLabel/TTTAttributedLabel.h>
 
-#import "JYMediaView.h"
+#import "JYPostMediaView.h"
 #import "JYPost.h"
 
-@interface JYMediaView ()
+@interface JYPostMediaView ()
 @property (nonatomic) TTTAttributedLabel *captionLabel;
 @property (nonatomic) UIImageView *photoView;
 @end
 
-@implementation JYMediaView
+@implementation JYPostMediaView
 
 - (instancetype)init
 {
@@ -68,11 +68,16 @@
                           placeholderImage:self.post.localImage
                                    success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
                                        weakSelf.photoView.image = image;
-                                       weakSelf.photoView.alpha = 0;
-                                       weakSelf.post.localImage = nil;
-                                       [UIView animateWithDuration:0.5 animations:^{
-                                           weakSelf.photoView.alpha = 1;
-                                       }];
+
+                                       if (!weakSelf.post.localImage)
+                                       {
+                                            weakSelf.photoView.alpha = 0;
+                                           [UIView animateWithDuration:0.5 animations:^{
+                                               weakSelf.photoView.alpha = 1;
+                                           }];
+                                       }
+                                       weakSelf.post.localImage = image;
+
                                    } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
                                        NSLog(@"setImageWithURLRequest failed with error = %@", error);
                                    }];

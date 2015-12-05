@@ -84,7 +84,7 @@
         if (![comment isLike])
         {
             TTTAttributedLabel *label = [self _createCommentLabel];
-            label.text = [self _displayTextOfComment:comment];
+            label.text = comment.displayText;
             [self.commentLabels addObject:label];
             [self addSubview:label];
         }
@@ -113,25 +113,6 @@
     label.lineBreakMode = NSLineBreakByWordWrapping;
 
     return label;
-}
-
-- (NSString *)_displayTextOfComment:(JYComment *)comment
-{
-    NSString *displayText = nil;
-
-    JYFriend *owner = [[JYFriendManager sharedInstance] friendOfId:comment.ownerId];
-    JYFriend *replyTo = ([comment.replyToId unsignedLongLongValue] == 0) ? nil: [[JYFriendManager sharedInstance] friendOfId:comment.replyToId];
-    NSString *replyText = NSLocalizedString(@"reply", nil);
-    if (replyTo)
-    {
-        displayText = [NSString stringWithFormat:@"%@ %@ %@: %@", owner.username, replyText, replyTo.username, comment.content];
-    }
-    else
-    {
-        displayText = [NSString stringWithFormat:@"%@: %@", owner.username, comment.content];
-    }
-
-    return displayText;
 }
 
 @end

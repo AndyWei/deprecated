@@ -369,7 +369,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
     return height;
 }
 
--(CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath
+- (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return 455;
 }
@@ -750,8 +750,13 @@ static NSString *const kPostCellIdentifier = @"postCell";
                        [commentList addObject:comment];
                   }
              }
-             [[JYLocalDataManager sharedInstance] insertObjects:commentList ofClass:JYComment.class];
-             [weakSelf _refreshComments];
+
+             if ([commentList count] > 0)
+             {
+                 [[JYLocalDataManager sharedInstance] receivedCommentList:commentList];
+                 [weakSelf _refreshComments];
+             }
+
              [weakSelf _networkThreadEnd];
          }
          failure:^(NSURLSessionTask *operation, NSError *error) {
