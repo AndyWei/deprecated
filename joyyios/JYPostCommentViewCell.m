@@ -8,6 +8,7 @@
 
 #import <TTTAttributedLabel/TTTAttributedLabel.h>
 
+#import "JYFriendManager.h"
 #import "JYPostCommentViewCell.h"
 
 @interface JYPostCommentViewCell ()
@@ -51,8 +52,18 @@
     }
 
     _comment = comment;
-    self.commentLabel.text = comment.displayText;
-    self.commentLabel.preferredMaxLayoutWidth = CGRectGetWidth(self.commentLabel.bounds);
+
+    JYFriend *owner = [[JYFriendManager sharedInstance] friendOfId:comment.ownerId];
+    JYFriend *replyTo = ([comment.replyToId unsignedLongLongValue] == 0) ? nil: [[JYFriendManager sharedInstance] friendOfId:comment.replyToId];
+    NSString *replyText = NSLocalizedString(@"reply", nil);
+    if (replyTo)
+    {
+        self.commentLabel.text = [NSString stringWithFormat:@"%@ %@ %@: %@", owner.username, replyText, replyTo.username, comment.content];
+    }
+    else
+    {
+        self.commentLabel.text = [NSString stringWithFormat:@"%@: %@", owner.username, comment.content];
+    }
 }
 
 - (TTTAttributedLabel *)commentLabel
@@ -67,6 +78,7 @@
         label.textInsets = UIEdgeInsetsMake(0, 5, 0, 5);
         label.lineBreakMode = NSLineBreakByWordWrapping;
         label.numberOfLines = 0;
+        label.preferredMaxLayoutWidth = SCREEN_WIDTH - 30;
 
         _commentLabel = label;
     }

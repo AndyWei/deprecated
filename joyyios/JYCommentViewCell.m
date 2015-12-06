@@ -6,15 +6,18 @@
 //  Copyright (c) 2015 Joyy Inc. All rights reserved.
 //
 
+#import <AFNetworking/UIButton+AFNetworking.h>
 #import <AFNetworking/UIImageView+AFNetworking.h>
 #import <TTTAttributedLabel/TTTAttributedLabel.h>
 
+#import "JYButton.h"
 #import "JYCommentViewCell.h"
 #import "JYFriendManager.h"
 
 @interface JYCommentViewCell ()
 @property(nonatomic) TTTAttributedLabel *commentLabel;
-@property(nonatomic) UIImageView *avatarView;
+@property(nonatomic) TTTAttributedLabel *usernameLabel;
+@property(nonatomic) UIButton *avatarButton;
 @end
 
 @implementation JYCommentViewCell
@@ -26,17 +29,20 @@
         self.selectionStyle = UITableViewCellSelectionStyleNone;
         self.backgroundColor = JoyyBlack50;
 
-        [self.contentView addSubview:self.avatarView];
+        [self.contentView addSubview:self.avatarButton];
         [self.contentView addSubview:self.commentLabel];
+        [self.contentView addSubview:self.usernameLabel];
 
         NSDictionary *views = @{
-                                @"avatarView": self.avatarView,
-                                @"commentLabel": self.commentLabel
+                                @"avatarButton": self.avatarButton,
+                                @"commentLabel": self.commentLabel,
+                                @"usernameLabel": self.usernameLabel
                                 };
 
-        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-10-[avatarView(40)]-10-[commentLabel]-10-|" options:0 metrics:nil views:views]];
-        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-10-[avatarView(40)]-10@500-|" options:0 metrics:nil views:views]];
-        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-10-[commentLabel(>=40@500)]-10-|" options:0 metrics:nil views:views]];
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-10-[avatarButton(40)]-10-[usernameLabel]-|" options:0 metrics:nil views:views]];
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-10-[avatarButton(40)]-10-[commentLabel]-10-|" options:0 metrics:nil views:views]];
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-10-[avatarButton(40)]-5@500-|" options:0 metrics:nil views:views]];
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-10-[usernameLabel][commentLabel]-5-|" options:0 metrics:nil views:views]];
     }
     return self;
 }
@@ -52,47 +58,71 @@
 {
     if (!comment)
     {
-        self.avatarView.image = nil;
-        self.avatarView.backgroundColor = ClearColor;
+        [self.avatarButton setImage:nil forState:UIControlStateNormal];
         self.commentLabel.text = nil;
+        self.usernameLabel.text = nil;
         return;
     }
 
     _comment = comment;
-    self.commentLabel.text = comment.displayText;
-    self.commentLabel.preferredMaxLayoutWidth = SCREEN_WIDTH - 90;
-    [self _updateAvatarView];
+
+    JYFriend *owner = [[JYFriendManager sharedInstance] friendOfId:comment.ownerId];
+    self.usernameLabel.text = owner.username;
+
+    // commentLabel
+    JYFriend *replyTo = ([comment.replyToId unsignedLongLongValue] == 0) ? nil: [[JYFriendManager sharedInstance] friendOfId:comment.replyToId];
+    NSString *replyText = NSLocalizedString(@"reply", nil);
+    if (replyTo)
+    {
+        self.commentLabel.text = [NSString stringWithFormat:@"%@ %@: %@", replyText, replyTo.username, comment.content];
+    }
+    else
+    {
+        self.commentLabel.text = comment.content;
+    }
+
+    [self _updateAvatarButtonImage];
 }
 
-- (void)_updateAvatarView
+- (void)_updateAvatarButtonImage
 {
     JYFriend *friend = [[JYFriendManager sharedInstance] friendOfId:self.comment.ownerId];
     NSURL *url = [NSURL URLWithString:friend.avatarURL];
-    NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestReturnCacheDataElseLoad timeoutInterval:5];
-
-    __weak typeof(self) weakSelf = self;
-    [self.avatarView setImageWithURLRequest:request
-                                       placeholderImage:nil
-                                                success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
-                                                    weakSelf.avatarView.image = image;
-
-                                                } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
-                                                    NSLog(@"comment owner avatar view image failed with error = %@", error);
-                                                }];
+    [self.avatarButton setImageForState:UIControlStateNormal withURL:url];
 }
 
-- (UIImageView *)avatarView
+- (UIButton *)avatarButton
 {
-    if (!_avatarView)
+    if (!_avatarButton)
     {
-        UIImageView *view = [[UIImageView alloc] init];
-        view.translatesAutoresizingMaskIntoConstraints = NO;
-        view.contentMode = UIViewContentModeScaleAspectFit;
-        view.layer.cornerRadius = 20;
-        view.layer.masksToBounds = YES;
-        _avatarView = view;
+        UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+        button.translatesAutoresizingMaskIntoConstraints = NO;
+        [button addTarget:self action:@selector(_showProfile) forControlEvents:UIControlEventTouchUpInside];
+        button.clipsToBounds = YES;
+        button.layer.cornerRadius = 20;
+        button.backgroundColor = ClearColor;
+
+        _avatarButton = button;
     }
-    return _avatarView;
+    return _avatarButton;
+}
+
+- (TTTAttributedLabel *)usernameLabel
+{
+    if (!_usernameLabel)
+    {
+        TTTAttributedLabel *label = [[TTTAttributedLabel alloc] initWithFrame:CGRectZero];
+        label.translatesAutoresizingMaskIntoConstraints = NO;
+        label.font = [UIFont systemFontOfSize:kFontSizeCaption];
+        label.backgroundColor = ClearColor;
+        label.textColor = JoyyBlue;
+        label.lineBreakMode = NSLineBreakByWordWrapping;
+        label.numberOfLines = 0;
+        label.preferredMaxLayoutWidth = SCREEN_WIDTH - 60;
+
+        _usernameLabel = label;
+    }
+    return _usernameLabel;
 }
 
 - (TTTAttributedLabel *)commentLabel
@@ -106,10 +136,16 @@
         label.textColor = JoyyWhite;
         label.lineBreakMode = NSLineBreakByWordWrapping;
         label.numberOfLines = 0;
+        label.preferredMaxLayoutWidth = SCREEN_WIDTH - 60;
 
         _commentLabel = label;
     }
     return _commentLabel;
+}
+
+- (void)_showProfile
+{
+
 }
 
 @end

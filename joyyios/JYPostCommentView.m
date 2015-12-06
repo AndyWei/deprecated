@@ -40,7 +40,15 @@ static NSString *const kPostCommentCellIdentifier = @"postCommentCell";
 
 - (void)setCommentList:(NSArray *)commentList
 {
-    _commentList = commentList;
+    _commentList = [NSMutableArray new];
+
+    for (JYComment *comment in commentList)
+    {
+        if (![comment isLike])
+        {
+            [_commentList addObject:comment];
+        }
+    }
 }
 
 #pragma mark - UITableViewDataSource

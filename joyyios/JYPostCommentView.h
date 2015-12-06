@@ -8,6 +8,6 @@
 
 @interface JYPostCommentView : UITableView <UITableViewDataSource, UITableViewDelegate>
 
-@property(nonatomic) NSArray *commentList;
+@property(nonatomic) NSMutableArray *commentList;
 
 @end

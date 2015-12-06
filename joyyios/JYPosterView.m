@@ -6,6 +6,7 @@
 //  Copyright © 2015 Joyy Inc. All rights reserved.
 //
 
+#import <AFNetworking/UIButton+AFNetworking.h>
 #import <AFNetworking/UIImageView+AFNetworking.h>
 #import <TTTAttributedLabel/TTTAttributedLabel.h>
 
@@ -77,17 +78,7 @@
 {
     JYFriend *friend = [[JYFriendManager sharedInstance] friendOfId:self.post.ownerId];
     NSURL *url = [NSURL URLWithString:friend.avatarURL];
-    NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestReturnCacheDataElseLoad timeoutInterval:5];
-
-    __weak typeof(self) weakSelf = self;
-    [self.avatarButton.imageView setImageWithURLRequest:request
-                                       placeholderImage:nil
-                                                success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
-                                                    weakSelf.avatarButton.imageView.image = image;
-
-                                                } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
-                                                    NSLog(@"setImageWithURLRequest failed with error = %@", error);
-                                                }];
+    [self.avatarButton setImageForState:UIControlStateNormal withURL:url];
 }
 
 - (UIButton *)avatarButton
@@ -97,10 +88,8 @@
         UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
         button.translatesAutoresizingMaskIntoConstraints = NO;
         [button addTarget:self action:@selector(_showProfile) forControlEvents:UIControlEventTouchUpInside];
-        [button setImage:[UIImage imageNamed:@"wink"] forState:UIControlStateNormal];
         button.clipsToBounds = YES;
         button.layer.cornerRadius = 20;
-        button.contentEdgeInsets = UIEdgeInsetsMake(4, 4, 4, 4);
 
         _avatarButton = button;
     }
