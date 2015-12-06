@@ -77,7 +77,7 @@
 
 + (UIColor *)joyyWhiterColor
 {
-    return rgb(235, 235, 235);
+    return rgb(242, 242, 242);
 }
 
 @end

@@ -277,7 +277,7 @@ static NSString *const kCommentCellIdentifier = @"postCommentCell";
     return height;
 }
 
--(CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath
+- (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return 60;
 }

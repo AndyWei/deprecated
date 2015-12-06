@@ -13,7 +13,6 @@
 #import "JYLocalDataManager.h"
 #import "JYPost.h"
 #import "JYPostActionView.h"
-#import "NSDate+Joyy.h"
 
 @interface JYPostActionView ()
 @property (nonatomic) BOOL likeButtonPressed;

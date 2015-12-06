@@ -27,6 +27,7 @@
 @property (nonatomic) JYPostActionView *actionView;
 @property (nonatomic) JYPosterView *posterView;
 @property (nonatomic) JYPostCommentView *commentView;
+@property (nonatomic) NSLayoutConstraint *commentViewHeightConstraint;
 @property (nonatomic) TTTAttributedLabel *likesLabel;
 @property (nonatomic) UITapGestureRecognizer *tapGestureRecognizer;
 @end
@@ -69,17 +70,26 @@
                                 @"commentView": self.commentView
                               };
         NSDictionary *metrics = @{
-                                  @"sw":@(SCREEN_WIDTH)
+                                  @"SW":@(SCREEN_WIDTH)
                                   };
 
-        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[posterView]-0-|" options:0 metrics:metrics views:views]];
-        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[mediaView]-0-|" options:0 metrics:metrics views:views]];
-        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[actionView]-0-|" options:0 metrics:metrics views:views]];
-        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[likesLabel]-0-|" options:0 metrics:metrics views:views]];
-        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[commentView]-0-|" options:0 metrics:metrics views:views]];
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[posterView]-0-|" options:0 metrics:nil views:views]];
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[mediaView]-0-|" options:0 metrics:nil views:views]];
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[actionView]-0-|" options:0 metrics:nil views:views]];
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-20-[likesLabel]-10-|" options:0 metrics:nil views:views]];
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-20-[commentView]-10-|" options:0 metrics:nil views:views]];
 
-        NSString *format = @"V:|-0@500-[posterView(40)][mediaView(sw)][actionView(40)][likesLabel][commentView]-40@500-|";
+        NSString *format = @"V:|-0@500-[posterView(40)][mediaView(SW)][actionView(40)][likesLabel][commentView]-10@500-|";
         [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:format options:0 metrics:metrics views:views]];
+
+        self.commentViewHeightConstraint = [NSLayoutConstraint constraintWithItem:self.commentView
+                                                                  attribute:NSLayoutAttributeHeight
+                                                                  relatedBy:NSLayoutRelationEqual
+                                                                     toItem:nil
+                                                                  attribute:NSLayoutAttributeNotAnAttribute
+                                                                 multiplier:0.0f
+                                                                   constant:0.0f];
+        [self.contentView addConstraint:self.commentViewHeightConstraint];
     }
     return self;
 }
@@ -125,7 +135,7 @@
 
     // Set the preferredMaxLayoutWidth of the mutli-line bodyLabel based on the evaluated width of the label's frame,
     // as this will allow the text to wrap correctly, and as a result allow the label to take on the correct height.
-    self.likesLabel.preferredMaxLayoutWidth = CGRectGetWidth(self.likesLabel.frame);
+    self.likesLabel.preferredMaxLayoutWidth = SCREEN_WIDTH - 30;
 }
 
 - (void)setPost:(JYPost *)post
@@ -156,6 +166,12 @@
     {
         self.commentView.commentList = nil;
     }
+
+    [self.commentView reloadData];
+
+    self.commentViewHeightConstraint.constant = self.commentView.contentSize.height;
+    [self setNeedsUpdateConstraints];
+    [self updateConstraintsIfNeeded];
 }
 
 - (void)_updateLikesLabel
@@ -226,9 +242,9 @@
         _likesLabel = [[TTTAttributedLabel alloc] initWithFrame:CGRectZero];
         _likesLabel.translatesAutoresizingMaskIntoConstraints = NO;
         _likesLabel.font = [UIFont systemFontOfSize:kFontSizeComment];
-        _likesLabel.textInsets = UIEdgeInsetsMake(0, 20, 0, kMarginRight);
-        _likesLabel.backgroundColor = JoyyWhitePure;
+        _likesLabel.backgroundColor = JoyyWhiter;
         _likesLabel.textColor = JoyyBlue;
+        _likesLabel.textInsets = UIEdgeInsetsMake(0, 5, 0, 5);
         _likesLabel.lineBreakMode = NSLineBreakByWordWrapping;
         _likesLabel.numberOfLines = 0;
     }
@@ -252,11 +268,5 @@
     }
     return _observer;
 }
-
-//- (void)_showAllComments
-//{
-//    NSDictionary *info = @{@"post": self.post, @"edit":@(NO)};
-//    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationWillCommentPost object:nil userInfo:info];
-//}
 
 @end
