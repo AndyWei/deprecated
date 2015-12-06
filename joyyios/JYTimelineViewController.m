@@ -30,6 +30,7 @@ typedef void(^Action)();
 @interface JYTimelineViewController () <TGCameraDelegate, UITableViewDataSource, UITableViewDelegate>
 @property (nonatomic) CABasicAnimation *colorPulse;
 @property (nonatomic) JYButton *cameraButton;
+@property (nonatomic) JYPost *currentPost;
 @property (nonatomic) JYPostViewCell *sizingCell;
 @property (nonatomic) NSInteger networkThreadCount;
 @property (nonatomic) NSDate *firstDate;
@@ -56,6 +57,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
     self.navigationItem.titleView = self.titleButton;
 
     self.networkThreadCount = 0;
+    self.currentPost = nil;
     self.postList = [NSMutableArray new];
     self.newestPostId = 0;
 
@@ -142,7 +144,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
     [self.cameraButton.imageLayer.layer removeAllAnimations];
     [self.cameraButton.imageLayer.layer addAnimation:self.colorPulse forKey:@"ColorPulse"];
 
-    [self.tableView reloadData];
+    [self _refreshTableView];
 }
 
 - (void)didReceiveMemoryWarning
@@ -153,6 +155,24 @@ static NSString *const kPostCellIdentifier = @"postCell";
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)_refreshTableView
+{
+    if (!self.currentPost)
+    {
+        return;
+    }
+
+    NSInteger selectedRow = [self.postList indexOfObject:self.currentPost];
+    self.currentPost = nil;
+    if (selectedRow == NSNotFound)
+    {
+        return;
+    }
+
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:selectedRow inSection:0];
+    [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
 }
 
 - (JYButton *)cameraButton
@@ -216,6 +236,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
         if (value != [NSNull null])
         {
             JYPost *post = (JYPost *)value;
+            self.currentPost = post;
             [self _likePost:post];
         }
     }
@@ -231,6 +252,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
         if (postObj != [NSNull null])
         {
             JYPost *post = (JYPost *)postObj;
+            self.currentPost = post;
             JYComment *comment = nil;
 
             if (commentObj != [NSNull null])
@@ -373,7 +395,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
     self.newestPostId = post.postId;
 
     [self.postList insertObject:post atIndex:0];
-    [self.tableView reloadData];
+    [self _refreshTableView];
 }
 
 - (void)_receivedNewPosts:(NSMutableArray *)postList
@@ -559,7 +581,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
               [commentList addObject:comment];
               post.commentList = commentList;
 
-              [weakSelf.tableView reloadData];
+              [weakSelf _refreshTableView];
               [weakSelf _networkThreadEnd];
           }
           failure:^(NSURLSessionTask *operation, NSError *error) {
@@ -580,8 +602,6 @@ static NSString *const kPostCellIdentifier = @"postCell";
     {
         post.commentList = [[JYLocalDataManager sharedInstance] selectCommentsOfPostId:post.postId];
     }
-
-    [self.tableView reloadData];
 }
 
 - (void)_fetchPostsFromDBWithAction:(Action)action
@@ -590,7 +610,6 @@ static NSString *const kPostCellIdentifier = @"postCell";
     NSNumber *maxId = [NSDate idOfNow];
 
     self.postList = [[JYLocalDataManager sharedInstance] selectPostsSinceId:minId beforeId:maxId];
-    [self _refreshComments];
 
     if ([self.postList count] == 0)
     {
@@ -606,6 +625,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
         self.firstDate = [NSDate dateOfId:oldestPost.postId];
     }
 
+    [self _refreshComments];
     [self.tableView reloadData];
 
     if (action)
