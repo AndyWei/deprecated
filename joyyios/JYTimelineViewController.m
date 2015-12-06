@@ -30,7 +30,6 @@ typedef void(^Action)();
 @interface JYTimelineViewController () <TGCameraDelegate, UITableViewDataSource, UITableViewDelegate>
 @property (nonatomic) CABasicAnimation *colorPulse;
 @property (nonatomic) JYButton *cameraButton;
-@property (nonatomic) JYPost *currentPost;
 @property (nonatomic) JYPostViewCell *sizingCell;
 @property (nonatomic) NSInteger networkThreadCount;
 @property (nonatomic) NSDate *firstDate;
@@ -57,7 +56,6 @@ static NSString *const kPostCellIdentifier = @"postCell";
     self.navigationItem.titleView = self.titleButton;
 
     self.networkThreadCount = 0;
-    self.currentPost = nil;
     self.postList = [NSMutableArray new];
     self.newestPostId = 0;
 
@@ -143,7 +141,8 @@ static NSString *const kPostCellIdentifier = @"postCell";
 
     [self.cameraButton.imageLayer.layer removeAllAnimations];
     [self.cameraButton.imageLayer.layer addAnimation:self.colorPulse forKey:@"ColorPulse"];
-    [self _reloadCurrentCell];
+
+    [self.tableView reloadData];
 }
 
 - (void)didReceiveMemoryWarning
@@ -232,7 +231,6 @@ static NSString *const kPostCellIdentifier = @"postCell";
         if (postObj != [NSNull null])
         {
             JYPost *post = (JYPost *)postObj;
-            self.currentPost = post;
             JYComment *comment = nil;
 
             if (commentObj != [NSNull null])
@@ -242,24 +240,6 @@ static NSString *const kPostCellIdentifier = @"postCell";
             [self _presentCommentViewForPost:post comment:comment];
         }
     }
-}
-
-- (void)_reloadCurrentCell
-{
-    if (!self.currentPost)
-    {
-        return;
-    }
-
-    NSInteger selectedRow = [self.postList indexOfObject:self.currentPost];
-    self.currentPost = nil;
-    if (selectedRow == NSNotFound)
-    {
-        return;
-    }
-
-    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:selectedRow inSection:0];
-    [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 
 - (void) _presentCommentViewForPost:(JYPost *)post comment:(JYComment *)comment
@@ -579,6 +559,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
               [commentList addObject:comment];
               post.commentList = commentList;
 
+              [weakSelf.tableView reloadData];
               [weakSelf _networkThreadEnd];
           }
           failure:^(NSURLSessionTask *operation, NSError *error) {

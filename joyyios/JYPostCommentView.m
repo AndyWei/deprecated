@@ -24,9 +24,9 @@ static NSString *const kPostCommentCellIdentifier = @"postCommentCell";
 {
     if (self = [super initWithFrame:CGRectZero style:UITableViewStylePlain])
     {
+        self.bounces = NO;
         self.dataSource = self;
         self.delegate = self;
-        self.estimatedRowHeight = UITableViewAutomaticDimension;
         self.scrollEnabled = NO;
         self.separatorStyle = UITableViewCellSeparatorStyleNone;
         self.showsHorizontalScrollIndicator = NO;
@@ -70,17 +70,9 @@ static NSString *const kPostCommentCellIdentifier = @"postCommentCell";
 
 #pragma mark - UITableView Delegate
 
+// This is a table-in-table view, so the height must be calculated manually and can not use the fancy UITableViewAutomaticDimension
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if ([NSProcessInfo instancesRespondToSelector:@selector(isOperatingSystemAtLeastVersion:)])
-    {
-        NSOperatingSystemVersion ios8_0_0 = (NSOperatingSystemVersion){8, 0, 0};
-        if ([[NSProcessInfo processInfo] isOperatingSystemAtLeastVersion:ios8_0_0])
-        {
-            return UITableViewAutomaticDimension;
-        }
-    }
-
     if (!self.sizingCell)
     {
         self.sizingCell = [[JYPostCommentViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"JYPostCommentViewCell_sizing"];
@@ -108,7 +100,8 @@ static NSString *const kPostCommentCellIdentifier = @"postCommentCell";
     return height;
 }
 
--(CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath
+// This is a table-in-table view, so the estimated height must be acurate and can not use the fancy UITableViewAutomaticDimension
+- (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return [self tableView:tableView heightForRowAtIndexPath:indexPath];
 }

@@ -52,7 +52,7 @@
 
     _comment = comment;
     self.commentLabel.text = comment.displayText;
-    self.commentLabel.preferredMaxLayoutWidth = SCREEN_WIDTH - 30;
+    self.commentLabel.preferredMaxLayoutWidth = CGRectGetWidth(self.commentLabel.bounds);
 }
 
 - (TTTAttributedLabel *)commentLabel

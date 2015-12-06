@@ -7,7 +7,6 @@
 //
 
 #import <AFNetworking/UIImageView+AFNetworking.h>
-#import <KVOController/FBKVOController.h>
 #import <TTTAttributedLabel/TTTAttributedLabel.h>
 
 #import "JYComment.h"
@@ -22,7 +21,6 @@
 
 @interface JYPostViewCell ()
 @property (nonatomic) BOOL didSetupConstraints;
-@property (nonatomic) FBKVOController *observer;
 @property (nonatomic) JYPostMediaView *mediaView;
 @property (nonatomic) JYPostActionView *actionView;
 @property (nonatomic) JYPosterView *posterView;
@@ -97,60 +95,15 @@
 - (void)prepareForReuse
 {
     [super prepareForReuse];
-
-    [self.observer unobserveAll];
-    self.observer = nil;
     self.post = nil;
-}
-
-- (void)dealloc
-{
-    [self.observer unobserveAll];
-    self.observer = nil;
-}
-
-- (void)_startObserve:(JYPost *)post
-{
-    __weak typeof(self) weakSelf = self;
-
-    [self.observer observe:post keyPath:@"commentList" options:NSKeyValueObservingOptionNew block:^(JYPostViewCell *cell, JYPost *post, NSDictionary *change) {
-
-          [weakSelf _updateCommentsAndLikes];
-    }];
-}
-
-- (void)_stopObserve:(JYPost *)post
-{
-    [self.observer unobserve:post];
-}
-
-- (void)layoutSubviews
-{
-    [super layoutSubviews];
-
-    // Make sure the contentView does a layout pass here so that its subviews have their frames set, which we
-    // need to use to set the preferredMaxLayoutWidth below.
-    [self.contentView setNeedsLayout];
-    [self.contentView layoutIfNeeded];
-
-    // Set the preferredMaxLayoutWidth of the mutli-line bodyLabel based on the evaluated width of the label's frame,
-    // as this will allow the text to wrap correctly, and as a result allow the label to take on the correct height.
-    self.likesLabel.preferredMaxLayoutWidth = SCREEN_WIDTH - 30;
 }
 
 - (void)setPost:(JYPost *)post
 {
-    if (_post)
-    {
-        [self _stopObserve:_post];
-    }
-
     _post = post;
     self.posterView.post = post;
     self.mediaView.post = post;
     [self _updateCommentsAndLikes];
-
-    [self _startObserve:post];
 }
 
 - (void)_updateCommentsAndLikes
@@ -168,8 +121,8 @@
     }
 
     [self.commentView reloadData];
-
     self.commentViewHeightConstraint.constant = self.commentView.contentSize.height;
+
     [self setNeedsUpdateConstraints];
     [self updateConstraintsIfNeeded];
 }
@@ -206,6 +159,8 @@
         NSString *likedList = [dedupedUsernames componentsJoinedByString:@", "];
         self.likesLabel.text = [NSString stringWithFormat:@"%@ %@", kLikeText, likedList];
     }
+
+    self.likesLabel.preferredMaxLayoutWidth = CGRectGetWidth(self.likesLabel.bounds);
 }
 
 - (JYPosterView *)posterView
@@ -258,15 +213,6 @@
         _commentView = [[JYPostCommentView alloc] init];
     }
     return _commentView;
-}
-
-- (FBKVOController *)observer
-{
-    if (!_observer)
-    {
-        _observer = [FBKVOController controllerWithObserver:self];
-    }
-    return _observer;
 }
 
 @end
