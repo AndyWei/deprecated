@@ -267,7 +267,14 @@ static NSString *const kPostCellIdentifier = @"postCell";
 - (void) _presentCommentViewForPost:(JYPost *)post comment:(JYComment *)comment
 {
     JYCommentViewController *viewController = [[JYCommentViewController alloc] initWithPost:post comment:comment];
-    [self.navigationController pushViewController:viewController animated:YES];
+
+    CATransition *transition = [CATransition animation];
+    transition.duration = 0.05;
+    transition.type = kCATransitionFade;
+    transition.subtype = kCATransitionFromBottom;
+
+    [self.navigationController.view.layer addAnimation:transition forKey:kCATransition];
+    [self.navigationController pushViewController:viewController animated:NO];
 }
 
 - (void)_showCamera

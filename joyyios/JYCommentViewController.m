@@ -12,6 +12,7 @@
 #import <MJRefresh/MJRefresh.h>
 #import <RKDropdownAlert/RKDropdownAlert.h>
 
+#import "JYButton.h"
 #import "JYCommentViewCell.h"
 #import "JYCommentViewController.h"
 #import "JYFriendManager.h"
@@ -19,11 +20,12 @@
 
 
 @interface JYCommentViewController ()
-@property (nonatomic) JYPost *post;
 @property (nonatomic) JYComment *originalComment;
 @property (nonatomic) JYCommentViewCell *sizingCell;
+@property (nonatomic) JYPost *post;
 @property (nonatomic) NSInteger networkThreadCount;
 @property (nonatomic) NSMutableArray *commentList;
+@property (nonatomic) UIBarButtonItem *closeButtonItem;
 @property (nonatomic) UIImageView *photoView;
 @property (nonatomic) UIView *backgroundView;
 @end
@@ -92,8 +94,9 @@ static NSString *const kCommentCellIdentifier = @"postCommentCell";
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.title = NSLocalizedString(@"COMMENTS", nil);
+    self.title = NSLocalizedString(@"Comments", nil);
     self.view.backgroundColor = JoyyBlack;
+    self.navigationItem.leftBarButtonItem = self.closeButtonItem;
 
     // textInput view
     self.bounces = YES;
@@ -123,6 +126,33 @@ static NSString *const kCommentCellIdentifier = @"postCommentCell";
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
+}
+
+- (void)_close
+{
+    CATransition *transition = [CATransition animation];
+    transition.duration = 0.05;
+    transition.type = kCATransitionFade;
+    transition.subtype = kCATransitionFromTop;
+
+    [self.navigationController.view.layer addAnimation:transition forKey:kCATransition];
+    [self.navigationController popViewControllerAnimated:NO];
+}
+
+- (UIBarButtonItem *)closeButtonItem
+{
+    if (!_closeButtonItem)
+    {
+        CGRect frame =  CGRectMake(-10, 0, 20, 20);
+        JYButton *button = [JYButton buttonWithFrame:frame buttonStyle:JYButtonStyleCentralImage shouldMaskImage:YES];
+        button.imageView.image = [UIImage imageNamed:@"close"];
+        [button addTarget:self action:@selector(_close) forControlEvents:UIControlEventTouchUpInside];
+        button.contentColor = JoyyBlue;
+        button.foregroundColor = ClearColor;
+
+        _closeButtonItem = [[UIBarButtonItem alloc] initWithCustomView:button];
+    }
+    return _closeButtonItem;
 }
 
 - (UIView *)backgroundView
@@ -296,6 +326,7 @@ static NSString *const kCommentCellIdentifier = @"postCommentCell";
     }
 
     [self.tableView reloadData];
+    [self _scrollTableViewToBottom];
 
     // update the comment list of the post
     NSMutableArray *newCommentList = [NSMutableArray arrayWithArray:self.post.commentList];
@@ -341,6 +372,7 @@ static NSString *const kCommentCellIdentifier = @"postCommentCell";
               }
 
               [weakSelf _networkThreadEnd];
+              [weakSelf _close];
           }
           failure:^(NSURLSessionTask *operation, NSError *error) {
 
