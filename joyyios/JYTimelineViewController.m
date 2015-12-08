@@ -41,7 +41,7 @@ typedef void(^Action)();
 @property (nonatomic, copy) Action pendingAction;
 @end
 
-static const NSInteger OFFSET_DAYS = -3;
+static const NSInteger OFFSET_DAYS = -5;
 static const CGFloat kCameraButtonWidth = 50;
 static NSString *const kPostCellIdentifier = @"postCell";
 
@@ -130,7 +130,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
     [self.tableView beginUpdates];
     [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
     [self.tableView endUpdates];
-    [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:YES];
+    [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:YES];
 }
 
 - (void)didReceiveMemoryWarning
