@@ -69,7 +69,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_comment:) name:kNotificationWillCommentPost object:nil];
 
     __weak typeof(self) weakSelf = self;
-    [self _fetchPostsFromDBWithAction:^{
+    [self _fetchLocalTimelineWithAction:^{
         [weakSelf _fetchNewPost];
     }];
 }
@@ -101,6 +101,46 @@ static NSString *const kPostCellIdentifier = @"postCell";
         _tableView.mj_footer = footer;
     }
     return _tableView;
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+
+    [self.cameraButton.imageLayer.layer removeAllAnimations];
+    [self.cameraButton.imageLayer.layer addAnimation:self.colorPulse forKey:@"ColorPulse"];
+    [self _refreshCurrentCell];
+}
+
+- (void)_refreshCurrentCell
+{
+    if (!self.currentPost)
+    {
+        return;
+    }
+
+    NSInteger selectedRow = [self.postList indexOfObject:self.currentPost];
+    self.currentPost = nil;
+    if (selectedRow == NSNotFound)
+    {
+        return;
+    }
+
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:selectedRow inSection:0];
+    [self.tableView beginUpdates];
+    [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
+    [self.tableView endUpdates];
+    [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:YES];
+}
+
+- (void)didReceiveMemoryWarning
+{
+    [super didReceiveMemoryWarning];
+}
+
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)_apiTokenReady
@@ -135,44 +175,6 @@ static NSString *const kPostCellIdentifier = @"postCell";
 
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
     [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:YES];
-}
-
-- (void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:animated];
-
-    [self.cameraButton.imageLayer.layer removeAllAnimations];
-    [self.cameraButton.imageLayer.layer addAnimation:self.colorPulse forKey:@"ColorPulse"];
-
-    [self _refreshTableView];
-}
-
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-}
-
-- (void)dealloc
-{
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
-
-- (void)_refreshTableView
-{
-    if (!self.currentPost)
-    {
-        return;
-    }
-
-    NSInteger selectedRow = [self.postList indexOfObject:self.currentPost];
-    self.currentPost = nil;
-    if (selectedRow == NSNotFound)
-    {
-        return;
-    }
-
-    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:selectedRow inSection:0];
-    [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
 }
 
 - (JYButton *)cameraButton
@@ -402,7 +404,10 @@ static NSString *const kPostCellIdentifier = @"postCell";
     self.newestPostId = post.postId;
 
     [self.postList insertObject:post atIndex:0];
-    [self _refreshTableView];
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
+    [self.tableView beginUpdates];
+    [self.tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationRight];
+    [self.tableView endUpdates];
 }
 
 - (void)_receivedNewPosts:(NSMutableArray *)postList
@@ -447,14 +452,26 @@ static NSString *const kPostCellIdentifier = @"postCell";
     [[JYLocalDataManager sharedInstance] insertObjects:postList ofClass:JYPost.class];
 
     NSNumber *sinceId = ((JYPost *)[postList lastObject]).postId;
-    NSNumber *beforeId = [JYLocalDataManager sharedInstance].minCommentIdInDB;
-    if (sinceId < beforeId)
+    NSNumber *beforeId = [NSNumber numberWithUnsignedLongLong:LLONG_MAX];
+    if ([self.postList count] > 0)
+    {
+        beforeId = ((JYPost *)[self.postList lastObject]).postId; // the comment id larger than beforeId should already been fetched
+    }
+
+    if ([sinceId unsignedLongLongValue] < [beforeId unsignedLongLongValue])
     {
         [self _fetchCommentsSinceId:sinceId beforeId:beforeId];
     }
 
-    [self.postList addObjectsFromArray:postList];
-    [self.tableView reloadData];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [self _refreshCommentsForPostList:postList];
+
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.postList addObjectsFromArray:postList];
+            [self.tableView reloadData];
+            [self.tableView.mj_footer endRefreshing];
+        });
+    });
 }
 
 #pragma mark - AWS S3
@@ -581,14 +598,13 @@ static NSString *const kPostCellIdentifier = @"postCell";
               NSDictionary *dict = (NSDictionary *)responseObject;
               NSError *error = nil;
               JYComment *comment = (JYComment *)[MTLJSONAdapter modelOfClass:JYComment.class fromJSONDictionary:dict error:&error];
-              [[JYLocalDataManager sharedInstance] insertObject:comment ofClass:JYComment.class];
+              if (comment)
+              {
+                  [[JYLocalDataManager sharedInstance] insertObject:comment ofClass:JYComment.class];
+                  [post.commentList addObject:comment];
+              }
 
-              // FBKVObserver can only detect array change, not array elements change, so generate a new array to trigger the observer
-              NSMutableArray *commentList = [NSMutableArray arrayWithArray:post.commentList];
-              [commentList addObject:comment];
-              post.commentList = commentList;
-
-              [weakSelf _refreshTableView];
+              [weakSelf _refreshCurrentCell];
               [weakSelf _networkThreadEnd];
           }
           failure:^(NSURLSessionTask *operation, NSError *error) {
@@ -598,47 +614,52 @@ static NSString *const kPostCellIdentifier = @"postCell";
      ];
 }
 
-- (void)_refreshComments
+- (void)_refreshCommentsForPostList:(NSArray *)postList
 {
-    if ([self.postList count] == 0)
+    if ([postList count] == 0)
     {
         return;
     }
 
-    for (JYPost *post in self.postList)
+    for (JYPost *post in postList)
     {
         post.commentList = [[JYLocalDataManager sharedInstance] selectCommentsOfPostId:post.postId];
     }
 }
 
-- (void)_fetchPostsFromDBWithAction:(Action)action
+- (void)_fetchLocalTimelineWithAction:(Action)action
 {
-    NSNumber *minId = [NSDate minIdWithOffsetInDays:OFFSET_DAYS];
-    NSNumber *maxId = [NSDate idOfNow];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        NSNumber *minId = [NSDate minIdWithOffsetInDays:OFFSET_DAYS];
+        NSNumber *maxId = [NSDate idOfNow];
 
-    self.postList = [[JYLocalDataManager sharedInstance] selectPostsSinceId:minId beforeId:maxId];
 
-    if ([self.postList count] == 0)
-    {
-        self.newestPostId = 0;
-        self.firstDate = [NSDate date];
-    }
-    else
-    {
-        JYPost *newestPost = self.postList[0];
-        self.newestPostId = newestPost.postId;
+        self.postList = [[JYLocalDataManager sharedInstance] selectPostsSinceId:minId beforeId:maxId];
 
-        JYPost *oldestPost = [self.postList lastObject];
-        self.firstDate = [NSDate dateOfId:oldestPost.postId];
-    }
+        if ([self.postList count] == 0)
+        {
+            self.newestPostId = 0;
+            self.firstDate = [NSDate date];
+        }
+        else
+        {
+            JYPost *newestPost = self.postList[0];
+            self.newestPostId = newestPost.postId;
 
-    [self _refreshComments];
-    [self.tableView reloadData];
+            JYPost *oldestPost = [self.postList lastObject];
+            self.firstDate = [NSDate dateOfId:oldestPost.postId];
+        }
 
-    if (action)
-    {
-        action();
-    }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self _refreshCommentsForPostList:self.postList];
+            [self.tableView reloadData];
+
+            if (action)
+            {
+                action();
+            }
+        });
+    });
 }
 
 - (void)_fetchNewPost
@@ -654,7 +675,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
     self.pendingAction = nil;
 
     NSNumber *day = [[NSDate date] joyyDay];
-    [self _fetchTimelineOfDay:day sinceId:self.newestPostId];
+    [self _fetchRemoteTimelineOfDay:day sinceId:self.newestPostId];
 }
 
 - (void)_fetchOldPost
@@ -671,10 +692,38 @@ static NSString *const kPostCellIdentifier = @"postCell";
 
     self.firstDate = [self.firstDate dateByAddingTimeInterval:60 * 60 * 24 * (-1)];
     NSNumber *day = [self.firstDate joyyDay];
-    [self _fetchTimelineOfDay:day sinceId:0];
+    [self _fetchTimelineOfDay:day];
 }
 
-- (void)_fetchTimelineOfDay:(NSNumber *)day sinceId:(NSNumber *)minId
+- (void)_fetchTimelineOfDay:(NSNumber *)joyyDay
+{
+    // fetch local timeline first, if none, then fetch remote timeline
+    NSDate *thatDay = [NSDate dateOfJoyyDay:joyyDay];
+    NSNumber *minId = [NSDate minIdOfDay:thatDay];
+
+    NSDate *nextDay = [thatDay dateByAddingTimeInterval:60 * 60 * 24];
+    NSNumber *maxId = [NSDate minIdOfDay:nextDay];
+
+    NSArray *postList = [[JYLocalDataManager sharedInstance] selectPostsSinceId:minId beforeId:maxId];
+    if ([postList count] == 0)
+    {
+        [self _fetchRemoteTimelineOfDay:joyyDay sinceId:0];
+    }
+    else
+    {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            [self _refreshCommentsForPostList:postList];
+
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.postList addObjectsFromArray:postList];
+                [self.tableView reloadData];
+                [self.tableView.mj_footer endRefreshing];
+            });
+        });
+    }
+}
+
+- (void)_fetchRemoteTimelineOfDay:(NSNumber *)day sinceId:(NSNumber *)minId
 {
     if (self.networkThreadCount > 0)
     {
@@ -762,9 +811,9 @@ static NSString *const kPostCellIdentifier = @"postCell";
              if ([commentList count] > 0)
              {
                  [[JYLocalDataManager sharedInstance] receivedCommentList:commentList];
-                 [weakSelf _refreshComments];
+                 [weakSelf _refreshCommentsForPostList:weakSelf.postList];
+                 [weakSelf.tableView reloadData];
              }
-
              [weakSelf _networkThreadEnd];
          }
          failure:^(NSURLSessionTask *operation, NSError *error) {

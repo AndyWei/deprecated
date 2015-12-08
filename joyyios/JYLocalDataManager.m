@@ -185,7 +185,14 @@ static NSString *const SELECT_ALL_SQL = @"SELECT * FROM %@ ORDER BY id ASC";
 
     [self insertObjects:commentList ofClass:JYComment.class];
 
-    // update maxCommentIdInDB
+    // update minCommentIdInDB and maxCommentIdInDB
+    JYComment *firstComment = [commentList firstObject];
+    NSNumber *minCommentId = firstComment.commentId;
+    if ([minCommentId unsignedLongLongValue] < [self.minCommentIdInDB unsignedLongLongValue])
+    {
+        self.minCommentIdInDB = minCommentId;
+    }
+
     JYComment *lastComment = [commentList lastObject];
     NSNumber *maxCommentId = lastComment.commentId;
     if ([maxCommentId unsignedLongLongValue] > [self.maxCommentIdInDB unsignedLongLongValue])

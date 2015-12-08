@@ -12,6 +12,7 @@
 + (NSNumber *)minIdWithOffsetInDays:(NSInteger)days;
 + (NSNumber *)minIdOfDay:(NSDate *)date;
 + (NSDate *)dateOfId:(NSNumber *)objId;
++ (NSDate *)dateOfJoyyDay:(NSNumber *)joyyDay;
 
 - (NSNumber *)joyyDay;
 - (NSString *)ageString;

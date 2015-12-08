@@ -10,6 +10,7 @@
 #import <AFNetworking/UIImageView+AFNetworking.h>
 #import <KVNProgress/KVNProgress.h>
 #import <MJRefresh/MJRefresh.h>
+#import <MSWeakTimer/MSWeakTimer.h>
 #import <RKDropdownAlert/RKDropdownAlert.h>
 
 #import "JYButton.h"
@@ -23,6 +24,7 @@
 @property (nonatomic) JYComment *originalComment;
 @property (nonatomic) JYCommentViewCell *sizingCell;
 @property (nonatomic) JYPost *post;
+@property (nonatomic) MSWeakTimer *closeTimer;
 @property (nonatomic) NSInteger networkThreadCount;
 @property (nonatomic) NSMutableArray *commentList;
 @property (nonatomic) UIBarButtonItem *closeButtonItem;
@@ -118,7 +120,6 @@ static NSString *const kCommentCellIdentifier = @"postCommentCell";
     self.tableView.estimatedRowHeight = UITableViewAutomaticDimension;
 
     [self _showBackgroundImage];
-    [self _fetchNewComments];
 
     [self.textView becomeFirstResponder];
 }
@@ -137,6 +138,27 @@ static NSString *const kCommentCellIdentifier = @"postCommentCell";
 
     [self.navigationController.view.layer addAnimation:transition forKey:kCATransition];
     [self.navigationController popViewControllerAnimated:NO];
+}
+
+- (void)_closeInSecs:(NSTimeInterval)seconds
+{
+    [self _stopCloseTimer];
+    dispatch_queue_t queue = dispatch_get_main_queue();
+    self.closeTimer = [MSWeakTimer scheduledTimerWithTimeInterval:seconds
+                                                            target:self
+                                                          selector:@selector(_close)
+                                                          userInfo:nil
+                                                           repeats:NO
+                                                     dispatchQueue:queue];
+}
+
+- (void)_stopCloseTimer
+{
+    if (self.closeTimer)
+    {
+        [self.closeTimer invalidate];
+        self.closeTimer = nil;
+    }
 }
 
 - (UIBarButtonItem *)closeButtonItem
@@ -221,7 +243,7 @@ static NSString *const kCommentCellIdentifier = @"postCommentCell";
     }
 }
 
-- (void)_scrollTableViewToBottom
+- (void)_scrollToTableBottom
 {
     if (self.commentList.count > 0)
     {
@@ -326,7 +348,6 @@ static NSString *const kCommentCellIdentifier = @"postCommentCell";
     }
 
     [self.tableView reloadData];
-    [self _scrollTableViewToBottom];
 
     // update the comment list of the post
     NSMutableArray *newCommentList = [NSMutableArray arrayWithArray:self.post.commentList];
@@ -342,6 +363,7 @@ static NSString *const kCommentCellIdentifier = @"postCommentCell";
     // This little trick validates any pending auto-correction or auto-spelling just after hitting the 'Send' button
     [self.textView refreshFirstResponder];
 
+    [self _stopCloseTimer];
     [self _postComment];
     [super didPressRightButton:sender];
 }
@@ -371,8 +393,9 @@ static NSString *const kCommentCellIdentifier = @"postCommentCell";
                   [weakSelf _receivedComments:commentList];
               }
 
+              [weakSelf _scrollToTableBottom];
               [weakSelf _networkThreadEnd];
-              [weakSelf _close];
+              [weakSelf _closeInSecs:0.6];
           }
           failure:^(NSURLSessionTask *operation, NSError *error) {
 
@@ -389,6 +412,8 @@ static NSString *const kCommentCellIdentifier = @"postCommentCell";
 
 - (void)_fetchNewComments
 {
+    [self _stopCloseTimer];
+
     if (self.networkThreadCount > 0)
     {
         return;
@@ -429,6 +454,7 @@ static NSString *const kCommentCellIdentifier = @"postCommentCell";
                  [weakSelf _receivedComments:commentList];
              }
 
+             [weakSelf _scrollToTableBottom];
              [weakSelf _networkThreadEnd];
          }
          failure:^(NSURLSessionTask *operation, NSError *error) {
