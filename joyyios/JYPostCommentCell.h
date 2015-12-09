@@ -1,5 +1,5 @@
 //
-//  JYPostCommentViewCell.h
+//  JYPostCommentCell.h
 //  joyyios
 //
 //  Created by Ping Yang on 12/5/15.
@@ -8,7 +8,7 @@
 
 #import "JYComment.h"
 
-@interface JYPostCommentViewCell : UITableViewCell
+@interface JYPostCommentCell : UITableViewCell
 
 @property(nonatomic) JYComment *comment;
 

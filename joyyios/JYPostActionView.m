@@ -84,7 +84,7 @@
     {
         _commentButton = [self _buttonWithImage:[UIImage imageNamed:@"comment"]];
         _commentButton.contentEdgeInsets = UIEdgeInsetsMake(9, 8, 7, 8);
-        [_commentButton addTarget:self action:@selector(_comment) forControlEvents:UIControlEventTouchUpInside];
+        [_commentButton addTarget:self action:@selector(_didTapCommentButton) forControlEvents:UIControlEventTouchUpInside];
     }
     return _commentButton;
 }
@@ -95,7 +95,7 @@
     {
         _likeButton = [self _buttonWithImage:[UIImage imageNamed:@"heart"]];
         _likeButton.contentEdgeInsets = UIEdgeInsetsMake(8, 8, 8, 8);
-        [_likeButton addTarget:self action:@selector(_like) forControlEvents:UIControlEventTouchUpInside];
+        [_likeButton addTarget:self action:@selector(_didTapLikeButton) forControlEvents:UIControlEventTouchUpInside];
     }
     return _likeButton;
 }
@@ -111,15 +111,14 @@
     return _separator;
 }
 
-- (void)_comment
+- (void)_didTapCommentButton
 {
     NSDictionary *info = @{@"post": self.post};
     [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationWillCommentPost object:nil userInfo:info];
 }
 
-- (void)_like
+- (void)_didTapLikeButton
 {
-    NSLog(@"_like");
     if (!self.post || self.likeButtonPressed || [self.post isLikedByMe])
     {
         return;

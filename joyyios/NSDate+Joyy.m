@@ -123,4 +123,12 @@ const uint64_t JOYY_EPOCH = 1420070400000; // 01 Jan 2015 00:00:00 GMT
     return [NSString stringWithFormat:@"%d%@", numberOfSeconds, seconds];
 }
 
+- (NSString *)localeStringWithDateStyle:(NSDateFormatterStyle)dateStyle timeStyle:(NSDateFormatterStyle)timeStyle
+{
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateStyle:dateStyle];
+    [dateFormatter setTimeStyle:timeStyle];
+    [dateFormatter setLocale:[NSLocale currentLocale]];
+    return[dateFormatter stringFromDate:self];
+}
 @end

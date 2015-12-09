@@ -1,5 +1,5 @@
 //
-//  JYPostCommentViewCell.m
+//  JYPostCommentCell.m
 //  joyyios
 //
 //  Created by Ping Yang on 12/5/15.
@@ -9,13 +9,13 @@
 #import <TTTAttributedLabel/TTTAttributedLabel.h>
 
 #import "JYFriendManager.h"
-#import "JYPostCommentViewCell.h"
+#import "JYPostCommentCell.h"
 
-@interface JYPostCommentViewCell ()
+@interface JYPostCommentCell ()
 @property(nonatomic) TTTAttributedLabel *commentLabel;
 @end
 
-@implementation JYPostCommentViewCell
+@implementation JYPostCommentCell
 
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {

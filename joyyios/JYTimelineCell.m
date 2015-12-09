@@ -1,12 +1,11 @@
 //
-//  JYPostViewCell.m
+//  JYTimelineCell.m
 //  joyyios
 //
 //  Created by Ping Yang on 7/12/15.
 //  Copyright (c) 2015 Joyy Inc. All rights reserved.
 //
 
-#import <AFNetworking/UIImageView+AFNetworking.h>
 #import <TTTAttributedLabel/TTTAttributedLabel.h>
 
 #import "JYComment.h"
@@ -15,12 +14,11 @@
 #import "JYPostActionView.h"
 #import "JYPostCommentView.h"
 #import "JYPostMediaView.h"
-#import "JYPostViewCell.h"
+#import "JYTimelineCell.h"
 #import "JYPosterView.h"
 
 
-@interface JYPostViewCell ()
-@property (nonatomic) BOOL didSetupConstraints;
+@interface JYTimelineCell ()
 @property (nonatomic) JYPostMediaView *mediaView;
 @property (nonatomic) JYPostActionView *actionView;
 @property (nonatomic) JYPosterView *posterView;
@@ -31,20 +29,7 @@
 @end
 
 
-@implementation JYPostViewCell
-
-+ (UIImage *)sharedPlaceholderImage
-{
-    static UIImage *_sharedPlaceholderImage = nil;
-    static dispatch_once_t done;
-
-    dispatch_once(&done, ^{
-
-        _sharedPlaceholderImage = [UIImage imageNamed:@"heart"];
-    });
-
-    return _sharedPlaceholderImage;
-}
+@implementation JYTimelineCell
 
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {

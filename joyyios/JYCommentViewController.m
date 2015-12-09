@@ -14,15 +14,15 @@
 #import <RKDropdownAlert/RKDropdownAlert.h>
 
 #import "JYButton.h"
-#import "JYCommentViewCell.h"
 #import "JYCommentViewController.h"
+#import "JYCommentlineCell.h"
 #import "JYFriendManager.h"
 #import "JYLocalDataManager.h"
 
 
 @interface JYCommentViewController ()
 @property (nonatomic) JYComment *originalComment;
-@property (nonatomic) JYCommentViewCell *sizingCell;
+@property (nonatomic) JYCommentlineCell *sizingCell;
 @property (nonatomic) JYPost *post;
 @property (nonatomic) MSWeakTimer *closeTimer;
 @property (nonatomic) NSInteger networkThreadCount;
@@ -32,7 +32,7 @@
 @property (nonatomic) UIView *backgroundView;
 @end
 
-static NSString *const kCommentCellIdentifier = @"postCommentCell";
+static NSString *const kCommentlineCellIdentifier = @"commentlineCell";
 
 @implementation JYCommentViewController
 
@@ -41,7 +41,7 @@ static NSString *const kCommentCellIdentifier = @"postCommentCell";
     self = [super initWithTableViewStyle:UITableViewStylePlain];
     if (self)
     {
-        [self.tableView registerClass:[JYCommentViewCell class] forCellReuseIdentifier:kCommentCellIdentifier];
+        [self.tableView registerClass:[JYCommentlineCell class] forCellReuseIdentifier:kCommentlineCellIdentifier];
 
         self.post = post;
         self.originalComment = originalComment;
@@ -266,8 +266,8 @@ static NSString *const kCommentCellIdentifier = @"postCommentCell";
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    JYCommentViewCell *cell =
-    (JYCommentViewCell *)[tableView dequeueReusableCellWithIdentifier:kCommentCellIdentifier forIndexPath:indexPath];
+    JYCommentlineCell *cell =
+    (JYCommentlineCell *)[tableView dequeueReusableCellWithIdentifier:kCommentlineCellIdentifier forIndexPath:indexPath];
 
     if (indexPath.row < self.commentList.count)
     {
@@ -304,7 +304,7 @@ static NSString *const kCommentCellIdentifier = @"postCommentCell";
 
     if (!self.sizingCell)
     {
-        self.sizingCell = [[JYCommentViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"JYCommentViewCell_sizing"];
+        self.sizingCell = [[JYCommentlineCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"JYCommentlineCell_sizing"];
     }
 
     // Configure sizing cell for this indexPath

@@ -1,5 +1,5 @@
 //
-//  JYPostViewCell.h
+//  JYTimelineCell.h
 //  joyyios
 //
 //  Created by Ping Yang on 7/12/15.
@@ -8,7 +8,7 @@
 
 @class JYPost;
 
-@interface JYPostViewCell : UITableViewCell
+@interface JYTimelineCell : UITableViewCell
 
 @property(nonatomic) JYPost *post;
 

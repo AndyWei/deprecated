@@ -12,28 +12,28 @@
 #import <RKDropdownAlert/RKDropdownAlert.h>
 
 #import "JYButton.h"
-#import "JYPhotoCaptionViewController.h"
 #import "JYComment.h"
 #import "JYCommentViewController.h"
 #import "JYFilename.h"
+#import "JYFriendManager.h"
 #import "JYLocalDataManager.h"
-#import "JYTimelineViewController.h"
+#import "JYPhotoCaptionViewController.h"
 #import "JYPost.h"
-#import "JYPostViewCell.h"
+#import "JYTimelineCell.h"
+#import "JYTimelineViewController.h"
+#import "JYUserlineViewController.h"
 #import "TGCameraColor.h"
 #import "TGCameraViewController.h"
 #import "NSDate+Joyy.h"
 #import "UIImage+Joyy.h"
 
-typedef void(^Action)();
-
 @interface JYTimelineViewController () <TGCameraDelegate, UITableViewDataSource, UITableViewDelegate>
 @property (nonatomic) CABasicAnimation *colorPulse;
 @property (nonatomic) JYButton *cameraButton;
 @property (nonatomic) JYPost *currentPost;
-@property (nonatomic) JYPostViewCell *sizingCell;
+@property (nonatomic) JYTimelineCell *sizingCell;
 @property (nonatomic) NSInteger networkThreadCount;
-@property (nonatomic) NSDate *firstDate;
+@property (nonatomic) NSDate *oldestDate;
 @property (nonatomic) NSMutableArray *postList;
 @property (nonatomic) NSNumber *newestPostId;
 @property (nonatomic) UIButton *titleButton;
@@ -43,7 +43,7 @@ typedef void(^Action)();
 
 static const NSInteger OFFSET_DAYS = -5;
 static const CGFloat kCameraButtonWidth = 50;
-static NSString *const kPostCellIdentifier = @"postCell";
+static NSString *const kTimelineCellIdentifier = @"timelineCell";
 
 @implementation JYTimelineViewController
 
@@ -65,8 +65,9 @@ static NSString *const kPostCellIdentifier = @"postCell";
     [self.view addSubview:self.cameraButton];
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_apiTokenReady) name:kNotificationAPITokenReady object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_like:) name:kNotificationWillLikePost object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_comment:) name:kNotificationWillCommentPost object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_likePost:) name:kNotificationWillLikePost object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_commentPost:) name:kNotificationWillCommentPost object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_tapOnUser:) name:kNotificationDidTapOnUser object:nil];
 
     __weak typeof(self) weakSelf = self;
     [self _fetchLocalTimelineWithAction:^{
@@ -86,7 +87,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
         _tableView.showsVerticalScrollIndicator = NO;
         _tableView.estimatedRowHeight = UITableViewAutomaticDimension;
 
-        [_tableView registerClass:[JYPostViewCell class] forCellReuseIdentifier:kPostCellIdentifier];
+        [_tableView registerClass:[JYTimelineCell class] forCellReuseIdentifier:kTimelineCellIdentifier];
 
         // Setup the pull-down-to-refresh header
         MJRefreshNormalHeader *header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(_fetchNewPost)];
@@ -229,7 +230,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
     }
 }
 
-- (void)_like:(NSNotification *)notification
+- (void)_likePost:(NSNotification *)notification
 {
     NSDictionary *info = [notification userInfo];
     if (info)
@@ -239,12 +240,12 @@ static NSString *const kPostCellIdentifier = @"postCell";
         {
             JYPost *post = (JYPost *)value;
             self.currentPost = post;
-            [self _likePost:post];
+            [self _like:post];
         }
     }
 }
 
-- (void)_comment:(NSNotification *)notification
+- (void)_commentPost:(NSNotification *)notification
 {
     NSDictionary *info = [notification userInfo];
     if (info)
@@ -264,6 +265,27 @@ static NSString *const kPostCellIdentifier = @"postCell";
             [self _presentCommentViewForPost:post comment:comment];
         }
     }
+}
+
+- (void)_tapOnUser:(NSNotification *)notification
+{
+    NSDictionary *info = [notification userInfo];
+    if (!info)
+    {
+        return;
+    }
+
+    id value = [info objectForKey:@"userid"];
+    if (value == [NSNull null])
+    {
+        return;
+    }
+
+    NSNumber *userid = (NSNumber *)value;
+    JYUser *user = [[JYFriendManager sharedInstance] friendOfId:userid];
+    JYUserlineViewController *viewController = [[JYUserlineViewController alloc] initWithUser:user];
+
+    [self.navigationController pushViewController:viewController animated:YES];
 }
 
 - (void) _presentCommentViewForPost:(JYPost *)post comment:(JYComment *)comment
@@ -328,8 +350,8 @@ static NSString *const kPostCellIdentifier = @"postCell";
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    JYPostViewCell *cell =
-    (JYPostViewCell *)[tableView dequeueReusableCellWithIdentifier:kPostCellIdentifier forIndexPath:indexPath];
+    JYTimelineCell *cell =
+    (JYTimelineCell *)[tableView dequeueReusableCellWithIdentifier:kTimelineCellIdentifier forIndexPath:indexPath];
 
     JYPost *post = self.postList[indexPath.row];
     cell.post = post;
@@ -355,7 +377,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
 
     if (!self.sizingCell)
     {
-        self.sizingCell = [[JYPostViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"JYPostViewCell_sizing"];
+        self.sizingCell = [[JYTimelineCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"JYPostViewCell_sizing"];
     }
 
     // Configure sizing cell for this indexPath
@@ -383,11 +405,6 @@ static NSString *const kPostCellIdentifier = @"postCell";
 - (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return 455;
-}
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    [tableView deselectRowAtIndexPath:indexPath animated:NO];
 }
 
 #pragma mark - Maintain table
@@ -576,7 +593,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
     return parameters;
 }
 
-- (void)_likePost:(JYPost *)post
+- (void)_like:(JYPost *)post
 {
     [self _networkThreadBegin];
 
@@ -639,7 +656,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
         if ([self.postList count] == 0)
         {
             self.newestPostId = 0;
-            self.firstDate = [NSDate date];
+            self.oldestDate = [NSDate date];
         }
         else
         {
@@ -647,7 +664,7 @@ static NSString *const kPostCellIdentifier = @"postCell";
             self.newestPostId = newestPost.postId;
 
             JYPost *oldestPost = [self.postList lastObject];
-            self.firstDate = [NSDate dateOfId:oldestPost.postId];
+            self.oldestDate = [NSDate dateOfId:oldestPost.postId];
         }
 
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -690,8 +707,8 @@ static NSString *const kPostCellIdentifier = @"postCell";
     }
     self.pendingAction = nil;
 
-    self.firstDate = [self.firstDate dateByAddingTimeInterval:60 * 60 * 24 * (-1)];
-    NSNumber *day = [self.firstDate joyyDay];
+    self.oldestDate = [self.oldestDate dateByAddingTimeInterval:60 * 60 * 24 * (-1)];
+    NSNumber *day = [self.oldestDate joyyDay];
     [self _fetchTimelineOfDay:day];
 }
 

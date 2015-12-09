@@ -62,6 +62,7 @@ extern NSString *const kNotificationAppDidStart;
 extern NSString *const kNotificationAppDidStop;
 extern NSString *const kNotificationDidChangeCountryCode;
 extern NSString *const kNotificationDidCreateProfile;
+extern NSString *const kNotificationDidTapOnUser;
 extern NSString *const kNotificationDidSignIn;
 extern NSString *const kNotificationDidSignUp;
 extern NSString *const kNotificationNeedGeoInfo;
@@ -78,6 +79,7 @@ extern NSUInteger const kAPN;
 
 extern UInt16  const kMessagePort;
 
+typedef void(^Action)();
 
 #define NAVIGATION_BAR_HEIGHT       (self.navigationController.navigationBar.frame.size.height)    // 44
 #define STATUS_BAR_HEIGHT           ([UIApplication sharedApplication].statusBarFrame.size.height) // 20

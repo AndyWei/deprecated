@@ -1,5 +1,5 @@
 //
-//  JYCommentViewCell.m
+//  JYCommentlineCell.m
 //  joyyios
 //
 //  Created by Ping Yang on 5/14/15.
@@ -11,16 +11,16 @@
 #import <TTTAttributedLabel/TTTAttributedLabel.h>
 
 #import "JYButton.h"
-#import "JYCommentViewCell.h"
+#import "JYCommentlineCell.h"
 #import "JYFriendManager.h"
 
-@interface JYCommentViewCell ()
+@interface JYCommentlineCell ()
 @property(nonatomic) TTTAttributedLabel *commentLabel;
 @property(nonatomic) TTTAttributedLabel *usernameLabel;
 @property(nonatomic) UIButton *avatarButton;
 @end
 
-@implementation JYCommentViewCell
+@implementation JYCommentlineCell
 
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {

@@ -10,10 +10,10 @@
 
 #import "JYComment.h"
 #import "JYPostCommentView.h"
-#import "JYPostCommentViewCell.h"
+#import "JYPostCommentCell.h"
 
 @interface JYPostCommentView ()
-@property (nonatomic) JYPostCommentViewCell *sizingCell;
+@property (nonatomic) JYPostCommentCell *sizingCell;
 @end
 
 static NSString *const kPostCommentCellIdentifier = @"postCommentCell";
@@ -33,7 +33,7 @@ static NSString *const kPostCommentCellIdentifier = @"postCommentCell";
         self.showsVerticalScrollIndicator = NO;
         self.translatesAutoresizingMaskIntoConstraints = NO;
 
-        [self registerClass:[JYPostCommentViewCell class] forCellReuseIdentifier:kPostCommentCellIdentifier];
+        [self registerClass:[JYPostCommentCell class] forCellReuseIdentifier:kPostCommentCellIdentifier];
     }
     return self;
 }
@@ -65,8 +65,8 @@ static NSString *const kPostCommentCellIdentifier = @"postCommentCell";
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    JYPostCommentViewCell *cell =
-    (JYPostCommentViewCell *)[tableView dequeueReusableCellWithIdentifier:kPostCommentCellIdentifier forIndexPath:indexPath];
+    JYPostCommentCell *cell =
+    (JYPostCommentCell *)[tableView dequeueReusableCellWithIdentifier:kPostCommentCellIdentifier forIndexPath:indexPath];
 
     cell.comment = self.commentList[indexPath.row];
 
@@ -83,7 +83,7 @@ static NSString *const kPostCommentCellIdentifier = @"postCommentCell";
 {
     if (!self.sizingCell)
     {
-        self.sizingCell = [[JYPostCommentViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"JYPostCommentViewCell_sizing"];
+        self.sizingCell = [[JYPostCommentCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"JYPostCommentViewCell_sizing"];
     }
 
     // Configure sizing cell for this indexPath

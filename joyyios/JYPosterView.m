@@ -17,7 +17,6 @@
 #import "NSDate+Joyy.h"
 
 @interface JYPosterView ()
-@property (nonatomic) BOOL didSetupConstraints;
 @property (nonatomic) UIButton *avatarButton;
 @property (nonatomic) TTTAttributedLabel *posterNameLabel;
 @property (nonatomic) TTTAttributedLabel *postTimeLabel;
@@ -87,7 +86,7 @@
     {
         UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
         button.translatesAutoresizingMaskIntoConstraints = NO;
-        [button addTarget:self action:@selector(_showProfile) forControlEvents:UIControlEventTouchUpInside];
+        [button addTarget:self action:@selector(_didTapAvatarButton) forControlEvents:UIControlEventTouchUpInside];
         button.clipsToBounds = YES;
         button.layer.cornerRadius = 20;
 
@@ -132,9 +131,9 @@
     return _postTimeLabel;
 }
 
-- (void)_showProfile
+- (void)_didTapAvatarButton
 {
-
+    NSDictionary *info = @{@"userid": self.post.ownerId};
+    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationDidTapOnUser object:nil userInfo:info];
 }
-
 @end

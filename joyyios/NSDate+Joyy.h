@@ -16,4 +16,6 @@
 
 - (NSNumber *)joyyDay;
 - (NSString *)ageString;
+
+- (NSString *)localeStringWithDateStyle:(NSDateFormatterStyle)dateStyle timeStyle:(NSDateFormatterStyle)timeStyle;
 @end
