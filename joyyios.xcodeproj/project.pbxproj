@@ -69,7 +69,6 @@
 		D67DD0E41B75302800333626 /* JYUserViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D67DD0E31B75302800333626 /* JYUserViewController.m */; };
 		D67DD0E81B7530AF00333626 /* JYUserCard.m in Sources */ = {isa = PBXBuildFile; fileRef = D67DD0E71B7530AF00333626 /* JYUserCard.m */; };
 		D67DD0EC1B75321A00333626 /* JYUser.m in Sources */ = {isa = PBXBuildFile; fileRef = D67DD0EB1B75321A00333626 /* JYUser.m */; };
-		D67DD0F41B77187000333626 /* JYCaptionTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = D67DD0F31B77187000333626 /* JYCaptionTextView.m */; };
 		D6825BC71BE897F400F3695D /* JYLocationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D6825BC61BE897F400F3695D /* JYLocationManager.m */; };
 		D6825BCA1BE89F5A00F3695D /* libFlurry_7.3.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D6825BC91BE89F5A00F3695D /* libFlurry_7.3.0.a */; };
 		D68486B61B8AC267005CA0C4 /* JYSessionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D68486B51B8AC267005CA0C4 /* JYSessionViewController.m */; };
@@ -240,8 +239,6 @@
 		D67DD0E71B7530AF00333626 /* JYUserCard.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYUserCard.m; sourceTree = "<group>"; };
 		D67DD0EA1B75321A00333626 /* JYUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYUser.h; sourceTree = "<group>"; };
 		D67DD0EB1B75321A00333626 /* JYUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYUser.m; sourceTree = "<group>"; };
-		D67DD0F21B77187000333626 /* JYCaptionTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYCaptionTextView.h; sourceTree = "<group>"; };
-		D67DD0F31B77187000333626 /* JYCaptionTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYCaptionTextView.m; sourceTree = "<group>"; };
 		D6825BC51BE897F400F3695D /* JYLocationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYLocationManager.h; sourceTree = "<group>"; };
 		D6825BC61BE897F400F3695D /* JYLocationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYLocationManager.m; sourceTree = "<group>"; };
 		D6825BC81BE89F4700F3695D /* Flurry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Flurry.h; sourceTree = "<group>"; };
@@ -718,8 +715,6 @@
 		D6903D061C07A92B00CDC64F /* View */ = {
 			isa = PBXGroup;
 			children = (
-				D67DD0F21B77187000333626 /* JYCaptionTextView.h */,
-				D67DD0F31B77187000333626 /* JYCaptionTextView.m */,
 				D65F37441B04807D007B534C /* JYCommentViewCell.h */,
 				D65F37451B04807D007B534C /* JYCommentViewCell.m */,
 				D6903D0B1C07C84E00CDC64F /* JYPostActionView.h */,
@@ -1101,7 +1096,6 @@
 				D65AFA5E1AEC715D007867D0 /* JYTimelineViewController.m in Sources */,
 				D61D1DB21B4E336E00DE37DF /* TGCameraFlash.m in Sources */,
 				D61D1DA61B4E336E00DE37DF /* TGCameraViewController.m in Sources */,
-				D67DD0F41B77187000333626 /* JYCaptionTextView.m in Sources */,
 				D61D1DC01B4E336E00DE37DF /* TGCameraFocusView.m in Sources */,
 				D69202B21AC4C7C0001C1C3D /* main.m in Sources */,
 				D6C82B691B12553D00876F57 /* JYComment.m in Sources */,

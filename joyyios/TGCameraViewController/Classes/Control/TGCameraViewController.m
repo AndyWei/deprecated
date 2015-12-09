@@ -95,9 +95,8 @@
     [_albumButton.layer setCornerRadius:10.f];
     [_albumButton.layer setMasksToBounds:YES];
 
-    _captureView.backgroundColor = [UIColor clearColor];
     _separatorView.hidden = YES;
-
+    _captureView.backgroundColor = [UIColor clearColor];
     _toggleOnColor = [TGCameraColor tintColor];
     _toggleOffColor = [UIColor grayColor];
     _gridButton.customTintColorOverride = _toggleButton.customTintColorOverride = _toggleOffColor;
@@ -204,10 +203,8 @@
         UIViewController *vc = (UIViewController *)self.captionViewController;
 
         [self.navigationController pushViewController:vc animated:NO];
-        return;
     }
-
-    if (self.delegate && [self.delegate respondsToSelector:@selector(cameraDidTakePhoto:fromAlbum:withCaption:)])
+    else if (self.delegate && [self.delegate respondsToSelector:@selector(cameraDidTakePhoto:fromAlbum:withCaption:)])
     {
         [self.delegate cameraDidTakePhoto:photo fromAlbum:fromAlbum withCaption:nil];
     }

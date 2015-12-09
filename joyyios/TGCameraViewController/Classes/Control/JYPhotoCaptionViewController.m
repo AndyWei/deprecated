@@ -6,7 +6,6 @@
 //  Copyright (c) 2015 Joyy Inc. All rights reserved.
 //
 
-#import "JYCaptionTextView.h"
 #import "JYPhotoCaptionViewController.h"
 #import "TGAssetsLibrary.h"
 
@@ -26,9 +25,8 @@ static NSString *const kImageCellIdentifier = @"imageCell";
     self = [super initWithTableViewStyle:UITableViewStylePlain];
     if (self)
     {
-        [self registerClassForTextView:[JYCaptionTextView class]];
         [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:kImageCellIdentifier];
-
+        self.textInputbar.textView.placeholder = NSLocalizedString(@"Add caption:", nil);
         self.delegate = delegate;
     }
     return self;
@@ -38,7 +36,6 @@ static NSString *const kImageCellIdentifier = @"imageCell";
 {
     [super viewDidLoad];
 
-    self.view.backgroundColor = JoyyBlack;
     self.title = NSLocalizedString(@"Caption", nil);
 
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"CameraBack"] style:UIBarButtonItemStylePlain target:self action:@selector(_back)];
@@ -52,13 +49,11 @@ static NSString *const kImageCellIdentifier = @"imageCell";
 
     [self.rightButton setTitle:NSLocalizedString(@"Send", nil) forState:UIControlStateNormal];
     self.rightButton.tintColor = JoyyBlue;
-    self.textInputbar.backgroundColor = JoyyBlack;
     self.textInputbar.autoHideRightButton = NO;
     self.typingIndicatorView.canResignByTouch = YES;
 
     // tableView
     self.tableView.allowsSelection = NO;
-    self.tableView.backgroundColor = JoyyBlack;
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
 
     // show keyboard
@@ -140,9 +135,15 @@ static NSString *const kImageCellIdentifier = @"imageCell";
     {
         _imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_WIDTH)];
         _imageView.centerX = self.tableView.centerX;
-        _imageView.image = self.photo;
+        _imageView.contentMode = UIViewContentModeScaleAspectFit;
     }
     return _imageView;
+}
+
+- (void)setPhoto:(UIImage *)photo
+{
+    _photo = photo;
+    [self.tableView reloadData];
 }
 
 #pragma mark - UITableViewDataSource
@@ -162,6 +163,8 @@ static NSString *const kImageCellIdentifier = @"imageCell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kImageCellIdentifier forIndexPath:indexPath];
     cell.backgroundColor = JoyyBlack;
     [cell addSubview:self.imageView];
+    self.imageView.image = self.photo;
+
     return cell;
 }
 
