@@ -97,7 +97,7 @@ func TestCreatePost(test *testing.T) {
 
     // check userline
     month := ThisMonth()
-    query := fmt.Sprintf("/v1/post/userline?month=%v", month)
+    query := fmt.Sprintf("/v1/post/userline?month=%v&userid=%v", month, userid)
     req, _ := http.NewRequest("GET", query, nil)
     resp := httptest.NewRecorder()
     h.ReadUserline(resp, req, userid, username)

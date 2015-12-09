@@ -176,7 +176,6 @@ func (h *Handler) CreateComment(w http.ResponseWriter, req *http.Request, userid
     bytes, _ := json.Marshal(response)
     RespondData(w, bytes)
     return
-    return
 }
 
 /*
@@ -256,7 +255,8 @@ func (h *Handler) ReadTimeline(w http.ResponseWriter, req *http.Request, userid 
  * Read userline
  */
 type UserlineParams struct {
-    Month int `param:"month" validate:"min=1501"`
+    UserId int64 `param:"userid" validate:"required"`
+    Month  int   `param:"month" validate:"min=1501"`
 }
 
 func (h *Handler) ReadUserline(w http.ResponseWriter, req *http.Request, userid int64, username string) {
@@ -266,7 +266,7 @@ func (h *Handler) ReadUserline(w http.ResponseWriter, req *http.Request, userid 
         return
     }
 
-    iter := h.DB.Query(`SELECT postid, url, caption FROM userline WHERE userid = ? AND month = ?`, userid, p.Month).Consistency(gocql.One).Iter()
+    iter := h.DB.Query(`SELECT postid, url, caption FROM userline WHERE userid = ? AND month = ?`, p.UserId, p.Month).Consistency(gocql.One).Iter()
     posts, err := iter.SliceMap()
     if err != nil {
         RespondError(w, err, http.StatusBadGateway)
