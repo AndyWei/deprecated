@@ -22,12 +22,17 @@ static NSString *const kImageCellIdentifier = @"imageCell";
 
 - (instancetype)initWithDelegate:(id<TGCameraDelegate>)delegate
 {
-    self = [super initWithTableViewStyle:UITableViewStylePlain];
+    UIScrollView *scrollView = [UIScrollView new];
+    self = [super initWithScrollView:scrollView];
     if (self)
     {
+        self.delegate = delegate;
         [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:kImageCellIdentifier];
         self.textInputbar.textView.placeholder = NSLocalizedString(@"Add caption:", nil);
-        self.delegate = delegate;
+
+        scrollView.bounds = self.view.bounds;
+        [self.view addSubview:scrollView];
+        [scrollView addSubview:self.imageView];
     }
     return self;
 }
@@ -51,10 +56,6 @@ static NSString *const kImageCellIdentifier = @"imageCell";
     self.rightButton.tintColor = JoyyBlue;
     self.textInputbar.autoHideRightButton = NO;
     self.typingIndicatorView.canResignByTouch = YES;
-
-    // tableView
-    self.tableView.allowsSelection = NO;
-    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
 
     // show keyboard
     [self.textView becomeFirstResponder];
@@ -134,7 +135,6 @@ static NSString *const kImageCellIdentifier = @"imageCell";
     if (!_imageView)
     {
         _imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_WIDTH)];
-        _imageView.centerX = self.tableView.centerX;
         _imageView.contentMode = UIViewContentModeScaleAspectFit;
     }
     return _imageView;
@@ -143,36 +143,7 @@ static NSString *const kImageCellIdentifier = @"imageCell";
 - (void)setPhoto:(UIImage *)photo
 {
     _photo = photo;
-    [self.tableView reloadData];
-}
-
-#pragma mark - UITableViewDataSource
-
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-{
-    return 1;
-}
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
-    return 1;
-}
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kImageCellIdentifier forIndexPath:indexPath];
-    cell.backgroundColor = JoyyBlack;
-    [cell addSubview:self.imageView];
-    self.imageView.image = self.photo;
-
-    return cell;
-}
-
-#pragma mark - UITableView Delegate
-
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    return SCREEN_WIDTH;
+    self.imageView.image = photo;
 }
 
 #pragma mark - Overriden Method
