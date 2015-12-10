@@ -7,17 +7,19 @@
 //
 
 #import <AFNetworking/AFNetworking.h>
+#import <AFNetworking/UIImageView+AFNetworking.h>
 #import <AWSS3/AWSS3.h>
 #import <MJRefresh/MJRefresh.h>
 #import <RKDropdownAlert/RKDropdownAlert.h>
 
 #import "JYMonth.h"
 #import "JYButton.h"
-#import "JYPhotoCaptionViewController.h"
+#import "JYCardView.h"
 #import "JYComment.h"
 #import "JYCommentViewController.h"
 #import "JYFilename.h"
 #import "JYLocalDataManager.h"
+#import "JYPhotoCaptionViewController.h"
 #import "JYPost.h"
 #import "JYUserlineCell.h"
 #import "JYUserlineViewController.h"
@@ -29,6 +31,7 @@
 @property (nonatomic) JYMonth *month;
 @property (nonatomic) JYUser *user;
 @property (nonatomic) JYUserlineCell *sizingCell;
+@property (nonatomic) JYCardView *cardView;
 @property (nonatomic) NSInteger networkThreadCount;
 @property (nonatomic) NSMutableArray *postList;
 @property (nonatomic) UITableView *tableView;
@@ -79,6 +82,10 @@ static NSString *const kUserlineCellIdentifier = @"userlineCell";
         _tableView.estimatedRowHeight = UITableViewAutomaticDimension;
         [_tableView registerClass:[JYUserlineCell class] forCellReuseIdentifier:kUserlineCellIdentifier];
 
+        // Setup card view as table header
+        [self _updateCardView];
+        _tableView.tableHeaderView = self.cardView;
+
         // Setup the pull-up-to-refresh footer
         MJRefreshAutoNormalFooter *footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(_fetchUserline)];
         footer.refreshingTitleHidden = YES;
@@ -88,9 +95,46 @@ static NSString *const kUserlineCellIdentifier = @"userlineCell";
     return _tableView;
 }
 
+- (JYCardView *)cardView
+{
+    if (!_cardView)
+    {
+        CGRect frame = CGRectMake(0, 0, SCREEN_WIDTH, 300);
+        _cardView = [[JYCardView alloc] initWithFrame:frame];
+        [_cardView addBlur];
+        [_cardView addShadow];
+    }
+    return _cardView;
+}
+
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)_updateCardView
+{
+    self.cardView.titleLabel.text = self.user.username;
+
+    NSURL *url = [NSURL URLWithString:self.user.avatarURL];
+    NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestReturnCacheDataElseLoad timeoutInterval:5];
+
+    __weak typeof(self) weakSelf = self;
+    [self.cardView.avatarImageView setImageWithURLRequest:request
+                                          placeholderImage:nil
+                                                   success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
+                                                       weakSelf.cardView.avatarImageView.image = image;
+                                                   } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
+                                                       NSLog(@"_updateCardView setImageWithURLRequest failed with error = %@", error);
+                                                   }];
+
+    [self.cardView.coverImageView setImageWithURLRequest:request
+                                        placeholderImage:nil
+                                                 success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
+                                                     weakSelf.cardView.coverImageView.image = image;
+                                                 } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
+                                                     NSLog(@"_updateCardView setImageWithURLRequest failed with error = %@", error);
+                                                 }];
 }
 
 - (void)_apiTokenReady

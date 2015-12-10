@@ -10,6 +10,7 @@
 		743498E564A05714440866C9 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8E034C4F8FC61E210B60EDCC /* libPods.a */; };
 		D60726AE1C18179500A43717 /* JYMonth.m in Sources */ = {isa = PBXBuildFile; fileRef = D60726AD1C18179500A43717 /* JYMonth.m */; };
 		D60726B11C18A4BB00A43717 /* JYPostTimeView.m in Sources */ = {isa = PBXBuildFile; fileRef = D60726B01C18A4BB00A43717 /* JYPostTimeView.m */; };
+		D60726B41C18FBFE00A43717 /* JYCardView.m in Sources */ = {isa = PBXBuildFile; fileRef = D60726B31C18FBFE00A43717 /* JYCardView.m */; };
 		D61D1D471B4A65F200DE37DF /* MDCGeometry.m in Sources */ = {isa = PBXBuildFile; fileRef = D61D1D2B1B4A65F200DE37DF /* MDCGeometry.m */; };
 		D61D1D491B4A65F200DE37DF /* MDCViewState.m in Sources */ = {isa = PBXBuildFile; fileRef = D61D1D2E1B4A65F200DE37DF /* MDCViewState.m */; };
 		D61D1D4D1B4A65F200DE37DF /* UIView+MDCBorderedLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = D61D1D331B4A65F200DE37DF /* UIView+MDCBorderedLabel.m */; };
@@ -127,6 +128,8 @@
 		D60726AD1C18179500A43717 /* JYMonth.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYMonth.m; sourceTree = "<group>"; };
 		D60726AF1C18A4BB00A43717 /* JYPostTimeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYPostTimeView.h; sourceTree = "<group>"; };
 		D60726B01C18A4BB00A43717 /* JYPostTimeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYPostTimeView.m; sourceTree = "<group>"; };
+		D60726B21C18FBFE00A43717 /* JYCardView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYCardView.h; sourceTree = "<group>"; };
+		D60726B31C18FBFE00A43717 /* JYCardView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYCardView.m; sourceTree = "<group>"; };
 		D61D1D2A1B4A65F200DE37DF /* MDCGeometry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDCGeometry.h; sourceTree = "<group>"; };
 		D61D1D2B1B4A65F200DE37DF /* MDCGeometry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDCGeometry.m; sourceTree = "<group>"; };
 		D61D1D2D1B4A65F200DE37DF /* MDCViewState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDCViewState.h; sourceTree = "<group>"; };
@@ -670,6 +673,8 @@
 				D6B2F05A1ACE630F009601B0 /* JYAutoCompleteTextField.m */,
 				D63F0D571AC7CFF20067C5EE /* JYButton.h */,
 				D63F0D581AC7CFF20067C5EE /* JYButton.m */,
+				D60726B21C18FBFE00A43717 /* JYCardView.h */,
+				D60726B31C18FBFE00A43717 /* JYCardView.m */,
 				D63F0D731AC9F6F80067C5EE /* JYDataStore.h */,
 				D63F0D741AC9F6F80067C5EE /* JYDataStore.m */,
 				D63B69B41AC53BB4005600A9 /* JYFloatLabeledTextField.h */,
@@ -1124,6 +1129,7 @@
 				D63B69B61AC53BB4005600A9 /* JYFloatLabeledTextField.m in Sources */,
 				D6F301B31C13B68000821FEF /* JYPostCommentCell.m in Sources */,
 				D6903D101C07CFE000CDC64F /* JYPostCommentView.m in Sources */,
+				D60726B41C18FBFE00A43717 /* JYCardView.m in Sources */,
 				D65AFA5E1AEC715D007867D0 /* JYTimelineViewController.m in Sources */,
 				D61D1DB21B4E336E00DE37DF /* TGCameraFlash.m in Sources */,
 				D61D1DA61B4E336E00DE37DF /* TGCameraViewController.m in Sources */,

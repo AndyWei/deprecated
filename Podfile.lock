@@ -89,7 +89,6 @@ PODS:
   - MJRefresh (3.0.7)
   - MSWeakTimer (1.1.0)
   - Onboard (2.1.7)
-  - RKCardView (0.1.0)
   - RKDropdownAlert (0.3.0)
   - SlackTextViewController (1.7.2)
   - TTTAttributedLabel (1.13.4)
@@ -260,7 +259,6 @@ DEPENDENCIES:
   - MJRefresh
   - MSWeakTimer
   - Onboard
-  - RKCardView
   - RKDropdownAlert
   - SlackTextViewController
   - TTTAttributedLabel
@@ -292,7 +290,6 @@ SPEC CHECKSUMS:
   MJRefresh: f3e1228ec3d38c7ba5208d58032631a52f39f495
   MSWeakTimer: 9426150f933b80ed3acf3f6d228e4b61f0e303c8
   Onboard: 87648089e1b76d13b4f5bf8f7a1cdb144092f0af
-  RKCardView: 80c09d833031dd8506eb4dcbaa820038065c2519
   RKDropdownAlert: f4b3364c251829ad439dc666836a1f2dad26f4c7
   SlackTextViewController: 1f4e8f68c156ef93de73fd422db2b8d5d5b0f4e7
   TTTAttributedLabel: 0a2ac7b2dd726d32a070dafb01446026b11e624f
