@@ -282,7 +282,7 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
     }
 
     NSNumber *userid = (NSNumber *)value;
-    JYUser *user = [[JYFriendManager sharedInstance] friendOfId:userid];
+    JYUser *user = [[JYFriendManager sharedInstance] friendWithId:userid];
     JYUserlineViewController *viewController = [[JYUserlineViewController alloc] initWithUser:user];
 
     [self.navigationController pushViewController:viewController animated:YES];

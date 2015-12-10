@@ -78,7 +78,7 @@ static NSString *const kCommentlineCellIdentifier = @"commentlineCell";
 {
     if (self.originalComment) // comment on another comment
     {
-        JYFriend *owner = [[JYFriendManager sharedInstance] friendOfId:self.originalComment.ownerId];
+        JYFriend *owner = [[JYFriendManager sharedInstance] friendWithId:self.originalComment.ownerId];
         NSString *replyText = NSLocalizedString(@"Reply to", nil);
         self.textInputbar.textView.placeholder = [NSString stringWithFormat:@"%@ %@:", replyText, owner.username];
     }

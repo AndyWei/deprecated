@@ -64,28 +64,34 @@
         _friendDict = [NSMutableDictionary new];
         for (JYFriend *friend in array)
         {
-            NSNumber *userid = friend.userId;
-            [_friendDict setObject:friend forKey:userid];
+            [_friendDict setObject:friend forKey:friend.userId];
+            [_friendDict setObject:friend forKey:friend.username];
         }
 
         JYFriend *myself = [JYFriend myself];
         [_friendDict setObject:myself forKey:myself.userId];
+        [_friendDict setObject:myself forKey:myself.username];
     }
     return _friendDict;
 }
 
-- (JYFriend *)friendOfId:(NSNumber *)userid
+- (JYFriend *)friendWithId:(NSNumber *)userid
 {
     return self.friendDict[userid];
 }
 
-- (JYFriend *)friendOfBareJid:(NSString *)bareJid
+- (JYFriend *)friendWithBareJid:(NSString *)bareJid
 {
     NSArray *parts = [bareJid componentsSeparatedByString:@"@"];
     NSString *idString = parts[0];
     NSNumber *userid = [NSNumber numberWithLongLong:idString.longLongValue];
 
-    return [self friendOfId:userid];
+    return [self friendWithId:userid];
+}
+
+- (JYFriend *)friendWithUsername:(NSString *)username
+{
+    return self.friendDict[username];
 }
 
 - (void)_fetchFriends

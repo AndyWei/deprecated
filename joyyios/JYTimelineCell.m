@@ -14,14 +14,14 @@
 #import "JYPostActionView.h"
 #import "JYPostCommentView.h"
 #import "JYPostMediaView.h"
+#import "JYPostOwnerView.h"
 #import "JYTimelineCell.h"
-#import "JYPosterView.h"
 
 
-@interface JYTimelineCell ()
+@interface JYTimelineCell () <TTTAttributedLabelDelegate>
 @property (nonatomic) JYPostMediaView *mediaView;
 @property (nonatomic) JYPostActionView *actionView;
-@property (nonatomic) JYPosterView *posterView;
+@property (nonatomic) JYPostOwnerView *ownerView;
 @property (nonatomic) JYPostCommentView *commentView;
 @property (nonatomic) NSLayoutConstraint *commentViewHeightConstraint;
 @property (nonatomic) TTTAttributedLabel *likesLabel;
@@ -39,14 +39,14 @@
         self.selectionStyle = UITableViewCellSelectionStyleNone;
         self.contentView.backgroundColor = JoyyWhitePure;
 
-        [self.contentView addSubview:self.posterView];
+        [self.contentView addSubview:self.ownerView];
         [self.contentView addSubview:self.mediaView];
         [self.contentView addSubview:self.actionView];
         [self.contentView addSubview:self.likesLabel];
         [self.contentView addSubview:self.commentView];
 
         NSDictionary *views = @{
-                                @"posterView": self.posterView,
+                                @"ownerView": self.ownerView,
                                 @"mediaView": self.mediaView,
                                 @"actionView": self.actionView,
                                 @"likesLabel": self.likesLabel,
@@ -56,13 +56,13 @@
                                   @"SW":@(SCREEN_WIDTH)
                                   };
 
-        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[posterView]-0-|" options:0 metrics:nil views:views]];
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[ownerView]-0-|" options:0 metrics:nil views:views]];
         [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[mediaView]-0-|" options:0 metrics:nil views:views]];
         [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[actionView]-0-|" options:0 metrics:nil views:views]];
         [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-20-[likesLabel]-10-|" options:0 metrics:nil views:views]];
         [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-20-[commentView]-10-|" options:0 metrics:nil views:views]];
 
-        NSString *format = @"V:|-0@500-[posterView(40)][mediaView(SW)][actionView(40)][likesLabel][commentView]-10@500-|";
+        NSString *format = @"V:|-0@500-[ownerView(40)][mediaView(SW)][actionView(40)][likesLabel][commentView]-10@500-|";
         [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:format options:0 metrics:metrics views:views]];
 
         self.commentViewHeightConstraint = [NSLayoutConstraint constraintWithItem:self.commentView
@@ -86,7 +86,7 @@
 - (void)setPost:(JYPost *)post
 {
     _post = post;
-    self.posterView.post = post;
+    self.ownerView.post = post;
     self.mediaView.post = post;
     [self _updateCommentsAndLikes];
 }
@@ -114,47 +114,60 @@
 
 - (void)_updateLikesLabel
 {
-    if (!_post)
+    NSArray *usernames = [self _likedByUsernames];
+    if ([usernames count] == 0)
     {
         self.likesLabel.text = nil;
         return;
     }
 
-    NSMutableArray *likedByUsernames = [NSMutableArray new];
-    for (JYComment *comment in self.post.commentList)
-    {
-        if ([comment isLike])
-        {
-            JYFriend *friend = [[JYFriendManager sharedInstance] friendOfId:comment.ownerId];
-            if (friend)
-            {
-                [likedByUsernames addObject:friend.username];
-            }
-        }
-    }
+    NSString *likedList = [usernames componentsJoinedByString:@", "];
+    self.likesLabel.text = [NSString stringWithFormat:@"%@ %@", kLikeText, likedList];
 
-    if ([likedByUsernames count] == 0)
+    // add link to make the label clickable on each username
+    for (NSString *username in usernames)
     {
-        self.likesLabel.text = nil;
-    }
-    else
-    {
-        NSOrderedSet *orderedSet = [NSOrderedSet orderedSetWithArray:likedByUsernames];
-        NSArray *dedupedUsernames = [orderedSet array];
-        NSString *likedList = [dedupedUsernames componentsJoinedByString:@", "];
-        self.likesLabel.text = [NSString stringWithFormat:@"%@ %@", kLikeText, likedList];
+        NSRange range = [self.likesLabel.text rangeOfString:username];
+        NSURL *url = [NSURL URLWithString:[NSString stringWithFormat: @"username://%@", username]];
+        [self.likesLabel addLinkToURL:url withRange:range];
     }
 
     self.likesLabel.preferredMaxLayoutWidth = CGRectGetWidth(self.likesLabel.bounds);
 }
 
-- (JYPosterView *)posterView
+- (NSArray *)_likedByUsernames
 {
-    if (!_posterView)
+    NSMutableArray *usernames = [NSMutableArray new];
+
+    if (!_post)
     {
-        _posterView = [[JYPosterView alloc] init];
+        self.likesLabel.text = nil;
+        return usernames;
     }
-    return _posterView;
+
+    for (JYComment *comment in self.post.commentList)
+    {
+        if ([comment isLike])
+        {
+            JYFriend *friend = [[JYFriendManager sharedInstance] friendWithId:comment.ownerId];
+            if (friend)
+            {
+                [usernames addObject:friend.username];
+            }
+        }
+    }
+
+    NSOrderedSet *orderedSet = [NSOrderedSet orderedSetWithArray:usernames];
+    return [orderedSet array];
+}
+
+- (JYPostOwnerView *)ownerView
+{
+    if (!_ownerView)
+    {
+        _ownerView = [[JYPostOwnerView alloc] init];
+    }
+    return _ownerView;
 }
 
 - (JYPostMediaView *)mediaView
@@ -179,14 +192,25 @@
 {
     if (!_likesLabel)
     {
-        _likesLabel = [[TTTAttributedLabel alloc] initWithFrame:CGRectZero];
-        _likesLabel.translatesAutoresizingMaskIntoConstraints = NO;
-        _likesLabel.font = [UIFont systemFontOfSize:kFontSizeComment];
-        _likesLabel.backgroundColor = JoyyWhiter;
-        _likesLabel.textColor = JoyyBlue;
-        _likesLabel.textInsets = UIEdgeInsetsMake(0, 5, 0, 5);
-        _likesLabel.lineBreakMode = NSLineBreakByWordWrapping;
-        _likesLabel.numberOfLines = 0;
+        TTTAttributedLabel *label = [[TTTAttributedLabel alloc] initWithFrame:CGRectZero];
+        label.translatesAutoresizingMaskIntoConstraints = NO;
+        label.font = [UIFont systemFontOfSize:kFontSizeComment];
+        label.backgroundColor = JoyyWhiter;
+        label.textColor = JoyyBlue;
+        label.textInsets = UIEdgeInsetsMake(0, 5, 0, 5);
+        label.lineBreakMode = NSLineBreakByWordWrapping;
+        label.numberOfLines = 0;
+        label.delegate = self;
+
+        label.linkAttributes = @{
+                                   (NSString*)kCTForegroundColorAttributeName: (__bridge id)(JoyyBlue.CGColor),
+                                   (NSString *)kCTUnderlineStyleAttributeName: [NSNumber numberWithBool:NO]
+                               };
+        label.activeLinkAttributes = @{
+                                          (NSString*)kCTForegroundColorAttributeName: (__bridge id)(FlatSand.CGColor),
+                                          (NSString *)kCTUnderlineStyleAttributeName: [NSNumber numberWithBool:NO]
+                                     };
+        _likesLabel = label;
     }
     return _likesLabel;
 }
@@ -198,6 +222,26 @@
         _commentView = [[JYPostCommentView alloc] init];
     }
     return _commentView;
+}
+
+#pragma mark -- TTTAttributedLabelDelegate
+
+- (void)attributedLabel:(TTTAttributedLabel *)label didSelectLinkWithURL:(NSURL *)url
+{
+    if (![url.scheme isEqualToString:@"username"])
+    {
+        return;
+    }
+
+    NSString *username = url.host;
+    NSAssert(username, @"username should not be nil");
+    JYFriend *friend = [[JYFriendManager sharedInstance] friendWithUsername:username];
+    NSAssert(friend, @"user should not be nil");
+    if (friend)
+    {
+        NSDictionary *info = @{@"userid": friend.userId};
+        [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationDidTapOnUser object:nil userInfo:info];
+    }
 }
 
 @end

@@ -85,7 +85,7 @@
 		D6903CFD1BF6BB6300CDC64F /* NSURLSession+SynchronousTask.m in Sources */ = {isa = PBXBuildFile; fileRef = D6903CFC1BF6BB6300CDC64F /* NSURLSession+SynchronousTask.m */; };
 		D6903D021BF9175400CDC64F /* MTLFMDBAdapter.m in Sources */ = {isa = PBXBuildFile; fileRef = D6903D011BF9175400CDC64F /* MTLFMDBAdapter.m */; };
 		D6903D051BF9AA4300CDC64F /* NSDate+Joyy.m in Sources */ = {isa = PBXBuildFile; fileRef = D6903D041BF9AA4300CDC64F /* NSDate+Joyy.m */; };
-		D6903D0A1C07A9C200CDC64F /* JYPosterView.m in Sources */ = {isa = PBXBuildFile; fileRef = D6903D091C07A9C200CDC64F /* JYPosterView.m */; };
+		D6903D0A1C07A9C200CDC64F /* JYPostOwnerView.m in Sources */ = {isa = PBXBuildFile; fileRef = D6903D091C07A9C200CDC64F /* JYPostOwnerView.m */; };
 		D6903D0D1C07C84E00CDC64F /* JYPostActionView.m in Sources */ = {isa = PBXBuildFile; fileRef = D6903D0C1C07C84E00CDC64F /* JYPostActionView.m */; };
 		D6903D101C07CFE000CDC64F /* JYPostCommentView.m in Sources */ = {isa = PBXBuildFile; fileRef = D6903D0F1C07CFE000CDC64F /* JYPostCommentView.m */; };
 		D6903D161C0B9E4A00CDC64F /* JYFriend.m in Sources */ = {isa = PBXBuildFile; fileRef = D6903D151C0B9E4A00CDC64F /* JYFriend.m */; };
@@ -277,8 +277,8 @@
 		D6903D011BF9175400CDC64F /* MTLFMDBAdapter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MTLFMDBAdapter.m; sourceTree = "<group>"; };
 		D6903D031BF9AA4300CDC64F /* NSDate+Joyy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+Joyy.h"; sourceTree = "<group>"; };
 		D6903D041BF9AA4300CDC64F /* NSDate+Joyy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+Joyy.m"; sourceTree = "<group>"; };
-		D6903D081C07A9C200CDC64F /* JYPosterView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYPosterView.h; sourceTree = "<group>"; };
-		D6903D091C07A9C200CDC64F /* JYPosterView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYPosterView.m; sourceTree = "<group>"; };
+		D6903D081C07A9C200CDC64F /* JYPostOwnerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYPostOwnerView.h; sourceTree = "<group>"; };
+		D6903D091C07A9C200CDC64F /* JYPostOwnerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYPostOwnerView.m; sourceTree = "<group>"; };
 		D6903D0B1C07C84E00CDC64F /* JYPostActionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYPostActionView.h; sourceTree = "<group>"; };
 		D6903D0C1C07C84E00CDC64F /* JYPostActionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYPostActionView.m; sourceTree = "<group>"; };
 		D6903D0E1C07CFE000CDC64F /* JYPostCommentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYPostCommentView.h; sourceTree = "<group>"; };
@@ -751,8 +751,8 @@
 				D6903D0C1C07C84E00CDC64F /* JYPostActionView.m */,
 				D6D622541C0D317E0039C4A7 /* JYPostMediaView.h */,
 				D6D622551C0D317E0039C4A7 /* JYPostMediaView.m */,
-				D6903D081C07A9C200CDC64F /* JYPosterView.h */,
-				D6903D091C07A9C200CDC64F /* JYPosterView.m */,
+				D6903D081C07A9C200CDC64F /* JYPostOwnerView.h */,
+				D6903D091C07A9C200CDC64F /* JYPostOwnerView.m */,
 				D61D1DE41B536B2700DE37DF /* JYTimelineCell.h */,
 				D61D1DE51B536B2700DE37DF /* JYTimelineCell.m */,
 				D6903D0E1C07CFE000CDC64F /* JYPostCommentView.h */,
@@ -1159,7 +1159,7 @@
 				D67DD0EC1B75321A00333626 /* JYUser.m in Sources */,
 				D6903D191C0BA44A00CDC64F /* JYYRS.m in Sources */,
 				D68DAF971AC4CACD00838E7E /* JYSignInViewController.m in Sources */,
-				D6903D0A1C07A9C200CDC64F /* JYPosterView.m in Sources */,
+				D6903D0A1C07A9C200CDC64F /* JYPostOwnerView.m in Sources */,
 				D61D1DB81B4E336E00DE37DF /* TGCameraShot.m in Sources */,
 				D63591951BEA913500BFFF82 /* JYDeviceManager.m in Sources */,
 				D69FF6E51B96474200466FE5 /* JYAuthenticatedIdentityProvider.m in Sources */,

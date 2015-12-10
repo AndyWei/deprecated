@@ -8,7 +8,7 @@
 
 @class JYPost;
 
-@interface JYPosterView : UIView
+@interface JYPostOwnerView : UIView
 
 @property(nonatomic) JYPost *post;
 

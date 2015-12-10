@@ -66,11 +66,11 @@
 
     _comment = comment;
 
-    JYFriend *owner = [[JYFriendManager sharedInstance] friendOfId:comment.ownerId];
+    JYFriend *owner = [[JYFriendManager sharedInstance] friendWithId:comment.ownerId];
     self.usernameLabel.text = owner.username;
 
     // commentLabel
-    JYFriend *replyTo = ([comment.replyToId unsignedLongLongValue] == 0) ? nil: [[JYFriendManager sharedInstance] friendOfId:comment.replyToId];
+    JYFriend *replyTo = ([comment.replyToId unsignedLongLongValue] == 0) ? nil: [[JYFriendManager sharedInstance] friendWithId:comment.replyToId];
     NSString *replyText = NSLocalizedString(@"reply", nil);
     if (replyTo)
     {
@@ -86,7 +86,7 @@
 
 - (void)_updateAvatarButtonImage
 {
-    JYFriend *friend = [[JYFriendManager sharedInstance] friendOfId:self.comment.ownerId];
+    JYFriend *friend = [[JYFriendManager sharedInstance] friendWithId:self.comment.ownerId];
     NSURL *url = [NSURL URLWithString:friend.avatarURL];
     [self.avatarButton setImageForState:UIControlStateNormal withURL:url];
 }

@@ -13,17 +13,18 @@
 #import "JYButton.h"
 #import "JYFriendManager.h"
 #import "JYPost.h"
-#import "JYPosterView.h"
+#import "JYPostOwnerView.h"
 #import "NSDate+Joyy.h"
 
-@interface JYPosterView ()
+@interface JYPostOwnerView () <TTTAttributedLabelDelegate>
 @property (nonatomic) UIButton *avatarButton;
 @property (nonatomic) TTTAttributedLabel *posterNameLabel;
 @property (nonatomic) TTTAttributedLabel *postTimeLabel;
 @end
 
+static NSString *kUsernameURL = @"action://_didTapAvatarButton";
 
-@implementation JYPosterView
+@implementation JYPostOwnerView
 
 - (instancetype)init
 {
@@ -63,10 +64,14 @@
 
     [self _updateAvatarButtonImage];
 
-    JYFriend *poster = [[JYFriendManager sharedInstance] friendOfId:self.post.ownerId];
+    JYFriend *poster = [[JYFriendManager sharedInstance] friendWithId:self.post.ownerId];
     if (poster)
     {
         self.posterNameLabel.text = poster.username;
+
+        // add link to make the label clickable
+        NSRange range = [self.posterNameLabel.text rangeOfString:self.posterNameLabel.text];
+        [self.posterNameLabel addLinkToURL:[NSURL URLWithString:kUsernameURL] withRange:range];
     }
 
     NSDate *date = [NSDate dateOfId:self.post.postId];
@@ -75,7 +80,7 @@
 
 - (void)_updateAvatarButtonImage
 {
-    JYFriend *friend = [[JYFriendManager sharedInstance] friendOfId:self.post.ownerId];
+    JYFriend *friend = [[JYFriendManager sharedInstance] friendWithId:self.post.ownerId];
     NSURL *url = [NSURL URLWithString:friend.avatarURL];
     [self.avatarButton setImageForState:UIControlStateNormal withURL:url];
 }
@@ -107,6 +112,16 @@
         label.textAlignment = NSTextAlignmentLeft;
         label.numberOfLines = 0;
         label.lineBreakMode = NSLineBreakByWordWrapping;
+        label.delegate = self;
+
+        label.linkAttributes = @{
+                                    (NSString*)kCTForegroundColorAttributeName: (__bridge id)(JoyyBlue.CGColor),
+                                    (NSString *)kCTUnderlineStyleAttributeName: [NSNumber numberWithBool:NO]
+                               };
+        label.activeLinkAttributes = @{
+                                          (NSString*)kCTForegroundColorAttributeName: (__bridge id)(FlatSand.CGColor),
+                                          (NSString *)kCTUnderlineStyleAttributeName: [NSNumber numberWithBool:NO]
+                                     };
 
         _posterNameLabel = label;
     }
@@ -136,4 +151,15 @@
     NSDictionary *info = @{@"userid": self.post.ownerId};
     [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationDidTapOnUser object:nil userInfo:info];
 }
+
+#pragma mark -- TTTAttributedLabelDelegate
+
+- (void)attributedLabel:(TTTAttributedLabel *)label didSelectLinkWithURL:(NSURL *)url
+{
+    if ([kUsernameURL isEqualToString:[url absoluteString]])
+    {
+        [self _didTapAvatarButton];
+    }
+}
+
 @end
