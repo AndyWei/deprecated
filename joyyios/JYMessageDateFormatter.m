@@ -29,7 +29,7 @@
 - (NSString *)autoStringFromDate:(NSDate *)date
 {
     NSDate *today = [NSDate date];
-    NSDateComponents *offsetComponents = [self.calendar components:(NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit) fromDate:today];
+    NSDateComponents *offsetComponents = [self.calendar components:(NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay) fromDate:today];
     NSDate *midnight = [self.calendar dateFromComponents:offsetComponents];
 
     // check if date is within today

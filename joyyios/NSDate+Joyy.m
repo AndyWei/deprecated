@@ -15,7 +15,7 @@ const uint64_t JOYY_EPOCH = 1420070400000; // 01 Jan 2015 00:00:00 GMT
 + (NSDate *)beginningOfDay:(NSDate *)date
 {
     NSCalendar *calendar = [NSCalendar currentCalendar];
-    NSDateComponents *components = [calendar components:NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit fromDate:date];
+    NSDateComponents *components = [calendar components:NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay fromDate:date];
     return [calendar dateFromComponents:components];
 }
 

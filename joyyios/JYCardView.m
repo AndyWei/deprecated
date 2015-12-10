@@ -58,11 +58,10 @@
     {
         _avatarView = [UIImageView new];
         _avatarView.translatesAutoresizingMaskIntoConstraints = NO;
-        _avatarView.backgroundColor = JoyyWhitePure;
         _avatarView.contentMode = UIViewContentModeScaleAspectFit;
         _avatarView.layer.cornerRadius = 75;
         _avatarView.layer.masksToBounds = YES;
-        _avatarView.layer.borderWidth = 2;
+        _avatarView.layer.borderWidth = 3;
         _avatarView.layer.borderColor = JoyyWhitePure.CGColor;
     }
     return _avatarView;
@@ -77,6 +76,7 @@
         _coverView.backgroundColor = JoyyWhitePure;
         _coverView.contentMode = UIViewContentModeScaleToFill;
         [_coverView addSubview:self.blurView];
+        _coverView.layer.shouldRasterize = YES; // to avoid the flashing on every scroll movement and touch
     }
     return _coverView;
 }

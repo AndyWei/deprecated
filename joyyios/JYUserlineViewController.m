@@ -122,17 +122,11 @@ static NSString *const kUserlineCellIdentifier = @"userlineCell";
                                           placeholderImage:nil
                                                    success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
                                                        weakSelf.cardView.avatarView.image = image;
+                                                       weakSelf.cardView.coverView.image = image;
                                                    } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
                                                        NSLog(@"_updateCardView setImageWithURLRequest failed with error = %@", error);
                                                    }];
 
-    [self.cardView.coverView setImageWithURLRequest:request
-                                        placeholderImage:nil
-                                                 success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
-                                                     weakSelf.cardView.coverView.image = image;
-                                                 } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
-                                                     NSLog(@"_updateCardView setImageWithURLRequest failed with error = %@", error);
-                                                 }];
 }
 
 - (void)_apiTokenReady

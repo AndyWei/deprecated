@@ -55,7 +55,7 @@ CGFloat const kEdgeInset = 10.f;
 
     // Profile Button
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"me_selected"]
-                                                                              style:UIBarButtonItemStyleBordered
+                                                                              style:UIBarButtonItemStylePlain
                                                                              target:self
                                                                              action:@selector(showPersonProfile)];
     // Start fetch data
