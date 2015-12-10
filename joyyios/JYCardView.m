@@ -8,28 +8,107 @@
 
 #import "JYCardView.h"
 
-// Responsive view ratio values
-#define kCoverRatio 0.38
-#define kAvatarRatio 0.247
-#define kAvatarXRatio 0.03
-#define kAvatarYRatio 0.213
-#define kAvatarBoarderWidth 3
-#define kLabelYRatio .012
+@interface JYCardView ()
+@property (nonatomic) UIVisualEffectView *blurView;
+@end
 
-@implementation JYCardView {
-    UIVisualEffectView *visualEffectView;
-}
-@synthesize avatarImageView;
-@synthesize coverImageView;
-@synthesize titleLabel;
+@implementation JYCardView
 
-- (id)initWithFrame:(CGRect)frame
+- (id)init
 {
-    self = [super initWithFrame:frame];
-    if (self) {
-        [self setupView];
+    self = [super init];
+    if (self)
+    {
+        self.translatesAutoresizingMaskIntoConstraints = NO;
+        self.backgroundColor = JoyyWhitePure;
+        self.layer.cornerRadius = 5;
+        self.layer.shadowRadius = 3;
+        self.layer.shadowOpacity = 0;
+        self.layer.shadowOffset = CGSizeMake(1, 1);
+
+        [self addSubview:self.coverView];
+        [self addSubview:self.avatarView];
+        [self addSubview:self.titleLabel];
+
+        NSDictionary *views = @{
+                                @"avatarView": self.avatarView,
+                                @"coverView": self.coverView,
+                                @"titleLabel": self.titleLabel,
+                                @"blurView": self.blurView
+                              };
+
+        NSDictionary *metrics = @{
+                                  @"SW": @(SCREEN_WIDTH)
+                                };
+
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[coverView(SW)]|" options:0 metrics:metrics views:views]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-20-[avatarView(150)][titleLabel]-10-|" options:0 metrics:nil views:views]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[coverView][titleLabel(20)]-20-|" options:0 metrics:nil views:views]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-50-[avatarView(150)]|" options:0 metrics:nil views:views]];
+
+        [self.coverView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[blurView]|" options:0 metrics:nil views:views]];
+        [self.coverView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[blurView]|" options:0 metrics:nil views:views]];
     }
     return self;
+}
+
+- (UIImageView *)avatarView
+{
+    if (!_avatarView)
+    {
+        _avatarView = [UIImageView new];
+        _avatarView.translatesAutoresizingMaskIntoConstraints = NO;
+        _avatarView.backgroundColor = JoyyWhitePure;
+        _avatarView.contentMode = UIViewContentModeScaleAspectFit;
+        _avatarView.layer.cornerRadius = 75;
+        _avatarView.layer.masksToBounds = YES;
+        _avatarView.layer.borderWidth = 2;
+        _avatarView.layer.borderColor = JoyyWhitePure.CGColor;
+    }
+    return _avatarView;
+}
+
+- (UIImageView *)coverView
+{
+    if (!_coverView)
+    {
+        _coverView = [[UIImageView alloc] init];
+        _coverView.translatesAutoresizingMaskIntoConstraints = NO;
+        _coverView.backgroundColor = JoyyWhitePure;
+        _coverView.contentMode = UIViewContentModeScaleToFill;
+        [_coverView addSubview:self.blurView];
+    }
+    return _coverView;
+}
+
+- (UIVisualEffectView *)blurView
+{
+    if (!_blurView)
+    {
+        UIBlurEffect* blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
+        _blurView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
+        _blurView.translatesAutoresizingMaskIntoConstraints = NO;
+        _blurView.hidden = YES;
+    }
+    return _blurView;
+}
+
+- (UILabel *)titleLabel
+{
+    if (!_titleLabel)
+    {
+        UILabel *label = [[UILabel alloc] init];
+        label.translatesAutoresizingMaskIntoConstraints = NO;
+        label.font = [UIFont systemFontOfSize:18];
+        label.textColor = JoyyGray;
+        label.backgroundColor = JoyyWhitePure;
+        label.textAlignment = NSTextAlignmentLeft;
+        label.numberOfLines = 0;
+        label.lineBreakMode = NSLineBreakByWordWrapping;
+
+        _titleLabel = label;
+    }
+    return _titleLabel;
 }
 
 - (void)addShadow
@@ -42,77 +121,14 @@
     self.layer.shadowOpacity = 0;
 }
 
--(void)setupView
-{
-    self.backgroundColor = [UIColor whiteColor];
-    self.layer.cornerRadius = 5;
-    self.layer.shadowRadius = 3;
-    self.layer.shadowOpacity = 0;
-    self.layer.shadowOffset = CGSizeMake(1, 1);
-    [self setupPhotos];
-}
-
--(void)setupPhotos
-{
-    CGFloat height = self.frame.size.height;
-    CGFloat width = self.frame.size.width;
-    UIView *cp_mask = [[UIView alloc]initWithFrame:CGRectMake(0, 0, width, height * kCoverRatio)];
-    UIView *pp_mask = [[UIView alloc]initWithFrame:CGRectMake(width * kAvatarXRatio, height * kAvatarYRatio, height * kAvatarRatio, height *kAvatarRatio)];
-    UIView *pp_circle = [[UIView alloc]initWithFrame:CGRectMake(pp_mask.frame.origin.x - kAvatarBoarderWidth, pp_mask.frame.origin.y - kAvatarBoarderWidth, pp_mask.frame.size.width + 2* kAvatarBoarderWidth, pp_mask.frame.size.height + 2*kAvatarBoarderWidth)];
-    pp_circle.backgroundColor = [UIColor whiteColor];
-    pp_circle.layer.cornerRadius = pp_circle.frame.size.height/2;
-    pp_mask.layer.cornerRadius = pp_mask.frame.size.height/2;
-    cp_mask.backgroundColor = [UIColor colorWithRed:0.98 green:0.98 blue:0.98 alpha:1];
-
-    CGFloat cornerRadius = self.layer.cornerRadius;
-    UIBezierPath *maskPath = [UIBezierPath bezierPathWithRoundedRect:cp_mask.bounds byRoundingCorners:UIRectCornerTopLeft | UIRectCornerTopRight cornerRadii:CGSizeMake(cornerRadius, cornerRadius)];
-    CAShapeLayer *maskLayer = [CAShapeLayer layer];
-    maskLayer.frame = cp_mask.bounds;
-    maskLayer.path = maskPath.CGPath;
-    cp_mask.layer.mask = maskLayer;
-
-
-    UIBlurEffect* blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
-    visualEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
-
-    visualEffectView.frame = cp_mask.frame;
-    visualEffectView.alpha = 0;
-
-    avatarImageView = [[UIImageView alloc]init];
-    avatarImageView.frame = CGRectMake(0, 0, pp_mask.frame.size.width, pp_mask.frame.size.height);
-    coverImageView = [[UIImageView alloc]init];
-    coverImageView.frame = cp_mask.frame;
-    [coverImageView setContentMode:UIViewContentModeScaleAspectFill];
-
-    [cp_mask addSubview:coverImageView];
-    [pp_mask addSubview:avatarImageView];
-    cp_mask.clipsToBounds = YES;
-    pp_mask.clipsToBounds = YES;
-
-    CGFloat titleLabelX = pp_circle.frame.origin.x+pp_circle.frame.size.width;
-    titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(titleLabelX, cp_mask.frame.size.height + 7, self.frame.size.width - titleLabelX, 26)];
-    titleLabel.adjustsFontSizeToFitWidth = NO;
-    titleLabel.lineBreakMode = NSLineBreakByClipping;
-
-    [titleLabel setFont:[UIFont systemFontOfSize:20]];
-    [titleLabel setTextColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.8]];
-    titleLabel.text = @"Title Label";
-
-    [self addSubview:titleLabel];
-    [self addSubview:cp_mask];
-    [self addSubview:pp_circle];
-    [self addSubview:pp_mask];
-    [coverImageView addSubview:visualEffectView];
-}
-
 -(void)addBlur
 {
-    visualEffectView.alpha = 1;
+    self.blurView.hidden = NO;
 }
 
 -(void)removeBlur
 {
-    visualEffectView.alpha = 0;
+    self.blurView.hidden = YES;
 }
 
 @end

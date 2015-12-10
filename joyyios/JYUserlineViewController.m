@@ -99,10 +99,8 @@ static NSString *const kUserlineCellIdentifier = @"userlineCell";
 {
     if (!_cardView)
     {
-        CGRect frame = CGRectMake(0, 0, SCREEN_WIDTH, 300);
-        _cardView = [[JYCardView alloc] initWithFrame:frame];
+        _cardView = [[JYCardView alloc] init];
         [_cardView addBlur];
-        [_cardView addShadow];
     }
     return _cardView;
 }
@@ -120,18 +118,18 @@ static NSString *const kUserlineCellIdentifier = @"userlineCell";
     NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestReturnCacheDataElseLoad timeoutInterval:5];
 
     __weak typeof(self) weakSelf = self;
-    [self.cardView.avatarImageView setImageWithURLRequest:request
+    [self.cardView.avatarView setImageWithURLRequest:request
                                           placeholderImage:nil
                                                    success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
-                                                       weakSelf.cardView.avatarImageView.image = image;
+                                                       weakSelf.cardView.avatarView.image = image;
                                                    } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
                                                        NSLog(@"_updateCardView setImageWithURLRequest failed with error = %@", error);
                                                    }];
 
-    [self.cardView.coverImageView setImageWithURLRequest:request
+    [self.cardView.coverView setImageWithURLRequest:request
                                         placeholderImage:nil
                                                  success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
-                                                     weakSelf.cardView.coverImageView.image = image;
+                                                     weakSelf.cardView.coverView.image = image;
                                                  } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
                                                      NSLog(@"_updateCardView setImageWithURLRequest failed with error = %@", error);
                                                  }];

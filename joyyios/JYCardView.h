@@ -8,9 +8,9 @@
 
 @interface JYCardView : UIView
 
-@property (nonatomic)UIImageView *avatarImageView;
-@property (nonatomic)UIImageView *coverImageView;
-@property (nonatomic)UILabel *titleLabel;
+@property (nonatomic) UIImageView *avatarView;
+@property (nonatomic) UIImageView *coverView;
+@property (nonatomic) UILabel *titleLabel;
 
 - (void)addBlur;
 - (void)removeBlur;
