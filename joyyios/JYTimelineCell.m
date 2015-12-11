@@ -14,18 +14,18 @@
 #import "JYPostActionView.h"
 #import "JYPostCommentView.h"
 #import "JYPostMediaView.h"
-#import "JYPostOwnerView.h"
+#import "JYFriendView.h"
 #import "JYTimelineCell.h"
-
+#import "NSDate+Joyy.h"
 
 @interface JYTimelineCell () <TTTAttributedLabelDelegate>
 @property (nonatomic) JYPostMediaView *mediaView;
 @property (nonatomic) JYPostActionView *actionView;
-@property (nonatomic) JYPostOwnerView *ownerView;
+@property (nonatomic) JYFriendView *ownerView;
 @property (nonatomic) JYPostCommentView *commentView;
 @property (nonatomic) NSLayoutConstraint *commentViewHeightConstraint;
 @property (nonatomic) TTTAttributedLabel *likesLabel;
-@property (nonatomic) UITapGestureRecognizer *tapGestureRecognizer;
+@property (nonatomic) TTTAttributedLabel *postTimeLabel;
 @end
 
 
@@ -40,6 +40,7 @@
         self.contentView.backgroundColor = JoyyWhitePure;
 
         [self.contentView addSubview:self.ownerView];
+        [self.contentView addSubview:self.postTimeLabel];
         [self.contentView addSubview:self.mediaView];
         [self.contentView addSubview:self.actionView];
         [self.contentView addSubview:self.likesLabel];
@@ -47,6 +48,7 @@
 
         NSDictionary *views = @{
                                 @"ownerView": self.ownerView,
+                                @"postTimeLabel": self.postTimeLabel,
                                 @"mediaView": self.mediaView,
                                 @"actionView": self.actionView,
                                 @"likesLabel": self.likesLabel,
@@ -56,7 +58,7 @@
                                   @"SW":@(SCREEN_WIDTH)
                                   };
 
-        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[ownerView]-0-|" options:0 metrics:nil views:views]];
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[ownerView][postTimeLabel(50)]-10-|" options:0 metrics:nil views:views]];
         [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[mediaView]-0-|" options:0 metrics:nil views:views]];
         [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[actionView]-0-|" options:0 metrics:nil views:views]];
         [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-20-[likesLabel]-10-|" options:0 metrics:nil views:views]];
@@ -64,6 +66,7 @@
 
         NSString *format = @"V:|-0@500-[ownerView(40)][mediaView(SW)][actionView(40)][likesLabel][commentView]-10@500-|";
         [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:format options:0 metrics:metrics views:views]];
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0@500-[postTimeLabel(40)]-370@400-|" options:0 metrics:nil views:views]];
 
         self.commentViewHeightConstraint = [NSLayoutConstraint constraintWithItem:self.commentView
                                                                   attribute:NSLayoutAttributeHeight
@@ -86,8 +89,12 @@
 - (void)setPost:(JYPost *)post
 {
     _post = post;
-    self.ownerView.post = post;
     self.mediaView.post = post;
+    
+    NSDate *date = [NSDate dateOfId:self.post.postId];
+    self.postTimeLabel.text = [date ageString];
+
+    self.ownerView.user = [[JYFriendManager sharedInstance] friendWithId: post.ownerId];
     [self _updateCommentsAndLikes];
 }
 
@@ -161,11 +168,11 @@
     return [orderedSet array];
 }
 
-- (JYPostOwnerView *)ownerView
+- (JYFriendView *)ownerView
 {
     if (!_ownerView)
     {
-        _ownerView = [[JYPostOwnerView alloc] init];
+        _ownerView = [[JYFriendView alloc] init];
     }
     return _ownerView;
 }
@@ -213,6 +220,24 @@
         _likesLabel = label;
     }
     return _likesLabel;
+}
+
+- (TTTAttributedLabel *)postTimeLabel
+{
+    if (!_postTimeLabel)
+    {
+        TTTAttributedLabel *label = [[TTTAttributedLabel alloc] initWithFrame:CGRectZero];
+        label.translatesAutoresizingMaskIntoConstraints = NO;
+        label.font = [UIFont systemFontOfSize:kFontSizeDetail];
+        label.textColor = JoyyGray;
+        label.backgroundColor = JoyyWhitePure;
+        label.textAlignment = NSTextAlignmentRight;
+        label.numberOfLines = 0;
+        label.lineBreakMode = NSLineBreakByWordWrapping;
+
+        _postTimeLabel = label;
+    }
+    return _postTimeLabel;
 }
 
 - (JYPostCommentView *)commentView

@@ -13,18 +13,17 @@
 #import "JYButton.h"
 #import "JYFriendManager.h"
 #import "JYPost.h"
-#import "JYPostOwnerView.h"
+#import "JYFriendView.h"
 #import "NSDate+Joyy.h"
 
-@interface JYPostOwnerView () <TTTAttributedLabelDelegate>
+@interface JYFriendView () <TTTAttributedLabelDelegate>
 @property (nonatomic) UIButton *avatarButton;
 @property (nonatomic) TTTAttributedLabel *posterNameLabel;
-@property (nonatomic) TTTAttributedLabel *postTimeLabel;
 @end
 
 static NSString *kUsernameURL = @"action://_didTapAvatarButton";
 
-@implementation JYPostOwnerView
+@implementation JYFriendView
 
 - (instancetype)init
 {
@@ -34,55 +33,47 @@ static NSString *kUsernameURL = @"action://_didTapAvatarButton";
 
         [self addSubview:self.avatarButton];
         [self addSubview:self.posterNameLabel];
-        [self addSubview:self.postTimeLabel];
+        
 
         NSDictionary *views = @{
                                 @"avatarButton": self.avatarButton,
-                                @"posterNameLabel": self.posterNameLabel,
-                                @"postTimeLabel": self.postTimeLabel
+                                @"posterNameLabel": self.posterNameLabel
                               };
 
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-8-[avatarButton(40)][posterNameLabel][postTimeLabel(50)]-8-|" options:0 metrics:nil views:views]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-8-[avatarButton(40)][posterNameLabel]|" options:0 metrics:nil views:views]];
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[avatarButton]|" options:0 metrics:nil views:views]];
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[posterNameLabel]|" options:0 metrics:nil views:views]];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[postTimeLabel]|" options:0 metrics:nil views:views]];
     }
     return self;
 }
 
-- (void)setPost:(JYPost *)post
+- (void)setUser:(JYFriend *)user
 {
-    _post = post;
+    _user = user;
 
-    if (!_post)
+    if (!_user)
     {
         self.avatarButton.imageView.image = nil;
         self.posterNameLabel.text = nil;
-        self.postTimeLabel.text = nil;
         return;
     }
 
     [self _updateAvatarButtonImage];
 
-    JYFriend *poster = [[JYFriendManager sharedInstance] friendWithId:self.post.ownerId];
-    if (poster)
-    {
-        self.posterNameLabel.text = poster.username;
+    self.posterNameLabel.text = user.username;
 
-        // add link to make the label clickable
-        NSRange range = [self.posterNameLabel.text rangeOfString:self.posterNameLabel.text];
-        [self.posterNameLabel addLinkToURL:[NSURL URLWithString:kUsernameURL] withRange:range];
-    }
-
-    NSDate *date = [NSDate dateOfId:self.post.postId];
-    self.postTimeLabel.text = [date ageString];
+    // add link to make the label clickable
+    NSRange range = [self.posterNameLabel.text rangeOfString:self.posterNameLabel.text];
+    [self.posterNameLabel addLinkToURL:[NSURL URLWithString:kUsernameURL] withRange:range];
 }
 
 - (void)_updateAvatarButtonImage
 {
-    JYFriend *friend = [[JYFriendManager sharedInstance] friendWithId:self.post.ownerId];
-    NSURL *url = [NSURL URLWithString:friend.avatarURL];
-    [self.avatarButton setImageForState:UIControlStateNormal withURL:url];
+    if (self.user)
+    {
+        NSURL *url = [NSURL URLWithString:self.user.avatarURL];
+        [self.avatarButton setImageForState:UIControlStateNormal withURL:url];
+    }
 }
 
 - (UIButton *)avatarButton
@@ -128,27 +119,9 @@ static NSString *kUsernameURL = @"action://_didTapAvatarButton";
     return _posterNameLabel;
 }
 
-- (TTTAttributedLabel *)postTimeLabel
-{
-    if (!_postTimeLabel)
-    {
-        TTTAttributedLabel *label = [[TTTAttributedLabel alloc] initWithFrame:CGRectZero];
-        label.translatesAutoresizingMaskIntoConstraints = NO;
-        label.font = [UIFont systemFontOfSize:kFontSizeDetail];
-        label.textColor = JoyyGray;
-        label.backgroundColor = JoyyWhitePure;
-        label.textAlignment = NSTextAlignmentRight;
-        label.numberOfLines = 0;
-        label.lineBreakMode = NSLineBreakByWordWrapping;
-
-        _postTimeLabel = label;
-    }
-    return _postTimeLabel;
-}
-
 - (void)_didTapAvatarButton
 {
-    NSDictionary *info = @{@"userid": self.post.ownerId};
+    NSDictionary *info = @{@"userid": self.user.userId};
     [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationDidTapOnUser object:nil userInfo:info];
 }
 

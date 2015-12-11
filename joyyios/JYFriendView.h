@@ -6,10 +6,10 @@
 //  Copyright © 2015 Joyy Inc. All rights reserved.
 //
 
-@class JYPost;
+@class JYFriend;
 
-@interface JYPostOwnerView : UIView
+@interface JYFriendView : UIView
 
-@property(nonatomic) JYPost *post;
+@property(nonatomic) JYFriend *user;
 
 @end
