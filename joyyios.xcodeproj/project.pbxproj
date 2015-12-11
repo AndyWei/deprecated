@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		743498E564A05714440866C9 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8E034C4F8FC61E210B60EDCC /* libPods.a */; };
 		D60726AE1C18179500A43717 /* JYMonth.m in Sources */ = {isa = PBXBuildFile; fileRef = D60726AD1C18179500A43717 /* JYMonth.m */; };
-		D60726B11C18A4BB00A43717 /* JYPostTimeView.m in Sources */ = {isa = PBXBuildFile; fileRef = D60726B01C18A4BB00A43717 /* JYPostTimeView.m */; };
 		D60726B41C18FBFE00A43717 /* JYCardView.m in Sources */ = {isa = PBXBuildFile; fileRef = D60726B31C18FBFE00A43717 /* JYCardView.m */; };
 		D61D1D471B4A65F200DE37DF /* MDCGeometry.m in Sources */ = {isa = PBXBuildFile; fileRef = D61D1D2B1B4A65F200DE37DF /* MDCGeometry.m */; };
 		D61D1D491B4A65F200DE37DF /* MDCViewState.m in Sources */ = {isa = PBXBuildFile; fileRef = D61D1D2E1B4A65F200DE37DF /* MDCViewState.m */; };
@@ -126,8 +125,6 @@
 		8E034C4F8FC61E210B60EDCC /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		D60726AC1C18179500A43717 /* JYMonth.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYMonth.h; sourceTree = "<group>"; };
 		D60726AD1C18179500A43717 /* JYMonth.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYMonth.m; sourceTree = "<group>"; };
-		D60726AF1C18A4BB00A43717 /* JYPostTimeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYPostTimeView.h; sourceTree = "<group>"; };
-		D60726B01C18A4BB00A43717 /* JYPostTimeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYPostTimeView.m; sourceTree = "<group>"; };
 		D60726B21C18FBFE00A43717 /* JYCardView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYCardView.h; sourceTree = "<group>"; };
 		D60726B31C18FBFE00A43717 /* JYCardView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYCardView.m; sourceTree = "<group>"; };
 		D61D1D2A1B4A65F200DE37DF /* MDCGeometry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDCGeometry.h; sourceTree = "<group>"; };
@@ -639,8 +636,6 @@
 				D644BF771C17F453005187C2 /* JYUserlineViewController.m */,
 				D644BF791C17F5AD005187C2 /* JYUserlineCell.h */,
 				D644BF7A1C17F5AD005187C2 /* JYUserlineCell.m */,
-				D60726AF1C18A4BB00A43717 /* JYPostTimeView.h */,
-				D60726B01C18A4BB00A43717 /* JYPostTimeView.m */,
 			);
 			name = Userline;
 			sourceTree = "<group>";
@@ -1152,7 +1147,6 @@
 				D61D1DB41B4E336E00DE37DF /* TGCameraFocus.m in Sources */,
 				D61D1DCC1B4E336E00DE37DF /* TGTintedLabel.m in Sources */,
 				D61D1DAA1B4E336E00DE37DF /* TGAlbum.m in Sources */,
-				D60726B11C18A4BB00A43717 /* JYPostTimeView.m in Sources */,
 				D61D1DAC1B4E336E00DE37DF /* TGAssetsLibrary.m in Sources */,
 				D61D1DBC1B4E336E00DE37DF /* TGAssetImageFile.m in Sources */,
 				D68486B61B8AC267005CA0C4 /* JYSessionViewController.m in Sources */,

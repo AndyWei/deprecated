@@ -10,13 +10,13 @@
 
 #import "JYComment.h"
 #import "JYPost.h"
-#import "JYPostTimeView.h"
 #import "JYPostMediaView.h"
 #import "JYUserlineCell.h"
+#import "NSDate+Joyy.h"
 
 @interface JYUserlineCell ()
 @property (nonatomic) JYPostMediaView *mediaView;
-@property (nonatomic) JYPostTimeView *timeView;
+@property (nonatomic) TTTAttributedLabel *postTimeLabel;
 @end
 
 @implementation JYUserlineCell
@@ -30,20 +30,20 @@
         self.contentView.backgroundColor = JoyyWhitePure;
 
         [self.contentView addSubview:self.mediaView];
-        [self.contentView addSubview:self.timeView];
+        [self.contentView addSubview:self.postTimeLabel];
 
         NSDictionary *views = @{
                                 @"mediaView": self.mediaView,
-                                @"timeView": self.timeView
+                                @"postTimeLabel": self.postTimeLabel
                                 };
         NSDictionary *metrics = @{
                                   @"SW":@(SCREEN_WIDTH)
                                   };
 
-        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[timeView]-10-|" options:0 metrics:nil views:views]];
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[postTimeLabel]-10-|" options:0 metrics:nil views:views]];
         [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[mediaView]-0-|" options:0 metrics:nil views:views]];
 
-        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0@500-[timeView][mediaView(SW)]-10@500-|" options:0 metrics:metrics views:views]];
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0@500-[postTimeLabel][mediaView(SW)]-10@500-|" options:0 metrics:metrics views:views]];
 
     }
     return self;
@@ -58,8 +58,21 @@
 - (void)setPost:(JYPost *)post
 {
     _post = post;
-    self.timeView.post = post;
     self.mediaView.post = post;
+
+    if (!post)
+    {
+        self.postTimeLabel.text = nil;
+        return;
+    }
+    
+    NSDate *date = [NSDate dateOfId:_post.postId];
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateStyle:NSDateFormatterMediumStyle];
+    [dateFormatter setTimeStyle:NSDateFormatterNoStyle];
+    [dateFormatter setLocale:[NSLocale currentLocale]];
+
+    self.postTimeLabel.text = [date localeStringWithDateStyle:NSDateFormatterMediumStyle timeStyle:NSDateFormatterNoStyle];
 }
 
 - (JYPostMediaView *)mediaView
@@ -71,13 +84,22 @@
     return _mediaView;
 }
 
-- (JYPostTimeView *)timeView
+- (TTTAttributedLabel *)postTimeLabel
 {
-    if (!_timeView)
+    if (!_postTimeLabel)
     {
-        _timeView = [[JYPostTimeView alloc] init];
+        TTTAttributedLabel *label = [[TTTAttributedLabel alloc] initWithFrame:CGRectZero];
+        label.translatesAutoresizingMaskIntoConstraints = NO;
+        label.font = [UIFont systemFontOfSize:kFontSizeDetail];
+        label.textColor = JoyyGray;
+        label.backgroundColor = ClearColor;
+        label.textAlignment = NSTextAlignmentRight;
+        label.numberOfLines = 0;
+        label.lineBreakMode = NSLineBreakByWordWrapping;
+
+        _postTimeLabel = label;
     }
-    return _timeView;
+    return _postTimeLabel;
 }
 
 @end
