@@ -8,7 +8,6 @@
 
 #import <TTTAttributedLabel/TTTAttributedLabel.h>
 
-#import "JYComment.h"
 #import "JYPost.h"
 #import "JYPostMediaView.h"
 #import "JYUserlineCell.h"

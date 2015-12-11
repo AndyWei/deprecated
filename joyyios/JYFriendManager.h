@@ -11,6 +11,7 @@
 + (JYFriendManager *)sharedInstance;
 
 - (void)start;
+- (void)receivedFriendList:(NSArray *)friendList;
 - (JYFriend *)friendWithId:(NSNumber *)userid;
 - (JYFriend *)friendWithBareJid:(NSString *)bareJid;
 - (JYFriend *)friendWithUsername:(NSString *)username;

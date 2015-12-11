@@ -1,5 +1,5 @@
 //
-//  JYPosterView.m
+//  JYFriendView.m
 //  joyyios
 //
 //  Created by Ping Yang on 11/26/15.

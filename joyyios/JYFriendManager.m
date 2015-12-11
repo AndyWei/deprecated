@@ -29,18 +29,6 @@
     return _sharedInstance;
 }
 
-- (instancetype)init
-{
-    self = [super init];
-    if (self)
-    {
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_apiTokenReady) name:kNotificationAPITokenReady object:nil];
-
-        NSLog(@"FriendsManager created");
-    }
-    return self;
-}
-
 - (void)start
 {
     NSLog(@"FriendsManager started");
@@ -51,26 +39,18 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (void)_apiTokenReady
-{
-    [self _fetchFriends];
-}
-
 - (NSMutableDictionary *)friendDict
 {
     if (!_friendDict)
     {
         NSArray *array = [[JYLocalDataManager sharedInstance] selectFriends];
         _friendDict = [NSMutableDictionary new];
-        for (JYFriend *friend in array)
+        for (JYFriend *user in array)
         {
-            [_friendDict setObject:friend forKey:friend.userId];
-            [_friendDict setObject:friend forKey:friend.username];
+            [self _insertFriend:user];
         }
 
-        JYFriend *myself = [JYFriend myself];
-        [_friendDict setObject:myself forKey:myself.userId];
-        [_friendDict setObject:myself forKey:myself.username];
+        [self _insertFriend:[JYFriend myself]];
     }
     return _friendDict;
 }
@@ -94,37 +74,32 @@
     return self.friendDict[username];
 }
 
-- (void)_fetchFriends
+- (void)receivedFriendList:(NSArray *)friendList
 {
-    NSString *url = [NSString apiURLWithPath:@"friends"];
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager managerWithToken];
+    for (JYFriend *user in friendList)
+    {
+        if (user)
+        {
+            if (!self.friendDict[user.userId]) // new friend
+            {
+                [[JYLocalDataManager sharedInstance] insertObject:user ofClass:JYFriend.class];
+            }
+            else
+            {
+                [[JYLocalDataManager sharedInstance] updateObject:user ofClass:JYFriend.class];
+            }
+            [self _insertFriend:user];
+        }
+    }
+}
 
-    [manager GET:url
-       parameters:nil
-          success:^(NSURLSessionTask *operation, id responseObject) {
-              NSLog(@"GET friends Success");
-
-              for (NSDictionary *dict in responseObject)
-              {
-                  NSError *error = nil;
-                  JYFriend *friend = (JYFriend *)[MTLJSONAdapter modelOfClass:JYFriend.class fromJSONDictionary:dict error:&error];
-                  if (friend)
-                  {
-                      if (self.friendDict[friend.userId] == nil) // new friend
-                      {
-                          [[JYLocalDataManager sharedInstance] insertObject:friend ofClass:JYFriend.class];
-                      }
-                      else
-                      {
-                          [[JYLocalDataManager sharedInstance] updateObject:friend ofClass:JYFriend.class];
-                      }
-                      [self.friendDict setObject:friend forKey:friend.userId];
-                  }
-              }
-          }
-          failure:^(NSURLSessionTask *operation, NSError *error) {
-              NSLog(@"GET friends error: %@", error);
-          }];
+- (void)_insertFriend:(JYFriend *)user
+{
+    if (user)
+    {
+        [_friendDict setObject:user forKey:user.userId];
+        [_friendDict setObject:user forKey:user.username];
+    }
 }
 
 @end

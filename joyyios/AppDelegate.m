@@ -21,6 +21,7 @@
 #import "JYDeviceManager.h"
 #import "JYFilename.h"
 #import "JYFriendManager.h"
+#import "JYFriendViewController.h"
 #import "JYLocalDataManager.h"
 #import "JYPhoneNumberViewController.h"
 #import "JYProfileViewController.h"
@@ -237,7 +238,7 @@
     UIViewController *vc3 = [JYSessionListViewController new];
     UINavigationController *nc3 = [[UINavigationController alloc] initWithRootViewController:vc3];
 
-    UIViewController *vc4 = [JYPhoneNumberViewController new];
+    UIViewController *vc4 = [JYFriendViewController new];
     UINavigationController *nc4 = [[UINavigationController alloc] initWithRootViewController:vc4];
 
     _tabBarController.viewControllers = @[ nc1, nc2, nc3, nc4 ];
@@ -262,7 +263,7 @@
 
     tabBarItem4.selectedImage = [[UIImage imageNamed:@"contacts_selected"]imageWithRenderingMode:UIImageRenderingModeAutomatic];
     tabBarItem4.image = [[UIImage imageNamed:@"contacts"]imageWithRenderingMode:UIImageRenderingModeAutomatic];
-    tabBarItem4.title = NSLocalizedString(@"Contacts", nil);
+    tabBarItem4.title = NSLocalizedString(@"Friends", nil);
 
     return _tabBarController;
 }

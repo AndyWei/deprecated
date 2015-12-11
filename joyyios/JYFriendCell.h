@@ -1,14 +1,14 @@
 //
-//  JYFriendView.h
+//  JYFriendCell.h
 //  joyyios
 //
-//  Created by Ping Yang on 11/26/15.
+//  Created by Ping Yang on 12/10/15.
 //  Copyright © 2015 Joyy Inc. All rights reserved.
 //
 
 @class JYFriend;
 
-@interface JYFriendView : UIView
+@interface JYFriendCell : UITableViewCell
 
 @property(nonatomic) JYFriend *user;
 

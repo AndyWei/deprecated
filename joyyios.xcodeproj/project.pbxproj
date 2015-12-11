@@ -52,6 +52,8 @@
 		D61D1DE61B536B2700DE37DF /* JYTimelineCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D61D1DE51B536B2700DE37DF /* JYTimelineCell.m */; };
 		D62C2C601B8E887200233F5B /* JYXmppManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D62C2C5F1B8E887200233F5B /* JYXmppManager.m */; };
 		D62C2C681B90261000233F5B /* JYSessionListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D62C2C671B90261000233F5B /* JYSessionListViewController.m */; };
+		D63147461C1A826500EAE05E /* JYFriendViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D63147451C1A826500EAE05E /* JYFriendViewController.m */; };
+		D63147491C1A829C00EAE05E /* JYFriendCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D63147481C1A829C00EAE05E /* JYFriendCell.m */; };
 		D6348D2F1ADB4DD60002BC35 /* NSString+Joyy.m in Sources */ = {isa = PBXBuildFile; fileRef = D6348D2E1ADB4DD60002BC35 /* NSString+Joyy.m */; };
 		D6348D371ADB7ABC0002BC35 /* NSMutableDictionary+Joyy.m in Sources */ = {isa = PBXBuildFile; fileRef = D6348D361ADB7ABC0002BC35 /* NSMutableDictionary+Joyy.m */; };
 		D63591951BEA913500BFFF82 /* JYDeviceManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D63591941BEA913500BFFF82 /* JYDeviceManager.m */; };
@@ -210,6 +212,10 @@
 		D62C2C5F1B8E887200233F5B /* JYXmppManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYXmppManager.m; sourceTree = "<group>"; };
 		D62C2C661B90261000233F5B /* JYSessionListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYSessionListViewController.h; sourceTree = "<group>"; };
 		D62C2C671B90261000233F5B /* JYSessionListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYSessionListViewController.m; sourceTree = "<group>"; };
+		D63147441C1A826500EAE05E /* JYFriendViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYFriendViewController.h; sourceTree = "<group>"; };
+		D63147451C1A826500EAE05E /* JYFriendViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYFriendViewController.m; sourceTree = "<group>"; };
+		D63147471C1A829C00EAE05E /* JYFriendCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYFriendCell.h; sourceTree = "<group>"; };
+		D63147481C1A829C00EAE05E /* JYFriendCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYFriendCell.m; sourceTree = "<group>"; };
 		D6348D2D1ADB4DD60002BC35 /* NSString+Joyy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Joyy.h"; sourceTree = "<group>"; };
 		D6348D2E1ADB4DD60002BC35 /* NSString+Joyy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Joyy.m"; sourceTree = "<group>"; };
 		D6348D351ADB7ABC0002BC35 /* NSMutableDictionary+Joyy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableDictionary+Joyy.h"; sourceTree = "<group>"; };
@@ -597,17 +603,28 @@
 			name = Vendor;
 			sourceTree = "<group>";
 		};
+		D63147431C1A821600EAE05E /* Friend */ = {
+			isa = PBXGroup;
+			children = (
+				D63147441C1A826500EAE05E /* JYFriendViewController.h */,
+				D63147451C1A826500EAE05E /* JYFriendViewController.m */,
+				D63147471C1A829C00EAE05E /* JYFriendCell.h */,
+				D63147481C1A829C00EAE05E /* JYFriendCell.m */,
+			);
+			name = Friend;
+			sourceTree = "<group>";
+		};
 		D63591921BEA90FB00BFFF82 /* Manager */ = {
 			isa = PBXGroup;
 			children = (
-				D6FD053C1C0CD8B4008F9BF2 /* JYFriendManager.h */,
-				D6FD053D1C0CD8B4008F9BF2 /* JYFriendManager.m */,
 				D69FF6D91B96471600466FE5 /* JYAmazonClientManager.h */,
 				D69FF6DA1B96471600466FE5 /* JYAmazonClientManager.m */,
 				D6E8ABA81BEB3A4E0040228C /* JYCredentialManager.h */,
 				D6E8ABA91BEB3A4E0040228C /* JYCredentialManager.m */,
 				D63591931BEA913500BFFF82 /* JYDeviceManager.h */,
 				D63591941BEA913500BFFF82 /* JYDeviceManager.m */,
+				D6FD053C1C0CD8B4008F9BF2 /* JYFriendManager.h */,
+				D6FD053D1C0CD8B4008F9BF2 /* JYFriendManager.m */,
 				D6E7BCC81BF66C4500954A1D /* JYLocalDataManager.h */,
 				D6E7BCC91BF66C4500954A1D /* JYLocalDataManager.m */,
 				D6825BC51BE897F400F3695D /* JYLocationManager.h */,
@@ -806,6 +823,7 @@
 				D61D1D5B1B4DBA5D00DE37DF /* Timeline */,
 				D644BF751C17F3E6005187C2 /* Userline */,
 				D68486B31B8AC207005CA0C4 /* Message */,
+				D63147431C1A821600EAE05E /* Friend */,
 				D6C82B611B1252FE00876F57 /* Model */,
 				D63B69AB1AC5184D005600A9 /* People */,
 				D6B9B7451BAF6DB8001F9500 /* Profile */,
@@ -1087,6 +1105,8 @@
 				D63B69BA1AC624F8005600A9 /* JYAutoCompleteDataSource.m in Sources */,
 				D69FF6DB1B96471600466FE5 /* JYAmazonClientManager.m in Sources */,
 				D644BF781C17F453005187C2 /* JYUserlineViewController.m in Sources */,
+				D63147491C1A829C00EAE05E /* JYFriendCell.m in Sources */,
+				D63147461C1A826500EAE05E /* JYFriendViewController.m in Sources */,
 				D63B69B21AC51D61005600A9 /* JYSignBaseViewController.m in Sources */,
 				D61D1DC41B4E336E00DE37DF /* TGCameraSlideDownView.m in Sources */,
 				D67DD0E41B75302800333626 /* JYUserViewController.m in Sources */,
