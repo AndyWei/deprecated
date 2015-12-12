@@ -18,7 +18,7 @@
     return [[JYYRS alloc] initWithYob:yob region:region sex:sex];
 }
 
-+ (instancetype)yrsWithValue:(NSUInteger)value
++ (instancetype)yrsWithValue:(uint64_t)value
 {
     return [[JYYRS alloc] initWithValue:value];
 }
@@ -36,7 +36,7 @@
     return self;
 }
 
-- (instancetype)initWithValue:(NSUInteger)value
+- (instancetype)initWithValue:(uint64_t)value
 {
     self = [super init];
     if (self)

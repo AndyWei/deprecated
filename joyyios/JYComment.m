@@ -64,4 +64,9 @@
     return [kLikeText isEqualToString:self.content];
 }
 
+- (BOOL)isMine
+{
+    return ([[JYCredential current].userId unsignedLongLongValue] == [self.ownerId unsignedLongLongValue]);
+}
+
 @end

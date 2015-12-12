@@ -107,4 +107,9 @@
     return NO;
 }
 
+- (BOOL)isMine
+{
+    return ([[JYCredential current].userId unsignedLongLongValue] == [self.ownerId unsignedLongLongValue]);
+}
+
 @end

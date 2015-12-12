@@ -12,6 +12,6 @@
 
 + (instancetype)myself;
 
-@property (nonatomic) NSUInteger phoneNumber;
+@property (nonatomic) uint64_t phoneNumber;
 
 @end

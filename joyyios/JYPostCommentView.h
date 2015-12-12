@@ -6,8 +6,10 @@
 //  Copyright © 2015 Joyy Inc. All rights reserved.
 //
 
-@interface JYPostCommentView : UITableView <UITableViewDataSource, UITableViewDelegate>
+@class JYPost;
 
-@property(nonatomic) NSMutableArray *commentList;
+@interface JYPostCommentView : UITableView
+
+@property(nonatomic) JYPost *post;
 
 @end

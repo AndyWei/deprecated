@@ -18,7 +18,7 @@
 @property (nonatomic) NSString *sex;
 @property (nonatomic) NSString *bio;
 @property (nonatomic) NSString *age;
-@property (nonatomic) NSUInteger yrsValue;
+@property (nonatomic) uint64_t yrsValue;
 @property (nonatomic) UIImage *avatarImage;
 
 @end

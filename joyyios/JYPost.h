@@ -23,5 +23,6 @@
 @property(nonatomic) UIImage *localImage;
 
 - (BOOL)isLikedByMe;
+- (BOOL)isMine;
 
 @end

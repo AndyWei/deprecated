@@ -114,7 +114,7 @@
 - (void)_didTapCommentButton
 {
     NSDictionary *info = @{@"post": self.post};
-    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationWillCommentPost object:nil userInfo:info];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationCreateComment object:nil userInfo:info];
 }
 
 - (void)_didTapLikeButton

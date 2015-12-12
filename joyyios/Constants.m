@@ -65,13 +65,14 @@ NSString *const kMessageBodyTypeVideo    = @"v:";
 NSString *const kNotificationAPITokenReady = @"apiTokenReady";
 NSString *const kNotificationAppDidStart = @"appDidStart";
 NSString *const kNotificationAppDidStop  = @"appDidStop";
+NSString *const kNotificationCreateComment = @"createComment";
+NSString *const kNotificationDeleteComment = @"deleteComment";
 NSString *const kNotificationDidChangeCountryCode = @"didChangeCountryCode";
 NSString *const kNotificationDidCreateProfile = @"didCreateProfile";
 NSString *const kNotificationDidTapOnUser = @"didTapOnUser";
 NSString *const kNotificationDidSignIn = @"didSignIn";
 NSString *const kNotificationDidSignUp = @"didSignUp";
 NSString *const kNotificationNeedGeoInfo = @"needGeoInfo";
-NSString *const kNotificationWillCommentPost = @"willCommentPost";
 NSString *const kNotificationWillLikePost = @"willLikePost";
 NSString *const kNotificationUserYRSReady = @"userYRSReady";
 

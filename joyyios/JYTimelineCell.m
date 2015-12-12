@@ -103,15 +103,7 @@
     [self _updateLikesLabel];
     self.actionView.post = _post;
 
-    if (_post)
-    {
-        self.commentView.commentList = _post.commentList;
-    }
-    else
-    {
-        self.commentView.commentList = nil;
-    }
-
+    self.commentView.post = _post;
     [self.commentView reloadData];
     self.commentViewHeightConstraint.constant = self.commentView.contentSize.height;
 

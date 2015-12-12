@@ -15,7 +15,7 @@
 #import "JYSignUpViewController.h"
 #import "JYVerificationViewController.h"
 
-@interface JYVerificationViewController () <UIActionSheetDelegate, UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate>
+@interface JYVerificationViewController () <UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate>
 @property (nonatomic) JYButton *button;
 @property (nonatomic) TTTAttributedLabel *headerLabel;
 @property (nonatomic) UITableView *tableView;
@@ -241,20 +241,23 @@ static NSString *const kVerificationCellIdentifier = @"verificationCell";
         cancel = NSLocalizedString(@"None of them", nil);
     }
 
-    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:title
-                                                             delegate:self
-                                                    cancelButtonTitle:nil
-                                               destructiveButtonTitle:nil
-                                                    otherButtonTitles:nil];
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:title
+                                                                   message:nil
+                                                            preferredStyle:UIAlertControllerStyleActionSheet];
 
+    __weak typeof(self) weakSelf = self;
     for (NSString *username in self.usernameList)
     {
-        [actionSheet addButtonWithTitle:username];
+        [alert addAction:[UIAlertAction actionWithTitle:username style:UIAlertActionStyleDefault
+                                                handler:^(UIAlertAction * action) {
+                                                    [weakSelf _showSigninViewWithUsername:username];
+                                                }]];
     }
 
-    actionSheet.cancelButtonIndex = [actionSheet addButtonWithTitle:cancel];
+    [alert addAction:[UIAlertAction actionWithTitle:cancel style:UIAlertActionStyleCancel handler:nil]];
+    
+    [self presentViewController:alert animated:YES completion:nil];
 
-    [actionSheet showInView:self.view];
 }
 
 - (void)_showSignupView
@@ -278,23 +281,6 @@ static NSString *const kVerificationCellIdentifier = @"verificationCell";
 {
     self.button.enabled = enabled;
     self.navigationItem.rightBarButtonItem.enabled = enabled;
-}
-
-#pragma mark - UIActionSheetDelegate methods
-
-- (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex
-{
-    if (buttonIndex == actionSheet.cancelButtonIndex)
-    {
-        [self _showSignupView];
-        return;
-    }
-
-    if (buttonIndex < self.usernameList.count )
-    {
-        NSString *username = self.usernameList[buttonIndex];
-        [self _showSigninViewWithUsername:username];
-    }
 }
 
 #pragma mark - Network

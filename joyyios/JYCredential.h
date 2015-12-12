@@ -16,7 +16,7 @@
 @property (nonatomic) NSString *phoneNumber;
 @property (nonatomic) NSString *token;
 
-@property (nonatomic) NSUInteger yrsValue;
+@property (nonatomic) uint64_t yrsValue;
 @property (nonatomic, readonly) NSInteger tokenValidInSeconds;
 
 - (void)save:(NSDictionary *)dict;

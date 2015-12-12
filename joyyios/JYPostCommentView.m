@@ -9,10 +9,12 @@
 #import <TTTAttributedLabel/TTTAttributedLabel.h>
 
 #import "JYComment.h"
+#import "JYPost.h"
 #import "JYPostCommentView.h"
 #import "JYPostCommentCell.h"
 
-@interface JYPostCommentView ()
+@interface JYPostCommentView () <UITableViewDataSource, UITableViewDelegate>
+@property(nonatomic) NSMutableArray *commentList;
 @property (nonatomic) JYPostCommentCell *sizingCell;
 @end
 
@@ -24,6 +26,7 @@ static NSString *const kPostCommentCellIdentifier = @"postCommentCell";
 {
     if (self = [super initWithFrame:CGRectZero style:UITableViewStylePlain])
     {
+        self.allowsSelection = YES;
         self.bounces = NO;
         self.dataSource = self;
         self.delegate = self;
@@ -38,11 +41,17 @@ static NSString *const kPostCommentCellIdentifier = @"postCommentCell";
     return self;
 }
 
-- (void)setCommentList:(NSArray *)commentList
+- (void)setPost:(JYPost *)post
 {
+    _post = post;
     _commentList = [NSMutableArray new];
 
-    for (JYComment *comment in commentList)
+    if (!post)
+    {
+        return;
+    }
+
+    for (JYComment *comment in post.commentList)
     {
         if (![comment isLike])
         {
@@ -114,4 +123,23 @@ static NSString *const kPostCommentCellIdentifier = @"postCommentCell";
     return [self tableView:tableView heightForRowAtIndexPath:indexPath];
 }
 
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    JYComment *comment = (JYComment *)self.commentList[indexPath.row];
+
+    if ([comment isMine])
+    {
+        NSDictionary *info = @{@"comment": comment};
+        [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationDeleteComment object:nil userInfo:info];
+    }
+    else
+    {
+        NSDictionary *info = @{@"post": self.post, @"comment": comment};
+        [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationCreateComment object:nil userInfo:info];
+    }
+    
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+}
+
 @end
+

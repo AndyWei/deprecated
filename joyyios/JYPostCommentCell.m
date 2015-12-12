@@ -21,7 +21,7 @@
 {
     if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier])
     {
-        self.selectionStyle = UITableViewCellSelectionStyleNone;
+        self.selectionStyle = UITableViewCellSelectionStyleDefault;
         self.backgroundColor = JoyyWhiter;
 
         [self.contentView addSubview:self.commentLabel];

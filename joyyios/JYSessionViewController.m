@@ -13,7 +13,7 @@
 #import "JYSessionViewController.h"
 #import "JYXmppManager.h"
 
-@interface JYSessionViewController() <UIActionSheetDelegate, NSFetchedResultsControllerDelegate>
+@interface JYSessionViewController() <NSFetchedResultsControllerDelegate>
 @property (nonatomic) JSQMessagesBubbleImage *outgoingBubbleImageData;
 @property (nonatomic) JSQMessagesBubbleImage *incomingBubbleImageData;
 @property (nonatomic) JSQMessagesAvatarImage *remoteAvatar;
@@ -212,13 +212,39 @@ CGFloat const kEdgeInset = 10.f;
 
 - (void)accButtonPressed
 {
-    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:@"Media messages"
-                                                       delegate:self
-                                              cancelButtonTitle:@"Cancel"
-                                         destructiveButtonTitle:nil
-                                              otherButtonTitles:@"Send photo", @"Send location", @"Send video", nil];
+    NSString *title  = NSLocalizedString(@"Media messages", nil);
+    NSString *cancel = NSLocalizedString(@"Cancel", nil);
+    NSString *photo = NSLocalizedString(@"Send photo", nil);
+    NSString *video = NSLocalizedString(@"Send video", nil);
+    NSString *location = NSLocalizedString(@"Send location", nil);
 
-    [sheet showFromToolbar:self.inputToolbar];
+
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:title
+                                                                   message:nil
+                                                            preferredStyle:UIAlertControllerStyleActionSheet];
+
+    __weak typeof(self) weakSelf = self;
+    [alert addAction:[UIAlertAction actionWithTitle:photo style:UIAlertActionStyleDefault
+                                            handler:^(UIAlertAction * action) {
+                                                [JSQSystemSoundPlayer jsq_playMessageSentSound];
+                                                [weakSelf finishSendingMessageAnimated:YES];
+                                            }]];
+
+    [alert addAction:[UIAlertAction actionWithTitle:video style:UIAlertActionStyleDefault
+                                            handler:^(UIAlertAction * action) {
+                                                [JSQSystemSoundPlayer jsq_playMessageSentSound];
+                                                [weakSelf finishSendingMessageAnimated:YES];
+                                            }]];
+
+    [alert addAction:[UIAlertAction actionWithTitle:location style:UIAlertActionStyleDefault
+                                            handler:^(UIAlertAction * action) {
+                                                 [JSQSystemSoundPlayer jsq_playMessageSentSound];
+                                                 [weakSelf finishSendingMessageAnimated:YES];
+                                            }]];
+
+    [alert addAction:[UIAlertAction actionWithTitle:cancel style:UIAlertActionStyleCancel handler:nil]];
+
+    [self presentViewController:alert animated:YES completion:nil];
 }
 
 - (void)cameraButtonPressed
@@ -269,37 +295,6 @@ CGFloat const kEdgeInset = 10.f;
     [message addBody:body];
     [message addSubject:kMessageBodyTypeText];
     [[JYXmppManager sharedInstance].xmppStream sendElement:message];
-
-    [self finishSendingMessageAnimated:YES];
-}
-
-- (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex
-{
-    if (buttonIndex == actionSheet.cancelButtonIndex) {
-        return;
-    }
-
-    switch (buttonIndex) {
-        case 0:
-//            [self.demoData addPhotoMediaMessage];
-            break;
-
-        case 1:
-        {
-//            __weak UICollectionView *weakView = self.collectionView;
-
-//            [self.demoData addLocationMediaMessageCompletion:^{
-//                [weakView reloadData];
-//            }];
-        }
-            break;
-
-        case 2:
-//            [self.demoData addVideoMediaMessage];
-            break;
-    }
-
-    [JSQSystemSoundPlayer jsq_playMessageSentSound];
 
     [self finishSendingMessageAnimated:YES];
 }

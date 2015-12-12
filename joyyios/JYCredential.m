@@ -62,10 +62,10 @@ static NSString *const kAPIYrsKey = @"api_yrs";
     return self;
 }
 
-- (void)setYrsValue:(NSUInteger)yrsValue
+- (void)setYrsValue:(uint64_t)yrsValue
 {
     _yrsValue = yrsValue;
-    self.keychain[kAPIYrsKey] = [NSString stringWithFormat:@"%llu", (uint64_t)yrsValue];
+    self.keychain[kAPIYrsKey] = [NSString stringWithFormat:@"%llu", yrsValue];
 }
 
 - (void)setUserId:(NSNumber *)userId

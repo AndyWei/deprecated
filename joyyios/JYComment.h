@@ -20,5 +20,6 @@
 @property(nonatomic, readonly) NSString *content;
 
 - (BOOL)isLike;
+- (BOOL)isMine;
 
 @end

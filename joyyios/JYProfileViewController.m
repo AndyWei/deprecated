@@ -24,7 +24,7 @@
 #import "UIImage+Joyy.h"
 #import "UITextField+Joyy.h"
 
-@interface JYProfileViewController () <AKPickerViewDataSource, AKPickerViewDelegate, TGCameraDelegate, UIActionSheetDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate>
+@interface JYProfileViewController () <AKPickerViewDataSource, AKPickerViewDelegate, TGCameraDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate>
 
 @property (nonatomic) UITableView *tableView;
 @property (nonatomic) TTTAttributedLabel *headerLabel;
@@ -63,7 +63,7 @@ const CGFloat kAvatarButtonWidth = kAvatarButtonHeight;
     [self _enableButtons:NO];
 
     [self.view addSubview:self.tableView];
-    [self _showActionSheet];
+    [self _showImageSourceOptions];
 }
 
 - (void)didReceiveMemoryWarning
@@ -227,42 +227,34 @@ const CGFloat kAvatarButtonWidth = kAvatarButtonHeight;
 
 - (void)_didTapAvatarButton
 {
-    [self _showActionSheet];
+    [self _showImageSourceOptions];
 }
 
-- (void)_showActionSheet
+- (void)_showImageSourceOptions
 {
     NSString *title  = NSLocalizedString(@"Where to fetch your primary photo?", nil);
     NSString *cancel = NSLocalizedString(@"Cancel", nil);
     NSString *camera = NSLocalizedString(@"Camera", nil);
-    NSString *libary = NSLocalizedString(@"Photo Libary", nil);
+    NSString *photoLibary = NSLocalizedString(@"Photo Libary", nil);
 
-    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:title
-                                                             delegate:self
-                                                    cancelButtonTitle:cancel
-                                               destructiveButtonTitle:nil
-                                                    otherButtonTitles:camera, libary, nil];
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:title
+                                                                   message:nil
+                                                            preferredStyle:UIAlertControllerStyleActionSheet];
 
-    [actionSheet showInView:self.view];
-}
+    __weak typeof(self) weakSelf = self;
+    [alert addAction:[UIAlertAction actionWithTitle:photoLibary style:UIAlertActionStyleDefault
+                                            handler:^(UIAlertAction * action) {
+                                                [weakSelf _showImagePicker];
+                                            }]];
 
-#pragma mark - UIActionSheetDelegate
+    [alert addAction:[UIAlertAction actionWithTitle:camera style:UIAlertActionStyleDefault
+                                            handler:^(UIAlertAction * action) {
+                                                [weakSelf _showCamera];
+                                            }]];
 
-- (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex
-{
-    if (buttonIndex == actionSheet.cancelButtonIndex)
-    {
-        return;
-    }
+    [alert addAction:[UIAlertAction actionWithTitle:cancel style:UIAlertActionStyleCancel handler:nil]];
 
-    if (buttonIndex == 0)
-    {
-        [self _showCamera];
-    }
-    else
-    {
-        [self _showImagePicker];
-    }
+    [self presentViewController:alert animated:YES completion:nil];
 }
 
 #pragma mark -  AKPickerViewDataSource

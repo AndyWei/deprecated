@@ -13,7 +13,7 @@
 #import "JYUser.h"
 #import "JYYRS.h"
 
-@interface JYLocationManager () <CLLocationManagerDelegate, UIAlertViewDelegate>
+@interface JYLocationManager () <CLLocationManagerDelegate>
 @property (nonatomic) CLLocationManager *manager;
 @property (nonatomic) CLPlacemark *lastPlacemark;
 @end
@@ -84,22 +84,7 @@ NSString *const kZip = @"location_zip";
         return;
     }
 
-
-    if ([self.manager respondsToSelector:@selector(requestWhenInUseAuthorization)])
-    {
-        [self.manager requestWhenInUseAuthorization];
-        return;
-    }
-
-    NSString *title = NSLocalizedString(@"Hey, WinkRock need your location to search people nearby", nil);
-    NSString *message = NSLocalizedString(@"You can allow it in 'Settings -> Privacy -> Location Services'", nil);
-
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:title
-                                                        message:message
-                                                       delegate:self
-                                              cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
-                                              otherButtonTitles:NSLocalizedString(@"Settings", nil), nil];
-    [alertView show];
+    [self.manager requestWhenInUseAuthorization];
 }
 
 - (void)setCountryCode:(NSString *)countryCode
@@ -112,18 +97,6 @@ NSString *const kZip = @"location_zip";
 - (void)setZip:(NSString *)zip
 {
     [[NSUserDefaults standardUserDefaults] setObject:zip forKey:kZip];
-}
-
-#pragma mark - UIAlertViewDelegate
-
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    if (buttonIndex == 1)
-    {
-        // Send the user to the Settings
-        NSURL *settingsURL = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
-        [[UIApplication sharedApplication] openURL:settingsURL];
-    }
 }
 
 #pragma mark - CLLocationManagerDelegate

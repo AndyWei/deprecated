@@ -66,7 +66,8 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_apiTokenReady) name:kNotificationAPITokenReady object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_likePost:) name:kNotificationWillLikePost object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_commentPost:) name:kNotificationWillCommentPost object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_createComment:) name:kNotificationCreateComment object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_deletecomment:) name:kNotificationDeleteComment object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_tapOnUser:) name:kNotificationDidTapOnUser object:nil];
 
     __weak typeof(self) weakSelf = self;
@@ -245,7 +246,7 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
     }
 }
 
-- (void)_commentPost:(NSNotification *)notification
+- (void)_createComment:(NSNotification *)notification
 {
     NSDictionary *info = [notification userInfo];
     if (info)
@@ -265,6 +266,39 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
             [self _presentCommentViewForPost:post comment:comment];
         }
     }
+}
+
+- (void)_deletecomment:(NSNotification *)notification
+{
+    NSDictionary *info = [notification userInfo];
+    if (info)
+    {
+        id commentObj = [info objectForKey:@"comment"];
+        if (commentObj != [NSNull null])
+        {
+            [self _showOptionsToDeleteComment:commentObj];
+        }
+    }
+}
+
+- (void)_showOptionsToDeleteComment:(JYComment *)comment
+{
+    NSString *cancel = NSLocalizedString(@"Cancel", nil);
+    NSString *delete = NSLocalizedString(@"Delete", nil);
+
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:nil
+                                                                   message:nil
+                                                            preferredStyle:UIAlertControllerStyleActionSheet];
+
+    __weak typeof(self) weakSelf = self;
+    [alert addAction:[UIAlertAction actionWithTitle:delete style:UIAlertActionStyleDestructive
+                                            handler:^(UIAlertAction * action) {
+                                                [weakSelf _doDeleteComment:comment];
+                                            }]];
+
+    [alert addAction:[UIAlertAction actionWithTitle:cancel style:UIAlertActionStyleCancel handler:nil]];
+
+    [self presentViewController:alert animated:YES completion:nil];
 }
 
 - (void)_tapOnUser:(NSNotification *)notification
@@ -837,6 +871,52 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
              NSLog(@"GET post/commentline error = %@", error);
              [weakSelf _networkThreadEnd];
          }
+     ];
+}
+
+- (void)_doDeleteComment:(JYComment *)comment
+{
+    if (!comment)
+    {
+        return;
+    }
+
+    if (self.networkThreadCount > 0)
+    {
+        return;
+    }
+
+    [self _networkThreadBegin];
+
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager managerWithToken];
+    NSString *url = [NSString apiURLWithPath:@"post/comment/delete"];
+    NSDictionary *parameters = @{
+                                 @"commentid": @([comment.commentId unsignedLongLongValue]),
+//                                 @"posterid": @([post.ownerId unsignedLongLongValue])
+                               };
+
+    __weak typeof(self) weakSelf = self;
+    [manager POST:url
+       parameters:parameters
+          success:^(NSURLSessionTask *operation, id responseObject) {
+              NSLog(@"delete comment success responseObject: %@", responseObject);
+
+              NSDictionary *dict = (NSDictionary *)responseObject;
+              NSError *error = nil;
+              JYComment *comment = (JYComment *)[MTLJSONAdapter modelOfClass:JYComment.class fromJSONDictionary:dict error:&error];
+              if (comment)
+              {
+                  [[JYLocalDataManager sharedInstance] insertObject:comment ofClass:JYComment.class];
+//                  [post.commentList addObject:comment];
+              }
+
+              [weakSelf _refreshCurrentCell];
+              [weakSelf _networkThreadEnd];
+          }
+          failure:^(NSURLSessionTask *operation, NSError *error) {
+              NSLog(@"delete comment like failed with error: %@", error);
+              [weakSelf _networkThreadEnd];
+          }
      ];
 }
 
