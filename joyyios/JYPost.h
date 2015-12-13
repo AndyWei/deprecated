@@ -11,6 +11,14 @@
 
 @interface JYPost : MTLModel <MTLJSONSerializing, MTLFMDBSerializing>
 
+- (instancetype)initWithPostId:(NSNumber *)postId;
+
+- (BOOL)hasSameIdWith:(JYPost *)post;
+- (BOOL)isAntiPost;
+- (BOOL)isLikedByMe;
+- (BOOL)isMine;
+- (NSNumber *)antiPostId;
+
 @property(nonatomic, readonly) NSNumber *postId;
 @property(nonatomic, readonly) NSNumber *ownerId;
 @property(nonatomic, readonly) uint64_t timestamp;
@@ -21,8 +29,5 @@
 
 @property(nonatomic) NSMutableArray *commentList;
 @property(nonatomic) UIImage *localImage;
-
-- (BOOL)isLikedByMe;
-- (BOOL)isMine;
 
 @end

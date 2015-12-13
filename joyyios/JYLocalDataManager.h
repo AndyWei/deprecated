@@ -16,7 +16,7 @@
 - (void)insertObject:(id)object ofClass:(Class)modelClass;
 - (void)updateObjects:(NSArray *)objectList ofClass:(Class)modelClass;
 - (void)updateObject:(id)object ofClass:(Class)modelClass;
-
+- (void)deleteObject:(id)object ofClass:(Class)modelClass;
 - (NSMutableArray *)selectPostsSinceId:(NSNumber *)minId beforeId:(NSNumber *)maxId;
 - (NSMutableArray *)selectCommentsOfPostId:(NSNumber *)postId;
 - (NSMutableArray *)selectFriends;

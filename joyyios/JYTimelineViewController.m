@@ -273,15 +273,16 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
     NSDictionary *info = [notification userInfo];
     if (info)
     {
-        id commentObj = [info objectForKey:@"comment"];
-        if (commentObj != [NSNull null])
+        id comment = [info objectForKey:@"comment"];
+        id post = [info objectForKey:@"post"];
+        if (comment != [NSNull null] && post != [NSNull null])
         {
-            [self _showOptionsToDeleteComment:commentObj];
+            [self _showOptionsToDeleteComment:comment ofPost:post];
         }
     }
 }
 
-- (void)_showOptionsToDeleteComment:(JYComment *)comment
+- (void)_showOptionsToDeleteComment:(JYComment *)comment ofPost:(JYPost *)post
 {
     NSString *cancel = NSLocalizedString(@"Cancel", nil);
     NSString *delete = NSLocalizedString(@"Delete", nil);
@@ -293,7 +294,7 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
     __weak typeof(self) weakSelf = self;
     [alert addAction:[UIAlertAction actionWithTitle:delete style:UIAlertActionStyleDestructive
                                             handler:^(UIAlertAction * action) {
-                                                [weakSelf _doDeleteComment:comment];
+                                                [weakSelf _doDeleteComment:comment ofPost:post];
                                             }]];
 
     [alert addAction:[UIAlertAction actionWithTitle:cancel style:UIAlertActionStyleCancel handler:nil]];
@@ -474,20 +475,21 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
         return;
     }
 
-    [[JYLocalDataManager sharedInstance] insertObjects:postList ofClass:JYPost.class];
-
-    JYPost *newestPost = self.postList[0];
+    JYPost *newestPost = postList[0];
     self.newestPostId = newestPost.postId;
 
     NSNumber *sinceId = ((JYPost *)[postList lastObject]).postId;
     NSNumber *maxLongLong = [NSNumber numberWithUnsignedLongLong:LLONG_MAX];
     [self _fetchCommentsSinceId:sinceId beforeId:maxLongLong];
 
+    NSMutableArray *purifiedPostList = [self _purifiedPostListFromList:postList];
+    [[JYLocalDataManager sharedInstance] insertObjects:purifiedPostList ofClass:JYPost.class];
+
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [postList addObjectsFromArray:self.postList];
+        [purifiedPostList addObjectsFromArray:self.postList];
 
         dispatch_async(dispatch_get_main_queue(), ^{
-            self.postList = postList;
+            self.postList = purifiedPostList;
             [self.tableView reloadData];
         });
     });
@@ -499,8 +501,6 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
     {
         return;
     }
-
-    [[JYLocalDataManager sharedInstance] insertObjects:postList ofClass:JYPost.class];
 
     NSNumber *sinceId = ((JYPost *)[postList lastObject]).postId;
     NSNumber *beforeId = [NSNumber numberWithUnsignedLongLong:LLONG_MAX];
@@ -514,15 +514,44 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
         [self _fetchCommentsSinceId:sinceId beforeId:beforeId];
     }
 
+    NSArray *purifiedPostList = [self _purifiedPostListFromList:postList];
+    [[JYLocalDataManager sharedInstance] insertObjects:purifiedPostList ofClass:JYPost.class];
+
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [self _refreshCommentsForPostList:postList];
+        [self _refreshCommentsForPostList:purifiedPostList];
 
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self.postList addObjectsFromArray:postList];
+            [self.postList addObjectsFromArray:purifiedPostList];
             [self.tableView reloadData];
             [self.tableView.mj_footer endRefreshing];
         });
     });
+}
+
+- (NSMutableArray *)_purifiedPostListFromList:(NSArray *)list
+{
+    NSMutableSet *antiPostIdSet = [NSMutableSet new];
+    for (JYPost *post in list)
+    {
+        NSNumber *antiPostId = [post antiPostId];
+        if (antiPostId )
+        {
+            [antiPostIdSet addObject:antiPostId];
+            JYPost *dummy = [[JYPost alloc] initWithPostId:antiPostId];
+            [[JYLocalDataManager sharedInstance] deleteObject:dummy ofClass:JYPost.class];
+        }
+    }
+
+    NSMutableArray *postList = [NSMutableArray new];
+    for (JYPost *post in list)
+    {
+        NSNumber *antiPostId = [post antiPostId];
+        if (!antiPostId && ![antiPostIdSet containsObject:post.postId])
+        {
+            [postList addObject:post];
+        }
+    }
+    return postList;
 }
 
 #pragma mark - AWS S3
@@ -855,7 +884,7 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
                   JYComment *comment = (JYComment *)[MTLJSONAdapter modelOfClass:JYComment.class fromJSONDictionary:dict error:&error];
                   if (comment)
                   {
-                       [commentList addObject:comment];
+                      [commentList addObject:comment];
                   }
              }
 
@@ -874,9 +903,9 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
      ];
 }
 
-- (void)_doDeleteComment:(JYComment *)comment
+- (void)_doDeleteComment:(JYComment *)comment ofPost:(JYPost *)post
 {
-    if (!comment)
+    if (!comment || !post)
     {
         return;
     }
@@ -890,26 +919,18 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
 
     AFHTTPSessionManager *manager = [AFHTTPSessionManager managerWithToken];
     NSString *url = [NSString apiURLWithPath:@"post/comment/delete"];
-    NSDictionary *parameters = @{
-                                 @"commentid": @([comment.commentId unsignedLongLongValue]),
-//                                 @"posterid": @([post.ownerId unsignedLongLongValue])
-                               };
+    NSDictionary *parameters = [self _parametersOfDeleteComment:comment ofPost:post];
 
     __weak typeof(self) weakSelf = self;
     [manager POST:url
        parameters:parameters
           success:^(NSURLSessionTask *operation, id responseObject) {
-              NSLog(@"delete comment success responseObject: %@", responseObject);
+              NSLog(@"delete comment success");
 
-              NSDictionary *dict = (NSDictionary *)responseObject;
-              NSError *error = nil;
-              JYComment *comment = (JYComment *)[MTLJSONAdapter modelOfClass:JYComment.class fromJSONDictionary:dict error:&error];
-              if (comment)
-              {
-                  [[JYLocalDataManager sharedInstance] insertObject:comment ofClass:JYComment.class];
-//                  [post.commentList addObject:comment];
-              }
+              [[JYLocalDataManager sharedInstance] deleteObject:comment ofClass:JYComment.class];
 
+              [weakSelf _removeCommentWithId:comment.commentId fromList:post.commentList];
+              weakSelf.currentPost = post;
               [weakSelf _refreshCurrentCell];
               [weakSelf _networkThreadEnd];
           }
@@ -918,6 +939,38 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
               [weakSelf _networkThreadEnd];
           }
      ];
+}
+
+- (NSDictionary *)_parametersOfDeleteComment:(JYComment *)comment ofPost:(JYPost *)post
+{
+    NSMutableDictionary *parameters = [NSMutableDictionary new];
+    [parameters setObject:@([comment.commentId unsignedLongLongValue]) forKey:@"commentid"];
+    [parameters setObject:@([post.postId unsignedLongLongValue]) forKey:@"postid"];
+    [parameters setObject:@([post.ownerId unsignedLongLongValue]) forKey:@"posterid"];
+
+
+    uint64_t replyToId = [comment.replyToId unsignedLongLongValue];
+    if (replyToId > 0)
+    {
+        [parameters setObject:@(replyToId) forKey:@"replytoid"];
+    }
+
+    return parameters;
+}
+
+- (void)_removeCommentWithId:(NSNumber *)commentId fromList:(NSMutableArray *)list
+{
+    NSUInteger count = [list count];
+    uint64_t value = [commentId unsignedLongLongValue];
+    for (NSUInteger index = 0; index < count; index++)
+    {
+        JYComment *c = list[index];
+        if (value == [c.commentId unsignedLongLongValue])
+        {
+            [list removeObjectAtIndex:index];
+            break;
+        }
+    }
 }
 
 @end

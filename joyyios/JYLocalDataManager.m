@@ -111,7 +111,7 @@ static NSString *const SELECT_ALL_SQL = @"SELECT * FROM %@ ORDER BY id ASC";
 
 - (void)insertObjects:(NSArray *)objectList ofClass:(Class)modelClass
 {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
 
         NSString *stmt = [MTLFMDBAdapter insertStatementForModelClass:modelClass];
         for (id obj in objectList)
@@ -124,7 +124,7 @@ static NSString *const SELECT_ALL_SQL = @"SELECT * FROM %@ ORDER BY id ASC";
 
 - (void)insertObject:(id)object ofClass:(Class)modelClass
 {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
 
         NSString *stmt = [MTLFMDBAdapter insertStatementForModelClass:modelClass];
         NSArray *params = [MTLFMDBAdapter columnValues:object];
@@ -134,7 +134,7 @@ static NSString *const SELECT_ALL_SQL = @"SELECT * FROM %@ ORDER BY id ASC";
 
 - (void)updateObjects:(NSArray *)objectList ofClass:(Class)modelClass
 {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
 
         NSString *stmt = [MTLFMDBAdapter updateStatementForModelClass:modelClass];
         for (id obj in objectList)
@@ -147,9 +147,19 @@ static NSString *const SELECT_ALL_SQL = @"SELECT * FROM %@ ORDER BY id ASC";
 
 - (void)updateObject:(id)object ofClass:(Class)modelClass
 {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
 
         NSString *stmt = [MTLFMDBAdapter updateStatementForModelClass:modelClass];
+        NSArray *params = [MTLFMDBAdapter columnValues:object];
+        [self _executeUpdate:stmt withArgumentsInArray:params];
+    });
+}
+
+- (void)deleteObject:(id)object ofClass:(Class)modelClass
+{
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+
+        NSString *stmt = [MTLFMDBAdapter deleteStatementForModelClass:modelClass];
         NSArray *params = [MTLFMDBAdapter columnValues:object];
         [self _executeUpdate:stmt withArgumentsInArray:params];
     });
@@ -183,7 +193,20 @@ static NSString *const SELECT_ALL_SQL = @"SELECT * FROM %@ ORDER BY id ASC";
         return;
     }
 
-    [self insertObjects:commentList ofClass:JYComment.class];
+    for (JYComment *comment in commentList)
+    {
+        NSNumber *antiCommentId = [comment antiCommentId];
+        if (antiCommentId)
+        {
+            // delete from DB
+            JYComment *dummy = [[JYComment alloc] initWithCommentId:antiCommentId];
+            [self deleteObject:dummy ofClass:JYComment.class];
+        }
+        else
+        {
+            [self insertObject:comment ofClass:JYComment.class];
+        }
+    }
 
     // update minCommentIdInDB and maxCommentIdInDB
     JYComment *firstComment = [commentList firstObject];

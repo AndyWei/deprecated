@@ -55,6 +55,15 @@
     return @"post";
 }
 
+- (instancetype)initWithPostId:(NSNumber *)postId
+{
+    if (self = [super init])
+    {
+        _postId = postId;
+    }
+    return self;
+}
+
 #pragma mark - properties
 
 - (NSString *)caption
@@ -93,6 +102,20 @@
     return (postid >> 32);
 }
 
+- (BOOL)hasSameIdWith:(JYPost *)post
+{
+    if (!post || !post.postId)
+    {
+        return NO;
+    }
+    return ([self.postId unsignedLongLongValue] == [post.postId unsignedLongLongValue]);
+}
+
+- (BOOL)isAntiPost
+{
+    return [self.shortURL hasPrefix:@":anti_post"];
+}
+
 - (BOOL)isLikedByMe
 {
     uint64_t myUserid = [[JYCredential current].userId unsignedLongLongValue];
@@ -112,4 +135,20 @@
     return ([[JYCredential current].userId unsignedLongLongValue] == [self.ownerId unsignedLongLongValue]);
 }
 
+- (NSNumber *)antiPostId
+{
+    if (![self isAntiPost])
+    {
+        return nil;
+    }
+
+    NSRange range1 = [self.shortURL rangeOfString:@"["];
+    NSString  *temp=[self.shortURL substringFromIndex:range1.location + 1];
+    NSRange range2 = [temp rangeOfString:@"]"];
+
+    NSString *idString = [temp substringWithRange:NSMakeRange(0, range2.location)];
+
+    NSNumberFormatter *nf = [[NSNumberFormatter alloc] init];
+    return [nf numberFromString:idString];
+}
 @end

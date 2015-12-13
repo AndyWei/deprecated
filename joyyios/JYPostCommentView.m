@@ -125,20 +125,18 @@ static NSString *const kPostCommentCellIdentifier = @"postCommentCell";
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    JYComment *comment = (JYComment *)self.commentList[indexPath.row];
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
 
+    JYComment *comment = (JYComment *)self.commentList[indexPath.row];
+    NSDictionary *info = @{@"post": self.post, @"comment": comment};
     if ([comment isMine])
     {
-        NSDictionary *info = @{@"comment": comment};
         [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationDeleteComment object:nil userInfo:info];
     }
     else
     {
-        NSDictionary *info = @{@"post": self.post, @"comment": comment};
         [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationCreateComment object:nil userInfo:info];
     }
-    
-    [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 @end
