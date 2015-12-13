@@ -67,13 +67,14 @@ NSString *const kNotificationAppDidStart = @"appDidStart";
 NSString *const kNotificationAppDidStop  = @"appDidStop";
 NSString *const kNotificationCreateComment = @"createComment";
 NSString *const kNotificationDeleteComment = @"deleteComment";
+NSString *const kNotificationDeletePost = @"deletePost";
 NSString *const kNotificationDidChangeCountryCode = @"didChangeCountryCode";
 NSString *const kNotificationDidCreateProfile = @"didCreateProfile";
 NSString *const kNotificationDidTapOnUser = @"didTapOnUser";
 NSString *const kNotificationDidSignIn = @"didSignIn";
 NSString *const kNotificationDidSignUp = @"didSignUp";
+NSString *const kNotificationLikePost = @"likePost";
 NSString *const kNotificationNeedGeoInfo = @"needGeoInfo";
-NSString *const kNotificationWillLikePost = @"willLikePost";
 NSString *const kNotificationUserYRSReady = @"userYRSReady";
 
 NSString *const kURLAPIBase = @"http://dev.winkrock.com:8000/v1/";

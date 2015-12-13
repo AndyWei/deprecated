@@ -65,9 +65,10 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
     [self.view addSubview:self.cameraButton];
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_apiTokenReady) name:kNotificationAPITokenReady object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_likePost:) name:kNotificationWillLikePost object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_likePost:) name:kNotificationLikePost object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_createComment:) name:kNotificationCreateComment object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_deletecomment:) name:kNotificationDeleteComment object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_deleteComment:) name:kNotificationDeleteComment object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_deletePost:) name:kNotificationDeletePost object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_tapOnUser:) name:kNotificationDidTapOnUser object:nil];
 
     __weak typeof(self) weakSelf = self;
@@ -268,7 +269,39 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
     }
 }
 
-- (void)_deletecomment:(NSNotification *)notification
+- (void)_deletePost:(NSNotification *)notification
+{
+    NSDictionary *info = [notification userInfo];
+    if (info)
+    {
+        id post = [info objectForKey:@"post"];
+        if (post != [NSNull null])
+        {
+            [self _showOptionsToDeletePost:post];
+        }
+    }
+}
+
+- (void)_showOptionsToDeletePost:(JYPost *)post
+{
+    NSString *cancel = NSLocalizedString(@"Cancel", nil);
+    NSString *delete = NSLocalizedString(@"Delete", nil);
+
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:nil
+                                                                   message:nil
+                                                            preferredStyle:UIAlertControllerStyleActionSheet];
+
+    __weak typeof(self) weakSelf = self;
+    [alert addAction:[UIAlertAction actionWithTitle:delete style:UIAlertActionStyleDestructive
+                                            handler:^(UIAlertAction * action) {
+                                                [weakSelf _doDeletePost:post];
+                                            }]];
+
+    [alert addAction:[UIAlertAction actionWithTitle:cancel style:UIAlertActionStyleCancel handler:nil]];
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
+- (void)_deleteComment:(NSNotification *)notification
 {
     NSDictionary *info = [notification userInfo];
     if (info)
@@ -298,7 +331,6 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
                                             }]];
 
     [alert addAction:[UIAlertAction actionWithTitle:cancel style:UIAlertActionStyleCancel handler:nil]];
-
     [self presentViewController:alert animated:YES completion:nil];
 }
 
@@ -900,6 +932,43 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
              NSLog(@"GET post/commentline error = %@", error);
              [weakSelf _networkThreadEnd];
          }
+     ];
+}
+
+- (void)_doDeletePost:(JYPost *)post
+{
+    if (!post)
+    {
+        return;
+    }
+
+    if (self.networkThreadCount > 0)
+    {
+        return;
+    }
+
+    [self _networkThreadBegin];
+
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager managerWithToken];
+    NSString *url = [NSString apiURLWithPath:@"post/delete"];
+    NSDictionary *parameters = @{@"postid": @([post.postId unsignedLongLongValue])};
+
+    __weak typeof(self) weakSelf = self;
+    [manager POST:url
+       parameters:parameters
+          success:^(NSURLSessionTask *operation, id responseObject) {
+              NSLog(@"delete post success");
+
+              [[JYLocalDataManager sharedInstance] deleteObject:post ofClass:JYPost.class];
+
+              [weakSelf.postList removeObject:post];
+              [weakSelf.tableView reloadData];
+              [weakSelf _networkThreadEnd];
+          }
+          failure:^(NSURLSessionTask *operation, NSError *error) {
+              NSLog(@"delete post failed with error: %@", error);
+              [weakSelf _networkThreadEnd];
+          }
      ];
 }
 

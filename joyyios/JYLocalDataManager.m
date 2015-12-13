@@ -160,7 +160,7 @@ static NSString *const SELECT_ALL_SQL = @"SELECT * FROM %@ ORDER BY id ASC";
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
 
         NSString *stmt = [MTLFMDBAdapter deleteStatementForModelClass:modelClass];
-        NSArray *params = [MTLFMDBAdapter columnValues:object];
+        NSArray *params = [MTLFMDBAdapter primaryKeysValues:object];
         [self _executeUpdate:stmt withArgumentsInArray:params];
     });
 }
