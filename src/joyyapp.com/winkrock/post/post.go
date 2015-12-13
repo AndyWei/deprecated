@@ -9,6 +9,7 @@ package post
 
 import (
     "encoding/json"
+    "fmt"
     "github.com/deckarep/golang-set"
     "github.com/gocql/gocql"
     "joyyapp.com/winkrock/idgen"
@@ -90,30 +91,35 @@ func (h *Handler) DeletePost(w http.ResponseWriter, req *http.Request, userid in
         return
     }
 
-    // delete from userline
-    month := idgen.MonthOf(p.PostId)
-    query := h.DB.Query(`DELETE FROM userline WHERE userid = ? AND month = ? AND postid = ?`, userid, month, p.PostId)
-
-    // delete failure may due to DB failure or incorrect postid
-    if err := query.Exec(); err != nil {
-        RespondError(w, err, http.StatusBadGateway)
-        return
-    }
-
     fids, err := h.getFriendIds(userid)
     if err != nil {
         RespondError(w, err, http.StatusBadGateway)
         return
     }
 
-    // delete post from all the friends timelines, including the owner. ignore write failures if any
-    fids = append(fids, userid)
-    day := idgen.DayOf(p.PostId)
-    query = h.DB.Query(`DELETE FROM timeline WHERE userid = ? AND day = ? AND postid = ?`, 0, 0, 0)
+    postid := idgen.NewID()
+    day := ThisDay()
 
+    // write an anti-post to all the friends timelines, including the owner's. ignore write failures if any
+    fids = append(fids, userid)
+
+    url := fmt.Sprintf(":anti_post[%d]", p.PostId)
+    query := h.DB.Query(`INSERT INTO timeline (userid, day, postid, ownerid, url) VALUES (?, ?, ?, ?, ?)`, 0, 0, 0, 0, "")
+    for _, fid := range fids {
+        query.Bind(fid, day, postid, userid, url).Exec()
+    }
+
+    // delete original post from all the friends timeline, including the owner's. ignore write failures if any
+    day = idgen.DayOf(p.PostId)
+    query = h.DB.Query(`DELETE FROM timeline WHERE userid = ? AND day = ? AND postid = ?`, 0, 0, 0)
     for _, fid := range fids {
         query.Bind(fid, day, p.PostId).Exec()
     }
+
+    // delete from userline
+    month := idgen.MonthOf(p.PostId)
+    query = h.DB.Query(`DELETE FROM userline WHERE userid = ? AND month = ? AND postid = ?`, userid, month, p.PostId)
+    query.Exec()
 
     RespondOK(w)
     return
@@ -144,7 +150,7 @@ func (h *Handler) CreateComment(w http.ResponseWriter, req *http.Request, userid
         return
     }
 
-    // a comment can be seen by the comments author and the o's mutual friends
+    // a comment can be seen by the comment's author and the peer's mutual friends
     peerid := p.PosterId
     if p.ReplyToId > 0 {
         peerid = p.ReplyToId
@@ -156,7 +162,6 @@ func (h *Handler) CreateComment(w http.ResponseWriter, req *http.Request, userid
         return
     }
 
-    fids = append(fids, userid)
     commentid := idgen.NewID()
 
     // write the comment to all the mutal friends' commentlines, including the owner. ignore write failures if any
@@ -179,11 +184,13 @@ func (h *Handler) CreateComment(w http.ResponseWriter, req *http.Request, userid
 }
 
 /*
- * Delete a comment
+ * Delete a comment. The original comment will not be deleted in DB, instead, we create an "anti-comment" to make the original comment invisible
  */
 type DeleteCommentParams struct {
-    CommentId int64 `param:"postid" validate:"required"`
+    CommentId int64 `param:"commentid" validate:"required"`
+    PostId    int64 `param:"postid" validate:"required"`
     PosterId  int64 `param:"posterid" validate:"required"`
+    ReplyToId int64 `param:"replytoid"`
 }
 
 func (h *Handler) DeleteComment(w http.ResponseWriter, req *http.Request, userid int64, username string) {
@@ -193,17 +200,29 @@ func (h *Handler) DeleteComment(w http.ResponseWriter, req *http.Request, userid
         return
     }
 
-    fids, err := h.getMutualFriendIds(userid, p.PosterId)
+    // same as a normal comment, an anti-comment can be seen by the comment's author and the peer's mutual friends
+    peerid := p.PosterId
+    if p.ReplyToId > 0 {
+        peerid = p.ReplyToId
+    }
+
+    fids, err := h.getMutualFriendIds(userid, peerid)
     if err != nil {
         RespondError(w, err, http.StatusBadGateway)
         return
     }
 
-    fids = append(fids, userid)
+    commentid := idgen.NewID()
+    content := fmt.Sprintf(":anti_comment[%d]", p.CommentId)
 
-    // delete comment from all the friends timelines, including the owner. ignore write failures if any
-    query := h.DB.Query(`DELETE FROM commentline WHERE userid = ? AND commentid = ?`, 0, 0)
+    // write the anti comment to all the mutal friends' commentlines. ignore write failures if any
+    query := h.DB.Query(`INSERT INTO commentline (userid, commentid, ownerid, postid, replytoid, content) VALUES (?, ?, ?, ?, ?)`, 0, 0, 0, 0, "", "")
+    for _, fid := range fids {
+        query.Bind(fid, commentid, userid, p.PostId, p.ReplyToId, content).Exec()
+    }
 
+    // delete comment from all the friends commentlines, including the owner's. ignore write failures if any
+    query = h.DB.Query(`DELETE FROM commentline WHERE userid = ? AND commentid = ?`, 0, 0)
     for _, fid := range fids {
         query.Bind(fid, p.CommentId).Exec()
     }
@@ -339,7 +358,7 @@ func (h *Handler) getFriendIdSet(userid int64) (mapset.Set, error) {
         s.Add(fid)
     }
     err := iter.Close()
-    s.Add(userid)
+    s.Add(userid) // an user is a friend of himself
     return s, err
 }
 
