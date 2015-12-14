@@ -66,10 +66,20 @@ static CGFloat kCardViewDefaultHeight = 150;
     self.month = [[JYMonth alloc] initWithDate:[NSDate date]];
 
     [self.view addSubview:self.tableView];
+    [self.view addSubview:self.cardView];
 
-//    [self _updateCardViewLayout];
-//    [self _updateCardViewContent];
-//    [self.tableView addSubview:self.cardView];
+    NSDictionary *views = @{ @"cardView": self.cardView };
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[cardView]-(>=100@500)-|" options:0 metrics:nil views:views]];
+    self.cardViewHeightConstraint = [NSLayoutConstraint constraintWithItem:self.cardView
+                                                                 attribute:NSLayoutAttributeHeight
+                                                                 relatedBy:NSLayoutRelationEqual
+                                                                    toItem:nil
+                                                                 attribute:NSLayoutAttributeNotAnAttribute
+                                                                multiplier:0.0f
+                                                                  constant:kCardViewDefaultHeight];
+    [self.view addConstraint:self.cardViewHeightConstraint];
+    [self _updateCardViewContent];
+
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_apiTokenReady) name:kNotificationAPITokenReady object:nil];
 
@@ -90,34 +100,7 @@ static CGFloat kCardViewDefaultHeight = 150;
         _tableView.estimatedRowHeight = 415;
         [_tableView registerClass:[JYUserlineCell class] forCellReuseIdentifier:kUserlineCellIdentifier];
 
-        // Setup card view as table header
-//        _tableView.tableHeaderView = self.cardView;
-
         _tableView.contentInset = UIEdgeInsetsMake(kCardViewDefaultHeight, 0, 0, 0);
-//        _tableView.contentOffset = CGPointMake(0, -kCardViewDefaultHeight);
-
-        [_tableView addSubview:self.cardView];
-
-//        [self _updateCardViewLayout];
-
-        NSDictionary *views = @{
-                                @"cardView": self.cardView
-                                };
-
-//        NSDictionary *metrics = @{
-//                                  @"OffSet": @(-_tableView.contentOffset.y)
-//                                  };
-        [_tableView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(-150)-[cardView]-|" options:0 metrics:nil views:views]];
-
-        self.cardViewHeightConstraint = [NSLayoutConstraint constraintWithItem:self.cardView
-                                                                     attribute:NSLayoutAttributeHeight
-                                                                     relatedBy:NSLayoutRelationEqual
-                                                                        toItem:nil
-                                                                     attribute:NSLayoutAttributeNotAnAttribute
-                                                                    multiplier:0.0f
-                                                                      constant:kCardViewDefaultHeight];
-        [_tableView addConstraint:self.cardViewHeightConstraint];
-        [self _updateCardViewContent];
 
         // Setup the pull-up-to-refresh footer
         MJRefreshAutoNormalFooter *footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(_fetchUserline)];
@@ -133,7 +116,7 @@ static CGFloat kCardViewDefaultHeight = 150;
     if (!_cardView)
     {
         _cardView = [[JYCardView alloc] init];
-        [_cardView addBlur];
+//        [_cardView addBlur];
     }
     return _cardView;
 }
@@ -145,27 +128,23 @@ static CGFloat kCardViewDefaultHeight = 150;
 
 - (void)scrollViewDidScroll:(UIScrollView*)scrollView
 {
-    [self _updateCardViewLayout];
-}
-
-- (void)_updateCardViewLayout
-{
-//    CGRect frame = CGRectMake(0, -kCardViewDefaultHeight, CGRectGetWidth(_tableView.bounds), kCardViewDefaultHeight);
-//    CGFloat offset = _tableView.contentOffset.y;
-//    if (offset < -kCardViewDefaultHeight)
-//    {
-//        frame.origin.y = offset;
-//        frame.size.height = -offset;
-//    }
-//    _cardView.frame = frame;
-//    [_cardView setNeedsLayout];
-//    [_cardView layoutIfNeeded];
-
     CGFloat offset = (-1) * _tableView.contentOffset.y;
+
     self.cardViewHeightConstraint.constant = fmax(offset, kCardViewDefaultHeight);
 
-    [_tableView setNeedsUpdateConstraints];
-    [_tableView updateConstraintsIfNeeded];
+    if (offset < 120)
+    {
+        [UIView animateWithDuration:0.3 animations:^{
+             self.cardView.alpha = 0;
+        }];
+    }
+    else
+    {
+        self.cardView.alpha = 1.0;
+    }
+
+    [self.view setNeedsUpdateConstraints];
+    [self.view updateConstraintsIfNeeded];
 }
 
 - (void)_updateCardViewContent
