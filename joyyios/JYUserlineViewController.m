@@ -116,7 +116,7 @@ static CGFloat kCardViewDefaultHeight = 150;
     if (!_cardView)
     {
         _cardView = [[JYCardView alloc] init];
-//        [_cardView addBlur];
+        [_cardView addBlur];
     }
     return _cardView;
 }
@@ -134,7 +134,7 @@ static CGFloat kCardViewDefaultHeight = 150;
 
     if (offset < 120)
     {
-        [UIView animateWithDuration:0.3 animations:^{
+        [UIView animateWithDuration:0.2 animations:^{
              self.cardView.alpha = 0;
         }];
     }
