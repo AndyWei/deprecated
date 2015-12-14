@@ -106,6 +106,7 @@
 		D69FF6E71B96474200466FE5 /* JYAuthenticationClient.m in Sources */ = {isa = PBXBuildFile; fileRef = D69FF6E21B96474200466FE5 /* JYAuthenticationClient.m */; };
 		D6B2F05B1ACE630F009601B0 /* JYAutoCompleteTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B2F05A1ACE630F009601B0 /* JYAutoCompleteTextField.m */; };
 		D6B9B7481BAF6E45001F9500 /* JYProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B9B7471BAF6E45001F9500 /* JYProfileViewController.m */; };
+		D6BD61711C1E788500EFC92C /* JYCreatePostController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6BD61701C1E788500EFC92C /* JYCreatePostController.m */; };
 		D6C6BBAC1B62DF6B00FFFAC7 /* NSDictionary+Joyy.m in Sources */ = {isa = PBXBuildFile; fileRef = D6C6BBAB1B62DF6B00FFFAC7 /* NSDictionary+Joyy.m */; };
 		D6C82B551B0D9FAE00876F57 /* JYCommentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6C82B541B0D9FAE00876F57 /* JYCommentViewController.m */; };
 		D6C82B691B12553D00876F57 /* JYComment.m in Sources */ = {isa = PBXBuildFile; fileRef = D6C82B681B12553D00876F57 /* JYComment.m */; };
@@ -320,6 +321,8 @@
 		D6B2F05A1ACE630F009601B0 /* JYAutoCompleteTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYAutoCompleteTextField.m; sourceTree = "<group>"; };
 		D6B9B7461BAF6E45001F9500 /* JYProfileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYProfileViewController.h; sourceTree = "<group>"; };
 		D6B9B7471BAF6E45001F9500 /* JYProfileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYProfileViewController.m; sourceTree = "<group>"; };
+		D6BD616F1C1E788500EFC92C /* JYCreatePostController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYCreatePostController.h; sourceTree = "<group>"; };
+		D6BD61701C1E788500EFC92C /* JYCreatePostController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYCreatePostController.m; sourceTree = "<group>"; };
 		D6C6BBAA1B62DF6B00FFFAC7 /* NSDictionary+Joyy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+Joyy.h"; sourceTree = "<group>"; };
 		D6C6BBAB1B62DF6B00FFFAC7 /* NSDictionary+Joyy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+Joyy.m"; sourceTree = "<group>"; };
 		D6C82B531B0D9FAE00876F57 /* JYCommentViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYCommentViewController.h; sourceTree = "<group>"; };
@@ -462,7 +465,7 @@
 		D61D1D5B1B4DBA5D00DE37DF /* Timeline */ = {
 			isa = PBXGroup;
 			children = (
-				D6903D071C07A97500CDC64F /* ViewController */,
+				D6903D071C07A97500CDC64F /* Controller */,
 				D6903D061C07A92B00CDC64F /* View */,
 			);
 			name = Timeline;
@@ -775,17 +778,19 @@
 			name = View;
 			sourceTree = "<group>";
 		};
-		D6903D071C07A97500CDC64F /* ViewController */ = {
+		D6903D071C07A97500CDC64F /* Controller */ = {
 			isa = PBXGroup;
 			children = (
 				D65AFA5C1AEC715D007867D0 /* JYTimelineViewController.h */,
 				D65AFA5D1AEC715D007867D0 /* JYTimelineViewController.m */,
+				D6BD616F1C1E788500EFC92C /* JYCreatePostController.h */,
+				D6BD61701C1E788500EFC92C /* JYCreatePostController.m */,
 				D693798B1B54E8BC00E64F3A /* JYPhotoCaptionViewController.h */,
 				D693798C1B54E8BC00E64F3A /* JYPhotoCaptionViewController.m */,
 				D6C82B531B0D9FAE00876F57 /* JYCommentViewController.h */,
 				D6C82B541B0D9FAE00876F57 /* JYCommentViewController.m */,
 			);
-			name = ViewController;
+			name = Controller;
 			sourceTree = "<group>";
 		};
 		D69202A31AC4C7C0001C1C3D = {
@@ -1160,6 +1165,7 @@
 				D61D1D531B4A65F200DE37DF /* MDCPanState.m in Sources */,
 				D61D1DBA1B4E336E00DE37DF /* TGCameraToggle.m in Sources */,
 				D61D1DA41B4E336E00DE37DF /* TGCameraNavigationController.m in Sources */,
+				D6BD61711C1E788500EFC92C /* JYCreatePostController.m in Sources */,
 				D68486BE1B8C59BF005CA0C4 /* JYMessage.m in Sources */,
 				D63F0D551AC7ACB70067C5EE /* JYSignUpViewController.m in Sources */,
 				D6966B3A1BA3873200AAD8D5 /* JYCountryViewCell.m in Sources */,

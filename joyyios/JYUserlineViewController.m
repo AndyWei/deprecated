@@ -79,7 +79,8 @@ static NSString *const kUserlineCellIdentifier = @"userlineCell";
         _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
         _tableView.showsHorizontalScrollIndicator = NO;
         _tableView.showsVerticalScrollIndicator = NO;
-        _tableView.estimatedRowHeight = UITableViewAutomaticDimension;
+        _tableView.rowHeight = UITableViewAutomaticDimension;
+        _tableView.estimatedRowHeight = 415;
         [_tableView registerClass:[JYUserlineCell class] forCellReuseIdentifier:kUserlineCellIdentifier];
 
         // Setup card view as table header
@@ -210,49 +211,6 @@ static NSString *const kUserlineCellIdentifier = @"userlineCell";
 }
 
 #pragma mark - UITableView Delegate
-
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if ([NSProcessInfo instancesRespondToSelector:@selector(isOperatingSystemAtLeastVersion:)])
-    {
-        NSOperatingSystemVersion ios8_0_0 = (NSOperatingSystemVersion){8, 0, 0};
-        if ([[NSProcessInfo processInfo] isOperatingSystemAtLeastVersion:ios8_0_0])
-        {
-            return UITableViewAutomaticDimension;
-        }
-    }
-
-    if (!self.sizingCell)
-    {
-        self.sizingCell = [[JYUserlineCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"JYUserlineCell_sizing"];
-    }
-
-    // Configure sizing cell for this indexPath
-    self.sizingCell.post = self.postList[indexPath.row];
-
-    // Make sure the constraints have been added to this cell, since it may have just been created from scratch
-    [self.sizingCell setNeedsUpdateConstraints];
-    [self.sizingCell updateConstraintsIfNeeded];
-
-    self.sizingCell.bounds = CGRectMake(0.0f, 0.0f, CGRectGetWidth(tableView.bounds), CGRectGetHeight(self.sizingCell.bounds));
-
-    [self.sizingCell setNeedsLayout];
-    [self.sizingCell layoutIfNeeded];
-
-    // Get the actual height required for the cell
-    CGSize size = [self.sizingCell.contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize];
-
-    // Add an extra point to the height to account for the cell separator, which is added between the bottom
-    // of the cell's contentView and the bottom of the table view cell.
-    CGFloat height = size.height;
-
-    return height;
-}
-
-- (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    return 415;
-}
 
 #pragma mark - Maintain table
 

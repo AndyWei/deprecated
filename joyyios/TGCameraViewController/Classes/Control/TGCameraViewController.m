@@ -73,7 +73,7 @@
 {
     [super viewDidLoad];
 
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"CameraClose"] style:UIBarButtonItemStylePlain target:self action:@selector(_close)];
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"close"] style:UIBarButtonItemStylePlain target:self action:@selector(_close)];
 
     [self deviceOrientationDidChangeNotification];
 

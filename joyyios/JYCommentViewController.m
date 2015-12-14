@@ -117,7 +117,8 @@ static NSString *const kCommentlineCellIdentifier = @"commentlineCell";
     self.tableView.backgroundColor = JoyyBlack;
     self.tableView.backgroundView = self.backgroundView;
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    self.tableView.estimatedRowHeight = UITableViewAutomaticDimension;
+    self.tableView.rowHeight = UITableViewAutomaticDimension;
+    self.tableView.estimatedRowHeight = 60;
 
     [self _showBackgroundImage];
 
@@ -292,46 +293,7 @@ static NSString *const kCommentlineCellIdentifier = @"commentlineCell";
     {
         return SCREEN_WIDTH;
     }
-
-    if ([NSProcessInfo instancesRespondToSelector:@selector(isOperatingSystemAtLeastVersion:)])
-    {
-        NSOperatingSystemVersion ios8_0_0 = (NSOperatingSystemVersion){8, 0, 0};
-        if ([[NSProcessInfo processInfo] isOperatingSystemAtLeastVersion:ios8_0_0])
-        {
-            return UITableViewAutomaticDimension;
-        }
-    }
-
-    if (!self.sizingCell)
-    {
-        self.sizingCell = [[JYCommentlineCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"JYCommentlineCell_sizing"];
-    }
-
-    // Configure sizing cell for this indexPath
-    self.sizingCell.comment = self.commentList[indexPath.row];
-
-    // Make sure the constraints have been added to this cell, since it may have just been created from scratch
-    [self.sizingCell setNeedsUpdateConstraints];
-    [self.sizingCell updateConstraintsIfNeeded];
-
-    self.sizingCell.bounds = CGRectMake(0.0f, 0.0f, CGRectGetWidth(tableView.bounds), CGRectGetHeight(self.sizingCell.bounds));
-
-    [self.sizingCell setNeedsLayout];
-    [self.sizingCell layoutIfNeeded];
-
-    // Get the actual height required for the cell
-    CGSize size = [self.sizingCell.contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize];
-
-    // Add an extra point to the height to account for the cell separator, which is added between the bottom
-    // of the cell's contentView and the bottom of the table view cell.
-    CGFloat height = size.height;
-    
-    return height;
-}
-
-- (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    return 60;
+    return UITableViewAutomaticDimension;
 }
 
 #pragma mark - Maintain Table

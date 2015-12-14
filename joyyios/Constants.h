@@ -82,6 +82,7 @@ extern NSUInteger const kAPN;
 extern UInt16  const kMessagePort;
 
 typedef void(^Action)();
+typedef void(^FailureHandler)(NSError *error);
 
 #define NAVIGATION_BAR_HEIGHT       (self.navigationController.navigationBar.frame.size.height)    // 44
 #define STATUS_BAR_HEIGHT           ([UIApplication sharedApplication].statusBarFrame.size.height) // 20

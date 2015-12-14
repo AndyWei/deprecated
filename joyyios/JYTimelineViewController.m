@@ -7,14 +7,13 @@
 //
 
 #import <AFNetworking/AFNetworking.h>
-#import <AWSS3/AWSS3.h>
 #import <MJRefresh/MJRefresh.h>
 #import <RKDropdownAlert/RKDropdownAlert.h>
 
 #import "JYButton.h"
 #import "JYComment.h"
 #import "JYCommentViewController.h"
-#import "JYFilename.h"
+#import "JYCreatePostController.h"
 #import "JYFriendManager.h"
 #import "JYLocalDataManager.h"
 #import "JYPhotoCaptionViewController.h"
@@ -30,8 +29,8 @@
 @interface JYTimelineViewController () <TGCameraDelegate, UITableViewDataSource, UITableViewDelegate>
 @property (nonatomic) CABasicAnimation *colorPulse;
 @property (nonatomic) JYButton *cameraButton;
+@property (nonatomic) JYCreatePostController *createPostController;
 @property (nonatomic) JYPost *currentPost;
-@property (nonatomic) JYTimelineCell *sizingCell;
 @property (nonatomic) NSInteger networkThreadCount;
 @property (nonatomic) NSDate *oldestDate;
 @property (nonatomic) NSMutableArray *postList;
@@ -57,6 +56,7 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
     self.navigationItem.titleView = self.titleButton;
 
     self.networkThreadCount = 0;
+    self.createPostController = [JYCreatePostController new];
     self.currentPost = nil;
     self.postList = [NSMutableArray new];
     self.newestPostId = 0;
@@ -87,8 +87,8 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
         _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
         _tableView.showsHorizontalScrollIndicator = NO;
         _tableView.showsVerticalScrollIndicator = NO;
-        _tableView.estimatedRowHeight = UITableViewAutomaticDimension;
-
+        _tableView.rowHeight = UITableViewAutomaticDimension;
+        _tableView.estimatedRowHeight = 455;
         [_tableView registerClass:[JYTimelineCell class] forCellReuseIdentifier:kTimelineCellIdentifier];
 
         // Setup the pull-down-to-refresh header
@@ -374,7 +374,6 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
 
     [TGCameraColor setTintColor:JoyyBlue];
     TGCameraNavigationController *camera = [TGCameraNavigationController cameraWithDelegate:self captionViewController:captionVC];
-    camera.title = self.title;
 
     [self presentViewController:camera animated:NO completion:nil];
 }
@@ -398,9 +397,26 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
     UIImage *image = [UIImage imageWithImage:photo scaledToSize:CGSizeMake(kPhotoWidth, kPhotoWidth)];
 
     [self _fetchNewPost]; // make sure timeline is refreshed before create new post
-    [self _createPostWithImage:image contentType:kContentTypeJPG caption:caption];
     [self dismissViewControllerAnimated:YES completion:nil];
+
+    __weak typeof(self) weakSelf = self;
+    [self _networkThreadBegin];
+    [self.createPostController createPostWithMedia:image caption:caption success:^(JYPost *post) {
+
+        post.localImage = image;
+        [weakSelf _createdNewPost:post];
+        [weakSelf _networkThreadEnd];
+    } failure:^(NSError *error) {
+
+        [weakSelf _networkThreadEnd];
+        [RKDropdownAlert title:NSLocalizedString(kErrorTitle, nil)
+                       message:error.localizedDescription
+               backgroundColor:FlatYellow
+                     textColor:FlatBlack
+                          time:5];
+    }];
 }
+
 
 #pragma mark - UITableViewDataSource
 
@@ -430,49 +446,6 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
 }
 
 #pragma mark - UITableView Delegate
-
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if ([NSProcessInfo instancesRespondToSelector:@selector(isOperatingSystemAtLeastVersion:)])
-    {
-        NSOperatingSystemVersion ios8_0_0 = (NSOperatingSystemVersion){8, 0, 0};
-        if ([[NSProcessInfo processInfo] isOperatingSystemAtLeastVersion:ios8_0_0])
-        {
-            return UITableViewAutomaticDimension;
-        }
-    }
-
-    if (!self.sizingCell)
-    {
-        self.sizingCell = [[JYTimelineCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"JYPostViewCell_sizing"];
-    }
-
-    // Configure sizing cell for this indexPath
-    self.sizingCell.post = self.postList[indexPath.row];
-
-    // Make sure the constraints have been added to this cell, since it may have just been created from scratch
-    [self.sizingCell setNeedsUpdateConstraints];
-    [self.sizingCell updateConstraintsIfNeeded];
-
-    self.sizingCell.bounds = CGRectMake(0.0f, 0.0f, CGRectGetWidth(tableView.bounds), CGRectGetHeight(self.sizingCell.bounds));
-
-    [self.sizingCell setNeedsLayout];
-    [self.sizingCell layoutIfNeeded];
-
-    // Get the actual height required for the cell
-    CGSize size = [self.sizingCell.contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize];
-
-    // Add an extra point to the height to account for the cell separator, which is added between the bottom
-    // of the cell's contentView and the bottom of the table view cell.
-    CGFloat height = size.height;
-
-    return height;
-}
-
-- (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    return 455;
-}
 
 #pragma mark - Maintain table
 
@@ -566,7 +539,7 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
     for (JYPost *post in list)
     {
         NSNumber *antiPostId = [post antiPostId];
-        if (antiPostId )
+        if (antiPostId)
         {
             [antiPostIdSet addObject:antiPostId];
             JYPost *dummy = [[JYPost alloc] initWithPostId:antiPostId];
@@ -584,108 +557,6 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
         }
     }
     return postList;
-}
-
-#pragma mark - AWS S3
-
-- (void)_createPostWithImage:(UIImage *)image contentType:(NSString *)contentType caption:(NSString *)caption
-{
-    NSURL *fileURL = [NSURL fileURLWithPath:[NSTemporaryDirectory() stringByAppendingPathComponent:@"timeline"]];
-
-    NSData *imageData = UIImageJPEGRepresentation(image, kPhotoQuality);
-    [imageData writeToURL:fileURL atomically:YES];
-
-    NSString *s3filename = [[JYFilename sharedInstance] randomFilenameWithHttpContentType:contentType];
-    NSString *s3region = [JYFilename sharedInstance].region;
-    NSString *s3url = [NSString stringWithFormat:@"%@:%@", s3region, s3filename];
-
-    AWSS3TransferManager *transferManager = [AWSS3TransferManager defaultS3TransferManager];
-    if (!transferManager)
-    {
-        NSLog(@"Error: no S3 transferManager");
-        return;
-    }
-
-    AWSS3TransferManagerUploadRequest *request = [AWSS3TransferManagerUploadRequest new];
-    request.bucket = [JYFilename sharedInstance].postBucketName;
-    request.key = s3filename;
-    request.body = fileURL;
-    request.contentType = contentType;
-
-    __weak typeof(self) weakSelf = self;
-    [[transferManager upload:request] continueWithBlock:^id(AWSTask *task) {
-        if (task.error)
-        {
-            if ([task.error.domain isEqualToString:AWSS3TransferManagerErrorDomain])
-            {
-                switch (task.error.code)
-                {
-                    case AWSS3TransferManagerErrorCancelled:
-                    case AWSS3TransferManagerErrorPaused:
-                        break;
-                    default:
-                        NSLog(@"Error: AWSS3TransferManager upload error = %@", task.error);
-                        break;
-                }
-            }
-            else
-            {
-                // Unknown error.
-                NSLog(@"Error: AWSS3TransferManager upload error = %@", task.error);
-            }
-        }
-        if (task.result)
-        {
-            AWSS3TransferManagerUploadOutput *uploadOutput = task.result;
-            NSLog(@"Success: AWSS3TransferManager upload task.result = %@", uploadOutput);
-            [weakSelf _createPostRecordWithS3URL:s3url caption:caption localImage:image];
-        }
-        return nil;
-    }];
-}
-
-#pragma mark - Network
-
-- (void)_createPostRecordWithS3URL:(NSString *)s3url caption:(NSString *)caption localImage:(UIImage *)image
-{
-    [self _networkThreadBegin];
-
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager managerWithToken];
-    NSString *url = [NSString apiURLWithPath:@"post/create"];
-    NSMutableDictionary *parameters = [self _parametersForPostWithURL:s3url caption:caption];
-
-    __weak typeof(self) weakSelf = self;
-    [manager POST:url
-       parameters:parameters
-          success:^(NSURLSessionTask *operation, id responseObject) {
-
-        NSLog(@"Success: post/create response = %@", responseObject);
-        NSError *error = nil;
-        JYPost *post = (JYPost *)[MTLJSONAdapter modelOfClass:JYPost.class fromJSONDictionary:responseObject error:&error];
-        post.localImage = image;
-        [weakSelf _createdNewPost:post];
-        [weakSelf _networkThreadEnd];
-
-    } failure:^(NSURLSessionTask *operation, NSError *error) {
-        NSLog(@"Failure: post/create error = %@", error);
-        [weakSelf _networkThreadEnd];
-
-        [RKDropdownAlert title:NSLocalizedString(kErrorTitle, nil)
-                       message:error.localizedDescription
-               backgroundColor:FlatYellow
-                     textColor:FlatBlack
-                          time:5];
-    }];
-}
-
-- (NSMutableDictionary *)_parametersForPostWithURL:(NSString *)url caption:(NSString *)caption
-{
-    NSMutableDictionary *parameters = [NSMutableDictionary new];
-
-    [parameters setObject:url forKey:@"url"];
-    [parameters setObject:caption forKey:@"caption"];
-
-    return parameters;
 }
 
 - (void)_like:(JYPost *)post
