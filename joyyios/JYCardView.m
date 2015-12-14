@@ -42,9 +42,9 @@
                                 };
 
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[coverView(SW)]|" options:0 metrics:metrics views:views]];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-20-[avatarView(150)][titleLabel]-10-|" options:0 metrics:nil views:views]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-20-[avatarView(120)][titleLabel]-10-|" options:0 metrics:nil views:views]];
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[coverView][titleLabel(20)]-20-|" options:0 metrics:nil views:views]];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-50-[avatarView(150)]|" options:0 metrics:nil views:views]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(>=30@500)-[avatarView(120)]|" options:0 metrics:nil views:views]];
 
         [self.coverView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[blurView]|" options:0 metrics:nil views:views]];
         [self.coverView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[blurView]|" options:0 metrics:nil views:views]];
@@ -59,7 +59,7 @@
         _avatarView = [UIImageView new];
         _avatarView.translatesAutoresizingMaskIntoConstraints = NO;
         _avatarView.contentMode = UIViewContentModeScaleAspectFit;
-        _avatarView.layer.cornerRadius = 75;
+        _avatarView.layer.cornerRadius = 60;
         _avatarView.layer.masksToBounds = YES;
         _avatarView.layer.borderWidth = 3;
         _avatarView.layer.borderColor = JoyyWhitePure.CGColor;

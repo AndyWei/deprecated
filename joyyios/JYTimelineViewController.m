@@ -390,7 +390,7 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
     // Default caption
     if (caption.length == 0 || [caption isInvisible])
     {
-        caption = kDummyCaptionText;
+        caption = nil;
     }
 
     // Handling and upload the photo

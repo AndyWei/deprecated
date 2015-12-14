@@ -33,12 +33,14 @@
 @property (nonatomic) JYUserlineCell *sizingCell;
 @property (nonatomic) JYCardView *cardView;
 @property (nonatomic) NSInteger networkThreadCount;
+@property (nonatomic) NSLayoutConstraint *cardViewHeightConstraint;
 @property (nonatomic) NSMutableArray *postList;
 @property (nonatomic) UITableView *tableView;
 @property (nonatomic, copy) Action pendingAction;
 @end
 
 static NSString *const kUserlineCellIdentifier = @"userlineCell";
+static CGFloat kCardViewDefaultHeight = 150;
 
 @implementation JYUserlineViewController
 
@@ -64,6 +66,11 @@ static NSString *const kUserlineCellIdentifier = @"userlineCell";
     self.month = [[JYMonth alloc] initWithDate:[NSDate date]];
 
     [self.view addSubview:self.tableView];
+
+//    [self _updateCardViewLayout];
+//    [self _updateCardViewContent];
+//    [self.tableView addSubview:self.cardView];
+
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_apiTokenReady) name:kNotificationAPITokenReady object:nil];
 
     [self _fetchUserline];
@@ -84,8 +91,33 @@ static NSString *const kUserlineCellIdentifier = @"userlineCell";
         [_tableView registerClass:[JYUserlineCell class] forCellReuseIdentifier:kUserlineCellIdentifier];
 
         // Setup card view as table header
-        [self _updateCardView];
-        _tableView.tableHeaderView = self.cardView;
+//        _tableView.tableHeaderView = self.cardView;
+
+        _tableView.contentInset = UIEdgeInsetsMake(kCardViewDefaultHeight, 0, 0, 0);
+//        _tableView.contentOffset = CGPointMake(0, -kCardViewDefaultHeight);
+
+        [_tableView addSubview:self.cardView];
+
+//        [self _updateCardViewLayout];
+
+        NSDictionary *views = @{
+                                @"cardView": self.cardView
+                                };
+
+//        NSDictionary *metrics = @{
+//                                  @"OffSet": @(-_tableView.contentOffset.y)
+//                                  };
+        [_tableView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(-150)-[cardView]-|" options:0 metrics:nil views:views]];
+
+        self.cardViewHeightConstraint = [NSLayoutConstraint constraintWithItem:self.cardView
+                                                                     attribute:NSLayoutAttributeHeight
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:nil
+                                                                     attribute:NSLayoutAttributeNotAnAttribute
+                                                                    multiplier:0.0f
+                                                                      constant:kCardViewDefaultHeight];
+        [_tableView addConstraint:self.cardViewHeightConstraint];
+        [self _updateCardViewContent];
 
         // Setup the pull-up-to-refresh footer
         MJRefreshAutoNormalFooter *footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(_fetchUserline)];
@@ -111,7 +143,32 @@ static NSString *const kUserlineCellIdentifier = @"userlineCell";
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (void)_updateCardView
+- (void)scrollViewDidScroll:(UIScrollView*)scrollView
+{
+    [self _updateCardViewLayout];
+}
+
+- (void)_updateCardViewLayout
+{
+//    CGRect frame = CGRectMake(0, -kCardViewDefaultHeight, CGRectGetWidth(_tableView.bounds), kCardViewDefaultHeight);
+//    CGFloat offset = _tableView.contentOffset.y;
+//    if (offset < -kCardViewDefaultHeight)
+//    {
+//        frame.origin.y = offset;
+//        frame.size.height = -offset;
+//    }
+//    _cardView.frame = frame;
+//    [_cardView setNeedsLayout];
+//    [_cardView layoutIfNeeded];
+
+    CGFloat offset = (-1) * _tableView.contentOffset.y;
+    self.cardViewHeightConstraint.constant = fmax(offset, kCardViewDefaultHeight);
+
+    [_tableView setNeedsUpdateConstraints];
+    [_tableView updateConstraintsIfNeeded];
+}
+
+- (void)_updateCardViewContent
 {
     self.cardView.titleLabel.text = self.user.username;
 
