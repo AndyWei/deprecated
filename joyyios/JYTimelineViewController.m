@@ -16,8 +16,10 @@
 #import "JYCreatePostController.h"
 #import "JYFriendManager.h"
 #import "JYLocalDataManager.h"
+#import "JYNewCommentViewController.h"
 #import "JYPhotoCaptionViewController.h"
 #import "JYPost.h"
+#include "JYReminderView.h"
 #import "JYTimelineCell.h"
 #import "JYTimelineViewController.h"
 #import "JYUserlineViewController.h"
@@ -31,6 +33,7 @@
 @property (nonatomic) JYButton *cameraButton;
 @property (nonatomic) JYCreatePostController *createPostController;
 @property (nonatomic) JYPost *currentPost;
+@property (nonatomic) JYReminderView *reminderView;
 @property (nonatomic) NSInteger networkThreadCount;
 @property (nonatomic) NSDate *oldestDate;
 @property (nonatomic) NSMutableArray *postList;
@@ -61,6 +64,8 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
     self.postList = [NSMutableArray new];
     self.newestPostId = 0;
 
+//    self.reminderView.alpha = 0;
+    self.reminderView.text = @"5 new comments";
     [self.view addSubview:self.tableView];
     [self.view addSubview:self.cameraButton];
 
@@ -70,6 +75,7 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_deleteComment:) name:kNotificationDeleteComment object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_deletePost:) name:kNotificationDeletePost object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_tapOnUser:) name:kNotificationDidTapOnUser object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_tapOnReminderView:) name:kNotificationDidTapReminderView object:nil];
 
     __weak typeof(self) weakSelf = self;
     [self _fetchLocalTimelineWithAction:^{
@@ -84,11 +90,11 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
         _tableView = [[UITableView alloc] initWithFrame:self.view.frame style:UITableViewStylePlain];
         _tableView.dataSource = self;
         _tableView.delegate = self;
+        _tableView.estimatedRowHeight = 455;
+        _tableView.rowHeight = UITableViewAutomaticDimension;
         _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
         _tableView.showsHorizontalScrollIndicator = NO;
         _tableView.showsVerticalScrollIndicator = NO;
-        _tableView.rowHeight = UITableViewAutomaticDimension;
-        _tableView.estimatedRowHeight = 455;
         [_tableView registerClass:[JYTimelineCell class] forCellReuseIdentifier:kTimelineCellIdentifier];
 
         // Setup the pull-down-to-refresh header
@@ -102,6 +108,9 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
         footer.refreshingTitleHidden = YES;
         footer.stateLabel.hidden = YES;
         _tableView.mj_footer = footer;
+
+        // reminder view
+        _tableView.tableHeaderView = self.reminderView;
     }
     return _tableView;
 }
@@ -152,6 +161,15 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
     {
         self.pendingAction();
     }
+}
+
+- (JYReminderView *)reminderView
+{
+    if (!_reminderView)
+    {
+        _reminderView = [JYReminderView new];
+    }
+    return _reminderView;
 }
 
 - (UIButton *)titleButton
@@ -264,7 +282,7 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
             {
                 comment = (JYComment *)commentObj;
             }
-            [self _presentCommentViewForPost:post comment:comment];
+            [self _showCommentCreateViewForPost:post replyToComment:comment];
         }
     }
 }
@@ -355,7 +373,20 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
     [self.navigationController pushViewController:viewController animated:YES];
 }
 
-- (void) _presentCommentViewForPost:(JYPost *)post comment:(JYComment *)comment
+- (void)_tapOnReminderView:(NSNotification *)notification
+{
+    [self _showNewComments];
+}
+
+- (void)_showNewComments
+{
+    JYNewCommentViewController *viewController = [[JYNewCommentViewController alloc] init];
+    JYPost *post = self.postList[0];
+    viewController.commentList = post.commentList;
+    [self.navigationController pushViewController:viewController animated:YES];
+}
+
+- (void) _showCommentCreateViewForPost:(JYPost *)post replyToComment:(JYComment *)comment
 {
     JYCommentViewController *viewController = [[JYCommentViewController alloc] initWithPost:post comment:comment];
 

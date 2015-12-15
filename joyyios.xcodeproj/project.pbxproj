@@ -107,6 +107,9 @@
 		D6B2F05B1ACE630F009601B0 /* JYAutoCompleteTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B2F05A1ACE630F009601B0 /* JYAutoCompleteTextField.m */; };
 		D6B9B7481BAF6E45001F9500 /* JYProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B9B7471BAF6E45001F9500 /* JYProfileViewController.m */; };
 		D6BD61711C1E788500EFC92C /* JYCreatePostController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6BD61701C1E788500EFC92C /* JYCreatePostController.m */; };
+		D6BD61741C1FF84B00EFC92C /* JYNewCommentCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D6BD61731C1FF84B00EFC92C /* JYNewCommentCell.m */; };
+		D6BD61771C2007EF00EFC92C /* JYNewCommentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6BD61761C2007EF00EFC92C /* JYNewCommentViewController.m */; };
+		D6BD617A1C20CC2300EFC92C /* JYReminderView.m in Sources */ = {isa = PBXBuildFile; fileRef = D6BD61791C20CC2300EFC92C /* JYReminderView.m */; };
 		D6C6BBAC1B62DF6B00FFFAC7 /* NSDictionary+Joyy.m in Sources */ = {isa = PBXBuildFile; fileRef = D6C6BBAB1B62DF6B00FFFAC7 /* NSDictionary+Joyy.m */; };
 		D6C82B551B0D9FAE00876F57 /* JYCommentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6C82B541B0D9FAE00876F57 /* JYCommentViewController.m */; };
 		D6C82B691B12553D00876F57 /* JYComment.m in Sources */ = {isa = PBXBuildFile; fileRef = D6C82B681B12553D00876F57 /* JYComment.m */; };
@@ -323,6 +326,12 @@
 		D6B9B7471BAF6E45001F9500 /* JYProfileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYProfileViewController.m; sourceTree = "<group>"; };
 		D6BD616F1C1E788500EFC92C /* JYCreatePostController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYCreatePostController.h; sourceTree = "<group>"; };
 		D6BD61701C1E788500EFC92C /* JYCreatePostController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYCreatePostController.m; sourceTree = "<group>"; };
+		D6BD61721C1FF84B00EFC92C /* JYNewCommentCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYNewCommentCell.h; sourceTree = "<group>"; };
+		D6BD61731C1FF84B00EFC92C /* JYNewCommentCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYNewCommentCell.m; sourceTree = "<group>"; };
+		D6BD61751C2007EF00EFC92C /* JYNewCommentViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYNewCommentViewController.h; sourceTree = "<group>"; };
+		D6BD61761C2007EF00EFC92C /* JYNewCommentViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYNewCommentViewController.m; sourceTree = "<group>"; };
+		D6BD61781C20CC2300EFC92C /* JYReminderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYReminderView.h; sourceTree = "<group>"; };
+		D6BD61791C20CC2300EFC92C /* JYReminderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYReminderView.m; sourceTree = "<group>"; };
 		D6C6BBAA1B62DF6B00FFFAC7 /* NSDictionary+Joyy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+Joyy.h"; sourceTree = "<group>"; };
 		D6C6BBAB1B62DF6B00FFFAC7 /* NSDictionary+Joyy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+Joyy.m"; sourceTree = "<group>"; };
 		D6C82B531B0D9FAE00876F57 /* JYCommentViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYCommentViewController.h; sourceTree = "<group>"; };
@@ -696,6 +705,8 @@
 				D63B69B51AC53BB4005600A9 /* JYFloatLabeledTextField.m */,
 				D6903D081C07A9C200CDC64F /* JYFriendView.h */,
 				D6903D091C07A9C200CDC64F /* JYFriendView.m */,
+				D6BD61781C20CC2300EFC92C /* JYReminderView.h */,
+				D6BD61791C20CC2300EFC92C /* JYReminderView.m */,
 				D69FF6D41B94144100466FE5 /* JYSoundPlayer.h */,
 				D69FF6D51B94144100466FE5 /* JYSoundPlayer.m */,
 				D6903D031BF9AA4300CDC64F /* NSDate+Joyy.h */,
@@ -774,6 +785,8 @@
 				D6903D0F1C07CFE000CDC64F /* JYPostCommentView.m */,
 				D6F301B11C13B68000821FEF /* JYPostCommentCell.h */,
 				D6F301B21C13B68000821FEF /* JYPostCommentCell.m */,
+				D6BD61721C1FF84B00EFC92C /* JYNewCommentCell.h */,
+				D6BD61731C1FF84B00EFC92C /* JYNewCommentCell.m */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -789,6 +802,8 @@
 				D693798C1B54E8BC00E64F3A /* JYPhotoCaptionViewController.m */,
 				D6C82B531B0D9FAE00876F57 /* JYCommentViewController.h */,
 				D6C82B541B0D9FAE00876F57 /* JYCommentViewController.m */,
+				D6BD61751C2007EF00EFC92C /* JYNewCommentViewController.h */,
+				D6BD61761C2007EF00EFC92C /* JYNewCommentViewController.m */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -1092,6 +1107,7 @@
 				D693798D1B54E8BC00E64F3A /* JYPhotoCaptionViewController.m in Sources */,
 				D68DAF961AC4CACD00838E7E /* Constants.m in Sources */,
 				D61D1D551B4A65F200DE37DF /* MDCSwipeResult.m in Sources */,
+				D6BD61741C1FF84B00EFC92C /* JYNewCommentCell.m in Sources */,
 				D6D622561C0D317E0039C4A7 /* JYPostMediaView.m in Sources */,
 				D61D1D4D1B4A65F200DE37DF /* UIView+MDCBorderedLabel.m in Sources */,
 				D689ED6A1AE42C8300CB4D2B /* UIView+Joyy.m in Sources */,
@@ -1168,6 +1184,7 @@
 				D6BD61711C1E788500EFC92C /* JYCreatePostController.m in Sources */,
 				D68486BE1B8C59BF005CA0C4 /* JYMessage.m in Sources */,
 				D63F0D551AC7ACB70067C5EE /* JYSignUpViewController.m in Sources */,
+				D6BD617A1C20CC2300EFC92C /* JYReminderView.m in Sources */,
 				D6966B3A1BA3873200AAD8D5 /* JYCountryViewCell.m in Sources */,
 				D61D1DA81B4E336E00DE37DF /* TGPhotoViewController.m in Sources */,
 				D61D1DB41B4E336E00DE37DF /* TGCameraFocus.m in Sources */,
@@ -1176,6 +1193,7 @@
 				D61D1DAC1B4E336E00DE37DF /* TGAssetsLibrary.m in Sources */,
 				D61D1DBC1B4E336E00DE37DF /* TGAssetImageFile.m in Sources */,
 				D68486B61B8AC267005CA0C4 /* JYSessionViewController.m in Sources */,
+				D6BD61771C2007EF00EFC92C /* JYNewCommentViewController.m in Sources */,
 				D67DD0EC1B75321A00333626 /* JYUser.m in Sources */,
 				D6903D191C0BA44A00CDC64F /* JYYRS.m in Sources */,
 				D68DAF971AC4CACD00838E7E /* JYSignInViewController.m in Sources */,

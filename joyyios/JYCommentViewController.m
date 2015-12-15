@@ -22,7 +22,6 @@
 
 @interface JYCommentViewController ()
 @property (nonatomic) JYComment *originalComment;
-@property (nonatomic) JYCommentlineCell *sizingCell;
 @property (nonatomic) JYPost *post;
 @property (nonatomic) MSWeakTimer *closeTimer;
 @property (nonatomic) NSInteger networkThreadCount;

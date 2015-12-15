@@ -165,6 +165,18 @@ static NSString *const SELECT_ALL_SQL = @"SELECT * FROM %@ ORDER BY id ASC";
     });
 }
 
+- (JYPost *)selectPostWithId:(NSNumber *)postId
+{
+    NSString *sql = [NSString stringWithFormat:SELECT_KEY_SQL, @"post", @"id"];
+    NSMutableArray *result = [self _executeSelect:sql keyId:postId ofClass: JYPost.class];
+
+    if ([result count] == 0)
+    {
+        return nil;
+    }
+    return result[0];
+}
+
 - (NSMutableArray *)selectPostsSinceId:(NSNumber *)minId beforeId:(NSNumber *)maxId
 {
     NSString *sql = [NSString stringWithFormat:SELECT_RANGE_SQL, @"post"];

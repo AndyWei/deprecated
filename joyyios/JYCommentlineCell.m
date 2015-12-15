@@ -11,6 +11,7 @@
 #import <TTTAttributedLabel/TTTAttributedLabel.h>
 
 #import "JYButton.h"
+#import "JYComment.h"
 #import "JYCommentlineCell.h"
 #import "JYFriendManager.h"
 
