@@ -71,7 +71,7 @@ static NSString *kActionURL = @"action://_didTapReminderLabel";
         label.layer.masksToBounds = YES;
 
         label.linkAttributes = @{
-                                 (NSString*)kCTForegroundColorAttributeName: (__bridge id)(JoyyWhite.CGColor),
+                                 (NSString*)kCTForegroundColorAttributeName: (__bridge id)(JoyyWhitePure.CGColor),
                                  (NSString *)kCTUnderlineStyleAttributeName: [NSNumber numberWithBool:NO]
                                  };
         label.activeLinkAttributes = @{

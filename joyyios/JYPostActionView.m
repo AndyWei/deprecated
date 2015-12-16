@@ -109,7 +109,7 @@
     if (!_deleteButton)
     {
         _deleteButton = [self _buttonWithImage:[UIImage imageNamed:@"delete"]];
-        _deleteButton.contentEdgeInsets = UIEdgeInsetsMake(9, 9, 9, 9);
+        _deleteButton.contentEdgeInsets = UIEdgeInsetsMake(12, 12, 12, 12);
         [_deleteButton addTarget:self action:@selector(_didTapDeleteButton) forControlEvents:UIControlEventTouchUpInside];
     }
     return _deleteButton;

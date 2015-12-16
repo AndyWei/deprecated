@@ -37,6 +37,7 @@
 @property (nonatomic) NSInteger networkThreadCount;
 @property (nonatomic) NSDate *oldestDate;
 @property (nonatomic) NSMutableArray *postList;
+@property (nonatomic) NSMutableArray *unreadCommentList;
 @property (nonatomic) NSNumber *newestPostId;
 @property (nonatomic) UIButton *titleButton;
 @property (nonatomic) UITableView *tableView;
@@ -65,7 +66,7 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
     self.newestPostId = 0;
 
 //    self.reminderView.alpha = 0;
-    self.reminderView.text = @"5 new comments";
+//    self.reminderView.text = @"5 new comments";
     [self.view addSubview:self.tableView];
     [self.view addSubview:self.cameraButton];
 
@@ -108,9 +109,6 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
         footer.refreshingTitleHidden = YES;
         footer.stateLabel.hidden = YES;
         _tableView.mj_footer = footer;
-
-        // reminder view
-        _tableView.tableHeaderView = self.reminderView;
     }
     return _tableView;
 }
@@ -380,9 +378,10 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
 
 - (void)_showNewComments
 {
+    self.tableView.tableHeaderView = nil;
+
     JYNewCommentViewController *viewController = [[JYNewCommentViewController alloc] init];
-    JYPost *post = self.postList[0];
-    viewController.commentList = post.commentList;
+    viewController.commentList = self.unreadCommentList;
     [self.navigationController pushViewController:viewController animated:YES];
 }
 
@@ -588,6 +587,37 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
         }
     }
     return postList;
+}
+
+- (void)_receivedNewComments:(NSArray *)list
+{
+    NSMutableSet *antiCommentIdSet = [NSMutableSet new];
+    for (JYComment *comment in list)
+    {
+        NSNumber *antiCommentId = [comment antiCommentId];
+        if (antiCommentId)
+        {
+            [antiCommentIdSet addObject:antiCommentId];
+        }
+    }
+
+    self.unreadCommentList = [NSMutableArray new];
+    for (JYComment *comment in list)
+    {
+        NSNumber *antiCommentId = [comment antiCommentId];
+        if (!antiCommentId && ![antiCommentIdSet containsObject:comment.commentId])
+        {
+            [self.unreadCommentList addObject:comment];
+        }
+    }
+
+    uint64_t count = [self.unreadCommentList count];
+    if (count > 0)
+    {
+        NSString *comments = NSLocalizedString(@"new comments", nil);
+        self.reminderView.text = [NSString stringWithFormat:@"%llu %@", count, comments];
+        self.tableView.tableHeaderView = self.reminderView;
+    }
 }
 
 - (void)_like:(JYPost *)post
@@ -825,6 +855,7 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
              if ([commentList count] > 0)
              {
                  [[JYLocalDataManager sharedInstance] receivedCommentList:commentList];
+                 [weakSelf _receivedNewComments:commentList];
                  [weakSelf _refreshCommentsForPostList:weakSelf.postList];
                  [weakSelf.tableView reloadData];
              }
