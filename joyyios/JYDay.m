@@ -1,14 +1,14 @@
 //
-//  JoyyMonth.m
+//  JYDay.m
 //  joyyios
 //
-//  Created by Ping Yang on 12/9/15.
+//  Created by Ping Yang on 12/17/15.
 //  Copyright © 2015 Joyy Inc. All rights reserved.
 //
 
-#import "JYMonth.h"
+#import "JYDay.h"
 
-@implementation JYMonth
+@implementation JYDay
 
 - (instancetype)initWithDate:(NSDate *)date
 {
@@ -16,10 +16,12 @@
     {
         self.date = date;
 
-        NSDateComponents *components = [[NSCalendar currentCalendar] components: NSCalendarUnitMonth | NSCalendarUnitYear fromDate:date];
+        NSDateComponents *components = [[NSCalendar currentCalendar] components: NSCalendarUnitDay | NSCalendarUnitMonth | NSCalendarUnitYear fromDate:date];
         uint64_t year = (uint64_t)[components year];
         uint64_t month = (uint64_t)[components month];
-        self.value = ((year - 2000) * 100) + month;
+        uint64_t day = (uint64_t)[components day];
+
+        self.value = ((year - 2000) * 10000) + (month * 100) + day;
     }
     return self;
 }
@@ -27,21 +29,21 @@
 - (instancetype)prev
 {
     NSDateComponents *dateComponents = [[NSDateComponents alloc] init];
-    [dateComponents setMonth:-1];
+    [dateComponents setDay:-1];
     NSCalendar *calendar = [NSCalendar currentCalendar];
     NSDate *newDate = [calendar dateByAddingComponents:dateComponents toDate:self.date options:0];
 
-    return [[JYMonth alloc] initWithDate:newDate];
+    return [[JYDay alloc] initWithDate:newDate];
 }
 
 - (instancetype)next
 {
     NSDateComponents *dateComponents = [[NSDateComponents alloc] init];
-    [dateComponents setMonth:+1];
+    [dateComponents setDay:1];
     NSCalendar *calendar = [NSCalendar currentCalendar];
     NSDate *newDate = [calendar dateByAddingComponents:dateComponents toDate:self.date options:0];
 
-    return [[JYMonth alloc] initWithDate:newDate];
+    return [[JYDay alloc] initWithDate:newDate];
 }
 
 @end

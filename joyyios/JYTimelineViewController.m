@@ -14,6 +14,7 @@
 #import "JYComment.h"
 #import "JYCommentViewController.h"
 #import "JYCreatePostController.h"
+#import "JYDay.h"
 #import "JYFriendManager.h"
 #import "JYLocalDataManager.h"
 #import "JYNewCommentViewController.h"
@@ -32,10 +33,10 @@
 @property (nonatomic) CABasicAnimation *colorPulse;
 @property (nonatomic) JYButton *cameraButton;
 @property (nonatomic) JYCreatePostController *createPostController;
+@property (nonatomic) JYDay *minDay;
 @property (nonatomic) JYPost *currentPost;
 @property (nonatomic) JYReminderView *reminderView;
 @property (nonatomic) NSInteger networkThreadCount;
-@property (nonatomic) NSDate *oldestDate;
 @property (nonatomic) NSMutableArray *postList;
 @property (nonatomic) NSMutableArray *unreadCommentList;
 @property (nonatomic) NSNumber *newestPostId;
@@ -532,8 +533,7 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
        NSNumber *sinceId = [JYLocalDataManager sharedInstance].maxCommentIdInDB;
         if (sinceId > 0)
         {
-            NSNumber *maxLongLong = [NSNumber numberWithUnsignedLongLong:LLONG_MAX];
-            [self _fetchCommentsSinceId:sinceId beforeId:maxLongLong];
+            [self _fetchCommentsSinceId:[sinceId unsignedLongLongValue] beforeId:LLONG_MAX];
         }
         return;
     }
@@ -542,8 +542,7 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
     self.newestPostId = newestPost.postId;
 
     NSNumber *sinceId = ((JYPost *)[postList lastObject]).postId;
-    NSNumber *maxLongLong = [NSNumber numberWithUnsignedLongLong:LLONG_MAX];
-    [self _fetchCommentsSinceId:sinceId beforeId:maxLongLong];
+    [self _fetchCommentsSinceId:[sinceId unsignedLongLongValue] beforeId:LLONG_MAX];
 
     NSMutableArray *purifiedPostList = [self _purifiedPostListFromList:postList];
     [[JYLocalDataManager sharedInstance] insertObjects:purifiedPostList ofClass:JYPost.class];
@@ -565,16 +564,17 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
         return;
     }
 
-    NSNumber *sinceId = ((JYPost *)[postList lastObject]).postId;
-    NSNumber *beforeId = [NSNumber numberWithUnsignedLongLong:LLONG_MAX];
+    uint64_t minId = [((JYPost *)[postList lastObject]).postId unsignedLongLongValue];
+    uint64_t maxId = LLONG_MAX;
     if ([self.postList count] > 0)
     {
-        beforeId = ((JYPost *)[self.postList lastObject]).postId; // the comment id larger than beforeId should already been fetched
+        JYPost *post = [self.postList lastObject];
+        maxId = [post.postId unsignedLongLongValue]; // the comment id larger than maxId should already be fetched
     }
 
-    if ([sinceId unsignedLongLongValue] < [beforeId unsignedLongLongValue])
+    if (minId < maxId)
     {
-        [self _fetchCommentsSinceId:sinceId beforeId:beforeId];
+        [self _fetchCommentsSinceId:minId beforeId:maxId];
     }
 
     NSArray *purifiedPostList = [self _purifiedPostListFromList:postList];
@@ -701,16 +701,16 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
 - (void)_fetchLocalTimelineWithAction:(Action)action
 {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        NSNumber *minId = [NSDate minIdWithOffsetInDays:OFFSET_DAYS];
-        NSNumber *maxId = [NSDate idOfNow];
-
+        NSDate *date = [[NSDate date] dateByAddingTimeInterval:60 * 60 * 24 * OFFSET_DAYS];
+        NSNumber *minId = [date minId];
+        NSNumber *maxId = [[NSDate date] currentId];
 
         self.postList = [[JYLocalDataManager sharedInstance] selectPostsSinceId:minId beforeId:maxId];
 
         if ([self.postList count] == 0)
         {
             self.newestPostId = 0;
-            self.oldestDate = [NSDate date];
+            self.minDay = [[JYDay alloc] initWithDate:[NSDate date]];
         }
         else
         {
@@ -718,7 +718,8 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
             self.newestPostId = newestPost.postId;
 
             JYPost *oldestPost = [self.postList lastObject];
-            self.oldestDate = [NSDate dateOfId:oldestPost.postId];
+            NSDate *date = [NSDate dateOfId:oldestPost.postId];
+            self.minDay = [[JYDay alloc] initWithDate:date];
         }
 
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -745,8 +746,8 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
     }
     self.pendingAction = nil;
 
-    NSNumber *day = [[NSDate date] joyyDay];
-    [self _fetchRemoteTimelineOfDay:day sinceId:self.newestPostId];
+    JYDay *today = [[JYDay alloc] initWithDate:[NSDate date]];
+    [self _fetchRemoteTimelineOfDay:today.value sinceId:[self.newestPostId unsignedLongLongValue]];
 }
 
 - (void)_fetchOldPost
@@ -761,24 +762,22 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
     }
     self.pendingAction = nil;
 
-    self.oldestDate = [self.oldestDate dateByAddingTimeInterval:60 * 60 * 24 * (-1)];
-    NSNumber *day = [self.oldestDate joyyDay];
-    [self _fetchTimelineOfDay:day];
+    self.minDay = [self.minDay prev];
+    [self _fetchTimelineOfDay:self.minDay];
 }
 
-- (void)_fetchTimelineOfDay:(NSNumber *)joyyDay
+- (void)_fetchTimelineOfDay:(JYDay *)jyDay
 {
     // fetch local timeline first, if none, then fetch remote timeline
-    NSDate *thatDay = [NSDate dateOfJoyyDay:joyyDay];
-    NSNumber *minId = [NSDate minIdOfDay:thatDay];
+    NSNumber *minId = [jyDay.date minId];
 
-    NSDate *nextDay = [thatDay dateByAddingTimeInterval:60 * 60 * 24];
-    NSNumber *maxId = [NSDate minIdOfDay:nextDay];
+    JYDay *nextDay = [jyDay next];
+    NSNumber *maxId = [nextDay.date minId];
 
     NSArray *postList = [[JYLocalDataManager sharedInstance] selectPostsSinceId:minId beforeId:maxId];
     if ([postList count] == 0)
     {
-        [self _fetchRemoteTimelineOfDay:joyyDay sinceId:0];
+        [self _fetchRemoteTimelineOfDay:jyDay.value sinceId:0];
     }
     else
     {
@@ -794,7 +793,7 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
     }
 }
 
-- (void)_fetchRemoteTimelineOfDay:(NSNumber *)day sinceId:(NSNumber *)minId
+- (void)_fetchRemoteTimelineOfDay:(uint64_t)day sinceId:(uint64_t)minId
 {
     if (self.networkThreadCount > 0)
     {
@@ -806,11 +805,7 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
     AFHTTPSessionManager *manager = [AFHTTPSessionManager managerWithToken];
 
     NSString *url = [NSString apiURLWithPath:@"post/timeline"];
-
-    uint64_t dayValue = [day unsignedLongLongValue];
-    uint64_t sinceValue = [minId unsignedLongLongValue];
-    NSLog(@"post/timeline params: day = %llu, sinceid = %llu", dayValue, sinceValue);
-    NSDictionary *parameters = @{@"day": @(dayValue), @"sinceid": @(sinceValue)};
+    NSDictionary *parameters = @{@"day": @(day), @"sinceid": @(minId)};
 
     __weak typeof(self) weakSelf = self;
     [manager GET:url
@@ -847,19 +842,13 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
      ];
 }
 
-- (void)_fetchCommentsSinceId:(NSNumber *)minId beforeId:(NSNumber *)maxId
+- (void)_fetchCommentsSinceId:(uint64_t)minId beforeId:(uint64_t)maxId
 {
     [self _networkThreadBegin];
 
     AFHTTPSessionManager *manager = [AFHTTPSessionManager managerWithToken];
-
     NSString *url = [NSString apiURLWithPath:@"post/commentline"];
-
-    uint64_t sinceid = [minId unsignedLongLongValue];
-    uint64_t beforeid = [maxId unsignedLongLongValue];
-    NSLog(@"post/commentline params: sinceid = %llu, beforeid = %llu", sinceid, beforeid);
-
-    NSDictionary *parameters = @{@"sinceid": @(sinceid), @"beforeid": @(beforeid)};
+    NSDictionary *parameters = @{@"sinceid": @(minId), @"beforeid": @(maxId)};
 
     __weak typeof(self) weakSelf = self;
     [manager GET:url

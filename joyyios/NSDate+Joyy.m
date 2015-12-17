@@ -12,7 +12,7 @@ const uint64_t JOYY_EPOCH = 1420070400000; // 01 Jan 2015 00:00:00 GMT
 
 @implementation NSDate (Joyy)
 
-+ (NSDate *)beginningOfDay:(NSDate *)date
++ (NSDate *)beginningOfDate:(NSDate *)date
 {
     NSCalendar *calendar = [NSCalendar currentCalendar];
     NSDateComponents *components = [calendar components:NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay fromDate:date];
@@ -34,26 +34,6 @@ const uint64_t JOYY_EPOCH = 1420070400000; // 01 Jan 2015 00:00:00 GMT
     return timestamp;
 }
 
-+ (NSNumber *)idOfNow
-{
-    uint64_t timestamp = (uint64_t)([[NSDate date] timeIntervalSince1970] * 1000);
-    return [NSDate idFromTimestamp:timestamp];
-}
-
-+ (NSNumber *)minIdOfDay:(NSDate *)date
-{
-    NSDate *midnight = [NSDate beginningOfDay:date];
-    uint64_t timestamp = (uint64_t)([midnight timeIntervalSince1970] * 1000);
-    return [NSDate idFromTimestamp:timestamp];
-}
-
-+ (NSNumber *)minIdWithOffsetInDays:(NSInteger)days
-{
-    NSDate *now = [NSDate date];
-    NSDate *newDate = [now dateByAddingTimeInterval:60 * 60 * 24 * days];
-    return [NSDate minIdOfDay:newDate];
-}
-
 + (NSDate *)dateOfId:(NSNumber *)objId
 {
     uint64_t timestamp = [NSDate timestampFromId:objId];
@@ -62,32 +42,17 @@ const uint64_t JOYY_EPOCH = 1420070400000; // 01 Jan 2015 00:00:00 GMT
     return date;
 }
 
-+ (NSDate *)dateOfJoyyDay:(NSNumber *)joyyDay
+- (NSNumber *)currentId
 {
-    NSInteger value = [joyyDay integerValue];
-    NSInteger year = (value / 10000) + 2000;
-    NSInteger month = ((value % 10000) / 100);
-    NSInteger day = (value % 100);
-
-    NSCalendar *calendar = [NSCalendar currentCalendar];
-    NSDateComponents *components = [[NSDateComponents alloc] init];
-
-    [components setDay:day];
-    [components setMonth:month];
-    [components setYear:year];
-    NSDate *date = [calendar dateFromComponents:components];
-    return date;
+    uint64_t timestamp = (uint64_t)([self timeIntervalSince1970] * 1000);
+    return [NSDate idFromTimestamp:timestamp];
 }
 
-- (NSNumber *)joyyDay
+- (NSNumber *)minId
 {
-    NSDateComponents *components = [[NSCalendar currentCalendar] components:NSCalendarUnitDay | NSCalendarUnitMonth | NSCalendarUnitYear fromDate:self];
-    uint64_t year = (uint64_t)[components year];
-    uint64_t month = (uint64_t)[components month];
-    uint64_t day = (uint64_t)[components day];
-
-    uint64_t value = ((year - 2000) * 10000) + (month * 100) + day;
-    return [NSNumber numberWithUnsignedLongLong:value];
+    NSDate *midnight = [NSDate beginningOfDate:self];
+    uint64_t timestamp = (uint64_t)([midnight timeIntervalSince1970] * 1000);
+    return [NSDate idFromTimestamp:timestamp];
 }
 
 - (NSString *)ageString

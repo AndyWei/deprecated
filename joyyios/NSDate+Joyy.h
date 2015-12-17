@@ -8,14 +8,11 @@
 
 @interface NSDate (Joyy)
 
-+ (NSNumber *)idOfNow;
-+ (NSNumber *)minIdWithOffsetInDays:(NSInteger)days;
-+ (NSNumber *)minIdOfDay:(NSDate *)date;
 + (NSDate *)dateOfId:(NSNumber *)objId;
-+ (NSDate *)dateOfJoyyDay:(NSNumber *)joyyDay;
 
-- (NSNumber *)joyyDay;
+- (NSNumber *)currentId;
+- (NSNumber *)minId;
 - (NSString *)ageString;
-
 - (NSString *)localeStringWithDateStyle:(NSDateFormatterStyle)dateStyle timeStyle:(NSDateFormatterStyle)timeStyle;
+
 @end

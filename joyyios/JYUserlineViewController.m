@@ -358,9 +358,9 @@ static CGFloat kCardViewDefaultHeight = 150;
         return;
     }
 
-    uint64_t month = self.month.value;
+    uint64_t monthValue = self.month.value;
     self.month = [self.month prev];
-    [self _fetchUserlineOfMonth:month];
+    [self _fetchUserlineOfMonth:monthValue];
 }
 
 - (void)_fetchUserlineOfMonth:(uint64_t)month
