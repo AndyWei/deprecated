@@ -19,7 +19,7 @@
 #import "JYNewCommentViewController.h"
 #import "JYPhotoCaptionViewController.h"
 #import "JYPost.h"
-#include "JYReminderView.h"
+#import "JYReminderView.h"
 #import "JYTimelineCell.h"
 #import "JYTimelineViewController.h"
 #import "JYUserlineViewController.h"
@@ -65,8 +65,6 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
     self.postList = [NSMutableArray new];
     self.newestPostId = 0;
 
-//    self.reminderView.alpha = 0;
-//    self.reminderView.text = @"5 new comments";
     [self.view addSubview:self.tableView];
     [self.view addSubview:self.cameraButton];
 
@@ -126,6 +124,7 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
 {
     if (!self.currentPost)
     {
+        [self.tableView reloadData];
         return;
     }
 
@@ -378,10 +377,11 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
 
 - (void)_showNewComments
 {
-    self.tableView.tableHeaderView = nil;
+//    self.tableView.tableHeaderView = nil;
 
     JYNewCommentViewController *viewController = [[JYNewCommentViewController alloc] init];
-    viewController.commentList = self.unreadCommentList;
+    viewController.commentList = [NSArray arrayWithArray:self.unreadCommentList];
+    self.unreadCommentList = nil;
     [self.navigationController pushViewController:viewController animated:YES];
 }
 
@@ -476,6 +476,34 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
 }
 
 #pragma mark - UITableView Delegate
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    if (section != 0)
+    {
+        return 0;
+    }
+
+    if (self.unreadCommentList)
+    {
+        return 40;
+    }
+    return 0;
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+{
+    if (section != 0)
+    {
+        return nil;
+    }
+
+    if (self.unreadCommentList)
+    {
+        return self.reminderView;
+    }
+    return nil;
+}
 
 #pragma mark - Maintain table
 
@@ -616,7 +644,6 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
     {
         NSString *comments = NSLocalizedString(@"new comments", nil);
         self.reminderView.text = [NSString stringWithFormat:@"%llu %@", count, comments];
-        self.tableView.tableHeaderView = self.reminderView;
     }
 }
 
@@ -855,8 +882,8 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
              if ([commentList count] > 0)
              {
                  [[JYLocalDataManager sharedInstance] receivedCommentList:commentList];
-                 [weakSelf _receivedNewComments:commentList];
                  [weakSelf _refreshCommentsForPostList:weakSelf.postList];
+                 [weakSelf _receivedNewComments:commentList];
                  [weakSelf.tableView reloadData];
              }
              [weakSelf _networkThreadEnd];
