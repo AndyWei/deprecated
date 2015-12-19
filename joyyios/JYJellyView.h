@@ -6,8 +6,9 @@
 //  Copyright © 2015 Joyy Inc. All rights reserved.
 //
 
+#import "MJRefreshHeader.h"
 
-@interface JYJellyView : UIView
+@interface JYJellyView : MJRefreshHeader
 
 @property (nonatomic) BOOL isLoading;
 @property (nonatomic) CGFloat controlPointOffset;

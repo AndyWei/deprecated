@@ -16,6 +16,9 @@
 @property (nonatomic) UIImageView *ballView;
 @end
 
+static const CGFloat kJellyHeaderHeight = 300;
+static const CGFloat kJellyStartThreshold = 64.5;
+static const CGFloat kJellyLenth = 80;
 static NSString *const kBoundaryIdentifier = @"boundaryIdentifier";
 
 @implementation JYJellyView
@@ -124,6 +127,93 @@ static NSString *const kBoundaryIdentifier = @"boundaryIdentifier";
     rotationAnimation.repeatCount = HUGE_VALF;
     rotationAnimation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionLinear];
     [self.ballView.layer addAnimation:rotationAnimation forKey:@"rotationAnimation"];
+}
+
+#pragma mark 在这里做一些初始化配置（比如添加子控件）
+- (void)prepare
+{
+    [super prepare];
+
+    // 设置控件的高度
+    self.mj_h = kJellyHeaderHeight;
+
+    self.isLoading = NO;
+    self.isFirstTime = NO;
+    [self addSubview:self.controlPoint];
+    [self addSubview:self.ballView];
+
+    self.shapeLayer = [CAShapeLayer layer];
+    [self.layer insertSublayer:self.shapeLayer below:self.ballView.layer];
+}
+
+#pragma mark 在这里设置子控件的位置和尺寸
+- (void)placeSubviews
+{
+    [super placeSubviews];
+
+    self.userFrame = self.bounds;
+
+    self.logo.bounds = CGRectMake(0, 0, self.bounds.size.width, 100);
+    self.logo.center = CGPointMake(self.mj_w * 0.5, - self.logo.mj_h + 20);
+
+    self.loading.center = CGPointMake(self.mj_w - 30, self.mj_h * 0.5);
+}
+
+#pragma mark 监听scrollView的contentOffset改变
+- (void)scrollViewContentOffsetDidChange:(NSDictionary *)change
+{
+    [super scrollViewContentOffsetDidChange:change];
+}
+
+#pragma mark 监听scrollView的contentSize改变
+- (void)scrollViewContentSizeDidChange:(NSDictionary *)change
+{
+    [super scrollViewContentSizeDidChange:change];
+}
+
+#pragma mark 监听scrollView的拖拽状态改变
+- (void)scrollViewPanStateDidChange:(NSDictionary *)change
+{
+    [super scrollViewPanStateDidChange:change];
+}
+
+#pragma mark 监听控件的刷新状态
+- (void)setState:(MJRefreshState)state
+{
+    MJRefreshCheckState;
+
+    switch (state) {
+        case MJRefreshStateIdle:
+            [self.loading stopAnimating];
+            [self.s setOn:NO animated:YES];
+            self.label.text = @"赶紧下拉吖(开关是打酱油滴)";
+            break;
+        case MJRefreshStatePulling:
+            [self.loading stopAnimating];
+            [self.s setOn:YES animated:YES];
+            self.label.text = @"赶紧放开我吧(开关是打酱油滴)";
+            break;
+        case MJRefreshStateRefreshing:
+            [self.s setOn:YES animated:YES];
+            self.label.text = @"加载数据中(开关是打酱油滴)";
+            [self.loading startAnimating];
+            break;
+        default:
+            break;
+    }
+}
+
+#pragma mark 监听拖拽比例（控件被拖出来的比例）
+- (void)setPullingPercent:(CGFloat)pullingPercent
+{
+    [super setPullingPercent:pullingPercent];
+
+    // 1.0 0.5 0.0
+    // 0.5 0.0 0.5
+    CGFloat red = 1.0 - pullingPercent * 0.5;
+    CGFloat green = 0.5 - 0.5 * pullingPercent;
+    CGFloat blue = 0.5 * pullingPercent;
+    self.label.textColor = [UIColor colorWithRed:red green:green blue:blue alpha:1.0];
 }
 
 @end
