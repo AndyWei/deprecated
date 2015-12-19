@@ -16,6 +16,7 @@
 #import "JYCreatePostController.h"
 #import "JYDay.h"
 #import "JYFriendManager.h"
+#import "JYJellyView.h"
 #import "JYLocalDataManager.h"
 #import "JYNewCommentViewController.h"
 #import "JYPhotoCaptionViewController.h"
@@ -31,9 +32,11 @@
 
 @interface JYTimelineViewController () <TGCameraDelegate, UITableViewDataSource, UITableViewDelegate>
 @property (nonatomic) CABasicAnimation *colorPulse;
+@property (nonatomic) CADisplayLink *displayLink;
 @property (nonatomic) JYButton *cameraButton;
 @property (nonatomic) JYCreatePostController *createPostController;
 @property (nonatomic) JYDay *minDay;
+@property (nonatomic) JYJellyView *jellyView;
 @property (nonatomic) JYPost *currentPost;
 @property (nonatomic) JYReminderView *reminderView;
 @property (nonatomic) NSInteger networkThreadCount;
@@ -45,8 +48,11 @@
 @property (nonatomic, copy) Action pendingAction;
 @end
 
-static const NSInteger OFFSET_DAYS = -5;
+static const NSInteger OFFSET_DAYS = -10;
 static const CGFloat kCameraButtonWidth = 50;
+static const CGFloat kJellyHeaderHeight = 300;
+static const CGFloat kJellyStartThreshold = 64.5;
+static const CGFloat kJellyLenth = 80;
 static NSString *const kTimelineCellIdentifier = @"timelineCell";
 
 @implementation JYTimelineViewController
@@ -98,10 +104,10 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
         [_tableView registerClass:[JYTimelineCell class] forCellReuseIdentifier:kTimelineCellIdentifier];
 
         // Setup the pull-down-to-refresh header
-        MJRefreshNormalHeader *header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(_fetchNewPost)];
-        header.lastUpdatedTimeLabel.hidden = YES;
-        header.stateLabel.hidden = YES;
-        _tableView.mj_header = header;
+//        MJRefreshNormalHeader *header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(_fetchNewPost)];
+//        header.lastUpdatedTimeLabel.hidden = YES;
+//        header.stateLabel.hidden = YES;
+//        _tableView.mj_header = header;
 
         // Setup the pull-up-to-refresh footer
         MJRefreshAutoNormalFooter *footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(_fetchOldPost)];
@@ -448,6 +454,90 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
     }];
 }
 
+#pragma mark - UIScrollViewDelegate
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+{
+    CGFloat offset = -scrollView.contentOffset.y;
+    if (offset < kJellyStartThreshold)
+    {
+        if (self.jellyView.isLoading == NO)
+        {
+            [self _removeJellyView];
+        }
+        return;
+    }
+
+    if (!self.displayLink && offset > kJellyStartThreshold)
+    {
+        self.jellyView = [[JYJellyView alloc]initWithFrame:CGRectMake(0, -kJellyHeaderHeight, SCREEN_WIDTH, kJellyHeaderHeight)];
+        self.jellyView.backgroundColor = [UIColor clearColor];
+        [self.view insertSubview:self.jellyView aboveSubview:self.tableView];
+
+        self.displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(_displayLinkAction:)];
+        [self.displayLink addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSRunLoopCommonModes];
+    }
+    else if (offset < kJellyStartThreshold)
+    {
+        [self _removeJellyView];
+    }
+}
+
+//松手的时候
+-(void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
+{
+    CGFloat offset = -scrollView.contentOffset.y;
+    if (offset >= kJellyStartThreshold + kJellyLenth)
+    {
+        self.jellyView.isLoading = YES;
+
+        [UIView animateWithDuration:0.3 delay:0.0f usingSpringWithDamping:0.4f initialSpringVelocity:0.0f options:UIViewAnimationOptionCurveEaseInOut animations:^{
+
+            self.jellyView.controlPoint.center = CGPointMake(self.jellyView.userFrame.size.width / 2, kJellyHeaderHeight);
+            NSLog(@"self.jellyView.controlPoint.center:%@", NSStringFromCGPoint(self.jellyView.controlPoint.center));
+
+            self.tableView.contentInset = UIEdgeInsetsMake(kJellyLenth+kJellyStartThreshold, 0, 0, 0);
+        } completion:^(BOOL finished) {
+            [self performSelector:@selector(backToTop) withObject:nil afterDelay:2.0f];
+        }];
+    }
+}
+
+//动画结束，删除一切
+-(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
+{
+    if (self.jellyView.isLoading == NO)
+    {
+        [self _removeJellyView];
+    }
+}
+
+//跳到顶部的方法
+-(void)backToTop
+{
+    [self.jellyView.layer removeAnimationForKey:@"rotationAnimation"];
+    [UIView animateWithDuration:0.3 delay:0.0f usingSpringWithDamping:0.4f initialSpringVelocity:0.0f options:UIViewAnimationOptionCurveEaseInOut animations:^{
+        self.tableView.contentInset = UIEdgeInsetsMake(kJellyStartThreshold, 0, 0, 0);
+    } completion:^(BOOL finished) {
+        self.jellyView.isLoading = NO;
+        [self _removeJellyView];
+    }];
+}
+
+//持续刷新屏幕的计时器
+-(void)_displayLinkAction:(CADisplayLink *)link
+{
+    self.jellyView.controlPointOffset = (self.jellyView.isLoading == NO)? (-self.tableView.contentOffset.y - kJellyStartThreshold) : (self.jellyView.controlPoint.layer.position.y - self.jellyView.userFrame.size.height);
+    [self.jellyView setNeedsDisplay];
+}
+
+- (void)_removeJellyView
+{
+    [self.jellyView removeFromSuperview];
+    self.jellyView = nil;
+    [self.displayLink invalidate];
+    self.displayLink = nil;
+}
 
 #pragma mark - UITableViewDataSource
 

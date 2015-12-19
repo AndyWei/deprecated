@@ -126,27 +126,6 @@ static CGFloat kCardViewDefaultHeight = 150;
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (void)scrollViewDidScroll:(UIScrollView*)scrollView
-{
-    CGFloat offset = (-1) * _tableView.contentOffset.y;
-
-    self.cardViewHeightConstraint.constant = fmax(offset, kCardViewDefaultHeight);
-
-    if (offset < 120)
-    {
-        [UIView animateWithDuration:0.2 animations:^{
-             self.cardView.alpha = 0;
-        }];
-    }
-    else
-    {
-        self.cardView.alpha = 1.0;
-    }
-
-    [self.view setNeedsUpdateConstraints];
-    [self.view updateConstraintsIfNeeded];
-}
-
 - (void)_updateCardViewContent
 {
     self.cardView.titleLabel.text = self.user.username;
@@ -218,6 +197,29 @@ static CGFloat kCardViewDefaultHeight = 150;
 //
 ////    [self _createPostWithImage:image contentType:kContentTypeJPG caption:caption];
 ////    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+#pragma mark - UIScrollViewDelegate
+
+- (void)scrollViewDidScroll:(UIScrollView*)scrollView
+{
+    CGFloat offset = (-1) * _tableView.contentOffset.y;
+
+    self.cardViewHeightConstraint.constant = fmax(offset, kCardViewDefaultHeight);
+
+    if (offset < 120)
+    {
+        [UIView animateWithDuration:0.2 animations:^{
+            self.cardView.alpha = 0;
+        }];
+    }
+    else
+    {
+        self.cardView.alpha = 1.0;
+    }
+
+    [self.view setNeedsUpdateConstraints];
+    [self.view updateConstraintsIfNeeded];
 }
 
 #pragma mark - UITableViewDataSource

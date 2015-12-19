@@ -55,6 +55,7 @@
 		D63147461C1A826500EAE05E /* JYFriendViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D63147451C1A826500EAE05E /* JYFriendViewController.m */; };
 		D63147491C1A829C00EAE05E /* JYFriendCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D63147481C1A829C00EAE05E /* JYFriendCell.m */; };
 		D632E9981C23464200D5837C /* JYDay.m in Sources */ = {isa = PBXBuildFile; fileRef = D632E9971C23464200D5837C /* JYDay.m */; };
+		D632E99B1C24CD0900D5837C /* JYJellyView.m in Sources */ = {isa = PBXBuildFile; fileRef = D632E99A1C24CD0900D5837C /* JYJellyView.m */; };
 		D6348D2F1ADB4DD60002BC35 /* NSString+Joyy.m in Sources */ = {isa = PBXBuildFile; fileRef = D6348D2E1ADB4DD60002BC35 /* NSString+Joyy.m */; };
 		D6348D371ADB7ABC0002BC35 /* NSMutableDictionary+Joyy.m in Sources */ = {isa = PBXBuildFile; fileRef = D6348D361ADB7ABC0002BC35 /* NSMutableDictionary+Joyy.m */; };
 		D63591951BEA913500BFFF82 /* JYDeviceManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D63591941BEA913500BFFF82 /* JYDeviceManager.m */; };
@@ -223,6 +224,8 @@
 		D63147481C1A829C00EAE05E /* JYFriendCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYFriendCell.m; sourceTree = "<group>"; };
 		D632E9961C23464200D5837C /* JYDay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYDay.h; sourceTree = "<group>"; };
 		D632E9971C23464200D5837C /* JYDay.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYDay.m; sourceTree = "<group>"; };
+		D632E9991C24CD0900D5837C /* JYJellyView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYJellyView.h; sourceTree = "<group>"; };
+		D632E99A1C24CD0900D5837C /* JYJellyView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYJellyView.m; sourceTree = "<group>"; };
 		D6348D2D1ADB4DD60002BC35 /* NSString+Joyy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Joyy.h"; sourceTree = "<group>"; };
 		D6348D2E1ADB4DD60002BC35 /* NSString+Joyy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Joyy.m"; sourceTree = "<group>"; };
 		D6348D351ADB7ABC0002BC35 /* NSMutableDictionary+Joyy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableDictionary+Joyy.h"; sourceTree = "<group>"; };
@@ -730,6 +733,8 @@
 				D6966B311BA2BB2B00AAD8D5 /* UITextField+Joyy.m */,
 				D689ED681AE42C8300CB4D2B /* UIView+Joyy.h */,
 				D689ED691AE42C8300CB4D2B /* UIView+Joyy.m */,
+				D632E9991C24CD0900D5837C /* JYJellyView.h */,
+				D632E99A1C24CD0900D5837C /* JYJellyView.m */,
 			);
 			name = Common;
 			sourceTree = "<group>";
@@ -1129,6 +1134,7 @@
 				D6F7F1491BA8ED76008118DA /* JYFacialGestureCamera.m in Sources */,
 				D63F0D591AC7CFF20067C5EE /* JYButton.m in Sources */,
 				D63B69BA1AC624F8005600A9 /* JYAutoCompleteDataSource.m in Sources */,
+				D632E99B1C24CD0900D5837C /* JYJellyView.m in Sources */,
 				D69FF6DB1B96471600466FE5 /* JYAmazonClientManager.m in Sources */,
 				D644BF781C17F453005187C2 /* JYUserlineViewController.m in Sources */,
 				D63147491C1A829C00EAE05E /* JYFriendCell.m in Sources */,
