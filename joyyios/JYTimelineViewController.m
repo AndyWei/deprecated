@@ -32,7 +32,6 @@
 
 @interface JYTimelineViewController () <TGCameraDelegate, UITableViewDataSource, UITableViewDelegate>
 @property (nonatomic) CABasicAnimation *colorPulse;
-@property (nonatomic) CADisplayLink *displayLink;
 @property (nonatomic) JYButton *cameraButton;
 @property (nonatomic) JYCreatePostController *createPostController;
 @property (nonatomic) JYDay *minDay;
@@ -452,91 +451,6 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
                      textColor:FlatBlack
                           time:5];
     }];
-}
-
-#pragma mark - UIScrollViewDelegate
-
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView
-{
-    CGFloat offset = -scrollView.contentOffset.y;
-    if (offset < kJellyStartThreshold)
-    {
-        if (self.jellyView.isLoading == NO)
-        {
-            [self _removeJellyView];
-        }
-        return;
-    }
-
-    if (!self.displayLink && offset > kJellyStartThreshold)
-    {
-        self.jellyView = [[JYJellyView alloc]initWithFrame:CGRectMake(0, -kJellyHeaderHeight, SCREEN_WIDTH, kJellyHeaderHeight)];
-        self.jellyView.backgroundColor = [UIColor clearColor];
-        [self.view insertSubview:self.jellyView aboveSubview:self.tableView];
-
-        self.displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(_displayLinkAction:)];
-        [self.displayLink addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSRunLoopCommonModes];
-    }
-    else if (offset < kJellyStartThreshold)
-    {
-        [self _removeJellyView];
-    }
-}
-
-//松手的时候
--(void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
-{
-    CGFloat offset = -scrollView.contentOffset.y;
-    if (offset >= kJellyStartThreshold + kJellyLenth)
-    {
-        self.jellyView.isLoading = YES;
-
-        [UIView animateWithDuration:0.3 delay:0.0f usingSpringWithDamping:0.4f initialSpringVelocity:0.0f options:UIViewAnimationOptionCurveEaseInOut animations:^{
-
-            self.jellyView.controlPoint.center = CGPointMake(self.jellyView.userFrame.size.width / 2, kJellyHeaderHeight);
-            NSLog(@"self.jellyView.controlPoint.center:%@", NSStringFromCGPoint(self.jellyView.controlPoint.center));
-
-            self.tableView.contentInset = UIEdgeInsetsMake(kJellyLenth+kJellyStartThreshold, 0, 0, 0);
-        } completion:^(BOOL finished) {
-            [self performSelector:@selector(backToTop) withObject:nil afterDelay:2.0f];
-        }];
-    }
-}
-
-//动画结束，删除一切
--(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
-{
-    if (self.jellyView.isLoading == NO)
-    {
-        [self _removeJellyView];
-    }
-}
-
-//跳到顶部的方法
--(void)backToTop
-{
-    [self.jellyView.layer removeAnimationForKey:@"rotationAnimation"];
-    [UIView animateWithDuration:0.3 delay:0.0f usingSpringWithDamping:0.4f initialSpringVelocity:0.0f options:UIViewAnimationOptionCurveEaseInOut animations:^{
-        self.tableView.contentInset = UIEdgeInsetsMake(kJellyStartThreshold, 0, 0, 0);
-    } completion:^(BOOL finished) {
-        self.jellyView.isLoading = NO;
-        [self _removeJellyView];
-    }];
-}
-
-//持续刷新屏幕的计时器
--(void)_displayLinkAction:(CADisplayLink *)link
-{
-    self.jellyView.controlPointOffset = (self.jellyView.isLoading == NO)? (-self.tableView.contentOffset.y - kJellyStartThreshold) : (self.jellyView.controlPoint.layer.position.y - self.jellyView.userFrame.size.height);
-    [self.jellyView setNeedsDisplay];
-}
-
-- (void)_removeJellyView
-{
-    [self.jellyView removeFromSuperview];
-    self.jellyView = nil;
-    [self.displayLink invalidate];
-    self.displayLink = nil;
 }
 
 #pragma mark - UITableViewDataSource

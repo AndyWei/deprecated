@@ -10,7 +10,6 @@
 
 @interface JYJellyView : MJRefreshHeader
 
-@property (nonatomic) BOOL isLoading;
 @property (nonatomic) CGFloat controlPointOffset;
 @property (nonatomic) CGFloat yOffset;
 @property (nonatomic) CGRect userFrame;
