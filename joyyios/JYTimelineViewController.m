@@ -35,7 +35,6 @@
 @property (nonatomic) JYButton *cameraButton;
 @property (nonatomic) JYCreatePostController *createPostController;
 @property (nonatomic) JYDay *minDay;
-@property (nonatomic) JYJellyView *jellyView;
 @property (nonatomic) JYPost *currentPost;
 @property (nonatomic) JYReminderView *reminderView;
 @property (nonatomic) NSInteger networkThreadCount;
@@ -103,10 +102,10 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
         [_tableView registerClass:[JYTimelineCell class] forCellReuseIdentifier:kTimelineCellIdentifier];
 
         // Setup the pull-down-to-refresh header
-//        MJRefreshNormalHeader *header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(_fetchNewPost)];
+        JYJellyView *header = [JYJellyView headerWithRefreshingTarget:self refreshingAction:@selector(_fetchNewPost)];
 //        header.lastUpdatedTimeLabel.hidden = YES;
 //        header.stateLabel.hidden = YES;
-//        _tableView.mj_header = header;
+        _tableView.mj_header = header;
 
         // Setup the pull-up-to-refresh footer
         MJRefreshAutoNormalFooter *footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(_fetchOldPost)];
