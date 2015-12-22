@@ -9,7 +9,6 @@
 #import "JYJellyView.h"
 
 @interface JYJellyView ()
-@property (nonatomic) CGFloat controlPointOffset;
 @property (nonatomic) CGFloat height;
 @property (nonatomic) CGFloat width;
 @property (nonatomic) UIView *controlPoint;
@@ -35,7 +34,7 @@ static NSString *const kRotationIdentifier = @"rotationAnimation";
         self.height = frame.size.height;
         self.width = frame.size.width;
         self.isRefreshing = NO;
-        self.backgroundColor = FlatGreen;
+        self.backgroundColor = ClearColor;
 
         [self addSubview:self.controlPoint];
         [self addSubview:self.ballView];
@@ -50,8 +49,9 @@ static NSString *const kRotationIdentifier = @"rotationAnimation";
 {
     if (!_controlPoint)
     {
-        _controlPoint = [[UIView alloc] initWithFrame:CGRectMake(self.width / 2, self.height, 10, 10)];
-        _controlPoint.backgroundColor = FlatBlack;
+        _controlPoint = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 10)];
+        _controlPoint.center = CGPointMake(self.width / 2, self.height);
+        _controlPoint.backgroundColor = ClearColor;
     }
     return _controlPoint;
 }
@@ -91,8 +91,6 @@ static NSString *const kRotationIdentifier = @"rotationAnimation";
 
 - (void)drawRect:(CGRect)rect
 {
-    self.controlPoint.center = CGPointMake(self.width / 2 , self.controlPointOffset);
-
     UIBezierPath *path = [UIBezierPath bezierPath];
     [path moveToPoint:CGPointMake(0, self.height)];
     [path addQuadCurveToPoint:CGPointMake(self.width, self.height) controlPoint:self.controlPoint.center];
@@ -101,7 +99,7 @@ static NSString *const kRotationIdentifier = @"rotationAnimation";
     [path closePath];
 
     self.shapeLayer.path = path.CGPath;
-    self.shapeLayer.fillColor = [UIColor redColor].CGColor;
+    self.shapeLayer.fillColor = FlatSand.CGColor;
 
     if (self.isRefreshing)
     {
@@ -120,7 +118,7 @@ static NSString *const kRotationIdentifier = @"rotationAnimation";
 {
     if (!self.snapBehavior)
     {
-        self.snapBehavior = [[ UISnapBehavior alloc] initWithItem:self.ballView snapToPoint:CGPointMake(self.width * 0.5, -50)];
+        self.snapBehavior = [[ UISnapBehavior alloc] initWithItem:self.ballView snapToPoint:CGPointMake(self.width * 0.5, 0)];
         self.snapBehavior.damping = 1.0;
         [self.animator addBehavior:self.snapBehavior];
     }
@@ -170,8 +168,15 @@ static NSString *const kRotationIdentifier = @"rotationAnimation";
 
 -(void)_displayLinkAction:(CADisplayLink *)link
 {
-    CGFloat y = (-self.contentOffsetY - 80);
-    self.controlPointOffset = fmax(y, 0);
+    if (self.isRefreshing)
+    {
+        self.controlPoint.center = CGPointMake(self.width / 2, self.height);
+    }
+    else
+    {
+        CGFloat y = -self.contentOffsetY;
+        self.controlPoint.center = CGPointMake(self.width / 2 , fmax(y, 0));
+    }
 
     [self setNeedsDisplay];
 }

@@ -6,16 +6,13 @@
 //  Copyright © 2015 Joyy Inc. All rights reserved.
 //
 
-#import "JYJellyView.h"
 #import "JYRefreshHeader.h"
 
 @interface JYRefreshHeader ()
 @property (nonatomic) BOOL needReset;
-@property (nonatomic) JYJellyView *jellyView;
 
 @end
 
-static const CGFloat kHeight = 54;
 static NSString *const kBoundaryIdentifier = @"boundaryIdentifier";
 static NSString *const kRotationIdentifier = @"rotationAnimation";
 
@@ -25,10 +22,9 @@ static NSString *const kRotationIdentifier = @"rotationAnimation";
 {
     [super prepare];
 
-    self.mj_h = kHeight;
     self.state = MJRefreshStateIdle;
     self.needReset = NO;
-    self.backgroundColor = FlatGreen;
+    self.backgroundColor = ClearColor;
 
     [self addSubview:self.jellyView];
 }
@@ -72,15 +68,6 @@ static NSString *const kRotationIdentifier = @"rotationAnimation";
     }
 }
 
-- (JYJellyView *)jellyView
-{
-    if (!_jellyView)
-    {
-        _jellyView = [[JYJellyView alloc] initWithFrame:CGRectMake(0, -kHeight, SCREEN_WIDTH, kHeight)];
-    }
-    return _jellyView;
-}
-
 - (void)_resetJellyView
 {
     if (!self.needReset)
@@ -90,11 +77,8 @@ static NSString *const kRotationIdentifier = @"rotationAnimation";
 
     [self.jellyView stopRotateBallView];
     [self.jellyView stopSnap];
-    [self.jellyView removeFromSuperview];
-    self.jellyView = nil;
-    [self addSubview:self.jellyView];
-
     self.needReset = NO;
+    [self.delegate refreshHeader:self willResetJellyView:self.jellyView];
 }
 
 @end

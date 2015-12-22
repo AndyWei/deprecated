@@ -16,6 +16,7 @@
 #import "JYCreatePostController.h"
 #import "JYDay.h"
 #import "JYFriendManager.h"
+#import "JYJellyView.h"
 #import "JYLocalDataManager.h"
 #import "JYNewCommentViewController.h"
 #import "JYPhotoCaptionViewController.h"
@@ -30,12 +31,14 @@
 #import "NSDate+Joyy.h"
 #import "UIImage+Joyy.h"
 
-@interface JYTimelineViewController () <TGCameraDelegate, UITableViewDataSource, UITableViewDelegate>
+@interface JYTimelineViewController () <JYRefreshHeaderDelegate, TGCameraDelegate, UITableViewDataSource, UITableViewDelegate>
 @property (nonatomic) CABasicAnimation *colorPulse;
 @property (nonatomic) JYButton *cameraButton;
 @property (nonatomic) JYCreatePostController *createPostController;
 @property (nonatomic) JYDay *minDay;
 @property (nonatomic) JYPost *currentPost;
+@property (nonatomic) JYJellyView *jellyView;
+@property (nonatomic) JYRefreshHeader *refreshHeader;
 @property (nonatomic) JYReminderView *reminderView;
 @property (nonatomic) NSInteger networkThreadCount;
 @property (nonatomic) NSMutableArray *postList;
@@ -48,6 +51,7 @@
 
 static const NSInteger OFFSET_DAYS = -10;
 static const CGFloat kCameraButtonWidth = 50;
+static const CGFloat kRefreshHeaderHeight = 54;
 static NSString *const kTimelineCellIdentifier = @"timelineCell";
 
 @implementation JYTimelineViewController
@@ -89,6 +93,7 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
     if (!_tableView)
     {
         _tableView = [[UITableView alloc] initWithFrame:self.view.frame style:UITableViewStylePlain];
+        _tableView.backgroundColor = FlatSand;
         _tableView.dataSource = self;
         _tableView.delegate = self;
         _tableView.estimatedRowHeight = 455;
@@ -99,10 +104,8 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
         [_tableView registerClass:[JYTimelineCell class] forCellReuseIdentifier:kTimelineCellIdentifier];
 
         // Setup the pull-down-to-refresh header
-        JYRefreshHeader *header = [JYRefreshHeader headerWithRefreshingTarget:self refreshingAction:@selector(_fetchNewPost)];
-//        header.lastUpdatedTimeLabel.hidden = YES;
-//        header.stateLabel.hidden = YES;
-        _tableView.mj_header = header;
+        _tableView.mj_header = self.refreshHeader;
+        [_tableView addSubview:self.jellyView];
 
         // Setup the pull-up-to-refresh footer
         MJRefreshAutoNormalFooter *footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(_fetchOldPost)];
@@ -111,6 +114,36 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
         _tableView.mj_footer = footer;
     }
     return _tableView;
+}
+
+- (JYRefreshHeader *)refreshHeader
+{
+    if (!_refreshHeader)
+    {
+        _refreshHeader = [JYRefreshHeader headerWithRefreshingTarget:self refreshingAction:@selector(_fetchNewPost)];
+        _refreshHeader.delegate = self;
+        _refreshHeader.jellyView = self.jellyView;
+    }
+    return _refreshHeader;
+}
+
+- (JYJellyView *)jellyView
+{
+    if (!_jellyView)
+    {
+        _jellyView = [[JYJellyView alloc] initWithFrame:CGRectMake(0, -kRefreshHeaderHeight, SCREEN_WIDTH, kRefreshHeaderHeight)];
+    }
+    return _jellyView;
+}
+
+#pragma mark - JYRefreshHeaderDelegate methods
+
+- (void)refreshHeader:(JYRefreshHeader *)header willResetJellyView:(JYJellyView *)jellyView
+{
+    [self.jellyView removeFromSuperview];
+    self.jellyView = nil;
+    [self.tableView addSubview:self.jellyView];
+    header.jellyView = self.jellyView;
 }
 
 - (void)viewWillAppear:(BOOL)animated
