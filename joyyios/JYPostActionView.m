@@ -42,7 +42,7 @@
                                 @"separator": self.separator
                                 };
 
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-10-[deleteButton(40)]-(>=160@500)-[likeButton(40)]-20-[commentButton(40)]-10-|" options:0 metrics:nil views:views]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(>=160@500)-[deleteButton(40)]-20-[likeButton(40)]-20-[commentButton(40)]-10-|" options:0 metrics:nil views:views]];
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(20)-[separator]|" options:0 metrics:nil views:views]];
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[commentButton][separator(0.5)]|" options:0 metrics:nil views:views]];
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[likeButton][separator(0.5)]|" options:0 metrics:nil views:views]];
@@ -109,7 +109,7 @@
     if (!_deleteButton)
     {
         _deleteButton = [self _buttonWithImage:[UIImage imageNamed:@"delete"]];
-        _deleteButton.contentEdgeInsets = UIEdgeInsetsMake(12, 12, 12, 12);
+        _deleteButton.contentEdgeInsets = UIEdgeInsetsMake(9, 8, 9, 8);
         [_deleteButton addTarget:self action:@selector(_didTapDeleteButton) forControlEvents:UIControlEventTouchUpInside];
     }
     return _deleteButton;

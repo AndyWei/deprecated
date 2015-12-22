@@ -40,6 +40,7 @@
 @property (nonatomic) JYJellyView *jellyView;
 @property (nonatomic) JYRefreshHeader *refreshHeader;
 @property (nonatomic) JYReminderView *reminderView;
+@property (nonatomic) NSDate *lastTimeFetchNew;
 @property (nonatomic) NSInteger networkThreadCount;
 @property (nonatomic) NSMutableArray *postList;
 @property (nonatomic) NSMutableArray *unreadCommentList;
@@ -71,6 +72,7 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
     self.currentPost = nil;
     self.postList = [NSMutableArray new];
     self.newestPostId = 0;
+    self.lastTimeFetchNew = [NSDate dateWithTimeIntervalSince1970:0]; // a fake old date
 
     [self.view addSubview:self.tableView];
     [self.view addSubview:self.cameraButton];
@@ -783,6 +785,14 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
     });
 }
 
+- (void)_stopRefreshWithDelay:(NSTimeInterval)seconds
+{
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, seconds * NSEC_PER_SEC);
+    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+        [self.tableView.mj_header endRefreshing];
+    });
+}
+
 - (void)_fetchNewPost
 {
     if ([JYCredential current].tokenValidInSeconds <= 0)
@@ -791,8 +801,20 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
         self.pendingAction = ^{
             [weakSelf _fetchNewPost];
         };
+
+        // delay 0.5 seconds to make the refresh header behave like a successful real fetch
+        [self _stopRefreshWithDelay:0.5];
         return;
     }
+
+    NSTimeInterval fetchAge = -self.lastTimeFetchNew.timeIntervalSinceNow;
+    if (fetchAge < 60) // only allow 1 fetching every 60 seconds
+    {
+        // delay 0.5 seconds to make the refresh header behave like a successful real fetch
+        [self _stopRefreshWithDelay:0.5];
+        return;
+    }
+
     self.pendingAction = nil;
 
     JYDay *today = [[JYDay alloc] initWithDate:[NSDate date]];
@@ -862,6 +884,7 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
          success:^(NSURLSessionTask *operation, id responseObject) {
              NSLog(@"post/timeline fetch success responseObject: %@", responseObject);
 
+             weakSelf.lastTimeFetchNew = [NSDate date];
              // the post json is in ASC order, so iterate reversely
              NSMutableArray *postList = [NSMutableArray new];
              for (NSDictionary *dict in [responseObject reverseObjectEnumerator])

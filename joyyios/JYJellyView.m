@@ -27,9 +27,7 @@ static NSString *const kRotationIdentifier = @"rotationAnimation";
 
 - (instancetype)initWithFrame:(CGRect)frame
 {
-    CGRect viewFrame = frame;
-    viewFrame.size.height =  frame.size.height + SCREEN_HEIGHT;
-    if (self = [super initWithFrame:viewFrame])
+    if (self = [super initWithFrame:frame])
     {
         self.width = frame.size.width;
         self.height = frame.size.height;
