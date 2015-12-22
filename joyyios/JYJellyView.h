@@ -6,8 +6,18 @@
 //  Copyright © 2015 Joyy Inc. All rights reserved.
 //
 
-#import "MJRefreshHeader.h"
+@interface JYJellyView : UIView
 
-@interface JYJellyView : MJRefreshHeader
+- (instancetype)initWithFrame:(CGRect)frame;
+- (void)startSnap;
+- (void)stopSnap;
+- (void)startRotateBallView;
+- (void)stopRotateBallView;
+- (void)startJellyBounce;
+- (void)stopJellyBounce;
+
+
+@property (nonatomic) BOOL isRefreshing;
+@property (nonatomic) CGFloat contentOffsetY;
 
 @end

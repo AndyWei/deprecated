@@ -16,11 +16,11 @@
 #import "JYCreatePostController.h"
 #import "JYDay.h"
 #import "JYFriendManager.h"
-#import "JYJellyView.h"
 #import "JYLocalDataManager.h"
 #import "JYNewCommentViewController.h"
 #import "JYPhotoCaptionViewController.h"
 #import "JYPost.h"
+#import "JYRefreshHeader.h"
 #import "JYReminderView.h"
 #import "JYTimelineCell.h"
 #import "JYTimelineViewController.h"
@@ -48,9 +48,6 @@
 
 static const NSInteger OFFSET_DAYS = -10;
 static const CGFloat kCameraButtonWidth = 50;
-static const CGFloat kJellyHeaderHeight = 300;
-static const CGFloat kJellyStartThreshold = 64.5;
-static const CGFloat kJellyLenth = 80;
 static NSString *const kTimelineCellIdentifier = @"timelineCell";
 
 @implementation JYTimelineViewController
@@ -102,7 +99,7 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
         [_tableView registerClass:[JYTimelineCell class] forCellReuseIdentifier:kTimelineCellIdentifier];
 
         // Setup the pull-down-to-refresh header
-        JYJellyView *header = [JYJellyView headerWithRefreshingTarget:self refreshingAction:@selector(_fetchNewPost)];
+        JYRefreshHeader *header = [JYRefreshHeader headerWithRefreshingTarget:self refreshingAction:@selector(_fetchNewPost)];
 //        header.lastUpdatedTimeLabel.hidden = YES;
 //        header.stateLabel.hidden = YES;
         _tableView.mj_header = header;

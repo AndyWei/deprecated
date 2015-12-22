@@ -9,31 +9,48 @@
 #import "JYJellyView.h"
 
 @interface JYJellyView ()
-@property (nonatomic) BOOL needReset;
-@property (nonatomic) CGFloat contentOffsetY;
 @property (nonatomic) CGFloat controlPointOffset;
+@property (nonatomic) CGFloat height;
+@property (nonatomic) CGFloat width;
 @property (nonatomic) UIView *controlPoint;
 @property (nonatomic) CADisplayLink *displayLink;
 @property (nonatomic) CAShapeLayer *shapeLayer;
 @property (nonatomic) UICollisionBehavior *collisionBehavior;
-@property (nonatomic) UISnapBehavior *snapBehavior;
 @property (nonatomic) UIDynamicAnimator *animator;
+@property (nonatomic) UISnapBehavior *snapBehavior;
 @property (nonatomic) UIImageView *ballView;
 @end
 
-static const CGFloat kOriginY = -50;
-static const CGFloat kHeight = 54;
 static NSString *const kBoundaryIdentifier = @"boundaryIdentifier";
 static NSString *const kRotationIdentifier = @"rotationAnimation";
 
 @implementation JYJellyView
 
+- (instancetype)initWithFrame:(CGRect)frame
+{
+    CGRect viewFrame = frame;
+    viewFrame.size.height =  frame.size.height + SCREEN_HEIGHT;
+    if (self = [super initWithFrame:viewFrame])
+    {
+        self.height = frame.size.height;
+        self.width = frame.size.width;
+        self.isRefreshing = NO;
+        self.backgroundColor = FlatGreen;
+
+        [self addSubview:self.controlPoint];
+        [self addSubview:self.ballView];
+
+        self.shapeLayer = [CAShapeLayer layer];
+        [self.layer insertSublayer:self.shapeLayer below:self.ballView.layer];
+    }
+    return self;
+}
+
 - (UIView *)controlPoint
 {
     if (!_controlPoint)
     {
-        _controlPoint = [[UIView alloc] initWithFrame:CGRectMake(0, kOriginY, 10, 10)];
-        _controlPoint.center = CGPointMake(SCREEN_WIDTH / 2, kHeight);
+        _controlPoint = [[UIView alloc] initWithFrame:CGRectMake(self.width / 2, self.height, 10, 10)];
         _controlPoint.backgroundColor = FlatBlack;
     }
     return _controlPoint;
@@ -43,7 +60,7 @@ static NSString *const kRotationIdentifier = @"rotationAnimation";
 {
     if (!_ballView)
     {
-        _ballView = [[UIImageView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH * 0.1, kOriginY, 40, 40)];
+        _ballView = [[UIImageView alloc] initWithFrame:CGRectMake(self.width * 0.1, 0, 40, 40)];
         _ballView.layer.cornerRadius = _ballView.bounds.size.width / 2;
         _ballView.image = [UIImage imageNamed:@"wink"];
         _ballView.backgroundColor = [UIColor clearColor];
@@ -74,21 +91,21 @@ static NSString *const kRotationIdentifier = @"rotationAnimation";
 
 - (void)drawRect:(CGRect)rect
 {
-    self.controlPoint.center = CGPointMake(SCREEN_WIDTH / 2 , self.controlPointOffset);
+    self.controlPoint.center = CGPointMake(self.width / 2 , self.controlPointOffset);
 
     UIBezierPath *path = [UIBezierPath bezierPath];
-    [path moveToPoint:CGPointMake(0, kOriginY + kHeight)];
-    [path addQuadCurveToPoint:CGPointMake(SCREEN_WIDTH, kOriginY + kHeight) controlPoint:self.controlPoint.center];
-    [path addLineToPoint:CGPointMake(SCREEN_WIDTH, kOriginY)];
-    [path addLineToPoint:CGPointMake(0, kOriginY)];
+    [path moveToPoint:CGPointMake(0, self.height)];
+    [path addQuadCurveToPoint:CGPointMake(self.width, self.height) controlPoint:self.controlPoint.center];
+    [path addLineToPoint:CGPointMake(self.width, 0)];
+    [path addLineToPoint:CGPointMake(0, 0)];
     [path closePath];
 
     self.shapeLayer.path = path.CGPath;
     self.shapeLayer.fillColor = [UIColor redColor].CGColor;
 
-    if (self.state == MJRefreshStateRefreshing)
+    if (self.isRefreshing)
     {
-        [self _startSnap];
+        [self startSnap];
     }
     else
     {
@@ -99,41 +116,17 @@ static NSString *const kRotationIdentifier = @"rotationAnimation";
     }
 }
 
-- (void)_resetViews
-{
-    if (!self.needReset)
-    {
-        return;
-    }
-
-    [self.ballView.layer removeAnimationForKey:kRotationIdentifier];
-    [self _stopSnap];
-    self.ballView.frame = CGRectMake(SCREEN_WIDTH * 0.1, kOriginY, 40, 40);
-
-    [self.ballView removeFromSuperview];
-    [self addSubview:self.ballView];
-
-    if (self.shapeLayer)
-    {
-        [self.shapeLayer removeFromSuperlayer];
-    }
-    self.shapeLayer = [CAShapeLayer layer];
-    [self.layer insertSublayer:self.shapeLayer below:self.ballView.layer];
-
-    self.needReset = NO;
-}
-
-- (void)_startSnap
+- (void)startSnap
 {
     if (!self.snapBehavior)
     {
-        self.snapBehavior = [[ UISnapBehavior alloc] initWithItem:self.ballView snapToPoint:CGPointMake(SCREEN_WIDTH * 0.6, -50)];
+        self.snapBehavior = [[ UISnapBehavior alloc] initWithItem:self.ballView snapToPoint:CGPointMake(self.width * 0.5, -50)];
         self.snapBehavior.damping = 1.0;
         [self.animator addBehavior:self.snapBehavior];
     }
 }
 
-- (void)_stopSnap
+- (void)stopSnap
 {
     if (self.snapBehavior)
     {
@@ -142,7 +135,7 @@ static NSString *const kRotationIdentifier = @"rotationAnimation";
     }
 }
 
-- (void)_startRotateBallView
+- (void)startRotateBallView
 {
     CABasicAnimation *rotationAnimation = [CABasicAnimation animationWithKeyPath:@"transform.rotation.z"];
     rotationAnimation.toValue = @(M_PI * 2.0);
@@ -153,15 +146,20 @@ static NSString *const kRotationIdentifier = @"rotationAnimation";
     [self.ballView.layer addAnimation:rotationAnimation forKey:kRotationIdentifier];
 }
 
-- (void)_startJellyBounce
+- (void)stopRotateBallView
 {
-    [self _stopJellyBounce];
+    [self.ballView.layer removeAnimationForKey:kRotationIdentifier];
+}
+
+- (void)startJellyBounce
+{
+    [self stopJellyBounce];
 
     self.displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(_displayLinkAction:)];
     [self.displayLink addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSRunLoopCommonModes];
 }
 
-- (void)_stopJellyBounce
+- (void)stopJellyBounce
 {
     if (self.displayLink)
     {
@@ -170,88 +168,12 @@ static NSString *const kRotationIdentifier = @"rotationAnimation";
     }
 }
 
-//持续刷新屏幕的计时器
 -(void)_displayLinkAction:(CADisplayLink *)link
 {
-//    if (self.state == MJRefreshStateRefreshing)
-//    {
-//        self.controlPointOffset = self.controlPoint.layer.position.y - kHeight + kOriginY;
-//    }
-//    else
-//    {
-//         self.controlPointOffset = (-self.contentOffsetY - kJellyStartThreshold + kOriginY);
-//    }
-
     CGFloat y = (-self.contentOffsetY - 80);
     self.controlPointOffset = fmax(y, 0);
 
     [self setNeedsDisplay];
 }
-
-
-- (void)prepare
-{
-    [super prepare];
-
-    self.mj_h = kHeight;
-    self.state = MJRefreshStateIdle;
-    self.needReset = NO;
-    self.backgroundColor = FlatGreen;
-
-    [self addSubview:self.controlPoint];
-    [self addSubview:self.ballView];
-
-    self.shapeLayer = [CAShapeLayer layer];
-    [self.layer insertSublayer:self.shapeLayer below:self.ballView.layer];
-}
-
-- (void)scrollViewContentOffsetDidChange:(NSDictionary *)change
-{
-    [super scrollViewContentOffsetDidChange:change];
-
-    CGPoint newPoint = [[change valueForKey:@"new"] CGPointValue];
-    self.contentOffsetY = newPoint.y;
-}
-
-- (void)scrollViewContentSizeDidChange:(NSDictionary *)change
-{
-    [super scrollViewContentSizeDidChange:change];
-}
-
-- (void)scrollViewPanStateDidChange:(NSDictionary *)change
-{
-    [super scrollViewPanStateDidChange:change];
-}
-
-- (void)setState:(MJRefreshState)state
-{
-    MJRefreshCheckState;
-
-    switch (state) {
-        case MJRefreshStateIdle:
-            self.needReset = YES;
-            [self _stopJellyBounce];
-            break;
-        case MJRefreshStatePulling:
-            [self _startJellyBounce];
-            break;
-        case MJRefreshStateRefreshing:
-            [self _startRotateBallView];
-            break;
-        default:
-            break;
-    }
-}
-
-- (void)setPullingPercent:(CGFloat)pullingPercent
-{
-    [super setPullingPercent:pullingPercent];
-    if (pullingPercent == 0.0f)
-    {
-        [self _resetViews];
-    }
-}
-
-#pragma mark - UIScrollViewDelegate
 
 @end
