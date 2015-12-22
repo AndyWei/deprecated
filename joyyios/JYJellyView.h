@@ -16,8 +16,6 @@
 - (void)startJellyBounce;
 - (void)stopJellyBounce;
 
-
 @property (nonatomic) BOOL isRefreshing;
 @property (nonatomic) CGFloat contentOffsetY;
-
 @end

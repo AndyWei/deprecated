@@ -13,11 +13,11 @@
 @property (nonatomic) CGFloat width;
 @property (nonatomic) UIView *controlPoint;
 @property (nonatomic) CADisplayLink *displayLink;
-@property (nonatomic) CAShapeLayer *shapeLayer;
 @property (nonatomic) UICollisionBehavior *collisionBehavior;
 @property (nonatomic) UIDynamicAnimator *animator;
-@property (nonatomic) UISnapBehavior *snapBehavior;
 @property (nonatomic) UIImageView *ballView;
+@property (nonatomic) UISnapBehavior *snapBehavior;
+@property (nonatomic) UIVisualEffectView *maskView;
 @end
 
 static NSString *const kBoundaryIdentifier = @"boundaryIdentifier";
@@ -31,16 +31,17 @@ static NSString *const kRotationIdentifier = @"rotationAnimation";
     viewFrame.size.height =  frame.size.height + SCREEN_HEIGHT;
     if (self = [super initWithFrame:viewFrame])
     {
-        self.height = frame.size.height;
         self.width = frame.size.width;
+        self.height = frame.size.height;
+        self.contentOffsetY = -frame.size.height;
+
         self.isRefreshing = NO;
         self.backgroundColor = ClearColor;
 
         [self addSubview:self.controlPoint];
+        [self addSubview:self.maskView];
         [self addSubview:self.ballView];
-
-        self.shapeLayer = [CAShapeLayer layer];
-        [self.layer insertSublayer:self.shapeLayer below:self.ballView.layer];
+        self.ballView.alpha = 0.0;
     }
     return self;
 }
@@ -60,7 +61,8 @@ static NSString *const kRotationIdentifier = @"rotationAnimation";
 {
     if (!_ballView)
     {
-        _ballView = [[UIImageView alloc] initWithFrame:CGRectMake(self.width * 0.1, 0, 40, 40)];
+        _ballView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
+        _ballView.center = CGPointMake(self.width * 0.9, 0);
         _ballView.layer.cornerRadius = _ballView.bounds.size.width / 2;
         _ballView.image = [UIImage imageNamed:@"wink"];
         _ballView.backgroundColor = [UIColor clearColor];
@@ -74,7 +76,7 @@ static NSString *const kRotationIdentifier = @"rotationAnimation";
     {
         _animator = [[UIDynamicAnimator alloc] initWithReferenceView:self];
         UIGravityBehavior *gravityBehavior = [[UIGravityBehavior alloc]initWithItems:@[self.ballView]];
-        gravityBehavior.magnitude = 5;
+        gravityBehavior.magnitude = 20;
         [_animator addBehavior:gravityBehavior];
     }
     return _animator;
@@ -89,17 +91,39 @@ static NSString *const kRotationIdentifier = @"rotationAnimation";
     return _collisionBehavior;
 }
 
-- (void)drawRect:(CGRect)rect
+- (UIVisualEffectView *)maskView
 {
+    if (!_maskView)
+    {
+        UIBlurEffect* blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
+        _maskView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
+        _maskView.frame = CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+        _maskView.layer.masksToBounds = YES;
+    }
+    return _maskView;
+}
+
+- (UIBezierPath *)bezierPath
+{
+//    CGFloat y = self.fullMask? fmin(self.contentOffsetY, 0): 0;
+    CGFloat y = 0;
+
     UIBezierPath *path = [UIBezierPath bezierPath];
     [path moveToPoint:CGPointMake(0, self.height)];
     [path addQuadCurveToPoint:CGPointMake(self.width, self.height) controlPoint:self.controlPoint.center];
-    [path addLineToPoint:CGPointMake(self.width, 0)];
-    [path addLineToPoint:CGPointMake(0, 0)];
+    [path addLineToPoint:CGPointMake(self.width, y)];
+    [path addLineToPoint:CGPointMake(0, y)];
     [path closePath];
 
-    self.shapeLayer.path = path.CGPath;
-    self.shapeLayer.fillColor = FlatSand.CGColor;
+    return path;
+}
+
+- (void)drawRect:(CGRect)rect
+{
+    UIBezierPath *path = [self bezierPath];
+    CAShapeLayer *shapeLayer = [CAShapeLayer new];
+    shapeLayer.path = path.CGPath;
+    self.maskView.layer.mask = shapeLayer;
 
     if (self.isRefreshing)
     {
@@ -118,8 +142,8 @@ static NSString *const kRotationIdentifier = @"rotationAnimation";
 {
     if (!self.snapBehavior)
     {
-        self.snapBehavior = [[ UISnapBehavior alloc] initWithItem:self.ballView snapToPoint:CGPointMake(self.width * 0.5, 0)];
-        self.snapBehavior.damping = 1.0;
+        self.snapBehavior = [[ UISnapBehavior alloc] initWithItem:self.ballView snapToPoint:CGPointMake(self.width * 0.5, 20)];
+        self.snapBehavior.damping = 0.5;
         [self.animator addBehavior:self.snapBehavior];
     }
 }
@@ -137,7 +161,7 @@ static NSString *const kRotationIdentifier = @"rotationAnimation";
 {
     CABasicAnimation *rotationAnimation = [CABasicAnimation animationWithKeyPath:@"transform.rotation.z"];
     rotationAnimation.toValue = @(M_PI * 2.0);
-    rotationAnimation.duration = 0.9f;
+    rotationAnimation.duration = 0.4f;
     rotationAnimation.autoreverses = NO;
     rotationAnimation.repeatCount = HUGE_VALF;
     rotationAnimation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionLinear];
@@ -153,6 +177,7 @@ static NSString *const kRotationIdentifier = @"rotationAnimation";
 {
     [self stopJellyBounce];
 
+    self.ballView.alpha = 1.0;
     self.displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(_displayLinkAction:)];
     [self.displayLink addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSRunLoopCommonModes];
 }
@@ -166,7 +191,7 @@ static NSString *const kRotationIdentifier = @"rotationAnimation";
     }
 }
 
--(void)_displayLinkAction:(CADisplayLink *)link
+- (void)_displayLinkAction:(CADisplayLink *)link
 {
     if (self.isRefreshing)
     {
@@ -174,7 +199,7 @@ static NSString *const kRotationIdentifier = @"rotationAnimation";
     }
     else
     {
-        CGFloat y = -self.contentOffsetY;
+        CGFloat y = -self.contentOffsetY + 50;
         self.controlPoint.center = CGPointMake(self.width / 2 , fmax(y, 0));
     }
 

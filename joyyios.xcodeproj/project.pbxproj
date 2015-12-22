@@ -714,6 +714,10 @@
 				D63B69B51AC53BB4005600A9 /* JYFloatLabeledTextField.m */,
 				D6903D081C07A9C200CDC64F /* JYFriendView.h */,
 				D6903D091C07A9C200CDC64F /* JYFriendView.m */,
+				D632E9991C24CD0900D5837C /* JYJellyView.h */,
+				D632E99A1C24CD0900D5837C /* JYJellyView.m */,
+				D632E99C1C28CC5B00D5837C /* JYRefreshHeader.h */,
+				D632E99D1C28CC5B00D5837C /* JYRefreshHeader.m */,
 				D6BD61781C20CC2300EFC92C /* JYReminderView.h */,
 				D6BD61791C20CC2300EFC92C /* JYReminderView.m */,
 				D69FF6D41B94144100466FE5 /* JYSoundPlayer.h */,
@@ -736,10 +740,6 @@
 				D6966B311BA2BB2B00AAD8D5 /* UITextField+Joyy.m */,
 				D689ED681AE42C8300CB4D2B /* UIView+Joyy.h */,
 				D689ED691AE42C8300CB4D2B /* UIView+Joyy.m */,
-				D632E9991C24CD0900D5837C /* JYJellyView.h */,
-				D632E99A1C24CD0900D5837C /* JYJellyView.m */,
-				D632E99C1C28CC5B00D5837C /* JYRefreshHeader.h */,
-				D632E99D1C28CC5B00D5837C /* JYRefreshHeader.m */,
 			);
 			name = Common;
 			sourceTree = "<group>";

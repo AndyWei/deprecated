@@ -46,6 +46,7 @@
 @property (nonatomic) NSNumber *newestPostId;
 @property (nonatomic) UIButton *titleButton;
 @property (nonatomic) UITableView *tableView;
+@property (nonatomic) UIView *backgroundView;
 @property (nonatomic, copy) Action pendingAction;
 @end
 
@@ -93,7 +94,6 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
     if (!_tableView)
     {
         _tableView = [[UITableView alloc] initWithFrame:self.view.frame style:UITableViewStylePlain];
-        _tableView.backgroundColor = FlatSand;
         _tableView.dataSource = self;
         _tableView.delegate = self;
         _tableView.estimatedRowHeight = 455;
@@ -114,6 +114,22 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
         _tableView.mj_footer = footer;
     }
     return _tableView;
+}
+
+// Not used
+- (UIView *)backgroundView
+{
+    if (!_backgroundView)
+    {
+        _backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"timeline_bg"]];
+
+        _backgroundView.frame = self.view.frame;
+        UIBlurEffect* blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
+        UIVisualEffectView *blurView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
+        blurView.frame = _backgroundView.frame;
+        [_backgroundView addSubview:blurView];
+    }
+    return _backgroundView;
 }
 
 - (JYRefreshHeader *)refreshHeader
