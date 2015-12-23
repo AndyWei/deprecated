@@ -108,7 +108,7 @@
 		D69FF6E51B96474200466FE5 /* JYAuthenticatedIdentityProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = D69FF6E01B96474200466FE5 /* JYAuthenticatedIdentityProvider.m */; };
 		D69FF6E71B96474200466FE5 /* JYAuthenticationClient.m in Sources */ = {isa = PBXBuildFile; fileRef = D69FF6E21B96474200466FE5 /* JYAuthenticationClient.m */; };
 		D6B2F05B1ACE630F009601B0 /* JYAutoCompleteTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B2F05A1ACE630F009601B0 /* JYAutoCompleteTextField.m */; };
-		D6B9B7481BAF6E45001F9500 /* JYProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B9B7471BAF6E45001F9500 /* JYProfileViewController.m */; };
+		D6B9B7481BAF6E45001F9500 /* JYNewProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B9B7471BAF6E45001F9500 /* JYNewProfileViewController.m */; };
 		D6BD61711C1E788500EFC92C /* JYCreatePostController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6BD61701C1E788500EFC92C /* JYCreatePostController.m */; };
 		D6BD61741C1FF84B00EFC92C /* JYNewCommentCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D6BD61731C1FF84B00EFC92C /* JYNewCommentCell.m */; };
 		D6BD61771C2007EF00EFC92C /* JYNewCommentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6BD61761C2007EF00EFC92C /* JYNewCommentViewController.m */; };
@@ -331,8 +331,8 @@
 		D69FF6E21B96474200466FE5 /* JYAuthenticationClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYAuthenticationClient.m; sourceTree = "<group>"; };
 		D6B2F0591ACE630F009601B0 /* JYAutoCompleteTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYAutoCompleteTextField.h; sourceTree = "<group>"; };
 		D6B2F05A1ACE630F009601B0 /* JYAutoCompleteTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYAutoCompleteTextField.m; sourceTree = "<group>"; };
-		D6B9B7461BAF6E45001F9500 /* JYProfileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYProfileViewController.h; sourceTree = "<group>"; };
-		D6B9B7471BAF6E45001F9500 /* JYProfileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYProfileViewController.m; sourceTree = "<group>"; };
+		D6B9B7461BAF6E45001F9500 /* JYNewProfileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYNewProfileViewController.h; sourceTree = "<group>"; };
+		D6B9B7471BAF6E45001F9500 /* JYNewProfileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYNewProfileViewController.m; sourceTree = "<group>"; };
 		D6BD616F1C1E788500EFC92C /* JYCreatePostController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYCreatePostController.h; sourceTree = "<group>"; };
 		D6BD61701C1E788500EFC92C /* JYCreatePostController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYCreatePostController.m; sourceTree = "<group>"; };
 		D6BD61721C1FF84B00EFC92C /* JYNewCommentCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYNewCommentCell.h; sourceTree = "<group>"; };
@@ -916,8 +916,8 @@
 		D6B9B7451BAF6DB8001F9500 /* Profile */ = {
 			isa = PBXGroup;
 			children = (
-				D6B9B7461BAF6E45001F9500 /* JYProfileViewController.h */,
-				D6B9B7471BAF6E45001F9500 /* JYProfileViewController.m */,
+				D6B9B7461BAF6E45001F9500 /* JYNewProfileViewController.h */,
+				D6B9B7471BAF6E45001F9500 /* JYNewProfileViewController.m */,
 			);
 			name = Profile;
 			sourceTree = "<group>";
@@ -1195,7 +1195,7 @@
 				D61D1DCA1B4E336E00DE37DF /* TGTintedButton.m in Sources */,
 				D6FD053E1C0CD8B4008F9BF2 /* JYFriendManager.m in Sources */,
 				D6348D2F1ADB4DD60002BC35 /* NSString+Joyy.m in Sources */,
-				D6B9B7481BAF6E45001F9500 /* JYProfileViewController.m in Sources */,
+				D6B9B7481BAF6E45001F9500 /* JYNewProfileViewController.m in Sources */,
 				D61D1D531B4A65F200DE37DF /* MDCPanState.m in Sources */,
 				D61D1DBA1B4E336E00DE37DF /* TGCameraToggle.m in Sources */,
 				D61D1DA41B4E336E00DE37DF /* TGCameraNavigationController.m in Sources */,

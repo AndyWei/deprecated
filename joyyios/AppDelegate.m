@@ -24,7 +24,7 @@
 #import "JYFriendViewController.h"
 #import "JYLocalDataManager.h"
 #import "JYPhoneNumberViewController.h"
-#import "JYProfileViewController.h"
+#import "JYNewProfileViewController.h"
 #import "JYSessionListViewController.h"
 #import "JYSoundPlayer.h"
 #import "JYTimelineViewController.h"
@@ -204,7 +204,7 @@
 
 - (void)_launchProfileViewController
 {
-    UIViewController *viewController = [JYProfileViewController new];
+    UIViewController *viewController = [JYNewProfileViewController new];
     UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:viewController];
     self.window.rootViewController = navigationController;
 }

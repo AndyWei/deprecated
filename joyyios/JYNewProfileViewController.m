@@ -1,5 +1,5 @@
 //
-//  JYProfileViewController.m
+//  JYNewProfileViewController.m
 //  joyyios
 //
 //  Created by Ping Yang on 9/20/15.
@@ -16,7 +16,7 @@
 #import "JYButton.h"
 #import "JYFilename.h"
 #import "JYFloatLabeledTextField.h"
-#import "JYProfileViewController.h"
+#import "JYNewProfileViewController.h"
 #import "JYYRS.h"
 #import "TGCameraColor.h"
 #import "TGCameraViewController.h"
@@ -24,7 +24,7 @@
 #import "UIImage+Joyy.h"
 #import "UITextField+Joyy.h"
 
-@interface JYProfileViewController () <AKPickerViewDataSource, AKPickerViewDelegate, TGCameraDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate>
+@interface JYNewProfileViewController () <AKPickerViewDataSource, AKPickerViewDelegate, TGCameraDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate>
 
 @property (nonatomic) UITableView *tableView;
 @property (nonatomic) TTTAttributedLabel *headerLabel;
@@ -48,7 +48,7 @@ const CGFloat kHeaderLabelHeight = 50;
 const CGFloat kAvatarButtonHeight = 200;
 const CGFloat kAvatarButtonWidth = kAvatarButtonHeight;
 
-@implementation JYProfileViewController
+@implementation JYNewProfileViewController
 
 - (void)viewDidLoad
 {
