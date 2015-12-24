@@ -81,6 +81,7 @@ NSString *const kNotificationDidSignUp = @"didSignUp";
 NSString *const kNotificationLikePost = @"likePost";
 NSString *const kNotificationNeedGeoInfo = @"needGeoInfo";
 NSString *const kNotificationUserYRSReady = @"userYRSReady";
+NSString *const kNotificationWillStartChat = @"willStartChat";
 
 NSString *const kURLAPIBase = @"http://dev.winkrock.com:8000/v1/";
 //NSString *const kURLAPIBase = @"http://api.winkrock.com:8000/v1/";

@@ -60,7 +60,9 @@
         _acceptButton = [JYButton buttonWithFrame:CGRectZero buttonStyle:JYButtonStyleTitle appearanceIdentifier:nil];
         _acceptButton.cornerRadius = 4;
         _acceptButton.contentColor = JoyyWhitePure;
+        _acceptButton.contentAnimateToColor = FlatGreen;
         _acceptButton.foregroundColor = FlatGreen;
+        _acceptButton.foregroundAnimateToColor = JoyyWhitePure;
         _acceptButton.textLabel.text = NSLocalizedString(@"accept", nil);
         _acceptButton.translatesAutoresizingMaskIntoConstraints = NO;
         [_acceptButton addTarget:self action:@selector(_accept) forControlEvents:UIControlEventTouchUpInside];
@@ -73,6 +75,7 @@
     if (!_userView)
     {
         _userView = [[JYUserView alloc] init];
+        _userView.notificationName = nil;
     }
     return _userView;
 }

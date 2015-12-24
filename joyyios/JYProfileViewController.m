@@ -17,6 +17,7 @@
 #import "JYComment.h"
 #import "JYCommentViewController.h"
 #import "JYFilename.h"
+#import "JYFriendManager.h"
 #import "JYFriendViewController.h"
 #import "JYLocalDataManager.h"
 #import "JYPhotoCaptionViewController.h"
@@ -34,6 +35,7 @@
 @property (nonatomic) JYUser *user;
 @property (nonatomic) JYProfileCardView *cardView;
 @property (nonatomic) NSInteger networkThreadCount;
+@property (nonatomic) NSMutableArray *friendList;
 @property (nonatomic) NSMutableArray *postList;
 @property (nonatomic) NSMutableArray *winkList;
 @property (nonatomic) UITableView *tableView;
@@ -70,7 +72,8 @@ static NSString *const kCellIdentifier = @"profileUserlineCell";
 {
     [self.view addSubview:self.tableView];
 
-    [self _updateCardView];
+    [self _fetchFriends];
+//    [self _fetchWinks];
     [self _fetchUserline];
 }
 
@@ -112,12 +115,6 @@ static NSString *const kCellIdentifier = @"profileUserlineCell";
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (void)_updateCardView
-{
-    self.cardView.friendCount = 5;
-    self.cardView.winkCount = 9;
-}
-
 - (void)_apiTokenReady
 {
     if (!self.user)
@@ -130,8 +127,11 @@ static NSString *const kCellIdentifier = @"profileUserlineCell";
 // TODO
 - (void)_tapOnFriendCount
 {
-    JYFriendViewController *viewController = [JYFriendViewController new];
-    [self.navigationController pushViewController:viewController animated:YES];
+    if ([self.friendList count] > 0)
+    {
+        JYFriendViewController *viewController = [[JYFriendViewController alloc] initWithFriendList:self.friendList];
+        [self.navigationController pushViewController:viewController animated:YES];
+    }
 }
 
 - (void)_tapOnInviteCount
@@ -370,6 +370,45 @@ static NSString *const kCellIdentifier = @"profileUserlineCell";
              [weakSelf _networkThreadEnd];
          }
      ];
+}
+
+- (void)_fetchFriends
+{
+    NSString *url = [NSString apiURLWithPath:@"friends"];
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager managerWithToken];
+
+    __weak typeof(self) weakSelf = self;
+    [manager GET:url
+      parameters:nil
+         success:^(NSURLSessionTask *operation, id responseObject) {
+             NSLog(@"GET friends Success");
+
+             NSMutableArray *friendList = [NSMutableArray new];
+             for (NSDictionary *dict in responseObject)
+             {
+                 NSError *error = nil;
+                 JYFriend *friend = (JYFriend *)[MTLJSONAdapter modelOfClass:JYFriend.class fromJSONDictionary:dict error:&error];
+                 if (friend)
+                 {
+                     [friendList addObject:friend];
+                 }
+             }
+
+//              test only
+//                 JYUser *user = [JYFriend myself];
+//                 for (int i = 0; i < 10; ++i)
+//                 {
+//                     [friendList addObject:user];
+//                 }
+//
+
+             weakSelf.friendList = friendList;
+             weakSelf.cardView.friendCount = [friendList count];
+             [[JYFriendManager sharedInstance] receivedFriendList:friendList];
+         }
+         failure:^(NSURLSessionTask *operation, NSError *error) {
+             NSLog(@"GET friends error: %@", error);
+         }];
 }
 
 - (void)_fetchWinks

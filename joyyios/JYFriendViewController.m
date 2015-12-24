@@ -6,12 +6,7 @@
 //  Copyright © 2015 Joyy Inc. All rights reserved.
 //
 
-#import <AFNetworking/AFNetworking.h>
-
-#import "JYCredential.h"
-#import "JYFriendManager.h"
 #import "JYFriendViewController.h"
-#import "JYLocalDataManager.h"
 #import "JYUserCell.h"
 #import "JYUserlineViewController.h"
 
@@ -25,11 +20,11 @@ static NSString *const kCellIdentifier = @"friendCell";
 
 @implementation JYFriendViewController
 
-- (instancetype)init
+- (instancetype)initWithFriendList:(NSArray *)friendList
 {
     if (self = [super init])
     {
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_apiTokenReady) name:kNotificationAPITokenReady object:nil];
+        [self _storeFriendList:friendList];
     }
     return self;
 }
@@ -42,13 +37,6 @@ static NSString *const kCellIdentifier = @"friendCell";
     self.navigationController.navigationBar.translucent = YES;
     self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:self.navigationItem.backBarButtonItem.style target:nil action:nil];
 
-    self.networkThreadCount = 0;
-
-    if (!self.friendArrays && [JYCredential current].tokenValidInSeconds > 0)
-    {
-        self.friendArrays = [NSMutableArray new];
-        [self _fetchFriends];
-    }
     [self.view addSubview:self.tableView];
 }
 
@@ -62,7 +50,7 @@ static NSString *const kCellIdentifier = @"friendCell";
 
         _tableView.sectionIndexColor = JoyyBlue;
         _tableView.sectionIndexBackgroundColor = ClearColor;
-        _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+        _tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
         _tableView.showsHorizontalScrollIndicator = NO;
         _tableView.showsVerticalScrollIndicator = YES;
 
@@ -74,37 +62,10 @@ static NSString *const kCellIdentifier = @"friendCell";
     return _tableView;
 }
 
-- (void)dealloc
+- (void)_storeFriendList:(NSArray *)list
 {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
-
-- (void)_apiTokenReady
-{
-    [self _fetchFriends];
-}
-
-- (void)_networkThreadBegin
-{
-    if (self.networkThreadCount == 0)
-    {
-        [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
-    }
-    self.networkThreadCount++;
-}
-
-- (void)_networkThreadEnd
-{
-    self.networkThreadCount--;
-    if (self.networkThreadCount <= 0)
-    {
-        [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-    }
-}
-
-- (void)_receivedFriendList:(NSArray *)friendList
-{
-    NSInteger count = [friendList count];
+    self.friendArrays = [NSMutableArray new];
+    NSInteger count = [list count];
     if (count == 0)
     {
         return;
@@ -114,7 +75,7 @@ static NSString *const kCellIdentifier = @"friendCell";
     NSMutableArray *usernames = [[NSMutableArray alloc] initWithCapacity:count];
     NSMutableDictionary *friendDict = [[NSMutableDictionary alloc] init];
 
-    for (JYFriend *user in friendList)
+    for (JYFriend *user in list)
     {
         if (user)
         {
@@ -130,14 +91,13 @@ static NSString *const kCellIdentifier = @"friendCell";
     UILocalizedIndexedCollation *collation = [UILocalizedIndexedCollation currentCollation];
 
     NSInteger n = [[collation sectionTitles] count];
-    self.friendArrays = [NSMutableArray arrayWithCapacity:n];
     for (int i = 0; i < n; i++)
     {
         NSMutableArray *friendList = [NSMutableArray arrayWithCapacity:1];
         [self.friendArrays addObject:friendList];
     }
 
-    // Fill in countries
+    // Fill in users
     for (NSString *username in usernames)
     {
         NSInteger section = [collation sectionForObject:username collationStringSelector:@selector(self)];
@@ -206,42 +166,6 @@ static NSString *const kCellIdentifier = @"friendCell";
 
     JYUserlineViewController *viewController = [[JYUserlineViewController alloc] initWithUser:user];
     [self.navigationController pushViewController:viewController animated:YES];
-}
-
-#pragma mark - Network
-
-- (void)_fetchFriends
-{
-    NSString *url = [NSString apiURLWithPath:@"friends"];
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager managerWithToken];
-
-    __weak typeof(self) weakSelf = self;
-    [manager GET:url
-      parameters:nil
-         success:^(NSURLSessionTask *operation, id responseObject) {
-             NSLog(@"GET friends Success");
-
-             NSMutableArray *friendList = [NSMutableArray new];
-             for (NSDictionary *dict in responseObject)
-             {
-                 NSError *error = nil;
-                 JYFriend *friend = (JYFriend *)[MTLJSONAdapter modelOfClass:JYFriend.class fromJSONDictionary:dict error:&error];
-                 if (friend)
-                 {
-                     [friendList addObject:friend];
-                 }
-             }
-
-             [weakSelf _receivedFriendList:friendList];
-             if (weakSelf.isViewLoaded)
-             {
-                 [weakSelf.tableView reloadData];
-             }
-             [[JYFriendManager sharedInstance] receivedFriendList:friendList];
-         }
-         failure:^(NSURLSessionTask *operation, NSError *error) {
-             NSLog(@"GET friends error: %@", error);
-         }];
 }
 
 @end

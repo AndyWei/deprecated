@@ -8,4 +8,6 @@
 
 @interface JYFriendViewController : UIViewController
 
+- (instancetype)initWithFriendList:(NSArray *)friendList;
+
 @end

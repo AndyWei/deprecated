@@ -84,30 +84,30 @@ static NSString *kWinkURL = @"action://_didTapWinkLabel";
     self.usernameLabel.text = user.username;
 }
 
-- (void)setFriendCount:(uint32_t)friendCount
+- (void)setFriendCount:(uint64_t)friendCount
 {
     _friendCount = friendCount;
-    NSString *count = [NSString stringWithFormat:@"%u", friendCount];
+    NSString *count = [NSString stringWithFormat:@"%llu", friendCount];
     self.friendCountLabel.text = count;
 
     NSRange range = [count rangeOfString:count];
     [self.friendCountLabel addLinkToURL:[NSURL URLWithString:kFriendURL] withRange:range];
 }
 
-- (void)setInviteCount:(uint32_t)inviteCount
+- (void)setInviteCount:(uint64_t)inviteCount
 {
     _inviteCount = inviteCount;
-    NSString *count = [NSString stringWithFormat:@"%u", inviteCount];
+    NSString *count = [NSString stringWithFormat:@"%llu", inviteCount];
     self.inviteCountLabel.text = count;
 
     NSRange range = [count rangeOfString:count];
     [self.inviteCountLabel addLinkToURL:[NSURL URLWithString:kInviteURL] withRange:range];
 }
 
-- (void)setWinkCount:(uint32_t)winkCount
+- (void)setWinkCount:(uint64_t)winkCount
 {
     _winkCount = winkCount;
-    NSString *count = [NSString stringWithFormat:@"%u", winkCount];
+    NSString *count = [NSString stringWithFormat:@"%llu", winkCount];
     self.winkCountLabel.text = count;
 
     NSRange range = [count rangeOfString:count];
