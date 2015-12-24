@@ -17,6 +17,7 @@
 #import "JYComment.h"
 #import "JYCommentViewController.h"
 #import "JYFilename.h"
+#import "JYFriendViewController.h"
 #import "JYLocalDataManager.h"
 #import "JYPhotoCaptionViewController.h"
 #import "JYProfileCardView.h"
@@ -51,6 +52,10 @@ static NSString *const kCellIdentifier = @"profileUserlineCell";
     self.month = [[JYMonth alloc] initWithDate:[NSDate date]];
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_apiTokenReady) name:kNotificationAPITokenReady object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_tapOnFriendCount) name:kNotificationDidTapOnFriendCount object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_tapOnInviteCount) name:kNotificationDidTapOnInviteCount object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_tapOnWinkCount) name:kNotificationDidTapOnWinkCount object:nil];
+
     self.user = [JYFriend myself];
 
     if (self.user)
@@ -118,6 +123,22 @@ static NSString *const kCellIdentifier = @"profileUserlineCell";
         self.user = [JYFriend myself];
         [self _initSubViews];
     }
+}
+
+- (void)_tapOnFriendCount
+{
+    JYFriendViewController *viewController = [JYFriendViewController new];
+    [self.navigationController pushViewController:viewController animated:YES];
+}
+
+- (void)_tapOnInviteCount
+{
+    
+}
+
+- (void)_tapOnWinkCount
+{
+
 }
 
 - (void)_networkThreadBegin
