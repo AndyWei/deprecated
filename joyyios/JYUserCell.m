@@ -53,6 +53,7 @@
     if (!_userView)
     {
         _userView = [[JYUserView alloc] init];
+        _userView.notificationName = nil;
     }
     return _userView;
 }

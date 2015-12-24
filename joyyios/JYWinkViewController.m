@@ -11,8 +11,8 @@
 #import "JYCredential.h"
 #import "JYFriendManager.h"
 #import "JYLocalDataManager.h"
-#import "JYUserCell.h"
 #import "JYUserlineViewController.h"
+#import "JYWinkCell.h"
 #import "JYWinkViewController.h"
 
 @interface JYWinkViewController () <UITableViewDataSource, UITableViewDelegate>
@@ -42,6 +42,7 @@ static NSString *const kCellIdentifier = @"winkCell";
     self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:self.navigationItem.backBarButtonItem.style target:nil action:nil];
 
     [self.view addSubview:self.tableView];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_acceptWink:) name:kNotificationDidAcceptWink object:nil];
 }
 
 - (UITableView *)tableView
@@ -53,14 +54,14 @@ static NSString *const kCellIdentifier = @"winkCell";
         _tableView.delegate = self;
 
         _tableView.sectionIndexBackgroundColor = ClearColor;
-        _tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLineEtched;
+        _tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
         _tableView.showsHorizontalScrollIndicator = NO;
         _tableView.showsVerticalScrollIndicator = YES;
 
         _tableView.rowHeight = UITableViewAutomaticDimension;
-        _tableView.estimatedRowHeight = 40;
+        _tableView.estimatedRowHeight = 60;
 
-        [_tableView registerClass:[JYUserCell class] forCellReuseIdentifier:kCellIdentifier];
+        [_tableView registerClass:[JYWinkCell class] forCellReuseIdentifier:kCellIdentifier];
     }
     return _tableView;
 }
@@ -74,8 +75,8 @@ static NSString *const kCellIdentifier = @"winkCell";
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    JYUserCell *cell =
-    (JYUserCell *)[tableView dequeueReusableCellWithIdentifier:kCellIdentifier forIndexPath:indexPath];
+    JYWinkCell *cell =
+    (JYWinkCell *)[tableView dequeueReusableCellWithIdentifier:kCellIdentifier forIndexPath:indexPath];
 
     JYUser *user = [self.winkList objectAtIndex:indexPath.row];
     cell.user = user;
@@ -93,12 +94,33 @@ static NSString *const kCellIdentifier = @"winkCell";
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 
     JYUser *user = [self.winkList objectAtIndex:indexPath.row];
-
     JYUserlineViewController *viewController = [[JYUserlineViewController alloc] initWithUser:user];
     [self.navigationController pushViewController:viewController animated:YES];
 }
 
 #pragma mark - Network
 
+- (void)_acceptWink:(NSNotification *)notification
+{
+    NSDictionary *info = [notification userInfo];
+    if (!info)
+    {
+        return;
+    }
+
+    id value = [info objectForKey:@"user"];
+    if (value == [NSNull null])
+    {
+        return;
+    }
+
+    JYUser *user = (JYUser *)value;
+    [self _acceptWinkFromUser:user];
+}
+
+- (void)_acceptWinkFromUser:(JYUser *)user
+{
+    
+}
 
 @end

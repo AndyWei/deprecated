@@ -24,6 +24,7 @@
 #import "JYProfileViewController.h"
 #import "JYPost.h"
 #import "JYUserlineCell.h"
+#import "JYWinkViewController.h"
 #import "TGCameraColor.h"
 #import "TGCameraViewController.h"
 #import "UIImage+Joyy.h"
@@ -126,6 +127,7 @@ static NSString *const kCellIdentifier = @"profileUserlineCell";
     }
 }
 
+// TODO
 - (void)_tapOnFriendCount
 {
     JYFriendViewController *viewController = [JYFriendViewController new];
@@ -139,7 +141,20 @@ static NSString *const kCellIdentifier = @"profileUserlineCell";
 
 - (void)_tapOnWinkCount
 {
+// test only
+//    JYUser *user = [JYFriend myself];
+//    self.winkList = [NSMutableArray new];
+//    for (int i = 0; i < 10; ++i)
+//    {
+//        [self.winkList addObject:user];
+//    }
+//
 
+    if ([self.winkList count] > 0)
+    {
+        JYWinkViewController *viewController = [[JYWinkViewController alloc] initWithWinkList:self.winkList];
+        [self.navigationController pushViewController:viewController animated:YES];
+    }
 }
 
 - (void)_networkThreadBegin

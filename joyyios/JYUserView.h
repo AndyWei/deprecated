@@ -10,6 +10,8 @@
 
 @interface JYUserView : UIView
 
-@property(nonatomic) JYUser *user;
+@property (nonatomic) BOOL hideDetail;
+@property (nonatomic) JYUser *user;
+@property (nonatomic) NSString *notificationName;
 
 @end

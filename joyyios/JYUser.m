@@ -1,5 +1,5 @@
 //
-//  JYPerson.m
+//  JYUser.m
 //  joyyios
 //
 //  Created by Ping Yang on 7/5/15.

@@ -6,8 +6,6 @@
 //  Copyright © 2015 Joyy Inc. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
-
 @interface JYWinkViewController : UIViewController
 
 - (instancetype)initWithWinkList:(NSMutableArray *)winkList;

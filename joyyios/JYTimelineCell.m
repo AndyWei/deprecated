@@ -165,6 +165,8 @@
     if (!_ownerView)
     {
         _ownerView = [[JYUserView alloc] init];
+        _ownerView.notificationName = kNotificationDidTapOnUser;
+        _ownerView.hideDetail = YES;
     }
     return _ownerView;
 }
