@@ -34,6 +34,7 @@
 @property (nonatomic) JYProfileCardView *cardView;
 @property (nonatomic) NSInteger networkThreadCount;
 @property (nonatomic) NSMutableArray *postList;
+@property (nonatomic) NSMutableArray *winkList;
 @property (nonatomic) UITableView *tableView;
 @end
 
@@ -354,6 +355,34 @@ static NSString *const kCellIdentifier = @"profileUserlineCell";
              [weakSelf _networkThreadEnd];
          }
      ];
+}
+
+- (void)_fetchWinks
+{
+    NSString *url = [NSString apiURLWithPath:@"winks"];
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager managerWithToken];
+
+    __weak typeof(self) weakSelf = self;
+    [manager GET:url
+      parameters:nil
+         success:^(NSURLSessionTask *operation, id responseObject) {
+             NSLog(@"GET winks Success");
+
+             NSMutableArray *winkList = [NSMutableArray new];
+             for (NSDictionary *dict in responseObject)
+             {
+                 NSError *error = nil;
+                 JYUser *user = (JYUser *)[MTLJSONAdapter modelOfClass:JYUser.class fromJSONDictionary:dict error:&error];
+                 if (user)
+                 {
+                     [winkList addObject:user];
+                 }
+             }
+             weakSelf.winkList = winkList;
+         }
+         failure:^(NSURLSessionTask *operation, NSError *error) {
+             NSLog(@"GET winks error: %@", error);
+         }];
 }
 
 @end

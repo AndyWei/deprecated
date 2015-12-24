@@ -1,15 +1,15 @@
 //
-//  JYFriendView.h
+//  JYUserView.h
 //  joyyios
 //
 //  Created by Ping Yang on 11/26/15.
 //  Copyright © 2015 Joyy Inc. All rights reserved.
 //
 
-@class JYFriend;
+@class JYUser;
 
-@interface JYFriendView : UIView
+@interface JYUserView : UIView
 
-@property(nonatomic) JYFriend *user;
+@property(nonatomic) JYUser *user;
 
 @end

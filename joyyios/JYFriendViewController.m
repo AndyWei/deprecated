@@ -9,10 +9,10 @@
 #import <AFNetworking/AFNetworking.h>
 
 #import "JYCredential.h"
-#import "JYFriendCell.h"
 #import "JYFriendManager.h"
 #import "JYFriendViewController.h"
 #import "JYLocalDataManager.h"
+#import "JYUserCell.h"
 #import "JYUserlineViewController.h"
 
 @interface JYFriendViewController () <UITableViewDataSource, UITableViewDelegate>
@@ -21,7 +21,7 @@
 @property (nonatomic) UITableView *tableView;
 @end
 
-static NSString *const kFriendCellIdentifier = @"friendCell";
+static NSString *const kCellIdentifier = @"friendCell";
 
 @implementation JYFriendViewController
 
@@ -69,7 +69,7 @@ static NSString *const kFriendCellIdentifier = @"friendCell";
         _tableView.rowHeight = UITableViewAutomaticDimension;
         _tableView.estimatedRowHeight = 40;
 
-        [_tableView registerClass:[JYFriendCell class] forCellReuseIdentifier:kFriendCellIdentifier];
+        [_tableView registerClass:[JYUserCell class] forCellReuseIdentifier:kCellIdentifier];
     }
     return _tableView;
 }
@@ -183,8 +183,8 @@ static NSString *const kFriendCellIdentifier = @"friendCell";
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    JYFriendCell *cell =
-    (JYFriendCell *)[tableView dequeueReusableCellWithIdentifier:kFriendCellIdentifier forIndexPath:indexPath];
+    JYUserCell *cell =
+    (JYUserCell *)[tableView dequeueReusableCellWithIdentifier:kCellIdentifier forIndexPath:indexPath];
 
     NSArray *array = [self.friendArrays objectAtIndex:indexPath.section];
     cell.user = array[indexPath.row];

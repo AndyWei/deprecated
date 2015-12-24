@@ -14,15 +14,15 @@
 #import "JYPostActionView.h"
 #import "JYPostCommentView.h"
 #import "JYPostMediaView.h"
-#import "JYFriendView.h"
 #import "JYTimelineCell.h"
+#import "JYUserView.h"
 #import "NSDate+Joyy.h"
 
 @interface JYTimelineCell () <TTTAttributedLabelDelegate>
 @property (nonatomic) JYPostMediaView *mediaView;
 @property (nonatomic) JYPostActionView *actionView;
-@property (nonatomic) JYFriendView *ownerView;
 @property (nonatomic) JYPostCommentView *commentView;
+@property (nonatomic) JYUserView *ownerView;
 @property (nonatomic) NSLayoutConstraint *commentViewHeightConstraint;
 @property (nonatomic) TTTAttributedLabel *likesLabel;
 @property (nonatomic) TTTAttributedLabel *postTimeLabel;
@@ -160,11 +160,11 @@
     return [orderedSet array];
 }
 
-- (JYFriendView *)ownerView
+- (JYUserView *)ownerView
 {
     if (!_ownerView)
     {
-        _ownerView = [[JYFriendView alloc] init];
+        _ownerView = [[JYUserView alloc] init];
     }
     return _ownerView;
 }

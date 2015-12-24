@@ -1,5 +1,5 @@
 //
-//  JYFriendView.m
+//  JYUserView.m
 //  joyyios
 //
 //  Created by Ping Yang on 11/26/15.
@@ -11,19 +11,18 @@
 #import <TTTAttributedLabel/TTTAttributedLabel.h>
 
 #import "JYButton.h"
-#import "JYFriendManager.h"
 #import "JYPost.h"
-#import "JYFriendView.h"
+#import "JYUserView.h"
 #import "NSDate+Joyy.h"
 
-@interface JYFriendView () <TTTAttributedLabelDelegate>
+@interface JYUserView () <TTTAttributedLabelDelegate>
 @property (nonatomic) UIButton *avatarButton;
 @property (nonatomic) TTTAttributedLabel *posterNameLabel;
 @end
 
 static NSString *kUsernameURL = @"action://_didTapAvatarButton";
 
-@implementation JYFriendView
+@implementation JYUserView
 
 - (instancetype)init
 {
@@ -47,7 +46,7 @@ static NSString *kUsernameURL = @"action://_didTapAvatarButton";
     return self;
 }
 
-- (void)setUser:(JYFriend *)user
+- (void)setUser:(JYUser *)user
 {
     _user = user;
 
