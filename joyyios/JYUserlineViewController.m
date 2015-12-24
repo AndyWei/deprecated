@@ -8,9 +8,7 @@
 
 #import <AFNetworking/AFNetworking.h>
 #import <AFNetworking/UIImageView+AFNetworking.h>
-#import <AWSS3/AWSS3.h>
 #import <MJRefresh/MJRefresh.h>
-#import <RKDropdownAlert/RKDropdownAlert.h>
 
 #import "JYMonth.h"
 #import "JYButton.h"
@@ -23,14 +21,11 @@
 #import "JYPost.h"
 #import "JYUserlineCell.h"
 #import "JYUserlineViewController.h"
-#import "TGCameraColor.h"
-#import "TGCameraViewController.h"
 #import "UIImage+Joyy.h"
 
-@interface JYUserlineViewController () <TGCameraDelegate, UITableViewDataSource, UITableViewDelegate>
+@interface JYUserlineViewController () <UITableViewDataSource, UITableViewDelegate>
 @property (nonatomic) JYMonth *month;
 @property (nonatomic) JYUser *user;
-@property (nonatomic) JYUserlineCell *sizingCell;
 @property (nonatomic) JYCardView *cardView;
 @property (nonatomic) NSInteger networkThreadCount;
 @property (nonatomic) NSLayoutConstraint *cardViewHeightConstraint;
@@ -115,7 +110,7 @@ static CGFloat kCardViewDefaultHeight = 150;
 {
     if (!_cardView)
     {
-        _cardView = [[JYCardView alloc] init];
+        _cardView = [JYCardView new];
         [_cardView addBlur];
     }
     return _cardView;
@@ -172,33 +167,6 @@ static CGFloat kCardViewDefaultHeight = 150;
     }
 }
 
-- (void)_showCamera
-{
-    JYPhotoCaptionViewController *captionVC = [[JYPhotoCaptionViewController alloc] initWithDelegate:self];
-
-    [TGCameraColor setTintColor:JoyyBlue];
-    TGCameraNavigationController *camera = [TGCameraNavigationController cameraWithDelegate:self captionViewController:captionVC];
-    camera.title = self.title;
-
-    [self presentViewController:camera animated:NO completion:nil];
-}
-
-#pragma mark - TGCameraDelegate Methods
-
-- (void)cameraDidCancel
-{
-    [self dismissViewControllerAnimated:NO completion:nil];
-}
-
-- (void)cameraDidTakePhoto:(UIImage *)photo fromAlbum:(BOOL)fromAlbum withCaption:(NSString *)caption
-{
-    // Handling and upload the photo
-//    UIImage *image = [UIImage imageWithImage:photo scaledToSize:CGSizeMake(kPhotoWidth, kPhotoWidth)];
-//
-////    [self _createPostWithImage:image contentType:kContentTypeJPG caption:caption];
-////    [self dismissViewControllerAnimated:YES completion:nil];
-}
-
 #pragma mark - UIScrollViewDelegate
 
 - (void)scrollViewDidScroll:(UIScrollView*)scrollView
@@ -252,24 +220,6 @@ static CGFloat kCardViewDefaultHeight = 150;
 
 #pragma mark - Maintain table
 
-//- (void)_createdNewPost:(JYPost *)post
-//{
-//    if (!post)
-//    {
-//        return;
-//    }
-//
-//    [[JYLocalDataManager sharedInstance] insertObjects:@[post] ofClass:JYPost.class];
-//
-//    self.oldestPostId = post.postId;
-//
-//    [self.postList insertObject:post atIndex:0];
-//    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
-//    [self.tableView beginUpdates];
-//    [self.tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationRight];
-//    [self.tableView endUpdates];
-//}
-
 - (void)_receivedOldPosts:(NSMutableArray *)postList
 {
     if ([postList count] == 0) // no more old post, do nothing
@@ -280,64 +230,6 @@ static CGFloat kCardViewDefaultHeight = 150;
     [self.postList addObjectsFromArray:postList];
     [self.tableView reloadData];
     [self.tableView.mj_footer endRefreshing];
-}
-
-#pragma mark - AWS S3
-
-- (void)_createPostWithImage:(UIImage *)image contentType:(NSString *)contentType caption:(NSString *)caption
-{
-//    NSURL *fileURL = [NSURL fileURLWithPath:[NSTemporaryDirectory() stringByAppendingPathComponent:@"timeline"]];
-//
-//    NSData *imageData = UIImageJPEGRepresentation(image, kPhotoQuality);
-//    [imageData writeToURL:fileURL atomically:YES];
-//
-//    NSString *s3filename = [[JYFilename sharedInstance] randomFilenameWithHttpContentType:contentType];
-//    NSString *s3region = [JYFilename sharedInstance].region;
-//    NSString *s3url = [NSString stringWithFormat:@"%@:%@", s3region, s3filename];
-//
-//    AWSS3TransferManager *transferManager = [AWSS3TransferManager defaultS3TransferManager];
-//    if (!transferManager)
-//    {
-//        NSLog(@"Error: no S3 transferManager");
-//        return;
-//    }
-//
-//    AWSS3TransferManagerUploadRequest *request = [AWSS3TransferManagerUploadRequest new];
-//    request.bucket = [JYFilename sharedInstance].postBucketName;
-//    request.key = s3filename;
-//    request.body = fileURL;
-//    request.contentType = contentType;
-//
-//    __weak typeof(self) weakSelf = self;
-//    [[transferManager upload:request] continueWithBlock:^id(AWSTask *task) {
-//        if (task.error)
-//        {
-//            if ([task.error.domain isEqualToString:AWSS3TransferManagerErrorDomain])
-//            {
-//                switch (task.error.code)
-//                {
-//                    case AWSS3TransferManagerErrorCancelled:
-//                    case AWSS3TransferManagerErrorPaused:
-//                        break;
-//                    default:
-//                        NSLog(@"Error: AWSS3TransferManager upload error = %@", task.error);
-//                        break;
-//                }
-//            }
-//            else
-//            {
-//                // Unknown error.
-//                NSLog(@"Error: AWSS3TransferManager upload error = %@", task.error);
-//            }
-//        }
-//        if (task.result)
-//        {
-//            AWSS3TransferManagerUploadOutput *uploadOutput = task.result;
-//            NSLog(@"Success: AWSS3TransferManager upload task.result = %@", uploadOutput);
-//            [weakSelf _createPostRecordWithS3URL:s3url caption:caption localImage:image];
-//        }
-//        return nil;
-//    }];
 }
 
 #pragma mark - Network

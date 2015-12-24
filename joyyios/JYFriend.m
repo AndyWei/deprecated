@@ -54,6 +54,11 @@
 
 + (instancetype)myself
 {
+    if ([JYCredential current].isInvalid)
+    {
+        return nil;
+    }
+
     JYFriend *_myself = [JYFriend new];
     _myself.userId = [JYCredential current].userId;
     _myself.username = [JYCredential current].username;

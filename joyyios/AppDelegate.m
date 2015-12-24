@@ -21,10 +21,10 @@
 #import "JYDeviceManager.h"
 #import "JYFilename.h"
 #import "JYFriendManager.h"
-#import "JYFriendViewController.h"
 #import "JYLocalDataManager.h"
-#import "JYPhoneNumberViewController.h"
 #import "JYNewProfileViewController.h"
+#import "JYPhoneNumberViewController.h"
+#import "JYProfileViewController.h"
 #import "JYSessionListViewController.h"
 #import "JYSoundPlayer.h"
 #import "JYTimelineViewController.h"
@@ -238,7 +238,7 @@
     UIViewController *vc3 = [JYSessionListViewController new];
     UINavigationController *nc3 = [[UINavigationController alloc] initWithRootViewController:vc3];
 
-    UIViewController *vc4 = [JYFriendViewController new];
+    UIViewController *vc4 = [JYProfileViewController new];
     UINavigationController *nc4 = [[UINavigationController alloc] initWithRootViewController:vc4];
 
     _tabBarController.viewControllers = @[ nc1, nc2, nc3, nc4 ];
@@ -261,9 +261,9 @@
     tabBarItem3.image = [[UIImage imageNamed:@"chat"]imageWithRenderingMode:UIImageRenderingModeAutomatic];
     tabBarItem3.title = NSLocalizedString(@"Chat", nil);
 
-    tabBarItem4.selectedImage = [[UIImage imageNamed:@"contacts_selected"]imageWithRenderingMode:UIImageRenderingModeAutomatic];
-    tabBarItem4.image = [[UIImage imageNamed:@"contacts"]imageWithRenderingMode:UIImageRenderingModeAutomatic];
-    tabBarItem4.title = NSLocalizedString(@"Friends", nil);
+    tabBarItem4.selectedImage = [[UIImage imageNamed:@"me_selected"]imageWithRenderingMode:UIImageRenderingModeAutomatic];
+    tabBarItem4.image = [[UIImage imageNamed:@"me"]imageWithRenderingMode:UIImageRenderingModeAutomatic];
+    tabBarItem4.title = NSLocalizedString(@"Me", nil);
 
     return _tabBarController;
 }
