@@ -91,6 +91,12 @@
     }];
 }
 
+- (void)forwardPost:(JYPost *)post success:(PostHandler)success failure:(FailureHandler)failure
+{
+    NSString *url = post.shortURL;
+    [self _createRecordWithURL:url caption:post.caption success:success failure:failure];
+}
+
 #pragma mark - Network
 
 - (void)_createRecordWithURL:(NSString *)s3url caption:(NSString *)caption success:(PostHandler)success failure:(FailureHandler)failure

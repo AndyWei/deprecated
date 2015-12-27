@@ -31,7 +31,7 @@
 #import "NSDate+Joyy.h"
 #import "UIImage+Joyy.h"
 
-@interface JYTimelineViewController () <JYRefreshHeaderDelegate, TGCameraDelegate, UITableViewDataSource, UITableViewDelegate>
+@interface JYTimelineViewController () <JYRefreshHeaderDelegate, JYTimelineCellDelegate, TGCameraDelegate, UITableViewDataSource, UITableViewDelegate>
 @property (nonatomic) CABasicAnimation *colorPulse;
 @property (nonatomic) JYButton *cameraButton;
 @property (nonatomic) JYCreatePostController *createPostController;
@@ -78,10 +78,8 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
     [self.view addSubview:self.cameraButton];
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_apiTokenReady) name:kNotificationAPITokenReady object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_likePost:) name:kNotificationLikePost object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_createComment:) name:kNotificationCreateComment object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_deleteComment:) name:kNotificationDeleteComment object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_deletePost:) name:kNotificationDeletePost object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_tapOnUser:) name:kNotificationDidTapOnUser object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_tapOnReminderView:) name:kNotificationDidTapReminderView object:nil];
 
@@ -300,21 +298,6 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
     }
 }
 
-- (void)_likePost:(NSNotification *)notification
-{
-    NSDictionary *info = [notification userInfo];
-    if (info)
-    {
-        id value = [info objectForKey:@"post"];
-        if (value != [NSNull null])
-        {
-            JYPost *post = (JYPost *)value;
-            self.currentPost = post;
-            [self _like:post];
-        }
-    }
-}
-
 - (void)_createComment:(NSNotification *)notification
 {
     NSDictionary *info = [notification userInfo];
@@ -337,32 +320,63 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
     }
 }
 
-- (void)_deletePost:(NSNotification *)notification
+- (void)_tapOnPostPhoto:(NSNotification *)notification
 {
     NSDictionary *info = [notification userInfo];
-    if (info)
+    if (!info)
     {
-        id post = [info objectForKey:@"post"];
-        if (post != [NSNull null])
-        {
-            [self _showOptionsToDeletePost:post];
-        }
+        return;
+    }
+
+    id postObj = [info objectForKey:@"post"];
+    if (postObj == [NSNull null])
+    {
+        return;
+    }
+
+    JYPost *post = (JYPost *)postObj;
+    if (post.isMine)
+    {
+        [self _showOptionsToDeletePost:post];
+    }
+    else
+    {
+        [self _showOptionsToForwardPost:post];
     }
 }
 
 - (void)_showOptionsToDeletePost:(JYPost *)post
 {
     NSString *cancel = NSLocalizedString(@"Cancel", nil);
-    NSString *delete = NSLocalizedString(@"Delete", nil);
+    NSString *title = NSLocalizedString(@"Delete", nil);
 
     UIAlertController* alert = [UIAlertController alertControllerWithTitle:nil
                                                                    message:nil
                                                             preferredStyle:UIAlertControllerStyleActionSheet];
 
     __weak typeof(self) weakSelf = self;
-    [alert addAction:[UIAlertAction actionWithTitle:delete style:UIAlertActionStyleDestructive
+    [alert addAction:[UIAlertAction actionWithTitle:title style:UIAlertActionStyleDestructive
                                             handler:^(UIAlertAction * action) {
                                                 [weakSelf _doDeletePost:post];
+                                            }]];
+
+    [alert addAction:[UIAlertAction actionWithTitle:cancel style:UIAlertActionStyleCancel handler:nil]];
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
+- (void)_showOptionsToForwardPost:(JYPost *)post
+{
+    NSString *cancel = NSLocalizedString(@"Cancel", nil);
+    NSString *title = NSLocalizedString(@"Forward", nil);
+
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:nil
+                                                                   message:nil
+                                                            preferredStyle:UIAlertControllerStyleActionSheet];
+
+    __weak typeof(self) weakSelf = self;
+    [alert addAction:[UIAlertAction actionWithTitle:title style:UIAlertActionStyleDestructive
+                                            handler:^(UIAlertAction * action) {
+                                                [weakSelf _doForwardPost:post];
                                             }]];
 
     [alert addAction:[UIAlertAction actionWithTitle:cancel style:UIAlertActionStyleCancel handler:nil]];
@@ -430,8 +444,6 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
 
 - (void)_showNewComments
 {
-//    self.tableView.tableHeaderView = nil;
-
     JYNewCommentViewController *viewController = [[JYNewCommentViewController alloc] init];
     viewController.commentList = [NSArray arrayWithArray:self.unreadCommentList];
     self.unreadCommentList = nil;
@@ -520,6 +532,7 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
 
     JYPost *post = self.postList[indexPath.row];
     cell.post = post;
+    cell.delegate = self;
 
     [cell setNeedsUpdateConstraints];
     [cell updateConstraintsIfNeeded];
@@ -555,6 +568,45 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
         return self.reminderView;
     }
     return nil;
+}
+
+#pragma mark - JYTimelineCellDelegate
+- (void)cell:(JYTimelineCell *)cell didTapOnPost:(JYPost *)post
+{
+    if (!post)
+    {
+        return;
+    }
+
+    if (post.isMine)
+    {
+        [self _showOptionsToDeletePost:post];
+    }
+    else
+    {
+        [self _showOptionsToForwardPost:post];
+    }
+}
+
+- (void)cell:(JYTimelineCell *)cell didLikePost:(JYPost *)post
+{
+    if (!post)
+    {
+        return;
+    }
+
+    self.currentPost = post;
+    [self _like:post];
+}
+
+- (void)cell:(JYTimelineCell *)cell didCommentPost:(JYPost *)post
+{
+    if (!post)
+    {
+        return;
+    }
+
+    [self _showCommentCreateViewForPost:post replyToComment:nil];
 }
 
 #pragma mark - Maintain table
@@ -991,6 +1043,32 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
               [weakSelf _networkThreadEnd];
           }
      ];
+}
+
+- (void)_doForwardPost:(JYPost *)post
+{
+    if (!post)
+    {
+        return;
+    }
+
+    [self _networkThreadBegin];
+
+    __weak typeof(self) weakSelf = self;
+    [self.createPostController forwardPost:post success:^(JYPost *newPost) {
+
+        newPost.localImage = post.localImage;
+        [weakSelf _createdNewPost:newPost];
+        [weakSelf _networkThreadEnd];
+    } failure:^(NSError *error) {
+
+        [weakSelf _networkThreadEnd];
+        [RKDropdownAlert title:NSLocalizedString(kErrorTitle, nil)
+                       message:error.localizedDescription
+               backgroundColor:FlatYellow
+                     textColor:FlatBlack
+                          time:5];
+    }];
 }
 
 - (void)_doDeleteComment:(JYComment *)comment ofPost:(JYPost *)post

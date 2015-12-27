@@ -18,7 +18,6 @@
 @property (nonatomic) BOOL likeButtonPressed;
 @property (nonatomic) JYButton *commentButton;
 @property (nonatomic) JYButton *likeButton;
-@property (nonatomic) JYButton *deleteButton;
 @property (nonatomic) UIView *separator;
 @end
 
@@ -32,21 +31,18 @@
 
         [self addSubview:self.likeButton];
         [self addSubview:self.commentButton];
-        [self addSubview:self.deleteButton];
         [self addSubview:self.separator];
 
         NSDictionary *views = @{
                                 @"commentButton": self.commentButton,
                                 @"likeButton": self.likeButton,
-                                @"deleteButton": self.deleteButton,
                                 @"separator": self.separator
                                 };
 
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(>=160@500)-[deleteButton(40)]-20-[likeButton(40)]-20-[commentButton(40)]-10-|" options:0 metrics:nil views:views]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(>=200@500)-[likeButton(40)]-20-[commentButton(40)]-10-|" options:0 metrics:nil views:views]];
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(20)-[separator]|" options:0 metrics:nil views:views]];
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[commentButton][separator(0.5)]|" options:0 metrics:nil views:views]];
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[likeButton][separator(0.5)]|" options:0 metrics:nil views:views]];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[deleteButton][separator(0.5)]|" options:0 metrics:nil views:views]];
 
     }
     return self;
@@ -104,17 +100,6 @@
     return _likeButton;
 }
 
-- (JYButton *)deleteButton
-{
-    if (!_deleteButton)
-    {
-        _deleteButton = [self _buttonWithImage:[UIImage imageNamed:@"delete"]];
-        _deleteButton.contentEdgeInsets = UIEdgeInsetsMake(9, 8, 9, 8);
-        [_deleteButton addTarget:self action:@selector(_didTapDeleteButton) forControlEvents:UIControlEventTouchUpInside];
-    }
-    return _deleteButton;
-}
-
 - (UIView *)separator
 {
     if (!_separator)
@@ -128,8 +113,10 @@
 
 - (void)_didTapCommentButton
 {
-    NSDictionary *info = @{@"post": self.post};
-    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationCreateComment object:nil userInfo:info];
+    if (self.delegate)
+    {
+        [self.delegate view:self didCommentPost:self.post];
+    }
 }
 
 - (void)_didTapLikeButton
@@ -141,14 +128,10 @@
 
     self.likeButtonPressed = YES;
 
-    NSDictionary *info = @{@"post": self.post};
-    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationLikePost object:nil userInfo:info];
-}
-
-- (void)_didTapDeleteButton
-{
-    NSDictionary *info = @{@"post": self.post};
-    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationDeletePost object:nil userInfo:info];
+    if (self.delegate)
+    {
+        [self.delegate view:self didLikePost:self.post];
+    }
 }
 
 - (JYButton *)_buttonWithImage:(UIImage *)image

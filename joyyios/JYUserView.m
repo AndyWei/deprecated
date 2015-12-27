@@ -7,7 +7,6 @@
 //
 
 #import <AFNetworking/UIButton+AFNetworking.h>
-#import <AFNetworking/UIImageView+AFNetworking.h>
 #import <TTTAttributedLabel/TTTAttributedLabel.h>
 
 #import "JYButton.h"

@@ -18,7 +18,7 @@
 #import "JYUserView.h"
 #import "NSDate+Joyy.h"
 
-@interface JYTimelineCell () <TTTAttributedLabelDelegate>
+@interface JYTimelineCell () <JYPostActionViewDelegate, JYPostMediaViewDelegate, TTTAttributedLabelDelegate>
 @property (nonatomic) JYPostMediaView *mediaView;
 @property (nonatomic) JYPostActionView *actionView;
 @property (nonatomic) JYPostCommentView *commentView;
@@ -176,6 +176,7 @@
     if (!_mediaView)
     {
         _mediaView = [[JYPostMediaView alloc] init];
+        _mediaView.delegate = self;
     }
     return _mediaView;
 }
@@ -185,6 +186,7 @@
     if (!_actionView)
     {
         _actionView = [[JYPostActionView alloc] init];
+        _actionView.delegate = self;
     }
     return _actionView;
 }
@@ -196,7 +198,7 @@
         TTTAttributedLabel *label = [[TTTAttributedLabel alloc] initWithFrame:CGRectZero];
         label.translatesAutoresizingMaskIntoConstraints = NO;
         label.font = [UIFont systemFontOfSize:kFontSizeComment];
-        label.backgroundColor = JoyyWhiter;
+        label.backgroundColor = JoyyWhitePure;
         label.textColor = JoyyBlue;
         label.textInsets = UIEdgeInsetsMake(0, 5, 0, 5);
         label.lineBreakMode = NSLineBreakByWordWrapping;
@@ -260,6 +262,34 @@
     {
         NSDictionary *info = @{@"userid": friend.userId};
         [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationDidTapOnUser object:nil userInfo:info];
+    }
+}
+
+#pragma mark -- JYPostActionViewDelegate
+
+- (void)view:(UIView *)view didLikePost:(JYPost *)post
+{
+    if (self.delegate)
+    {
+        [self.delegate cell:self didLikePost:post];
+    }
+}
+
+- (void)view:(UIView *)view didCommentPost:(JYPost *)post
+{
+    if (self.delegate)
+    {
+        [self.delegate cell:self didCommentPost:post];
+    }
+}
+
+#pragma mark -- JYPostMediaViewDelegate
+
+- (void)view:(UIView *)view didTapOnPost:(JYPost *)post
+{
+    if (self.delegate)
+    {
+        [self.delegate cell:self didTapOnPost:post];
     }
 }
 

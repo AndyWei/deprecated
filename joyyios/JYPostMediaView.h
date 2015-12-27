@@ -8,8 +8,12 @@
 
 @class JYPost;
 
+@protocol JYPostMediaViewDelegate <NSObject>
+- (void)view:(UIView *)view didTapOnPost:(JYPost *)post;
+@end
+
+
 @interface JYPostMediaView : UIView
-
 @property(nonatomic) JYPost *post;
-
+@property(nonatomic, weak) id<JYPostMediaViewDelegate> delegate;
 @end

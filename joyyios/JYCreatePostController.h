@@ -14,5 +14,6 @@ typedef void(^PostHandler)(JYPost *);
 @interface JYCreatePostController : NSObject
 
 - (void)createPostWithMedia:(id)media caption:(NSString *)caption success:(PostHandler)success failure:(FailureHandler)failure;
+- (void)forwardPost:(JYPost *)post success:(PostHandler)success failure:(FailureHandler)failure;
 
 @end

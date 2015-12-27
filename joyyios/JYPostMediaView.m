@@ -106,6 +106,11 @@
         _photoView = [[UIImageView alloc] init];
         _photoView.translatesAutoresizingMaskIntoConstraints = NO;
         _photoView.contentMode = UIViewContentModeScaleAspectFit;
+        _photoView.userInteractionEnabled = YES;
+
+        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(_didTapPhotoView)];
+        tap.numberOfTapsRequired = 1;
+        [_photoView addGestureRecognizer:tap];
     }
     return _photoView;
 }
@@ -130,6 +135,14 @@
         _captionLabel.clipsToBounds = YES;
     }
     return _captionLabel;
+}
+
+- (void)_didTapPhotoView
+{
+    if (self.delegate)
+    {
+        [self.delegate view:self didTapOnPost:self.post];
+    }
 }
 
 @end

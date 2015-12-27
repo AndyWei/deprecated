@@ -7,9 +7,15 @@
 //
 
 @class JYPost;
+@class JYTimelineCell;
+
+@protocol JYTimelineCellDelegate <NSObject>
+- (void)cell:(JYTimelineCell *)cell didTapOnPost:(JYPost *)post;
+- (void)cell:(JYTimelineCell *)cell didLikePost:(JYPost *)post;
+- (void)cell:(JYTimelineCell *)cell didCommentPost:(JYPost *)post;
+@end
 
 @interface JYTimelineCell : UITableViewCell
-
 @property(nonatomic) JYPost *post;
-
+@property(nonatomic) id<JYTimelineCellDelegate> delegate;
 @end

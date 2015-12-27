@@ -8,8 +8,12 @@
 
 @class JYPost;
 
+@protocol JYPostActionViewDelegate <NSObject>
+- (void)view:(UIView *)view didLikePost:(JYPost *)post;
+- (void)view:(UIView *)view didCommentPost:(JYPost *)post;
+@end
+
 @interface JYPostActionView : UIView
-
 @property(nonatomic) JYPost *post;
-
+@property(nonatomic, weak) id<JYPostActionViewDelegate> delegate;
 @end
