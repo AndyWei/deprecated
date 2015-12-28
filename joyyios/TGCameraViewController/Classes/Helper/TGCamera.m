@@ -27,7 +27,7 @@
 #import "TGCameraGrid.h"
 #import "TGCameraGridView.h"
 #import "TGCameraFlash.h"
-#import "TGCameraFocus.h"
+#import "TGCameraFocusView.h"
 #import "TGCameraShot.h"
 #import "TGCameraToggle.h"
 
@@ -142,9 +142,33 @@ NSMutableDictionary *optionDictionary;
     [TGCameraFlash changeModeWithCaptureSession:_session andButton:button];
 }
 
-- (void)focusView:(UIView *)focusView inTouchPoint:(CGPoint)touchPoint
+- (void)captureView:(UIView *)captureView focusAtTouchPoint:(CGPoint)touchPoint
 {
-    [TGCameraFocus focusWithCaptureSession:_session touchPoint:touchPoint inFocusView:focusView];
+    AVCaptureDevice *device = [_session.inputs.lastObject device];
+
+    [self showFocusAnimationOnView:captureView withTouchPoint:touchPoint];
+
+    if ([device lockForConfiguration:nil]) {
+
+        CGPoint pointOfInterest = [self pointOfInterestWithTouchPoint:touchPoint onView:captureView];
+        if (device.focusPointOfInterestSupported) {
+            device.focusPointOfInterest = pointOfInterest;
+        }
+
+        if (device.exposurePointOfInterestSupported) {
+            device.exposurePointOfInterest = pointOfInterest;
+        }
+
+        if ([device isFocusModeSupported:AVCaptureFocusModeContinuousAutoFocus]) {
+            device.focusMode = AVCaptureFocusModeContinuousAutoFocus;
+        }
+
+        if ([device isExposureModeSupported:AVCaptureExposureModeContinuousAutoExposure]) {
+            device.exposureMode = AVCaptureExposureModeContinuousAutoExposure;
+        }
+
+        [device unlockForConfiguration];
+    }
 }
 
 - (void)takePhotoWithCaptureView:(UIView *)captureView videoOrientation:(AVCaptureVideoOrientation)videoOrientation cropSize:(CGSize)cropSize completion:(void (^)(UIImage *))completion
@@ -163,6 +187,55 @@ NSMutableDictionary *optionDictionary;
 
 #pragma mark -
 #pragma mark - Private methods
+
+- (void)showFocusAnimationOnView:(UIView *)view withTouchPoint:(CGPoint)touchPoint
+{
+    //
+    // add focus view animated
+    //
+    TGCameraFocusView *cameraFocusView = [[TGCameraFocusView alloc] initWithFrame:CGRectMake(0, 0, TGCameraFocusSize, TGCameraFocusSize)];
+    cameraFocusView.center = touchPoint;
+    [view addSubview:cameraFocusView];
+    [cameraFocusView startAnimation];
+
+    dispatch_time_t focusTime = dispatch_time(DISPATCH_TIME_NOW, 0.5f * NSEC_PER_SEC);
+    dispatch_after(focusTime, dispatch_get_main_queue(), ^(void){
+        [cameraFocusView stopAnimation];
+    });
+}
+
+- (CGPoint)pointOfInterestWithTouchPoint:(CGPoint)touchPoint onView:(UIView *)view
+{
+    CGPoint pointOfInterest = CGPointMake(0.5f, 0.5f);
+    CGSize frameSize = [view frame].size;
+
+    for (AVCaptureInputPort *port in [[[_session inputs] lastObject] ports]) {
+        if ([port mediaType] == AVMediaTypeVideo) {
+
+            CGRect cleanAperture = CMVideoFormatDescriptionGetCleanAperture([port formatDescription], NO);
+            CGSize apertureSize = cleanAperture.size;
+            CGPoint point = touchPoint;
+
+            CGFloat apertureRatio = apertureSize.height / apertureSize.width;
+            CGFloat viewRatio = frameSize.width / frameSize.height;
+            CGFloat xc = .5f;
+            CGFloat yc = .5f;
+
+            if (viewRatio > apertureRatio) {
+                CGFloat y2 = apertureSize.width * (frameSize.width / apertureSize.height);
+                xc = (point.y + ((y2 - frameSize.height) / 2.f)) / y2;
+                yc = (frameSize.width - point.x) / frameSize.width;
+            } else {
+                CGFloat x2 = apertureSize.height * (frameSize.height / apertureSize.width);
+                yc = 1.f - ((point.x + ((x2 - frameSize.width) / 2)) / x2);
+                xc = point.y / frameSize.height;
+            }
+            pointOfInterest = CGPointMake(xc, yc);
+        }
+    }
+    
+    return pointOfInterest;
+}
 
 + (instancetype)newCamera
 {
@@ -200,20 +273,13 @@ NSMutableDictionary *optionDictionary;
     AVCaptureDevice *device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
     
     if ([device lockForConfiguration:nil]) {
-        if (device.autoFocusRangeRestrictionSupported) {
-            device.autoFocusRangeRestriction = AVCaptureAutoFocusRangeRestrictionNear;
-        }
-        
-        if (device.smoothAutoFocusSupported) {
-            device.smoothAutoFocusEnabled = YES;
-        }
         
         if([device isFocusModeSupported:AVCaptureFocusModeContinuousAutoFocus]){
             device.focusMode = AVCaptureFocusModeContinuousAutoFocus;
         }
 
         device.exposureMode = AVCaptureExposureModeContinuousAutoExposure;
-        
+
         [device unlockForConfiguration];
     }
 
@@ -267,13 +333,6 @@ NSMutableDictionary *optionDictionary;
     }
     
     if ([device lockForConfiguration:nil]) {
-        if (device.autoFocusRangeRestrictionSupported) {
-            device.autoFocusRangeRestriction = AVCaptureAutoFocusRangeRestrictionNear;
-        }
-        
-        if (device.smoothAutoFocusSupported) {
-            device.smoothAutoFocusEnabled = YES;
-        }
         
         if ([device isFocusModeSupported:AVCaptureFocusModeContinuousAutoFocus]) {
             device.focusMode = AVCaptureFocusModeContinuousAutoFocus;

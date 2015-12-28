@@ -63,7 +63,7 @@
 
 - (void)changeFlashModeWithButton:(UIButton *)button;
 
-- (void)focusView:(UIView *)focusView inTouchPoint:(CGPoint)touchPoint;
+- (void)captureView:(UIView *)captureView focusAtTouchPoint:(CGPoint)touchPoint;
 
 - (void)takePhotoWithCaptureView:(UIView *)captureView
                 videoOrientation:(AVCaptureVideoOrientation)videoOrientation

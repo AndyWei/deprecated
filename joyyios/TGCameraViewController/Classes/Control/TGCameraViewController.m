@@ -25,7 +25,6 @@
 
 #import "TGCameraColor.h"
 #import "TGCameraViewController.h"
-#import "TGCameraSlideView.h"
 #import "TGTintedButton.h"
 
 
@@ -42,8 +41,6 @@
 @property (strong, nonatomic) IBOutlet UIButton *shotButton;
 @property (strong, nonatomic) IBOutlet TGTintedButton *albumButton;
 @property (strong, nonatomic) IBOutlet UIButton *flashButton;
-@property (strong, nonatomic) IBOutlet TGCameraSlideView *slideUpView;
-@property (strong, nonatomic) IBOutlet TGCameraSlideView *slideDownView;
 
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *topViewHeight;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *toggleButtonWidth;
@@ -61,7 +58,6 @@
 - (void)deviceOrientationDidChangeNotification;
 - (void)latestPhoto;
 - (AVCaptureVideoOrientation)videoOrientationForDeviceOrientation:(UIDeviceOrientation)deviceOrientation;
-- (void)viewWillDisappearWithCompletion:(void (^)(void))completion;
 
 @end
 
@@ -172,8 +168,6 @@
     _shotButton = nil;
     _albumButton = nil;
     _flashButton = nil;
-    _slideUpView = nil;
-    _slideDownView = nil;
     _camera = nil;
 }
 
@@ -252,11 +246,8 @@
     _shotButton.enabled =
     _albumButton.enabled = NO;
 
-    __weak typeof(self) weakSelf = self;
-    [self viewWillDisappearWithCompletion:^{
-        UIImagePickerController *pickerController = [TGAlbum imagePickerControllerWithDelegate:self];
-        [weakSelf presentViewController:pickerController animated:YES completion:nil];
-    }];
+    UIImagePickerController *pickerController = [TGAlbum imagePickerControllerWithDelegate:self];
+    [self presentViewController:pickerController animated:YES completion:nil];
 }
 
 - (IBAction)toggleTapped
@@ -270,7 +261,7 @@
 - (IBAction)handleTapGesture:(UITapGestureRecognizer *)recognizer
 {
     CGPoint touchPoint = [recognizer locationInView:_captureView];
-    [_camera focusView:_captureView inTouchPoint:touchPoint];
+    [_camera captureView:_captureView focusAtTouchPoint:touchPoint];
 }
 
 #pragma mark -
@@ -342,15 +333,6 @@
     }
     
     return result;
-}
-
-- (void)viewWillDisappearWithCompletion:(void (^)(void))completion
-{
-    _actionsView.hidden = YES;
-    
-    [TGCameraSlideView showSlideUpView:_slideUpView slideDownView:_slideDownView atView:_captureView completion:^{
-        completion();
-    }];
 }
 
 @end

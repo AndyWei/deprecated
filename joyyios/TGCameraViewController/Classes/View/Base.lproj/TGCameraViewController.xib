@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="7706" systemVersion="14E46" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="9531" systemVersion="14F1509" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
     </dependencies>
     <objects>
@@ -15,8 +15,6 @@
                 <outlet property="gridButton" destination="Nol-dD-ETh" id="tfG-QF-CbC"/>
                 <outlet property="separatorView" destination="xFF-75-cke" id="J08-U0-hk1"/>
                 <outlet property="shotButton" destination="wtQ-Dg-G3i" id="cWY-WV-5Gp"/>
-                <outlet property="slideDownView" destination="Czb-nz-m44" id="Ga2-kT-HSY"/>
-                <outlet property="slideUpView" destination="vJp-kA-okD" id="hiW-4t-8lC"/>
                 <outlet property="toggleButton" destination="WJG-N5-BnZ" id="QRP-Z9-Zpe"/>
                 <outlet property="toggleButtonWidth" destination="6Yw-v5-k8c" id="Tt0-Xt-LUE"/>
                 <outlet property="topViewHeight" destination="0mu-lN-Lkb" id="RZR-8e-pHu"/>
@@ -182,52 +180,6 @@
             <nil key="simulatedStatusBarMetrics"/>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <point key="canvasLocation" x="833" y="280"/>
-        </view>
-        <view contentMode="scaleToFill" id="vJp-kA-okD" customClass="TGCameraSlideUpView">
-            <rect key="frame" x="0.0" y="0.0" width="600" height="225"/>
-            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-            <subviews>
-                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="HQ4-27-y2g" userLabel="Separator View">
-                    <rect key="frame" x="0.0" y="224" width="600" height="1"/>
-                    <color key="backgroundColor" red="0.078431372550000003" green="0.078431372550000003" blue="0.078431372550000003" alpha="1" colorSpace="calibratedRGB"/>
-                    <constraints>
-                        <constraint firstAttribute="height" constant="1" id="HY2-Sb-rlR"/>
-                    </constraints>
-                </view>
-            </subviews>
-            <color key="backgroundColor" red="0.11764705882352941" green="0.11764705882352941" blue="0.11764705882352941" alpha="1" colorSpace="calibratedRGB"/>
-            <color key="tintColor" red="1" green="0.35686275360000003" blue="0.0039215688589999999" alpha="1" colorSpace="deviceRGB"/>
-            <constraints>
-                <constraint firstItem="HQ4-27-y2g" firstAttribute="leading" secondItem="vJp-kA-okD" secondAttribute="leading" id="GqW-ZD-APZ"/>
-                <constraint firstAttribute="trailing" secondItem="HQ4-27-y2g" secondAttribute="trailing" id="Hnf-2P-GD4"/>
-                <constraint firstAttribute="bottom" secondItem="HQ4-27-y2g" secondAttribute="bottom" id="gue-Mt-PoF"/>
-            </constraints>
-            <nil key="simulatedStatusBarMetrics"/>
-            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <point key="canvasLocation" x="1484" y="-17.5"/>
-        </view>
-        <view contentMode="scaleToFill" id="Czb-nz-m44" customClass="TGCameraSlideDownView">
-            <rect key="frame" x="0.0" y="0.0" width="600" height="225"/>
-            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-            <subviews>
-                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wsO-7U-Imk" userLabel="Separator View">
-                    <rect key="frame" x="0.0" y="0.0" width="600" height="1"/>
-                    <color key="backgroundColor" white="1" alpha="0.050000000000000003" colorSpace="calibratedWhite"/>
-                    <constraints>
-                        <constraint firstAttribute="height" constant="1" id="RKR-Z9-Lco"/>
-                    </constraints>
-                </view>
-            </subviews>
-            <color key="backgroundColor" red="0.11764705882352941" green="0.11764705882352941" blue="0.11764705882352941" alpha="1" colorSpace="calibratedRGB"/>
-            <color key="tintColor" red="1" green="0.35686275360000003" blue="0.0039215688589999999" alpha="1" colorSpace="deviceRGB"/>
-            <constraints>
-                <constraint firstItem="wsO-7U-Imk" firstAttribute="top" secondItem="Czb-nz-m44" secondAttribute="top" id="8ye-9a-LYK"/>
-                <constraint firstItem="wsO-7U-Imk" firstAttribute="leading" secondItem="Czb-nz-m44" secondAttribute="leading" id="9ZZ-vg-AT1"/>
-                <constraint firstAttribute="trailing" secondItem="wsO-7U-Imk" secondAttribute="trailing" id="yY4-cP-SLv"/>
-            </constraints>
-            <nil key="simulatedStatusBarMetrics"/>
-            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <point key="canvasLocation" x="1484" y="254.5"/>
         </view>
         <tapGestureRecognizer id="8lp-h9-4Ub">
             <connections>
