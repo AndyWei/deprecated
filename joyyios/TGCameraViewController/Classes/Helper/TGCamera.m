@@ -24,8 +24,6 @@
 //  THE SOFTWARE.
 
 #import "TGCamera.h"
-#import "TGCameraGrid.h"
-#import "TGCameraGridView.h"
 #import "TGCameraFlash.h"
 #import "TGCameraFocusView.h"
 #import "TGCameraShot.h"
@@ -34,18 +32,16 @@
 NSMutableDictionary *optionDictionary;
 
 
-
 @interface TGCamera ()
 
 @property (strong, nonatomic) AVCaptureSession *session;
 @property (strong, nonatomic) AVCaptureVideoPreviewLayer *previewLayer;
 @property (strong, nonatomic) AVCaptureStillImageOutput *stillImageOutput;
-@property (strong, nonatomic) TGCameraGridView *gridView;
 
 + (instancetype)newCamera;
 + (void)initOptions;
 
-- (void)setupWithFlashButton:(UIButton *)flashButton;
+- (void)setupWithFlashButton:(JYButton *)flashButton;
 
 @end
 
@@ -53,7 +49,7 @@ NSMutableDictionary *optionDictionary;
 
 @implementation TGCamera
 
-+ (instancetype)cameraWithFlashButton:(UIButton *)flashButton
++ (instancetype)cameraWithFlashButton:(JYButton *)flashButton
 {
     TGCamera *camera = [TGCamera newCamera];
     [camera setupWithFlashButton:flashButton];
@@ -61,7 +57,7 @@ NSMutableDictionary *optionDictionary;
     return camera;
 }
 
-+ (instancetype)cameraWithFlashButton:(UIButton *)flashButton devicePosition:(AVCaptureDevicePosition)devicePosition
++ (instancetype)cameraWithFlashButton:(JYButton *)flashButton devicePosition:(AVCaptureDevicePosition)devicePosition
 {
     TGCamera *camera = [TGCamera newCamera];
     [camera setupWithFlashButton:flashButton devicePosition:devicePosition];
@@ -99,7 +95,6 @@ NSMutableDictionary *optionDictionary;
     _session = nil;
     _previewLayer = nil;
     _stillImageOutput = nil;
-    _gridView = nil;
 }
 
 #pragma mark -
@@ -117,27 +112,21 @@ NSMutableDictionary *optionDictionary;
 
 - (void)insertSublayerWithCaptureView:(UIView *)captureView atRootView:(UIView *)rootView
 {
+    if (_previewLayer)
+    {
+        return;
+    }
+
     _previewLayer = [[AVCaptureVideoPreviewLayer alloc] initWithSession:_session];
     _previewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
-    
-    CALayer *rootLayer = [rootView layer];
-    rootLayer.masksToBounds = YES;
-    
     CGRect frame = captureView.frame;
     _previewLayer.frame = frame;
-    
+
+    CALayer *rootLayer = [rootView layer];
     [rootLayer insertSublayer:_previewLayer atIndex:0];
-    
-    NSInteger index = [captureView.subviews count]-1;
-    [captureView insertSubview:self.gridView atIndex:index];
 }
 
-- (void)changeGridView
-{
-    [TGCameraGrid changeGridView:self.gridView];
-}
-
-- (void)changeFlashModeWithButton:(UIButton *)button
+- (void)changeFlashModeWithButton:(JYButton *)button
 {
     [TGCameraFlash changeModeWithCaptureSession:_session andButton:button];
 }
@@ -179,7 +168,7 @@ NSMutableDictionary *optionDictionary;
     }];
 }
 
-- (void)toogleWithFlashButton:(UIButton *)flashButton
+- (void)toogleWithFlashButton:(JYButton *)flashButton
 {
     [TGCameraToggle toogleWithCaptureSession:_session];
     [TGCameraFlash flashModeWithCaptureSession:_session andButton:flashButton];
@@ -193,14 +182,14 @@ NSMutableDictionary *optionDictionary;
     //
     // add focus view animated
     //
-    TGCameraFocusView *cameraFocusView = [[TGCameraFocusView alloc] initWithFrame:CGRectMake(0, 0, TGCameraFocusSize, TGCameraFocusSize)];
-    cameraFocusView.center = touchPoint;
-    [view addSubview:cameraFocusView];
-    [cameraFocusView startAnimation];
+    TGCameraFocusView *focusView = [[TGCameraFocusView alloc] initWithFrame:CGRectMake(0, 0, TGCameraFocusSize, TGCameraFocusSize)];
+    focusView.center = touchPoint;
+    [view addSubview:focusView];
+    [focusView startAnimation];
 
     dispatch_time_t focusTime = dispatch_time(DISPATCH_TIME_NOW, 0.5f * NSEC_PER_SEC);
     dispatch_after(focusTime, dispatch_get_main_queue(), ^(void){
-        [cameraFocusView stopAnimation];
+        [focusView stopAnimation];
     });
 }
 
@@ -242,22 +231,7 @@ NSMutableDictionary *optionDictionary;
     return [super new];
 }
 
-- (TGCameraGridView *)gridView
-{
-    if (_gridView == nil) {
-        CGRect frame = _previewLayer.frame;
-        frame.origin.x = frame.origin.y = 0;
-        
-        _gridView = [[TGCameraGridView alloc] initWithFrame:frame];
-        _gridView.numberOfColumns = 2;
-        _gridView.numberOfRows = 2;
-        _gridView.alpha = 0;
-    }
-    
-    return _gridView;
-}
-
-- (void)setupWithFlashButton:(UIButton *)flashButton
+- (void)setupWithFlashButton:(JYButton *)flashButton
 {
     //
     // create session
@@ -308,7 +282,7 @@ NSMutableDictionary *optionDictionary;
     [TGCameraFlash flashModeWithCaptureSession:_session andButton:flashButton];
 }
 
-- (void)setupWithFlashButton:(UIButton *)flashButton devicePosition:(AVCaptureDevicePosition)devicePosition
+- (void)setupWithFlashButton:(JYButton *)flashButton devicePosition:(AVCaptureDevicePosition)devicePosition
 {
     //
     // create session

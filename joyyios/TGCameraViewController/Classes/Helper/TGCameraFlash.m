@@ -32,7 +32,7 @@
 #pragma mark -
 #pragma mark - Public methods
 
-+ (void)changeModeWithCaptureSession:(AVCaptureSession *)session andButton:(UIButton *)button
++ (void)changeModeWithCaptureSession:(AVCaptureSession *)session andButton:(JYButton *)button
 {
     AVCaptureDevice *device = [session.inputs.lastObject device];
     AVCaptureFlashMode mode = [device flashMode];
@@ -62,19 +62,13 @@
     [self flashModeWithCaptureSession:session andButton:button];
 }
 
-+ (void)flashModeWithCaptureSession:(AVCaptureSession *)session andButton:(UIButton *)button
++ (void)flashModeWithCaptureSession:(AVCaptureSession *)session andButton:(JYButton *)button
 {
     AVCaptureDevice *device = [session.inputs.lastObject device];
     AVCaptureFlashMode mode = [device flashMode];
-    UIImage *image = UIImageFromAVCaptureFlashMode(mode);
-    UIColor *tintColor = TintColorFromAVCaptureFlashMode(mode);
+    button.imageView.image = UIImageFromAVCaptureFlashMode(mode);
+    button.contentColor = TintColorFromAVCaptureFlashMode(mode);
     button.enabled = [device isFlashModeSupported:mode];
-    
-    if ([button isKindOfClass:[TGTintedButton class]]) {
-        [(TGTintedButton*)button setCustomTintColorOverride:tintColor];
-    }
-    
-    [button setImage:image forState:UIControlStateNormal];
 }
 
 #pragma mark -

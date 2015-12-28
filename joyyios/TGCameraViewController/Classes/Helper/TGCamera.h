@@ -23,6 +23,8 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
+#import "JYButton.h"
+
 @import Foundation;
 @import AVFoundation;
 @import UIKit;
@@ -45,8 +47,8 @@
 - (instancetype) init __attribute__
 ((unavailable("[-init] is not allowed, use [+cameraWithRootView:andCaptureView:]")));
 
-+ (instancetype)cameraWithFlashButton:(UIButton *)flashButton;
-+ (instancetype)cameraWithFlashButton:(UIButton *)flashButton devicePosition:(AVCaptureDevicePosition)devicePosition;
++ (instancetype)cameraWithFlashButton:(JYButton *)flashButton;
++ (instancetype)cameraWithFlashButton:(JYButton *)flashButton devicePosition:(AVCaptureDevicePosition)devicePosition;
 
 + (void)setOption:(NSString*)option value:(id)value;
 + (id)getOption:(NSString*)option;
@@ -59,9 +61,7 @@
 
 - (void)insertSublayerWithCaptureView:(UIView *)captureView atRootView:(UIView *)rootView;
 
-- (void)changeGridView;
-
-- (void)changeFlashModeWithButton:(UIButton *)button;
+- (void)changeFlashModeWithButton:(JYButton *)button;
 
 - (void)captureView:(UIView *)captureView focusAtTouchPoint:(CGPoint)touchPoint;
 
@@ -70,7 +70,7 @@
                         cropSize:(CGSize)cropSize
                       completion:(void (^)(UIImage *))completion;
 
-- (void)toogleWithFlashButton:(UIButton *)flashButton;
+- (void)toogleWithFlashButton:(JYButton *)flashButton;
 
 @end
 

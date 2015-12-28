@@ -23,13 +23,15 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
+#import "JYButton.h"
+
 @import Foundation;
 @import AVFoundation;
 @import UIKit;
 
 @interface TGCameraFlash : NSObject
 
-+ (void)changeModeWithCaptureSession:(AVCaptureSession *)session andButton:(UIButton *)button;
-+ (void)flashModeWithCaptureSession:(AVCaptureSession *)session andButton:(UIButton *)button;
++ (void)changeModeWithCaptureSession:(AVCaptureSession *)session andButton:(JYButton *)button;
++ (void)flashModeWithCaptureSession:(AVCaptureSession *)session andButton:(JYButton *)button;
 
 @end
