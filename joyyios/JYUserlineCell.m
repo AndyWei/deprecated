@@ -35,14 +35,19 @@
                                 @"mediaView": self.mediaView,
                                 @"postTimeLabel": self.postTimeLabel
                                 };
-        NSDictionary *metrics = @{
-                                  @"SW":@(SCREEN_WIDTH)
-                                  };
 
         [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[postTimeLabel]-10-|" options:0 metrics:nil views:views]];
         [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[mediaView]-0-|" options:0 metrics:nil views:views]];
 
-        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0@500-[postTimeLabel][mediaView(SW)]-10@500-|" options:0 metrics:metrics views:views]];
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0@500-[postTimeLabel][mediaView]-10@500-|" options:0 metrics:nil views:views]];
+
+        [self.mediaView addConstraint:[NSLayoutConstraint constraintWithItem:self.mediaView
+                                                                   attribute:NSLayoutAttributeHeight
+                                                                   relatedBy:NSLayoutRelationEqual
+                                                                      toItem:self.mediaView
+                                                                   attribute:NSLayoutAttributeWidth
+                                                                  multiplier:1.0f
+                                                                    constant:0.0f]];
 
     }
     return self;

@@ -64,6 +64,7 @@ static CGFloat kCardViewDefaultHeight = 150;
     [self.view addSubview:self.cardView];
 
     NSDictionary *views = @{ @"cardView": self.cardView };
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[cardView]-0-|" options:0 metrics:nil views:views]];
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[cardView]-(>=100@500)-|" options:0 metrics:nil views:views]];
     self.cardViewHeightConstraint = [NSLayoutConstraint constraintWithItem:self.cardView
                                                                  attribute:NSLayoutAttributeHeight

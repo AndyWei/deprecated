@@ -37,11 +37,7 @@
                                 @"blurView": self.blurView
                               };
 
-        NSDictionary *metrics = @{
-                                  @"SW": @(SCREEN_WIDTH)
-                                };
-
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[coverView(SW)]|" options:0 metrics:metrics views:views]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[coverView]-0-|" options:0 metrics:nil views:views]];
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-20-[avatarView(120)][titleLabel]-10-|" options:0 metrics:nil views:views]];
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[coverView][titleLabel(20)]-20-|" options:0 metrics:nil views:views]];
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(>=30@500)-[avatarView(120)]|" options:0 metrics:nil views:views]];

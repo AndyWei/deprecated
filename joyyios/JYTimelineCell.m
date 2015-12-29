@@ -54,9 +54,6 @@
                                 @"likesLabel": self.likesLabel,
                                 @"commentView": self.commentView
                               };
-        NSDictionary *metrics = @{
-                                  @"SW":@(SCREEN_WIDTH)
-                                  };
 
         [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[ownerView][postTimeLabel(50)]-10-|" options:0 metrics:nil views:views]];
         [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[mediaView]-0-|" options:0 metrics:nil views:views]];
@@ -64,9 +61,17 @@
         [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-20-[likesLabel]-10-|" options:0 metrics:nil views:views]];
         [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-20-[commentView]-10-|" options:0 metrics:nil views:views]];
 
-        NSString *format = @"V:|-0@500-[ownerView(40)][mediaView(SW)][actionView(40)][likesLabel][commentView]-10@500-|";
-        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:format options:0 metrics:metrics views:views]];
+        NSString *format = @"V:|-0@500-[ownerView(40)][mediaView][actionView(40)][likesLabel][commentView]-10@500-|";
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:format options:0 metrics:nil views:views]];
         [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0@500-[postTimeLabel(40)]-370@400-|" options:0 metrics:nil views:views]];
+
+        [self.mediaView addConstraint:[NSLayoutConstraint constraintWithItem:self.mediaView
+                                                                   attribute:NSLayoutAttributeHeight
+                                                                   relatedBy:NSLayoutRelationEqual
+                                                                      toItem:self.mediaView
+                                                                   attribute:NSLayoutAttributeWidth
+                                                                  multiplier:1.0f
+                                                                    constant:0.0f]];
 
         self.commentViewHeightConstraint = [NSLayoutConstraint constraintWithItem:self.commentView
                                                                   attribute:NSLayoutAttributeHeight
