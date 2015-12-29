@@ -7,13 +7,12 @@
 //
 
 #import <AFNetworking/AFNetworking.h>
-#import <AFNetworking/UIImageView+AFNetworking.h>
-#import <AWSS3/AWSS3.h>
 #import <MJRefresh/MJRefresh.h>
 #import <RKDropdownAlert/RKDropdownAlert.h>
 
 #import "JYMonth.h"
 #import "JYButton.h"
+#import "JYAvatarCreator.h"
 #import "JYComment.h"
 #import "JYCommentViewController.h"
 #import "JYFilename.h"
@@ -26,11 +25,9 @@
 #import "JYPost.h"
 #import "JYUserlineCell.h"
 #import "JYWinkViewController.h"
-#import "TGCameraColor.h"
-#import "TGCameraViewController.h"
-#import "UIImage+Joyy.h"
 
-@interface JYProfileViewController () <TGCameraDelegate, UITableViewDataSource, UITableViewDelegate>
+@interface JYProfileViewController () <JYAvatarCreatorDelegate, JYProfileCardViewDelegate, UITableViewDataSource, UITableViewDelegate>
+@property (nonatomic) JYAvatarCreator *avatarCreator;
 @property (nonatomic) JYMonth *month;
 @property (nonatomic) JYUser *user;
 @property (nonatomic) JYProfileCardView *cardView;
@@ -56,9 +53,6 @@ static NSString *const kCellIdentifier = @"profileUserlineCell";
     self.month = [[JYMonth alloc] initWithDate:[NSDate date]];
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_apiTokenReady) name:kNotificationAPITokenReady object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_tapOnFriendCount) name:kNotificationDidTapOnFriendCount object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_tapOnInviteCount) name:kNotificationDidTapOnInviteCount object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_tapOnWinkCount) name:kNotificationDidTapOnWinkCount object:nil];
 
     self.user = [JYFriend myself];
 
@@ -106,8 +100,19 @@ static NSString *const kCellIdentifier = @"profileUserlineCell";
     {
         _cardView = [JYProfileCardView new];
         _cardView.user = self.user;
+        _cardView.delegate = self;
     }
     return _cardView;
+}
+
+- (JYAvatarCreator *)avatarCreator
+{
+    if (!_avatarCreator)
+    {
+        _avatarCreator = [[JYAvatarCreator alloc] initWithViewController:self];
+        _avatarCreator.delegate = self;
+    }
+    return _avatarCreator;
 }
 
 - (void)dealloc
@@ -124,8 +129,9 @@ static NSString *const kCellIdentifier = @"profileUserlineCell";
     }
 }
 
-// TODO
-- (void)_tapOnFriendCount
+#pragma mark - JYProfileCardViewDelegate
+
+- (void)didTapFriendLabelOnView:(JYProfileCardView *)view
 {
     if ([self.friendList count] > 0)
     {
@@ -134,12 +140,12 @@ static NSString *const kCellIdentifier = @"profileUserlineCell";
     }
 }
 
-- (void)_tapOnInviteCount
+- (void)didTapContactLabelOnView:(JYProfileCardView *)view
 {
     
 }
 
-- (void)_tapOnWinkCount
+- (void)didTapWinkLabelOnView:(JYProfileCardView *)view
 {
 // test only
 //    JYUser *user = [JYFriend myself];
@@ -157,50 +163,28 @@ static NSString *const kCellIdentifier = @"profileUserlineCell";
     }
 }
 
-- (void)_networkThreadBegin
+- (void)didTapAvatarOnView:(JYProfileCardView *)view
 {
-    if (self.networkThreadCount == 0)
-    {
-        [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
-    }
-    self.networkThreadCount++;
+    [self.avatarCreator showOptions];
 }
 
-- (void)_networkThreadEnd
+#pragma mark - JYAvatarCreatorDelegate
+
+- (void)creator:(JYAvatarCreator *)creator didTakePhoto:(UIImage *)image
 {
-    self.networkThreadCount--;
-    if (self.networkThreadCount <= 0)
-    {
-        [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-        [self.tableView.mj_footer endRefreshing];
-    }
-}
+    self.cardView.avatarImage = image;
+    [self.avatarCreator uploadAvatarImage:image success:^{
+        
+    } failure:^(NSError *error) {
+        NSString *errorMessage = nil;
+        errorMessage = [error.userInfo valueForKey:NSLocalizedDescriptionKey];
 
-- (void)_showCamera
-{
-    JYPhotoCaptionViewController *captionVC = [[JYPhotoCaptionViewController alloc] initWithDelegate:self];
-
-    [TGCameraColor setTintColor:JoyyBlue];
-    TGCameraNavigationController *camera = [TGCameraNavigationController cameraWithDelegate:self captionViewController:captionVC];
-    camera.title = self.title;
-
-    [self presentViewController:camera animated:NO completion:nil];
-}
-
-#pragma mark - TGCameraDelegate Methods
-
-- (void)cameraDidCancel
-{
-    [self dismissViewControllerAnimated:NO completion:nil];
-}
-
-- (void)cameraDidTakePhoto:(UIImage *)photo fromAlbum:(BOOL)fromAlbum withCaption:(NSString *)caption
-{
-    // Handling and upload the photo
-    //    UIImage *image = [UIImage imageWithImage:photo scaledToSize:CGSizeMake(kPhotoWidth, kPhotoWidth)];
-    //
-    ////    [self _createPostWithImage:image contentType:kContentTypeJPG caption:caption];
-    ////    [self dismissViewControllerAnimated:YES completion:nil];
+        [RKDropdownAlert title:NSLocalizedString(kErrorTitle, nil)
+                       message:errorMessage
+               backgroundColor:FlatYellow
+                     textColor:FlatBlack
+                          time:5];
+    }];
 }
 
 #pragma mark - UITableViewDataSource
@@ -233,24 +217,6 @@ static NSString *const kCellIdentifier = @"profileUserlineCell";
 
 #pragma mark - Maintain table
 
-//- (void)_createdNewPost:(JYPost *)post
-//{
-//    if (!post)
-//    {
-//        return;
-//    }
-//
-//    [[JYLocalDataManager sharedInstance] insertObjects:@[post] ofClass:JYPost.class];
-//
-//    self.oldestPostId = post.postId;
-//
-//    [self.postList insertObject:post atIndex:0];
-//    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
-//    [self.tableView beginUpdates];
-//    [self.tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationRight];
-//    [self.tableView endUpdates];
-//}
-
 - (void)_receivedOldPosts:(NSMutableArray *)postList
 {
     if ([postList count] == 0) // no more old post, do nothing
@@ -263,65 +229,26 @@ static NSString *const kCellIdentifier = @"profileUserlineCell";
     [self.tableView.mj_footer endRefreshing];
 }
 
-#pragma mark - AWS S3
+#pragma mark - Network
 
-- (void)_createPostWithImage:(UIImage *)image contentType:(NSString *)contentType caption:(NSString *)caption
+- (void)_networkThreadBegin
 {
-    //    NSURL *fileURL = [NSURL fileURLWithPath:[NSTemporaryDirectory() stringByAppendingPathComponent:@"timeline"]];
-    //
-    //    NSData *imageData = UIImageJPEGRepresentation(image, kPhotoQuality);
-    //    [imageData writeToURL:fileURL atomically:YES];
-    //
-    //    NSString *s3filename = [[JYFilename sharedInstance] randomFilenameWithHttpContentType:contentType];
-    //    NSString *s3region = [JYFilename sharedInstance].region;
-    //    NSString *s3url = [NSString stringWithFormat:@"%@:%@", s3region, s3filename];
-    //
-    //    AWSS3TransferManager *transferManager = [AWSS3TransferManager defaultS3TransferManager];
-    //    if (!transferManager)
-    //    {
-    //        NSLog(@"Error: no S3 transferManager");
-    //        return;
-    //    }
-    //
-    //    AWSS3TransferManagerUploadRequest *request = [AWSS3TransferManagerUploadRequest new];
-    //    request.bucket = [JYFilename sharedInstance].postBucketName;
-    //    request.key = s3filename;
-    //    request.body = fileURL;
-    //    request.contentType = contentType;
-    //
-    //    __weak typeof(self) weakSelf = self;
-    //    [[transferManager upload:request] continueWithBlock:^id(AWSTask *task) {
-    //        if (task.error)
-    //        {
-    //            if ([task.error.domain isEqualToString:AWSS3TransferManagerErrorDomain])
-    //            {
-    //                switch (task.error.code)
-    //                {
-    //                    case AWSS3TransferManagerErrorCancelled:
-    //                    case AWSS3TransferManagerErrorPaused:
-    //                        break;
-    //                    default:
-    //                        NSLog(@"Error: AWSS3TransferManager upload error = %@", task.error);
-    //                        break;
-    //                }
-    //            }
-    //            else
-    //            {
-    //                // Unknown error.
-    //                NSLog(@"Error: AWSS3TransferManager upload error = %@", task.error);
-    //            }
-    //        }
-    //        if (task.result)
-    //        {
-    //            AWSS3TransferManagerUploadOutput *uploadOutput = task.result;
-    //            NSLog(@"Success: AWSS3TransferManager upload task.result = %@", uploadOutput);
-    //            [weakSelf _createPostRecordWithS3URL:s3url caption:caption localImage:image];
-    //        }
-    //        return nil;
-    //    }];
+    if (self.networkThreadCount == 0)
+    {
+        [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+    }
+    self.networkThreadCount++;
 }
 
-#pragma mark - Network
+- (void)_networkThreadEnd
+{
+    self.networkThreadCount--;
+    if (self.networkThreadCount <= 0)
+    {
+        [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+        [self.tableView.mj_footer endRefreshing];
+    }
+}
 
 - (void)_fetchUserline
 {

@@ -14,7 +14,6 @@
 #import "JYButton.h"
 #import "JYFacialGestureDetector.h"
 #import "JYUserViewController.h"
-#import "UIImage+Joyy.h"
 
 @interface JYUserViewController () <JYFacialGuestureDetectorDelegate, MDCSwipeToChooseDelegate>
 @property (nonatomic) CGRect cardFrame;

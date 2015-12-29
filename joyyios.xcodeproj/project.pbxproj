@@ -39,7 +39,6 @@
 		D61D1DCE1B4E336E00DE37DF /* TGCameraAuthorizationViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D61D1D971B4E336E00DE37DF /* TGCameraAuthorizationViewController.xib */; };
 		D61D1DD41B4E336E00DE37DF /* TGCameraViewController.bundle in Resources */ = {isa = PBXBuildFile; fileRef = D61D1D9E1B4E336E00DE37DF /* TGCameraViewController.bundle */; };
 		D61D1DD61B4E336E00DE37DF /* TGCameraViewController.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D61D1D9F1B4E336E00DE37DF /* TGCameraViewController.xcassets */; };
-		D61D1DDE1B5342DD00DE37DF /* UIImage+Joyy.m in Sources */ = {isa = PBXBuildFile; fileRef = D61D1DDD1B5342DD00DE37DF /* UIImage+Joyy.m */; };
 		D61D1DE21B5366DC00DE37DF /* JYPost.m in Sources */ = {isa = PBXBuildFile; fileRef = D61D1DE11B5366DC00DE37DF /* JYPost.m */; };
 		D61D1DE61B536B2700DE37DF /* JYTimelineCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D61D1DE51B536B2700DE37DF /* JYTimelineCell.m */; };
 		D62C2C601B8E887200233F5B /* JYXmppManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D62C2C5F1B8E887200233F5B /* JYXmppManager.m */; };
@@ -101,6 +100,7 @@
 		D69FF6E71B96474200466FE5 /* JYAuthenticationClient.m in Sources */ = {isa = PBXBuildFile; fileRef = D69FF6E21B96474200466FE5 /* JYAuthenticationClient.m */; };
 		D6B2F05B1ACE630F009601B0 /* JYAutoCompleteTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B2F05A1ACE630F009601B0 /* JYAutoCompleteTextField.m */; };
 		D6B8D3011C2BA75000B30548 /* JYWinkCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B8D3001C2BA75000B30548 /* JYWinkCell.m */; };
+		D6B8D3041C322F6400B30548 /* JYAvatarCreator.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B8D3031C322F6400B30548 /* JYAvatarCreator.m */; };
 		D6B9B7481BAF6E45001F9500 /* JYNewProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B9B7471BAF6E45001F9500 /* JYNewProfileViewController.m */; };
 		D6BD61711C1E788500EFC92C /* JYCreatePostController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6BD61701C1E788500EFC92C /* JYCreatePostController.m */; };
 		D6BD61741C1FF84B00EFC92C /* JYNewCommentCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D6BD61731C1FF84B00EFC92C /* JYNewCommentCell.m */; };
@@ -191,8 +191,6 @@
 		D61D1D981B4E336E00DE37DF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/TGCameraAuthorizationViewController.xib; sourceTree = "<group>"; };
 		D61D1D9E1B4E336E00DE37DF /* TGCameraViewController.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = TGCameraViewController.bundle; sourceTree = "<group>"; };
 		D61D1D9F1B4E336E00DE37DF /* TGCameraViewController.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = TGCameraViewController.xcassets; sourceTree = "<group>"; };
-		D61D1DDC1B5342DD00DE37DF /* UIImage+Joyy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Joyy.h"; sourceTree = "<group>"; };
-		D61D1DDD1B5342DD00DE37DF /* UIImage+Joyy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Joyy.m"; sourceTree = "<group>"; };
 		D61D1DE01B5366DC00DE37DF /* JYPost.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYPost.h; sourceTree = "<group>"; };
 		D61D1DE11B5366DC00DE37DF /* JYPost.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYPost.m; sourceTree = "<group>"; };
 		D61D1DE41B536B2700DE37DF /* JYTimelineCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYTimelineCell.h; sourceTree = "<group>"; };
@@ -315,6 +313,8 @@
 		D6B2F05A1ACE630F009601B0 /* JYAutoCompleteTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYAutoCompleteTextField.m; sourceTree = "<group>"; };
 		D6B8D2FF1C2BA75000B30548 /* JYWinkCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYWinkCell.h; sourceTree = "<group>"; };
 		D6B8D3001C2BA75000B30548 /* JYWinkCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYWinkCell.m; sourceTree = "<group>"; };
+		D6B8D3021C322F6400B30548 /* JYAvatarCreator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYAvatarCreator.h; sourceTree = "<group>"; };
+		D6B8D3031C322F6400B30548 /* JYAvatarCreator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYAvatarCreator.m; sourceTree = "<group>"; };
 		D6B9B7461BAF6E45001F9500 /* JYNewProfileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYNewProfileViewController.h; sourceTree = "<group>"; };
 		D6B9B7471BAF6E45001F9500 /* JYNewProfileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYNewProfileViewController.m; sourceTree = "<group>"; };
 		D6BD616F1C1E788500EFC92C /* JYCreatePostController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYCreatePostController.h; sourceTree = "<group>"; };
@@ -712,8 +712,6 @@
 				D6348D2E1ADB4DD60002BC35 /* NSString+Joyy.m */,
 				D63F0DA01ACD08260067C5EE /* UIColor+Joyy.h */,
 				D63F0DA11ACD08260067C5EE /* UIColor+Joyy.m */,
-				D61D1DDC1B5342DD00DE37DF /* UIImage+Joyy.h */,
-				D61D1DDD1B5342DD00DE37DF /* UIImage+Joyy.m */,
 				D6966B301BA2BB2B00AAD8D5 /* UITextField+Joyy.h */,
 				D6966B311BA2BB2B00AAD8D5 /* UITextField+Joyy.m */,
 				D689ED681AE42C8300CB4D2B /* UIView+Joyy.h */,
@@ -935,6 +933,8 @@
 				D6C89F7B1C2B5C9C00E96E99 /* JYProfileViewController.m */,
 				D6C89F811C2B9A8700E96E99 /* JYWinkViewController.h */,
 				D6C89F821C2B9A8700E96E99 /* JYWinkViewController.m */,
+				D6B8D3021C322F6400B30548 /* JYAvatarCreator.h */,
+				D6B8D3031C322F6400B30548 /* JYAvatarCreator.m */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -1109,6 +1109,7 @@
 			files = (
 				D61D1DE61B536B2700DE37DF /* JYTimelineCell.m in Sources */,
 				D6825BC71BE897F400F3695D /* JYLocationManager.m in Sources */,
+				D6B8D3041C322F6400B30548 /* JYAvatarCreator.m in Sources */,
 				D693798D1B54E8BC00E64F3A /* JYPhotoCaptionViewController.m in Sources */,
 				D68DAF961AC4CACD00838E7E /* Constants.m in Sources */,
 				D61D1D551B4A65F200DE37DF /* MDCSwipeResult.m in Sources */,
@@ -1124,7 +1125,6 @@
 				D61D1D511B4A65F200DE37DF /* MDCSwipeToChooseViewOptions.m in Sources */,
 				D6F7F14B1BA8ED76008118DA /* JYFacialGestureDetector.m in Sources */,
 				D61D1D471B4A65F200DE37DF /* MDCGeometry.m in Sources */,
-				D61D1DDE1B5342DD00DE37DF /* UIImage+Joyy.m in Sources */,
 				D61D1DC21B4E336E00DE37DF /* TGCameraGridView.m in Sources */,
 				D6F7F1491BA8ED76008118DA /* JYFacialGestureCamera.m in Sources */,
 				D632E99E1C28CC5B00D5837C /* JYRefreshHeader.m in Sources */,

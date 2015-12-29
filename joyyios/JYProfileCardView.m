@@ -16,14 +16,14 @@
 @property (nonatomic) TTTAttributedLabel *usernameLabel;
 @property (nonatomic) TTTAttributedLabel *friendCountLabel;
 @property (nonatomic) TTTAttributedLabel *friendsLabel;
-@property (nonatomic) TTTAttributedLabel *inviteCountLabel;
-@property (nonatomic) TTTAttributedLabel *invitesLabel;
+@property (nonatomic) TTTAttributedLabel *contactCountLabel;
+@property (nonatomic) TTTAttributedLabel *contactsLabel;
 @property (nonatomic) TTTAttributedLabel *winkCountLabel;
 @property (nonatomic) TTTAttributedLabel *winksLabel;
 @end
 
 static NSString *kFriendURL = @"action://_didTapFriendLabel";
-static NSString *kInviteURL = @"action://_didTapInviteLabel";
+static NSString *kContactURL = @"action://_didTapContactLabel";
 static NSString *kWinkURL = @"action://_didTapWinkLabel";
 
 @implementation JYProfileCardView
@@ -40,30 +40,30 @@ static NSString *kWinkURL = @"action://_didTapWinkLabel";
         [self addSubview:self.usernameLabel];
         [self addSubview:self.friendCountLabel];
         [self addSubview:self.friendsLabel];
-        [self addSubview:self.inviteCountLabel];
-        [self addSubview:self.invitesLabel];
+        [self addSubview:self.contactCountLabel];
+        [self addSubview:self.contactsLabel];
         [self addSubview:self.winkCountLabel];
         [self addSubview:self.winksLabel];
 
-        self.friendCount = self.inviteCount = self.winkCount = 0;
+        self.friendCount = self.contactCount = self.winkCount = 0;
 
         NSDictionary *views = @{
                                 @"avatarButton": self.avatarButton,
                                 @"usernameLabel": self.usernameLabel,
                                 @"friendCountLabel": self.friendCountLabel,
                                 @"friendsLabel": self.friendsLabel,
-                                @"inviteCountLabel": self.inviteCountLabel,
-                                @"invitesLabel": self.invitesLabel,
+                                @"contactCountLabel": self.contactCountLabel,
+                                @"contactsLabel": self.contactsLabel,
                                 @"winkCountLabel": self.winkCountLabel,
                                 @"winksLabel": self.winksLabel
                                 };
 
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-10-[avatarButton(80)]-20-[friendCountLabel(60)]-10-[inviteCountLabel(60)]-10-[winkCountLabel(60)]-(>=0@500)-|" options:0 metrics:nil views:views]];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-10-[avatarButton(80)]-20-[friendsLabel(60)]-10-[invitesLabel(60)]-10-[winksLabel(60)]-(>=0@500)-|" options:0 metrics:nil views:views]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-10-[avatarButton(80)]-20-[friendCountLabel(60)]-10-[contactCountLabel(60)]-10-[winkCountLabel(60)]-(>=0@500)-|" options:0 metrics:nil views:views]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-10-[avatarButton(80)]-20-[friendsLabel(60)]-10-[contactsLabel(60)]-10-[winksLabel(60)]-(>=0@500)-|" options:0 metrics:nil views:views]];
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-10-[usernameLabel(300)]-(>=10@500)-|" options:0 metrics:nil views:views]];
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-10-[avatarButton(80)]-10-[usernameLabel]-10-|" options:0 metrics:nil views:views]];
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-10-[friendCountLabel][friendsLabel]-(>=10@500)-|" options:0 metrics:nil views:views]];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-10-[inviteCountLabel][invitesLabel]-(>=10@500)-|" options:0 metrics:nil views:views]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-10-[contactCountLabel][contactsLabel]-(>=10@500)-|" options:0 metrics:nil views:views]];
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-10-[winkCountLabel][winksLabel]-(>=10@500)-|" options:0 metrics:nil views:views]];
     }
     return self;
@@ -94,14 +94,14 @@ static NSString *kWinkURL = @"action://_didTapWinkLabel";
     [self.friendCountLabel addLinkToURL:[NSURL URLWithString:kFriendURL] withRange:range];
 }
 
-- (void)setInviteCount:(uint64_t)inviteCount
+- (void)setContactCount:(uint64_t)contactCount
 {
-    _inviteCount = inviteCount;
-    NSString *count = [NSString stringWithFormat:@"%llu", inviteCount];
-    self.inviteCountLabel.text = count;
+    _contactCount = contactCount;
+    NSString *count = [NSString stringWithFormat:@"%llu", contactCount];
+    self.contactCountLabel.text = count;
 
     NSRange range = [count rangeOfString:count];
-    [self.inviteCountLabel addLinkToURL:[NSURL URLWithString:kInviteURL] withRange:range];
+    [self.contactCountLabel addLinkToURL:[NSURL URLWithString:kContactURL] withRange:range];
 }
 
 - (void)setWinkCount:(uint64_t)winkCount
@@ -112,6 +112,11 @@ static NSString *kWinkURL = @"action://_didTapWinkLabel";
 
     NSRange range = [count rangeOfString:count];
     [self.winkCountLabel addLinkToURL:[NSURL URLWithString:kWinkURL] withRange:range];
+}
+
+- (void)setAvatarImage:(UIImage *)avatarImage
+{
+    [self.avatarButton setImage:avatarImage forState:UIControlStateNormal];
 }
 
 - (UIButton *)avatarButton
@@ -165,26 +170,26 @@ static NSString *kWinkURL = @"action://_didTapWinkLabel";
     return _friendsLabel;
 }
 
-- (TTTAttributedLabel *)inviteCountLabel
+- (TTTAttributedLabel *)contactCountLabel
 {
-    if (!_inviteCountLabel)
+    if (!_contactCountLabel)
     {
-        _inviteCountLabel = [self _countLabel];
+        _contactCountLabel = [self _countLabel];
     }
-    return _inviteCountLabel;
+    return _contactCountLabel;
 }
 
-- (TTTAttributedLabel *)invitesLabel
+- (TTTAttributedLabel *)contactsLabel
 {
-    if (!_invitesLabel)
+    if (!_contactsLabel)
     {
-        _invitesLabel = [self _propertyLabel];
+        _contactsLabel = [self _propertyLabel];
 
-        _invitesLabel.text = NSLocalizedString(@"invites", nil);
-        NSRange range = [_invitesLabel.text rangeOfString:_invitesLabel.text];
-        [_invitesLabel addLinkToURL:[NSURL URLWithString:kInviteURL] withRange:range];
+        _contactsLabel.text = NSLocalizedString(@"contacts", nil);
+        NSRange range = [_contactsLabel.text rangeOfString:_contactsLabel.text];
+        [_contactsLabel addLinkToURL:[NSURL URLWithString:kContactURL] withRange:range];
     }
-    return _invitesLabel;
+    return _contactsLabel;
 }
 
 - (TTTAttributedLabel *)winkCountLabel
@@ -268,24 +273,32 @@ static NSString *kWinkURL = @"action://_didTapWinkLabel";
 
 - (void)_didTapAvatarButton
 {
-
+    if (self.delegate)
+    {
+        [self.delegate didTapAvatarOnView:self];
+    }
 }
 
 #pragma mark -- TTTAttributedLabelDelegate
 
 - (void)attributedLabel:(TTTAttributedLabel *)label didSelectLinkWithURL:(NSURL *)url
 {
+    if (!self.delegate)
+    {
+        return;
+    }
+
     if ([kFriendURL isEqualToString:[url absoluteString]])
     {
-        [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationDidTapOnFriendCount object:nil userInfo:nil];
+        [self.delegate didTapFriendLabelOnView:self];
     }
-    else if ([kInviteURL isEqualToString:[url absoluteString]])
+    else if ([kContactURL isEqualToString:[url absoluteString]])
     {
-        [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationDidTapOnInviteCount object:nil userInfo:nil];
+       [self.delegate didTapContactLabelOnView:self];
     }
     else if ([kWinkURL isEqualToString:[url absoluteString]])
     {
-        [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationDidTapOnWinkCount object:nil userInfo:nil];
+        [self.delegate didTapWinkLabelOnView:self];
     }
 }
 

@@ -79,9 +79,9 @@
         JYYRS *yrs = [JYYRS yrsWithValue:self.yrsValue];
         NSString *region = [NSString stringWithFormat:@"%ld", (long)yrs.region];
         NSString *prefix = [[JYFilename sharedInstance] avatarURLPrefixOfRegion:region];
-        uint64_t userid = [self.userId unsignedLongLongValue];
-        NSString *filename = [NSString stringWithFormat:@"%llu.jpg", userid];
-        _avatarURL = [prefix stringByAppendingString:filename];
+        NSString *idString = [NSString stringWithFormat:@"%llu", [self.userId unsignedLongLongValue]];
+        NSString *filename = [idString reversedString];
+        _avatarURL = [NSString stringWithFormat:@"%@%@.jpg", prefix, filename];
     }
     return _avatarURL;
 }

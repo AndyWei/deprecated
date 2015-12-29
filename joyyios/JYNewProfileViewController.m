@@ -20,8 +20,6 @@
 #import "JYYRS.h"
 #import "TGCameraColor.h"
 #import "TGCameraViewController.h"
-#import "UIImage+Joyy.h"
-#import "UIImage+Joyy.h"
 #import "UITextField+Joyy.h"
 
 @interface JYNewProfileViewController () <AKPickerViewDataSource, AKPickerViewDelegate, TGCameraDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate>
@@ -456,8 +454,8 @@ const CGFloat kAvatarButtonWidth = kAvatarButtonHeight;
     [self.avatarButton removeFromSuperview];
     [self.avatarContainerView addSubview:self.photoButton];
 
-    UIImage *compressedImage = [UIImage imageWithImage:image scaledToSize:CGSizeMake(kPhotoWidth, kPhotoWidth)];
-    self.avatarImage = compressedImage;
+    UIImage *scaledImage = [image imageScaledToSize:CGSizeMake(kPhotoWidth, kPhotoWidth)];
+    self.avatarImage = scaledImage;
 }
 
 #pragma mark - TGCameraDelegate Methods
@@ -622,28 +620,5 @@ const CGFloat kAvatarButtonWidth = kAvatarButtonHeight;
 
     return parameters;
 }
-
-//- (void)_fetchProfile
-//{
-//    AFHTTPSessionManager *manager = [AFHTTPSessionManager managerWithToken];
-//    NSString *url = [NSString apiURLWithPath:@"user/profile"];
-//
-//    [self _showNetworkIndicator:YES];
-//
-//    __weak typeof(self) weakSelf = self;
-//    [manager GET:url
-//      parameters:nil
-//         success:^(NSURLSessionTask *operation, id responseObject) {
-//             NSLog(@"Success: GET user/profile responseObject: %@", responseObject);
-//             [weakSelf _showNetworkIndicator:NO];
-//
-//             [[JYUser me] save:responseObject];
-//             [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationUserYRSReady object:nil];
-//         }
-//         failure:^(NSURLSessionTask *operation, NSError *error) {
-//             NSLog(@"Error: GET user/profile: %@", error);
-//             [weakSelf _showNetworkIndicator:NO];
-//         }];
-//}
 
 @end

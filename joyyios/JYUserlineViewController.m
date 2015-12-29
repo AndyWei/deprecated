@@ -21,7 +21,6 @@
 #import "JYPost.h"
 #import "JYUserlineCell.h"
 #import "JYUserlineViewController.h"
-#import "UIImage+Joyy.h"
 
 @interface JYUserlineViewController () <UITableViewDataSource, UITableViewDelegate>
 @property (nonatomic) JYMonth *month;

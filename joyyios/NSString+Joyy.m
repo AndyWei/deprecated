@@ -150,6 +150,18 @@
     return [predicate evaluateWithObject:self];
 }
 
+- (NSString *)reversedString
+{
+    NSMutableString *reversedString = [NSMutableString stringWithCapacity:self.length];
+
+    [self enumerateSubstringsInRange:NSMakeRange(0,self.length)
+                             options:(NSStringEnumerationReverse | NSStringEnumerationByComposedCharacterSequences)
+                          usingBlock:^(NSString *substring, NSRange substringRange, NSRange enclosingRange, BOOL *stop) {
+                              [reversedString appendString:substring];
+                          }];
+    return reversedString;
+}
+
 - (uint64_t)uint64Value
 {
     NSNumber *number = [NSNumber numberWithLongLong: self.longLongValue];

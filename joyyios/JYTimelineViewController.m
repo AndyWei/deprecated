@@ -29,7 +29,6 @@
 #import "TGCameraColor.h"
 #import "TGCameraViewController.h"
 #import "NSDate+Joyy.h"
-#import "UIImage+Joyy.h"
 
 @interface JYTimelineViewController () <JYRefreshHeaderDelegate, JYTimelineCellDelegate, TGCameraDelegate, UITableViewDataSource, UITableViewDelegate>
 @property (nonatomic) CABasicAnimation *colorPulse;
@@ -482,6 +481,9 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
 
 - (void)cameraDidTakePhoto:(UIImage *)photo fromAlbum:(BOOL)fromAlbum withCaption:(NSString *)caption
 {
+    // make sure timeline is refreshed before create new post
+    [self _fetchNewPost];
+
     // Default caption
     if (caption.length == 0 || [caption isInvisible])
     {
@@ -489,9 +491,8 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
     }
 
     // Handling and upload the photo
-    UIImage *image = [UIImage imageWithImage:photo scaledToSize:CGSizeMake(kPhotoWidth, kPhotoWidth)];
+    UIImage *image = [photo imageScaledToSize:CGSizeMake(kPhotoWidth, kPhotoWidth)];
 
-    [self _fetchNewPost]; // make sure timeline is refreshed before create new post
     [self dismissViewControllerAnimated:YES completion:nil];
 
     __weak typeof(self) weakSelf = self;

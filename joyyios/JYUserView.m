@@ -44,7 +44,7 @@ static NSString *kUsernameURL = @"action://_didTapAvatarButton";
                                 @"sexLabel": self.sexLabel
                               };
 
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-8-[avatarButton(40)][usernameLabel][ageLabel(40)]-5-[sexLabel(20)]|" options:0 metrics:nil views:views]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-8-[avatarButton(40)]-8-[usernameLabel][ageLabel(40)]-5-[sexLabel(20)]|" options:0 metrics:nil views:views]];
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[avatarButton]|" options:0 metrics:nil views:views]];
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[usernameLabel]|" options:0 metrics:nil views:views]];
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[ageLabel]|" options:0 metrics:nil views:views]];
