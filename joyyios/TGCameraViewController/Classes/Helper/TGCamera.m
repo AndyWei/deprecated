@@ -138,6 +138,24 @@ NSMutableDictionary *optionDictionary;
     [TGCameraFlash changeModeWithCaptureSession:_session andButton:button];
 }
 
+- (BOOL)zoomToScale:(CGFloat)scale
+{
+    BOOL success = NO;
+
+    AVCaptureDevice *device = [_session.inputs.lastObject device];
+
+    if ([device lockForConfiguration:nil])
+    {
+        if (1.0f <= scale && scale <= [self videoMaxZoomFactor])
+        {
+            device.videoZoomFactor = scale;
+            success = YES;
+        }
+        [device unlockForConfiguration];
+    }
+    return success;
+}
+
 - (void)captureView:(UIView *)captureView focusAtTouchPoint:(CGPoint)touchPoint
 {
     AVCaptureDevice *device = [_session.inputs.lastObject device];
@@ -181,14 +199,17 @@ NSMutableDictionary *optionDictionary;
     [TGCameraFlash flashModeWithCaptureSession:_session andButton:flashButton];
 }
 
+- (CGFloat)videoMaxZoomFactor
+{
+    AVCaptureDevice *device = [_session.inputs.lastObject device];
+    return fmin(device.activeFormat.videoMaxZoomFactor, 4.f);
+}
+
 #pragma mark -
 #pragma mark - Private methods
 
 - (void)showFocusAnimationOnView:(UIView *)view withTouchPoint:(CGPoint)touchPoint
 {
-    //
-    // add focus view animated
-    //
     TGCameraFocusView *focusView = [[TGCameraFocusView alloc] initWithFrame:CGRectMake(0, 0, TGCameraFocusSize, TGCameraFocusSize)];
     focusView.center = touchPoint;
     [view addSubview:focusView];
@@ -254,8 +275,8 @@ NSMutableDictionary *optionDictionary;
     AVCaptureDevice *device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
     
     if ([device lockForConfiguration:nil]) {
-        
-        if([device isFocusModeSupported:AVCaptureFocusModeContinuousAutoFocus]){
+
+        if ([device isFocusModeSupported:AVCaptureFocusModeContinuousAutoFocus]){
             device.focusMode = AVCaptureFocusModeContinuousAutoFocus;
         }
 

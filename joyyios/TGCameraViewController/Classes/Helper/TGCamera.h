@@ -72,6 +72,10 @@
 
 - (void)toogleWithFlashButton:(JYButton *)flashButton;
 
+- (BOOL)zoomToScale:(CGFloat)scale;
+
+- (CGFloat)videoMaxZoomFactor;
+
 @end
 
 

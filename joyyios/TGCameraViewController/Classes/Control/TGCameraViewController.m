@@ -30,6 +30,9 @@
 #import "TGTintedButton.h"
 
 @interface TGCameraViewController () <UIImagePickerControllerDelegate, UINavigationControllerDelegate>
+@property (nonatomic) CGFloat currentScale;
+@property (nonatomic) CGFloat lastScale;
+@property (nonatomic) CGFloat maxScale;
 @property (nonatomic) TGTintedButton *albumButton;
 @property (nonatomic) JYButton *closeButton;
 @property (nonatomic) JYButton *flashButton;
@@ -49,8 +52,6 @@
 {
     [super viewDidLoad];
     self.view.backgroundColor = JoyyBlack;
-
-//    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"close"] style:UIBarButtonItemStylePlain target:self action:@selector(_close)];
 
     [self.view addSubview:self.albumButton];
     [self.view addSubview:self.captureView];
@@ -192,6 +193,9 @@
     if (!_camera)
     {
         _camera = [TGCamera cameraWithFlashButton:self.flashButton];
+        self.currentScale = 1.0f;
+        self.lastScale = 1.0f;
+        self.maxScale = [_camera videoMaxZoomFactor];
     }
     return _camera;
 }
@@ -225,6 +229,9 @@
         UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(_didTapCaptureView:)];
         tap.numberOfTapsRequired = 1;
         [_captureView addGestureRecognizer:tap];
+
+        UIPinchGestureRecognizer *pinch = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(_didPinchCaptureView:)];
+        [_captureView addGestureRecognizer:pinch];
     }
     return _captureView;
 }
@@ -429,12 +436,40 @@
     self.toggleButton.contentColor = isOff ? self.toggleOnColor: self.toggleOffColor;
 
     [self.camera toogleWithFlashButton:self.flashButton];
+
+    self.maxScale = [_camera videoMaxZoomFactor];
+    self.currentScale = 1.0f;
+    self.lastScale = 1.0f;
 }
 
 - (void)_didTapCaptureView:(UITapGestureRecognizer *)recognizer
 {
     CGPoint touchPoint = [recognizer locationInView:self.captureView];
     [self.camera captureView:self.captureView focusAtTouchPoint:touchPoint];
+}
+
+- (void)_didPinchCaptureView:(UIPinchGestureRecognizer *)recognizer
+{
+    CGFloat newScale = recognizer.scale * self.currentScale;
+
+    if (newScale > self.maxScale)
+    {
+        newScale = self.maxScale;
+    }
+
+    if (newScale < 1.f) {
+        newScale = 1.f;
+    }
+
+    if ([self.camera zoomToScale:newScale])
+    {
+        self.lastScale = newScale;
+    }
+
+    if (recognizer.state == UIGestureRecognizerStateEnded)
+    {
+        self.currentScale = self.lastScale;
+    }
 }
 
 #pragma mark -
