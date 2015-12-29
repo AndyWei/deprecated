@@ -8,11 +8,10 @@
 
 #import <AFNetworking/AFNetworking.h>
 #import <AKPickerView/AKPickerView.h>
-#import <AWSS3/AWSS3.h>
-#import <KVNProgress/KVNProgress.h>
 #import <RKDropdownAlert/RKDropdownAlert.h>
 #import <TTTAttributedLabel/TTTAttributedLabel.h>
 
+#import "JYAvatarCreator.h"
 #import "JYButton.h"
 #import "JYFilename.h"
 #import "JYFloatLabeledTextField.h"
@@ -22,23 +21,20 @@
 #import "TGCameraViewController.h"
 #import "UITextField+Joyy.h"
 
-@interface JYNewProfileViewController () <AKPickerViewDataSource, AKPickerViewDelegate, TGCameraDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate>
-
-@property (nonatomic) UITableView *tableView;
-@property (nonatomic) TTTAttributedLabel *headerLabel;
+@interface JYNewProfileViewController () <AKPickerViewDataSource, AKPickerViewDelegate, JYAvatarCreatorDelegate, UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate>
+@property (nonatomic) BOOL hasYobProvided;
+@property (nonatomic) AKPickerView *sexPickerView;
+@property (nonatomic) JYAvatarCreator *avatarCreator;
 @property (nonatomic) JYButton *saveButton;
-
 @property (nonatomic) JYButton *avatarButton;
 @property (nonatomic) JYButton *photoButton;
-@property (nonatomic) UIImage *avatarImage;
-@property (nonatomic) UIView *avatarContainerView;
-
-@property (nonatomic) TTTAttributedLabel *sexLabel;
-@property (nonatomic) AKPickerView *sexPickerView;
 @property (nonatomic) NSUInteger sex;
-
+@property (nonatomic) TTTAttributedLabel *headerLabel;
+@property (nonatomic) TTTAttributedLabel *sexLabel;
+@property (nonatomic) UIImage *avatarImage;
+@property (nonatomic) UITableView *tableView;
 @property (nonatomic) UITextField *yobTextField;
-@property (nonatomic) BOOL hasYobProvided;
+@property (nonatomic) UIView *avatarContainerView;
 @end
 
 static NSString *const kProfileCellIdentifier = @"profileCell";
@@ -61,16 +57,17 @@ const CGFloat kAvatarButtonWidth = kAvatarButtonHeight;
     [self _enableButtons:NO];
 
     [self.view addSubview:self.tableView];
-    [self _showImageSourceOptions];
+    [self.avatarCreator showOptions];
 }
 
-- (void)didReceiveMemoryWarning
+- (JYAvatarCreator *)avatarCreator
 {
-    [super didReceiveMemoryWarning];
-}
-
-- (void)dealloc
-{
+    if (!_avatarCreator)
+    {
+        _avatarCreator = [[JYAvatarCreator alloc] initWithViewController:self];
+        _avatarCreator.delegate = self;
+    }
+    return _avatarCreator;
 }
 
 - (UITableView *)tableView
@@ -225,34 +222,7 @@ const CGFloat kAvatarButtonWidth = kAvatarButtonHeight;
 
 - (void)_didTapAvatarButton
 {
-    [self _showImageSourceOptions];
-}
-
-- (void)_showImageSourceOptions
-{
-    NSString *title  = NSLocalizedString(@"Where to fetch your primary photo?", nil);
-    NSString *cancel = NSLocalizedString(@"Cancel", nil);
-    NSString *camera = NSLocalizedString(@"Camera", nil);
-    NSString *photoLibary = NSLocalizedString(@"Photo Libary", nil);
-
-    UIAlertController* alert = [UIAlertController alertControllerWithTitle:title
-                                                                   message:nil
-                                                            preferredStyle:UIAlertControllerStyleActionSheet];
-
-    __weak typeof(self) weakSelf = self;
-    [alert addAction:[UIAlertAction actionWithTitle:photoLibary style:UIAlertActionStyleDefault
-                                            handler:^(UIAlertAction * action) {
-                                                [weakSelf _showImagePicker];
-                                            }]];
-
-    [alert addAction:[UIAlertAction actionWithTitle:camera style:UIAlertActionStyleDefault
-                                            handler:^(UIAlertAction * action) {
-                                                [weakSelf _showCamera];
-                                            }]];
-
-    [alert addAction:[UIAlertAction actionWithTitle:cancel style:UIAlertActionStyleCancel handler:nil]];
-
-    [self presentViewController:alert animated:YES completion:nil];
+    [self.avatarCreator showOptions];
 }
 
 #pragma mark -  AKPickerViewDataSource
@@ -413,28 +383,6 @@ const CGFloat kAvatarButtonWidth = kAvatarButtonHeight;
 
 #pragma mark - Actions
 
-- (void)_showImagePicker
-{
-    UIImagePickerController *picker = [[UIImagePickerController alloc] init];
-
-    picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-    picker.mediaTypes = @[(NSString *) kUTTypeImage];
-
-    picker.allowsEditing = YES;
-    picker.delegate = self;
-
-    [self.navigationController presentViewController:picker animated:YES completion:nil];
-}
-
-- (void)_showCamera
-{
-    [TGCameraColor setTintColor:JoyyBlue];
-    TGCameraNavigationController *camera = [TGCameraNavigationController cameraWithDelegate:self];
-    camera.title = self.title;
-
-    [self presentViewController:camera animated:NO completion:nil];
-}
-
 - (void)_didTapSaveButton
 {
     [self _enableButtons:NO];
@@ -443,124 +391,31 @@ const CGFloat kAvatarButtonWidth = kAvatarButtonHeight;
 
 - (void)_updateProfile
 {
-    NSData *imageData = UIImageJPEGRepresentation(self.avatarImage, kPhotoQuality);
-    [self _updateProfileWithMediaData:imageData contentType:kContentTypeJPG];
+    __weak typeof(self) weakSelf = self;
+    [self.avatarCreator uploadAvatarImage:self.avatarImage success:^{
+
+        [weakSelf _updateProfileRecord];
+    } failure:^(NSError *error) {
+        NSString *errorMessage = nil;
+        errorMessage = [error.userInfo valueForKey:NSLocalizedDescriptionKey];
+
+        [RKDropdownAlert title:NSLocalizedString(kErrorTitle, nil)
+                       message:errorMessage
+               backgroundColor:FlatYellow
+                     textColor:FlatBlack
+                          time:5];
+    }];
 }
 
-- (void)_handleImage:(UIImage *)image
+#pragma mark - JYAvatarCreatorDelegate
+
+- (void)creator:(JYAvatarCreator *)creator didTakePhoto:(UIImage *)image
 {
-    // Use photoButton to replace the default avatar button
     self.photoButton.imageView.image = image;
     [self.avatarButton removeFromSuperview];
     [self.avatarContainerView addSubview:self.photoButton];
 
-    UIImage *scaledImage = [image imageScaledToSize:CGSizeMake(kPhotoWidth, kPhotoWidth)];
-    self.avatarImage = scaledImage;
-}
-
-#pragma mark - TGCameraDelegate Methods
-
-- (void)cameraDidTakePhoto:(UIImage *)photo fromAlbum:(BOOL)fromAlbum withCaption:(NSString *)caption
-{
-    [self dismissViewControllerAnimated:YES completion:nil];
-
-    [self _handleImage:photo];
-}
-
-- (void)cameraDidCancel
-{
-    [self dismissViewControllerAnimated:NO completion:nil];
-}
-
-#pragma mark - UIImagePickerControllerDelegate Methods
-
-- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info
-{
-    [picker dismissViewControllerAnimated:YES completion:nil];
-
-    UIImage *editedImage = [info objectForKey:UIImagePickerControllerEditedImage];
-    [self _handleImage:editedImage];
-}
-
-- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
-{
-    [picker dismissViewControllerAnimated:YES completion:nil];
-}
-
-#pragma mark - Indicators
-
-- (void)_showNetworkIndicator:(BOOL)show
-{
-    if (show)
-    {
-        [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
-        [KVNProgress show];
-    }
-    else
-    {
-        [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-        [KVNProgress dismiss];
-    }
-}
-
-#pragma mark - AWS S3
-
-- (void)_updateProfileWithMediaData:(NSData *)data contentType:(NSString *)contentType
-{
-    [self _showNetworkIndicator:YES];
-
-    NSURL *fileURL = [NSURL fileURLWithPath:[NSTemporaryDirectory() stringByAppendingPathComponent:@"profile"]];
-    [data writeToURL:fileURL atomically:YES];
-
-    NSString *filename = [NSString stringWithFormat:@"%llu", [[JYCredential current].userId unsignedLongLongValue]];
-    NSString *s3filename = [filename stringByAppendingString:@".jpg"];
-
-    AWSS3TransferManager *transferManager = [AWSS3TransferManager defaultS3TransferManager];
-    if (!transferManager)
-    {
-        NSLog(@"Error: no S3 transferManager");
-        return;
-    }
-
-    AWSS3TransferManagerUploadRequest *request = [AWSS3TransferManagerUploadRequest new];
-    request.bucket = [JYFilename sharedInstance].avatarBucketName;
-    request.key = s3filename;
-    request.body = fileURL;
-    request.contentType = contentType;
-
-    __weak typeof(self) weakSelf = self;
-    [[transferManager upload:request] continueWithBlock:^id(AWSTask *task) {
-        if (task.error)
-        {
-            [weakSelf _showNetworkIndicator:NO];
-
-            if ([task.error.domain isEqualToString:AWSS3TransferManagerErrorDomain])
-            {
-                switch (task.error.code)
-                {
-                    case AWSS3TransferManagerErrorCancelled:
-                    case AWSS3TransferManagerErrorPaused:
-                        break;
-                    default:
-                        NSLog(@"Error: AWSS3TransferManager upload error = %@", task.error);
-                        break;
-                }
-            }
-            else
-            {
-                NSLog(@"Error: AWSS3TransferManager upload error = %@", task.error);
-            }
-            return nil;
-        }
-
-        if (task.result)
-        {
-            AWSS3TransferManagerUploadOutput *uploadOutput = task.result;
-            NSLog(@"Success: AWSS3TransferManager upload task.result = %@", uploadOutput);
-            [weakSelf _updateProfileRecord];
-        }
-        return nil;
-    }];
+    self.avatarImage = image;
 }
 
 #pragma mark - Network
@@ -571,12 +426,14 @@ const CGFloat kAvatarButtonWidth = kAvatarButtonHeight;
     NSString *url = [NSString apiURLWithPath:@"user/profile"];
     NSDictionary *parameters = [self _parametersForUpdatingProfile];
 
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+
     __weak typeof(self) weakSelf = self;
     [manager POST:url
       parameters:parameters
          success:^(NSURLSessionTask *operation, id responseObject) {
              NSLog(@"Success: POST user/profile");
-             [weakSelf _showNetworkIndicator:NO];
+             [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
 
              [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationDidCreateProfile object:nil];
              [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationUserYRSReady object:nil];
@@ -584,7 +441,7 @@ const CGFloat kAvatarButtonWidth = kAvatarButtonHeight;
          failure:^(NSURLSessionTask *operation, NSError *error) {
              NSLog(@"Error: POST user/profile error = %@", error);
 
-             [weakSelf _showNetworkIndicator:NO];
+             [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
              weakSelf.saveButton.enabled = YES;
 
              NSString *errorMessage = nil;

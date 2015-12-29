@@ -1,5 +1,5 @@
 //
-//  JYCreatePostController.m
+//  JYPostCreator.m
 //  joyyios
 //
 //  Created by Ping Yang on 12/13/15.
@@ -9,11 +9,11 @@
 #import <AFNetworking/AFNetworking.h>
 #import <AWSS3/AWSS3.h>
 
-#import "JYCreatePostController.h"
+#import "JYPostCreator.h"
 #import "JYFilename.h"
 #import "JYPost.h"
 
-@implementation JYCreatePostController
+@implementation JYPostCreator
 
 #pragma mark - AWS S3
 

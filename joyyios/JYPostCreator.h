@@ -1,5 +1,5 @@
 //
-//  JYCreatePostController.h
+//  JYPostCreator.h
 //  joyyios
 //
 //  Created by Ping Yang on 12/13/15.
@@ -11,7 +11,7 @@
 typedef void(^PostHandler)(JYPost *);
 
 
-@interface JYCreatePostController : NSObject
+@interface JYPostCreator : NSObject
 
 - (void)createPostWithMedia:(id)media caption:(NSString *)caption success:(PostHandler)success failure:(FailureHandler)failure;
 - (void)forwardPost:(JYPost *)post success:(PostHandler)success failure:(FailureHandler)failure;

@@ -13,7 +13,6 @@
 #import "JYButton.h"
 #import "JYComment.h"
 #import "JYCommentViewController.h"
-#import "JYCreatePostController.h"
 #import "JYDay.h"
 #import "JYFriendManager.h"
 #import "JYJellyView.h"
@@ -21,6 +20,7 @@
 #import "JYNewCommentViewController.h"
 #import "JYPhotoCaptionViewController.h"
 #import "JYPost.h"
+#import "JYPostCreator.h"
 #import "JYRefreshHeader.h"
 #import "JYReminderView.h"
 #import "JYTimelineCell.h"
@@ -33,7 +33,7 @@
 @interface JYTimelineViewController () <JYRefreshHeaderDelegate, JYTimelineCellDelegate, TGCameraDelegate, UITableViewDataSource, UITableViewDelegate>
 @property (nonatomic) CABasicAnimation *colorPulse;
 @property (nonatomic) JYButton *cameraButton;
-@property (nonatomic) JYCreatePostController *createPostController;
+@property (nonatomic) JYPostCreator *createPostController;
 @property (nonatomic) JYDay *minDay;
 @property (nonatomic) JYPost *currentPost;
 @property (nonatomic) JYJellyView *jellyView;
@@ -67,7 +67,7 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
     self.navigationItem.titleView = self.titleButton;
 
     self.networkThreadCount = 0;
-    self.createPostController = [JYCreatePostController new];
+    self.createPostController = [JYPostCreator new];
     self.currentPost = nil;
     self.postList = [NSMutableArray new];
     self.newestPostId = 0;
