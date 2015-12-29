@@ -17,6 +17,8 @@
 
 - (instancetype)initWithViewController:(UIViewController *)viewController;
 - (void)showOptions;
+- (void)showImagePicker;
+- (void)showCamera;
 - (void)uploadAvatarImage:(UIImage *)image success:(Action)success failure:(FailureHandler)failure;
 
 @property (nonatomic, weak) id<JYAvatarCreatorDelegate> delegate;

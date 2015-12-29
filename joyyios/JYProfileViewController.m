@@ -142,7 +142,6 @@ static NSString *const kCellIdentifier = @"profileUserlineCell";
 
 - (void)didTapContactLabelOnView:(JYProfileCardView *)view
 {
-    
 }
 
 - (void)didTapWinkLabelOnView:(JYProfileCardView *)view

@@ -48,6 +48,10 @@
 + (instancetype)onboardWithBackgroundVideoURL:(NSURL *)backgroundVideoURL contents:(NSArray *)contents;
 - (instancetype)initWithBackgroundVideoURL:(NSURL *)backgroundVideoURL contents:(NSArray *)contents;
 
+- (instancetype)initWithContents:(NSArray *)contents;
+- (instancetype)init;
+- (void)commonInit;
+
 // Manually moving to next page
 - (void)moveNextPage;
 

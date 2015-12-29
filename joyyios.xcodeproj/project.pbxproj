@@ -51,6 +51,9 @@
 		D6348D2F1ADB4DD60002BC35 /* NSString+Joyy.m in Sources */ = {isa = PBXBuildFile; fileRef = D6348D2E1ADB4DD60002BC35 /* NSString+Joyy.m */; };
 		D6348D371ADB7ABC0002BC35 /* NSMutableDictionary+Joyy.m in Sources */ = {isa = PBXBuildFile; fileRef = D6348D361ADB7ABC0002BC35 /* NSMutableDictionary+Joyy.m */; };
 		D63591951BEA913500BFFF82 /* JYDeviceManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D63591941BEA913500BFFF82 /* JYDeviceManager.m */; };
+		D63A013A1C331BF600E74C36 /* JYProfileCreationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D63A01391C331BF600E74C36 /* JYProfileCreationViewController.m */; };
+		D63A01461C3322A900E74C36 /* OnboardingContentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D63A01431C3322A900E74C36 /* OnboardingContentViewController.m */; };
+		D63A01471C3322A900E74C36 /* OnboardingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D63A01451C3322A900E74C36 /* OnboardingViewController.m */; };
 		D63B69B21AC51D61005600A9 /* JYSignBaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D63B69B11AC51D61005600A9 /* JYSignBaseViewController.m */; };
 		D63B69B61AC53BB4005600A9 /* JYFloatLabeledTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = D63B69B51AC53BB4005600A9 /* JYFloatLabeledTextField.m */; };
 		D63B69BA1AC624F8005600A9 /* JYAutoCompleteDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = D63B69B91AC624F8005600A9 /* JYAutoCompleteDataSource.m */; };
@@ -215,6 +218,13 @@
 		D6348D361ADB7ABC0002BC35 /* NSMutableDictionary+Joyy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSMutableDictionary+Joyy.m"; sourceTree = "<group>"; };
 		D63591931BEA913500BFFF82 /* JYDeviceManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYDeviceManager.h; sourceTree = "<group>"; };
 		D63591941BEA913500BFFF82 /* JYDeviceManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYDeviceManager.m; sourceTree = "<group>"; };
+		D63A01381C331BF600E74C36 /* JYProfileCreationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYProfileCreationViewController.h; sourceTree = "<group>"; };
+		D63A01391C331BF600E74C36 /* JYProfileCreationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYProfileCreationViewController.m; sourceTree = "<group>"; };
+		D63A01421C3322A900E74C36 /* OnboardingContentViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OnboardingContentViewController.h; sourceTree = "<group>"; };
+		D63A01431C3322A900E74C36 /* OnboardingContentViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OnboardingContentViewController.m; sourceTree = "<group>"; };
+		D63A01441C3322A900E74C36 /* OnboardingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OnboardingViewController.h; sourceTree = "<group>"; };
+		D63A01451C3322A900E74C36 /* OnboardingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OnboardingViewController.m; sourceTree = "<group>"; };
+		D63A01481C3322EA00E74C36 /* OnboardingContentViewController_Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OnboardingContentViewController_Private.h; sourceTree = "<group>"; };
 		D63B69B01AC51D61005600A9 /* JYSignBaseViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYSignBaseViewController.h; sourceTree = "<group>"; };
 		D63B69B11AC51D61005600A9 /* JYSignBaseViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYSignBaseViewController.m; sourceTree = "<group>"; };
 		D63B69B41AC53BB4005600A9 /* JYFloatLabeledTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYFloatLabeledTextField.h; sourceTree = "<group>"; };
@@ -591,11 +601,12 @@
 		D62C2C6A1B917FE500233F5B /* Vendor */ = {
 			isa = PBXGroup;
 			children = (
+				D6B9B7401BAE9831001F9500 /* Flurry */,
+				D61D1D281B4A65F200DE37DF /* MDCSwipeToChoose */,
 				D6903CFF1BF9173200CDC64F /* MTLFMDBAdapter */,
 				D6903CFE1BF916DB00CDC64F /* NSURLSession+SynchronousTask */,
-				D6B9B7401BAE9831001F9500 /* Flurry */,
+				D63A013B1C3320DA00E74C36 /* Onboard */,
 				D61D1D601B4E336E00DE37DF /* TGCameraViewController */,
-				D61D1D281B4A65F200DE37DF /* MDCSwipeToChoose */,
 			);
 			name = Vendor;
 			sourceTree = "<group>";
@@ -632,6 +643,18 @@
 				D62C2C5F1B8E887200233F5B /* JYXmppManager.m */,
 			);
 			name = Manager;
+			sourceTree = "<group>";
+		};
+		D63A013B1C3320DA00E74C36 /* Onboard */ = {
+			isa = PBXGroup;
+			children = (
+				D63A01481C3322EA00E74C36 /* OnboardingContentViewController_Private.h */,
+				D63A01421C3322A900E74C36 /* OnboardingContentViewController.h */,
+				D63A01431C3322A900E74C36 /* OnboardingContentViewController.m */,
+				D63A01441C3322A900E74C36 /* OnboardingViewController.h */,
+				D63A01451C3322A900E74C36 /* OnboardingViewController.m */,
+			);
+			name = Onboard;
 			sourceTree = "<group>";
 		};
 		D63B69AB1AC5184D005600A9 /* People */ = {
@@ -935,6 +958,8 @@
 				D6C89F821C2B9A8700E96E99 /* JYWinkViewController.m */,
 				D6B8D3021C322F6400B30548 /* JYAvatarCreator.h */,
 				D6B8D3031C322F6400B30548 /* JYAvatarCreator.m */,
+				D63A01381C331BF600E74C36 /* JYProfileCreationViewController.h */,
+				D63A01391C331BF600E74C36 /* JYProfileCreationViewController.m */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -1127,8 +1152,10 @@
 				D61D1D471B4A65F200DE37DF /* MDCGeometry.m in Sources */,
 				D61D1DC21B4E336E00DE37DF /* TGCameraGridView.m in Sources */,
 				D6F7F1491BA8ED76008118DA /* JYFacialGestureCamera.m in Sources */,
+				D63A01461C3322A900E74C36 /* OnboardingContentViewController.m in Sources */,
 				D632E99E1C28CC5B00D5837C /* JYRefreshHeader.m in Sources */,
 				D63F0D591AC7CFF20067C5EE /* JYButton.m in Sources */,
+				D63A01471C3322A900E74C36 /* OnboardingViewController.m in Sources */,
 				D63B69BA1AC624F8005600A9 /* JYAutoCompleteDataSource.m in Sources */,
 				D632E99B1C24CD0900D5837C /* JYJellyView.m in Sources */,
 				D69FF6DB1B96471600466FE5 /* JYAmazonClientManager.m in Sources */,
@@ -1139,6 +1166,7 @@
 				D67DD0E41B75302800333626 /* JYUserViewController.m in Sources */,
 				D65F37461B04807D007B534C /* JYCommentlineCell.m in Sources */,
 				D60726AE1C18179500A43717 /* JYMonth.m in Sources */,
+				D63A013A1C331BF600E74C36 /* JYProfileCreationViewController.m in Sources */,
 				D61D1DAE1B4E336E00DE37DF /* TGCamera.m in Sources */,
 				D63F0D751AC9F6F80067C5EE /* JYDataStore.m in Sources */,
 				D6903D051BF9AA4300CDC64F /* NSDate+Joyy.m in Sources */,

@@ -45,12 +45,12 @@
     __weak typeof(self) weakSelf = self;
     [alert addAction:[UIAlertAction actionWithTitle:photoLibary style:UIAlertActionStyleDefault
                                             handler:^(UIAlertAction * action) {
-                                                [weakSelf _showImagePicker];
+                                                [weakSelf showImagePicker];
                                             }]];
 
     [alert addAction:[UIAlertAction actionWithTitle:camera style:UIAlertActionStyleDefault
                                             handler:^(UIAlertAction * action) {
-                                                [weakSelf _showCamera];
+                                                [weakSelf showCamera];
                                             }]];
 
     [alert addAction:[UIAlertAction actionWithTitle:cancel style:UIAlertActionStyleCancel handler:nil]];
@@ -58,7 +58,7 @@
     [self.viewController presentViewController:alert animated:YES completion:nil];
 }
 
-- (void)_showImagePicker
+- (void)showImagePicker
 {
     UIImagePickerController *picker = [[UIImagePickerController alloc] init];
 
@@ -71,7 +71,7 @@
     [self.viewController.navigationController presentViewController:picker animated:YES completion:nil];
 }
 
-- (void)_showCamera
+- (void)showCamera
 {
     [TGCameraColor setTintColor:JoyyBlue];
     TGCameraNavigationController *camera = [TGCameraNavigationController cameraWithDelegate:self];

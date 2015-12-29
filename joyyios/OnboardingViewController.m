@@ -27,6 +27,9 @@ static NSString * const kSkipButtonText = @"Skip";
     OnboardingContentViewController *_upcomingPage;
 }
 
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self forKeyPath:UIApplicationWillEnterForegroundNotification];
+}
 
 #pragma mark - Initializing with images
 
@@ -65,11 +68,26 @@ static NSString * const kSkipButtonText = @"Skip";
 #pragma mark - Initialization
 
 - (instancetype)initWithContents:(NSArray *)contents {
-    self = [super init];
+    if (self = [super init])
+    {
+        // store the passed in view controllers array
+        self.viewControllers = contents;
     
-    // store the passed in view controllers array
-    self.viewControllers = contents;
-    
+        [self commonInit];
+    }
+    return self;
+}
+
+- (instancetype)init {
+    if (self = [super init])
+    {
+        [self commonInit];
+    }
+    return self;
+}
+
+- (void)commonInit
+{
     // set the default properties
     self.shouldMaskBackground = YES;
     self.shouldBlurBackground = NO;
@@ -78,10 +96,10 @@ static NSString * const kSkipButtonText = @"Skip";
     self.fadeSkipButtonOnLastPage = NO;
     self.swipingEnabled = YES;
     self.hidePageControl = NO;
-    
+
     self.allowSkipping = NO;
     self.skipHandler = ^{};
-    
+
     // create the initial exposed components so they can be customized
     self.pageControl = [UIPageControl new];
     self.pageControl.numberOfPages = self.viewControllers.count;
@@ -90,16 +108,14 @@ static NSString * const kSkipButtonText = @"Skip";
     self.skipButton = [UIButton new];
     [self.skipButton setTitle:kSkipButtonText forState:UIControlStateNormal];
     [self.skipButton addTarget:self action:@selector(handleSkipButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+    self.skipButton.titleLabel.adjustsFontSizeToFitWidth = YES;
 
     // create the movie player controller
     self.moviePlayerController = [MPMoviePlayerController new];
-    
+
     // Handle when the app enters the foreground.
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleAppEnteredForeground) name:UIApplicationWillEnterForegroundNotification object:nil];
-    
-    return self;
 }
-
 
 #pragma mark - View life cycle
 

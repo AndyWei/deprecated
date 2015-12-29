@@ -14,6 +14,7 @@
 #import <RKDropdownAlert/RKDropdownAlert.h>
 
 #import "AppDelegate.h"
+#import "Flurry.h"
 #import "JYAmazonClientManager.h"
 #import "JYButton.h"
 #import "JYCredentialManager.h"
@@ -22,15 +23,14 @@
 #import "JYFilename.h"
 #import "JYFriendManager.h"
 #import "JYLocalDataManager.h"
-#import "JYNewProfileViewController.h"
 #import "JYPhoneNumberViewController.h"
+#import "JYProfileCreationViewController.h"
 #import "JYProfileViewController.h"
 #import "JYSessionListViewController.h"
 #import "JYSoundPlayer.h"
 #import "JYTimelineViewController.h"
 #import "JYUserViewController.h"
 #import "JYXmppManager.h"
-#import "Flurry.h"
 #import "OnboardingViewController.h"
 #import "OnboardingContentViewController.h"
 
@@ -204,9 +204,9 @@
 
 - (void)_launchProfileViewController
 {
-    UIViewController *viewController = [JYNewProfileViewController new];
-    UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:viewController];
-    self.window.rootViewController = navigationController;
+    UIViewController *viewController = [JYProfileCreationViewController new];
+//    UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:viewController];
+    self.window.rootViewController = viewController;
 }
 
 - (void)_launchIntroductionViewController
@@ -216,8 +216,9 @@
 
 - (void)_launchMainViewController
 {
-    self.window.rootViewController = self.tabBarController;
-    self.onboardingViewController = nil;
+//    self.window.rootViewController = self.tabBarController;
+//    self.onboardingViewController = nil;
+    [self _launchProfileViewController];
 }
 
 - (UITabBarController *)tabBarController
