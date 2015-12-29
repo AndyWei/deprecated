@@ -31,6 +31,7 @@
 
 @interface TGCameraViewController () <UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 @property (nonatomic) TGTintedButton *albumButton;
+@property (nonatomic) JYButton *closeButton;
 @property (nonatomic) JYButton *flashButton;
 @property (nonatomic) JYButton *gridButton;
 @property (nonatomic) JYButton *shotButton;
@@ -49,11 +50,11 @@
     [super viewDidLoad];
     self.view.backgroundColor = JoyyBlack;
 
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"close"] style:UIBarButtonItemStylePlain target:self action:@selector(_close)];
-
+//    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"close"] style:UIBarButtonItemStylePlain target:self action:@selector(_close)];
 
     [self.view addSubview:self.albumButton];
     [self.view addSubview:self.captureView];
+    [self.view addSubview:self.closeButton];
     [self.view addSubview:self.flashButton];
     [self.view addSubview:self.gridButton];
     [self.view addSubview:self.shotButton];
@@ -63,6 +64,7 @@
     NSDictionary *views = @{
                             @"albumButton": self.albumButton,
                             @"captureView": self.captureView,
+                            @"closeButton": self.closeButton,
                             @"flashButton": self.flashButton,
                             @"gridButton": self.gridButton,
                             @"shotButton": self.shotButton,
@@ -70,17 +72,20 @@
                             @"gridView": self.gridView,
                             };
 
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-10-[closeButton(40)]-(>=0@500)-|" options:0 metrics:nil views:views]];
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-10-[closeButton(40)]-(>=0@500)-|" options:0 metrics:nil views:views]];
+
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[captureView]-0-|" options:0 metrics:nil views:views]];
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[captureView]-(>=20@500)-|" options:0 metrics:nil views:views]];
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-120-[captureView]-(>=0@500)-|" options:0 metrics:nil views:views]];
 
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(>=20@500)-[gridButton(40)]-60-[toggleButton(40)]-60-[flashButton(40)]-(>=20@500)-|" options:0 metrics:nil views:views]];
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(>=00@500)-[shotButton(80)]-(>=20@500)-|" options:0 metrics:nil views:views]];
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(>=0@500)-[toggleButton(40)]-30-[shotButton(80)]-60-|" options:0 metrics:nil views:views]];
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(>=0@500)-[gridButton(40)]-170-|" options:0 metrics:nil views:views]];
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(>=0@500)-[flashButton(40)]-170-|" options:0 metrics:nil views:views]];
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(>=20@500)-[shotButton(80)]-(>=20@500)-|" options:0 metrics:nil views:views]];
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(>=0@500)-[toggleButton(40)]-30-[shotButton(80)]-10-|" options:0 metrics:nil views:views]];
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(>=0@500)-[gridButton(40)]-120-|" options:0 metrics:nil views:views]];
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(>=0@500)-[flashButton(40)]-120-|" options:0 metrics:nil views:views]];
 
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-20-[albumButton(40)]-(>=0@500)-|" options:0 metrics:nil views:views]];
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(>=0@500)-[albumButton(40)]-80-|" options:0 metrics:nil views:views]];
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(>=0@500)-[albumButton(40)]-30-|" options:0 metrics:nil views:views]];
 
     [self.captureView addConstraint:[NSLayoutConstraint constraintWithItem:self.captureView
                                                                  attribute:NSLayoutAttributeHeight
@@ -111,6 +116,8 @@
 
     [self deviceOrientationDidChange];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deviceOrientationDidChange) name:UIDeviceOrientationDidChangeNotification object:nil];
+
+    [self.camera startRunning];
 }
 
 - (void)showControls
@@ -126,6 +133,7 @@
 {
     [super viewWillAppear:animated];
 
+    self.navigationController.navigationBar.hidden = YES;
     [self.camera startRunning];
     [self showControls];
 
@@ -151,6 +159,8 @@
 - (void)viewDidDisappear:(BOOL)animated
 {
     [super viewDidDisappear:animated];
+    self.navigationController.navigationBar.hidden = NO;
+
     [_camera stopRunning];
 }
 
@@ -247,6 +257,23 @@
         _albumButton = button;
     }
     return _albumButton;
+}
+
+- (JYButton *)closeButton
+{
+    if (!_closeButton)
+    {
+        JYButton *button = [JYButton buttonWithFrame:CGRectZero buttonStyle:JYButtonStyleCentralImage shouldMaskImage:YES];
+        button.translatesAutoresizingMaskIntoConstraints = NO;
+        button.contentColor = self.toggleOffColor;
+        button.contentAnimateToColor = self.toggleOnColor;
+        button.contentEdgeInsets = UIEdgeInsetsMake(9, 9, 9, 9);
+        button.foregroundColor = ClearColor;
+        button.imageView.image = [UIImage imageNamed:@"close"];
+        [button addTarget:self action:@selector(_closeTapped) forControlEvents:UIControlEventTouchUpInside];
+        _closeButton = button;
+    }
+    return _closeButton;
 }
 
 - (JYButton *)flashButton
@@ -346,7 +373,7 @@
 
 #pragma mark - Actions
 
-- (void)_close
+- (void)_closeTapped
 {
     if ([self.delegate respondsToSelector:@selector(cameraDidCancel)])
     {

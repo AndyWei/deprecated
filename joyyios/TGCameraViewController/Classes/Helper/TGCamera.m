@@ -102,12 +102,18 @@ NSMutableDictionary *optionDictionary;
 
 - (void)startRunning
 {
-    [_session startRunning];
+    if (!_session.running)
+    {
+        [_session startRunning];
+    }
 }
 
 - (void)stopRunning
 {
-    [_session stopRunning];
+    if (_session.running)
+    {
+        [_session stopRunning];
+    }
 }
 
 - (void)insertSublayerWithCaptureView:(UIView *)captureView atRootView:(UIView *)rootView
@@ -124,6 +130,7 @@ NSMutableDictionary *optionDictionary;
 
     CALayer *rootLayer = [rootView layer];
     [rootLayer insertSublayer:_previewLayer atIndex:0];
+    rootLayer.masksToBounds = YES;
 }
 
 - (void)changeFlashModeWithButton:(JYButton *)button
