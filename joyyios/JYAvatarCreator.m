@@ -77,7 +77,7 @@
     TGCameraNavigationController *camera = [TGCameraNavigationController cameraWithDelegate:self];
     camera.title = NSLocalizedString(@"Primary Photo", nil);
 
-    [self.viewController presentViewController:camera animated:NO completion:nil];
+    [self.viewController presentViewController:camera animated:YES completion:nil];
 }
 
 - (void)_handleImage:(UIImage *)image
@@ -186,7 +186,9 @@
             }
             if (failure)
             {
-                failure(task.error);
+                dispatch_async(dispatch_get_main_queue(), ^(void){
+                    failure(task.error);
+                });
             }
             return nil;
         }
@@ -198,7 +200,9 @@
 
             if (success)
             {
-                success();
+                dispatch_async(dispatch_get_main_queue(), ^(void){
+                    success();
+                });
             }
         }
         return nil;

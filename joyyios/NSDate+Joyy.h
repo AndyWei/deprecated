@@ -9,6 +9,7 @@
 @interface NSDate (Joyy)
 
 + (NSDate *)dateOfId:(NSNumber *)objId;
++ (NSDate *)dateWithYear:(NSInteger)year month:(NSInteger)month day:(NSInteger)day;
 
 - (NSNumber *)currentId;
 - (NSNumber *)minId;

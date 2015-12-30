@@ -63,7 +63,7 @@
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_didManuallySignIn) name:kNotificationDidSignIn object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_didManuallySignUp) name:kNotificationDidSignUp object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_didCreateProfile) name:kNotificationDidCreateProfile object:nil];
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_didCreateProfile) name:kNotificationDidCreateProfile object:nil];
 
     [self _setupGlobalAppearance];
     [self _launchViewController];

@@ -150,6 +150,13 @@ NSString * const kOnboardActionButtonAccessibilityIdentifier = @"OnboardActionBu
     
     // now that the view has loaded we can generate the content
     [self generateView];
+
+    // call our view did load block
+    if (self.viewDidLoadBlock) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.viewDidLoadBlock();
+        });
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated {

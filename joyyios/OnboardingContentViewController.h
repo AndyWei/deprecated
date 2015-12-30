@@ -57,6 +57,7 @@ typedef void (^action_callback)(OnboardingViewController *onboardController);
 
 @property (nonatomic, copy) action_callback buttonActionHandler;
 
+@property (nonatomic, copy) dispatch_block_t viewDidLoadBlock;
 @property (nonatomic, copy) dispatch_block_t viewWillAppearBlock;
 @property (nonatomic, copy) dispatch_block_t viewDidAppearBlock;
 @property (nonatomic, copy) dispatch_block_t viewWillDisappearBlock;

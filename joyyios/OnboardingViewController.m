@@ -19,13 +19,15 @@ static CGFloat const kDefaultSaturationDeltaFactor = 1.8;
 
 static NSString * const kSkipButtonText = @"Skip";
 
-@implementation OnboardingViewController {
-    NSURL *_videoURL;
-    UIPageViewController *_pageVC;
-    
-    OnboardingContentViewController *_currentPage;
-    OnboardingContentViewController *_upcomingPage;
-}
+@interface OnboardingViewController ()
+@property (nonatomic) NSURL *videoURL;
+@property (nonatomic) UIPageViewController *pageVC;
+@property (nonatomic) OnboardingContentViewController *currentPage;
+@property (nonatomic) OnboardingContentViewController *upcomingPage;
+@property (nonatomic) UIImageView *backgroundImageView;
+@end
+
+@implementation OnboardingViewController
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self forKeyPath:UIApplicationWillEnterForegroundNotification];
@@ -151,18 +153,18 @@ static NSString * const kSkipButtonText = @"Skip";
     _pageVC.delegate = self;
     _pageVC.dataSource = self.swipingEnabled ? self : nil;
     
-    if (self.shouldBlurBackground) {
+    if (self.shouldBlurBackground)
+    {
         [self blurBackground];
     }
     
-    UIImageView *backgroundImageView;
-    
     // create the background image view and set it to aspect fill so it isn't skewed
-    if (self.backgroundImage) {
-        backgroundImageView = [[UIImageView alloc] initWithFrame:self.view.bounds];
-        backgroundImageView.contentMode = UIViewContentModeScaleAspectFill;
-        [backgroundImageView setImage:self.backgroundImage];
-        [self.view addSubview:backgroundImageView];
+    if (self.backgroundImage)
+    {
+        self.backgroundImageView = [[UIImageView alloc] initWithFrame:self.view.bounds];
+        self.backgroundImageView.contentMode = UIViewContentModeScaleAspectFill;
+        self.backgroundImageView.image = self.backgroundImage;
+        [self.view addSubview:self.backgroundImageView];
     }
     
     // as long as the shouldMaskBackground setting hasn't been set to NO, we want to
@@ -193,8 +195,8 @@ static NSString * const kSkipButtonText = @"Skip";
     [_pageVC.view sendSubviewToBack:backgroundMaskView];
     
     // send the background image view to the back if we have one
-    if (backgroundImageView) {
-        [_pageVC.view sendSubviewToBack:backgroundImageView];
+    if (self.backgroundImageView) {
+        [_pageVC.view sendSubviewToBack:self.backgroundImageView];
     }
     
     // otherwise send the video view to the back if we have one
@@ -251,6 +253,15 @@ static NSString * const kSkipButtonText = @"Skip";
 
 
 #pragma mark - Convenience setters for content pages
+
+- (void)setBackgroundImage:(UIImage *)backgroundImage
+{
+    _backgroundImage = backgroundImage;
+    if (_backgroundImageView)
+    {
+        _backgroundImageView.image = backgroundImage;
+    }
+}
 
 - (void)setIconSize:(CGFloat)iconSize {
     for (OnboardingContentViewController *contentVC in self.viewControllers) {
