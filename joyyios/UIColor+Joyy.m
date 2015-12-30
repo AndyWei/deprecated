@@ -60,6 +60,11 @@
     return rgb(247, 91, 37);
 }
 
++ (UIColor *)joyyRedColor50
+{
+    return rgba(247, 91, 37, 0.5);
+}
+
 + (UIColor *)joyyWhiteColor
 {
     return rgb(215, 215, 215);

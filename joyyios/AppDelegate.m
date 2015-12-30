@@ -63,7 +63,7 @@
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_didManuallySignIn) name:kNotificationDidSignIn object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_didManuallySignUp) name:kNotificationDidSignUp object:nil];
-//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_didCreateProfile) name:kNotificationDidCreateProfile object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_didCreateProfile) name:kNotificationDidCreateProfile object:nil];
 
     [self _setupGlobalAppearance];
     [self _launchViewController];
@@ -205,7 +205,6 @@
 - (void)_launchProfileViewController
 {
     UIViewController *viewController = [JYProfileCreationViewController new];
-//    UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:viewController];
     self.window.rootViewController = viewController;
 }
 
@@ -216,9 +215,8 @@
 
 - (void)_launchMainViewController
 {
-//    self.window.rootViewController = self.tabBarController;
-//    self.onboardingViewController = nil;
-    [self _launchProfileViewController];
+    self.window.rootViewController = self.tabBarController;
+    self.onboardingViewController = nil;
 }
 
 - (UITabBarController *)tabBarController

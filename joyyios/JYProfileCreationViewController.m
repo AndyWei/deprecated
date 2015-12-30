@@ -23,7 +23,7 @@
 @property (nonatomic) JYAvatarCreator *avatarCreator;
 @property (nonatomic) JYButton *boyButton;
 @property (nonatomic) JYButton *girlButton;
-@property (nonatomic) NSUInteger sex;
+@property (nonatomic) NSInteger sex;
 @property (nonatomic) NSUInteger yob;
 @property (nonatomic) OnboardingContentViewController *avatarPage;
 @property (nonatomic) OnboardingContentViewController *sexPage;
@@ -31,6 +31,9 @@
 @property (nonatomic) JYYearPickerView *yobPickerView;
 @property (nonatomic) UIImage *iconImage;
 @end
+
+static const CGFloat kButtonWidth = 150;
+static const CGFloat kButtonInset = 30;
 
 @implementation JYProfileCreationViewController
 
@@ -42,12 +45,12 @@
         self.viewControllers = @[self.avatarPage, self.sexPage, self.yobPage];
         
         self.allowSkipping = NO;
-        self.backgroundImage = [UIImage imageNamed:@"wink"];
+        self.backgroundImage = [UIImage imageNamed:@"profile_bg"];
         self.fadePageControlOnLastPage = YES;
         self.shouldFadeTransitions = YES;
         self.swipingEnabled = NO;
 
-        self.sex = 0;
+        self.sex = -1;
         self.isUploading = NO;
     }
     return self;
@@ -89,7 +92,7 @@
 - (JYButton *)boyButton
 {
     if (!_boyButton) {
-        CGRect frame = CGRectMake(SCREEN_WIDTH - 120, 250, 80, 80);
+        CGRect frame = CGRectMake(SCREEN_WIDTH - kButtonInset - kButtonWidth, 250, kButtonWidth, kButtonWidth);
         JYButton *button = [JYButton buttonWithFrame:frame buttonStyle:JYButtonStyleImageWithSubtitle appearanceIdentifier:nil];
         button.imageView.image = [UIImage imageNamed:@"boy"];
         button.detailTextLabel.text = NSLocalizedString(@"Boy", nil);
@@ -97,6 +100,7 @@
 
         button.contentColor = JoyyBlue;
         button.foregroundColor = ClearColor;
+        button.cornerRadius = kButtonWidth / 2;
 
         _boyButton = button;
     }
@@ -106,14 +110,15 @@
 - (JYButton *)girlButton
 {
     if (!_girlButton) {
-        CGRect frame = CGRectMake(40, 250, 80, 80);
+        CGRect frame = CGRectMake(kButtonInset, 250, kButtonWidth, kButtonWidth);
         JYButton *button = [JYButton buttonWithFrame:frame buttonStyle:JYButtonStyleImageWithSubtitle appearanceIdentifier:nil];
         button.imageView.image = [UIImage imageNamed:@"girl"];
         button.detailTextLabel.text = NSLocalizedString(@"Girl", nil);
         [button addTarget:self action:@selector(_didTapGirlButton) forControlEvents:UIControlEventTouchUpInside];
 
-        button.contentColor = FlatRed;
+        button.contentColor = JoyyRed;
         button.foregroundColor = ClearColor;
+        button.cornerRadius = kButtonWidth / 2;
 
         _girlButton = button;
     }
@@ -158,7 +163,10 @@
                                                                 image:self.iconImage
                                                             buttonText:NSLocalizedString(@"Confirm", nil)
                                                               action:^{
-                                                                  [weakSelf moveNextPage];
+                                                                  if (weakSelf.sex >= 0)
+                                                                  {
+                                                                      [weakSelf moveNextPage];
+                                                                  }
                                                               }];
 
         __weak typeof(_sexPage) weakPage = _sexPage;
@@ -204,7 +212,7 @@
 {
     self.sex = 0;
     self.boyButton.foregroundColor = ClearColor;
-    self.girlButton.foregroundColor = FlatRedDark;
+    self.girlButton.foregroundColor = JoyyRed50;
 }
 
 #pragma mark - JYYearPickerViewDelegate
