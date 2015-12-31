@@ -95,12 +95,14 @@
 {
     _post = post;
     self.mediaView.post = post;
-    
-    NSDate *date = [NSDate dateOfId:self.post.postId];
-    self.postTimeLabel.text = [date ageString];
-
-    self.ownerView.user = [[JYFriendManager sharedInstance] friendWithId: post.ownerId];
     [self _updateCommentsAndLikes];
+
+    if (post)
+    {
+        NSDate *date = [NSDate dateOfId:post.postId];
+        self.postTimeLabel.text = [date ageString];
+        self.ownerView.user = [[JYFriendManager sharedInstance] friendWithId: post.ownerId];
+    }
 }
 
 - (void)_updateCommentsAndLikes

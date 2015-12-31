@@ -263,6 +263,7 @@ static NSString *const kVerificationCellIdentifier = @"verificationCell";
 - (void)_showSignupView
 {
     [JYCredential current].phoneNumber = self.phoneNumber;
+    [JYFriend myself].phoneNumber = [[JYCredential current].phoneNumber uint64Value];
 
     JYSignUpViewController *vc = [JYSignUpViewController new];
     [self.navigationController pushViewController:vc animated:YES];
@@ -271,6 +272,7 @@ static NSString *const kVerificationCellIdentifier = @"verificationCell";
 - (void)_showSigninViewWithUsername:(NSString *)username
 {
     [JYCredential current].phoneNumber = self.phoneNumber;
+    [JYFriend myself].phoneNumber = [[JYCredential current].phoneNumber uint64Value];
     
     JYSignInViewController *vc = [JYSignInViewController new];
     vc.username = username;

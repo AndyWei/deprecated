@@ -20,6 +20,7 @@
 - (void)showImagePicker;
 - (void)showCamera;
 - (void)uploadAvatarImage:(UIImage *)image success:(Action)success failure:(FailureHandler)failure;
+- (void)writeRemoteProfileWithParameters:(NSDictionary *)parameters;
 
 @property (nonatomic, weak) id<JYAvatarCreatorDelegate> delegate;
 

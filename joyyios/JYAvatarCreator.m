@@ -8,9 +8,11 @@
 
 #import <AWSS3/AWSS3.h>
 #import <KVNProgress/KVNProgress.h>
+#import <RKDropdownAlert/RKDropdownAlert.h>
 
 #import "JYAvatarCreator.h"
 #import "JYFilename.h"
+#import "JYYRS.h"
 #import "NSString+Joyy.h"
 #import "TGCameraColor.h"
 #import "TGCameraViewController.h"
@@ -145,9 +147,8 @@
     NSURL *fileURL = [NSURL fileURLWithPath:[NSTemporaryDirectory() stringByAppendingPathComponent:@"profile"]];
     [imageData writeToURL:fileURL atomically:YES];
 
-    NSString *idString = [NSString stringWithFormat:@"%llu", [[JYCredential current].userId unsignedLongLongValue]];
-    NSString *filename = [idString reversedString]; // use reversed userid as filename to avoid hash conflict in S3
-    NSString *s3filename = [filename stringByAppendingString:@".jpg"];
+    JYFriend *me = [JYFriend myself];
+    NSString *s3filename = [me nextS3Filename];
 
     AWSS3TransferManager *transferManager = [AWSS3TransferManager defaultS3TransferManager];
     if (!transferManager)
@@ -164,7 +165,6 @@
 
     __weak typeof(self) weakSelf = self;
     [[transferManager upload:request] continueWithBlock:^id(AWSTask *task) {
-        [weakSelf _showNetworkIndicator:NO];
 
         if (task.error)
         {
@@ -184,12 +184,24 @@
             {
                 NSLog(@"Error: AWSS3TransferManager upload error = %@", task.error);
             }
+
+            NSString *errorMessage = NSLocalizedString(@"Upload photo failed", nil);
+
+            [RKDropdownAlert title:NSLocalizedString(kErrorTitle, nil)
+                           message:errorMessage
+                   backgroundColor:FlatYellow
+                         textColor:FlatBlack
+                              time:5];
+            
             if (failure)
             {
                 dispatch_async(dispatch_get_main_queue(), ^(void){
                     failure(task.error);
                 });
             }
+
+            [weakSelf _showNetworkIndicator:NO];
+
             return nil;
         }
 
@@ -198,6 +210,7 @@
             AWSS3TransferManagerUploadOutput *uploadOutput = task.result;
             NSLog(@"Success: AWSS3TransferManager upload task.result = %@", uploadOutput);
 
+            [weakSelf _updateLocalYRS];
             if (success)
             {
                 dispatch_async(dispatch_get_main_queue(), ^(void){
@@ -205,8 +218,54 @@
                 });
             }
         }
+        [weakSelf _showNetworkIndicator:NO];
         return nil;
     }];
+}
+
+- (void)_updateLocalYRS
+{
+    JYYRS *yrs = [JYYRS yrsWithValue:[JYCredential current].yrsValue];
+    yrs.version = [yrs nextVersion];
+    [JYFriend myself].yrsValue = yrs.value;
+
+    // write JYCredential ask for keychain access, which must be executed in main thread to avoid OSStatus error: [-34018]
+    dispatch_async(dispatch_get_main_queue(), ^(void){
+        [JYCredential current].yrsValue = yrs.value;
+    });
+}
+
+- (void)writeRemoteProfileWithParameters:(NSDictionary *)parameters
+{
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager managerWithToken];
+    NSString *url = [NSString apiURLWithPath:@"user/profile"];
+
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+
+    [manager POST:url
+       parameters:parameters
+          success:^(NSURLSessionTask *operation, id responseObject) {
+              NSLog(@"Success: POST user/profile");
+
+              [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+
+              [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationDidCreateProfile object:nil];
+              [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationUserYRSReady object:nil];
+          }
+          failure:^(NSURLSessionTask *operation, NSError *error) {
+              NSLog(@"Error: POST user/profile error = %@", error);
+
+              [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+
+              NSString *errorMessage = nil;
+              errorMessage = [error.userInfo valueForKey:NSLocalizedDescriptionKey];
+
+              [RKDropdownAlert title:NSLocalizedString(kErrorTitle, nil)
+                             message:errorMessage
+                     backgroundColor:FlatYellow
+                           textColor:FlatBlack
+                                time:5];
+          }];
 }
 
 @end

@@ -8,12 +8,15 @@
 
 @interface JYYRS : NSObject
 
-+ (instancetype)yrsWithYob:(NSUInteger)yob region:(NSUInteger)region sex:(NSUInteger)sex;
++ (instancetype)yrsWithVersion:(NSUInteger)version yob:(NSUInteger)yob region:(NSUInteger)region sex:(NSUInteger)sex;
 + (instancetype)yrsWithValue:(uint64_t)value;
 
-- (instancetype)initWithYob:(NSUInteger)yob region:(NSUInteger)region sex:(NSUInteger)sex;
+- (instancetype)initWithVersion:(NSUInteger)version yob:(NSUInteger)yob region:(NSUInteger)region sex:(NSUInteger)sex;
 - (instancetype)initWithValue:(uint64_t)value;
 
+- (NSUInteger)nextVersion;
+
+@property (nonatomic) NSUInteger version;
 @property (nonatomic) NSUInteger yob;
 @property (nonatomic) NSUInteger region;
 @property (nonatomic) NSUInteger sex;

@@ -12,6 +12,9 @@
 
 @interface JYUser : MTLModel <MTLJSONSerializing, MTLFMDBSerializing>
 
+- (NSString *)reversedIdString;
+- (NSString *)nextS3Filename;
+
 @property (nonatomic) NSNumber *userId;
 @property (nonatomic) NSString *username;
 @property (nonatomic) NSString *avatarURL;

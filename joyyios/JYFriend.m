@@ -50,7 +50,7 @@
     return @"friend";
 }
 
-#pragma mark - Lifecycle
+#pragma mark
 
 + (instancetype)myself
 {
@@ -59,11 +59,16 @@
         return nil;
     }
 
-    JYFriend *_myself = [JYFriend new];
-    _myself.userId = [JYCredential current].userId;
-    _myself.username = [JYCredential current].username;
-    _myself.yrsValue = [JYCredential current].yrsValue;
-    _myself.phoneNumber = [[JYCredential current].phoneNumber uint64Value];
+    static JYFriend *_myself = nil;
+    static dispatch_once_t done;
+
+    dispatch_once(&done, ^{
+        _myself = [JYFriend new];
+        _myself.userId = [JYCredential current].userId;
+        _myself.username = [JYCredential current].username;
+        _myself.yrsValue = [JYCredential current].yrsValue;
+        _myself.phoneNumber = [[JYCredential current].phoneNumber uint64Value];
+    });
 
     return _myself;
 }

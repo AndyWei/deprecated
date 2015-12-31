@@ -172,8 +172,10 @@ static NSString *const kCellIdentifier = @"profileUserlineCell";
 - (void)creator:(JYAvatarCreator *)creator didTakePhoto:(UIImage *)image
 {
     self.cardView.avatarImage = image;
+
+    __weak typeof(self) weakSelf = self;
     [self.avatarCreator uploadAvatarImage:image success:^{
-        
+        [weakSelf _updateProfileRecord];
     } failure:^(NSError *error) {
         NSString *errorMessage = nil;
         errorMessage = [error.userInfo valueForKey:NSLocalizedDescriptionKey];
@@ -363,6 +365,32 @@ static NSString *const kCellIdentifier = @"profileUserlineCell";
          failure:^(NSURLSessionTask *operation, NSError *error) {
              NSLog(@"GET winks error: %@", error);
          }];
+}
+
+- (void)_updateProfileRecord
+{
+    NSDictionary *parameters = [self _profileUpdateParameters];
+    [self.avatarCreator writeRemoteProfileWithParameters:parameters];
+}
+
+- (NSDictionary *)_profileUpdateParameters
+{
+    NSMutableDictionary *parameters = [NSMutableDictionary new];
+
+    // phone
+    NSString *phoneNumber = [JYCredential current].phoneNumber;
+    if (!phoneNumber)
+    {
+        return nil;
+    }
+
+    [parameters setObject:phoneNumber forKey:@"phone"];
+
+    // YRS
+    uint64_t yrsValue = [JYCredential current].yrsValue;
+    [parameters setObject:@(yrsValue) forKey:@"yrs"];
+
+    return parameters;
 }
 
 @end

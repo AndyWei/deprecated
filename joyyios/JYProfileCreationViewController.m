@@ -7,7 +7,6 @@
 //
 
 #import <AFNetworking/AFNetworking.h>
-#import <RKDropdownAlert/RKDropdownAlert.h>
 
 #import "JYAvatarCreator.h"
 #import "JYButton.h"
@@ -188,7 +187,7 @@ static const CGFloat kButtonInset = 30;
                                                                image:self.iconImage
                                                           buttonText:NSLocalizedString(@"Submit", nil)
                                                               action:^{
-                                                                  [weakSelf _updateProfileRecord];
+                                                                  [weakSelf _createProfileRecord];
                                                               }];
 
         __weak typeof(_yobPage) weakPage = _yobPage;
@@ -229,66 +228,19 @@ static const CGFloat kButtonInset = 30;
 
      __weak typeof(self) weakSelf = self;
     [self.avatarCreator uploadAvatarImage:image success:^{
-
         [weakSelf moveNextPage];
-    } failure:^(NSError *error) {
-        NSString *errorMessage = nil;
-        errorMessage = [error.userInfo valueForKey:NSLocalizedDescriptionKey];
-
-        [RKDropdownAlert title:NSLocalizedString(kErrorTitle, nil)
-                       message:errorMessage
-               backgroundColor:FlatYellow
-                     textColor:FlatBlack
-                          time:5];
-    }];
+    } failure:nil];
 }
 
 #pragma mark - Network
 
-- (void)_updateProfileRecord
+- (void)_createProfileRecord
 {
-    if (self.isUploading)
-    {
-        return;
-    }
-    self.isUploading = YES;
-
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager managerWithToken];
-    NSString *url = [NSString apiURLWithPath:@"user/profile"];
-    NSDictionary *parameters = [self _parametersForUpdatingProfile];
-
-    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
-
-    __weak typeof(self) weakSelf = self;
-    [manager POST:url
-       parameters:parameters
-          success:^(NSURLSessionTask *operation, id responseObject) {
-              NSLog(@"Success: POST user/profile");
-
-              weakSelf.isUploading = NO;
-              [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-
-              [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationDidCreateProfile object:nil];
-              [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationUserYRSReady object:nil];
-          }
-          failure:^(NSURLSessionTask *operation, NSError *error) {
-              NSLog(@"Error: POST user/profile error = %@", error);
-              weakSelf.isUploading = NO;
-
-              [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-
-              NSString *errorMessage = nil;
-              errorMessage = [error.userInfo valueForKey:NSLocalizedDescriptionKey];
-
-              [RKDropdownAlert title:NSLocalizedString(kErrorTitle, nil)
-                             message:errorMessage
-                     backgroundColor:FlatYellow
-                           textColor:FlatBlack
-                                time:5];
-          }];
+    NSDictionary *parameters = [self _profileCreationParameters];
+    [self.avatarCreator writeRemoteProfileWithParameters:parameters];
 }
 
-- (NSDictionary *)_parametersForUpdatingProfile
+- (NSDictionary *)_profileCreationParameters
 {
     NSMutableDictionary *parameters = [NSMutableDictionary new];
 
@@ -302,9 +254,14 @@ static const CGFloat kButtonInset = 30;
     [parameters setObject:phoneNumber forKey:@"phone"];
 
     // YRS
-    NSUInteger region = [[JYFilename sharedInstance].region integerValue];
-    JYYRS *yrs = [JYYRS yrsWithYob:self.yob region:region sex:self.sex];
+    uint64_t yrsValue = [JYCredential current].yrsValue;
+    JYYRS *yrs = [JYYRS yrsWithValue:yrsValue];
+    yrs.yob = self.yob;
+    yrs.sex = self.sex;
+    yrs.region = [[JYFilename sharedInstance].region integerValue];
+
     [JYCredential current].yrsValue = yrs.value;
+    [JYFriend myself].yrsValue = yrs.value;
     [parameters setObject:@(yrs.value) forKey:@"yrs"];
     
     return parameters;

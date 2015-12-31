@@ -77,13 +77,42 @@
     if (!_avatarURL)
     {
         JYYRS *yrs = [JYYRS yrsWithValue:self.yrsValue];
-        NSString *region = [NSString stringWithFormat:@"%ld", (long)yrs.region];
+        NSString *region = [NSString stringWithFormat:@"%lu", (unsigned long)yrs.region];
         NSString *prefix = [[JYFilename sharedInstance] avatarURLPrefixOfRegion:region];
-        NSString *idString = [NSString stringWithFormat:@"%llu", [self.userId unsignedLongLongValue]];
-        NSString *filename = [idString reversedString];
-        _avatarURL = [NSString stringWithFormat:@"%@%@.jpg", prefix, filename];
+
+        NSString *filename = [self avatarFilename];
+        _avatarURL = [NSString stringWithFormat:@"%@%@", prefix, filename];
     }
     return _avatarURL;
+}
+
+- (void)setYrsValue:(uint64_t)yrsValue
+{
+    _yrsValue = yrsValue;
+    _avatarURL = nil; // clear the old avatar URL will force it's re-generated from the new yrs value
+}
+
+- (NSString *)reversedIdString
+{
+    NSString *idString = [NSString stringWithFormat:@"%llu", [self.userId unsignedLongLongValue]];
+    return [idString reversedString];
+}
+
+- (NSString *)avatarFilename
+{
+    JYYRS *yrs = [JYYRS yrsWithValue:self.yrsValue];
+    NSString *version = [NSString stringWithFormat:@"%lu", (unsigned long)yrs.version];
+    NSString *filename = [NSString stringWithFormat:@"%@_%@.jpg", [self reversedIdString], version];
+    return filename;
+}
+
+- (NSString *)nextS3Filename
+{
+    JYYRS *yrs = [JYYRS yrsWithValue:self.yrsValue];
+    NSString *version = [NSString stringWithFormat:@"%lu", (unsigned long)[yrs nextVersion]];
+
+    NSString *filename = [NSString stringWithFormat:@"%@_%@.jpg", [self reversedIdString], version];
+    return filename;
 }
 
 - (NSString *)sex
