@@ -71,9 +71,10 @@ func (h *Handler) CheckUsername(w http.ResponseWriter, req *http.Request) {
  * Profile endpoints
  */
 type WriteProfileParams struct {
-    Phone int64  `param:"phone" validate:"required"`
-    YRS   int64  `param:"yrs" validate:"required"`
-    Bio   string `param:"bio"`
+    Phone     int64  `param:"phone" validate:"required"`
+    YRS       int64  `param:"yrs" validate:"required"`
+    Bio       string `param:"bio"`
+    Boardcast bool   `param:"boardcast"`
 }
 
 func (h *Handler) WriteProfile(w http.ResponseWriter, req *http.Request, userid int64, username string) {
@@ -94,6 +95,20 @@ func (h *Handler) WriteProfile(w http.ResponseWriter, req *http.Request, userid 
         p.Phone, username, userid).Exec(); err != nil {
         RespondError(w, err, http.StatusBadGateway)
         return
+    }
+
+    // inform all my friends
+    if p.Boardcast {
+        fids, err := h.getFriendIds(userid)
+        if err != nil {
+            RespondError(w, err, http.StatusBadGateway)
+            return
+        }
+
+        query := h.DB.Query(`INSERT INTO friend (userid, fid, fyrs) VALUES (?, ?, ?)`, 0, 0, 0)
+        for _, fid := range fids {
+            query.Bind(fid, userid, p.YRS).Exec()
+        }
     }
 
     RespondOK(w)
@@ -214,4 +229,17 @@ func (h *Handler) ReadUsers(w http.ResponseWriter, req *http.Request, userid int
 
     RespondData(w, bytes)
     return
+}
+
+func (h *Handler) getFriendIds(userid int64) ([]int64, error) {
+
+    var result []int64
+    var fid int64
+
+    iter := h.DB.Query(`SELECT fid FROM friend WHERE userid = ? LIMIT 500`, userid).Consistency(gocql.One).Iter()
+    for iter.Scan(&fid) {
+        result = append(result, fid)
+    }
+    err := iter.Close()
+    return result, err
 }
