@@ -20,7 +20,7 @@ var WriteProfileTests = []struct {
     userid   int64
     username string
     phone    int64
-    yrs      int
+    yrs      int64
     bio      string
     code     int
 }{
@@ -59,7 +59,7 @@ var ReadProfileTests = []struct {
     userid   int64
     username string
     phone    int64
-    yrs      int
+    yrs      int64
     bio      string
     code     int
 }{
@@ -70,7 +70,7 @@ var ReadProfileTests = []struct {
 type ReadProfileReply struct {
     Username string `json:"username"`
     Phone    int64  `json:"phone"`
-    YRS      int    `json:"yrs"`
+    YRS      int64  `json:"yrs"`
     Bio      string `json:"bio"`
 }
 
@@ -118,7 +118,7 @@ var AppearTests = []struct {
     username string
     country  string
     zip      string
-    yrs      int
+    yrs      int64
     code     int
 }{
     {1234567890001, "user1", "US", "94536", 19900101, http.StatusOK},
@@ -155,7 +155,7 @@ var Users = []struct {
     username string
     country  string
     zip      string
-    yrs      int
+    yrs      int64
 }{
     {1234567890000, "user0", "US", "94530", 000001},
     {1234567890001, "user1", "US", "94531", 000001},
@@ -196,7 +196,7 @@ func (h *Handler) prepareUsers() {
 type User struct {
     Userid   int64  `json:"userid"`
     Username string `json:"username"`
-    YRS      int    `json:"yrs"`
+    YRS      int64  `json:"yrs"`
 }
 
 var ReadUsersTests = []struct {

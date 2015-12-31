@@ -21,10 +21,10 @@ import (
 var AddFriendTests = []struct {
     userid   int64
     username string
-    yrs      int
+    yrs      int64
     fid      int64
     fname    string
-    fyrs     int
+    fyrs     int64
 }{
     {1234567890000, "user0", 1, 1234567890001, "user1", 1},
     {1234567890000, "user0", 1, 1234567890002, "user2", 1},
@@ -53,7 +53,7 @@ func TestAddFriend(test *testing.T) {
 var ReadFriendsTests = []struct {
     fid   int64
     fname string
-    fyrs  int
+    fyrs  int64
 }{
     {1234567890001, "user1", 1},
     {1234567890002, "user2", 1},
@@ -64,7 +64,7 @@ var ReadFriendsTests = []struct {
 type Friend struct {
     Fid   int64  `json:"fid"`
     Fname string `json:"fname"`
-    Fyrs  int    `json:"fyrs"`
+    Fyrs  int64  `json:"fyrs"`
 }
 
 func TestReadFriends(test *testing.T) {
@@ -74,7 +74,7 @@ func TestReadFriends(test *testing.T) {
 
     userid := int64(1234567890000)
     username := "user0"
-    yrs := 1
+    yrs := int64(1)
 
     for _, t := range ReadFriendsTests {
 

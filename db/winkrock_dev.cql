@@ -24,7 +24,7 @@ GRANT SELECT ON KEYSPACE winkrock TO dev;
 GRANT MODIFY ON KEYSPACE winkrock TO dev;
 
 /*
- * user.cql
+ * winkrock_dev.cql
  * 
  * Copyright (c) 2015 Joyy Inc. All rights reserved.
  */
@@ -33,7 +33,9 @@ USE winkrock;
 
 /*
  * YRS Encoding Rule
- * yrs has 32 bits, 16 bits of yob, 8 bits of region and 8 bits of sex, i.e. yyyyrrss
+ * yrs has 64 bits, 16 bits reserved, 16 bits of primary photo version, 16 bits of yob, 8 bits of region and 8 bits of sex, i.e. RRRRvvvvyyyyrrss
+ * -- RRRR: reserved
+ * -- vvvv: primary photo version
  * -- yyyy: year of birth
  * -- rr: the region where user's avatar photo stored. 0: North America, 1: Asia, 2: Europe
  * -- ss: user's sex.  0 - female, 1 - male, 2 - other
@@ -55,7 +57,7 @@ CREATE TABLE IF NOT EXISTS user (
 
     -- profile fields updated in post profile
     phone            bigint  , -- phone number in E.164 format, but the leading '+' has been dropped
-    yrs              int     , -- see YRS Encoding Rule 
+    yrs              bigint  , -- see YRS Encoding Rule 
     bio              text    ,
 
     PRIMARY KEY (id)
@@ -125,7 +127,7 @@ CREATE TABLE IF NOT EXISTS invite (
     userid       bigint , -- userid
     fid          bigint , -- friend userid
     fname        text   , -- friend username
-    fyrs         int    , -- friend yrs, see YRS Encoding Rule. 
+    fyrs         bigint , -- friend yrs, see YRS Encoding Rule. 
 
     PRIMARY KEY (userid, fid)
 );
@@ -141,7 +143,7 @@ CREATE TABLE IF NOT EXISTS friend (
     userid       bigint , -- userid
     fid          bigint , -- friend userid
     fname        text   , -- friend username
-    fyrs         int    , -- friend yrs, see YRS Encoding Rule. 
+    fyrs         bigint , -- friend yrs, see YRS Encoding Rule. 
 
     PRIMARY KEY (userid, fid)
 ) WITH COMPACTION = {'class': 'LeveledCompactionStrategy', 'enabled': 'true'};
@@ -163,7 +165,7 @@ CREATE TABLE IF NOT EXISTS user_csz1 (
     month        int    , -- months in form of yymm
     userid       bigint ,
     username     text   ,
-    yrs          int    ,
+    yrs          bigint ,
 
     PRIMARY KEY ((area, month), userid)
 ) WITH CLUSTERING ORDER BY (userid DESC);
@@ -174,7 +176,7 @@ CREATE TABLE IF NOT EXISTS user_csz2 (
     month        int    , -- months in form of yymm
     userid       bigint ,
     username     text   ,
-    yrs          int    ,
+    yrs          bigint ,
 
     PRIMARY KEY ((area, month), userid)
 ) WITH CLUSTERING ORDER BY (userid DESC);
@@ -185,7 +187,7 @@ CREATE TABLE IF NOT EXISTS user_csz3 (
     month        int    , -- months in form of yymm
     userid       bigint ,
     username     text   ,
-    yrs          int    ,
+    yrs          bigint ,
 
     PRIMARY KEY ((area, month), userid)
 ) WITH CLUSTERING ORDER BY (userid DESC)
@@ -197,7 +199,7 @@ CREATE TABLE IF NOT EXISTS user_csz4 (
     month        int    , -- months in form of yymm
     userid       bigint ,
     username     text   ,
-    yrs          int    ,
+    yrs          bigint ,
 
     PRIMARY KEY ((area, month), userid)
 ) WITH CLUSTERING ORDER BY (userid DESC)
@@ -209,7 +211,7 @@ CREATE TABLE IF NOT EXISTS user_csz5 (
     month        int    , -- months in form of yymm
     userid       bigint ,
     username     text   ,
-    yrs          int    ,
+    yrs          bigint ,
 
     PRIMARY KEY ((area, month), userid)
 ) WITH CLUSTERING ORDER BY (userid DESC)

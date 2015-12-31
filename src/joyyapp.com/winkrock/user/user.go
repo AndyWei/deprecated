@@ -72,7 +72,7 @@ func (h *Handler) CheckUsername(w http.ResponseWriter, req *http.Request) {
  */
 type WriteProfileParams struct {
     Phone int64  `param:"phone" validate:"required"`
-    YRS   int    `param:"yrs" validate:"required"`
+    YRS   int64  `param:"yrs" validate:"required"`
     Bio   string `param:"bio"`
 }
 
@@ -126,7 +126,7 @@ func (h *Handler) ReadProfile(w http.ResponseWriter, req *http.Request, userid i
 type AppearParams struct {
     Country string `param:"country" validate:"alpha,len=2"`
     Zip     string `param:"zip" validate:"alphanum"`
-    YRS     int    `param:"yrs" validate:"required"`
+    YRS     int64  `param:"yrs" validate:"required"`
 }
 
 func (h *Handler) Appear(w http.ResponseWriter, req *http.Request, userid int64, username string) {

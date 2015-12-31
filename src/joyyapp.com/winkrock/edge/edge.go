@@ -35,8 +35,8 @@ const (
 type CreateEdgeParams struct {
     FriendUserId   int64  `param:"fid" validate:"required"`
     FriendUsername string `param:"fname" validate:"min=2,max=40"`
-    FriendYRS      int    `param:"fyrs" validate:"required"`
-    UserYRS        int    `param:"yrs" validate:"required"`
+    FriendYRS      int64  `param:"fyrs" validate:"required"`
+    UserYRS        int64  `param:"yrs" validate:"required"`
 }
 
 /* Invite */
@@ -160,7 +160,7 @@ func (h *Handler) readEdgesAndRespond(w http.ResponseWriter, stmt string, src in
     RespondData(w, bytes)
 }
 
-func (h *Handler) addFriendAndRespond(w http.ResponseWriter, userid, fid int64, username, fname string, userYRS, fYRS int) {
+func (h *Handler) addFriendAndRespond(w http.ResponseWriter, userid, fid int64, username, fname string, userYRS, fYRS int64) {
     query := h.DB.Query(kAddFriendStmt, userid, fid, fname, fYRS)
     if err := query.Exec(); err != nil {
         RespondError(w, err, http.StatusBadGateway)
