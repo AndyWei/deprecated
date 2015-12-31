@@ -9,6 +9,7 @@
 #import <AFNetworking/UIButton+AFNetworking.h>
 #import <TTTAttributedLabel/TTTAttributedLabel.h>
 
+#import "JYButton.h"
 #import "JYProfileCardView.h"
 
 @interface JYProfileCardView () <TTTAttributedLabelDelegate>
@@ -20,6 +21,7 @@
 @property (nonatomic) TTTAttributedLabel *contactsLabel;
 @property (nonatomic) TTTAttributedLabel *winkCountLabel;
 @property (nonatomic) TTTAttributedLabel *winksLabel;
+@property (nonatomic) JYButton *sexButton;
 @end
 
 static NSString *kFriendURL = @"action://_didTapFriendLabel";
@@ -44,6 +46,7 @@ static NSString *kWinkURL = @"action://_didTapWinkLabel";
         [self addSubview:self.contactsLabel];
         [self addSubview:self.winkCountLabel];
         [self addSubview:self.winksLabel];
+        [self addSubview:self.sexButton];
 
         self.friendCount = self.contactCount = self.winkCount = 0;
 
@@ -55,16 +58,22 @@ static NSString *kWinkURL = @"action://_didTapWinkLabel";
                                 @"contactCountLabel": self.contactCountLabel,
                                 @"contactsLabel": self.contactsLabel,
                                 @"winkCountLabel": self.winkCountLabel,
-                                @"winksLabel": self.winksLabel
+                                @"winksLabel": self.winksLabel,
+                                @"sexButton": self.sexButton
                                 };
 
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-10-[avatarButton(80)]-20-[friendCountLabel(60)]-10-[contactCountLabel(60)]-10-[winkCountLabel(60)]-(>=0@500)-|" options:0 metrics:nil views:views]];
+
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-10-[avatarButton(80)]-20-[friendsLabel(60)]-10-[contactsLabel(60)]-10-[winksLabel(60)]-(>=0@500)-|" options:0 metrics:nil views:views]];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-10-[usernameLabel(300)]-(>=10@500)-|" options:0 metrics:nil views:views]];
+
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-10-[sexButton(20)]-10-[usernameLabel(300)]-(>=10@500)-|" options:0 metrics:nil views:views]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-10-[avatarButton(80)]-10-[sexButton(20)]-10-|" options:0 metrics:nil views:views]];
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-10-[avatarButton(80)]-10-[usernameLabel]-10-|" options:0 metrics:nil views:views]];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-10-[friendCountLabel][friendsLabel]-(>=10@500)-|" options:0 metrics:nil views:views]];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-10-[contactCountLabel][contactsLabel]-(>=10@500)-|" options:0 metrics:nil views:views]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-10-[friendCountLabel][friendsLabel]-(>=0@500)-|" options:0 metrics:nil views:views]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-10-[contactCountLabel][contactsLabel]-(>=0@500)-|" options:0 metrics:nil views:views]];
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-10-[winkCountLabel][winksLabel]-(>=10@500)-|" options:0 metrics:nil views:views]];
+
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-10-[avatarButton(80)]-(>=0@500)-|" options:0 metrics:nil views:views]];
     }
     return self;
 }
@@ -82,6 +91,17 @@ static NSString *kWinkURL = @"action://_didTapWinkLabel";
     [self.avatarButton setImageForState:UIControlStateNormal withURL:url];
 
     self.usernameLabel.text = user.username;
+
+    if ([user.sex isEqualToString:@"F"])
+    {
+        self.sexButton.imageView.image = [UIImage imageNamed:@"girl"];
+        self.sexButton.contentColor = JoyyRed;
+    }
+    else
+    {
+        self.sexButton.imageView.image = [UIImage imageNamed:@"boy"];
+        self.sexButton.contentColor = JoyyBlue;
+    }
 }
 
 - (void)setFriendCount:(uint64_t)friendCount
@@ -162,7 +182,6 @@ static NSString *kWinkURL = @"action://_didTapWinkLabel";
     if (!_friendsLabel)
     {
         _friendsLabel = [self _propertyLabel];
-
         _friendsLabel.text = NSLocalizedString(@"friends", nil);
         NSRange range = [_friendsLabel.text rangeOfString:_friendsLabel.text];
         [_friendsLabel addLinkToURL:[NSURL URLWithString:kFriendURL] withRange:range];
@@ -184,7 +203,6 @@ static NSString *kWinkURL = @"action://_didTapWinkLabel";
     if (!_contactsLabel)
     {
         _contactsLabel = [self _propertyLabel];
-
         _contactsLabel.text = NSLocalizedString(@"contacts", nil);
         NSRange range = [_contactsLabel.text rangeOfString:_contactsLabel.text];
         [_contactsLabel addLinkToURL:[NSURL URLWithString:kContactURL] withRange:range];
@@ -206,16 +224,22 @@ static NSString *kWinkURL = @"action://_didTapWinkLabel";
     if (!_winksLabel)
     {
         _winksLabel = [self _propertyLabel];
-        _winksLabel.linkAttributes = @{
-                                           (NSString*)kCTForegroundColorAttributeName: (__bridge id)(JoyyGray.CGColor),
-                                           (NSString *)kCTUnderlineStyleAttributeName: [NSNumber numberWithBool:NO]
-                                           };
-
         _winksLabel.text = NSLocalizedString(@"winks", nil);
         NSRange range = [_winksLabel.text rangeOfString:_winksLabel.text];
         [_winksLabel addLinkToURL:[NSURL URLWithString:kWinkURL] withRange:range];
     }
     return _winksLabel;
+}
+
+- (JYButton *)sexButton
+{
+    if (!_sexButton)
+    {
+        _sexButton = [JYButton buttonWithFrame:CGRectZero buttonStyle:JYButtonStyleCentralImage shouldMaskImage:YES];
+        _sexButton.translatesAutoresizingMaskIntoConstraints = NO;
+        _sexButton.foregroundColor = ClearColor;
+    }
+    return _sexButton;
 }
 
 - (TTTAttributedLabel *)_countLabel

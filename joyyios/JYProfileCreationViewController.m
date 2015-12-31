@@ -12,22 +12,18 @@
 #import "JYButton.h"
 #import "JYFilename.h"
 #import "JYProfileCreationViewController.h"
-#import "JYYearPickerView.h"
 #import "JYYRS.h"
 #import "NSDate+Joyy.h"
 #import "OnboardingContentViewController.h"
 
-@interface JYProfileCreationViewController () <JYAvatarCreatorDelegate, JYYearPickerViewDelegate>
+@interface JYProfileCreationViewController () <JYAvatarCreatorDelegate>
 @property (nonatomic) BOOL isUploading;
 @property (nonatomic) JYAvatarCreator *avatarCreator;
 @property (nonatomic) JYButton *boyButton;
 @property (nonatomic) JYButton *girlButton;
 @property (nonatomic) NSInteger sex;
-@property (nonatomic) NSUInteger yob;
 @property (nonatomic) OnboardingContentViewController *avatarPage;
 @property (nonatomic) OnboardingContentViewController *sexPage;
-@property (nonatomic) OnboardingContentViewController *yobPage;
-@property (nonatomic) JYYearPickerView *yobPickerView;
 @property (nonatomic) UIImage *iconImage;
 @end
 
@@ -41,7 +37,7 @@ static const CGFloat kButtonInset = 30;
     if (self = [super init])
     {
         [self commonInit];
-        self.viewControllers = @[self.avatarPage, self.sexPage, self.yobPage];
+        self.viewControllers = @[self.avatarPage, self.sexPage];
         
         self.allowSkipping = NO;
         self.backgroundImage = [UIImage imageNamed:@"profile_bg"];
@@ -58,8 +54,6 @@ static const CGFloat kButtonInset = 30;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-
-
 }
 
 - (BOOL)prefersStatusBarHidden
@@ -124,18 +118,6 @@ static const CGFloat kButtonInset = 30;
     return _girlButton;
 }
 
-- (JYYearPickerView *)yobPickerView
-{
-    if (!_yobPickerView)
-    {
-        CGRect frame = CGRectMake(0, 300, SCREEN_WIDTH, 280);
-        _yobPickerView = [[JYYearPickerView alloc] initWithFrame:frame maxValue:2000 minValue:1910 initValue:1995];
-        _yobPickerView.backgroundColor = JoyyWhite50;
-        _yobPickerView.delegate = self;
-    }
-    return _yobPickerView;
-}
-
 - (OnboardingContentViewController *)avatarPage
 {
     if (!_avatarPage)
@@ -160,11 +142,11 @@ static const CGFloat kButtonInset = 30;
         _sexPage = [OnboardingContentViewController contentWithTitle:NSLocalizedString(@"Your are a", nil)
                                                                 body:nil
                                                                 image:self.iconImage
-                                                            buttonText:NSLocalizedString(@"Confirm", nil)
+                                                            buttonText:NSLocalizedString(@"Submit", nil)
                                                               action:^{
                                                                   if (weakSelf.sex >= 0)
                                                                   {
-                                                                      [weakSelf moveNextPage];
+                                                                      [weakSelf _createProfileRecord];
                                                                   }
                                                               }];
 
@@ -175,27 +157,6 @@ static const CGFloat kButtonInset = 30;
         };
     }
     return _sexPage;
-}
-
-- (OnboardingContentViewController *)yobPage
-{
-    if (!_yobPage)
-    {
-        __weak typeof(self) weakSelf = self;
-        _yobPage = [OnboardingContentViewController contentWithTitle:NSLocalizedString(@"Last question: What's your birth year?", nil)
-                                                                body:nil
-                                                               image:self.iconImage
-                                                          buttonText:NSLocalizedString(@"Submit", nil)
-                                                              action:^{
-                                                                  [weakSelf _createProfileRecord];
-                                                              }];
-
-        __weak typeof(_yobPage) weakPage = _yobPage;
-        _yobPage.viewDidLoadBlock = ^{
-            [weakPage.view addSubview:weakSelf.yobPickerView];
-        };
-    }
-    return _yobPage;
 }
 
 #pragma mark - Actions
@@ -212,12 +173,6 @@ static const CGFloat kButtonInset = 30;
     self.sex = 0;
     self.boyButton.foregroundColor = ClearColor;
     self.girlButton.foregroundColor = JoyyRed50;
-}
-
-#pragma mark - JYYearPickerViewDelegate
-- (void)pickerView:(JYYearPickerView *)view didSelectValue:(NSInteger)value
-{
-    self.yob = value;
 }
 
 #pragma mark - JYAvatarCreatorDelegate
@@ -246,23 +201,18 @@ static const CGFloat kButtonInset = 30;
 
     // phone
     NSString *phoneNumber = [JYCredential current].phoneNumber;
-    if (!phoneNumber)
-    {
-        return nil;
-    }
-
     [parameters setObject:phoneNumber forKey:@"phone"];
 
     // YRS
     uint64_t yrsValue = [JYCredential current].yrsValue;
     JYYRS *yrs = [JYYRS yrsWithValue:yrsValue];
-    yrs.yob = self.yob;
     yrs.sex = self.sex;
     yrs.region = [[JYFilename sharedInstance].region integerValue];
 
     [JYCredential current].yrsValue = yrs.value;
     [JYFriend myself].yrsValue = yrs.value;
     [parameters setObject:@(yrs.value) forKey:@"yrs"];
+    [parameters setObject:@YES forKey:@"boardcast"];
     
     return parameters;
 }

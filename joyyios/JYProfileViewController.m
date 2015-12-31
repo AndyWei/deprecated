@@ -379,16 +379,12 @@ static NSString *const kCellIdentifier = @"profileUserlineCell";
 
     // phone
     NSString *phoneNumber = [JYCredential current].phoneNumber;
-    if (!phoneNumber)
-    {
-        return nil;
-    }
-
     [parameters setObject:phoneNumber forKey:@"phone"];
 
     // YRS
     uint64_t yrsValue = [JYCredential current].yrsValue;
     [parameters setObject:@(yrsValue) forKey:@"yrs"];
+    [parameters setObject:@YES forKey:@"boardcast"];
 
     return parameters;
 }

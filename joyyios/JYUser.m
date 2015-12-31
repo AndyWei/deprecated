@@ -119,21 +119,28 @@
 {
     if (!_sex)
     {
-        JYYRS *yrs = [JYYRS yrsWithValue:self.yrsValue];
-        switch (yrs.sex)
-        {
-            case 0:
-                _sex = @"F";
-                break;
-            case 1:
-                _sex = @"M";
-                break;
-            default:
-                _sex = @"X";
-                break;
-        }
+        NSString *str = [self sexLongString];
+        _sex = [str substringWithRange:NSMakeRange(0, 1)];
     }
     return _sex;
+}
+
+- (NSString *)sexLongString
+{
+    NSString *sex = NSLocalizedString(@"Other", nil);
+    JYYRS *yrs = [JYYRS yrsWithValue:self.yrsValue];
+    switch (yrs.sex)
+    {
+        case 0:
+            sex = NSLocalizedString(@"Female", nil);
+            break;
+        case 1:
+            sex = NSLocalizedString(@"Male", nil);
+            break;
+        default:
+            break;
+    }
+    return sex;
 }
 
 @end
