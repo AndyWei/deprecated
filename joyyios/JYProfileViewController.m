@@ -370,7 +370,7 @@ static NSString *const kCellIdentifier = @"profileUserlineCell";
 - (void)_updateProfileRecord
 {
     NSDictionary *parameters = [self _profileUpdateParameters];
-    [self.avatarCreator writeRemoteProfileWithParameters:parameters];
+    [self.avatarCreator writeRemoteProfileWithParameters:parameters success:nil failure:nil];
 }
 
 - (NSDictionary *)_profileUpdateParameters

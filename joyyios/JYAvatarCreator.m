@@ -235,7 +235,7 @@
     });
 }
 
-- (void)writeRemoteProfileWithParameters:(NSDictionary *)parameters
+- (void)writeRemoteProfileWithParameters:(NSDictionary *)parameters success:(Action)success failure:(FailureHandler)failure
 {
     AFHTTPSessionManager *manager = [AFHTTPSessionManager managerWithToken];
     NSString *url = [NSString apiURLWithPath:@"user/profile"];
@@ -249,22 +249,24 @@
 
               [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
 
-              [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationDidCreateProfile object:nil];
-              [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationUserYRSReady object:nil];
+              if (success)
+              {
+                  dispatch_async(dispatch_get_main_queue(), ^(void){
+                      success();
+                  });
+              }
           }
           failure:^(NSURLSessionTask *operation, NSError *error) {
               NSLog(@"Error: POST user/profile error = %@", error);
 
               [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
 
-              NSString *errorMessage = nil;
-              errorMessage = [error.userInfo valueForKey:NSLocalizedDescriptionKey];
-
-              [RKDropdownAlert title:NSLocalizedString(kErrorTitle, nil)
-                             message:errorMessage
-                     backgroundColor:FlatYellow
-                           textColor:FlatBlack
-                                time:5];
+              if (failure)
+              {
+                  dispatch_async(dispatch_get_main_queue(), ^(void){
+                      failure(error);
+                  });
+              }
           }];
 }
 

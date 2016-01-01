@@ -65,6 +65,16 @@
     return rgba(247, 91, 37, 0.5);
 }
 
++ (UIColor *)joyyPinkColor
+{
+    return hsb(324, 49, 96);
+}
+
++ (UIColor *)joyyPinkColor50
+{
+    return hsba(324, 49, 96, 0.5);
+}
+
 + (UIColor *)joyyWhiteColor
 {
     return rgb(215, 215, 215);

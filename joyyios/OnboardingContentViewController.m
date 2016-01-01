@@ -42,7 +42,7 @@ NSString * const kOnboardActionButtonAccessibilityIdentifier = @"OnboardActionBu
 @implementation OnboardingContentViewController
 
 - (void)dealloc {
-    [[NSNotificationCenter defaultCenter] removeObserver:self forKeyPath:UIApplicationWillEnterForegroundNotification];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 + (instancetype)contentWithTitle:(NSString *)title body:(NSString *)body image:(UIImage *)image buttonText:(NSString *)buttonText action:(dispatch_block_t)action {
@@ -139,15 +139,15 @@ NSString * const kOnboardActionButtonAccessibilityIdentifier = @"OnboardActionBu
     self.viewWillDisappearBlock = ^{};
     self.viewDidDisappearBlock = ^{};
     
-    // Handle when the app enters the foreground.
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleAppEnteredForeground) name:UIApplicationWillEnterForegroundNotification object:nil];
-    
     return self;
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+
+    // Handle when the app enters the foreground.
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleAppEnteredForeground) name:UIApplicationWillEnterForegroundNotification object:nil];
+
     // now that the view has loaded we can generate the content
     [self generateView];
 

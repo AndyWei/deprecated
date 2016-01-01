@@ -95,7 +95,7 @@ static NSString *kWinkURL = @"action://_didTapWinkLabel";
     if ([user.sex isEqualToString:@"F"])
     {
         self.sexButton.imageView.image = [UIImage imageNamed:@"girl"];
-        self.sexButton.contentColor = JoyyRed;
+        self.sexButton.contentColor = JoyyPink;
     }
     else
     {
@@ -152,6 +152,17 @@ static NSString *kWinkURL = @"action://_didTapWinkLabel";
         _avatarButton = button;
     }
     return _avatarButton;
+}
+
+- (JYButton *)sexButton
+{
+    if (!_sexButton)
+    {
+        _sexButton = [JYButton buttonWithFrame:CGRectZero buttonStyle:JYButtonStyleCentralImage shouldMaskImage:YES];
+        _sexButton.translatesAutoresizingMaskIntoConstraints = NO;
+        _sexButton.foregroundColor = ClearColor;
+    }
+    return _sexButton;
 }
 
 - (TTTAttributedLabel *)usernameLabel
@@ -229,17 +240,6 @@ static NSString *kWinkURL = @"action://_didTapWinkLabel";
         [_winksLabel addLinkToURL:[NSURL URLWithString:kWinkURL] withRange:range];
     }
     return _winksLabel;
-}
-
-- (JYButton *)sexButton
-{
-    if (!_sexButton)
-    {
-        _sexButton = [JYButton buttonWithFrame:CGRectZero buttonStyle:JYButtonStyleCentralImage shouldMaskImage:YES];
-        _sexButton.translatesAutoresizingMaskIntoConstraints = NO;
-        _sexButton.foregroundColor = ClearColor;
-    }
-    return _sexButton;
 }
 
 - (TTTAttributedLabel *)_countLabel

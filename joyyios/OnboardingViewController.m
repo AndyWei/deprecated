@@ -29,11 +29,11 @@ static NSString * const kSkipButtonText = @"Skip";
 
 @implementation OnboardingViewController
 
-- (void)dealloc {
-    [[NSNotificationCenter defaultCenter] removeObserver:self forKeyPath:UIApplicationWillEnterForegroundNotification];
-}
-
 #pragma mark - Initializing with images
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
 
 + (instancetype)onboardWithBackgroundImage:(UIImage *)backgroundImage contents:(NSArray *)contents {
      OnboardingViewController *onboardingVC = [[self alloc] initWithBackgroundImage:backgroundImage contents:contents];
@@ -114,16 +114,16 @@ static NSString * const kSkipButtonText = @"Skip";
 
     // create the movie player controller
     self.moviePlayerController = [MPMoviePlayerController new];
-
-    // Handle when the app enters the foreground.
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleAppEnteredForeground) name:UIApplicationWillEnterForegroundNotification object:nil];
 }
 
 #pragma mark - View life cycle
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+
+    // Handle when the app enters the foreground.
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleAppEnteredForeground) name:UIApplicationWillEnterForegroundNotification object:nil];
+
     // now that the view has loaded, we can generate the content
     [self generateView];
 }
