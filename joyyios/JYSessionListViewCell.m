@@ -57,8 +57,7 @@ static const CGFloat kTimeLabelWidth = 80;
     self.nameLabel.text = friend.username;
 
     // Fetch avatar image via network
-    NSURL *url = [NSURL URLWithString:friend.avatarURL];
-    NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestReturnCacheDataElseLoad timeoutInterval:5];
+    NSURLRequest *request = [NSURLRequest requestWithURL:friend.avatarThumbnailURL cachePolicy:NSURLRequestReturnCacheDataElseLoad timeoutInterval:5];
 
     __weak typeof(self) weakSelf = self;
     [self.avatarView setImageWithURLRequest:request

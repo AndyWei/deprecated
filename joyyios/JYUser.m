@@ -36,6 +36,7 @@
              @"yrsValue": @"yrs",
              @"bio": [NSNull null],
              @"avatarURL": [NSNull null],
+             @"avatarThumbnailURL": [NSNull null],
              @"sex": [NSNull null],
              @"age": [NSNull null],
              @"avatarImage": [NSNull null]
@@ -51,8 +52,6 @@
 {
     return @"user";
 }
-
-#pragma mark - properties
 
 - (NSString *)age
 {
@@ -72,18 +71,66 @@
     return _age;
 }
 
-- (NSString *)avatarURL
+- (NSString *)mediaURLPrefix
+{
+    JYYRS *yrs = [JYYRS yrsWithValue:self.yrsValue];
+    NSString *region = [NSString stringWithFormat:@"%lu", (unsigned long)yrs.region];
+    NSString *prefix = [[JYFilename sharedInstance] avatarURLPrefixOfRegion:region];
+    return prefix;
+}
+
+- (NSURL *)avatarURL
 {
     if (!_avatarURL)
     {
-        JYYRS *yrs = [JYYRS yrsWithValue:self.yrsValue];
-        NSString *region = [NSString stringWithFormat:@"%lu", (unsigned long)yrs.region];
-        NSString *prefix = [[JYFilename sharedInstance] avatarURLPrefixOfRegion:region];
-
-        NSString *filename = [self avatarFilename];
-        _avatarURL = [NSString stringWithFormat:@"%@%@", prefix, filename];
+        NSString *str = [NSString stringWithFormat:@"%@%@", [self mediaURLPrefix], [self avatarFilename]];
+        _avatarURL = [NSURL URLWithString:str];
     }
     return _avatarURL;
+}
+
+- (NSURL *)avatarThumbnailURL
+{
+    if (!_avatarThumbnailURL)
+    {
+        NSString *str = [NSString stringWithFormat:@"%@%@", [self mediaURLPrefix], [self avatarThumbnailFilename]];
+        _avatarThumbnailURL = [NSURL URLWithString:str];
+    }
+    return _avatarThumbnailURL;
+}
+
+- (NSString *)avatarFilename
+{
+    JYYRS *yrs = [JYYRS yrsWithValue:self.yrsValue];
+    NSString *version = [NSString stringWithFormat:@"%lu", (unsigned long)yrs.version];
+    NSString *filename = [NSString stringWithFormat:@"%@_%@_t.jpg", [self reversedIdString], version];
+    return filename;
+}
+
+- (NSString *)avatarThumbnailFilename
+{
+    JYYRS *yrs = [JYYRS yrsWithValue:self.yrsValue];
+    NSString *version = [NSString stringWithFormat:@"%lu", (unsigned long)yrs.version];
+    NSString *filename = [NSString stringWithFormat:@"%@_%@.jpg", [self reversedIdString], version];
+    return filename;
+}
+
+- (NSString *)nextAvatarFilename
+{
+    JYYRS *yrs = [JYYRS yrsWithValue:self.yrsValue];
+    NSString *version = [NSString stringWithFormat:@"%lu", (unsigned long)[yrs nextVersion]];
+
+    NSString *filename = [NSString stringWithFormat:@"%@_%@_t.jpg", [self reversedIdString], version];
+    return filename;
+}
+
+- (NSString *)nextAvatarThumbnailFilename
+{
+    JYYRS *yrs = [JYYRS yrsWithValue:self.yrsValue];
+    NSString *version = [NSString stringWithFormat:@"%lu", (unsigned long)[yrs nextVersion]];
+
+    NSString *filename = [NSString stringWithFormat:@"%@_%@.jpg", [self reversedIdString], version];
+    return filename;
 }
 
 - (void)setYrsValue:(uint64_t)yrsValue
@@ -96,23 +143,6 @@
 {
     NSString *idString = [NSString stringWithFormat:@"%llu", [self.userId unsignedLongLongValue]];
     return [idString reversedString];
-}
-
-- (NSString *)avatarFilename
-{
-    JYYRS *yrs = [JYYRS yrsWithValue:self.yrsValue];
-    NSString *version = [NSString stringWithFormat:@"%lu", (unsigned long)yrs.version];
-    NSString *filename = [NSString stringWithFormat:@"%@_%@.jpg", [self reversedIdString], version];
-    return filename;
-}
-
-- (NSString *)nextS3Filename
-{
-    JYYRS *yrs = [JYYRS yrsWithValue:self.yrsValue];
-    NSString *version = [NSString stringWithFormat:@"%lu", (unsigned long)[yrs nextVersion]];
-
-    NSString *filename = [NSString stringWithFormat:@"%@_%@.jpg", [self reversedIdString], version];
-    return filename;
 }
 
 - (NSString *)sex

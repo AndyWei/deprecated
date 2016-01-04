@@ -88,8 +88,7 @@
 - (void)_updateAvatarButtonImage
 {
     JYFriend *friend = [[JYFriendManager sharedInstance] friendWithId:self.comment.ownerId];
-    NSURL *url = [NSURL URLWithString:friend.avatarURL];
-    [self.avatarButton setImageForState:UIControlStateNormal withURL:url];
+    [self.avatarButton setImageForState:UIControlStateNormal withURL:friend.avatarThumbnailURL];
 }
 
 - (UIButton *)avatarButton

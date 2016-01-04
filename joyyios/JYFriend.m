@@ -34,6 +34,7 @@
              @"phoneNumber": @"phone",
              @"bio": @"bio",
              @"avatarURL": [NSNull null],
+             @"avatarThumbnailURL": [NSNull null],
              @"sex": [NSNull null],
              @"age": [NSNull null],
              @"avatarImage": [NSNull null]

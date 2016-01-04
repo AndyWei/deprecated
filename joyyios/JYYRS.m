@@ -89,7 +89,8 @@
 
 - (uint64_t)_valueWithVersion:(NSUInteger)version yob:(NSUInteger)yob region:(NSUInteger)region sex:(NSUInteger)sex
 {
-    uint64_t value = ((version & 0xFFFF) << 32) |
+    uint64_t versionValue = (uint64_t)version;
+    uint64_t value = ((versionValue & 0xFFFF) << 32) |
                      ((yob & 0xFFFF) << 16) |
                      ((region & 0xFF) << 8) |
                      (sex & 0xFF);

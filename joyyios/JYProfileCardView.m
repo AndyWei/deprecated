@@ -87,8 +87,7 @@ static NSString *kWinkURL = @"action://_didTapWinkLabel";
 
     _user = user;
 
-    NSURL *url = [NSURL URLWithString:user.avatarURL];
-    [self.avatarButton setImageForState:UIControlStateNormal withURL:url];
+    [self.avatarButton setImageForState:UIControlStateNormal withURL:user.avatarThumbnailURL];
 
     self.usernameLabel.text = user.username;
 

@@ -125,8 +125,7 @@ static CGFloat kCardViewDefaultHeight = 150;
 {
     self.cardView.titleLabel.text = self.user.username;
 
-    NSURL *url = [NSURL URLWithString:self.user.avatarURL];
-    NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestReturnCacheDataElseLoad timeoutInterval:5];
+    NSURLRequest *request = [NSURLRequest requestWithURL:self.user.avatarThumbnailURL cachePolicy:NSURLRequestReturnCacheDataElseLoad timeoutInterval:5];
 
     __weak typeof(self) weakSelf = self;
     [self.cardView.avatarView setImageWithURLRequest:request

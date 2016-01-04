@@ -148,7 +148,7 @@
     [imageData writeToURL:fileURL atomically:YES];
 
     JYFriend *me = [JYFriend myself];
-    NSString *s3filename = [me nextS3Filename];
+    NSString *s3filename = [me nextAvatarFilename];
 
     AWSS3TransferManager *transferManager = [AWSS3TransferManager defaultS3TransferManager];
     if (!transferManager)

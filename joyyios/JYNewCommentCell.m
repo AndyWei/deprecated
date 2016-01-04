@@ -121,8 +121,8 @@
         self.avatarView.image = nil;
         return;
     }
-    NSURL *url = [NSURL URLWithString:owner.avatarURL];
-    NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestReturnCacheDataElseLoad timeoutInterval:5];
+
+    NSURLRequest *request = [NSURLRequest requestWithURL:owner.avatarThumbnailURL cachePolicy:NSURLRequestReturnCacheDataElseLoad timeoutInterval:5];
 
     __weak typeof(self) weakSelf = self;
     [self.avatarView setImageWithURLRequest:request

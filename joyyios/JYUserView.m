@@ -82,8 +82,7 @@ static NSString *kUsernameURL = @"action://_didTapAvatarButton";
 {
     if (self.user)
     {
-        NSURL *url = [NSURL URLWithString:self.user.avatarURL];
-        [self.avatarButton setImageForState:UIControlStateNormal withURL:url];
+        [self.avatarButton setImageForState:UIControlStateNormal withURL:self.user.avatarThumbnailURL];
     }
 }
 
