@@ -30,7 +30,7 @@
 @property (nonatomic) NSLayoutConstraint *cardViewHeightConstraint;
 @property (nonatomic) NSMutableArray *postList;
 @property (nonatomic) UITableView *tableView;
-@property (nonatomic, copy) Action pendingAction;
+@property (nonatomic, copy) SuccessHandler pendingAction;
 @end
 
 static NSString *const kUserlineCellIdentifier = @"userlineCell";

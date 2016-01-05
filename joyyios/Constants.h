@@ -24,6 +24,7 @@ extern CGFloat const kMarginRight;
 extern CGFloat const kMarginTop;
 extern CGFloat const kPhotoQuality;
 extern CGFloat const kPhotoWidth;  // exact pixel size
+extern CGFloat const kThumbnailWidth;
 extern CGFloat const kSignButtonHeight;
 extern CGFloat const kSignButtonWidth;
 extern CGFloat const kSignButtonMarginTop;
@@ -82,7 +83,7 @@ extern NSUInteger const kAPN;
 
 extern UInt16  const kMessagePort;
 
-typedef void(^Action)();
+typedef void(^SuccessHandler)();
 typedef void(^FailureHandler)(NSError *error);
 
 #define NAVIGATION_BAR_HEIGHT       (self.navigationController.navigationBar.frame.size.height)    // 44

@@ -19,6 +19,7 @@ CGFloat const kMarginRight = 8.0f;
 CGFloat const kMarginTop = 8.0f;
 CGFloat const kPhotoQuality = 0.7;
 CGFloat const kPhotoWidth = 750.0;
+CGFloat const kThumbnailWidth = 80;
 CGFloat const kSignButtonHeight = 60.0f;
 CGFloat const kSignButtonWidth = 120;
 CGFloat const kSignButtonMarginTop = 20.0f;

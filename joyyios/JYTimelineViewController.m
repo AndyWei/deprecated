@@ -47,7 +47,7 @@
 @property (nonatomic) UIButton *titleButton;
 @property (nonatomic) UITableView *tableView;
 @property (nonatomic) UIView *backgroundView;
-@property (nonatomic, copy) Action pendingAction;
+@property (nonatomic, copy) SuccessHandler pendingAction;
 @end
 
 static const NSInteger OFFSET_DAYS = -10;
@@ -802,7 +802,7 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
     }
 }
 
-- (void)_fetchLocalTimelineWithAction:(Action)action
+- (void)_fetchLocalTimelineWithAction:(SuccessHandler)action
 {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         NSDate *date = [[NSDate date] dateByAddingTimeInterval:60 * 60 * 24 * OFFSET_DAYS];

@@ -139,17 +139,8 @@
 
 #pragma mark - AWS S3
 
-- (void)uploadAvatarImage:(UIImage *)image success:(Action)success failure:(FailureHandler)failure
+- (void)uploadAvatarImage:(UIImage *)image success:(SuccessHandler)success failure:(FailureHandler)failure
 {
-    [self _showNetworkIndicator:YES];
-
-    NSData *imageData = UIImageJPEGRepresentation(image, kPhotoQuality);
-    NSURL *fileURL = [NSURL fileURLWithPath:[NSTemporaryDirectory() stringByAppendingPathComponent:@"profile"]];
-    [imageData writeToURL:fileURL atomically:YES];
-
-    JYFriend *me = [JYFriend myself];
-    NSString *s3filename = [me nextAvatarFilename];
-
     AWSS3TransferManager *transferManager = [AWSS3TransferManager defaultS3TransferManager];
     if (!transferManager)
     {
@@ -157,51 +148,46 @@
         return;
     }
 
-    AWSS3TransferManagerUploadRequest *request = [AWSS3TransferManagerUploadRequest new];
-    request.bucket = [JYFilename sharedInstance].avatarBucketName;
-    request.key = s3filename;
-    request.body = fileURL;
-    request.contentType = kContentTypeJPG;
+    [self _showNetworkIndicator:YES];
+
+    NSData *imageData = UIImageJPEGRepresentation(image, kPhotoQuality);
+    NSURL *fileURL = [NSURL fileURLWithPath:[NSTemporaryDirectory() stringByAppendingPathComponent:@"avatar"]];
+    [imageData writeToURL:fileURL atomically:YES];
+
+    JYFriend *me = [JYFriend myself];
+
+    AWSS3TransferManagerUploadRequest *AvatarRequest = [AWSS3TransferManagerUploadRequest new];
+    AvatarRequest.bucket = [JYFilename sharedInstance].avatarBucketName;
+    AvatarRequest.key = [me nextAvatarFilename];
+    AvatarRequest.body = fileURL;
+    AvatarRequest.contentType = kContentTypeJPG;
 
     __weak typeof(self) weakSelf = self;
-    [[transferManager upload:request] continueWithBlock:^id(AWSTask *task) {
+    [[[transferManager upload:AvatarRequest] continueWithBlock:^id (AWSTask *task) {
+        if (task.error)
+        {
+            return [AWSTask taskWithError:task.error];
+        }
+
+        // upload thumbnail
+        UIImage *thumbnail = [image imageScaledToSize:CGSizeMake(kThumbnailWidth, kThumbnailWidth)];
+        NSData *thumbnailImageData = UIImageJPEGRepresentation(thumbnail, kPhotoQuality);
+        NSURL *thumbnailFileURL = [NSURL fileURLWithPath:[NSTemporaryDirectory() stringByAppendingPathComponent:@"avatar_thumbnail"]];
+        [thumbnailImageData writeToURL:thumbnailFileURL atomically:YES];
+
+        AWSS3TransferManagerUploadRequest *AvatarThumbnailRequest = [AWSS3TransferManagerUploadRequest new];
+        AvatarThumbnailRequest.bucket = [JYFilename sharedInstance].avatarBucketName;
+        AvatarThumbnailRequest.key = [me nextAvatarThumbnailFilename];
+        AvatarThumbnailRequest.body = thumbnailFileURL;
+        AvatarThumbnailRequest.contentType = kContentTypeJPG;
+
+        return [transferManager upload:AvatarThumbnailRequest];
+    }] continueWithBlock:^id(AWSTask *task) {
 
         if (task.error)
         {
-            if ([task.error.domain isEqualToString:AWSS3TransferManagerErrorDomain])
-            {
-                switch (task.error.code)
-                {
-                    case AWSS3TransferManagerErrorCancelled:
-                    case AWSS3TransferManagerErrorPaused:
-                        break;
-                    default:
-                        NSLog(@"Error: AWSS3TransferManager upload error = %@", task.error);
-                        break;
-                }
-            }
-            else
-            {
-                NSLog(@"Error: AWSS3TransferManager upload error = %@", task.error);
-            }
-
-            NSString *errorMessage = NSLocalizedString(@"Upload photo failed", nil);
-
-            [RKDropdownAlert title:NSLocalizedString(kErrorTitle, nil)
-                           message:errorMessage
-                   backgroundColor:FlatYellow
-                         textColor:FlatBlack
-                              time:5];
-            
-            if (failure)
-            {
-                dispatch_async(dispatch_get_main_queue(), ^(void){
-                    failure(task.error);
-                });
-            }
-
+            [weakSelf _handleUploadError:task.error withFailureBlock:failure];
             [weakSelf _showNetworkIndicator:NO];
-
             return nil;
         }
 
@@ -223,6 +209,20 @@
     }];
 }
 
+- (void)_handleUploadError:(NSError *)error withFailureBlock:(FailureHandler)failureBlock
+{
+    NSLog(@"Error: AWSS3TransferManager upload error = %@", error);
+    NSString *errorMessage = NSLocalizedString(@"Upload photo failed", nil);
+    [RKDropdownAlert title:NSLocalizedString(kErrorTitle, nil) message:errorMessage backgroundColor:FlatYellow textColor:FlatBlack time:5];
+
+    if (failureBlock)
+    {
+        dispatch_async(dispatch_get_main_queue(), ^(void){
+            failureBlock(error);
+        });
+    }
+}
+
 - (void)_updateLocalYRS
 {
     JYYRS *yrs = [JYYRS yrsWithValue:[JYCredential current].yrsValue];
@@ -235,7 +235,7 @@
     });
 }
 
-- (void)writeRemoteProfileWithParameters:(NSDictionary *)parameters success:(Action)success failure:(FailureHandler)failure
+- (void)writeRemoteProfileWithParameters:(NSDictionary *)parameters success:(SuccessHandler)success failure:(FailureHandler)failure
 {
     AFHTTPSessionManager *manager = [AFHTTPSessionManager managerWithToken];
     NSString *url = [NSString apiURLWithPath:@"user/profile"];

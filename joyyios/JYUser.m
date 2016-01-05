@@ -103,7 +103,7 @@
 {
     JYYRS *yrs = [JYYRS yrsWithValue:self.yrsValue];
     NSString *version = [NSString stringWithFormat:@"%lu", (unsigned long)yrs.version];
-    NSString *filename = [NSString stringWithFormat:@"%@_%@_t.jpg", [self reversedIdString], version];
+    NSString *filename = [NSString stringWithFormat:@"%@_%@.jpg", [self reversedIdString], version];
     return filename;
 }
 
@@ -111,7 +111,7 @@
 {
     JYYRS *yrs = [JYYRS yrsWithValue:self.yrsValue];
     NSString *version = [NSString stringWithFormat:@"%lu", (unsigned long)yrs.version];
-    NSString *filename = [NSString stringWithFormat:@"%@_%@.jpg", [self reversedIdString], version];
+    NSString *filename = [NSString stringWithFormat:@"%@_%@_t.jpg", [self reversedIdString], version];
     return filename;
 }
 
@@ -120,7 +120,7 @@
     JYYRS *yrs = [JYYRS yrsWithValue:self.yrsValue];
     NSString *version = [NSString stringWithFormat:@"%lu", (unsigned long)[yrs nextVersion]];
 
-    NSString *filename = [NSString stringWithFormat:@"%@_%@_t.jpg", [self reversedIdString], version];
+    NSString *filename = [NSString stringWithFormat:@"%@_%@.jpg", [self reversedIdString], version];
     return filename;
 }
 
@@ -129,14 +129,17 @@
     JYYRS *yrs = [JYYRS yrsWithValue:self.yrsValue];
     NSString *version = [NSString stringWithFormat:@"%lu", (unsigned long)[yrs nextVersion]];
 
-    NSString *filename = [NSString stringWithFormat:@"%@_%@.jpg", [self reversedIdString], version];
+    NSString *filename = [NSString stringWithFormat:@"%@_%@_t.jpg", [self reversedIdString], version];
     return filename;
 }
 
 - (void)setYrsValue:(uint64_t)yrsValue
 {
     _yrsValue = yrsValue;
-    _avatarURL = nil; // clear the old avatar URL will force it's re-generated from the new yrs value
+
+    // clear the old avatar URLs will force they are re-generated from the new yrs value
+    _avatarURL = nil;
+    _avatarThumbnailURL = nil;
 }
 
 - (NSString *)reversedIdString
