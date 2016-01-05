@@ -6,12 +6,18 @@
 //  Copyright © 2015 Joyy Inc. All rights reserved.
 //
 
+@class JYCardView;
+
+@protocol JYCardViewDelegate <NSObject>
+- (void)didTapAvatarOnView:(JYCardView *)view;
+@end
+
 @interface JYCardView : UIView
 
-@property (nonatomic) UIImageView *avatarView;
+@property (nonatomic) UIButton *avatarButton;
 @property (nonatomic) UIImageView *coverView;
 @property (nonatomic) UILabel *titleLabel;
-
+@property (nonatomic, weak) id<JYCardViewDelegate> delegate;
 - (void)addBlur;
 - (void)removeBlur;
 - (void)addShadow;

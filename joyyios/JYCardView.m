@@ -27,20 +27,20 @@
         self.layer.shadowOffset = CGSizeMake(1, 1);
 
         [self addSubview:self.coverView];
-        [self addSubview:self.avatarView];
+        [self addSubview:self.avatarButton];
         [self addSubview:self.titleLabel];
 
         NSDictionary *views = @{
-                                @"avatarView": self.avatarView,
+                                @"avatarButton": self.avatarButton,
                                 @"coverView": self.coverView,
                                 @"titleLabel": self.titleLabel,
                                 @"blurView": self.blurView
                               };
 
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[coverView]-0-|" options:0 metrics:nil views:views]];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-20-[avatarView(120)][titleLabel]-10-|" options:0 metrics:nil views:views]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-20-[avatarButton(120)][titleLabel]-10-|" options:0 metrics:nil views:views]];
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[coverView][titleLabel(20)]-20-|" options:0 metrics:nil views:views]];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(>=30@500)-[avatarView(120)]|" options:0 metrics:nil views:views]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(>=30@500)-[avatarButton(120)]|" options:0 metrics:nil views:views]];
 
         [self.coverView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[blurView]|" options:0 metrics:nil views:views]];
         [self.coverView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[blurView]|" options:0 metrics:nil views:views]];
@@ -48,19 +48,19 @@
     return self;
 }
 
-- (UIImageView *)avatarView
+- (UIButton *)avatarButton
 {
-    if (!_avatarView)
+    if (!_avatarButton)
     {
-        _avatarView = [UIImageView new];
-        _avatarView.translatesAutoresizingMaskIntoConstraints = NO;
-        _avatarView.contentMode = UIViewContentModeScaleAspectFit;
-        _avatarView.layer.cornerRadius = 60;
-        _avatarView.layer.masksToBounds = YES;
-        _avatarView.layer.borderWidth = 3;
-        _avatarView.layer.borderColor = JoyyWhitePure.CGColor;
+        UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+        button.translatesAutoresizingMaskIntoConstraints = NO;
+        [button addTarget:self action:@selector(_didTapAvatarButton) forControlEvents:UIControlEventTouchUpInside];
+        button.clipsToBounds = YES;
+        button.layer.cornerRadius = 60;
+
+        _avatarButton = button;
     }
-    return _avatarView;
+    return _avatarButton;
 }
 
 - (UIImageView *)coverView
@@ -72,7 +72,6 @@
         _coverView.backgroundColor = JoyyWhitePure;
         _coverView.contentMode = UIViewContentModeScaleToFill;
         [_coverView addSubview:self.blurView];
-        _coverView.layer.shouldRasterize = YES; // to avoid the flashing on every scroll movement and touch
     }
     return _coverView;
 }
@@ -105,6 +104,14 @@
         _titleLabel = label;
     }
     return _titleLabel;
+}
+
+- (void)_didTapAvatarButton
+{
+    if (self.delegate)
+    {
+        [self.delegate didTapAvatarOnView:self];
+    }
 }
 
 - (void)addShadow

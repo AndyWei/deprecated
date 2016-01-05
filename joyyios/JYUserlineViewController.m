@@ -7,7 +7,7 @@
 //
 
 #import <AFNetworking/AFNetworking.h>
-#import <AFNetworking/UIImageView+AFNetworking.h>
+#import <AFNetworking/UIButton+AFNetworking.h>
 #import <MJRefresh/MJRefresh.h>
 
 #import "JYMonth.h"
@@ -22,7 +22,7 @@
 #import "JYUserlineCell.h"
 #import "JYUserlineViewController.h"
 
-@interface JYUserlineViewController () <UITableViewDataSource, UITableViewDelegate>
+@interface JYUserlineViewController () <JYCardViewDelegate, UITableViewDataSource, UITableViewDelegate>
 @property (nonatomic) JYMonth *month;
 @property (nonatomic) JYUser *user;
 @property (nonatomic) JYCardView *cardView;
@@ -30,7 +30,6 @@
 @property (nonatomic) NSLayoutConstraint *cardViewHeightConstraint;
 @property (nonatomic) NSMutableArray *postList;
 @property (nonatomic) UITableView *tableView;
-@property (nonatomic, copy) SuccessHandler pendingAction;
 @end
 
 static NSString *const kUserlineCellIdentifier = @"userlineCell";
@@ -74,10 +73,6 @@ static CGFloat kCardViewDefaultHeight = 150;
                                                                   constant:kCardViewDefaultHeight];
     [self.view addConstraint:self.cardViewHeightConstraint];
     [self _updateCardViewContent];
-
-
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_apiTokenReady) name:kNotificationAPITokenReady object:nil];
-
     [self _fetchUserline];
 }
 
@@ -111,40 +106,26 @@ static CGFloat kCardViewDefaultHeight = 150;
     if (!_cardView)
     {
         _cardView = [JYCardView new];
+        _cardView.delegate = self;
         [_cardView addBlur];
     }
     return _cardView;
-}
-
-- (void)dealloc
-{
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)_updateCardViewContent
 {
     self.cardView.titleLabel.text = self.user.username;
 
-    NSURLRequest *request = [NSURLRequest requestWithURL:self.user.avatarThumbnailURL cachePolicy:NSURLRequestReturnCacheDataElseLoad timeoutInterval:5];
+    NSURLRequest *request = [NSURLRequest requestWithURL:self.user.avatarURL cachePolicy:NSURLRequestReturnCacheDataElseLoad timeoutInterval:5];
 
     __weak typeof(self) weakSelf = self;
-    [self.cardView.avatarView setImageWithURLRequest:request
-                                          placeholderImage:nil
-                                                   success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
-                                                       weakSelf.cardView.avatarView.image = image;
-                                                       weakSelf.cardView.coverView.image = image;
-                                                   } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
-                                                       NSLog(@"_updateCardView setImageWithURLRequest failed with error = %@", error);
-                                                   }];
+    [self.cardView.avatarButton setImageForState:UIControlStateNormal withURLRequest:request placeholderImage:nil success:^(NSURLRequest * request, NSHTTPURLResponse *response, UIImage *image) {
 
-}
-
-- (void)_apiTokenReady
-{
-    if (self.pendingAction)
-    {
-        self.pendingAction();
-    }
+        weakSelf.cardView.coverView.image = image;
+        [weakSelf.cardView.avatarButton setImage:image forState:UIControlStateNormal];
+    } failure:^(NSError *error) {
+         NSLog(@"_updateCardViewContent setImageForState failed with error = %@", error);
+    }];
 }
 
 - (void)_networkThreadBegin
@@ -187,6 +168,13 @@ static CGFloat kCardViewDefaultHeight = 150;
 
     [self.view setNeedsUpdateConstraints];
     [self.view updateConstraintsIfNeeded];
+}
+
+#pragma mark - JYCardViewDelegate
+
+- (void)didTapAvatarOnView:(JYCardView *)view
+{
+
 }
 
 #pragma mark - UITableViewDataSource
@@ -235,17 +223,6 @@ static CGFloat kCardViewDefaultHeight = 150;
 
 - (void)_fetchUserline
 {
-    if ([JYCredential current].tokenValidInSeconds <= 0)
-    {
-        __weak typeof(self) weakSelf = self;
-        self.pendingAction = ^{
-            [weakSelf _fetchUserline];
-        };
-        return;
-    }
-
-    self.pendingAction = nil;
-
     if (self.networkThreadCount > 0)
     {
         return;

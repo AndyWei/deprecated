@@ -13,7 +13,7 @@
 #import "JYProfileCardView.h"
 
 @interface JYProfileCardView () <TTTAttributedLabelDelegate>
-@property (nonatomic) UIButton *avatarButton;
+@property (nonatomic) JYButton *sexButton;
 @property (nonatomic) TTTAttributedLabel *usernameLabel;
 @property (nonatomic) TTTAttributedLabel *friendCountLabel;
 @property (nonatomic) TTTAttributedLabel *friendsLabel;
@@ -21,7 +21,7 @@
 @property (nonatomic) TTTAttributedLabel *contactsLabel;
 @property (nonatomic) TTTAttributedLabel *winkCountLabel;
 @property (nonatomic) TTTAttributedLabel *winksLabel;
-@property (nonatomic) JYButton *sexButton;
+@property (nonatomic) UIButton *avatarButton;
 @end
 
 static NSString *kFriendURL = @"action://_didTapFriendLabel";
@@ -87,7 +87,7 @@ static NSString *kWinkURL = @"action://_didTapWinkLabel";
 
     _user = user;
 
-    [self.avatarButton setImageForState:UIControlStateNormal withURL:user.avatarThumbnailURL];
+    [self.avatarButton setImageForState:UIControlStateNormal withURL:user.avatarURL];
 
     self.usernameLabel.text = user.username;
 

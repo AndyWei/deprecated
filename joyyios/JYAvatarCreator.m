@@ -35,7 +35,7 @@
 
 - (void)showOptions
 {
-    NSString *title  = NSLocalizedString(@"Where to fetch your primary photo?", nil);
+    NSString *title  = NSLocalizedString(@"Upload your new portrait from", nil);
     NSString *cancel = NSLocalizedString(@"Cancel", nil);
     NSString *camera = NSLocalizedString(@"Camera", nil);
     NSString *photoLibary = NSLocalizedString(@"Photo Libary", nil);
