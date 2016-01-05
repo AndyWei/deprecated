@@ -52,8 +52,9 @@ static NSString *const kImageCellIdentifier = @"imageCell";
     self.shouldScrollToBottomAfterKeyboardShows = NO;
     self.inverted = NO;
 
-    [self.rightButton setTitle:NSLocalizedString(@"Send", nil) forState:UIControlStateNormal];
+    [self.rightButton setTitle:NSLocalizedString(@"Done", nil) forState:UIControlStateNormal];
     self.rightButton.tintColor = JoyyBlue;
+    self.rightButton.enabled = YES;
     self.textInputbar.autoHideRightButton = NO;
     self.typingIndicatorView.canResignByTouch = YES;
 

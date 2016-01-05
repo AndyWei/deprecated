@@ -8,6 +8,7 @@
 
 #import <AFNetworking/AFNetworking.h>
 #import <MJRefresh/MJRefresh.h>
+#import <KVNProgress/KVNProgress.h>
 #import <RKDropdownAlert/RKDropdownAlert.h>
 
 #import "JYButton.h"
@@ -33,7 +34,7 @@
 @interface JYTimelineViewController () <JYRefreshHeaderDelegate, JYTimelineCellDelegate, TGCameraDelegate, UITableViewDataSource, UITableViewDelegate>
 @property (nonatomic) CABasicAnimation *colorPulse;
 @property (nonatomic) JYButton *cameraButton;
-@property (nonatomic) JYPostCreator *createPostController;
+@property (nonatomic) JYPostCreator *postCreator;
 @property (nonatomic) JYDay *minDay;
 @property (nonatomic) JYPost *currentPost;
 @property (nonatomic) JYJellyView *jellyView;
@@ -67,7 +68,7 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
     self.navigationItem.titleView = self.titleButton;
 
     self.networkThreadCount = 0;
-    self.createPostController = [JYPostCreator new];
+    self.postCreator = [JYPostCreator new];
     self.currentPost = nil;
     self.postList = [NSMutableArray new];
     self.newestPostId = 0;
@@ -481,6 +482,8 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
 
 - (void)cameraDidTakePhoto:(UIImage *)photo fromAlbum:(BOOL)fromAlbum withCaption:(NSString *)caption
 {
+    [KVNProgress show];
+
     // make sure timeline is refreshed before create new post
     [self _fetchNewPost];
 
@@ -497,14 +500,17 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
 
     __weak typeof(self) weakSelf = self;
     [self _networkThreadBegin];
-    [self.createPostController createPostWithMedia:image caption:caption success:^(JYPost *post) {
+    [self.postCreator createPostWithMedia:image caption:caption success:^(JYPost *post) {
 
         post.localImage = image;
         [weakSelf _createdNewPost:post];
         [weakSelf _networkThreadEnd];
+        [KVNProgress dismiss];
     } failure:^(NSError *error) {
 
         [weakSelf _networkThreadEnd];
+        [KVNProgress dismiss];
+
         [RKDropdownAlert title:NSLocalizedString(kErrorTitle, nil)
                        message:error.localizedDescription
                backgroundColor:FlatYellow
@@ -626,8 +632,9 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
     [self.postList insertObject:post atIndex:0];
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
     [self.tableView beginUpdates];
-    [self.tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationRight];
+    [self.tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationTop];
     [self.tableView endUpdates];
+    [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:YES];
 }
 
 - (void)_receivedNewPosts:(NSMutableArray *)postList
@@ -713,7 +720,7 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
     for (JYPost *post in list)
     {
         NSNumber *antiPostId = [post antiPostId];
-        if (!antiPostId && ![antiPostIdSet containsObject:post.postId])
+        if (antiPostId == nil && ![antiPostIdSet containsObject:post.postId])
         {
             [postList addObject:post];
         }
@@ -1056,7 +1063,7 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
     [self _networkThreadBegin];
 
     __weak typeof(self) weakSelf = self;
-    [self.createPostController forwardPost:post success:^(JYPost *newPost) {
+    [self.postCreator forwardPost:post success:^(JYPost *newPost) {
 
         newPost.localImage = post.localImage;
         [weakSelf _createdNewPost:newPost];

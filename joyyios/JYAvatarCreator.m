@@ -199,9 +199,7 @@
             [weakSelf _updateLocalYRS];
             if (success)
             {
-                dispatch_async(dispatch_get_main_queue(), ^(void){
-                    success();
-                });
+                dispatch_async(dispatch_get_main_queue(), ^(void){ success(); });
             }
         }
         [weakSelf _showNetworkIndicator:NO];
@@ -209,17 +207,15 @@
     }];
 }
 
-- (void)_handleUploadError:(NSError *)error withFailureBlock:(FailureHandler)failureBlock
+- (void)_handleUploadError:(NSError *)error withFailureBlock:(FailureHandler)failure
 {
     NSLog(@"Error: AWSS3TransferManager upload error = %@", error);
     NSString *errorMessage = NSLocalizedString(@"Upload photo failed", nil);
     [RKDropdownAlert title:NSLocalizedString(kErrorTitle, nil) message:errorMessage backgroundColor:FlatYellow textColor:FlatBlack time:5];
 
-    if (failureBlock)
+    if (failure)
     {
-        dispatch_async(dispatch_get_main_queue(), ^(void){
-            failureBlock(error);
-        });
+        dispatch_async(dispatch_get_main_queue(), ^(void){ failure(error); });
     }
 }
 
@@ -251,9 +247,7 @@
 
               if (success)
               {
-                  dispatch_async(dispatch_get_main_queue(), ^(void){
-                      success();
-                  });
+                  dispatch_async(dispatch_get_main_queue(), ^(void){ success(); });
               }
           }
           failure:^(NSURLSessionTask *operation, NSError *error) {
@@ -263,9 +257,7 @@
 
               if (failure)
               {
-                  dispatch_async(dispatch_get_main_queue(), ^(void){
-                      failure(error);
-                  });
+                  dispatch_async(dispatch_get_main_queue(), ^(void){ failure(error); });
               }
           }];
 }

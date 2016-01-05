@@ -44,7 +44,7 @@
         if (failure)
         {
             NSError *error = [NSError errorWithDomain:@"winkrock" code:2000 userInfo:@{@"error": @"no S3 transferManager"}];
-            failure(error);
+            dispatch_async(dispatch_get_main_queue(), ^(void){ failure(error); });
         }
         return;
     }
@@ -59,26 +59,11 @@
     [[transferManager upload:request] continueWithBlock:^id(AWSTask *task) {
         if (task.error)
         {
-            if ([task.error.domain isEqualToString:AWSS3TransferManagerErrorDomain])
-            {
-                switch (task.error.code)
-                {
-                    case AWSS3TransferManagerErrorCancelled:
-                    case AWSS3TransferManagerErrorPaused:
-                        break;
-                    default:
-                        NSLog(@"Error: AWSS3TransferManager upload error = %@", task.error);
-                        break;
-                }
-            }
-            else
-            {
-                // Unknown error.
-                NSLog(@"Error: AWSS3TransferManager upload error = %@", task.error);
-            }
+            NSLog(@"Error: AWSS3TransferManager upload error = %@", task.error);
+
             if (failure)
             {
-                failure(task.error);
+                dispatch_async(dispatch_get_main_queue(), ^(void){ failure(task.error); });
             }
         }
         if (task.result)
@@ -114,14 +99,14 @@
               JYPost *post = (JYPost *)[MTLJSONAdapter modelOfClass:JYPost.class fromJSONDictionary:responseObject error:&error];
               if (success)
               {
-                  success(post);
+                  dispatch_async(dispatch_get_main_queue(), ^(void){ success(post); });
               }
 
           } failure:^(NSURLSessionTask *operation, NSError *error) {
               NSLog(@"Failure: post/create error = %@", error);
               if (failure)
               {
-                  failure(error);
+                  dispatch_async(dispatch_get_main_queue(), ^(void){ failure(error); });
               }
           }];
 }

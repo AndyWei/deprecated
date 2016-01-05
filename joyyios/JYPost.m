@@ -66,16 +66,6 @@
 
 #pragma mark - properties
 
-- (NSString *)caption
-{
-    if ([kDummyCaptionText isEqualToString:_caption])
-    {
-        _caption = @"";
-    }
-
-    return _caption;
-}
-
 - (NSString *)URL
 {
     if (!_URL)

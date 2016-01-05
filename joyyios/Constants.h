@@ -45,7 +45,6 @@ extern AWSRegionType const kCognitoRegionType;
 extern NSString *const kFlurryKey;
 
 extern NSString *const kContentTypeJPG;
-extern NSString *const kDummyCaptionText;
 extern NSString *const kErrorSignInFailed;
 extern NSString *const kErrorTitle;
 extern NSString *const kLikeText;

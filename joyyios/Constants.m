@@ -47,7 +47,6 @@ AWSRegionType const kCognitoRegionType = AWSRegionUSEast1;
 NSString *const kFlurryKey = @"3RRHRXVTX38ZCW3QRHV6";
 
 NSString *const kContentTypeJPG = @"image/jpeg";
-NSString *const kDummyCaptionText = @"◦";
 NSString *const kErrorSignInFailed = @"Incorrect password";
 NSString *const kErrorTitle = @"😜: oops!";
 NSString *const kLikeText = @"♡";
