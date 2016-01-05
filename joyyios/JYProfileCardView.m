@@ -21,7 +21,6 @@
 @property (nonatomic) TTTAttributedLabel *contactsLabel;
 @property (nonatomic) TTTAttributedLabel *winkCountLabel;
 @property (nonatomic) TTTAttributedLabel *winksLabel;
-@property (nonatomic) UIButton *avatarButton;
 @end
 
 static NSString *kFriendURL = @"action://_didTapFriendLabel";

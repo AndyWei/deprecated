@@ -18,6 +18,7 @@
 
 @interface JYProfileCardView : UIView
 @property (nonatomic) JYUser *user;
+@property (nonatomic) UIButton *avatarButton;
 @property (nonatomic) UIImage *avatarImage;
 @property (nonatomic) uint64_t friendCount;
 @property (nonatomic) uint64_t contactCount;

@@ -8,6 +8,7 @@
 
 #import <AFNetworking/AFNetworking.h>
 #import <AFNetworking/UIButton+AFNetworking.h>
+#import <IDMPhotoBrowser/IDMPhotoBrowser.h>
 #import <MJRefresh/MJRefresh.h>
 
 #import "JYMonth.h"
@@ -174,7 +175,15 @@ static CGFloat kCardViewDefaultHeight = 150;
 
 - (void)didTapAvatarOnView:(JYCardView *)view
 {
+    if (!view)
+    {
+        return;
+    }
 
+    IDMPhoto *photo = [IDMPhoto photoWithImage:view.avatarButton.imageView.image];
+    IDMPhotoBrowser *browser = [[IDMPhotoBrowser alloc] initWithPhotos:@[photo] animatedFromView:view.avatarButton];
+    browser.scaleImage = view.avatarButton.imageView.image; // set scaleImage to smooth the animation
+    [self presentViewController:browser animated:YES completion:nil];
 }
 
 #pragma mark - UITableViewDataSource
