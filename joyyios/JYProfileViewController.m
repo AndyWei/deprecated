@@ -67,7 +67,7 @@ static NSString *const kCellIdentifier = @"profileUserlineCell";
     [self.view addSubview:self.tableView];
 
     [self _fetchFriends];
-//    [self _fetchWinks];
+    [self _fetchWinks];
     [self _fetchUserline];
 }
 
@@ -341,29 +341,29 @@ static NSString *const kCellIdentifier = @"profileUserlineCell";
 
 - (void)_fetchWinks
 {
-    NSString *url = [NSString apiURLWithPath:@"winks"];
+    NSString *url = [NSString apiURLWithPath:@"invites"];
     AFHTTPSessionManager *manager = [AFHTTPSessionManager managerWithToken];
 
     __weak typeof(self) weakSelf = self;
     [manager GET:url
       parameters:nil
          success:^(NSURLSessionTask *operation, id responseObject) {
-             NSLog(@"GET winks Success");
+             NSLog(@"GET invites Success");
 
              NSMutableArray *winkList = [NSMutableArray new];
              for (NSDictionary *dict in responseObject)
              {
                  NSError *error = nil;
-                 JYUser *user = (JYUser *)[MTLJSONAdapter modelOfClass:JYUser.class fromJSONDictionary:dict error:&error];
-                 if (user)
+                 JYFriend *friend = (JYFriend *)[MTLJSONAdapter modelOfClass:JYFriend.class fromJSONDictionary:dict error:&error];
+                 if (friend)
                  {
-                     [winkList addObject:user];
+                     [winkList addObject:friend];
                  }
              }
              weakSelf.winkList = winkList;
          }
          failure:^(NSURLSessionTask *operation, NSError *error) {
-             NSLog(@"GET winks error: %@", error);
+             NSLog(@"GET invites error: %@", error);
          }];
 }
 

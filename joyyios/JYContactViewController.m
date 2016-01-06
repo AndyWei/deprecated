@@ -1,42 +1,34 @@
 //
-//  JYWinkViewController.m
+//  JYContactViewController.m
 //  joyyios
 //
-//  Created by Ping Yang on 12/23/15.
-//  Copyright © 2015 Joyy Inc. All rights reserved.
+//  Created by Ping Yang on 1/5/16.
+//  Copyright © 2016 Joyy Inc. All rights reserved.
 //
 
 #import <AFNetworking/AFNetworking.h>
 
+#import "JYContactCell.h"
+#import "JYContactViewController.h"
 #import "JYCredential.h"
 #import "JYFriendManager.h"
 #import "JYLocalDataManager.h"
 #import "JYUserlineViewController.h"
-#import "JYWinkCell.h"
-#import "JYWinkViewController.h"
 
-@interface JYWinkViewController () <JYUserBaseCellDelegate, UITableViewDataSource, UITableViewDelegate>
-@property (nonatomic) NSMutableArray *winkList;
+
+@interface JYContactViewController () <JYUserBaseCellDelegate, UITableViewDataSource, UITableViewDelegate>
+@property (nonatomic) NSMutableArray *contactList;
 @property (nonatomic) UITableView *tableView;
 @end
 
-static NSString *const kCellIdentifier = @"winkCell";
+static NSString *const kCellIdentifier = @"contactCell";
 
-@implementation JYWinkViewController
-
-- (instancetype)initWithWinkList:(NSMutableArray *)winkList
-{
-    if (self = [super init])
-    {
-        self.winkList = winkList;
-    }
-    return self;
-}
+@implementation JYContactViewController
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.title = NSLocalizedString(@"Winks", nil);
+    self.title = NSLocalizedString(@"Contacts", nil);
 
     self.navigationController.navigationBar.translucent = YES;
     self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:self.navigationItem.backBarButtonItem.style target:nil action:nil];
@@ -60,7 +52,7 @@ static NSString *const kCellIdentifier = @"winkCell";
         _tableView.rowHeight = UITableViewAutomaticDimension;
         _tableView.estimatedRowHeight = 60;
 
-        [_tableView registerClass:[JYWinkCell class] forCellReuseIdentifier:kCellIdentifier];
+        [_tableView registerClass:[JYContactCell class] forCellReuseIdentifier:kCellIdentifier];
     }
     return _tableView;
 }
@@ -69,15 +61,15 @@ static NSString *const kCellIdentifier = @"winkCell";
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return [self.winkList count];
+    return [self.contactList count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    JYWinkCell *cell =
-    (JYWinkCell *)[tableView dequeueReusableCellWithIdentifier:kCellIdentifier forIndexPath:indexPath];
+    JYContactCell *cell =
+    (JYContactCell *)[tableView dequeueReusableCellWithIdentifier:kCellIdentifier forIndexPath:indexPath];
 
-    JYUser *user = [self.winkList objectAtIndex:indexPath.row];
+    JYUser *user = [self.contactList objectAtIndex:indexPath.row];
     cell.user = user;
     cell.delegate = self;
 
@@ -93,7 +85,7 @@ static NSString *const kCellIdentifier = @"winkCell";
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 
-    JYUser *user = [self.winkList objectAtIndex:indexPath.row];
+    JYUser *user = [self.contactList objectAtIndex:indexPath.row];
     JYUserlineViewController *viewController = [[JYUserlineViewController alloc] initWithUser:user];
     [self.navigationController pushViewController:viewController animated:YES];
 }
@@ -107,14 +99,15 @@ static NSString *const kCellIdentifier = @"winkCell";
         return;
     }
 
-    [self _acceptWinkFromUser:cell.user];
+    [self _connectUser:cell.user];
 }
 
 #pragma mark - Network
 
-- (void)_acceptWinkFromUser:(JYUser *)user
+- (void)_connectUser:(JYUser *)user
 {
-    
+
 }
+
 
 @end

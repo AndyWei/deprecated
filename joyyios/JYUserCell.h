@@ -6,10 +6,8 @@
 //  Copyright © 2015 Joyy Inc. All rights reserved.
 //
 
-@class JYUser;
+#import "JYUserBaseCell.h"
 
-@interface JYUserCell : UITableViewCell
-
-@property(nonatomic) JYUser *user;
+@interface JYUserCell : JYUserBaseCell
 
 @end

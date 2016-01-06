@@ -10,7 +10,7 @@
 #import "JYUserCell.h"
 #import "JYUserlineViewController.h"
 
-@interface JYFriendViewController () <UITableViewDataSource, UITableViewDelegate>
+@interface JYFriendViewController () <JYUserBaseCellDelegate, UITableViewDataSource, UITableViewDelegate>
 @property (nonatomic) NSInteger networkThreadCount;
 @property (nonatomic) NSMutableArray *friendArrays;
 @property (nonatomic) UITableView *tableView;
@@ -148,6 +148,7 @@ static NSString *const kCellIdentifier = @"friendCell";
 
     NSArray *array = [self.friendArrays objectAtIndex:indexPath.section];
     cell.user = array[indexPath.row];
+    cell.delegate = self;
 
     [cell setNeedsUpdateConstraints];
     [cell updateConstraintsIfNeeded];
@@ -166,6 +167,23 @@ static NSString *const kCellIdentifier = @"friendCell";
 
     JYUserlineViewController *viewController = [[JYUserlineViewController alloc] initWithUser:user];
     [self.navigationController pushViewController:viewController animated:YES];
+}
+
+#pragma mark - JYUserBaseCellDelegate
+
+- (void)didTapActionButtonOnCell:(JYUserBaseCell *)cell
+{
+    if (!cell || !cell.user)
+    {
+        return;
+    }
+
+    [self _chatWith:cell.user];
+}
+
+- (void)_chatWith:(JYUser *)user
+{
+
 }
 
 @end
