@@ -175,8 +175,8 @@ CGFloat const kCountryNumberWidth = 60;
     NSString *localizedCountryName = [[NSLocale currentLocale] displayNameForKey:NSLocaleCountryCode value:_countryCode];
     self.countryNameLabel.text = localizedCountryName;
 
-    NSString *dialingCode = [NSString dialingCodeForCountryCode:_countryCode];
-    self.countryNumberLabel.text = [NSString stringWithFormat:@"+%@", dialingCode];
+    NSString *dialCode = [NSString dialingCodeForCountryCode:_countryCode];
+    self.countryNumberLabel.text = [NSString stringWithFormat:@"+%@", dialCode];
 
     // For NANP countries, use US format
     if ([self.countryNumberLabel.text isEqualToString:@"+1"])       // NANP
