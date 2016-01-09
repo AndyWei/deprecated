@@ -29,7 +29,11 @@ const (
     kCreateInviteStmt = "INSERT INTO invite (userid, fid, fname, fyrs) VALUES (?, ?, ?, ?)"
     kDeleteInviteStmt = "DELETE FROM invite WHERE userid = ? AND fid = ?"
     kReadInvitesStmt  = "SELECT fid, fname, fyrs FROM invite WHERE userid = ?"
-    kCheckInviteStmt  = "SELECT fid FROM invite WHERE userid = ? AND fid = ? LIMIT 1"
+
+    kWink           = "wink"
+    kCreateWinkStmt = "INSERT INTO wink (userid, fid, fname, fyrs) VALUES (?, ?, ?, ?)"
+    kDeleteWinkStmt = "DELETE FROM wink WHERE userid = ? AND fid = ?"
+    kReadWinksStmt  = "SELECT fid, fname, fyrs FROM wink WHERE userid = ?"
 )
 
 type CreateEdgeParams struct {
@@ -85,6 +89,52 @@ func (h *Handler) DeleteInvite(w http.ResponseWriter, req *http.Request, userid 
     return
 }
 
+/* Wink */
+func (h *Handler) CreateWink(w http.ResponseWriter, req *http.Request, userid int64, username string) {
+    var p CreateEdgeParams
+    if err := ParseAndCheck(req, &p); err != nil {
+        RespondError(w, err, http.StatusBadRequest)
+        return
+    }
+
+    // If the friend has already winked the user, then the friendship can be created directly
+    // otherwise create an wink edge
+    if h.EdgeExist(kWink, p.FriendUserId, userid) {
+        // delete the wink since the relationship is upgraded to friendship
+        h.DB.Query(kDeleteWinkStmt, p.FriendUserId, userid).Exec()
+        h.addFriendAndRespond(w, userid, p.FriendUserId, username, p.FriendUsername, p.UserYRS, p.FriendYRS)
+        return
+    }
+
+    if err := h.DB.Query(kCreateWinkStmt, p.FriendUserId, userid, username, p.UserYRS).Exec(); err != nil {
+        RespondError(w, err, http.StatusBadGateway)
+        return
+    }
+
+    RespondOK(w)
+    return
+}
+
+type DeleteWinkParams struct {
+    FriendUserId int64 `param:"fid" validate:"required"`
+}
+
+func (h *Handler) DeleteWink(w http.ResponseWriter, req *http.Request, userid int64, username string) {
+    var p DeleteWinkParams
+    if err := ParseAndCheck(req, &p); err != nil {
+        RespondError(w, err, http.StatusBadRequest)
+        return
+    }
+
+    if err := h.DB.Query(kDeleteWinkStmt, userid, p.FriendUserId).Exec(); err != nil {
+        RespondError(w, err, http.StatusBadGateway)
+        return
+    }
+
+    RespondOK(w)
+    return
+}
+
 /* Friend*/
 func (h *Handler) AddFriend(w http.ResponseWriter, req *http.Request, userid int64, username string) {
     var p CreateEdgeParams
@@ -125,6 +175,10 @@ func (h *Handler) RemoveFriend(w http.ResponseWriter, req *http.Request, userid 
 
 func (h *Handler) ReadInvites(w http.ResponseWriter, req *http.Request, userid int64, username string) {
     h.readEdgesAndRespond(w, kReadInvitesStmt, userid)
+}
+
+func (h *Handler) ReadWinks(w http.ResponseWriter, req *http.Request, userid int64, username string) {
+    h.readEdgesAndRespond(w, kReadWinksStmt, userid)
 }
 
 func (h *Handler) ReadFriends(w http.ResponseWriter, req *http.Request, userid int64, username string) {

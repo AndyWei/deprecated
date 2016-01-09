@@ -49,6 +49,10 @@ func main() {
     router.Post("/v1/invite/create", authenticate(edgeHandler.CreateInvite))
     router.Post("/v1/invite/delete", authenticate(edgeHandler.DeleteInvite))
 
+    router.Get("/v1/winks", authenticate(edgeHandler.ReadWinks))
+    router.Post("/v1/wink/create", authenticate(edgeHandler.CreateWink))
+    router.Post("/v1/wink/delete", authenticate(edgeHandler.DeleteWink))
+
     router.Get("/v1/post/timeline", authenticate(postHandler.ReadTimeline))
     router.Get("/v1/post/userline", authenticate(postHandler.ReadUserline))
     router.Post("/v1/post/create", authenticate(postHandler.CreatePost))
@@ -65,6 +69,7 @@ func main() {
     router.Post("/v1/user/profile", authenticate(userHandler.WriteProfile))
 
     router.Get("/v1/users", authenticate(userHandler.ReadUsers))
+    router.Get("/v1/contacts", authenticate(userHandler.ReadContacts))
     router.Get("/v1/username/existence", userHandler.CheckUsername)
     router.Post("/v1/user/appear", authenticate(userHandler.Appear))
 

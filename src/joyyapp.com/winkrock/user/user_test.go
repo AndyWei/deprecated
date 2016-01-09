@@ -24,10 +24,10 @@ var WriteProfileTests = []struct {
     bio      string
     code     int
 }{
-    {1234567890001, "user1", 16509001234, 2, "good man in us", http.StatusOK},
+    {1234567890001, "user1", 16509001234, 1, "good man in us", http.StatusOK},
     {1234567890002, "user2", 14258009876, 0, "bad girl in unknown region", http.StatusBadRequest},
-    {1234567890003, "user3", 86136123412, 2, "good man in china", http.StatusOK},
-    {1234567890004, "user4", 86136123412, 2, "", http.StatusOK},
+    {1234567890003, "user3", 86136123412, 1, "good man in china", http.StatusOK},
+    {1234567890004, "user4", 86136123412, 1, "", http.StatusOK},
 }
 
 func TestWriteProfile(test *testing.T) {
@@ -104,7 +104,7 @@ func TestReadProfile(test *testing.T) {
         LogError(err)
 
         assert.Nil(err)
-        assert.Equal(t.phone, r.Phone, "should store correct region in DB")
+        assert.Equal(t.phone, r.Phone, "should store correct phone in DB")
         assert.Equal(t.yrs, r.YRS, "should store correct yrs in DB")
         assert.Equal(t.bio, r.Bio, "should store correct bio in DB")
     }
@@ -157,26 +157,26 @@ var Users = []struct {
     zip      string
     yrs      int64
 }{
-    {1234567890000, "user0", "US", "94530", 000001},
-    {1234567890001, "user1", "US", "94531", 000001},
-    {1234567890002, "user2", "US", "94532", 000001},
-    {1234567890003, "user3", "US", "94533", 000001},
-    {1234567890004, "user4", "US", "94534", 000001},
-    {1234567890005, "user5", "US", "94535", 000001},
-    {1234567890006, "user6", "US", "94536", 000001},
-    {1234567890007, "user7", "US", "94537", 000001},
-    {1234567890008, "user8", "US", "94538", 000001},
-    {1234567890009, "user9", "US", "94539", 000001},
-    {1234567890010, "userA", "US", "94530", 000001},
-    {1234567890011, "userB", "US", "94531", 000001},
-    {1234567890012, "userC", "US", "94532", 000001},
-    {1234567890013, "userD", "US", "94533", 000001},
-    {1234567890014, "userE", "US", "94534", 000001},
-    {1234567890015, "userF", "US", "94535", 000001},
-    {1234567890016, "userG", "US", "94536", 000001},
-    {1234567890017, "userH", "US", "94537", 000001},
-    {1234567890018, "userI", "US", "94538", 000001},
-    {1234567890019, "userJ", "US", "94539", 000001},
+    {1234567890000, "user0", "US", "94530", 1},
+    {1234567890001, "user1", "US", "94531", 1},
+    {1234567890002, "user2", "US", "94532", 1},
+    {1234567890003, "user3", "US", "94533", 1},
+    {1234567890004, "user4", "US", "94534", 1},
+    {1234567890005, "user5", "US", "94535", 1},
+    {1234567890006, "user6", "US", "94536", 1},
+    {1234567890007, "user7", "US", "94537", 1},
+    {1234567890008, "user8", "US", "94538", 1},
+    {1234567890009, "user9", "US", "94539", 1},
+    {1234567890010, "userA", "US", "94530", 1},
+    {1234567890011, "userB", "US", "94531", 1},
+    {1234567890012, "userC", "US", "94532", 1},
+    {1234567890013, "userD", "US", "94533", 1},
+    {1234567890014, "userE", "US", "94534", 1},
+    {1234567890015, "userF", "US", "94535", 1},
+    {1234567890016, "userG", "US", "94536", 1},
+    {1234567890017, "userH", "US", "94537", 1},
+    {1234567890018, "userI", "US", "94538", 1},
+    {1234567890019, "userJ", "US", "94539", 1},
 }
 
 func (h *Handler) prepareUsers() {

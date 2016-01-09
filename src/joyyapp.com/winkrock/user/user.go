@@ -44,7 +44,7 @@ func (h *Handler) CheckUsername(w http.ResponseWriter, req *http.Request) {
     }
 
     var userid int64
-    if err := h.DB.Query(`SELECT id FROM user_by_name WHERE username = ? LIMIT 1`,
+    if err := h.DB.Query(`SELECT userid FROM user_by_name WHERE username = ? LIMIT 1`,
         p.Username).Consistency(gocql.One).Scan(&userid); err != nil {
 
         response := &CheckUsernameResponse{
@@ -85,14 +85,14 @@ func (h *Handler) WriteProfile(w http.ResponseWriter, req *http.Request, userid 
         return
     }
 
-    if err := h.DB.Query(`INSERT INTO user (id, phone, yrs, bio) VALUES (?, ?, ?, ?)`,
+    if err := h.DB.Query(`INSERT INTO user (userid, phone, yrs, bio) VALUES (?, ?, ?, ?)`,
         userid, p.Phone, p.YRS, p.Bio).Exec(); err != nil {
         RespondError(w, err, http.StatusBadGateway)
         return
     }
 
-    if err := h.DB.Query(`INSERT INTO user_by_phone (phone, username, id) VALUES (?, ?, ?)`,
-        p.Phone, username, userid).Exec(); err != nil {
+    if err := h.DB.Query(`INSERT INTO user_by_phone (phone, username, userid, yrs) VALUES (?, ?, ?, ?)`,
+        p.Phone, username, userid, p.YRS).Exec(); err != nil {
         RespondError(w, err, http.StatusBadGateway)
         return
     }
@@ -119,7 +119,7 @@ func (h *Handler) ReadProfile(w http.ResponseWriter, req *http.Request, userid i
 
     m := make(map[string]interface{})
 
-    if err := h.DB.Query(`SELECT username, phone, yrs, bio FROM user WHERE id = ? LIMIT 1`,
+    if err := h.DB.Query(`SELECT username, phone, yrs, bio FROM user WHERE userid = ? LIMIT 1`,
         userid).Consistency(gocql.One).MapScan(m); err != nil {
         RespondError(w, ErrUserNotExist, http.StatusNotFound)
         return
@@ -184,7 +184,7 @@ func (h *Handler) Appear(w http.ResponseWriter, req *http.Request, userid int64,
     return
 }
 
-type UserParams struct {
+type ReadUsersParams struct {
     Country   string `param:"country" validate:"len=2"`
     Sex       string `param:"sex" validate:"required"`
     Zip       string `param:"zip" validate:"required"`
@@ -193,7 +193,7 @@ type UserParams struct {
 
 func (h *Handler) ReadUsers(w http.ResponseWriter, req *http.Request, userid int64, username string) {
 
-    var p UserParams
+    var p ReadUsersParams
     if err := ParseAndCheck(req, &p); err != nil {
         RespondError(w, err, http.StatusBadRequest)
         return
@@ -215,6 +215,35 @@ func (h *Handler) ReadUsers(w http.ResponseWriter, req *http.Request, userid int
     }
 
     iter := query.Consistency(gocql.One).Iter()
+    users, err := iter.SliceMap()
+    if err != nil {
+        RespondError(w, err, http.StatusBadGateway)
+        return
+    }
+
+    bytes, err := json.Marshal(users)
+    if err != nil {
+        RespondError(w, err, http.StatusBadGateway)
+        return
+    }
+
+    RespondData(w, bytes)
+    return
+}
+
+type ReadContactsParams struct {
+    PhoneNumbers []int64 `param:"phone"`
+}
+
+func (h *Handler) ReadContacts(w http.ResponseWriter, req *http.Request, userid int64, username string) {
+
+    var p ReadContactsParams
+    if err := ParseAndCheck(req, &p); err != nil {
+        RespondError(w, err, http.StatusBadRequest)
+        return
+    }
+
+    iter := h.DB.Query(`SELECT phone, username, userid, yrs FROM user_by_phone WHERE phone IN ? `, p.PhoneNumbers).Consistency(gocql.One).Iter()
     users, err := iter.SliceMap()
     if err != nil {
         RespondError(w, err, http.StatusBadGateway)

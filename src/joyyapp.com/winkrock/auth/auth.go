@@ -50,7 +50,7 @@ type AuthParams struct {
 
 type AuthResponse struct {
     Username string `json:"username"`
-    Id       int64  `json:"id"`
+    Id       int64  `json:"userid"`
     Token    string `json:"token"`
     TokenTtl int    `json:"token_ttl"`
 }
@@ -67,14 +67,14 @@ func (h *Handler) SignUp(w http.ResponseWriter, req *http.Request) {
     userid := idgen.NewID()
 
     // write DB. note lightweight transaction is used to make sure the username is unique
-    applied, err := h.DB.Query(`INSERT INTO user_by_name (username, id, password) VALUES (?, ?, ?) IF NOT EXISTS`,
+    applied, err := h.DB.Query(`INSERT INTO user_by_name (username, userid, password) VALUES (?, ?, ?) IF NOT EXISTS`,
         p.Username, userid, epassword).ScanCAS()
     if err != nil || !applied {
         RespondError(w, ErrUsernameConflict, http.StatusBadRequest)
         return
     }
 
-    if err := h.DB.Query(`INSERT INTO user (id, username, deleted) VALUES (?, ?, false)`,
+    if err := h.DB.Query(`INSERT INTO user (userid, username, deleted) VALUES (?, ?, false)`,
         userid, p.Username).Exec(); err != nil {
         RespondError(w, err, http.StatusBadGateway)
         return
@@ -117,7 +117,7 @@ func (h *Handler) SignIn(w http.ResponseWriter, req *http.Request) {
     // read encrypted password from DB
     var userid int64
     var epassword string
-    if err := h.DB.Query(`SELECT id, password FROM user_by_name WHERE username = ? LIMIT 1`,
+    if err := h.DB.Query(`SELECT userid, password FROM user_by_name WHERE username = ? LIMIT 1`,
         p.Username).Consistency(gocql.One).Scan(&userid, &epassword); err != nil {
         RespondError(w, ErrUserNotExist, http.StatusBadRequest)
         return
@@ -171,7 +171,7 @@ func (h *Handler) CheckExistence(w http.ResponseWriter, req *http.Request) {
 
     // read DB
     var deleted bool
-    err := h.DB.Query(`SELECT deleted FROM user WHERE id = ? LIMIT 1`,
+    err := h.DB.Query(`SELECT deleted FROM user WHERE userid = ? LIMIT 1`,
         p.UserId).Consistency(gocql.One).Scan(&deleted)
 
     if err != nil || deleted {

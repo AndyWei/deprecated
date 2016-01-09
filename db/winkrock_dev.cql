@@ -51,7 +51,7 @@ USE winkrock;
  * @Discussion:
  */
 CREATE TABLE IF NOT EXISTS user (
-    id               bigint  ,
+    userid           bigint  ,
     username         text    , -- only the last used username will be kept
     deleted          boolean , -- set to true only if the user deleted the account 
 
@@ -60,7 +60,7 @@ CREATE TABLE IF NOT EXISTS user (
     yrs              bigint  , -- see YRS Encoding Rule 
     bio              text    ,
 
-    PRIMARY KEY (id)
+    PRIMARY KEY (userid)
 ) WITH COMPACTION = {'class': 'LeveledCompactionStrategy', 'enabled': 'true'};
 
 
@@ -89,7 +89,7 @@ CREATE TABLE IF NOT EXISTS user_device (
 CREATE TABLE IF NOT EXISTS user_by_name (
     -- account fields created in post user/signup
     username         text    ,
-    id               bigint  ,
+    userid           bigint  ,
     password         text    , -- bcrypt hashed password, it always 60 bytes long, however text makes it flexible
 
     PRIMARY KEY (username)
@@ -100,9 +100,10 @@ CREATE TABLE IF NOT EXISTS user_by_name (
  *
  */
 CREATE TABLE IF NOT EXISTS user_by_phone (
-    phone            bigint  ,
-    username         text    ,
-    id               bigint  ,
+    phone            bigint ,
+    username         text   ,
+    userid           bigint ,
+    yrs              bigint ,
 
     PRIMARY KEY (phone)
 ) WITH COMPACTION = {'class': 'LeveledCompactionStrategy', 'enabled': 'true'};
@@ -111,8 +112,8 @@ CREATE TABLE IF NOT EXISTS user_by_phone (
  *
  */
 CREATE TABLE IF NOT EXISTS code_by_phone (
-    phone            bigint  ,
-    code             int     ,
+    phone            bigint ,
+    code             int    ,
 
     PRIMARY KEY (phone)
 );
@@ -269,7 +270,7 @@ CREATE TABLE IF NOT EXISTS userline (
  */
 
 -- user
-INSERT INTO user (id, username, deleted, phone, yrs) VALUES (114269549829816320, 'andyw', false, 14257850318, 130416641);
-INSERT INTO user_by_name (username, id, password) VALUES ('andyw', 114269549829816320, '$2a$10$.pJOlEZ/hMZRyw3CoFDHm.IBAV6nek6PWAtseFdgKIlDfDUVP23cG');
-INSERT INTO user_by_phone (phone, id, username) VALUES (14257850318, 114269549829816320, 'andyw');
+INSERT INTO user (userid, username, deleted, phone, yrs) VALUES (114269549829816320, 'andyw', false, 14257850318, 130416641);
+INSERT INTO user_by_name (username, userid, password) VALUES ('andyw', 114269549829816320, '$2a$10$.pJOlEZ/hMZRyw3CoFDHm.IBAV6nek6PWAtseFdgKIlDfDUVP23cG');
+INSERT INTO user_by_phone (phone, userid, username) VALUES (14257850318, 114269549829816320, 'andyw');
 

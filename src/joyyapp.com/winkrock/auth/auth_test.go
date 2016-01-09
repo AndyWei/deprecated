@@ -18,11 +18,11 @@ var signupTests = []struct {
     password string
     code     int
 }{
-    {"sign_up_user", "dummy_password", http.StatusOK},
-    {"sign_up_user", "dummy_password", http.StatusBadRequest},
+    {"dummy_user", "dummy_password", http.StatusOK},
+    {"dummy_user", "dummy_password", http.StatusBadRequest},
     {"", "", http.StatusBadRequest},
     {"", "dummy_password", http.StatusBadRequest},
-    {"sign_up_user", "", http.StatusBadRequest},
+    {"dummy_user", "", http.StatusBadRequest},
 }
 
 func TestSignUp(test *testing.T) {
@@ -58,12 +58,12 @@ var signinTests = []struct {
     password string
     code     int
 }{
-    {"sign_up_user", "dummy_password", http.StatusOK},
-    {"sign_up_user", "dummy_password", http.StatusOK},
-    {"sign_up_user", "bad_password", http.StatusUnauthorized},
+    {"dummy_user", "dummy_password", http.StatusOK},
+    {"dummy_user", "dummy_password", http.StatusOK},
+    {"dummy_user", "bad_password", http.StatusUnauthorized},
     {"", "", http.StatusBadRequest},
     {"", "dummy_password", http.StatusBadRequest},
-    {"sign_up_user", "", http.StatusBadRequest},
+    {"dummy_user", "", http.StatusBadRequest},
 }
 
 func TestSignIn(test *testing.T) {
