@@ -12,7 +12,7 @@
 @protocol JYProfileCardViewDelegate <NSObject>
 - (void)didTapAvatarOnView:(JYProfileCardView *)view;
 - (void)didTapFriendLabelOnView:(JYProfileCardView *)view;
-- (void)didTapContactLabelOnView:(JYProfileCardView *)view;
+- (void)didTapInviteLabelOnView:(JYProfileCardView *)view;
 - (void)didTapWinkLabelOnView:(JYProfileCardView *)view;
 @end
 
@@ -21,7 +21,7 @@
 @property (nonatomic) UIButton *avatarButton;
 @property (nonatomic) UIImage *avatarImage;
 @property (nonatomic) uint64_t friendCount;
-@property (nonatomic) uint64_t contactCount;
+@property (nonatomic) uint64_t inviteCount;
 @property (nonatomic) uint64_t winkCount;
 @property (nonatomic, weak) id<JYProfileCardViewDelegate> delegate;
 @end

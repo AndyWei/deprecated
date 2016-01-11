@@ -41,6 +41,7 @@
 		D61D1DD61B4E336E00DE37DF /* TGCameraViewController.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D61D1D9F1B4E336E00DE37DF /* TGCameraViewController.xcassets */; };
 		D61D1DE21B5366DC00DE37DF /* JYPost.m in Sources */ = {isa = PBXBuildFile; fileRef = D61D1DE11B5366DC00DE37DF /* JYPost.m */; };
 		D61D1DE61B536B2700DE37DF /* JYTimelineCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D61D1DE51B536B2700DE37DF /* JYTimelineCell.m */; };
+		D61FAE5E1C4461BB00142450 /* JYInviteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D61FAE5D1C4461BB00142450 /* JYInviteViewController.m */; };
 		D62C2C601B8E887200233F5B /* JYXmppManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D62C2C5F1B8E887200233F5B /* JYXmppManager.m */; };
 		D62C2C681B90261000233F5B /* JYSessionListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D62C2C671B90261000233F5B /* JYSessionListViewController.m */; };
 		D63147461C1A826500EAE05E /* JYFriendViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D63147451C1A826500EAE05E /* JYFriendViewController.m */; };
@@ -201,6 +202,8 @@
 		D61D1DE11B5366DC00DE37DF /* JYPost.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYPost.m; sourceTree = "<group>"; };
 		D61D1DE41B536B2700DE37DF /* JYTimelineCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYTimelineCell.h; sourceTree = "<group>"; };
 		D61D1DE51B536B2700DE37DF /* JYTimelineCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYTimelineCell.m; sourceTree = "<group>"; };
+		D61FAE5C1C4461BB00142450 /* JYInviteViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYInviteViewController.h; sourceTree = "<group>"; };
+		D61FAE5D1C4461BB00142450 /* JYInviteViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYInviteViewController.m; sourceTree = "<group>"; };
 		D62C2C5E1B8E887200233F5B /* JYXmppManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYXmppManager.h; sourceTree = "<group>"; };
 		D62C2C5F1B8E887200233F5B /* JYXmppManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYXmppManager.m; sourceTree = "<group>"; };
 		D62C2C661B90261000233F5B /* JYSessionListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYSessionListViewController.h; sourceTree = "<group>"; };
@@ -761,20 +764,22 @@
 		D68DAF9A1AC4CD1800838E7E /* Sign */ = {
 			isa = PBXGroup;
 			children = (
-				D63F0D7B1ACA5E260067C5EE /* JYPhoneNumberViewController.h */,
-				D63F0D7C1ACA5E260067C5EE /* JYPhoneNumberViewController.m */,
-				D6F7F1361BA71ADF008118DA /* JYVerificationViewController.h */,
-				D6F7F1371BA71ADF008118DA /* JYVerificationViewController.m */,
+				D63A014C1C3CA22A00E74C36 /* JYContactViewController.h */,
+				D63A014D1C3CA22A00E74C36 /* JYContactViewController.m */,
 				D6966B341BA3753A00AAD8D5 /* JYCountryListViewController.h */,
 				D6966B351BA3753A00AAD8D5 /* JYCountryListViewController.m */,
 				D6966B381BA3873200AAD8D5 /* JYCountryViewCell.h */,
 				D6966B391BA3873200AAD8D5 /* JYCountryViewCell.m */,
+				D63F0D7B1ACA5E260067C5EE /* JYPhoneNumberViewController.h */,
+				D63F0D7C1ACA5E260067C5EE /* JYPhoneNumberViewController.m */,
 				D63B69B01AC51D61005600A9 /* JYSignBaseViewController.h */,
 				D63B69B11AC51D61005600A9 /* JYSignBaseViewController.m */,
 				D68DAF941AC4CACD00838E7E /* JYSignInViewController.h */,
 				D68DAF951AC4CACD00838E7E /* JYSignInViewController.m */,
 				D63F0D531AC7ACB70067C5EE /* JYSignUpViewController.h */,
 				D63F0D541AC7ACB70067C5EE /* JYSignUpViewController.m */,
+				D6F7F1361BA71ADF008118DA /* JYVerificationViewController.h */,
+				D6F7F1371BA71ADF008118DA /* JYVerificationViewController.m */,
 			);
 			name = Sign;
 			sourceTree = "<group>";
@@ -973,8 +978,8 @@
 				D6C89F7B1C2B5C9C00E96E99 /* JYProfileViewController.m */,
 				D6C89F811C2B9A8700E96E99 /* JYWinkViewController.h */,
 				D6C89F821C2B9A8700E96E99 /* JYWinkViewController.m */,
-				D63A014C1C3CA22A00E74C36 /* JYContactViewController.h */,
-				D63A014D1C3CA22A00E74C36 /* JYContactViewController.m */,
+				D61FAE5C1C4461BB00142450 /* JYInviteViewController.h */,
+				D61FAE5D1C4461BB00142450 /* JYInviteViewController.m */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -1179,6 +1184,7 @@
 				D63147491C1A829C00EAE05E /* JYUserCell.m in Sources */,
 				D63147461C1A826500EAE05E /* JYFriendViewController.m in Sources */,
 				D63B69B21AC51D61005600A9 /* JYSignBaseViewController.m in Sources */,
+				D61FAE5E1C4461BB00142450 /* JYInviteViewController.m in Sources */,
 				D67DD0E41B75302800333626 /* JYUserViewController.m in Sources */,
 				D65F37461B04807D007B534C /* JYCommentlineCell.m in Sources */,
 				D60726AE1C18179500A43717 /* JYMonth.m in Sources */,

@@ -191,7 +191,7 @@ static NSString *const kCellIdentifier = @"contactCell";
 
 - (void)_showAddressBookAccessAlert
 {
-    NSString *message = NSLocalizedString(@"This app requires access to your contacts to function properly. Please visit to the \"Privacy\" section in iPhone Settings", nil);
+    NSString *message = NSLocalizedString(@"This app requires access to your contacts to function properly. Please visit to Settings -> Privacy -> Contacts", nil);
     NSString *ok = NSLocalizedString(@"OK", nil);
 
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -320,12 +320,46 @@ static NSString *const kCellIdentifier = @"contactCell";
 
 - (void) _readRemoteUsersInContact
 {
+    NSString *url = [NSString apiURLWithPath:@"contacts"];
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager managerWithToken];
+
+    __weak typeof(self) weakSelf = self;
+    [manager GET:url
+      parameters:nil
+         success:^(NSURLSessionTask *operation, id responseObject) {
+             NSLog(@"GET contacts Success");
+
+             NSMutableArray *userList = [NSMutableArray new];
+             for (NSDictionary *dict in responseObject)
+             {
+                 NSError *error = nil;
+                 JYFriend *friend = (JYFriend *)[MTLJSONAdapter modelOfClass:JYUser.class fromJSONDictionary:dict error:&error];
+                 if (friend)
+                 {
+                     [userList addObject:friend];
+                 }
+             }
+//             weakSelf.winkList = winkList;
+         }
+         failure:^(NSURLSessionTask *operation, NSError *error) {
+             NSLog(@"GET contacts error: %@", error);
+         }];
+}
+
+- (NSDictionary *)_readRemoteUsersParameters
+{
+    NSMutableArray *phoneNumberList = [NSMutableArray new];
+    for (NSNumber *phoneNumber in self.phoneNumberSet)
+    {
+        uint64_t number = [phoneNumber unsignedLongLongValue];
+        [phoneNumberList addObject:@(number)];
+    }
+    return @{@"phone": phoneNumberList};
 }
 
 - (void)_connectUser:(JYUser *)user
 {
 
 }
-
 
 @end

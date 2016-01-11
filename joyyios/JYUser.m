@@ -31,7 +31,7 @@
 + (NSDictionary *)FMDBColumnsByPropertyKey
 {
     return @{
-             @"userId": @"id",
+             @"userId": @"userid",
              @"username": @"username",
              @"yrsValue": @"yrs",
              @"bio": [NSNull null],

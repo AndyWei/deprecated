@@ -120,9 +120,9 @@ static NSString *const kAPIYrsKey = @"api_yrs";
 
 - (void)save:(NSDictionary *)dict
 {
-    if ([dict objectForKey:@"id"])
+    if ([dict objectForKey:@"userid"])
     {
-        self.userId = [dict objectForKey:@"id"];
+        self.userId = [dict objectForKey:@"userid"];
     }
 
     if ([dict objectForKey:@"username"])
