@@ -241,3 +241,89 @@ func TestReadUsers(test *testing.T) {
         assert.Equal(t.count, len(r), "should store user profiles on each level of user_csz")
     }
 }
+
+/*
+ * Contact Test
+ */
+
+type Contact struct {
+    Userid   int64  `json:"userid"`
+    Username string `json:"username"`
+    YRS      int64  `json:"yrs"`
+    Phone    int64  `json:"phone"`
+}
+
+var Contacts = []Contact{
+    {1234567890000, "user0", 1, 14258001000},
+    {1234567890001, "user1", 1, 14258001001},
+    {1234567890002, "user2", 1, 14258001002},
+    {1234567890003, "user3", 1, 14258001003},
+    {1234567890004, "user4", 1, 14258001004},
+    {1234567890005, "user5", 1, 14258001005},
+    {1234567890006, "user6", 1, 14258001006},
+    {1234567890007, "user7", 1, 14258001007},
+    {1234567890008, "user8", 1, 14258001008},
+    {1234567890009, "user9", 1, 14258001009},
+}
+
+func (h *Handler) prepareContacts() {
+
+    for _, c := range Contacts {
+
+        body := fmt.Sprintf("phone=%v&yrs=%v", c.Phone, c.YRS)
+
+        req, _ := http.NewRequest("POST", "/v1/user/profile", strings.NewReader(body))
+        req.Header.Set("Content-Type", "application/x-www-form-urlencoded; param=value")
+        resp := httptest.NewRecorder()
+
+        h.WriteProfile(resp, req, c.Userid, c.Username)
+    }
+}
+
+var ReadContactsTests = []struct {
+    phone int64
+    count int
+}{
+    {14258001000, 1},
+    {14258001001, 1},
+    {14258001002, 1},
+    {14258001003, 1},
+    {14258001004, 1},
+    {14258001005, 1},
+    {14258001006, 1},
+    {14258001007, 1},
+    {14258001008, 1},
+    {14258001009, 1},
+    {14258009000, 0},
+    {14258009001, 0},
+    {14258009002, 0},
+    {14258009003, 0},
+    {14258009004, 0},
+    {14258009005, 0},
+    {14258009006, 0},
+    {14258009007, 0},
+    {14258009008, 0},
+    {14258009009, 0},
+}
+
+func TestReadContacts(test *testing.T) {
+    assert := assert.New(test)
+    db := cassandra.DB()
+    h := Handler{DB: db}
+    h.prepareContacts()
+
+    for _, t := range ReadContactsTests {
+        query := fmt.Sprintf("/v1/users?phone[]=%v", t.phone)
+        req, _ := http.NewRequest("GET", query, nil)
+        resp := httptest.NewRecorder()
+        h.ReadContacts(resp, req, int64(1), "username")
+
+        bytes := resp.Body.Bytes()
+
+        var r []Contact
+        err := json.Unmarshal(bytes, &r)
+
+        assert.Nil(err)
+        assert.Equal(t.count, len(r), "should return correct count")
+    }
+}
