@@ -51,6 +51,7 @@ type AuthParams struct {
 type AuthResponse struct {
     Username string `json:"username"`
     Id       int64  `json:"userid"`
+    YRS      int64  `json:"yrs"`
     Token    string `json:"token"`
     TokenTtl int    `json:"token_ttl"`
 }
@@ -93,6 +94,7 @@ func (h *Handler) SignUp(w http.ResponseWriter, req *http.Request) {
     response := &AuthResponse{
         Username: p.Username,
         Id:       userid,
+        YRS:      int64(0),
         Token:    token,
         TokenTtl: kTokenTtl,
     }
@@ -117,8 +119,9 @@ func (h *Handler) SignIn(w http.ResponseWriter, req *http.Request) {
     // read encrypted password from DB
     var userid int64
     var epassword string
-    if err := h.DB.Query(`SELECT userid, password FROM user_by_name WHERE username = ? LIMIT 1`,
-        p.Username).Consistency(gocql.One).Scan(&userid, &epassword); err != nil {
+    var yrs int64
+    if err := h.DB.Query(`SELECT userid, password, yrs FROM user_by_name WHERE username = ? LIMIT 1`,
+        p.Username).Consistency(gocql.One).Scan(&userid, &epassword, &yrs); err != nil {
         RespondError(w, ErrUserNotExist, http.StatusBadRequest)
         return
     }
@@ -139,6 +142,7 @@ func (h *Handler) SignIn(w http.ResponseWriter, req *http.Request) {
     response := &AuthResponse{
         Username: p.Username,
         Id:       userid,
+        YRS:      yrs,
         Token:    token,
         TokenTtl: kTokenTtl,
     }

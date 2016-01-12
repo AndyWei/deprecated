@@ -97,6 +97,12 @@ func (h *Handler) WriteProfile(w http.ResponseWriter, req *http.Request, userid 
         return
     }
 
+    if err := h.DB.Query(`INSERT INTO user_by_name (username, userid, yrs) VALUES (?, ?, ?)`,
+        username, userid, p.YRS).Exec(); err != nil {
+        RespondError(w, err, http.StatusBadGateway)
+        return
+    }
+
     // inform all my friends
     if p.Boardcast {
         fids, err := h.getFriendIds(userid)

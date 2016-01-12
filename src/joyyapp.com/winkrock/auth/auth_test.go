@@ -160,24 +160,6 @@ func TestCheckPassword(test *testing.T) {
     }
 }
 
-func (h *Handler) signIn(username, password string) (id int64, token string, err error) {
-    body := fmt.Sprintf("username=%v&password=%v", username, password)
-    req, _ := http.NewRequest("POST", "/v1/auth/signin", strings.NewReader(body))
-    req.Header.Set("Content-Type", "application/x-www-form-urlencoded; param=value")
-
-    resp := httptest.NewRecorder()
-    h.SignIn(resp, req)
-
-    bytes := resp.Body.Bytes()
-    if resp.Code != http.StatusOK {
-        return 0, "", errors.New(string(bytes))
-    }
-
-    var reply AuthResponse
-    json.Unmarshal(bytes, &reply)
-    return reply.Id, reply.Token, nil
-}
-
 func (h *Handler) signUp(username, password string) (id int64, token string, err error) {
     body := fmt.Sprintf("username=%v&password=%v", username, password)
     req, _ := http.NewRequest("POST", "/v1/auth/signup", strings.NewReader(body))

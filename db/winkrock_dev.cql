@@ -1,5 +1,5 @@
 /*
- * winkrock.cql
+ * winkrock_dev.cql
  * 
  * Copyright (c) 2015 Joyy Inc. All rights reserved.
  */
@@ -22,12 +22,6 @@ CREATE USER IF NOT EXISTS dev WITH PASSWORD 'password' NOSUPERUSER;
 
 GRANT SELECT ON KEYSPACE winkrock TO dev;
 GRANT MODIFY ON KEYSPACE winkrock TO dev;
-
-/*
- * winkrock_dev.cql
- * 
- * Copyright (c) 2015 Joyy Inc. All rights reserved.
- */
 
 USE winkrock;
 
@@ -91,6 +85,7 @@ CREATE TABLE IF NOT EXISTS user_by_name (
     username         text    ,
     userid           bigint  ,
     password         text    , -- bcrypt hashed password, it always 60 bytes long, however text makes it flexible
+    yrs              bigint  ,
 
     PRIMARY KEY (username)
 ) WITH COMPACTION = {'class': 'LeveledCompactionStrategy', 'enabled': 'true'};
@@ -125,6 +120,21 @@ CREATE TABLE IF NOT EXISTS code_by_phone (
  * @Discussion:
  */
 CREATE TABLE IF NOT EXISTS invite (
+    userid       bigint , -- userid
+    fid          bigint , -- friend userid
+    fname        text   , -- friend username
+    fyrs         bigint , -- friend yrs, see YRS Encoding Rule. 
+
+    PRIMARY KEY (userid, fid)
+);
+
+/*
+ * Description: the table stores friendship wink invite
+ * Write      : when userA want to create friendship with userB, a row will be write to userB's wink partition
+ *
+ * @Discussion:
+ */
+CREATE TABLE IF NOT EXISTS wink (
     userid       bigint , -- userid
     fid          bigint , -- friend userid
     fname        text   , -- friend username

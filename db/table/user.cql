@@ -63,9 +63,10 @@ CREATE TABLE IF NOT EXISTS user_device (
  */
 CREATE TABLE IF NOT EXISTS user_by_name (
     -- account fields created in post user/signup
-    username         text    ,
-    userid           bigint  ,
-    password         text    , -- bcrypt hashed password, it always 60 bytes long, however text makes it flexible
+    username         text   ,
+    userid           bigint ,
+    password         text   , -- bcrypt hashed password, it always 60 bytes long, however text makes it flexible
+    yrs              bigint ,
 
     PRIMARY KEY (username)
 ) WITH COMPACTION = {'class': 'LeveledCompactionStrategy', 'enabled': 'true'};
