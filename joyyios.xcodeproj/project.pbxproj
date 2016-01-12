@@ -113,7 +113,6 @@
 		D6BD61741C1FF84B00EFC92C /* JYNewCommentCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D6BD61731C1FF84B00EFC92C /* JYNewCommentCell.m */; };
 		D6BD61771C2007EF00EFC92C /* JYNewCommentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6BD61761C2007EF00EFC92C /* JYNewCommentViewController.m */; };
 		D6BD617A1C20CC2300EFC92C /* JYReminderView.m in Sources */ = {isa = PBXBuildFile; fileRef = D6BD61791C20CC2300EFC92C /* JYReminderView.m */; };
-		D6C6BBAC1B62DF6B00FFFAC7 /* NSDictionary+Joyy.m in Sources */ = {isa = PBXBuildFile; fileRef = D6C6BBAB1B62DF6B00FFFAC7 /* NSDictionary+Joyy.m */; };
 		D6C82B551B0D9FAE00876F57 /* JYCommentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6C82B541B0D9FAE00876F57 /* JYCommentViewController.m */; };
 		D6C82B691B12553D00876F57 /* JYComment.m in Sources */ = {isa = PBXBuildFile; fileRef = D6C82B681B12553D00876F57 /* JYComment.m */; };
 		D6C89F7C1C2B5C9C00E96E99 /* JYProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6C89F7B1C2B5C9C00E96E99 /* JYProfileViewController.m */; };
@@ -347,8 +346,6 @@
 		D6BD61761C2007EF00EFC92C /* JYNewCommentViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYNewCommentViewController.m; sourceTree = "<group>"; };
 		D6BD61781C20CC2300EFC92C /* JYReminderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYReminderView.h; sourceTree = "<group>"; };
 		D6BD61791C20CC2300EFC92C /* JYReminderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYReminderView.m; sourceTree = "<group>"; };
-		D6C6BBAA1B62DF6B00FFFAC7 /* NSDictionary+Joyy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+Joyy.h"; sourceTree = "<group>"; };
-		D6C6BBAB1B62DF6B00FFFAC7 /* NSDictionary+Joyy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+Joyy.m"; sourceTree = "<group>"; };
 		D6C82B531B0D9FAE00876F57 /* JYCommentViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYCommentViewController.h; sourceTree = "<group>"; };
 		D6C82B541B0D9FAE00876F57 /* JYCommentViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYCommentViewController.m; sourceTree = "<group>"; };
 		D6C82B671B12553D00876F57 /* JYComment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYComment.h; sourceTree = "<group>"; };
@@ -743,8 +740,6 @@
 				D63A014A1C335BA700E74C36 /* JYYearPickerView.m */,
 				D6903D031BF9AA4300CDC64F /* NSDate+Joyy.h */,
 				D6903D041BF9AA4300CDC64F /* NSDate+Joyy.m */,
-				D6C6BBAA1B62DF6B00FFFAC7 /* NSDictionary+Joyy.h */,
-				D6C6BBAB1B62DF6B00FFFAC7 /* NSDictionary+Joyy.m */,
 				D6E3B0631B9A7C6D00B707DF /* NSIndexPath+Joyy.h */,
 				D6E3B0641B9A7C6D00B707DF /* NSIndexPath+Joyy.m */,
 				D6348D351ADB7ABC0002BC35 /* NSMutableDictionary+Joyy.h */,
@@ -1218,7 +1213,6 @@
 				D61D1DA21B4E336E00DE37DF /* TGCameraAuthorizationViewController.m in Sources */,
 				D6C89F831C2B9A8700E96E99 /* JYWinkViewController.m in Sources */,
 				D6F7F1381BA71ADF008118DA /* JYVerificationViewController.m in Sources */,
-				D6C6BBAC1B62DF6B00FFFAC7 /* NSDictionary+Joyy.m in Sources */,
 				D63F0D7D1ACA5E260067C5EE /* JYPhoneNumberViewController.m in Sources */,
 				D6966B321BA2BB2B00AAD8D5 /* UITextField+Joyy.m in Sources */,
 				D6C89F801C2B62BC00E96E99 /* JYProfileCardView.m in Sources */,

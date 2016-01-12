@@ -12,6 +12,4 @@
 
 + (instancetype)myself;
 
-@property (nonatomic) uint64_t phoneNumber;
-
 @end

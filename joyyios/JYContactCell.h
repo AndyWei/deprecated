@@ -10,4 +10,6 @@
 
 @interface JYContactCell : JYUserBaseCell
 
+@property (nonatomic) NSString *contactName;
+
 @end

@@ -69,6 +69,7 @@ static NSString *const kCellIdentifier = @"profileUserlineCell";
     [self.view addSubview:self.tableView];
 
     [self _fetchFriends];
+    [self _fetchInvites];
     [self _fetchWinks];
     [self _fetchUserline];
 }

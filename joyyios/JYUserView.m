@@ -17,7 +17,6 @@
 @interface JYUserView () <TTTAttributedLabelDelegate>
 @property (nonatomic) UIButton *avatarButton;
 @property (nonatomic) TTTAttributedLabel *usernameLabel;
-@property (nonatomic) TTTAttributedLabel *ageLabel;
 @property (nonatomic) TTTAttributedLabel *sexLabel;
 @end
 
@@ -34,20 +33,17 @@ static NSString *kUsernameURL = @"action://_didTapAvatarButton";
 
         [self addSubview:self.avatarButton];
         [self addSubview:self.usernameLabel];
-        [self addSubview:self.ageLabel];
         [self addSubview:self.sexLabel];
 
         NSDictionary *views = @{
                                 @"avatarButton": self.avatarButton,
                                 @"usernameLabel": self.usernameLabel,
-                                @"ageLabel": self.ageLabel,
                                 @"sexLabel": self.sexLabel
                               };
 
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-8-[avatarButton(40)]-8-[usernameLabel][ageLabel(40)]-5-[sexLabel(20)]|" options:0 metrics:nil views:views]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-8-[avatarButton(40)]-8-[usernameLabel]-5-[sexLabel(20)]|" options:0 metrics:nil views:views]];
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[avatarButton]|" options:0 metrics:nil views:views]];
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[usernameLabel]|" options:0 metrics:nil views:views]];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[ageLabel]|" options:0 metrics:nil views:views]];
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[sexLabel]|" options:0 metrics:nil views:views]];
     }
     return self;
@@ -73,7 +69,6 @@ static NSString *kUsernameURL = @"action://_didTapAvatarButton";
 
     if (!self.hideDetail)
     {
-        self.ageLabel.text = _user.age;
         self.sexLabel.text = _user.sex;
     }
 }
@@ -119,15 +114,6 @@ static NSString *kUsernameURL = @"action://_didTapAvatarButton";
                                        };
     }
     return _usernameLabel;
-}
-
-- (TTTAttributedLabel *)ageLabel
-{
-    if (!_ageLabel)
-    {
-        _ageLabel = [self _defaultLabel];
-    }
-    return _ageLabel;
 }
 
 - (TTTAttributedLabel *)sexLabel

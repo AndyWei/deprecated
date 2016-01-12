@@ -164,8 +164,16 @@
 
 - (uint64_t)uint64Value
 {
-    NSNumber *number = [NSNumber numberWithLongLong: self.longLongValue];
+    NSNumberFormatter *f = [[NSNumberFormatter alloc] init];
+    f.numberStyle = NSNumberFormatterDecimalStyle;
+    NSNumber *number = [f numberFromString:self];
     return number.unsignedLongLongValue;
+}
+
+- (NSNumber *)uint64Number
+{
+    uint64_t value = [self uint64Value];
+    return [NSNumber numberWithUnsignedLongLong:value];
 }
 
 - (NSString *)messageDisplayString

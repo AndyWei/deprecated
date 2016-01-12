@@ -17,6 +17,7 @@
 #import "Flurry.h"
 #import "JYAmazonClientManager.h"
 #import "JYButton.h"
+#import "JYContactViewController.h"
 #import "JYCredentialManager.h"
 #import "JYDataStore.h"
 #import "JYDeviceManager.h"
@@ -64,6 +65,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_didManuallySignIn) name:kNotificationDidSignIn object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_didManuallySignUp) name:kNotificationDidSignUp object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_didCreateProfile) name:kNotificationDidCreateProfile object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_didFinishContactsConnection) name:kNotificationDidFinishContactsConnection object:nil];
 
     [self _setupGlobalAppearance];
     [self _launchViewController];
@@ -185,7 +187,8 @@
         return;
     }
 
-    [self _launchMainViewController];
+//    [self _launchMainViewController];
+    [self _launchContactViewController];
 }
 
 - (void)_introductionDidFinish
@@ -205,6 +208,12 @@
 - (void)_launchProfileViewController
 {
     UIViewController *viewController = [JYProfileCreationViewController new];
+    self.window.rootViewController = viewController;
+}
+
+- (void)_launchContactViewController
+{
+    UIViewController *viewController = [JYContactViewController new];
     self.window.rootViewController = viewController;
 }
 
@@ -281,9 +290,13 @@
 
 - (void)_didCreateProfile
 {
-    [self _launchMainViewController];
+    [self _launchContactViewController];
 }
 
+- (void)_didFinishContactsConnection
+{
+    [self _launchMainViewController];
+}
 
 #pragma mark - Introduction Pages
 

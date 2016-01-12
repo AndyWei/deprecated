@@ -12,6 +12,7 @@
 #import <AFNetworking/AFNetworking.h>
 #import <CoreTelephony/CTCarrier.h>
 #import <CoreTelephony/CTTelephonyNetworkInfo.h>
+#import <KVNProgress/KVNProgress.h>
 
 #import "JYContactCell.h"
 #import "JYContactViewController.h"
@@ -55,14 +56,14 @@ static NSString *const kCellIdentifier = @"contactCell";
 
 - (void)_readPhoneNumbers
 {
-    if (NSClassFromString(@"CNContact"))
-    {
-        [self _readPhoneNumbersFromContactStore]; // iOS9 and later
-    }
-    else
-    {
+//    if (NSClassFromString(@"CNContact"))
+//    {
+//        [self _readPhoneNumbersFromContactStore]; // iOS9 and later
+//    }
+//    else
+//    {
         [self _readPhoneNumbersFromAddressBook]; // iOS7 and iOS8
-    }
+//    }
 }
 
 - (void)_readPhoneNumbersFromContactStore
@@ -78,6 +79,7 @@ static NSString *const kCellIdentifier = @"contactCell";
 
         //keys with fetching properties
         NSArray *keys = @[CNContactFamilyNameKey, CNContactGivenNameKey, CNContactPhoneNumbersKey];
+
         NSPredicate *predicate = [CNContact predicateForContactsInContainerWithIdentifier:store.defaultContainerIdentifier];
         NSError *err;
         NSArray *contactList = [store unifiedContactsMatchingPredicate:predicate keysToFetch:keys error:&err];
@@ -98,6 +100,7 @@ static NSString *const kCellIdentifier = @"contactCell";
                 [weakSelf _handlePhoneNumber:phoneNumber contactName:fullName];
             }
         }
+        NSLog(@"self.phoneNumberSet count = %lu", (unsigned long)[self.phoneNumberSet count]);
         [weakSelf _readRemoteUsersInContact];
     }];
 }
@@ -202,6 +205,11 @@ static NSString *const kCellIdentifier = @"contactCell";
 - (void)_handlePhoneNumber:(NSString *)phoneNumber contactName:(NSString *)contactName
 {
     NSNumber *number = [self _parsePhoneNumber:phoneNumber];
+    if (number == 0)
+    {
+        return;
+    }
+
     [self.phoneNumberSet addObject:number];
     [self.contactDict setObject:contactName forKey:number];
 }
@@ -229,13 +237,13 @@ static NSString *const kCellIdentifier = @"contactCell";
 {
     if (lastname == nil)
     {
-        return [NSString stringWithFormat:@"%@",firstname];
+        return [NSString stringWithFormat:@"%@", firstname];
     }
     else if (firstname == nil)
     {
-        return [NSString stringWithFormat:@"%@",lastname];
+        return [NSString stringWithFormat:@"%@", lastname];
     }
-    return [NSString stringWithFormat:@"%@ %@",firstname,lastname];
+    return [NSString stringWithFormat:@"%@ %@", firstname, lastname];
 }
 
 - (NSString *)countryDailCode
@@ -285,6 +293,7 @@ static NSString *const kCellIdentifier = @"contactCell";
 
     JYUser *user = [self.contactList objectAtIndex:indexPath.row];
     cell.user = user;
+    cell.contactName = [self.contactDict objectForKey:user.phoneNumber];
     cell.delegate = self;
 
     [cell setNeedsUpdateConstraints];
@@ -320,29 +329,49 @@ static NSString *const kCellIdentifier = @"contactCell";
 
 - (void) _readRemoteUsersInContact
 {
+    if ([self.phoneNumberSet count] == 0)
+    {
+        return;
+    }
+
+//    [KVNProgress show];
+
     NSString *url = [NSString apiURLWithPath:@"contacts"];
     AFHTTPSessionManager *manager = [AFHTTPSessionManager managerWithToken];
 
     __weak typeof(self) weakSelf = self;
     [manager GET:url
-      parameters:nil
+      parameters: [self _readRemoteUsersParameters]
          success:^(NSURLSessionTask *operation, id responseObject) {
              NSLog(@"GET contacts Success");
+
+//             [KVNProgress dismiss];
 
              NSMutableArray *userList = [NSMutableArray new];
              for (NSDictionary *dict in responseObject)
              {
                  NSError *error = nil;
-                 JYFriend *friend = (JYFriend *)[MTLJSONAdapter modelOfClass:JYUser.class fromJSONDictionary:dict error:&error];
-                 if (friend)
+                 JYUser *user = (JYFriend *)[MTLJSONAdapter modelOfClass:JYUser.class fromJSONDictionary:dict error:&error];
+                 if (user)
                  {
-                     [userList addObject:friend];
+                     [userList addObject:user];
                  }
              }
-//             weakSelf.winkList = winkList;
+
+             if ([userList count] == 0)
+             {
+                 [weakSelf _close];
+             }
+             else
+             {
+                 weakSelf.contactList = userList;
+                 [weakSelf.tableView reloadData];
+             }
          }
          failure:^(NSURLSessionTask *operation, NSError *error) {
              NSLog(@"GET contacts error: %@", error);
+//             [KVNProgress dismiss];
+             [weakSelf _close];
          }];
 }
 
@@ -354,12 +383,18 @@ static NSString *const kCellIdentifier = @"contactCell";
         uint64_t number = [phoneNumber unsignedLongLongValue];
         [phoneNumberList addObject:@(number)];
     }
+    NSLog(@"phoneNumberList count = %lu", (unsigned long)[phoneNumberList count]);
     return @{@"phone": phoneNumberList};
 }
 
 - (void)_connectUser:(JYUser *)user
 {
 
+}
+
+- (void)_close
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationDidFinishContactsConnection object:nil];
 }
 
 @end

@@ -17,14 +17,15 @@
 - (NSString *)nextAvatarThumbnailFilename;
 - (NSString *)reversedIdString;
 
+@property (nonatomic) NSNumber *phoneNumber;
 @property (nonatomic) NSNumber *userId;
 @property (nonatomic) NSString *username;
-@property (nonatomic) NSURL *avatarURL;
-@property (nonatomic) NSURL *avatarThumbnailURL;
 @property (nonatomic) NSString *sex;
 @property (nonatomic) NSString *bio;
 @property (nonatomic) NSString *age;
-@property (nonatomic) uint64_t yrsValue;
+@property (nonatomic) NSURL *avatarURL;
+@property (nonatomic) NSURL *avatarThumbnailURL;
 @property (nonatomic) UIImage *avatarImage;
+@property (nonatomic) uint64_t yrsValue;
 
 @end

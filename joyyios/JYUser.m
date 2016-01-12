@@ -22,6 +22,7 @@
              @"userId": @"userid",
              @"username": @"username",
              @"yrsValue": @"yrs",
+             @"phoneNumber": @"phone",
              @"bio": @"bio"
              };
 }
@@ -31,9 +32,10 @@
 + (NSDictionary *)FMDBColumnsByPropertyKey
 {
     return @{
-             @"userId": @"userid",
+             @"userId": @"id",
              @"username": @"username",
              @"yrsValue": @"yrs",
+             @"phoneNumber": @"phone",
              @"bio": [NSNull null],
              @"avatarURL": [NSNull null],
              @"avatarThumbnailURL": [NSNull null],

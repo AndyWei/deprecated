@@ -18,8 +18,8 @@
              @"userId": @"fid",
              @"username": @"fname",
              @"yrsValue": @"fyrs",
-             @"bio": @"bio",
-             @"phoneNumber": @"phone"
+             @"phoneNumber": @"phone",
+             @"bio": @"bio"
              };
 }
 
@@ -68,7 +68,7 @@
         _myself.userId = [JYCredential current].userId;
         _myself.username = [JYCredential current].username;
         _myself.yrsValue = [JYCredential current].yrsValue;
-        _myself.phoneNumber = [[JYCredential current].phoneNumber uint64Value];
+        _myself.phoneNumber = [[JYCredential current].phoneNumber uint64Number];
     });
 
     return _myself;

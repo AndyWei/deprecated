@@ -27,6 +27,8 @@ static NSString *const CREATE_USER_TABLE_SQL =
     id       INTEGER NOT NULL, \
     username TEXT    NOT NULL, \
     yrs      INTEGER NOT NULL, \
+    phone    INTEGER         , \
+    bio      TEXT            , \
 PRIMARY KEY(id)) ";
 
 static NSString *const CREATE_FRIEND_TABLE_SQL =
