@@ -87,6 +87,7 @@ PODS:
     - libextobjc/RuntimeExtensions
   - libextobjc/RuntimeExtensions (0.4.1)
   - libextobjc/UmbrellaHeader (0.4.1)
+  - libPhoneNumber-iOS (0.8.10)
   - Mantle (2.0.6):
     - Mantle/extobjc (= 2.0.6)
   - Mantle/extobjc (2.0.6)
@@ -262,6 +263,7 @@ DEPENDENCIES:
   - KVNProgress
   - KVOController
   - libextobjc
+  - libPhoneNumber-iOS (~> 0.8)
   - Mantle
   - MJRefresh
   - MSWeakTimer
@@ -293,6 +295,7 @@ SPEC CHECKSUMS:
   KVNProgress: 7001d2d16a2755cee5599e8e485befe056f2197b
   KVOController: 9fd8f0343670994e4b6f9f0b31f5a45663f3e1cf
   libextobjc: a650fc1bf489a3d3a9bc2e621efa3e1006fc5471
+  libPhoneNumber-iOS: 7bfd00f843fdcd82b5182b463e8eb3b27579f41d
   Mantle: 299966b00759634931699f69cb6a30b9239b944d
   MJRefresh: f3e1228ec3d38c7ba5208d58032631a52f39f495
   MSWeakTimer: 9426150f933b80ed3acf3f6d228e4b61f0e303c8
