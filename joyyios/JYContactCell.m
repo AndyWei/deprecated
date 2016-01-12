@@ -7,6 +7,7 @@
 //
 
 #import <TTTAttributedLabel/TTTAttributedLabel.h>
+#import <libPhoneNumber-iOS/NBPhoneNumberUtil.h>
 
 #import "JYContactCell.h"
 
@@ -34,7 +35,7 @@
 
         [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[userView]-10-[actionButton(130)]-10-|" options:0 metrics:nil views:views]];
         [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-10-[contactNameLabel]-10-[phoneNumberLabel]-(>=10@500)-|" options:0 metrics:nil views:views]];
-        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-15-[actionButton(30)]-(>=15@500)-|" options:0 metrics:nil views:views]];
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-20-[actionButton(30)]-(>=10@500)-|" options:0 metrics:nil views:views]];
         [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-10-[userView(40)][contactNameLabel]-(>=10@500)-|" options:0 metrics:nil views:views]];
         [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-10-[userView(40)][phoneNumberLabel]-(>=10@500)-|" options:0 metrics:nil views:views]];
 
@@ -47,7 +48,13 @@
 - (void)setUser:(JYUser *)user
 {
     [super setUser:user];
-    self.phoneNumberLabel.text = [user.phoneNumber stringValue];
+
+    NSString *e164 = [NSString stringWithFormat:@"+%@", [user.phoneNumber stringValue]];
+    NBPhoneNumberUtil *phoneUtil = [NBPhoneNumberUtil new];
+
+    NSError *error = nil;
+    NBPhoneNumber *number = [phoneUtil parse:e164 defaultRegion:nil error:&error];
+    self.phoneNumberLabel.text = [phoneUtil format:number numberFormat:NBEPhoneNumberFormatINTERNATIONAL error:&error];
 }
 
 - (void)setContactName:(NSString *)contactName
@@ -62,9 +69,10 @@
     {
         TTTAttributedLabel *label = [[TTTAttributedLabel alloc] initWithFrame:CGRectZero];
         label.translatesAutoresizingMaskIntoConstraints = NO;
-        label.font = [UIFont systemFontOfSize:kFontSizeCaption];
+        label.font = [UIFont systemFontOfSize:kFontSizeDetail];
         label.backgroundColor = ClearColor;
-        label.textColor = JoyyBlue;
+        label.textColor = JoyyGray;
+        label.textAlignment = NSTextAlignmentRight;
         label.lineBreakMode = NSLineBreakByWordWrapping;
         label.numberOfLines = 0;
 
@@ -79,9 +87,10 @@
     {
         TTTAttributedLabel *label = [[TTTAttributedLabel alloc] initWithFrame:CGRectZero];
         label.translatesAutoresizingMaskIntoConstraints = NO;
-        label.font = [UIFont systemFontOfSize:kFontSizeCaption];
+        label.font = [UIFont systemFontOfSize:kFontSizeDetail];
         label.backgroundColor = ClearColor;
         label.textColor = JoyyGray;
+        label.textAlignment = NSTextAlignmentRight;
         label.lineBreakMode = NSLineBreakByWordWrapping;
         label.numberOfLines = 0;
 

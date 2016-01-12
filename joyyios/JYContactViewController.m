@@ -271,12 +271,12 @@ static NSString *const kCellIdentifier = @"contactCell";
         _tableView.delegate = self;
 
         _tableView.sectionIndexBackgroundColor = ClearColor;
-        _tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
+        _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
         _tableView.showsHorizontalScrollIndicator = NO;
         _tableView.showsVerticalScrollIndicator = YES;
 
         _tableView.rowHeight = UITableViewAutomaticDimension;
-        _tableView.estimatedRowHeight = 60;
+        _tableView.estimatedRowHeight = 80;
 
         [_tableView registerClass:[JYContactCell class] forCellReuseIdentifier:kCellIdentifier];
     }

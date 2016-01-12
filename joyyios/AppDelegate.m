@@ -181,11 +181,11 @@
         return;
     }
 
-    if ([JYCredential current].yrsValue == 0)
-    {
-        [self _launchProfileViewController];
-        return;
-    }
+//    if ([JYCredential current].yrsValue == 0)
+//    {
+//        [self _launchProfileViewController];
+//        return;
+//    }
 
 //    [self _launchMainViewController];
     [self _launchContactViewController];
