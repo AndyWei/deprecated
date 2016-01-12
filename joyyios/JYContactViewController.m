@@ -13,6 +13,7 @@
 #import <CoreTelephony/CTCarrier.h>
 #import <CoreTelephony/CTTelephonyNetworkInfo.h>
 #import <KVNProgress/KVNProgress.h>
+#import <libPhoneNumber-iOS/NBPhoneNumberUtil.h>
 
 #import "JYContactCell.h"
 #import "JYContactViewController.h"
@@ -26,10 +27,11 @@
 @import Contacts;
 
 @interface JYContactViewController () <JYUserBaseCellDelegate, UITableViewDataSource, UITableViewDelegate>
+@property (nonatomic) NBPhoneNumberUtil *phoneUtil;
 @property (nonatomic) NSMutableArray *contactList;
 @property (nonatomic) NSMutableSet *phoneNumberSet;
 @property (nonatomic) NSMutableDictionary *contactDict;
-@property (nonatomic) NSString *countryDailCode;
+@property (nonatomic) NSString *countryCode;
 @property (nonatomic) UITableView *tableView;
 @end
 
@@ -48,6 +50,7 @@ static NSString *const kCellIdentifier = @"contactCell";
     self.contactList = [NSMutableArray new];
     [self.view addSubview:self.tableView];
 
+    self.phoneUtil = [NBPhoneNumberUtil new];
     self.phoneNumberSet = [NSMutableSet new];
     self.contactDict = [NSMutableDictionary new];
 
@@ -216,21 +219,23 @@ static NSString *const kCellIdentifier = @"contactCell";
 
 - (NSNumber *)_parsePhoneNumber:(NSString *)phone
 {
-    if ([phone length] == 0)
+    NSError *error = nil;
+    NBPhoneNumber *phoneNumber = [self.phoneUtil parse:phone defaultRegion:self.countryCode error:&error];
+
+    if (error || ![self.phoneUtil isValidNumber:phoneNumber])
     {
         return 0;
     }
 
-    NSString *phoneStr = [phone pureNumberString];
-    if (![phone containsString:@"+"]) // no country code included
+    NSString *e164 = [self.phoneUtil format:phoneNumber numberFormat:NBEPhoneNumberFormatE164 error:&error];
+    if (error)
     {
-        phoneStr = [NSString stringWithFormat:@"%@%@", self.countryDailCode, phoneStr];
+        return 0;
     }
 
-    NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
-    formatter.numberStyle = NSNumberFormatterDecimalStyle;
-    NSNumber *phoneNumber = [formatter numberFromString:phoneStr];
-    return phoneNumber;
+    // remove '+'
+    NSString *phoneStr = [e164 substringFromIndex:1];
+    return [phoneStr uint64Number];
 }
 
 - (NSString *)_fullNameWithFirstname:(NSString *)firstname lastname:(NSString *)lastname
@@ -246,16 +251,15 @@ static NSString *const kCellIdentifier = @"contactCell";
     return [NSString stringWithFormat:@"%@ %@", firstname, lastname];
 }
 
-- (NSString *)countryDailCode
+- (NSString *)countryCode
 {
-    if (!_countryDailCode)
+    if (!_countryCode)
     {
         CTTelephonyNetworkInfo *netInfo = [[CTTelephonyNetworkInfo alloc] init];
         CTCarrier *carrier = [netInfo subscriberCellularProvider];
-        NSString *countryCode = [carrier.isoCountryCode uppercaseString];
-        _countryDailCode = [NSString dialingCodeForCountryCode:countryCode];
+        _countryCode = [carrier.isoCountryCode uppercaseString];
     }
-    return _countryDailCode;
+    return _countryCode;
 }
 
 - (UITableView *)tableView
@@ -327,6 +331,23 @@ static NSString *const kCellIdentifier = @"contactCell";
 
 #pragma mark - Network
 
+- (void)_showNetWorkIndicator
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [KVNProgress show];
+        [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+    });
+}
+
+- (void)_hideNetWorkIndicator
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [KVNProgress dismiss];
+        [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+    });
+}
+
+
 - (void) _readRemoteUsersInContact
 {
     if ([self.phoneNumberSet count] == 0)
@@ -334,7 +355,7 @@ static NSString *const kCellIdentifier = @"contactCell";
         return;
     }
 
-//    [KVNProgress show];
+    [self _showNetWorkIndicator];
 
     NSString *url = [NSString apiURLWithPath:@"contacts"];
     AFHTTPSessionManager *manager = [AFHTTPSessionManager managerWithToken];
@@ -344,14 +365,13 @@ static NSString *const kCellIdentifier = @"contactCell";
       parameters: [self _readRemoteUsersParameters]
          success:^(NSURLSessionTask *operation, id responseObject) {
              NSLog(@"GET contacts Success");
-
-//             [KVNProgress dismiss];
+             [weakSelf _hideNetWorkIndicator];
 
              NSMutableArray *userList = [NSMutableArray new];
              for (NSDictionary *dict in responseObject)
              {
                  NSError *error = nil;
-                 JYUser *user = (JYFriend *)[MTLJSONAdapter modelOfClass:JYUser.class fromJSONDictionary:dict error:&error];
+                 JYUser *user = (JYUser *)[MTLJSONAdapter modelOfClass:JYUser.class fromJSONDictionary:dict error:&error];
                  if (user)
                  {
                      [userList addObject:user];
@@ -370,7 +390,7 @@ static NSString *const kCellIdentifier = @"contactCell";
          }
          failure:^(NSURLSessionTask *operation, NSError *error) {
              NSLog(@"GET contacts error: %@", error);
-//             [KVNProgress dismiss];
+             [weakSelf _hideNetWorkIndicator];
              [weakSelf _close];
          }];
 }

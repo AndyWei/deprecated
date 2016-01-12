@@ -213,8 +213,9 @@
 
 - (void)_launchContactViewController
 {
-    UIViewController *viewController = [JYContactViewController new];
-    self.window.rootViewController = viewController;
+    UIViewController *vc = [JYContactViewController new];
+    UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:vc];
+    self.window.rootViewController = nc;
 }
 
 - (void)_launchIntroductionViewController

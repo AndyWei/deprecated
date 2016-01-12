@@ -32,13 +32,14 @@
                                 @"phoneNumberLabel": self.phoneNumberLabel,
                                 };
 
-        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[userView]-30-[actionButton(60)]-30-|" options:0 metrics:nil views:views]];
-        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-10-[contactNameLabel]-10-[phoneNumberLabel]-(>=10@500)-[actionButton(60)]-30-|" options:0 metrics:nil views:views]];
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[userView]-10-[actionButton(130)]-10-|" options:0 metrics:nil views:views]];
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-10-[contactNameLabel]-10-[phoneNumberLabel]-(>=10@500)-|" options:0 metrics:nil views:views]];
         [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-15-[actionButton(30)]-(>=15@500)-|" options:0 metrics:nil views:views]];
         [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-10-[userView(40)][contactNameLabel]-(>=10@500)-|" options:0 metrics:nil views:views]];
         [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-10-[userView(40)][phoneNumberLabel]-(>=10@500)-|" options:0 metrics:nil views:views]];
 
         self.actionButton.textLabel.text = NSLocalizedString(@"connect", nil);
+        self.userView.hideDetail = YES;
     }
     return self;
 }

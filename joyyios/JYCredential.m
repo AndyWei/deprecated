@@ -130,6 +130,11 @@ static NSString *const kAPIYrsKey = @"api_yrs";
         self.username = [dict objectForKey:@"username"];
     }
 
+    if ([dict objectForKey:@"yrs"])
+    {
+        self.yrsValue = [[dict objectForKey:@"yrs"] unsignedLongLongValue];
+    }
+
     if ([dict objectForKey:@"token"])
     {
         self.token = [dict objectForKey:@"token"];
@@ -142,7 +147,7 @@ static NSString *const kAPIYrsKey = @"api_yrs";
 
 - (BOOL)isInvalid
 {
-    BOOL invalid = ((self.username == nil) || (self.password == nil) || (self.userId == nil) || ([self.userId unsignedLongLongValue] == 0));
+    BOOL invalid = (!self.username || !self.password || !self.userId);
     return invalid;
 }
 

@@ -60,7 +60,7 @@ static NSString *kUsernameURL = @"action://_didTapAvatarButton";
         return;
     }
 
-    [self _updateAvatarButtonImage];
+    [self.avatarButton setImageForState:UIControlStateNormal withURL:user.avatarThumbnailURL];
 
     // add link to make the label clickable
     self.usernameLabel.text = user.username;
@@ -70,14 +70,6 @@ static NSString *kUsernameURL = @"action://_didTapAvatarButton";
     if (!self.hideDetail)
     {
         self.sexLabel.text = _user.sex;
-    }
-}
-
-- (void)_updateAvatarButtonImage
-{
-    if (self.user)
-    {
-        [self.avatarButton setImageForState:UIControlStateNormal withURL:self.user.avatarThumbnailURL];
     }
 }
 
