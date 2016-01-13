@@ -61,7 +61,7 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.title = NSLocalizedString(@"Home", nil);
+    self.title = NSLocalizedString(@"Feeds", nil);
 
     self.navigationController.navigationBar.translucent = YES;
     self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:self.navigationItem.backBarButtonItem.style target:nil action:nil];

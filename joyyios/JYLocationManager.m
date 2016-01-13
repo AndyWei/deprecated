@@ -18,8 +18,8 @@
 @property (nonatomic) CLPlacemark *lastPlacemark;
 @end
 
-NSString *const kCountryCode = @"location_country_code";
-NSString *const kZip = @"location_zip";
+static NSString *const kCountryCode = @"location_country_code";
+static NSString *const kZip = @"location_zip";
 
 @implementation JYLocationManager
 
@@ -96,6 +96,7 @@ NSString *const kZip = @"location_zip";
 
 - (void)setZip:(NSString *)zip
 {
+    _zip = zip;
     [[NSUserDefaults standardUserDefaults] setObject:zip forKey:kZip];
 }
 
@@ -139,11 +140,6 @@ NSString *const kZip = @"location_zip";
         return;
     }
 
-    if ([JYCredential current].yrsValue == 0 || [JYCredential current].tokenValidInSeconds <= 0)
-    {
-        return;
-    }
-
     NSString *countryCode = placemark.ISOcountryCode;
     NSString *zip = placemark.postalCode;
 
@@ -159,6 +155,12 @@ NSString *const kZip = @"location_zip";
 
     self.zip = zip;
     self.countryCode = countryCode;
+
+    if ([JYCredential current].yrsValue == 0 || [JYCredential current].tokenValidInSeconds <= 0)
+    {
+        return;
+    }
+    
     [self _appearInZip:zip country:countryCode];
 }
 
@@ -174,7 +176,7 @@ NSString *const kZip = @"location_zip";
               NSLog(@"POST user/appear Success. zip = %@", zip);
           }
           failure:^(NSURLSessionTask *operation, NSError *error) {
-              NSLog(@"user/appear error: %@", error);
+              NSLog(@"POST user/appear error: %@", error);
           }];
     
 }

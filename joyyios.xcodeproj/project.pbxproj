@@ -74,7 +74,7 @@
 		D65AFA5E1AEC715D007867D0 /* JYTimelineViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D65AFA5D1AEC715D007867D0 /* JYTimelineViewController.m */; };
 		D65F37461B04807D007B534C /* JYCommentlineCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D65F37451B04807D007B534C /* JYCommentlineCell.m */; };
 		D679B3011B97B1E5004EBA61 /* JYFilename.m in Sources */ = {isa = PBXBuildFile; fileRef = D679B3001B97B1E5004EBA61 /* JYFilename.m */; };
-		D67DD0E41B75302800333626 /* JYUserViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D67DD0E31B75302800333626 /* JYUserViewController.m */; };
+		D67DD0E41B75302800333626 /* JYPeopleViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D67DD0E31B75302800333626 /* JYPeopleViewController.m */; };
 		D67DD0E81B7530AF00333626 /* JYUserCard.m in Sources */ = {isa = PBXBuildFile; fileRef = D67DD0E71B7530AF00333626 /* JYUserCard.m */; };
 		D67DD0EC1B75321A00333626 /* JYUser.m in Sources */ = {isa = PBXBuildFile; fileRef = D67DD0EB1B75321A00333626 /* JYUser.m */; };
 		D6825BC71BE897F400F3695D /* JYLocationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D6825BC61BE897F400F3695D /* JYLocationManager.m */; };
@@ -267,8 +267,8 @@
 		D65F37451B04807D007B534C /* JYCommentlineCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYCommentlineCell.m; sourceTree = "<group>"; };
 		D679B2FF1B97B1E5004EBA61 /* JYFilename.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYFilename.h; sourceTree = "<group>"; };
 		D679B3001B97B1E5004EBA61 /* JYFilename.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYFilename.m; sourceTree = "<group>"; };
-		D67DD0E21B75302800333626 /* JYUserViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYUserViewController.h; sourceTree = "<group>"; };
-		D67DD0E31B75302800333626 /* JYUserViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYUserViewController.m; sourceTree = "<group>"; };
+		D67DD0E21B75302800333626 /* JYPeopleViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYPeopleViewController.h; sourceTree = "<group>"; };
+		D67DD0E31B75302800333626 /* JYPeopleViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYPeopleViewController.m; sourceTree = "<group>"; };
 		D67DD0E61B7530AF00333626 /* JYUserCard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYUserCard.h; sourceTree = "<group>"; };
 		D67DD0E71B7530AF00333626 /* JYUserCard.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYUserCard.m; sourceTree = "<group>"; };
 		D67DD0EA1B75321A00333626 /* JYUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYUser.h; sourceTree = "<group>"; };
@@ -671,8 +671,8 @@
 			children = (
 				D67DD0E61B7530AF00333626 /* JYUserCard.h */,
 				D67DD0E71B7530AF00333626 /* JYUserCard.m */,
-				D67DD0E21B75302800333626 /* JYUserViewController.h */,
-				D67DD0E31B75302800333626 /* JYUserViewController.m */,
+				D67DD0E21B75302800333626 /* JYPeopleViewController.h */,
+				D67DD0E31B75302800333626 /* JYPeopleViewController.m */,
 			);
 			name = People;
 			sourceTree = "<group>";
@@ -1180,7 +1180,7 @@
 				D63147461C1A826500EAE05E /* JYFriendViewController.m in Sources */,
 				D63B69B21AC51D61005600A9 /* JYSignBaseViewController.m in Sources */,
 				D61FAE5E1C4461BB00142450 /* JYInviteViewController.m in Sources */,
-				D67DD0E41B75302800333626 /* JYUserViewController.m in Sources */,
+				D67DD0E41B75302800333626 /* JYPeopleViewController.m in Sources */,
 				D65F37461B04807D007B534C /* JYCommentlineCell.m in Sources */,
 				D60726AE1C18179500A43717 /* JYMonth.m in Sources */,
 				D63A013A1C331BF600E74C36 /* JYProfileCreationViewController.m in Sources */,

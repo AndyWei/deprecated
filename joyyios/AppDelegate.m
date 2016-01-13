@@ -24,13 +24,13 @@
 #import "JYFilename.h"
 #import "JYFriendManager.h"
 #import "JYLocalDataManager.h"
+#import "JYPeopleViewController.h"
 #import "JYPhoneNumberViewController.h"
 #import "JYProfileCreationViewController.h"
 #import "JYProfileViewController.h"
 #import "JYSessionListViewController.h"
 #import "JYSoundPlayer.h"
 #import "JYTimelineViewController.h"
-#import "JYUserViewController.h"
 #import "JYXmppManager.h"
 #import "OnboardingViewController.h"
 #import "OnboardingContentViewController.h"
@@ -181,14 +181,14 @@
         return;
     }
 
-//    if ([JYCredential current].yrsValue == 0)
-//    {
-//        [self _launchProfileViewController];
-//        return;
-//    }
+    if ([JYCredential current].yrsValue == 0)
+    {
+        [self _launchProfileViewController];
+        return;
+    }
 
-//    [self _launchMainViewController];
-    [self _launchContactViewController];
+    [self _launchMainViewController];
+//    [self _launchContactViewController];
 }
 
 - (void)_introductionDidFinish
@@ -238,10 +238,10 @@
 
     _tabBarController = [UITabBarController new];
 
-    UIViewController *vc1 = [JYTimelineViewController new];
+    UIViewController *vc1 = [JYPeopleViewController new];
     UINavigationController *nc1 = [[UINavigationController alloc] initWithRootViewController:vc1];
 
-    UIViewController *vc2 = [JYUserViewController new];
+    UIViewController *vc2 = [JYTimelineViewController new];
     UINavigationController *nc2 = [[UINavigationController alloc] initWithRootViewController:vc2];
 
     UIViewController *vc3 = [JYSessionListViewController new];
@@ -258,13 +258,13 @@
     UITabBarItem *tabBarItem3 = [tabBar.items objectAtIndex:2];
     UITabBarItem *tabBarItem4 = [tabBar.items objectAtIndex:3];
 
-    tabBarItem1.selectedImage = [[UIImage imageNamed:@"home_selected"] imageWithRenderingMode:UIImageRenderingModeAutomatic];
-    tabBarItem1.image = [[UIImage imageNamed:@"home"] imageWithRenderingMode:UIImageRenderingModeAutomatic];
-    tabBarItem1.title = NSLocalizedString(@"Home", nil);
+    tabBarItem1.selectedImage = [[UIImage imageNamed:@"people_selected"]imageWithRenderingMode:UIImageRenderingModeAutomatic];
+    tabBarItem1.image = [[UIImage imageNamed:@"people"]imageWithRenderingMode:UIImageRenderingModeAutomatic];
+    tabBarItem1.title = NSLocalizedString(@"People", nil);
 
-    tabBarItem2.selectedImage = [[UIImage imageNamed:@"people_selected"]imageWithRenderingMode:UIImageRenderingModeAutomatic];
-    tabBarItem2.image = [[UIImage imageNamed:@"people"]imageWithRenderingMode:UIImageRenderingModeAutomatic];
-    tabBarItem2.title = NSLocalizedString(@"Radar", nil);
+    tabBarItem2.selectedImage = [[UIImage imageNamed:@"feeds_selected"] imageWithRenderingMode:UIImageRenderingModeAutomatic];
+    tabBarItem2.image = [[UIImage imageNamed:@"feeds"] imageWithRenderingMode:UIImageRenderingModeAutomatic];
+    tabBarItem2.title = NSLocalizedString(@"Feeds", nil);
 
     tabBarItem3.selectedImage = [[UIImage imageNamed:@"chat_selected"]imageWithRenderingMode:UIImageRenderingModeAutomatic];
     tabBarItem3.image = [[UIImage imageNamed:@"chat"]imageWithRenderingMode:UIImageRenderingModeAutomatic];

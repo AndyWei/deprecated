@@ -12,36 +12,43 @@
 
 #import "AppDelegate.h"
 #import "JYButton.h"
+#import "JYCredential.h"
 #import "JYFacialGestureDetector.h"
-#import "JYUserViewController.h"
+#import "JYPeopleViewController.h"
+#import "JYUserCard.h"
+#import "JYYRS.h"
+#import "MDCSwipeToChoose.h"
 
-@interface JYUserViewController () <JYFacialGuestureDetectorDelegate, MDCSwipeToChooseDelegate>
+@interface JYPeopleViewController () <JYFacialGuestureDetectorDelegate, MDCSwipeToChooseDelegate>
+@property (nonatomic) BOOL isListening;
 @property (nonatomic) CGRect cardFrame;
 @property (nonatomic) JYButton *nopeButton;
 @property (nonatomic) JYButton *winkButton;
 @property (nonatomic) JYButton *fetchButton;
-
 @property (nonatomic) JYFacialGestureDetector *facialGesturesDetector;
+@property (nonatomic) JYUserCard *frontCard;
+@property (nonatomic) JYUserCard *backCard;
 @property (nonatomic) MSWeakTimer *detectorAwakeTimer;
-@property (nonatomic) BOOL isListening;
-
 @property (nonatomic) NSMutableArray *userList;
 @property (nonatomic) NSInteger networkThreadCount;
+@property (nonatomic) uint64_t minUserId;
+@property (nonatomic, copy) SuccessHandler pendingAction;
 @end
 
 const CGFloat kButtonSpaceH = 80;
 const CGFloat kButtonSpaceV = 40;
 const CGFloat kButtonWidth = 60;
 
-@implementation JYUserViewController
+@implementation JYPeopleViewController
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     self.view.backgroundColor = JoyyWhitePure;
-    self.title = NSLocalizedString(@"Radar", nil);
+    self.title = NSLocalizedString(@"People", nil);
 
     self.userList = [NSMutableArray new];
+    self.minUserId = LLONG_MAX;
 
     _cardFrame = CGRectZero;
 
@@ -51,6 +58,7 @@ const CGFloat kButtonWidth = 60;
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_appStart) name:kNotificationAppDidStart object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_appStop) name:kNotificationAppDidStop object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_apiTokenReady) name:kNotificationAPITokenReady object:nil];
 
     [self _fetchUsers];
 }
@@ -58,6 +66,14 @@ const CGFloat kButtonWidth = 60;
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)_apiTokenReady
+{
+    if (self.pendingAction)
+    {
+        self.pendingAction();
+    }
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -94,8 +110,8 @@ const CGFloat kButtonWidth = 60;
 
 - (void)_turnOnDetector
 {
-    // Since in the init few seconds the reportings from the detector is not accurate, we don't listening to them
-    // Later the awake timer will enable the reporting
+    // Since in the init few seconds the reportings from the detector is not accurate, we don't listening to them.
+    // The awake timer will enable the reporting later
 
     self.isListening = NO;
     NSError *error;
@@ -120,12 +136,7 @@ const CGFloat kButtonWidth = 60;
     }
 
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-    self.detectorAwakeTimer = [MSWeakTimer scheduledTimerWithTimeInterval:2.0f
-                                                            target:self
-                                                          selector:@selector(_awakeDetector)
-                                                          userInfo:nil
-                                                           repeats:NO
-                                                     dispatchQueue:queue];
+    self.detectorAwakeTimer = [MSWeakTimer scheduledTimerWithTimeInterval:2.0f target:self selector:@selector(_awakeDetector) userInfo:nil repeats:NO dispatchQueue:queue];
 }
 
 - (void)_stopDetectorAwakeTimer
@@ -221,7 +232,7 @@ const CGFloat kButtonWidth = 60;
         _fetchButton.width = SCREEN_WIDTH - 100;
         _fetchButton.cornerRadius = 5;
 
-        _fetchButton.textLabel.text = NSLocalizedString(@"GET MORE PEOPLE", nil);
+        _fetchButton.textLabel.text = NSLocalizedString(@"Give Me More", nil);
         [_fetchButton addTarget:self action:@selector(_fetchUsers) forControlEvents:UIControlEventTouchUpInside];
     }
     return _fetchButton;
@@ -357,34 +368,6 @@ const CGFloat kButtonWidth = 60;
 
 #pragma mark - Maintain Data
 
-- (void)_handleNearbyUserIds:(NSArray *)userIds
-{
-    if (!userIds || userIds.count == 0)
-    {
-        return;
-    }
-
-    NSArray *validUserIds = [self _filterUserIds:userIds];
-    [self _fetchPersonByIds:validUserIds];
-}
-
-- (NSArray *)_filterUserIds:(NSArray *)userIds
-{
-    NSMutableArray *validUserIds = [NSMutableArray new];
-    for (NSString *userId in userIds)
-    {
-        if ([self _isValid:userId])
-        {
-            [validUserIds addObject:userId];
-        }
-    }
-    return validUserIds;
-}
-
-- (BOOL)_isValid:(NSString *)userId
-{
-    return YES;
-}
 
 #pragma mark - Network
 
@@ -394,60 +377,29 @@ const CGFloat kButtonWidth = 60;
     {
         return;
     }
+
+    if ([JYCredential current].tokenValidInSeconds <= 0)
+    {
+        __weak typeof(self) weakSelf = self;
+        self.pendingAction = ^{
+            [weakSelf _fetchUsers];
+        };
+        return;
+    }
+    
+    self.pendingAction = nil;
+
     [self _networkThreadBegin];
 
     AFHTTPSessionManager *manager = [AFHTTPSessionManager managerWithToken];
-    NSString *url = [NSString apiURLWithPath:@"person/nearby"];
+    NSString *url = [NSString apiURLWithPath:@"users"];
     NSDictionary *parameters = [self _parametersForPersonNearby];
 
     __weak typeof(self) weakSelf = self;
     [manager GET:url
       parameters:parameters
          success:^(NSURLSessionTask *operation, id responseObject) {
-//             NSLog(@"person/nearby fetch success responseObject: %@", responseObject);
-
-             [weakSelf _handleNearbyUserIds:responseObject];
-             [weakSelf _networkThreadEnd];
-         }
-         failure:^(NSURLSessionTask *operation, NSError *error) {
-             [weakSelf _networkThreadEnd];
-         }
-     ];
-}
-
-- (NSDictionary *)_parametersForPersonNearby
-{
-    NSMutableDictionary *parameters = [NSMutableDictionary new];
-
-    AppDelegate *delegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-    [parameters setObject:delegate.locationManager.zip forKey:@"zip"];
-
-//    NSString *orientation = [JYUser me].sexualOrientation;
-//    [parameters setObject:orientation forKey:@"orientation"];
-
-    if (self.userList.count > 0)
-    {
-//        JYUser *person = self.userList.lastObject;
-//        [parameters setValue:@(person.id) forKey:@"max"];
-    }
-
-//    NSLog(@"fetch person nearby parameters: %@", parameters);
-    return parameters;
-}
-
-- (void)_fetchPersonByIds:(NSArray *)userIds
-{
-    [self _networkThreadBegin];
-
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager managerWithToken];
-    NSString *url = [NSString apiURLWithPath:@"person"];
-    NSDictionary *parameters = @{@"id": userIds};
-
-    __weak typeof(self) weakSelf = self;
-    [manager GET:url
-      parameters:parameters
-         success:^(NSURLSessionTask *operation, id responseObject) {
-             NSLog(@"fetch person by ids success responseObject: %@", responseObject);
+             NSLog(@"GET users success. responseObject = %@", responseObject);
 
              for (NSDictionary *dict in responseObject)
              {
@@ -459,9 +411,44 @@ const CGFloat kButtonWidth = 60;
              [weakSelf _networkThreadEnd];
          }
          failure:^(NSURLSessionTask *operation, NSError *error) {
+             NSLog(@"GET users fail. error = %@", error);
              [weakSelf _networkThreadEnd];
          }
      ];
+}
+
+- (NSDictionary *)_parametersForPersonNearby
+{
+    NSMutableDictionary *parameters = [NSMutableDictionary new];
+
+    [parameters setObject:[self _sexualOrientation] forKey:@"sex"];
+
+    AppDelegate *delegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
+    [parameters setObject:delegate.locationManager.countryCode forKey:@"country"];
+
+//    [parameters setObject:delegate.locationManager.zip forKey:@"zip"];
+    [parameters setObject:@"9" forKey:@"zip"];
+
+    [parameters setValue:@(self.minUserId) forKey:@"max_userid"];
+
+    NSLog(@"fetch users parameters: %@", parameters);
+    return parameters;
+}
+
+- (NSString *)_sexualOrientation
+{
+    NSString *sex = @"0";
+    uint64_t yrsValue = [JYCredential current].yrsValue;
+    JYYRS *yrs = [JYYRS yrsWithValue:yrsValue];
+    switch (yrs.sex)
+    {
+        case 0:
+            sex = @"1";
+            break;
+        default:
+            break;
+    }
+    return sex;
 }
 
 - (void)_networkThreadBegin

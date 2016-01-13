@@ -44,6 +44,8 @@ static const CGFloat kInfoLabelWidth = 280.f;
                                 UIViewAutoresizingFlexibleBottomMargin;
         self.imageView.autoresizingMask = self.autoresizingMask;
         self.backgroundColor = JoyyWhitePure;
+
+        [self addSubview:self.infoLabel];
     }
     return self;
 }
@@ -52,11 +54,7 @@ static const CGFloat kInfoLabelWidth = 280.f;
 {
     if (!_infoLabel)
     {
-        CGFloat y = CGRectGetHeight(self.bounds) - kLabelHeight;
-        CGRect frame = CGRectMake(0, y, kInfoLabelWidth, kLabelHeight);
-        _infoLabel = [self _labelWithFrame:frame];
-
-        [self addSubview:_infoLabel];
+        _infoLabel = [self _labelWithFrame:CGRectZero];
     }
 
     return _infoLabel;
@@ -84,9 +82,17 @@ static const CGFloat kInfoLabelWidth = 280.f;
 - (TTTAttributedLabel *)_labelWithFrame:(CGRect)frame
 {
     TTTAttributedLabel *label = [[TTTAttributedLabel alloc] initWithFrame:frame];
-    label.backgroundColor = JoyyBlack50;
+    label.backgroundColor = JoyyBlack80;
+    label.font = [UIFont systemFontOfSize:kFontSizeCaption];
+    label.textAlignment = NSTextAlignmentCenter;
     label.textColor = JoyyWhite;
-    label.textInsets = UIEdgeInsetsMake(0, 10, 0, 0);
+    label.textInsets = UIEdgeInsetsMake(0, kMarginLeft, 0, kMarginRight);
+
+    label.lineBreakMode = NSLineBreakByWordWrapping;
+    label.numberOfLines = 0;
+
+    label.layer.cornerRadius = 4;
+    label.clipsToBounds = YES;
 
     return label;
 }
@@ -99,16 +105,14 @@ static const CGFloat kInfoLabelWidth = 280.f;
     }
 
     _user = user;
-
     [self _updateImage];
     [self _updateInfoLabel];
-    [self _updateHeartCount];
 }
 
 - (void)_updateImage
 {
     // Get network image
-    NSURLRequest *request = [NSURLRequest requestWithURL:self.user.avatarThumbnailURL cachePolicy:NSURLRequestReturnCacheDataElseLoad timeoutInterval:5];
+    NSURLRequest *request = [NSURLRequest requestWithURL:self.user.avatarURL cachePolicy:NSURLRequestReturnCacheDataElseLoad timeoutInterval:5];
 
     __weak typeof(self) weakSelf = self;
     [self.imageView setImageWithURLRequest:request
@@ -132,19 +136,15 @@ static const CGFloat kInfoLabelWidth = 280.f;
 
 - (void)_updateInfoLabel
 {
-    if (self.user.age)
-    {
-        self.infoLabel.text = [NSString stringWithFormat:@"%@, %@", self.user.username, self.user.age];
-    }
-    else
-    {
-        self.infoLabel.text = [NSString stringWithFormat:@"%@", self.user.username];
-    }
-}
+    self.infoLabel.text = [NSString stringWithFormat:@"%@", self.user.username];
 
-- (void)_updateHeartCount
-{
-//    self.winkCountView.textLabel.text = [NSString stringWithFormat:@"%llu", self.person.winkCount];
+    CGFloat cardWidth = CGRectGetWidth(self.bounds);
+    CGFloat cardHeight = CGRectGetHeight(self.bounds);
+    self.infoLabel.width = cardWidth - 30;
+
+    [self.infoLabel sizeToFit];
+    self.infoLabel.centerX = cardWidth/2;
+    self.infoLabel.y = cardHeight - self.infoLabel.height - 10;
 }
 
 @end
