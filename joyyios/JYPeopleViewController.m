@@ -30,7 +30,7 @@
 @property (nonatomic) JYUserCard *backCard;
 @property (nonatomic) MSWeakTimer *detectorAwakeTimer;
 @property (nonatomic) NSMutableArray *userList;
-@property (nonatomic) NSInteger networkThreadCount;
+@property (nonatomic) NSMutableString *zip;
 @property (nonatomic) uint64_t minUserId;
 @property (nonatomic, copy) SuccessHandler pendingAction;
 @end
@@ -368,16 +368,31 @@ const CGFloat kButtonWidth = 60;
 
 #pragma mark - Maintain Data
 
+- (void)_receivedUserList:(NSArray *)userList
+{
+    if ([userList count] == 0)
+    {
+        if ([self.zip length] > 1)
+        {
+            // shorten zip for 1 char and try again, which will cause the server search in a larger geo range
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.zip deleteCharactersInRange:NSMakeRange([self.zip length] - 1, 1)];
+                [self _fetchUsers];
+            });
+        }
+        return;
+    }
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.userList addObjectsFromArray:userList];
+        [self _loadCards];
+    });
+}
 
 #pragma mark - Network
 
 - (void)_fetchUsers
 {
-    if (self.networkThreadCount > 0)
-    {
-        return;
-    }
-
     if ([JYCredential current].tokenValidInSeconds <= 0)
     {
         __weak typeof(self) weakSelf = self;
@@ -401,13 +416,14 @@ const CGFloat kButtonWidth = 60;
          success:^(NSURLSessionTask *operation, id responseObject) {
              NSLog(@"GET users success. responseObject = %@", responseObject);
 
+             NSMutableArray *userList = [NSMutableArray new];
              for (NSDictionary *dict in responseObject)
              {
                  NSError *error = nil;
                  JYUser *user = (JYUser *)[MTLJSONAdapter modelOfClass:JYUser.class fromJSONDictionary:dict error:&error];
-                 [weakSelf.userList addObject:user];
+                 [userList addObject:user];
              }
-             [weakSelf _loadCards];
+             [weakSelf _receivedUserList:userList];
              [weakSelf _networkThreadEnd];
          }
          failure:^(NSURLSessionTask *operation, NSError *error) {
@@ -422,14 +438,16 @@ const CGFloat kButtonWidth = 60;
     NSMutableDictionary *parameters = [NSMutableDictionary new];
 
     [parameters setObject:[self _sexualOrientation] forKey:@"sex"];
+    [parameters setValue:@(self.minUserId) forKey:@"max_userid"];
 
     AppDelegate *delegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
     [parameters setObject:delegate.locationManager.countryCode forKey:@"country"];
 
-//    [parameters setObject:delegate.locationManager.zip forKey:@"zip"];
-    [parameters setObject:@"9" forKey:@"zip"];
-
-    [parameters setValue:@(self.minUserId) forKey:@"max_userid"];
+    if (!self.zip)
+    {
+        self.zip = [NSMutableString stringWithString:delegate.locationManager.zip];
+    }
+    [parameters setObject:self.zip forKey:@"zip"];
 
     NSLog(@"fetch users parameters: %@", parameters);
     return parameters;
@@ -453,20 +471,12 @@ const CGFloat kButtonWidth = 60;
 
 - (void)_networkThreadBegin
 {
-    if (self.networkThreadCount == 0)
-    {
-        [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
-    }
-    self.networkThreadCount++;
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
 }
 
 - (void)_networkThreadEnd
 {
-    self.networkThreadCount--;
-    if (self.networkThreadCount <= 0)
-    {
-        [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-    }
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
 }
 
 @end
