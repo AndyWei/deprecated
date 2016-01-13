@@ -172,7 +172,7 @@ CREATE TABLE IF NOT EXISTS friend (
  *                   4. The old slots will be deleted to save disk space.
  */
 CREATE TABLE IF NOT EXISTS user_csz1 (
-    area         text   , -- a man in US 94536 will have csz1 area "US09"
+    area         text   , -- a man in US 94536 will have csz1 area "US19"
     month        int    , -- months in form of yymm
     userid       bigint ,
     username     text   ,
@@ -183,7 +183,7 @@ CREATE TABLE IF NOT EXISTS user_csz1 (
 
 
 CREATE TABLE IF NOT EXISTS user_csz2 (
-    area         text   , -- a man in US 94536 will have csz2 area "US094"
+    area         text   , -- a man in US 94536 will have csz2 area "US194"
     month        int    , -- months in form of yymm
     userid       bigint ,
     username     text   ,
@@ -194,7 +194,7 @@ CREATE TABLE IF NOT EXISTS user_csz2 (
 
 
 CREATE TABLE IF NOT EXISTS user_csz3 (
-    area         text   , -- a man in US 94536 will have csz3 area code "US0945"
+    area         text   , -- a man in US 94536 will have csz3 area code "US1945"
     month        int    , -- months in form of yymm
     userid       bigint ,
     username     text   ,
@@ -206,7 +206,7 @@ CREATE TABLE IF NOT EXISTS user_csz3 (
 
 
 CREATE TABLE IF NOT EXISTS user_csz4 (
-    area         text   , -- a man in US 94536 will have csz4 area code "US09453"
+    area         text   , -- a man in US 94536 will have csz4 area code "US19453"
     month        int    , -- months in form of yymm
     userid       bigint ,
     username     text   ,
@@ -218,7 +218,7 @@ CREATE TABLE IF NOT EXISTS user_csz4 (
 
 
 CREATE TABLE IF NOT EXISTS user_csz5 (
-    area         text   , -- a man in US 94536 will have csz5 area code "US094536"
+    area         text   , -- a man in US 94536 will have csz5 area code "US194536"
     month        int    , -- months in form of yymm
     userid       bigint ,
     username     text   ,
@@ -281,6 +281,27 @@ CREATE TABLE IF NOT EXISTS userline (
 
 -- user
 INSERT INTO user (userid, username, deleted, phone, yrs) VALUES (114269549829816320, 'andyw', false, 14257850318, 130416641);
-INSERT INTO user_by_name (username, userid, password) VALUES ('andyw', 114269549829816320, '$2a$10$.pJOlEZ/hMZRyw3CoFDHm.IBAV6nek6PWAtseFdgKIlDfDUVP23cG');
+INSERT INTO user_by_name (username, userid, password, yrs) VALUES ('andyw', 114269549829816320, '$2a$10$.pJOlEZ/hMZRyw3CoFDHm.IBAV6nek6PWAtseFdgKIlDfDUVP23cG', 130416641);
 INSERT INTO user_by_phone (phone, userid, username) VALUES (14257850318, 114269549829816320, 'andyw');
+
+INSERT INTO user_csz1 (area, month, userid, username, yrs) VALUES ('US09', 1601, 1, 'user1', 130416640);
+INSERT INTO user_csz1 (area, month, userid, username, yrs) VALUES ('US09', 1601, 2, 'user2', 130416640);
+INSERT INTO user_csz1 (area, month, userid, username, yrs) VALUES ('US09', 1601, 3, 'user3', 130416640);
+INSERT INTO user_csz1 (area, month, userid, username, yrs) VALUES ('US09', 1601, 4, 'user4', 130416640);
+INSERT INTO user_csz1 (area, month, userid, username, yrs) VALUES ('US09', 1601, 5, 'user5', 130416640);
+INSERT INTO user_csz1 (area, month, userid, username, yrs) VALUES ('US09', 1601, 6, 'user6', 130416640);
+INSERT INTO user_csz1 (area, month, userid, username, yrs) VALUES ('US09', 1601, 7, 'user7', 130416640);
+INSERT INTO user_csz1 (area, month, userid, username, yrs) VALUES ('US09', 1601, 8, 'user8', 130416640);
+INSERT INTO user_csz1 (area, month, userid, username, yrs) VALUES ('US09', 1601, 9, 'user9', 130416640);
+INSERT INTO user_csz1 (area, month, userid, username, yrs) VALUES ('US09', 1601, 10, 'user10', 130416640);
+INSERT INTO user_csz1 (area, month, userid, username, yrs) VALUES ('US09', 1601, 11, 'user11', 130416640);
+INSERT INTO user_csz1 (area, month, userid, username, yrs) VALUES ('US09', 1601, 12, 'user12', 130416640);
+INSERT INTO user_csz1 (area, month, userid, username, yrs) VALUES ('US09', 1601, 13, 'user13', 130416640);
+INSERT INTO user_csz1 (area, month, userid, username, yrs) VALUES ('US09', 1601, 14, 'user14', 130416640);
+INSERT INTO user_csz1 (area, month, userid, username, yrs) VALUES ('US09', 1601, 15, 'user15', 130416640);
+INSERT INTO user_csz1 (area, month, userid, username, yrs) VALUES ('US09', 1601, 16, 'user16', 130416640);
+INSERT INTO user_csz1 (area, month, userid, username, yrs) VALUES ('US09', 1601, 17, 'user17', 130416640);
+INSERT INTO user_csz1 (area, month, userid, username, yrs) VALUES ('US09', 1601, 18, 'user18', 130416640);
+INSERT INTO user_csz1 (area, month, userid, username, yrs) VALUES ('US09', 1601, 19, 'user19', 130416640);
+INSERT INTO user_csz1 (area, month, userid, username, yrs) VALUES ('US09', 1601, 20, 'user20', 130416640);
 

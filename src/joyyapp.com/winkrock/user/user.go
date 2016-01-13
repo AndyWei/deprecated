@@ -191,10 +191,10 @@ func (h *Handler) Appear(w http.ResponseWriter, req *http.Request, userid int64,
 }
 
 type ReadUsersParams struct {
-    Country   string `param:"country" validate:"len=2"`
+    Country   string `param:"country" validate:"alpha,len=2"`
     Sex       string `param:"sex" validate:"required"`
     Zip       string `param:"zip" validate:"required"`
-    MaxUserId int64  `param:"max_userid"`
+    MaxUserId int64  `param:"max_userid" validate:"required"`
 }
 
 func (h *Handler) ReadUsers(w http.ResponseWriter, req *http.Request, userid int64, username string) {
@@ -205,21 +205,13 @@ func (h *Handler) ReadUsers(w http.ResponseWriter, req *http.Request, userid int
         return
     }
 
-    var query *gocql.Query
-    area := strings.ToUpper(p.Country + p.Sex + p.Zip)
     ziplen := math.Min(5, len(p.Zip))
+    format := "SELECT userid, username, yrs FROM user_csz%v WHERE area = ? AND month = ? AND userid < ? LIMIT 100"
+    stmt := fmt.Sprintf(format, ziplen)
+    area := strings.ToUpper(p.Country + p.Sex + p.Zip)
     month := ThisMonth()
 
-    if p.MaxUserId == 0 {
-        format := "SELECT userid, username, yrs FROM user_csz%v WHERE area = ? AND month = ? LIMIT 100"
-        stmt := fmt.Sprintf(format, ziplen)
-        query = h.DB.Query(stmt, area, month)
-    } else {
-        format := "SELECT userid, username, yrs FROM user_csz%v WHERE area = ? AND month = ? AND userid < ? LIMIT 100"
-        stmt := fmt.Sprintf(format, ziplen)
-        query = h.DB.Query(stmt, area, month, p.MaxUserId)
-    }
-
+    query := h.DB.Query(stmt, area, month, p.MaxUserId)
     iter := query.Consistency(gocql.One).Iter()
     users, err := iter.SliceMap()
     if err != nil {

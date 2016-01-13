@@ -27,7 +27,7 @@ USE winkrock;
  */
 CREATE TABLE IF NOT EXISTS user (
     userid           bigint  ,
-    username         text    , -- only the last used username will be kept
+    username         text    ,
     deleted          boolean , -- set to true only if the user deleted the account 
 
     -- profile fields updated in post profile
@@ -153,7 +153,7 @@ CREATE TABLE IF NOT EXISTS friend (
  *                   4. The old slots will be deleted to save disk space.
  */
 CREATE TABLE IF NOT EXISTS user_csz1 (
-    area         text   , -- a man in US 94536 will have csz1 area "US09"
+    area         text   , -- a man in US 94536 will have csz1 area "US19"
     month        int    , -- months in form of yymm
     userid       bigint ,
     username     text   ,
@@ -164,7 +164,7 @@ CREATE TABLE IF NOT EXISTS user_csz1 (
 
 
 CREATE TABLE IF NOT EXISTS user_csz2 (
-    area         text   , -- a man in US 94536 will have csz2 area "US094"
+    area         text   , -- a man in US 94536 will have csz2 area "US194"
     month        int    , -- months in form of yymm
     userid       bigint ,
     username     text   ,
@@ -175,7 +175,7 @@ CREATE TABLE IF NOT EXISTS user_csz2 (
 
 
 CREATE TABLE IF NOT EXISTS user_csz3 (
-    area         text   , -- a man in US 94536 will have csz3 area code "US0945"
+    area         text   , -- a man in US 94536 will have csz3 area code "US1945"
     month        int    , -- months in form of yymm
     userid       bigint ,
     username     text   ,
@@ -187,7 +187,7 @@ CREATE TABLE IF NOT EXISTS user_csz3 (
 
 
 CREATE TABLE IF NOT EXISTS user_csz4 (
-    area         text   , -- a man in US 94536 will have csz4 area code "US09453"
+    area         text   , -- a man in US 94536 will have csz4 area code "US19453"
     month        int    , -- months in form of yymm
     userid       bigint ,
     username     text   ,
@@ -199,7 +199,7 @@ CREATE TABLE IF NOT EXISTS user_csz4 (
 
 
 CREATE TABLE IF NOT EXISTS user_csz5 (
-    area         text   , -- a man in US 94536 will have csz5 area code "US094536"
+    area         text   , -- a man in US 94536 will have csz5 area code "US194536"
     month        int    , -- months in form of yymm
     userid       bigint ,
     username     text   ,
