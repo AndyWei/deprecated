@@ -7,6 +7,7 @@
 //
 
 #import <AFNetworking/AFNetworking.h>
+#import <AMPopTip/AMPopTip.h>
 #import <MSWeakTimer/MSWeakTimer.h>
 #import <TTTAttributedLabel/TTTAttributedLabel.h>
 
@@ -20,6 +21,9 @@
 #import "MDCSwipeToChoose.h"
 
 @interface JYPeopleViewController () <JYFacialGuestureDetectorDelegate, MDCSwipeToChooseDelegate>
+@property (nonatomic) AMPopTip *winkTip;
+@property (nonatomic) AMPopTip *nopeTip;
+@property (nonatomic) BOOL didShowTips;
 @property (nonatomic) BOOL isListening;
 @property (nonatomic) CGRect cardFrame;
 @property (nonatomic) JYButton *nopeButton;
@@ -48,10 +52,10 @@ const CGFloat kButtonWidth = 60;
     self.view.backgroundColor = JoyyWhitePure;
     self.title = NSLocalizedString(@"People", nil);
 
+    _cardFrame = CGRectZero;
     self.userList = [NSMutableArray new];
     self.minUserId = LLONG_MAX;
-
-    _cardFrame = CGRectZero;
+    self.didShowTips = NO;
 
     [self.view addSubview:self.fetchButton];
     [self.view addSubview:self.nopeButton];
@@ -64,6 +68,26 @@ const CGFloat kButtonWidth = 60;
     [self _fetchUsers];
 }
 
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+
+    if (self.didShowTips)
+    {
+        [self _turnOnDetector];
+    }
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
+
+    if (_facialGesturesDetector)
+    {
+        [self _turnOffDetector];
+    }
+}
+
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -74,19 +98,6 @@ const CGFloat kButtonWidth = 60;
     if (self.pendingAction)
     {
         self.pendingAction();
-    }
-}
-
-- (void)viewDidAppear:(BOOL)animated
-{
-    [self _turnOnDetector];
-}
-
-- (void)viewDidDisappear:(BOOL)animated
-{
-    if (_facialGesturesDetector)
-    {
-        [self _turnOffDetector];
     }
 }
 
@@ -221,7 +232,7 @@ const CGFloat kButtonWidth = 60;
     [self performSelector:@selector(_recoverWinkButton) withObject:self afterDelay:0.4f];
 }
 
-#pragma mark View Handling
+#pragma mark - Properties
 
 - (JYButton *)fetchButton
 {
@@ -245,7 +256,7 @@ const CGFloat kButtonWidth = 60;
     {
         CGRect frame = CGRectMake(kButtonSpaceH, CGRectGetMaxY(self.cardFrame) + kButtonSpaceV, kButtonWidth, kButtonWidth);
         UIImage *image = [UIImage imageNamed:@"nope"];
-        _nopeButton = [JYButton iconButtonWithFrame:frame icon:image color:JoyyRed];
+        _nopeButton = [JYButton iconButtonWithFrame:frame icon:image color:FlatYellowDark];
         _nopeButton.contentAnimateToColor = JoyyWhite;
 
         [_nopeButton addTarget:self action:@selector(_nope) forControlEvents:UIControlEventTouchUpInside];
@@ -399,6 +410,7 @@ const CGFloat kButtonWidth = 60;
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.userList addObjectsFromArray:userList];
         [self _loadCards];
+        [self _showTips];
     });
 }
 
@@ -528,4 +540,61 @@ const CGFloat kButtonWidth = 60;
     [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
 }
 
+#pragma mark - Tips
+
+- (AMPopTip *)winkTip
+{
+    if (!_winkTip)
+    {
+        _winkTip = [AMPopTip popTip];
+        _winkTip.entranceAnimation = AMPopTipEntranceAnimationScale;
+        _winkTip.popoverColor = JoyyBlue;
+        _winkTip.shouldDismissOnTap = YES;
+
+        __weak typeof(self) weakSelf = self;
+        _winkTip.dismissHandler = ^{
+            [weakSelf _showNopeTip];
+        };
+    }
+    return _winkTip;
+}
+
+- (AMPopTip *)nopeTip
+{
+    if (!_nopeTip)
+    {
+        _nopeTip = [AMPopTip popTip];
+        _nopeTip.entranceAnimation = AMPopTipEntranceAnimationScale;
+        _nopeTip.popoverColor = FlatYellowDark;
+        _nopeTip.shouldDismissOnTap = YES;
+
+        __weak typeof(self) weakSelf = self;
+        _nopeTip.dismissHandler = ^{
+            [weakSelf _turnOnDetector];
+        };
+    }
+    return _nopeTip;
+}
+
+- (void)_showTips
+{
+    if (self.didShowTips)
+    {
+        return;
+    }
+    self.didShowTips = YES;
+    [self _showWinkTip];
+}
+
+- (void)_showWinkTip
+{
+    NSString *text = NSLocalizedString(@"If you like someone, just do a right wink (right eye closed and left eye open). \n\r OK", nil);
+    [self.winkTip showText:text direction:AMPopTipDirectionUp maxWidth:180 inView:self.view fromFrame:self.winkButton.frame];
+}
+
+- (void)_showNopeTip
+{
+    NSString *text = NSLocalizedString(@"If you don't like someone, do a left wink (left eye closed and right eye open) \n\r OK", nil);
+    [self.nopeTip showText:text direction:AMPopTipDirectionUp maxWidth:180 inView:self.view fromFrame:self.nopeButton.frame];
+}
 @end

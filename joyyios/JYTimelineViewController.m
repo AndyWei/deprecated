@@ -7,6 +7,7 @@
 //
 
 #import <AFNetworking/AFNetworking.h>
+#import <AMPopTip/AMPopTip.h>
 #import <MJRefresh/MJRefresh.h>
 #import <KVNProgress/KVNProgress.h>
 #import <RKDropdownAlert/RKDropdownAlert.h>
@@ -32,6 +33,8 @@
 #import "NSDate+Joyy.h"
 
 @interface JYTimelineViewController () <JYRefreshHeaderDelegate, JYTimelineCellDelegate, TGCameraDelegate, UITableViewDataSource, UITableViewDelegate>
+@property (nonatomic) AMPopTip *popTip;
+@property (nonatomic) BOOL didShowPopTip;
 @property (nonatomic) CABasicAnimation *colorPulse;
 @property (nonatomic) JYButton *cameraButton;
 @property (nonatomic) JYPostCreator *postCreator;
@@ -67,6 +70,7 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
     self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:self.navigationItem.backBarButtonItem.style target:nil action:nil];
     self.navigationItem.titleView = self.titleButton;
 
+    self.didShowPopTip = NO;
     self.networkThreadCount = 0;
     self.postCreator = [JYPostCreator new];
     self.currentPost = nil;
@@ -87,6 +91,21 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
     [self _fetchLocalTimelineWithAction:^{
         [weakSelf _fetchNewPost];
     }];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+
+    [self.cameraButton.imageLayer.layer removeAllAnimations];
+    [self.cameraButton.imageLayer.layer addAnimation:self.colorPulse forKey:@"ColorPulse"];
+    [self _refreshCurrentCell];
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    [self _showTip];
 }
 
 - (UITableView *)tableView
@@ -160,15 +179,6 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
     self.jellyView = nil;
     [self.tableView addSubview:self.jellyView];
     header.jellyView = self.jellyView;
-}
-
-- (void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:animated];
-
-    [self.cameraButton.imageLayer.layer removeAllAnimations];
-    [self.cameraButton.imageLayer.layer addAnimation:self.colorPulse forKey:@"ColorPulse"];
-    [self _refreshCurrentCell];
 }
 
 - (void)_refreshCurrentCell
@@ -276,6 +286,33 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
         _colorPulse.toValue = (__bridge id)([JoyyGray CGColor]);
     }
     return _colorPulse;
+}
+
+#pragma mark - Tips
+
+- (AMPopTip *)popTip
+{
+    if (!_popTip)
+    {
+        _popTip = [AMPopTip popTip];
+        _popTip.entranceAnimation = AMPopTipEntranceAnimationScale;
+        _popTip.actionAnimation = AMPopTipActionAnimationBounce;
+        _popTip.popoverColor = JoyyBlue;
+        _popTip.shouldDismissOnTap = YES;
+    }
+    return _popTip;
+}
+
+- (void)_showTip
+{
+    if (self.didShowPopTip)
+    {
+        return;
+    }
+    self.didShowPopTip = YES;
+
+    NSString *text = NSLocalizedString(@"Tap the camera button to create post) ", nil);
+    [self.popTip showText:text direction:AMPopTipDirectionUp maxWidth:200 inView:self.view fromFrame:self.cameraButton.frame duration:4];
 }
 
 - (void)_networkThreadBegin
@@ -465,6 +502,8 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
 
 - (void)_showCamera
 {
+    [self.popTip hide];
+
     JYPhotoCaptionViewController *captionVC = [[JYPhotoCaptionViewController alloc] initWithDelegate:self];
 
     [TGCameraColor setTintColor:JoyyBlue];
