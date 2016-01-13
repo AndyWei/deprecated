@@ -8,6 +8,4 @@
 
 @interface JYPeopleViewController : UIViewController
 
-@property (nonatomic) JYUser *currentUser;
-
 @end

@@ -26,6 +26,7 @@
 @property (nonatomic) JYButton *winkButton;
 @property (nonatomic) JYButton *fetchButton;
 @property (nonatomic) JYFacialGestureDetector *facialGesturesDetector;
+@property (nonatomic) JYUser *currentUser;
 @property (nonatomic) JYUserCard *frontCard;
 @property (nonatomic) JYUserCard *backCard;
 @property (nonatomic) MSWeakTimer *detectorAwakeTimer;
@@ -187,11 +188,11 @@ const CGFloat kButtonWidth = 60;
     }
     else
     {
-//        NSLog(@"You liked %@.", self.currentPerson.username);
+        [self _wink:self.currentUser];
     }
 
-    // MDCSwipeToChooseView has removed the frontCard from the view hierarchy
-    // after it is swiped. So, we move the backCard to the front, and create a new backCard.
+    // MDCSwipeToChooseView has removed the frontCard from the view hierarchy after it is swiped.
+    // So, we move the backCard to the front, and create a new backCard.
     self.frontCard = self.backCard;
 
     self.isListening = (self.frontCard != nil);
@@ -312,7 +313,14 @@ const CGFloat kButtonWidth = 60;
 - (void)setFrontCard:(JYUserCard *)frontCard
 {
     _frontCard = frontCard;
-    self.currentUser = frontCard.user;
+    if (frontCard)
+    {
+        self.currentUser = frontCard.user;
+    }
+    else
+    {
+        self.currentUser = nil;
+    }
 }
 
 - (JYUserCard *)popCard
@@ -383,6 +391,11 @@ const CGFloat kButtonWidth = 60;
         return;
     }
 
+    // update minUserId
+    // TODO: uncommnet below
+//    JYUser *lastUser = (JYUser *)[userList lastObject];
+//    self.minUserId = [lastUser.userId unsignedLongLongValue];
+
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.userList addObjectsFromArray:userList];
         [self _loadCards];
@@ -390,6 +403,44 @@ const CGFloat kButtonWidth = 60;
 }
 
 #pragma mark - Network
+
+- (void)_wink:(JYUser *)user
+{
+    if (!user)
+    {
+        return;
+    }
+
+    [self _networkThreadBegin];
+
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager managerWithToken];
+    NSString *url = [NSString apiURLWithPath:@"wink/create"];
+    NSDictionary *parameters = [self _parametersForWinkingUser:user];
+
+    __weak typeof(self) weakSelf = self;
+    [manager POST:url
+      parameters:parameters
+         success:^(NSURLSessionTask *operation, id responseObject) {
+             NSLog(@"POST wink success. that username = %@", user.username);
+             [weakSelf _networkThreadEnd];
+         }
+         failure:^(NSURLSessionTask *operation, NSError *error) {
+             NSLog(@"POST wink fail. error = %@", error);
+             [weakSelf _networkThreadEnd];
+         }
+     ];
+}
+
+- (NSDictionary *)_parametersForWinkingUser:(JYUser *)user
+{
+    NSMutableDictionary *parameters = [NSMutableDictionary new];
+    [parameters setObject:user.username forKey:@"fname"];
+    [parameters setObject:@([user.userId unsignedLongLongValue]) forKey:@"fid"];
+    [parameters setObject:@(user.yrsValue) forKey:@"fyrs"];
+    [parameters setObject:@([JYCredential current].yrsValue) forKey:@"yrs"];
+
+    return parameters;
+}
 
 - (void)_fetchUsers
 {
@@ -401,14 +452,12 @@ const CGFloat kButtonWidth = 60;
         };
         return;
     }
-    
     self.pendingAction = nil;
-
     [self _networkThreadBegin];
 
     AFHTTPSessionManager *manager = [AFHTTPSessionManager managerWithToken];
     NSString *url = [NSString apiURLWithPath:@"users"];
-    NSDictionary *parameters = [self _parametersForPersonNearby];
+    NSDictionary *parameters = [self _parametersForFetchingUsers];
 
     __weak typeof(self) weakSelf = self;
     [manager GET:url
@@ -433,12 +482,12 @@ const CGFloat kButtonWidth = 60;
      ];
 }
 
-- (NSDictionary *)_parametersForPersonNearby
+- (NSDictionary *)_parametersForFetchingUsers
 {
     NSMutableDictionary *parameters = [NSMutableDictionary new];
 
     [parameters setObject:[self _sexualOrientation] forKey:@"sex"];
-    [parameters setValue:@(self.minUserId) forKey:@"max_userid"];
+    [parameters setObject:@(self.minUserId) forKey:@"max_userid"];
 
     AppDelegate *delegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
     [parameters setObject:delegate.locationManager.countryCode forKey:@"country"];
