@@ -20,6 +20,7 @@ PODS:
   - AFNetworking/UIKit (2.6.3):
     - AFNetworking/NSURLConnection
     - AFNetworking/NSURLSession
+  - AMPopTip (0.10.1)
   - AWSCore (2.3.1)
   - AWSS3 (2.3.1):
     - AWSCore (= 2.3.1)
@@ -250,6 +251,7 @@ PODS:
 
 DEPENDENCIES:
   - AFNetworking
+  - AMPopTip
   - AWSCore
   - AWSS3
   - ChameleonFramework
@@ -278,6 +280,7 @@ DEPENDENCIES:
 
 SPEC CHECKSUMS:
   AFNetworking: cb8d14a848e831097108418f5d49217339d4eb60
+  AMPopTip: b0b5d009f3ed47b10f118438a18e0ab5cd03c40d
   AWSCore: 7ad34b4bc285b778a3df699cb6f00aad3d1c446f
   AWSS3: b7f4a0ad4da6dcc172e757dcb2b2423d26b32325
   ChameleonFramework: 5abe69b1f2a6cc79c3c435fcd9d3d855748225ee
