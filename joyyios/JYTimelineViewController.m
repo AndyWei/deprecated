@@ -19,6 +19,7 @@
 #import "JYFriendManager.h"
 #import "JYJellyView.h"
 #import "JYLocalDataManager.h"
+#import "JYManagementDataStore.h"
 #import "JYNewCommentViewController.h"
 #import "JYPhotoCaptionViewController.h"
 #import "JYPost.h"
@@ -34,7 +35,6 @@
 
 @interface JYTimelineViewController () <JYRefreshHeaderDelegate, JYTimelineCellDelegate, TGCameraDelegate, UITableViewDataSource, UITableViewDelegate>
 @property (nonatomic) AMPopTip *popTip;
-@property (nonatomic) BOOL didShowPopTip;
 @property (nonatomic) CABasicAnimation *colorPulse;
 @property (nonatomic) JYButton *cameraButton;
 @property (nonatomic) JYPostCreator *postCreator;
@@ -70,7 +70,6 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
     self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:self.navigationItem.backBarButtonItem.style target:nil action:nil];
     self.navigationItem.titleView = self.titleButton;
 
-    self.didShowPopTip = NO;
     self.networkThreadCount = 0;
     self.postCreator = [JYPostCreator new];
     self.currentPost = nil;
@@ -305,11 +304,11 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
 
 - (void)_showTip
 {
-    if (self.didShowPopTip)
+    if ([JYManagementDataStore sharedInstance].didShowPeopleViewTips)
     {
         return;
     }
-    self.didShowPopTip = YES;
+    [JYManagementDataStore sharedInstance].didShowPeopleViewTips = YES;
 
     NSString *text = NSLocalizedString(@"Tap the camera button to create post) ", nil);
     [self.popTip showText:text direction:AMPopTipDirectionUp maxWidth:200 inView:self.view fromFrame:self.cameraButton.frame duration:4];
@@ -1162,7 +1161,6 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
     [parameters setObject:@([comment.commentId unsignedLongLongValue]) forKey:@"commentid"];
     [parameters setObject:@([post.postId unsignedLongLongValue]) forKey:@"postid"];
     [parameters setObject:@([post.ownerId unsignedLongLongValue]) forKey:@"posterid"];
-
 
     uint64_t replyToId = [comment.replyToId unsignedLongLongValue];
     if (replyToId > 0)

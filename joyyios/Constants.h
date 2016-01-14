@@ -15,7 +15,6 @@ extern CGFloat const kButtonCornerRadius;
 extern CGFloat const kButtonDefaultHeight;
 extern CGFloat const kButtonDefaultFontSize;
 extern CGFloat const kButtonLocateDiameter;
-extern CGFloat const kIntroductionVersion;
 extern CGFloat const kFontSizeCaption;
 extern CGFloat const kFontSizeComment;
 extern CGFloat const kFontSizeDetail;
@@ -31,6 +30,9 @@ extern CGFloat const kSignButtonMarginTop;
 extern CGFloat const kSignFieldHeight;
 extern CGFloat const kSignFieldMarginLeft;
 extern CGFloat const kSignViewTopOffset;
+extern CGFloat const kVersionIntroduction;
+extern CGFloat const kVersionFeedsViewTips;
+extern CGFloat const kVersionPeopleViewTips;
 
 extern CGFloat const kCellHeight;
 extern CGFloat const kHeaderHeight;

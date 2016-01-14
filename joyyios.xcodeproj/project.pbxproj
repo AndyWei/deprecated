@@ -65,7 +65,7 @@
 		D63F0D551AC7ACB70067C5EE /* JYSignUpViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D63F0D541AC7ACB70067C5EE /* JYSignUpViewController.m */; };
 		D63F0D591AC7CFF20067C5EE /* JYButton.m in Sources */ = {isa = PBXBuildFile; fileRef = D63F0D581AC7CFF20067C5EE /* JYButton.m */; };
 		D63F0D711AC9EC060067C5EE /* JYCredential.m in Sources */ = {isa = PBXBuildFile; fileRef = D63F0D701AC9EC060067C5EE /* JYCredential.m */; };
-		D63F0D751AC9F6F80067C5EE /* JYDataStore.m in Sources */ = {isa = PBXBuildFile; fileRef = D63F0D741AC9F6F80067C5EE /* JYDataStore.m */; };
+		D63F0D751AC9F6F80067C5EE /* JYManagementDataStore.m in Sources */ = {isa = PBXBuildFile; fileRef = D63F0D741AC9F6F80067C5EE /* JYManagementDataStore.m */; };
 		D63F0D7D1ACA5E260067C5EE /* JYPhoneNumberViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D63F0D7C1ACA5E260067C5EE /* JYPhoneNumberViewController.m */; };
 		D63F0DA21ACD08260067C5EE /* UIColor+Joyy.m in Sources */ = {isa = PBXBuildFile; fileRef = D63F0DA11ACD08260067C5EE /* UIColor+Joyy.m */; };
 		D63F0DA51ACD16190067C5EE /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D63F0DA41ACD16190067C5EE /* CoreLocation.framework */; };
@@ -250,8 +250,8 @@
 		D63F0D581AC7CFF20067C5EE /* JYButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYButton.m; sourceTree = "<group>"; };
 		D63F0D6F1AC9EC060067C5EE /* JYCredential.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYCredential.h; sourceTree = "<group>"; };
 		D63F0D701AC9EC060067C5EE /* JYCredential.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYCredential.m; sourceTree = "<group>"; };
-		D63F0D731AC9F6F80067C5EE /* JYDataStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYDataStore.h; sourceTree = "<group>"; };
-		D63F0D741AC9F6F80067C5EE /* JYDataStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYDataStore.m; sourceTree = "<group>"; };
+		D63F0D731AC9F6F80067C5EE /* JYManagementDataStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYManagementDataStore.h; sourceTree = "<group>"; };
+		D63F0D741AC9F6F80067C5EE /* JYManagementDataStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYManagementDataStore.m; sourceTree = "<group>"; };
 		D63F0D7B1ACA5E260067C5EE /* JYPhoneNumberViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYPhoneNumberViewController.h; sourceTree = "<group>"; };
 		D63F0D7C1ACA5E260067C5EE /* JYPhoneNumberViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYPhoneNumberViewController.m; sourceTree = "<group>"; };
 		D63F0DA01ACD08260067C5EE /* UIColor+Joyy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+Joyy.h"; sourceTree = "<group>"; };
@@ -720,8 +720,8 @@
 				D60726B31C18FBFE00A43717 /* JYCardView.m */,
 				D63A01521C3CB09200E74C36 /* JYContactCell.h */,
 				D63A01531C3CB09200E74C36 /* JYContactCell.m */,
-				D63F0D731AC9F6F80067C5EE /* JYDataStore.h */,
-				D63F0D741AC9F6F80067C5EE /* JYDataStore.m */,
+				D63F0D731AC9F6F80067C5EE /* JYManagementDataStore.h */,
+				D63F0D741AC9F6F80067C5EE /* JYManagementDataStore.m */,
 				D63B69B41AC53BB4005600A9 /* JYFloatLabeledTextField.h */,
 				D63B69B51AC53BB4005600A9 /* JYFloatLabeledTextField.m */,
 				D632E9991C24CD0900D5837C /* JYJellyView.h */,
@@ -1185,7 +1185,7 @@
 				D60726AE1C18179500A43717 /* JYMonth.m in Sources */,
 				D63A013A1C331BF600E74C36 /* JYProfileCreationViewController.m in Sources */,
 				D61D1DAE1B4E336E00DE37DF /* TGCamera.m in Sources */,
-				D63F0D751AC9F6F80067C5EE /* JYDataStore.m in Sources */,
+				D63F0D751AC9F6F80067C5EE /* JYManagementDataStore.m in Sources */,
 				D6903D051BF9AA4300CDC64F /* NSDate+Joyy.m in Sources */,
 				D63A01541C3CB09200E74C36 /* JYContactCell.m in Sources */,
 				D6348D371ADB7ABC0002BC35 /* NSMutableDictionary+Joyy.m in Sources */,

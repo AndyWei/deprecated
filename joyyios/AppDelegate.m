@@ -19,11 +19,11 @@
 #import "JYButton.h"
 #import "JYContactViewController.h"
 #import "JYCredentialManager.h"
-#import "JYDataStore.h"
 #import "JYDeviceManager.h"
 #import "JYFilename.h"
 #import "JYFriendManager.h"
 #import "JYLocalDataManager.h"
+#import "JYManagementDataStore.h"
 #import "JYPeopleViewController.h"
 #import "JYPhoneNumberViewController.h"
 #import "JYProfileCreationViewController.h"
@@ -167,9 +167,7 @@
 
 - (void)_launchViewController
 {
-    BOOL needIntroduction = ([JYDataStore sharedInstance].presentedIntroductionVersion < kIntroductionVersion);
-
-    if (needIntroduction)
+    if (![JYManagementDataStore sharedInstance].didShowIntroduction)
     {
         [self _launchIntroductionViewController];
         return;
@@ -194,7 +192,7 @@
 - (void)_introductionDidFinish
 {
     // Update introduction history to avoid duplicated presenting
-    [JYDataStore sharedInstance].presentedIntroductionVersion = kIntroductionVersion;
+    [JYManagementDataStore sharedInstance].didShowIntroduction = YES;
     [self _launchViewController];
 }
 

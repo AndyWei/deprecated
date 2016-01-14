@@ -10,7 +10,6 @@ CGFloat const kButtonCornerRadius = 4.0f;
 CGFloat const kButtonDefaultHeight = 44.0f;
 CGFloat const kButtonDefaultFontSize = 18.0f;
 CGFloat const kButtonLocateDiameter = 40;
-CGFloat const kIntroductionVersion = 1.0;
 CGFloat const kFontSizeCaption = 17.0f;
 CGFloat const kFontSizeComment = 16.0f;
 CGFloat const kFontSizeDetail = 14.0f;
@@ -30,6 +29,9 @@ CGFloat const kSignViewTopOffset = 152;
 CGFloat const kCellHeight = 50;
 CGFloat const kHeaderHeight = 100;
 CGFloat const kFooterHeight = 100;
+CGFloat const kVersionIntroduction = 1.0;
+CGFloat const kVersionFeedsViewTips = 1.0;
+CGFloat const kVersionPeopleViewTips = 1.0;
 
 NSInteger const kSignInRetryInSeconds = 60;
 NSTimeInterval const k5Minutes = 300;

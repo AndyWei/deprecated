@@ -15,6 +15,7 @@
 #import "JYButton.h"
 #import "JYCredential.h"
 #import "JYFacialGestureDetector.h"
+#import "JYManagementDataStore.h"
 #import "JYPeopleViewController.h"
 #import "JYUserCard.h"
 #import "JYYRS.h"
@@ -23,7 +24,6 @@
 @interface JYPeopleViewController () <JYFacialGuestureDetectorDelegate, MDCSwipeToChooseDelegate>
 @property (nonatomic) AMPopTip *winkTip;
 @property (nonatomic) AMPopTip *nopeTip;
-@property (nonatomic) BOOL didShowTips;
 @property (nonatomic) BOOL isListening;
 @property (nonatomic) CGRect cardFrame;
 @property (nonatomic) JYButton *nopeButton;
@@ -55,7 +55,6 @@ const CGFloat kButtonWidth = 60;
     _cardFrame = CGRectZero;
     self.userList = [NSMutableArray new];
     self.minUserId = LLONG_MAX;
-    self.didShowTips = NO;
 
     [self.view addSubview:self.fetchButton];
     [self.view addSubview:self.nopeButton];
@@ -72,7 +71,7 @@ const CGFloat kButtonWidth = 60;
 {
     [super viewDidAppear:animated];
 
-    if (self.didShowTips)
+    if ([JYManagementDataStore sharedInstance].didShowPeopleViewTips)
     {
         [self _turnOnDetector];
     }
@@ -578,23 +577,23 @@ const CGFloat kButtonWidth = 60;
 
 - (void)_showTips
 {
-    if (self.didShowTips)
+    if ([JYManagementDataStore sharedInstance].didShowPeopleViewTips)
     {
         return;
     }
-    self.didShowTips = YES;
     [self _showWinkTip];
 }
 
 - (void)_showWinkTip
 {
-    NSString *text = NSLocalizedString(@"If you like someone, just do a right wink (right eye closed and left eye open). \n\r OK", nil);
+    NSString *text = NSLocalizedString(@"If you like someone, just do a right wink (right eye closed and left eye open). \n\r Next", nil);
     [self.winkTip showText:text direction:AMPopTipDirectionUp maxWidth:180 inView:self.view fromFrame:self.winkButton.frame];
 }
 
 - (void)_showNopeTip
 {
-    NSString *text = NSLocalizedString(@"If you don't like someone, do a left wink (left eye closed and right eye open) \n\r OK", nil);
+    NSString *text = NSLocalizedString(@"If you don't like someone, do a left wink (left eye closed and right eye open) \n\r Start", nil);
     [self.nopeTip showText:text direction:AMPopTipDirectionUp maxWidth:180 inView:self.view fromFrame:self.nopeButton.frame];
+    [JYManagementDataStore sharedInstance].didShowPeopleViewTips = YES;
 }
 @end
