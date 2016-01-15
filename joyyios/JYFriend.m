@@ -17,7 +17,7 @@
     return @{
              @"userId": @"fid",
              @"username": @"fname",
-             @"yrsValue": @"fyrs",
+             @"yrsNumber": @"fyrs",
              @"phoneNumber": @"phone",
              @"bio": @"bio"
              };
@@ -30,9 +30,11 @@
     return @{
              @"userId": @"id",
              @"username": @"username",
-             @"yrsValue": @"yrs",
+             @"yrsNumber": @"yrs",
              @"phoneNumber": @"phone",
              @"bio": @"bio",
+             @"isHit": [NSNull null],
+             @"isInvited": [NSNull null],
              @"avatarURL": [NSNull null],
              @"avatarThumbnailURL": [NSNull null],
              @"sex": [NSNull null],
@@ -67,7 +69,7 @@
         _myself = [JYFriend new];
         _myself.userId = [JYCredential current].userId;
         _myself.username = [JYCredential current].username;
-        _myself.yrsValue = [JYCredential current].yrsValue;
+        _myself.yrsNumber = [NSNumber numberWithUnsignedLongLong:[JYCredential current].yrsValue];
         _myself.phoneNumber = [[JYCredential current].phoneNumber uint64Number];
     });
 

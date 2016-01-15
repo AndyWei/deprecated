@@ -12,6 +12,7 @@
 #import <libPhoneNumber-iOS/NBPhoneNumberUtil.h>
 
 #import "JYContactManager.h"
+#import "JYLocalDataManager.h"
 #import "JYManagementDataStore.h"
 #import "NSString+Joyy.h"
 
@@ -20,8 +21,11 @@
 
 @interface JYContactManager ()
 @property (nonatomic) NBPhoneNumberUtil *phoneUtil;
-@property (nonatomic) NSMutableSet *phoneNumberSet;
 @property (nonatomic) NSMutableDictionary *contactDict;
+@property (nonatomic) NSMutableSet *phoneNumberSet;
+@property (nonatomic) NSMutableSet *hitNumbers;
+@property (nonatomic) NSMutableSet *invitedNumbers;
+@property (nonatomic) NSSet *hitUsers;
 @property (nonatomic) NSString *countryCode;
 @end
 
@@ -46,6 +50,8 @@
         self.phoneUtil = [NBPhoneNumberUtil new];
         self.phoneNumberSet = [NSMutableSet new];
         self.contactDict = [NSMutableDictionary new];
+        self.hitUsers = [[JYLocalDataManager sharedInstance] selectHitUsers];
+
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_apiTokenReady) name:kNotificationAPITokenReady object:nil];
     }
     return self;
@@ -70,6 +76,7 @@
         return;
     }
 
+    [JYManagementDataStore sharedInstance].needQueryContacts = NO;
     [self _readPhoneNumbers];
 }
 
@@ -234,7 +241,12 @@
         return;
     }
 
-    [self.phoneNumberSet addObject:number];
+    // only query not hit numbers
+    if (![self.hitNumbers containsObject:number])
+    {
+        [self.phoneNumberSet addObject:number];
+    }
+
     [self.contactDict setObject:contactName forKey:number];
 }
 
@@ -270,6 +282,45 @@
         return [NSString stringWithFormat:@"%@", lastname];
     }
     return [NSString stringWithFormat:@"%@ %@", firstname, lastname];
+}
+
+- (NSMutableSet *)invitedNumbers
+{
+    if (!_invitedNumbers)
+    {
+        _invitedNumbers = [NSMutableSet new];
+        NSSet *invitedUsers = [[JYLocalDataManager sharedInstance] selectInvitedUsers];
+        for (JYUser *user in invitedUsers)
+        {
+            if (user.phoneNumber)
+            {
+                // convert user.phoneNumber from NSNumber(float) to NSNumber(uint64_t)
+                uint64_t phone = [user.phoneNumber unsignedLongLongValue];
+                NSNumber *phoneNumber = [NSNumber numberWithUnsignedLongLong:phone];
+                [_invitedNumbers addObject:phoneNumber];
+            }
+        }
+    }
+    return _invitedNumbers;
+}
+
+- (NSMutableSet *)hitNumbers
+{
+    if (!_hitNumbers)
+    {
+        _hitNumbers = [NSMutableSet new];
+        for (JYUser *user in self.hitUsers)
+        {
+            if (user.phoneNumber)
+            {
+                // convert user.phoneNumber from NSNumber(float) to NSNumber(uint64_t)
+                uint64_t phone = [user.phoneNumber unsignedLongLongValue];
+                NSNumber *phoneNumber = [NSNumber numberWithUnsignedLongLong:phone];
+                [_hitNumbers addObject:phoneNumber];
+            }
+        }
+    }
+    return _hitNumbers;
 }
 
 - (NSString *)countryCode
@@ -312,10 +363,7 @@
                  }
              }
 
-             if ([userList count] > 0)
-             {
-                 [weakSelf _findInContactsUsers:userList];
-             }
+             [weakSelf _findInContactsUsers:userList];
          }
          failure:^(NSURLSessionTask *operation, NSError *error) {
              NSLog(@"GET contacts error: %@", error);
@@ -336,8 +384,37 @@
 
 - (void)_findInContactsUsers:(NSArray *)userList
 {
-    NSDictionary *info = @{@"users": userList, @"contacts": self.contactDict};
+    // incase no new users hit, then do not show the contact view
+    if ([userList count] == 0)
+    {
+        return;
+    }
+
+    [self _saveHitUsers:userList];
+
+    // mergedUserList = new users + not invited local users
+    NSMutableArray *mergedUserList = [NSMutableArray arrayWithArray:userList];
+    for (JYUser *user in self.hitUsers)
+    {
+        // only show not invited numbers
+        if (![self.invitedNumbers containsObject:user.phoneNumber])
+        {
+            [mergedUserList addObject:user];
+        }
+    }
+
+    NSDictionary *info = @{@"users": mergedUserList, @"contacts": self.contactDict};
     [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationDidFindInContactsUsers object:nil userInfo:info];
+}
+
+- (void)_saveHitUsers:(NSArray *)userList
+{
+    for (JYUser *user in userList)
+    {
+        user.isHit = [NSNumber numberWithInteger:1];
+        user.isInvited = [NSNumber numberWithInteger:0];
+        [[JYLocalDataManager sharedInstance] insertObject:user ofClass:JYUser.class];
+    }
 }
 
 @end

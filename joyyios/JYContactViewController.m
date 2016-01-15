@@ -12,6 +12,7 @@
 #import "JYContactCell.h"
 #import "JYContactViewController.h"
 #import "JYCredential.h"
+#import "JYLocalDataManager.h"
 #import "JYUserlineViewController.h"
 #import "NSString+Joyy.h"
 
@@ -141,7 +142,7 @@ static NSString *const kCellIdentifier = @"contactCell";
     NSMutableDictionary *parameters = [NSMutableDictionary new];
     [parameters setObject:user.username forKey:@"fname"];
     [parameters setObject:@([user.userId unsignedLongLongValue]) forKey:@"fid"];
-    [parameters setObject:@(user.yrsValue) forKey:@"fyrs"];
+    [parameters setObject:user.yrsNumber forKey:@"fyrs"];
     [parameters setObject:@([JYCredential current].yrsValue) forKey:@"yrs"];
 
     return parameters;
@@ -149,6 +150,8 @@ static NSString *const kCellIdentifier = @"contactCell";
 
 - (void)_didInviteUser:(JYUser *)user
 {
+    [self _saveInvitedUser:user];
+
     NSInteger index = [self.userList indexOfObject:user];
     if (index == NSNotFound)
     {
@@ -168,6 +171,12 @@ static NSString *const kCellIdentifier = @"contactCell";
             [self _close];
         });
     }
+}
+
+- (void)_saveInvitedUser:(JYUser *)user
+{
+    user.isInvited = [NSNumber numberWithInteger:1];
+    [[JYLocalDataManager sharedInstance] updateObject:user ofClass:JYUser.class];
 }
 
 @end

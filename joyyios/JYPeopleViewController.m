@@ -469,7 +469,7 @@ const CGFloat kButtonWidth = 60;
     NSMutableDictionary *parameters = [NSMutableDictionary new];
     [parameters setObject:user.username forKey:@"fname"];
     [parameters setObject:@([user.userId unsignedLongLongValue]) forKey:@"fid"];
-    [parameters setObject:@(user.yrsValue) forKey:@"fyrs"];
+    [parameters setObject:user.yrsNumber forKey:@"fyrs"];
     [parameters setObject:@([JYCredential current].yrsValue) forKey:@"yrs"];
 
     return parameters;

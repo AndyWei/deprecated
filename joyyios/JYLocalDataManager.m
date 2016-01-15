@@ -27,6 +27,8 @@ static NSString *const CREATE_USER_TABLE_SQL =
     id       INTEGER NOT NULL, \
     username TEXT    NOT NULL, \
     yrs      INTEGER NOT NULL, \
+    hit      INTEGER NOT NULL, \
+    invited  INTEGER NOT NULL, \
     phone    INTEGER         , \
     bio      TEXT            , \
 PRIMARY KEY(id)) ";
@@ -59,6 +61,7 @@ PRIMARY KEY(id)) ";
 
 static NSString *const CREATE_COMMENT_INDEX_SQL = @"CREATE INDEX IF NOT EXISTS postid_index ON comment(postid)";
 static NSString *const SELECT_RANGE_SQL = @"SELECT * FROM %@ WHERE id > (?) AND id < (?) ORDER BY id DESC";
+static NSString *const SELECT_CONDITION_SQL = @"SELECT * FROM %@ WHERE (%@) ORDER BY id DESC";
 static NSString *const SELECT_KEY_SQL = @"SELECT * FROM %@ WHERE %@ = ? ORDER BY id ASC";
 static NSString *const SELECT_ALL_SQL = @"SELECT * FROM %@ ORDER BY id ASC";
 
@@ -126,12 +129,7 @@ static NSString *const SELECT_ALL_SQL = @"SELECT * FROM %@ ORDER BY id ASC";
 
 - (void)insertObject:(id)object ofClass:(Class)modelClass
 {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-
-        NSString *stmt = [MTLFMDBAdapter insertStatementForModelClass:modelClass];
-        NSArray *params = [MTLFMDBAdapter columnValues:object];
-        [self _executeUpdate:stmt withArgumentsInArray:params];
-    });
+    [self insertObjects:@[object] ofClass:modelClass];
 }
 
 - (void)updateObjects:(NSArray *)objectList ofClass:(Class)modelClass
@@ -141,7 +139,8 @@ static NSString *const SELECT_ALL_SQL = @"SELECT * FROM %@ ORDER BY id ASC";
         NSString *stmt = [MTLFMDBAdapter updateStatementForModelClass:modelClass];
         for (id obj in objectList)
         {
-            NSArray *params = [MTLFMDBAdapter columnValues:obj];
+            NSMutableArray *params = [NSMutableArray arrayWithArray:[MTLFMDBAdapter columnValues:obj]];
+            [params addObjectsFromArray:[MTLFMDBAdapter primaryKeysValues:obj]];
             [self _executeUpdate:stmt withArgumentsInArray:params];
         }
     });
@@ -149,12 +148,7 @@ static NSString *const SELECT_ALL_SQL = @"SELECT * FROM %@ ORDER BY id ASC";
 
 - (void)updateObject:(id)object ofClass:(Class)modelClass
 {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-
-        NSString *stmt = [MTLFMDBAdapter updateStatementForModelClass:modelClass];
-        NSArray *params = [MTLFMDBAdapter columnValues:object];
-        [self _executeUpdate:stmt withArgumentsInArray:params];
-    });
+    [self updateObjects:@[object] ofClass:modelClass];
 }
 
 - (void)deleteObject:(id)object ofClass:(Class)modelClass
@@ -198,6 +192,20 @@ static NSString *const SELECT_ALL_SQL = @"SELECT * FROM %@ ORDER BY id ASC";
     NSString *sql = [NSString stringWithFormat:SELECT_ALL_SQL, @"friend"];
     NSMutableArray *result = [self _executeSelect:sql ofClass:JYFriend.class];
     return result;
+}
+
+- (NSSet *)selectInvitedUsers
+{
+    NSString *sql = [NSString stringWithFormat:SELECT_CONDITION_SQL, @"user", @"invited > 0"];
+    NSMutableArray *result = [self _executeSelect:sql ofClass:JYUser.class];
+    return [NSSet setWithArray:result];
+}
+
+- (NSSet *)selectHitUsers
+{
+    NSString *sql = [NSString stringWithFormat:SELECT_CONDITION_SQL, @"user", @"hit > 0"];
+    NSMutableArray *result = [self _executeSelect:sql ofClass:JYUser.class];
+    return [NSSet setWithArray:result];
 }
 
 - (void)receivedCommentList:(NSArray *)commentList

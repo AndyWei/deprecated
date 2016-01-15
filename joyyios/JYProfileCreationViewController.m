@@ -286,7 +286,7 @@ static const CGFloat kSexButtonInset = 30;
     yrs.region = [[JYFilename sharedInstance].region integerValue];
 
     [JYCredential current].yrsValue = yrs.value;
-    [JYFriend myself].yrsValue = yrs.value;
+    [JYFriend myself].yrsNumber = [NSNumber numberWithUnsignedLongLong:yrs.value];
     [parameters setObject:@(yrs.value) forKey:@"yrs"];
     [parameters setObject:@YES forKey:@"boardcast"];
     

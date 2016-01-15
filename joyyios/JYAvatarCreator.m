@@ -223,7 +223,7 @@
 {
     JYYRS *yrs = [JYYRS yrsWithValue:[JYCredential current].yrsValue];
     yrs.version = [yrs nextVersion];
-    [JYFriend myself].yrsValue = yrs.value;
+    [JYFriend myself].yrsNumber = [NSNumber numberWithUnsignedLongLong:[JYCredential current].yrsValue];
 
     // write JYCredential ask for keychain access, which must be executed in main thread to avoid OSStatus error: [-34018]
     dispatch_async(dispatch_get_main_queue(), ^(void){

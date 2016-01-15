@@ -21,6 +21,8 @@
 - (NSMutableArray *)selectPostsSinceId:(NSNumber *)minId beforeId:(NSNumber *)maxId;
 - (NSMutableArray *)selectCommentsOfPostId:(NSNumber *)postId;
 - (NSMutableArray *)selectFriends;
+- (NSSet *)selectInvitedUsers;
+- (NSSet *)selectHitUsers;
 
 - (void)receivedCommentList:(NSArray *)commentList;
 

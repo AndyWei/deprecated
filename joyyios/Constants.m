@@ -20,7 +20,6 @@ CGFloat const kPhotoQuality = 0.7;
 CGFloat const kPhotoWidth = 750.0;
 CGFloat const kThumbnailWidth = 80;
 CGFloat const kSecondsOfDay = 86400.0f;
-//CGFloat const kSecondsOfDay = 0.0f;
 CGFloat const kSignButtonHeight = 60.0f;
 CGFloat const kSignButtonWidth = 120;
 CGFloat const kSignButtonMarginTop = 20.0f;
