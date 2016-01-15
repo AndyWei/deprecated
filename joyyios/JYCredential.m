@@ -114,7 +114,7 @@ static NSString *const kAPIYrsKey = @"api_yrs";
 - (NSInteger)tokenValidInSeconds
 {
     uint64_t now = (uint64_t)[NSDate timeIntervalSinceReferenceDate];
-    int64_t secsLeft = (self.tokenExpiryTime > now) ? (self.tokenExpiryTime - now): (-1)*(now - self.tokenExpiryTime);
+    int64_t secsLeft = self.tokenExpiryTime - now;
     return (NSInteger)secsLeft;
 }
 

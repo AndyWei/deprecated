@@ -24,15 +24,13 @@ extern CGFloat const kMarginTop;
 extern CGFloat const kPhotoQuality;
 extern CGFloat const kPhotoWidth;  // exact pixel size
 extern CGFloat const kThumbnailWidth;
+extern CGFloat const kSecondsOfDay;
 extern CGFloat const kSignButtonHeight;
 extern CGFloat const kSignButtonWidth;
 extern CGFloat const kSignButtonMarginTop;
 extern CGFloat const kSignFieldHeight;
 extern CGFloat const kSignFieldMarginLeft;
 extern CGFloat const kSignViewTopOffset;
-extern CGFloat const kVersionIntroduction;
-extern CGFloat const kVersionFeedsViewTips;
-extern CGFloat const kVersionPeopleViewTips;
 
 extern CGFloat const kCellHeight;
 extern CGFloat const kHeaderHeight;
@@ -66,7 +64,7 @@ extern NSString *const kNotificationCreateComment;
 extern NSString *const kNotificationDeleteComment;
 extern NSString *const kNotificationDidChangeCountryCode;
 extern NSString *const kNotificationDidCreateProfile;
-extern NSString *const kNotificationDidFinishContactsConnection;
+extern NSString *const kNotificationDidFindInContactsUsers;
 extern NSString *const kNotificationDidTapOnUser;
 extern NSString *const kNotificationDidTapReminderView;
 extern NSString *const kNotificationDidSignIn;

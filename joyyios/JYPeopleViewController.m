@@ -13,6 +13,7 @@
 
 #import "AppDelegate.h"
 #import "JYButton.h"
+#import "JYContactViewController.h"
 #import "JYCredential.h"
 #import "JYFacialGestureDetector.h"
 #import "JYManagementDataStore.h"
@@ -63,6 +64,7 @@ const CGFloat kButtonWidth = 60;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_appStart) name:kNotificationAppDidStart object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_appStop) name:kNotificationAppDidStop object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_apiTokenReady) name:kNotificationAPITokenReady object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_didFindInContactsUsers:) name:kNotificationDidFindInContactsUsers object:nil];
 
     [self _fetchUsers];
 }
@@ -174,6 +176,26 @@ const CGFloat kButtonWidth = 60;
 - (void)_recoverWinkButton
 {
     self.winkButton.selected = NO;
+}
+
+- (void)_didFindInContactsUsers:(NSNotification *)notification
+{
+    NSDictionary *info = [notification userInfo];
+    if (info)
+    {
+        id users = [info objectForKey:@"users"];
+        id contacts = [info objectForKey:@"contacts"];
+        if (users != [NSNull null] && contacts != [NSNull null])
+        {
+            NSMutableArray *userList = (NSMutableArray *)users;
+            NSDictionary *contactDict = (NSDictionary *)contacts;
+            JYContactViewController *vc = [[JYContactViewController alloc] initWithUserList:userList contactDictionay:contactDict];
+            UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:vc];
+            [self.navigationController presentViewController:nc animated:YES completion:nil];
+        }
+    }
+
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 #pragma mark - MDCSwipeToChooseDelegate Methods
@@ -587,13 +609,14 @@ const CGFloat kButtonWidth = 60;
 - (void)_showWinkTip
 {
     NSString *text = NSLocalizedString(@"If you like someone, just do a right wink (right eye closed and left eye open). \n\r Next", nil);
-    [self.winkTip showText:text direction:AMPopTipDirectionUp maxWidth:180 inView:self.view fromFrame:self.winkButton.frame];
+    [self.winkTip showText:text direction:AMPopTipDirectionUp maxWidth:180 inView:self.view fromFrame:self.winkButton.frame duration:10];
 }
 
 - (void)_showNopeTip
 {
     NSString *text = NSLocalizedString(@"If you don't like someone, do a left wink (left eye closed and right eye open) \n\r Start", nil);
-    [self.nopeTip showText:text direction:AMPopTipDirectionUp maxWidth:180 inView:self.view fromFrame:self.nopeButton.frame];
+    [self.nopeTip showText:text direction:AMPopTipDirectionUp maxWidth:180 inView:self.view fromFrame:self.nopeButton.frame duration:10];
     [JYManagementDataStore sharedInstance].didShowPeopleViewTips = YES;
 }
+
 @end

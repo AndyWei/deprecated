@@ -10,9 +10,14 @@
 
 #import "JYManagementDataStore.h"
 
-static NSString *const kKeyShowedIntroductionVersion = @"ShowedIntroductionVersion";
-static NSString *const kKeyShowedFeedsViewTipsVersion = @"ShowedFeedsViewTipsVersion";
-static NSString *const kKeyShowedPeopleViewTipsVersion = @"ShowedPeopleViewTipsVersion";
+static CGFloat const kIntroductionVersion = 1.0;
+static CGFloat const kFeedsViewTipsVersion = 1.0;
+static CGFloat const kPeopleViewTipsVersion = 1.0;
+
+static NSString *const kLastContactsQueryDateKey = @"LastContactsQueryDate";
+static NSString *const kShowedIntroductionVersionKey = @"ShowedIntroductionVersion";
+static NSString *const kShowedFeedsViewTipsVersionKey = @"ShowedFeedsViewTipsVersion";
+static NSString *const kShowedPeopleViewTipsVersionKey = @"ShowedPeopleViewTipsVersion";
 
 static NSString *const kTableNameUser = @"user_table";
 
@@ -48,43 +53,67 @@ static NSString *const kTableNameUser = @"user_table";
 
 - (BOOL)didShowIntroduction
 {
-    CGFloat showedVersion = [[NSUserDefaults standardUserDefaults] floatForKey:kKeyShowedIntroductionVersion];
-    return (showedVersion >= kVersionIntroduction);
+    CGFloat showedVersion = [[NSUserDefaults standardUserDefaults] floatForKey:kShowedIntroductionVersionKey];
+    return (showedVersion >= kIntroductionVersion);
 }
 
 - (void)setDidShowIntroduction:(BOOL)didShowIntroduction
 {
     if (didShowIntroduction)
     {
-        [[NSUserDefaults standardUserDefaults] setFloat:kVersionIntroduction forKey:kKeyShowedIntroductionVersion];
+        [[NSUserDefaults standardUserDefaults] setFloat:kIntroductionVersion forKey:kShowedIntroductionVersionKey];
     }
 }
 
 - (BOOL)didShowFeedsViewTips
 {
-    CGFloat showedVersion = [[NSUserDefaults standardUserDefaults] floatForKey:kKeyShowedFeedsViewTipsVersion];
-    return (showedVersion >= kVersionFeedsViewTips);
+    CGFloat showedVersion = [[NSUserDefaults standardUserDefaults] floatForKey:kShowedFeedsViewTipsVersionKey];
+    return (showedVersion >= kFeedsViewTipsVersion);
 }
 
 - (void)setDidShowFeedsViewTips:(BOOL)didShowFeedsViewTips
 {
     if (didShowFeedsViewTips)
     {
-        [[NSUserDefaults standardUserDefaults] setFloat:kVersionFeedsViewTips forKey:kKeyShowedFeedsViewTipsVersion];
+        [[NSUserDefaults standardUserDefaults] setFloat:kFeedsViewTipsVersion forKey:kShowedFeedsViewTipsVersionKey];
     }
 }
 
 - (BOOL)didShowPeopleViewTips
 {
-    CGFloat showedVersion = [[NSUserDefaults standardUserDefaults] floatForKey:kKeyShowedPeopleViewTipsVersion];
-    return (showedVersion >= kVersionPeopleViewTips);
+    CGFloat showedVersion = [[NSUserDefaults standardUserDefaults] floatForKey:kShowedPeopleViewTipsVersionKey];
+    return (showedVersion >= kPeopleViewTipsVersion);
 }
 
 - (void)setDidShowPeopleViewTips:(BOOL)didShowPeopleViewTips
 {
     if (didShowPeopleViewTips)
     {
-        [[NSUserDefaults standardUserDefaults] setFloat:kVersionPeopleViewTips forKey:kKeyShowedPeopleViewTipsVersion];
+        [[NSUserDefaults standardUserDefaults] setFloat:kPeopleViewTipsVersion forKey:kShowedPeopleViewTipsVersionKey];
+    }
+}
+
+- (BOOL)needQueryContacts
+{
+    NSDate *lastQueryDate = (NSDate *)[[NSUserDefaults standardUserDefaults] objectForKey:kLastContactsQueryDateKey];
+    if (!lastQueryDate)
+    {
+        return YES;
+    }
+
+    NSTimeInterval passedSecs = -[lastQueryDate timeIntervalSinceNow];
+    return (passedSecs > kSecondsOfDay);
+}
+
+- (void)setNeedQueryContacts:(BOOL)needQueryContacts
+{
+    if (needQueryContacts)
+    {
+        [[NSUserDefaults standardUserDefaults] setObject:[NSDate dateWithTimeIntervalSince1970:0] forKey:kLastContactsQueryDateKey];
+    }
+    else
+    {
+        [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:kLastContactsQueryDateKey];
     }
 }
 

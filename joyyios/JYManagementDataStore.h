@@ -13,5 +13,5 @@
 @property (nonatomic) BOOL didShowIntroduction;
 @property (nonatomic) BOOL didShowFeedsViewTips;
 @property (nonatomic) BOOL didShowPeopleViewTips;
-
+@property (nonatomic) BOOL needQueryContacts;
 @end

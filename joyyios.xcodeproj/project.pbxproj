@@ -119,6 +119,7 @@
 		D6C89F801C2B62BC00E96E99 /* JYProfileCardView.m in Sources */ = {isa = PBXBuildFile; fileRef = D6C89F7F1C2B62BC00E96E99 /* JYProfileCardView.m */; };
 		D6C89F831C2B9A8700E96E99 /* JYWinkViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6C89F821C2B9A8700E96E99 /* JYWinkViewController.m */; };
 		D6D622561C0D317E0039C4A7 /* JYPostMediaView.m in Sources */ = {isa = PBXBuildFile; fileRef = D6D622551C0D317E0039C4A7 /* JYPostMediaView.m */; };
+		D6DE9E131C48692F007C853C /* JYContactManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D6DE9E121C48692F007C853C /* JYContactManager.m */; };
 		D6E3B0551B996F5400B707DF /* JYSessionListViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D6E3B0541B996F5400B707DF /* JYSessionListViewCell.m */; };
 		D6E3B0611B9A38F500B707DF /* JYMessageDateFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = D6E3B0601B9A38F500B707DF /* JYMessageDateFormatter.m */; };
 		D6E3B0651B9A7C6D00B707DF /* NSIndexPath+Joyy.m in Sources */ = {isa = PBXBuildFile; fileRef = D6E3B0641B9A7C6D00B707DF /* NSIndexPath+Joyy.m */; };
@@ -358,6 +359,8 @@
 		D6C89F821C2B9A8700E96E99 /* JYWinkViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYWinkViewController.m; sourceTree = "<group>"; };
 		D6D622541C0D317E0039C4A7 /* JYPostMediaView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYPostMediaView.h; sourceTree = "<group>"; };
 		D6D622551C0D317E0039C4A7 /* JYPostMediaView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYPostMediaView.m; sourceTree = "<group>"; };
+		D6DE9E111C48692F007C853C /* JYContactManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYContactManager.h; sourceTree = "<group>"; };
+		D6DE9E121C48692F007C853C /* JYContactManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYContactManager.m; sourceTree = "<group>"; };
 		D6E3B0531B996F5400B707DF /* JYSessionListViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYSessionListViewCell.h; sourceTree = "<group>"; };
 		D6E3B0541B996F5400B707DF /* JYSessionListViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYSessionListViewCell.m; sourceTree = "<group>"; };
 		D6E3B05F1B9A38F500B707DF /* JYMessageDateFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYMessageDateFormatter.h; sourceTree = "<group>"; };
@@ -638,6 +641,8 @@
 			children = (
 				D69FF6D91B96471600466FE5 /* JYAmazonClientManager.h */,
 				D69FF6DA1B96471600466FE5 /* JYAmazonClientManager.m */,
+				D6DE9E111C48692F007C853C /* JYContactManager.h */,
+				D6DE9E121C48692F007C853C /* JYContactManager.m */,
 				D6E8ABA81BEB3A4E0040228C /* JYCredentialManager.h */,
 				D6E8ABA91BEB3A4E0040228C /* JYCredentialManager.m */,
 				D63591931BEA913500BFFF82 /* JYDeviceManager.h */,
@@ -720,6 +725,8 @@
 				D60726B31C18FBFE00A43717 /* JYCardView.m */,
 				D63A01521C3CB09200E74C36 /* JYContactCell.h */,
 				D63A01531C3CB09200E74C36 /* JYContactCell.m */,
+				D63A014C1C3CA22A00E74C36 /* JYContactViewController.h */,
+				D63A014D1C3CA22A00E74C36 /* JYContactViewController.m */,
 				D63F0D731AC9F6F80067C5EE /* JYManagementDataStore.h */,
 				D63F0D741AC9F6F80067C5EE /* JYManagementDataStore.m */,
 				D63B69B41AC53BB4005600A9 /* JYFloatLabeledTextField.h */,
@@ -759,8 +766,6 @@
 		D68DAF9A1AC4CD1800838E7E /* Sign */ = {
 			isa = PBXGroup;
 			children = (
-				D63A014C1C3CA22A00E74C36 /* JYContactViewController.h */,
-				D63A014D1C3CA22A00E74C36 /* JYContactViewController.m */,
 				D6966B341BA3753A00AAD8D5 /* JYCountryListViewController.h */,
 				D6966B351BA3753A00AAD8D5 /* JYCountryListViewController.m */,
 				D6966B381BA3873200AAD8D5 /* JYCountryViewCell.h */,
@@ -1234,6 +1239,7 @@
 				D61D1D531B4A65F200DE37DF /* MDCPanState.m in Sources */,
 				D61D1DBA1B4E336E00DE37DF /* TGCameraToggle.m in Sources */,
 				D61D1DA41B4E336E00DE37DF /* TGCameraNavigationController.m in Sources */,
+				D6DE9E131C48692F007C853C /* JYContactManager.m in Sources */,
 				D6BD61711C1E788500EFC92C /* JYPostCreator.m in Sources */,
 				D68486BE1B8C59BF005CA0C4 /* JYMessage.m in Sources */,
 				D63F0D551AC7ACB70067C5EE /* JYSignUpViewController.m in Sources */,

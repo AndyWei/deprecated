@@ -17,7 +17,7 @@
 #import "Flurry.h"
 #import "JYAmazonClientManager.h"
 #import "JYButton.h"
-#import "JYContactViewController.h"
+#import "JYContactManager.h"
 #import "JYCredentialManager.h"
 #import "JYDeviceManager.h"
 #import "JYFilename.h"
@@ -65,7 +65,6 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_didManuallySignIn) name:kNotificationDidSignIn object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_didManuallySignUp) name:kNotificationDidSignUp object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_didCreateProfile) name:kNotificationDidCreateProfile object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_didFinishContactsConnection) name:kNotificationDidFinishContactsConnection object:nil];
 
     [self _setupGlobalAppearance];
     [self _launchViewController];
@@ -186,7 +185,6 @@
     }
 
     [self _launchMainViewController];
-//    [self _launchContactViewController];
 }
 
 - (void)_introductionDidFinish
@@ -209,13 +207,6 @@
     self.window.rootViewController = viewController;
 }
 
-- (void)_launchContactViewController
-{
-    UIViewController *vc = [JYContactViewController new];
-    UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:vc];
-    self.window.rootViewController = nc;
-}
-
 - (void)_launchIntroductionViewController
 {
     self.window.rootViewController = self.onboardingViewController;
@@ -223,6 +214,7 @@
 
 - (void)_launchMainViewController
 {
+    [[JYContactManager sharedInstance] start];
     self.window.rootViewController = self.tabBarController;
     self.onboardingViewController = nil;
 }
@@ -288,11 +280,6 @@
 }
 
 - (void)_didCreateProfile
-{
-    [self _launchContactViewController];
-}
-
-- (void)_didFinishContactsConnection
 {
     [self _launchMainViewController];
 }

@@ -8,4 +8,6 @@
 
 @interface JYContactViewController : UIViewController
 
+- (instancetype)initWithUserList:(NSMutableArray *)userList contactDictionay:(NSDictionary *)contactDict;
+
 @end
