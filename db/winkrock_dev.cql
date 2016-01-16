@@ -114,33 +114,62 @@ CREATE TABLE IF NOT EXISTS code_by_phone (
 );
 
 /*
- * Description: the table stores friendship invite
- * Write      : when userA want to create friendship with userB, a row will be write to userB's invite partition
+ * Description: the table stores invite entities, which is for the "does an invite exist" query
+ * Write      : when userA creates an invite edge to userB
  *
  * @Discussion:
  */
 CREATE TABLE IF NOT EXISTS invite (
-    userid       bigint , -- userid
-    fid          bigint , -- friend userid
-    fname        text   , -- friend username
-    fyrs         bigint , -- friend yrs, see YRS Encoding Rule. 
+    fromid     bigint , -- from userid
+    toid       bigint , -- to userid
 
-    PRIMARY KEY (userid, fid)
+    PRIMARY KEY (fromid, toid)
 );
 
 /*
- * Description: the table stores friendship wink invite
- * Write      : when userA want to create friendship with userB, a row will be write to userB's wink partition
+ * Description: the table stores wink entities, which is for the "does a wink exist" query
+ * Write      : when userA creates a wink edge to userB
  *
  * @Discussion:
  */
 CREATE TABLE IF NOT EXISTS wink (
+    fromid     bigint , -- from userid
+    toid       bigint , -- to userid
+
+    PRIMARY KEY (fromid, toid)
+);
+
+/*
+ * Description: the table stores user inboxes of invites, which is for the "read invites" query
+ * Write      : when userA want to create friendship with userB by invite, a row will be write to userB's invite inbox
+ *
+ * @Discussion:
+ */
+CREATE TABLE IF NOT EXISTS invite_inbox (
     userid       bigint , -- userid
+    id           bigint , -- invite id
+    fid          bigint , -- friend userid
+    fname        text   , -- friend username
+    fyrs         bigint , -- friend yrs, see YRS Encoding Rule. 
+    phone        bigint , -- friend phone number
+
+    PRIMARY KEY (userid, id)
+);
+
+/*
+ * Description: the table stores user inboxes of winks, which is for the "read winks" query
+ * Write      : when userA want to create friendship with userB by wink, a row will be write to userB's wink inbox
+ *
+ * @Discussion:
+ */
+CREATE TABLE IF NOT EXISTS wink_inbox (
+    userid       bigint , -- userid
+    id           bigint , -- wink id
     fid          bigint , -- friend userid
     fname        text   , -- friend username
     fyrs         bigint , -- friend yrs, see YRS Encoding Rule. 
 
-    PRIMARY KEY (userid, fid)
+    PRIMARY KEY (userid, id)
 );
 
 /*
@@ -281,8 +310,13 @@ CREATE TABLE IF NOT EXISTS userline (
 
 -- user
 INSERT INTO user (userid, username, deleted, phone, yrs) VALUES (114269549829816320, 'andyw', false, 14257850318, 130416641);
+INSERT INTO user (userid, username, deleted, phone, yrs) VALUES (20, 'pingy', false, 14256287208, 130416640);
+
 INSERT INTO user_by_name (username, userid, password, yrs) VALUES ('andyw', 114269549829816320, '$2a$10$.pJOlEZ/hMZRyw3CoFDHm.IBAV6nek6PWAtseFdgKIlDfDUVP23cG', 130416641);
-INSERT INTO user_by_phone (phone, userid, username) VALUES (14257850318, 114269549829816320, 'andyw');
+INSERT INTO user_by_name (username, userid, password, yrs) VALUES ('pingy', 20, '$2a$10$.pJOlEZ/hMZRyw3CoFDHm.IBAV6nek6PWAtseFdgKIlDfDUVP23cG', 130416640);
+
+INSERT INTO user_by_phone (phone, userid, username, yrs) VALUES (14257850318, 114269549829816320, 'andyw', 130416641);
+INSERT INTO user_by_phone (phone, userid, username, yrs) VALUES (14256287208, 20, 'pingy', 130416640);
 
 INSERT INTO user_csz1 (area, month, userid, username, yrs) VALUES ('US09', 1601, 1, 'user1', 130416640);
 INSERT INTO user_csz1 (area, month, userid, username, yrs) VALUES ('US09', 1601, 2, 'user2', 130416640);
@@ -303,5 +337,5 @@ INSERT INTO user_csz1 (area, month, userid, username, yrs) VALUES ('US09', 1601,
 INSERT INTO user_csz1 (area, month, userid, username, yrs) VALUES ('US09', 1601, 17, 'user17', 130416640);
 INSERT INTO user_csz1 (area, month, userid, username, yrs) VALUES ('US09', 1601, 18, 'user18', 130416640);
 INSERT INTO user_csz1 (area, month, userid, username, yrs) VALUES ('US09', 1601, 19, 'user19', 130416640);
-INSERT INTO user_csz1 (area, month, userid, username, yrs) VALUES ('US09', 1601, 20, 'user20', 130416640);
+INSERT INTO user_csz1 (area, month, userid, username, yrs) VALUES ('US09', 1601, 20, 'pingy', 130416640);
 

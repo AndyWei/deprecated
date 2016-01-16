@@ -227,7 +227,7 @@ func TestReadUsers(test *testing.T) {
 
     sex := 1 // the same as the users in Users, whose sex are all 1
     for _, t := range ReadUsersTests {
-        query := fmt.Sprintf("/v1/users?country=%v&sex=%v&zip=%v", url.QueryEscape("US"), sex, url.QueryEscape(t.zip))
+        query := fmt.Sprintf("/v1/users?country=%v&sex=%v&zip=%v&beforeid=1234567890020", url.QueryEscape("US"), sex, url.QueryEscape(t.zip))
         req, _ := http.NewRequest("GET", query, nil)
         resp := httptest.NewRecorder()
         h.ReadUsers(resp, req, int64(1), "username")

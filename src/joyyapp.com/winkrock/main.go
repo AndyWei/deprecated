@@ -42,16 +42,15 @@ func main() {
     router.Post("/v1/code/validate", authHandler.ValidateCode)
 
     router.Get("/v1/friends", authenticate(edgeHandler.ReadFriends))
-    router.Post("/v1/friend/add", authenticate(edgeHandler.AddFriend))
-    router.Post("/v1/friend/remove", authenticate(edgeHandler.RemoveFriend))
+    router.Post("/v1/friend/delete", authenticate(edgeHandler.DeleteFriend))
 
     router.Get("/v1/invites", authenticate(edgeHandler.ReadInvites))
     router.Post("/v1/invite/create", authenticate(edgeHandler.CreateInvite))
-    router.Post("/v1/invite/delete", authenticate(edgeHandler.DeleteInvite))
+    router.Post("/v1/invite/accept", authenticate(edgeHandler.AcceptInvite))
 
     router.Get("/v1/winks", authenticate(edgeHandler.ReadWinks))
     router.Post("/v1/wink/create", authenticate(edgeHandler.CreateWink))
-    router.Post("/v1/wink/delete", authenticate(edgeHandler.DeleteWink))
+    router.Post("/v1/wink/accept", authenticate(edgeHandler.AcceptWink))
 
     router.Get("/v1/post/timeline", authenticate(postHandler.ReadTimeline))
     router.Get("/v1/post/userline", authenticate(postHandler.ReadUserline))
@@ -75,6 +74,7 @@ func main() {
 
     router.Get("/v1/xmpp/check_password", authHandler.CheckPassword)
     router.Get("/v1/xmpp/user_exists", authHandler.CheckExistence)
+    router.Post("/v1/xmpp/push", pushHandler.Push)
 
     router.Serve()
 }

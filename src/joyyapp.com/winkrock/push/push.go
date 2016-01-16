@@ -76,7 +76,40 @@ func (h *Handler) RemoveDevice(w http.ResponseWriter, req *http.Request, userid 
     return
 }
 
-func (h *Handler) Send(userid int64, message string) {
+type PushParams struct {
+    FromUserId int64  `param:"from" validate:"required"`
+    ToUserId   int64  `param:"to" validate:"required"`
+    Message    string `param:"message" validate:"required"`
+}
+
+func (h *Handler) Push(w http.ResponseWriter, req *http.Request) {
+
+    var p PushParams
+    if err := ParseAndCheck(req, &p); err != nil {
+        RespondError(w, err, http.StatusBadRequest)
+        return
+    }
+
+    h.send(p.ToUserId, p.Message)
+
+    RespondOK(w)
+    return
+}
+
+func init() {
+
+    viper.SetConfigName("config")
+    viper.SetConfigType("toml")
+    viper.AddConfigPath("/etc/winkrock/")
+    err := viper.ReadInConfig()
+    LogPanic(err)
+
+    kSnsArnApns = viper.GetString("aws.snsArnApns")
+
+    svc = sns.New(session.New(), aws.NewConfig().WithRegion("us-east-1"))
+}
+
+func (h *Handler) send(userid int64, message string) {
 
     arn, err := h.endpointARN(userid)
     if err != nil {
@@ -103,19 +136,6 @@ func (h *Handler) Send(userid int64, message string) {
     }
 
     return
-}
-
-func init() {
-
-    viper.SetConfigName("config")
-    viper.SetConfigType("toml")
-    viper.AddConfigPath("/etc/winkrock/")
-    err := viper.ReadInConfig()
-    LogPanic(err)
-
-    kSnsArnApns = viper.GetString("aws.snsArnApns")
-
-    svc = sns.New(session.New(), aws.NewConfig().WithRegion("us-east-1"))
 }
 
 func (h *Handler) registerAndRespond(w http.ResponseWriter, userid int64, pns int, dtoken string) {

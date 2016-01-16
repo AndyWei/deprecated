@@ -191,10 +191,10 @@ func (h *Handler) Appear(w http.ResponseWriter, req *http.Request, userid int64,
 }
 
 type ReadUsersParams struct {
-    Country   string `param:"country" validate:"alpha,len=2"`
-    Sex       string `param:"sex" validate:"required"`
-    Zip       string `param:"zip" validate:"required"`
-    MaxUserId int64  `param:"max_userid" validate:"required"`
+    Country  string `param:"country" validate:"alpha,len=2"`
+    Sex      string `param:"sex" validate:"required"`
+    Zip      string `param:"zip" validate:"required"`
+    BeforeId int64  `param:"beforeid" validate:"required"`
 }
 
 func (h *Handler) ReadUsers(w http.ResponseWriter, req *http.Request, userid int64, username string) {
@@ -211,7 +211,7 @@ func (h *Handler) ReadUsers(w http.ResponseWriter, req *http.Request, userid int
     area := strings.ToUpper(p.Country + p.Sex + p.Zip)
     month := ThisMonth()
 
-    query := h.DB.Query(stmt, area, month, p.MaxUserId)
+    query := h.DB.Query(stmt, area, month, p.BeforeId)
     iter := query.Consistency(gocql.One).Iter()
     users, err := iter.SliceMap()
     if err != nil {
@@ -230,7 +230,7 @@ func (h *Handler) ReadUsers(w http.ResponseWriter, req *http.Request, userid int
 }
 
 type ReadContactsParams struct {
-    PhoneNumbers []int64 `param:"phone"`
+    Phones []int64 `param:"phone"`
 }
 
 func (h *Handler) ReadContacts(w http.ResponseWriter, req *http.Request, userid int64, username string) {
@@ -241,7 +241,7 @@ func (h *Handler) ReadContacts(w http.ResponseWriter, req *http.Request, userid 
         return
     }
 
-    iter := h.DB.Query(`SELECT phone, username, userid, yrs FROM user_by_phone WHERE phone IN ? `, p.PhoneNumbers).Consistency(gocql.One).Iter()
+    iter := h.DB.Query(`SELECT phone, username, userid, yrs FROM user_by_phone WHERE phone IN ? `, p.Phones).Consistency(gocql.One).Iter()
     users, err := iter.SliceMap()
     if err != nil {
         RespondError(w, err, http.StatusBadGateway)
