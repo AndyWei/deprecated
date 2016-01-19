@@ -14,6 +14,7 @@
 #import "JYContactManager.h"
 #import "JYLocalDataManager.h"
 #import "JYManagementDataStore.h"
+#import "NSNumber+Joyy.h"
 #import "NSString+Joyy.h"
 
 @import AddressBook;
@@ -25,7 +26,7 @@
 @property (nonatomic) NSMutableSet *phoneNumberSet;
 @property (nonatomic) NSMutableSet *hitNumbers;
 @property (nonatomic) NSMutableSet *invitedNumbers;
-@property (nonatomic) NSSet *hitUsers;
+@property (nonatomic) NSArray *hitUsers;
 @property (nonatomic) NSString *countryCode;
 @end
 
@@ -50,7 +51,7 @@
         self.phoneUtil = [NBPhoneNumberUtil new];
         self.phoneNumberSet = [NSMutableSet new];
         self.contactDict = [NSMutableDictionary new];
-        self.hitUsers = [[JYLocalDataManager sharedInstance] selectHitUsers];
+        self.hitUsers = [[JYLocalDataManager sharedInstance] selectObjectsOfClass:JYUser.class withCondition:@"hit > 0" sort:@"DESC"];
 
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_apiTokenReady) name:kNotificationAPITokenReady object:nil];
     }
@@ -289,15 +290,13 @@
     if (!_invitedNumbers)
     {
         _invitedNumbers = [NSMutableSet new];
-        NSSet *invitedUsers = [[JYLocalDataManager sharedInstance] selectInvitedUsers];
+        NSArray *invitedUsers = [[JYLocalDataManager sharedInstance] selectObjectsOfClass:JYUser.class withCondition:@"invited > 0" sort:@"DESC"];
         for (JYUser *user in invitedUsers)
         {
             if (user.phoneNumber)
             {
-                // convert user.phoneNumber from NSNumber(float) to NSNumber(uint64_t)
-                uint64_t phone = [user.phoneNumber unsignedLongLongValue];
-                NSNumber *phoneNumber = [NSNumber numberWithUnsignedLongLong:phone];
-                [_invitedNumbers addObject:phoneNumber];
+                // make sure save as NSNumber(uint64_t)
+                [_invitedNumbers addObject:[user.phoneNumber uint64Number]];
             }
         }
     }
@@ -313,10 +312,8 @@
         {
             if (user.phoneNumber)
             {
-                // convert user.phoneNumber from NSNumber(float) to NSNumber(uint64_t)
-                uint64_t phone = [user.phoneNumber unsignedLongLongValue];
-                NSNumber *phoneNumber = [NSNumber numberWithUnsignedLongLong:phone];
-                [_hitNumbers addObject:phoneNumber];
+                // make sure save as NSNumber(uint64_t)
+                [_hitNumbers addObject:[user.phoneNumber uint64Number]];
             }
         }
     }

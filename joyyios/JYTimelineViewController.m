@@ -679,10 +679,11 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
 {
     if ([postList count] == 0) // no new post, continue to fetch new comments
     {
-       NSNumber *sinceId = [JYLocalDataManager sharedInstance].maxCommentIdInDB;
-        if (sinceId > 0)
+        JYComment *maxComment = [[JYLocalDataManager sharedInstance] maxIdObjectOfOfClass:JYComment.class];
+        uint64_t sinceid = maxComment? [maxComment.commentId unsignedLongLongValue]: 0;
+        if (sinceid > 0)
         {
-            [self _fetchCommentsSinceId:[sinceId unsignedLongLongValue] beforeId:LLONG_MAX];
+            [self _fetchCommentsSinceId:sinceid beforeId:LLONG_MAX];
         }
         return;
     }
@@ -768,6 +769,11 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
 
 - (void)_receivedNewComments:(NSArray *)list
 {
+    if ([list count] == 0)
+    {
+        return;
+    }
+
     NSMutableSet *antiCommentIdSet = [NSMutableSet new];
     for (JYComment *comment in list)
     {
@@ -782,9 +788,17 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
     for (JYComment *comment in list)
     {
         NSNumber *antiCommentId = [comment antiCommentId];
-        if (!antiCommentId && ![antiCommentIdSet containsObject:comment.commentId])
+        if (antiCommentId)
+        {
+            // delete from DB
+            JYComment *dummy = [[JYComment alloc] initWithCommentId:antiCommentId];
+            [[JYLocalDataManager sharedInstance] deleteObject:dummy ofClass:JYComment.class];
+        }
+        else if (![antiCommentIdSet containsObject:comment.commentId])
         {
             [self.unreadCommentList addObject:comment];
+            // save to DB
+            [[JYLocalDataManager sharedInstance] insertObject:comment ofClass:JYComment.class];
         }
     }
 
@@ -843,7 +857,7 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
 
     for (JYPost *post in postList)
     {
-        post.commentList = [[JYLocalDataManager sharedInstance] selectCommentsOfPostId:post.postId];
+        post.commentList = [[JYLocalDataManager sharedInstance] selectObjectsOfClass:JYComment.class withProperty:@"postId" equals:post.postId];
     }
 }
 
@@ -854,7 +868,7 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
         NSNumber *minId = [date minId];
         NSNumber *maxId = [[NSDate date] currentId];
 
-        self.postList = [[JYLocalDataManager sharedInstance] selectPostsSinceId:minId beforeId:maxId];
+        self.postList = [[JYLocalDataManager sharedInstance] selectObjectsOfClass:JYPost.class sinceId:minId beforeId:maxId];
 
         if ([self.postList count] == 0)
         {
@@ -943,7 +957,7 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
     JYDay *nextDay = [jyDay next];
     NSNumber *maxId = [nextDay.date minId];
 
-    NSArray *postList = [[JYLocalDataManager sharedInstance] selectPostsSinceId:minId beforeId:maxId];
+    NSArray *postList = [[JYLocalDataManager sharedInstance] selectObjectsOfClass:JYPost.class sinceId:minId beforeId:maxId];
     if ([postList count] == 0)
     {
         [self _fetchRemoteTimelineOfDay:jyDay.value sinceId:0];
@@ -1040,9 +1054,8 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
 
              if ([commentList count] > 0)
              {
-                 [[JYLocalDataManager sharedInstance] receivedCommentList:commentList];
-                 [weakSelf _refreshCommentsForPostList:weakSelf.postList];
                  [weakSelf _receivedNewComments:commentList];
+                 [weakSelf _refreshCommentsForPostList:weakSelf.postList];
                  [weakSelf.tableView reloadData];
              }
              [weakSelf _networkThreadEnd];

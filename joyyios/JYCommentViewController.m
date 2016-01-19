@@ -299,21 +299,32 @@ static NSString *const kCommentlineCellIdentifier = @"commentlineCell";
 
 - (void)_receivedComments:(NSArray *)commentList
 {
-    // update data source
+    if ([commentList count] == 0)
+    {
+        return;
+    }
+
     for (JYComment *comment in commentList)
     {
-        if ([comment.postId unsignedLongLongValue] == [self.post.postId unsignedLongLongValue] && ![comment isLike])
+        NSNumber *antiCommentId = [comment antiCommentId];
+        if (antiCommentId)
         {
-            [self.commentList addObject:comment];
+            // delete from DB
+            JYComment *dummy = [[JYComment alloc] initWithCommentId:antiCommentId];
+            [[JYLocalDataManager sharedInstance] deleteObject:dummy ofClass:JYComment.class];
+        }
+        else
+        {
+            if ([comment.postId unsignedLongLongValue] == [self.post.postId unsignedLongLongValue] && ![comment isLike])
+            {
+                [self.commentList addObject:comment];
+                [self.post.commentList addObject:comment];
+            }
+            [[JYLocalDataManager sharedInstance] insertObject:comment ofClass:JYComment.class];
         }
     }
 
     [self.tableView reloadData];
-
-    // update the comment list of the post
-    NSMutableArray *newCommentList = [NSMutableArray arrayWithArray:self.post.commentList];
-    [newCommentList addObjectsFromArray:commentList];
-    self.post.commentList = newCommentList;
 }
 
 #pragma mark - Overriden Method
@@ -350,7 +361,6 @@ static NSString *const kCommentlineCellIdentifier = @"commentlineCell";
               if (comment)
               {
                   NSArray *commentList = @[comment];
-                  [[JYLocalDataManager sharedInstance] receivedCommentList:commentList];
                   [weakSelf _receivedComments:commentList];
               }
 
@@ -385,7 +395,8 @@ static NSString *const kCommentlineCellIdentifier = @"commentlineCell";
 
     NSString *url = [NSString apiURLWithPath:@"post/commentline"];
 
-    uint64_t sinceid = [[JYLocalDataManager sharedInstance].maxCommentIdInDB unsignedLongLongValue];
+    JYComment *maxComment = [[JYLocalDataManager sharedInstance] maxIdObjectOfOfClass:JYComment.class];
+    uint64_t sinceid = maxComment? [maxComment.commentId unsignedLongLongValue]: 0;
     uint64_t beforeid = LLONG_MAX;
     
     NSDictionary *parameters = @{@"sinceid": @(sinceid), @"beforeid": @(beforeid)};
@@ -411,7 +422,6 @@ static NSString *const kCommentlineCellIdentifier = @"commentlineCell";
 
              if ([commentList count] > 0)
              {
-                 [[JYLocalDataManager sharedInstance] receivedCommentList:commentList];
                  [weakSelf _receivedComments:commentList];
              }
 

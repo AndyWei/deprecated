@@ -10,6 +10,7 @@
 #import "JYYRS.h"
 
 @interface JYUser ()
+@property (nonatomic) JYYRS *yrs;
 @end
 
 @implementation JYUser
@@ -43,7 +44,8 @@
              @"avatarThumbnailURL": [NSNull null],
              @"sex": [NSNull null],
              @"age": [NSNull null],
-             @"avatarImage": [NSNull null]
+             @"avatarImage": [NSNull null],
+             @"yrs": [NSNull null]
              };
 }
 
@@ -57,6 +59,15 @@
     return @"user";
 }
 
+- (JYYRS *)yrs
+{
+    if (!_yrs)
+    {
+        _yrs = [JYYRS yrsWithValue:[self.yrsNumber unsignedLongLongValue]];
+    }
+    return _yrs;
+}
+
 - (NSString *)age
 {
     if (self.yrsNumber == 0)
@@ -68,8 +79,7 @@
     {
         NSCalendar *gregorian = [NSCalendar calendarWithIdentifier:NSCalendarIdentifierGregorian];
         NSInteger year = [gregorian component:NSCalendarUnitYear fromDate:NSDate.date];
-        JYYRS *yrs = [JYYRS yrsWithValue:[self.yrsNumber unsignedLongLongValue]];
-        NSInteger age = year - yrs.yob;
+        NSInteger age = year - self.yrs.yob;
         _age = [NSString stringWithFormat:@"%ld", (long)age];
     }
     return _age;
@@ -77,8 +87,7 @@
 
 - (NSString *)mediaURLPrefix
 {
-    JYYRS *yrs = [JYYRS yrsWithValue:[self.yrsNumber unsignedLongLongValue]];
-    NSString *region = [NSString stringWithFormat:@"%lu", (unsigned long)yrs.region];
+    NSString *region = [NSString stringWithFormat:@"%lu", (unsigned long)self.yrs.region];
     NSString *prefix = [[JYFilename sharedInstance] avatarURLPrefixOfRegion:region];
     return prefix;
 }
@@ -105,33 +114,28 @@
 
 - (NSString *)avatarFilename
 {
-    JYYRS *yrs = [JYYRS yrsWithValue:[self.yrsNumber unsignedLongLongValue]];
-    NSString *version = [NSString stringWithFormat:@"%lu", (unsigned long)yrs.version];
+    NSString *version = [NSString stringWithFormat:@"%lu", (unsigned long)self.yrs.version];
     NSString *filename = [NSString stringWithFormat:@"%@_%@.jpg", [self reversedIdString], version];
     return filename;
 }
 
 - (NSString *)avatarThumbnailFilename
 {
-    JYYRS *yrs = [JYYRS yrsWithValue:[self.yrsNumber unsignedLongLongValue]];
-    NSString *version = [NSString stringWithFormat:@"%lu", (unsigned long)yrs.version];
+    NSString *version = [NSString stringWithFormat:@"%lu", (unsigned long)self.yrs.version];
     NSString *filename = [NSString stringWithFormat:@"%@_%@_t.jpg", [self reversedIdString], version];
     return filename;
 }
 
 - (NSString *)nextAvatarFilename
 {
-    JYYRS *yrs = [JYYRS yrsWithValue:[self.yrsNumber unsignedLongLongValue]];
-    NSString *version = [NSString stringWithFormat:@"%lu", (unsigned long)[yrs nextVersion]];
-
+    NSString *version = [NSString stringWithFormat:@"%lu", (unsigned long)[self.yrs nextVersion]];
     NSString *filename = [NSString stringWithFormat:@"%@_%@.jpg", [self reversedIdString], version];
     return filename;
 }
 
 - (NSString *)nextAvatarThumbnailFilename
 {
-    JYYRS *yrs = [JYYRS yrsWithValue:[self.yrsNumber unsignedLongLongValue]];
-    NSString *version = [NSString stringWithFormat:@"%lu", (unsigned long)[yrs nextVersion]];
+    NSString *version = [NSString stringWithFormat:@"%lu", (unsigned long)[self.yrs nextVersion]];
 
     NSString *filename = [NSString stringWithFormat:@"%@_%@_t.jpg", [self reversedIdString], version];
     return filename;
@@ -141,7 +145,8 @@
 {
     _yrsNumber = yrsNumber;
 
-    // clear the old avatar URLs will force they are re-generated from the new yrs value
+    // clear those properties is to force they are re-generated from the new yrs value
+    _yrs = nil;
     _avatarURL = nil;
     _avatarThumbnailURL = nil;
 }
@@ -165,8 +170,7 @@
 - (NSString *)sexLongString
 {
     NSString *sex = NSLocalizedString(@"Other", nil);
-    JYYRS *yrs = [JYYRS yrsWithValue:[self.yrsNumber unsignedLongLongValue]];
-    switch (yrs.sex)
+    switch (self.yrs.sex)
     {
         case 0:
             sex = NSLocalizedString(@"Female", nil);

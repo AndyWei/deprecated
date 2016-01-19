@@ -21,6 +21,7 @@
 #import "JYUserCard.h"
 #import "JYYRS.h"
 #import "MDCSwipeToChoose.h"
+#import "NSNumber+Joyy.h"
 
 @interface JYPeopleViewController () <JYFacialGuestureDetectorDelegate, MDCSwipeToChooseDelegate>
 @property (nonatomic) AMPopTip *winkTip;
@@ -469,7 +470,7 @@ const CGFloat kButtonWidth = 60;
     NSMutableDictionary *parameters = [NSMutableDictionary new];
     [parameters setObject:user.username forKey:@"fname"];
     [parameters setObject:@([user.userId unsignedLongLongValue]) forKey:@"fid"];
-    [parameters setObject:user.yrsNumber forKey:@"fyrs"];
+    [parameters setObject:[user.yrsNumber uint64Number] forKey:@"fyrs"];
     [parameters setObject:@([JYCredential current].yrsValue) forKey:@"yrs"];
 
     return parameters;
@@ -520,7 +521,7 @@ const CGFloat kButtonWidth = 60;
     NSMutableDictionary *parameters = [NSMutableDictionary new];
 
     [parameters setObject:[self _sexualOrientation] forKey:@"sex"];
-    [parameters setObject:@(self.minUserId) forKey:@"max_userid"];
+    [parameters setObject:@(self.minUserId) forKey:@"beforeid"];
 
     AppDelegate *delegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
     [parameters setObject:delegate.locationManager.countryCode forKey:@"country"];

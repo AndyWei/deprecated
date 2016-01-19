@@ -18,6 +18,7 @@
 #import "JYFilename.h"
 #import "JYFriendManager.h"
 #import "JYFriendViewController.h"
+#import "JYInvite.h"
 #import "JYInviteViewController.h"
 #import "JYLocalDataManager.h"
 #import "JYPhotoCaptionViewController.h"
@@ -25,6 +26,7 @@
 #import "JYProfileViewController.h"
 #import "JYPost.h"
 #import "JYUserlineCell.h"
+#import "JYWink.h"
 #import "JYWinkViewController.h"
 
 @interface JYProfileViewController () <JYAvatarCreatorDelegate, JYProfileCardViewDelegate, UITableViewDataSource, UITableViewDelegate>
@@ -366,23 +368,28 @@ static NSString *const kCellIdentifier = @"profileUserlineCell";
       parameters:nil
          success:^(NSURLSessionTask *operation, id responseObject) {
              NSLog(@"GET invites Success");
-
-             NSMutableArray *inviteList = [NSMutableArray new];
-             for (NSDictionary *dict in responseObject)
-             {
-                 NSError *error = nil;
-                 JYFriend *friend = (JYFriend *)[MTLJSONAdapter modelOfClass:JYFriend.class fromJSONDictionary:dict error:&error];
-                 if (friend)
-                 {
-                     [inviteList addObject:friend];
-                 }
-             }
-             weakSelf.inviteList = inviteList;
-             weakSelf.cardView.inviteCount = [inviteList count];
+             [weakSelf _didReceiveInvites:(NSArray *)responseObject];
          }
          failure:^(NSURLSessionTask *operation, NSError *error) {
              NSLog(@"GET invites error: %@", error);
          }];
+}
+
+- (void)_didReceiveInvites:(NSArray *)invites
+{
+    NSMutableArray *inviteList = [NSMutableArray new];
+    for (NSDictionary *dict in invites)
+    {
+        NSError *error = nil;
+        JYInvite *invite = (JYInvite *)[MTLJSONAdapter modelOfClass:JYInvite.class fromJSONDictionary:dict error:&error];
+        if (invite)
+        {
+            [[JYLocalDataManager sharedInstance] insertObject:invite ofClass:JYInvite.class];
+            [inviteList addObject:invite];
+        }
+    }
+    self.inviteList = inviteList;
+    self.cardView.inviteCount = [inviteList count];
 }
 
 - (void)_fetchWinks
@@ -397,16 +404,17 @@ static NSString *const kCellIdentifier = @"profileUserlineCell";
              NSLog(@"GET winks Success");
 
              NSMutableArray *winkList = [NSMutableArray new];
-             for (NSDictionary *dict in responseObject)
+             for (NSDictionary *dict in [responseObject reverseObjectEnumerator])
              {
                  NSError *error = nil;
-                 JYFriend *friend = (JYFriend *)[MTLJSONAdapter modelOfClass:JYFriend.class fromJSONDictionary:dict error:&error];
-                 if (friend)
+                 JYWink *wink = (JYWink *)[MTLJSONAdapter modelOfClass:JYWink.class fromJSONDictionary:dict error:&error];
+                 if (wink)
                  {
-                     [winkList addObject:friend];
+                     [[JYLocalDataManager sharedInstance] insertObject:wink ofClass:JYWink.class];
+                     [winkList addObject:wink];
                  }
              }
-             weakSelf.winkList = winkList;
+             [weakSelf.winkList addObjectsFromArray: winkList];
              weakSelf.cardView.winkCount = [winkList count];
          }
          failure:^(NSURLSessionTask *operation, NSError *error) {

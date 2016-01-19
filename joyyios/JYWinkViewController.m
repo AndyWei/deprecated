@@ -12,8 +12,10 @@
 #import "JYFriendManager.h"
 #import "JYLocalDataManager.h"
 #import "JYUserlineViewController.h"
+#import "JYWink.h"
 #import "JYWinkCell.h"
 #import "JYWinkViewController.h"
+#import "NSNumber+Joyy.h"
 
 @interface JYWinkViewController () <JYUserBaseCellDelegate, UITableViewDataSource, UITableViewDelegate>
 @property (nonatomic) NSMutableArray *winkList;
@@ -107,14 +109,63 @@ static NSString *const kCellIdentifier = @"winkCell";
         return;
     }
 
-    [self _acceptWinkFromUser:cell.user];
+    JYWink *wink = (JYWink *)cell.user;
+    [self _acceptWink:wink];
 }
 
 #pragma mark - Network
 
-- (void)_acceptWinkFromUser:(JYUser *)user
+- (void)_acceptWink:(JYWink *)wink
 {
-    
+    if (!wink)
+    {
+        return;
+    }
+
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager managerWithToken];
+    NSString *url = [NSString apiURLWithPath:@"wink/accept"];
+    NSDictionary *parameters = [self _parametersForAcceptingWink:wink];
+
+    __weak typeof(self) weakSelf = self;
+    [manager POST:url
+       parameters:parameters
+          success:^(NSURLSessionTask *operation, id responseObject) {
+              NSLog(@"POST accept/wink success. responseObject = %@", responseObject);
+
+              if ([responseObject isKindOfClass:NSDictionary.class])
+              {
+                  NSDictionary *dict = (NSDictionary *)responseObject;
+                  NSError *error = nil;
+                  JYFriend *friend = (JYFriend *)[MTLJSONAdapter modelOfClass:JYFriend.class fromJSONDictionary:dict error:&error];
+                  [weakSelf _didAddFriend:friend];
+              }
+          }
+          failure:^(NSURLSessionTask *operation, NSError *error) {
+              NSLog(@"POST accept/wink fail. error = %@", error);
+          }
+     ];
+}
+
+- (NSDictionary *)_parametersForAcceptingWink:(JYWink *)wink
+{
+    NSMutableDictionary *parameters = [NSMutableDictionary new];
+
+    [parameters setObject:wink.username forKey:@"fname"];
+    [parameters setObject:[wink.winkId uint64Number] forKey:@"id"];
+    [parameters setObject:[wink.userId uint64Number] forKey:@"fid"];
+    [parameters setObject:[wink.yrsNumber uint64Number] forKey:@"fyrs"];
+
+    // YRS
+    uint64_t yrsValue = [JYCredential current].yrsValue;
+    [parameters setObject:@(yrsValue) forKey:@"yrs"];
+
+    return parameters;
+}
+
+- (void)_didAddFriend:(JYFriend *)friend
+{
+
 }
 
 @end
+

@@ -6,8 +6,6 @@
 //  Copyright © 2015 Joyy Inc. All rights reserved.
 //
 
-@class JYPost;
-
 @interface JYLocalDataManager : NSObject
 
 + (JYLocalDataManager *)sharedInstance;
@@ -17,16 +15,14 @@
 - (void)updateObjects:(NSArray *)objectList ofClass:(Class)modelClass;
 - (void)updateObject:(id)object ofClass:(Class)modelClass;
 - (void)deleteObject:(id)object ofClass:(Class)modelClass;
-- (JYPost *)selectPostWithId:(NSNumber *)postId;
-- (NSMutableArray *)selectPostsSinceId:(NSNumber *)minId beforeId:(NSNumber *)maxId;
-- (NSMutableArray *)selectCommentsOfPostId:(NSNumber *)postId;
-- (NSMutableArray *)selectFriends;
-- (NSSet *)selectInvitedUsers;
-- (NSSet *)selectHitUsers;
 
-- (void)receivedCommentList:(NSArray *)commentList;
+- (id)selectObjectOfClass:(Class)modelClass withId:(NSNumber *)objId;
+- (id)minIdObjectOfOfClass:(Class)modelClass;
+- (id)maxIdObjectOfOfClass:(Class)modelClass;
 
-@property (nonatomic) NSNumber *minCommentIdInDB;
-@property (nonatomic) NSNumber *maxCommentIdInDB;
+- (NSMutableArray *)selectObjectsOfClass:(Class)modelClass;
+- (NSMutableArray *)selectObjectsOfClass:(Class)modelClass withCondition:(NSString *)condition sort:(NSString *)sort;
+- (NSMutableArray *)selectObjectsOfClass:(Class)modelClass sinceId:(NSNumber *)minId beforeId:(NSNumber *)maxId;
+- (NSMutableArray *)selectObjectsOfClass:(Class)modelClass withProperty:(NSString *)property equals:(NSNumber *)value;
 
 @end

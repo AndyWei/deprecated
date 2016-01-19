@@ -43,7 +43,7 @@
 {
     if (!_friendDict)
     {
-        NSArray *array = [[JYLocalDataManager sharedInstance] selectFriends];
+        NSArray *array = [[JYLocalDataManager sharedInstance] selectObjectsOfClass:JYFriend.class];
         _friendDict = [NSMutableDictionary new];
         for (JYFriend *user in array)
         {

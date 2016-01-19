@@ -10,11 +10,12 @@
 
 #import "JYCredential.h"
 #import "JYFriendManager.h"
+#import "JYInvite.h"
 #import "JYInviteViewController.h"
 #import "JYLocalDataManager.h"
 #import "JYUserlineViewController.h"
 #import "JYContactCell.h"
-
+#import "NSNumber+Joyy.h"
 
 @interface JYInviteViewController () <JYUserBaseCellDelegate, UITableViewDataSource, UITableViewDelegate>
 @property (nonatomic) NSMutableArray *inviteList;
@@ -101,6 +102,8 @@ static NSString *const kCellIdentifier = @"inviteCell";
 
 #pragma mark - JYUserBaseCellDelegate
 
+#pragma mark - JYUserBaseCellDelegate
+
 - (void)didTapActionButtonOnCell:(JYUserBaseCell *)cell
 {
     if (!cell || !cell.user)
@@ -108,12 +111,60 @@ static NSString *const kCellIdentifier = @"inviteCell";
         return;
     }
 
-    [self _acceptInviteFromUser:cell.user];
+    JYInvite *invite = (JYInvite *)cell.user;
+    [self _acceptInvite:invite];
 }
 
 #pragma mark - Network
 
-- (void)_acceptInviteFromUser:(JYUser *)user
+- (void)_acceptInvite:(JYInvite *)invite
+{
+    if (!invite)
+    {
+        return;
+    }
+
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager managerWithToken];
+    NSString *url = [NSString apiURLWithPath:@"invite/accept"];
+    NSDictionary *parameters = [self _parametersForAcceptingInvite:invite];
+
+    __weak typeof(self) weakSelf = self;
+    [manager POST:url
+       parameters:parameters
+          success:^(NSURLSessionTask *operation, id responseObject) {
+              NSLog(@"POST accept/invite success. responseObject = %@", responseObject);
+
+              if ([responseObject isKindOfClass:NSDictionary.class])
+              {
+                  NSDictionary *dict = (NSDictionary *)responseObject;
+                  NSError *error = nil;
+                  JYFriend *friend = (JYFriend *)[MTLJSONAdapter modelOfClass:JYFriend.class fromJSONDictionary:dict error:&error];
+                  [weakSelf _didAddFriend:friend];
+              }
+          }
+          failure:^(NSURLSessionTask *operation, NSError *error) {
+              NSLog(@"POST accept/invite fail. error = %@", error);
+          }
+     ];
+}
+
+- (NSDictionary *)_parametersForAcceptingInvite:(JYInvite *)invite
+{
+    NSMutableDictionary *parameters = [NSMutableDictionary new];
+
+    [parameters setObject:invite.username forKey:@"fname"];
+    [parameters setObject:[invite.inviteId uint64Number] forKey:@"id"];
+    [parameters setObject:[invite.userId uint64Number] forKey:@"fid"];
+    [parameters setObject:[invite.yrsNumber uint64Number] forKey:@"fyrs"];
+
+    // YRS
+    uint64_t yrsValue = [JYCredential current].yrsValue;
+    [parameters setObject:@(yrsValue) forKey:@"yrs"];
+
+    return parameters;
+}
+
+- (void)_didAddFriend:(JYFriend *)friend
 {
     
 }

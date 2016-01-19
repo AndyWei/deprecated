@@ -9,9 +9,7 @@
 #import <FMDB/FMDB.h>
 #import <Mantle/Mantle.h>
 
-#import "JYComment.h"
 #import "JYLocalDataManager.h"
-#import "JYPost.h"
 #import "MTLFMDBAdapter.h"
 
 @interface JYLocalDataManager ()
@@ -19,8 +17,6 @@
 @end
 
 NSString *const kDBName = @"/winkrock.db";
-NSString *const kMinCommentIdKey = @"min_comment_id_in_db";
-NSString *const kMaxCommentIdKey = @"max_comment_id_in_db";
 
 static NSString *const CREATE_USER_TABLE_SQL =
 @"CREATE TABLE IF NOT EXISTS user ( \
@@ -42,6 +38,23 @@ static NSString *const CREATE_FRIEND_TABLE_SQL =
     bio      TEXT            , \
 PRIMARY KEY(id)) ";
 
+static NSString *const CREATE_INVITE_TABLE_SQL =
+@"CREATE TABLE IF NOT EXISTS invite ( \
+    id       INTEGER NOT NULL, \
+    userid   INTEGER NOT NULL, \
+    username TEXT    NOT NULL, \
+    yrs      INTEGER NOT NULL, \
+    phone    INTEGER NOT NULL, \
+PRIMARY KEY(id)) ";
+
+static NSString *const CREATE_WINK_TABLE_SQL =
+@"CREATE TABLE IF NOT EXISTS wink ( \
+    id       INTEGER NOT NULL, \
+    userid   INTEGER NOT NULL, \
+    username TEXT    NOT NULL, \
+    yrs      INTEGER NOT NULL, \
+PRIMARY KEY(id)) ";
+
 static NSString *const CREATE_POST_TABLE_SQL =
 @"CREATE TABLE IF NOT EXISTS post ( \
     id      INTEGER NOT NULL, \
@@ -61,10 +74,11 @@ PRIMARY KEY(id)) ";
 
 static NSString *const CREATE_COMMENT_INDEX_SQL = @"CREATE INDEX IF NOT EXISTS postid_index ON comment(postid)";
 static NSString *const SELECT_RANGE_SQL = @"SELECT * FROM %@ WHERE id > (?) AND id < (?) ORDER BY id DESC";
-static NSString *const SELECT_CONDITION_SQL = @"SELECT * FROM %@ WHERE (%@) ORDER BY id DESC";
+static NSString *const SELECT_CONDITION_SQL = @"SELECT * FROM %@ WHERE (%@) ORDER BY id %@";
 static NSString *const SELECT_KEY_SQL = @"SELECT * FROM %@ WHERE %@ = ? ORDER BY id ASC";
 static NSString *const SELECT_ALL_SQL = @"SELECT * FROM %@ ORDER BY id ASC";
-
+static NSString *const SELECT_MIN_ID_SQL = @"SELECT id FROM %@ ORDER BY id ASC LIMIT 1";
+static NSString *const SELECT_MAX_ID_SQL = @"SELECT id FROM %@ ORDER BY id DESC LIMIT 1";
 
 @implementation JYLocalDataManager
 
@@ -102,6 +116,8 @@ static NSString *const SELECT_ALL_SQL = @"SELECT * FROM %@ ORDER BY id ASC";
 {
     [self _executeUpdateSQL:CREATE_USER_TABLE_SQL];
     [self _executeUpdateSQL:CREATE_FRIEND_TABLE_SQL];
+    [self _executeUpdateSQL:CREATE_INVITE_TABLE_SQL];
+    [self _executeUpdateSQL:CREATE_WINK_TABLE_SQL];
     [self _executeUpdateSQL:CREATE_POST_TABLE_SQL];
     [self _executeUpdateSQL:CREATE_COMMENT_TABLE_SQL];
     [self _executeUpdateSQL:CREATE_COMMENT_INDEX_SQL];
@@ -161,10 +177,15 @@ static NSString *const SELECT_ALL_SQL = @"SELECT * FROM %@ ORDER BY id ASC";
     });
 }
 
-- (JYPost *)selectPostWithId:(NSNumber *)postId
+- (id)selectObjectOfClass:(Class)modelClass withId:(NSNumber *)objId
 {
-    NSString *sql = [NSString stringWithFormat:SELECT_KEY_SQL, @"post", @"id"];
-    NSMutableArray *result = [self _executeSelect:sql keyId:postId ofClass: JYPost.class];
+    if(![modelClass conformsToProtocol:@protocol(MTLFMDBSerializing)])
+    {
+        return nil;
+    }
+
+    NSString *sql = [NSString stringWithFormat:SELECT_KEY_SQL, [modelClass FMDBTableName], [modelClass FMDBPrimaryKeys][0]];
+    NSMutableArray *result = [self _executeSelect:sql withId:objId ofClass: modelClass];
 
     if ([result count] == 0)
     {
@@ -173,107 +194,74 @@ static NSString *const SELECT_ALL_SQL = @"SELECT * FROM %@ ORDER BY id ASC";
     return result[0];
 }
 
-- (NSMutableArray *)selectPostsSinceId:(NSNumber *)minId beforeId:(NSNumber *)maxId
+- (NSMutableArray *)selectObjectsOfClass:(Class)modelClass
 {
-    NSString *sql = [NSString stringWithFormat:SELECT_RANGE_SQL, @"post"];
-    NSMutableArray *result = [self _executeSelect:sql minId:minId maxId:maxId ofClass:JYPost.class];
+    if(![modelClass conformsToProtocol:@protocol(MTLFMDBSerializing)])
+    {
+        return [NSMutableArray new];
+    }
+
+    NSString *sql = [NSString stringWithFormat:SELECT_ALL_SQL, [modelClass FMDBTableName]];
+    NSMutableArray *result = [self _executeSelect:sql ofClass:modelClass];
     return result;
 }
 
-- (NSMutableArray *)selectCommentsOfPostId:(NSNumber *)postId
+- (NSMutableArray *)selectObjectsOfClass:(Class)modelClass withCondition:(NSString *)condition sort:(NSString *)sort
 {
-    NSString *sql = [NSString stringWithFormat:SELECT_KEY_SQL, @"comment", @"postid"];
-    NSMutableArray *result = [self _executeSelect:sql keyId:postId ofClass: JYComment.class];
+    if(![modelClass conformsToProtocol:@protocol(MTLFMDBSerializing)])
+    {
+        return [NSMutableArray new];
+    }
+
+    NSString *sql = [NSString stringWithFormat:SELECT_CONDITION_SQL, [modelClass FMDBTableName], condition, sort];
+    NSMutableArray *result = [self _executeSelect:sql ofClass:modelClass];
     return result;
 }
 
-- (NSMutableArray *)selectFriends
+- (NSMutableArray *)selectObjectsOfClass:(Class)modelClass sinceId:(NSNumber *)minId beforeId:(NSNumber *)maxId
 {
-    NSString *sql = [NSString stringWithFormat:SELECT_ALL_SQL, @"friend"];
-    NSMutableArray *result = [self _executeSelect:sql ofClass:JYFriend.class];
+    if(![modelClass conformsToProtocol:@protocol(MTLFMDBSerializing)])
+    {
+        return [NSMutableArray new];
+    }
+
+    NSString *sql = [NSString stringWithFormat:SELECT_RANGE_SQL, [modelClass FMDBTableName]];
+    NSMutableArray *result = [self _executeSelect:sql minId:minId maxId:maxId ofClass:modelClass];
     return result;
 }
 
-- (NSSet *)selectInvitedUsers
+- (NSMutableArray *)selectObjectsOfClass:(Class)modelClass withProperty:(NSString *)property equals:(NSNumber *)value
 {
-    NSString *sql = [NSString stringWithFormat:SELECT_CONDITION_SQL, @"user", @"invited > 0"];
-    NSMutableArray *result = [self _executeSelect:sql ofClass:JYUser.class];
-    return [NSSet setWithArray:result];
+    NSString *sql = [NSString stringWithFormat:SELECT_KEY_SQL, [modelClass FMDBTableName], property];
+    NSMutableArray *result = [self _executeSelect:sql withId:value ofClass:modelClass];
+    return result;
 }
 
-- (NSSet *)selectHitUsers
+- (id)minIdObjectOfOfClass:(Class)modelClass
 {
-    NSString *sql = [NSString stringWithFormat:SELECT_CONDITION_SQL, @"user", @"hit > 0"];
-    NSMutableArray *result = [self _executeSelect:sql ofClass:JYUser.class];
-    return [NSSet setWithArray:result];
+    NSString *sql = [NSString stringWithFormat:SELECT_MIN_ID_SQL, [modelClass FMDBTableName]];
+    return [self selectOneObjectOfOfClass:modelClass withSql:sql];
 }
 
-- (void)receivedCommentList:(NSArray *)commentList
+- (id)maxIdObjectOfOfClass:(Class)modelClass
 {
-    if ([commentList count] == 0)
-    {
-        return;
-    }
-
-    for (JYComment *comment in commentList)
-    {
-        NSNumber *antiCommentId = [comment antiCommentId];
-        if (antiCommentId)
-        {
-            // delete from DB
-            JYComment *dummy = [[JYComment alloc] initWithCommentId:antiCommentId];
-            [self deleteObject:dummy ofClass:JYComment.class];
-        }
-        else
-        {
-            [self insertObject:comment ofClass:JYComment.class];
-        }
-    }
-
-    // update minCommentIdInDB and maxCommentIdInDB
-    JYComment *firstComment = [commentList firstObject];
-    NSNumber *minCommentId = firstComment.commentId;
-    if ([minCommentId unsignedLongLongValue] < [self.minCommentIdInDB unsignedLongLongValue])
-    {
-        self.minCommentIdInDB = minCommentId;
-    }
-
-    JYComment *lastComment = [commentList lastObject];
-    NSNumber *maxCommentId = lastComment.commentId;
-    if ([maxCommentId unsignedLongLongValue] > [self.maxCommentIdInDB unsignedLongLongValue])
-    {
-        self.maxCommentIdInDB = maxCommentId;
-    }
+    NSString *sql = [NSString stringWithFormat:SELECT_MAX_ID_SQL, [modelClass FMDBTableName]];
+    return [self selectOneObjectOfOfClass:modelClass withSql:sql];
 }
 
-- (void)setMinCommentIdInDB:(NSNumber *)minCommentIdInDB
+- (id)selectOneObjectOfOfClass:(Class)modelClass withSql:(NSString *)sql
 {
-    [[NSUserDefaults standardUserDefaults] setObject:minCommentIdInDB forKey:kMinCommentIdKey];
-}
-
-- (NSNumber *)minCommentIdInDB
-{
-    NSNumber *minId = [[NSUserDefaults standardUserDefaults] objectForKey:kMinCommentIdKey];
-    if (!minId)
+    if(![modelClass conformsToProtocol:@protocol(MTLFMDBSerializing)])
     {
-        return [NSNumber numberWithUnsignedLongLong:LLONG_MAX]; // note it's not ULLONG_MAX as the DB is in Java
+        return nil;
     }
-    return minId;
-}
 
-- (void)setMaxCommentIdInDB:(NSNumber *)maxCommentIdInDB
-{
-    [[NSUserDefaults standardUserDefaults] setObject:maxCommentIdInDB forKey:kMaxCommentIdKey];
-}
-
-- (NSNumber *)maxCommentIdInDB
-{
-    NSNumber *maxId = [[NSUserDefaults standardUserDefaults] objectForKey:kMinCommentIdKey];
-    if (!maxId)
+    NSMutableArray *result = [self _executeSelect:sql ofClass:modelClass];
+    if ([result count] == 0)
     {
-        return 0;
+        return nil;
     }
-    return maxId;
+    return result[0];
 }
 
 - (NSMutableArray *)_executeSelect:(NSString *)sql minId:(NSNumber *)minId maxId:(NSNumber *)maxId ofClass:(Class)modelClass
@@ -295,11 +283,11 @@ static NSString *const SELECT_ALL_SQL = @"SELECT * FROM %@ ORDER BY id ASC";
     return result;
 }
 
-- (NSMutableArray *)_executeSelect:(NSString *)sql keyId:(NSNumber *)keyId ofClass:(Class)modelClass
+- (NSMutableArray *)_executeSelect:(NSString *)sql withId:(NSNumber *)objId ofClass:(Class)modelClass
 {
     __block NSMutableArray * result = [NSMutableArray array];
     [_dbQueue inDatabase:^(FMDatabase *db) {
-        FMResultSet * rs = [db executeQuery:sql, keyId];
+        FMResultSet * rs = [db executeQuery:sql, objId];
         while ([rs next]) {
             NSError *error = nil;
             id item = [MTLFMDBAdapter modelOfClass:modelClass fromFMResultSet:rs error:&error];

@@ -144,6 +144,7 @@ static NSString *const kCellIdentifier = @"contactCell";
     [parameters setObject:@([user.userId unsignedLongLongValue]) forKey:@"fid"];
     [parameters setObject:user.yrsNumber forKey:@"fyrs"];
     [parameters setObject:@([JYCredential current].yrsValue) forKey:@"yrs"];
+    [parameters setObject:[JYCredential current].phoneNumber forKey:@"phone"];
 
     return parameters;
 }

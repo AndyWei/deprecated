@@ -137,7 +137,7 @@
 
 - (void)_updatePostImageView
 {
-    JYPost *post = [[JYLocalDataManager sharedInstance] selectPostWithId:_comment.postId];
+    JYPost *post = [[JYLocalDataManager sharedInstance] selectObjectOfClass:JYPost.class withId:_comment.postId];
     if (!post)
     {
         self.postImageView.image = nil;
