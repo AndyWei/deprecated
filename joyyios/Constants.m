@@ -68,6 +68,7 @@ NSString *const kNotificationAppDidStop  = @"appDidStop";
 NSString *const kNotificationCreateComment = @"createComment";
 NSString *const kNotificationDeleteComment = @"deleteComment";
 NSString *const kNotificationDidChangeCountryCode = @"didChangeCountryCode";
+NSString *const kNotificationDidChangeRedDot = @"didChangeRedDot";
 NSString *const kNotificationDidCreateProfile = @"didCreateProfile";
 NSString *const kNotificationDidFindInContactsUsers = @"didFindInContactsUsers";
 NSString *const kNotificationDidTapOnUser = @"didTapOnUser";

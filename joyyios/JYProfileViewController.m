@@ -67,6 +67,8 @@ static NSString *const kCellIdentifier = @"profileUserlineCell";
     {
         [self _initSubViews];
     }
+
+//    [self _showRedDot:YES];
 }
 
 - (void)_initSubViews
@@ -135,6 +137,12 @@ static NSString *const kCellIdentifier = @"profileUserlineCell";
         self.user = [JYFriend myself];
         [self _initSubViews];
     }
+}
+
+- (void)_showRedDot:(BOOL)show
+{
+    NSDictionary *info = @{@"index": @(3), @"show": [NSNumber numberWithBool:show]};
+    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationDidChangeRedDot object:nil userInfo:info];
 }
 
 #pragma mark - JYProfileCardViewDelegate

@@ -34,6 +34,7 @@
 #import "JYXmppManager.h"
 #import "OnboardingViewController.h"
 #import "OnboardingContentViewController.h"
+#import "UITabBarItem+Joyy.h"
 
 @interface AppDelegate ()
 @property (nonatomic) OnboardingContentViewController *page1;
@@ -65,6 +66,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_didManuallySignIn) name:kNotificationDidSignIn object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_didManuallySignUp) name:kNotificationDidSignUp object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_didCreateProfile) name:kNotificationDidCreateProfile object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_didChangeRedDot:) name:kNotificationDidChangeRedDot object:nil];
 
     [self _setupGlobalAppearance];
     [self _launchViewController];
@@ -265,6 +267,22 @@
     tabBarItem4.title = NSLocalizedString(@"Me", nil);
 
     return _tabBarController;
+}
+
+- (void)_didChangeRedDot:(NSNotification *)notification
+{
+    NSDictionary *info = [notification userInfo];
+    if (info)
+    {
+        id index = [info objectForKey:@"index"];
+        id show = [info objectForKey:@"show"];
+        if (index != [NSNull null] && show != [NSNull null])
+        {
+            NSUInteger itemIndex = [index unsignedIntegerValue];
+            BOOL shouldShow = [show boolValue];
+            [self.tabBarController.tabBar.items[itemIndex] showRedDot:shouldShow];
+        }
+    }
 }
 
 - (void)_didManuallySignIn

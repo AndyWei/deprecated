@@ -74,6 +74,7 @@
 		D63F0DA51ACD16190067C5EE /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D63F0DA41ACD16190067C5EE /* CoreLocation.framework */; };
 		D644BF781C17F453005187C2 /* JYUserlineViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D644BF771C17F453005187C2 /* JYUserlineViewController.m */; };
 		D644BF7B1C17F5AD005187C2 /* JYUserlineCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D644BF7A1C17F5AD005187C2 /* JYUserlineCell.m */; };
+		D650DE3F1C503BA100EA0CE5 /* UITabBarItem+Joyy.m in Sources */ = {isa = PBXBuildFile; fileRef = D650DE3E1C503BA100EA0CE5 /* UITabBarItem+Joyy.m */; };
 		D65AFA5E1AEC715D007867D0 /* JYTimelineViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D65AFA5D1AEC715D007867D0 /* JYTimelineViewController.m */; };
 		D65F37461B04807D007B534C /* JYCommentlineCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D65F37451B04807D007B534C /* JYCommentlineCell.m */; };
 		D679B3011B97B1E5004EBA61 /* JYFilename.m in Sources */ = {isa = PBXBuildFile; fileRef = D679B3001B97B1E5004EBA61 /* JYFilename.m */; };
@@ -271,6 +272,8 @@
 		D644BF771C17F453005187C2 /* JYUserlineViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYUserlineViewController.m; sourceTree = "<group>"; };
 		D644BF791C17F5AD005187C2 /* JYUserlineCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYUserlineCell.h; sourceTree = "<group>"; };
 		D644BF7A1C17F5AD005187C2 /* JYUserlineCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYUserlineCell.m; sourceTree = "<group>"; };
+		D650DE3D1C503BA100EA0CE5 /* UITabBarItem+Joyy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITabBarItem+Joyy.h"; sourceTree = "<group>"; };
+		D650DE3E1C503BA100EA0CE5 /* UITabBarItem+Joyy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITabBarItem+Joyy.m"; sourceTree = "<group>"; };
 		D65AFA5C1AEC715D007867D0 /* JYTimelineViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYTimelineViewController.h; sourceTree = "<group>"; };
 		D65AFA5D1AEC715D007867D0 /* JYTimelineViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYTimelineViewController.m; sourceTree = "<group>"; };
 		D65F37441B04807D007B534C /* JYCommentlineCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYCommentlineCell.h; sourceTree = "<group>"; };
@@ -766,6 +769,8 @@
 				D6348D2E1ADB4DD60002BC35 /* NSString+Joyy.m */,
 				D63F0DA01ACD08260067C5EE /* UIColor+Joyy.h */,
 				D63F0DA11ACD08260067C5EE /* UIColor+Joyy.m */,
+				D650DE3D1C503BA100EA0CE5 /* UITabBarItem+Joyy.h */,
+				D650DE3E1C503BA100EA0CE5 /* UITabBarItem+Joyy.m */,
 				D6966B301BA2BB2B00AAD8D5 /* UITextField+Joyy.h */,
 				D6966B311BA2BB2B00AAD8D5 /* UITextField+Joyy.m */,
 				D689ED681AE42C8300CB4D2B /* UIView+Joyy.h */,
@@ -1284,6 +1289,7 @@
 				D67DD0E81B7530AF00333626 /* JYUserCard.m in Sources */,
 				D6E3B0551B996F5400B707DF /* JYSessionListViewCell.m in Sources */,
 				D61D1D571B4A65F200DE37DF /* MDCSwipeToChooseView.m in Sources */,
+				D650DE3F1C503BA100EA0CE5 /* UITabBarItem+Joyy.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
