@@ -31,14 +31,14 @@ const (
     kDeleteInviteStmt          = "DELETE FROM invite WHERE fromid = ? AND toid = ?"
     kWriteInviteInboxStmt      = "INSERT INTO invite_inbox (userid, id, fid, fname, fyrs, phone) VALUES (?, ?, ?, ?, ?, ?)"
     kDeleteInviteInboxItemStmt = "DELETE FROM invite_inbox WHERE userid = ? AND id = ?"
-    kReadInviteInboxStmt       = "SELECT * FROM invite_inbox WHERE userid = ? AND id > ?"
+    kReadInviteInboxStmt       = "SELECT * FROM invite_inbox WHERE userid = ? AND id > ? AND id < ? ORDER BY id DESC LIMIT 500"
 
     kWink                    = "wink"
     kCreateWinkStmt          = "INSERT INTO wink (fromid, toid) VALUES (?, ?)"
     kDeleteWinkStmt          = "DELETE FROM wink WHERE fromid = ? AND toid = ?"
     kWriteWinkInboxStmt      = "INSERT INTO wink_inbox (userid, id, fid, fname, fyrs) VALUES (?, ?, ?, ?, ?)"
     kDeleteWinkInboxItemStmt = "DELETE FROM wink_inbox WHERE userid = ? AND id = ?"
-    kReadWinkInboxStmt       = "SELECT * FROM wink_inbox WHERE userid = ? AND id > ?"
+    kReadWinkInboxStmt       = "SELECT * FROM wink_inbox WHERE userid = ? AND id > ? AND id < ? ORDER BY id DESC LIMIT 500"
 )
 
 type CreateInviteParams struct {
@@ -245,7 +245,8 @@ func (h *Handler) DeleteFriend(w http.ResponseWriter, req *http.Request, userid 
 }
 
 type ReadInboxParams struct {
-    SinceId int64 `param:"sinceid" validate:"required"`
+    SinceId  int64 `param:"sinceid"`
+    BeforeId int64 `param:"beforeid"`
 }
 
 func (h *Handler) ReadInvites(w http.ResponseWriter, req *http.Request, userid int64, username string) {
@@ -255,7 +256,7 @@ func (h *Handler) ReadInvites(w http.ResponseWriter, req *http.Request, userid i
         return
     }
 
-    h.readInboxAndRespond(w, kReadInviteInboxStmt, userid, p.SinceId)
+    h.readInboxAndRespond(w, kReadInviteInboxStmt, userid, p.SinceId, p.BeforeId)
 }
 
 func (h *Handler) ReadWinks(w http.ResponseWriter, req *http.Request, userid int64, username string) {
@@ -265,7 +266,7 @@ func (h *Handler) ReadWinks(w http.ResponseWriter, req *http.Request, userid int
         return
     }
 
-    h.readInboxAndRespond(w, kReadWinkInboxStmt, userid, p.SinceId)
+    h.readInboxAndRespond(w, kReadWinkInboxStmt, userid, p.SinceId, p.BeforeId)
 }
 
 func (h *Handler) ReadFriends(w http.ResponseWriter, req *http.Request, userid int64, username string) {
@@ -297,8 +298,8 @@ func (h *Handler) EdgeExist(table string, src, dest int64) (exist bool) {
     return toid > 0
 }
 
-func (h *Handler) readInboxAndRespond(w http.ResponseWriter, stmt string, userid, sinceId int64) {
-    iter := h.DB.Query(stmt, userid, sinceId).Consistency(gocql.One).Iter()
+func (h *Handler) readInboxAndRespond(w http.ResponseWriter, stmt string, userid, sinceId, beforeId int64) {
+    iter := h.DB.Query(stmt, userid, sinceId, beforeId).Consistency(gocql.One).Iter()
     results, err := iter.SliceMap()
     if err != nil {
         RespondError(w, err, http.StatusBadGateway)

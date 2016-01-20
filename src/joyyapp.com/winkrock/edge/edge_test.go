@@ -66,7 +66,7 @@ func TestInvite(test *testing.T) {
     }
 
     // all the invites should be read out successfully
-    req, _ := http.NewRequest("GET", "/v1/invites?sinceid=1", nil)
+    req, _ := http.NewRequest("GET", "/v1/invites?sinceid=0&beforeid=9223372036854775807", nil)
     resp := httptest.NewRecorder()
     h.ReadInvites(resp, req, myId, myName)
     bytes := resp.Body.Bytes()
@@ -127,7 +127,7 @@ func TestWink(test *testing.T) {
     }
 
     // all the winks should be read out successfully
-    req, _ := http.NewRequest("GET", "/v1/winks?sinceid=1", nil)
+    req, _ := http.NewRequest("GET", "/v1/winks?sinceid=0&beforeid=9223372036854775807", nil)
     resp := httptest.NewRecorder()
     h.ReadWinks(resp, req, myId, myName)
     bytes := resp.Body.Bytes()
