@@ -108,8 +108,11 @@ static NSString *kWinkURL = @"action://_didTapWinkLabel";
     NSString *count = [NSString stringWithFormat:@"%llu", friendCount];
     self.friendCountLabel.text = count;
 
-    NSRange range = [count rangeOfString:count];
-    [self.friendCountLabel addLinkToURL:[NSURL URLWithString:kFriendURL] withRange:range];
+    if (friendCount > 0)
+    {
+        NSRange range = [count rangeOfString:count];
+        [self.friendCountLabel addLinkToURL:[NSURL URLWithString:kFriendURL] withRange:range];
+    }
 }
 
 - (void)setInviteCount:(uint64_t)inviteCount
@@ -118,8 +121,11 @@ static NSString *kWinkURL = @"action://_didTapWinkLabel";
     NSString *count = [NSString stringWithFormat:@"%llu", inviteCount];
     self.inviteCountLabel.text = count;
 
-    NSRange range = [count rangeOfString:count];
-    [self.inviteCountLabel addLinkToURL:[NSURL URLWithString:kInviteURL] withRange:range];
+    if (inviteCount > 0)
+    {
+        NSRange range = [count rangeOfString:count];
+        [self.inviteCountLabel addLinkToURL:[NSURL URLWithString:kInviteURL] withRange:range];
+    }
 }
 
 - (void)setWinkCount:(uint64_t)winkCount
@@ -128,8 +134,11 @@ static NSString *kWinkURL = @"action://_didTapWinkLabel";
     NSString *count = [NSString stringWithFormat:@"%llu", winkCount];
     self.winkCountLabel.text = count;
 
-    NSRange range = [count rangeOfString:count];
-    [self.winkCountLabel addLinkToURL:[NSURL URLWithString:kWinkURL] withRange:range];
+    if (winkCount > 0)
+    {
+        NSRange range = [count rangeOfString:count];
+        [self.winkCountLabel addLinkToURL:[NSURL URLWithString:kWinkURL] withRange:range];
+    }
 }
 
 - (void)setAvatarImage:(UIImage *)avatarImage
@@ -181,7 +190,22 @@ static NSString *kWinkURL = @"action://_didTapWinkLabel";
 {
     if (!_friendCountLabel)
     {
-        _friendCountLabel = [self _countLabel];
+        TTTAttributedLabel *label = [self _countLabel];
+
+        UIFont *boldSystemFont = [UIFont boldSystemFontOfSize:14];
+        CTFontRef font = CTFontCreateWithName((__bridge CFStringRef)boldSystemFont.fontName, boldSystemFont.pointSize, NULL);
+        label.linkAttributes = @{
+                                 (NSString *)kCTFontAttributeName: (__bridge id)font,
+                                 (NSString*)kCTForegroundColorAttributeName: (__bridge id)(JoyyBlue.CGColor),
+                                 (NSString *)kCTUnderlineStyleAttributeName: [NSNumber numberWithBool:NO]
+                                 };
+
+        label.activeLinkAttributes = @{
+                                       (NSString*)kCTForegroundColorAttributeName: (__bridge id)(FlatSand.CGColor),
+                                       (NSString *)kCTUnderlineStyleAttributeName: [NSNumber numberWithBool:NO]
+                                       };
+
+        _friendCountLabel = label;
     }
     return _friendCountLabel;
 }
@@ -249,7 +273,7 @@ static NSString *kWinkURL = @"action://_didTapWinkLabel";
     label.lineBreakMode = NSLineBreakByWordWrapping;
     label.numberOfLines = 0;
     label.preferredMaxLayoutWidth = 80;
-    label.textColor = JoyyGray;
+    label.textColor = JoyyBlue;
     label.textAlignment = NSTextAlignmentCenter;
     label.translatesAutoresizingMaskIntoConstraints = NO;
 
@@ -257,12 +281,12 @@ static NSString *kWinkURL = @"action://_didTapWinkLabel";
     CTFontRef font = CTFontCreateWithName((__bridge CFStringRef)boldSystemFont.fontName, boldSystemFont.pointSize, NULL);
     label.linkAttributes = @{
                              (NSString *)kCTFontAttributeName: (__bridge id)font,
-                             (NSString*)kCTForegroundColorAttributeName: (__bridge id)(JoyyBlue.CGColor),
+                             (NSString*)kCTForegroundColorAttributeName: (__bridge id)(JoyyRed.CGColor),
                              (NSString *)kCTUnderlineStyleAttributeName: [NSNumber numberWithBool:NO]
                             };
 
     label.activeLinkAttributes = @{
-                                   (NSString*)kCTForegroundColorAttributeName: (__bridge id)(FlatSand.CGColor),
+                                   (NSString*)kCTForegroundColorAttributeName: (__bridge id)(JoyyBlue.CGColor),
                                    (NSString *)kCTUnderlineStyleAttributeName: [NSNumber numberWithBool:NO]
                                    };
     return label;

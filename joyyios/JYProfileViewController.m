@@ -28,6 +28,7 @@
 #import "JYUserlineCell.h"
 #import "JYWink.h"
 #import "JYWinkViewController.h"
+#import "NSNumber+Joyy.h"
 
 @interface JYProfileViewController () <JYAvatarCreatorDelegate, JYProfileCardViewDelegate, UITableViewDataSource, UITableViewDelegate>
 @property (nonatomic) JYAvatarCreator *avatarCreator;
@@ -54,6 +55,8 @@ static NSString *const kCellIdentifier = @"profileUserlineCell";
 
     self.networkThreadCount = 0;
     self.postList = [NSMutableArray new];
+    self.inviteList = [NSMutableArray new];
+    self.winkList =[NSMutableArray new];
     self.month = [[JYMonth alloc] initWithDate:[NSDate date]];
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_apiTokenReady) name:kNotificationAPITokenReady object:nil];
@@ -365,7 +368,7 @@ static NSString *const kCellIdentifier = @"profileUserlineCell";
 
     __weak typeof(self) weakSelf = self;
     [manager GET:url
-      parameters:nil
+      parameters:[self _fetchInvitesParameters]
          success:^(NSURLSessionTask *operation, id responseObject) {
              NSLog(@"GET invites Success");
              [weakSelf _didReceiveInvites:(NSArray *)responseObject];
@@ -373,6 +376,25 @@ static NSString *const kCellIdentifier = @"profileUserlineCell";
          failure:^(NSURLSessionTask *operation, NSError *error) {
              NSLog(@"GET invites error: %@", error);
          }];
+}
+
+- (NSDictionary *)_fetchInvitesParameters
+{
+    NSMutableDictionary *parameters = [NSMutableDictionary new];
+
+    JYInvite *maxInvite = (JYInvite *)[[JYLocalDataManager sharedInstance] maxIdObjectOfOfClass:JYInvite.class];
+    if (maxInvite)
+    {
+        [parameters setObject:[maxInvite.inviteId uint64Number] forKey:@"sinceid"];
+    }
+    else
+    {
+        [parameters setObject:@(0) forKey:@"sinceid"];
+    }
+
+    [parameters setObject:@(LLONG_MAX) forKey:@"beforeid"];
+
+    return parameters;
 }
 
 - (void)_didReceiveInvites:(NSArray *)invites
@@ -388,6 +410,7 @@ static NSString *const kCellIdentifier = @"profileUserlineCell";
             [inviteList addObject:invite];
         }
     }
+    [inviteList addObjectsFromArray:self.inviteList];
     self.inviteList = inviteList;
     self.cardView.inviteCount = [inviteList count];
 }
@@ -399,12 +422,12 @@ static NSString *const kCellIdentifier = @"profileUserlineCell";
 
     __weak typeof(self) weakSelf = self;
     [manager GET:url
-      parameters:nil
+      parameters:[self _fetchWinksParameters]
          success:^(NSURLSessionTask *operation, id responseObject) {
              NSLog(@"GET winks Success");
 
              NSMutableArray *winkList = [NSMutableArray new];
-             for (NSDictionary *dict in [responseObject reverseObjectEnumerator])
+             for (NSDictionary *dict in responseObject) // results are in DESC
              {
                  NSError *error = nil;
                  JYWink *wink = (JYWink *)[MTLJSONAdapter modelOfClass:JYWink.class fromJSONDictionary:dict error:&error];
@@ -414,12 +437,32 @@ static NSString *const kCellIdentifier = @"profileUserlineCell";
                      [winkList addObject:wink];
                  }
              }
-             [weakSelf.winkList addObjectsFromArray: winkList];
+             [winkList addObjectsFromArray:weakSelf.winkList];
+             weakSelf.winkList = winkList;
              weakSelf.cardView.winkCount = [winkList count];
          }
          failure:^(NSURLSessionTask *operation, NSError *error) {
              NSLog(@"GET winks error: %@", error);
          }];
+}
+
+- (NSDictionary *)_fetchWinksParameters
+{
+    NSMutableDictionary *parameters = [NSMutableDictionary new];
+
+    JYWink *maxWink = (JYWink *)[[JYLocalDataManager sharedInstance] maxIdObjectOfOfClass:JYWink.class];
+    if (maxWink)
+    {
+        [parameters setObject:[maxWink.winkId uint64Number] forKey:@"sinceid"];
+    }
+    else
+    {
+        [parameters setObject:@(0) forKey:@"sinceid"];
+    }
+
+    [parameters setObject:@(LLONG_MAX) forKey:@"beforeid"];
+
+    return parameters;
 }
 
 - (void)_updateProfileRecord
