@@ -10,32 +10,25 @@
 #import <MJRefresh/MJRefresh.h>
 #import <RKDropdownAlert/RKDropdownAlert.h>
 
-#import "JYMonth.h"
 #import "JYButton.h"
 #import "JYAvatarCreator.h"
-#import "JYComment.h"
-#import "JYCommentViewController.h"
 #import "JYFilename.h"
 #import "JYFriendManager.h"
 #import "JYFriendViewController.h"
-#import "JYInvite.h"
 #import "JYInviteViewController.h"
 #import "JYLocalDataManager.h"
-#import "JYPhotoCaptionViewController.h"
 #import "JYProfileCardView.h"
+#import "JYProfileDataManager.h"
 #import "JYProfileViewController.h"
 #import "JYPost.h"
 #import "JYUserlineCell.h"
-#import "JYWink.h"
 #import "JYWinkViewController.h"
 #import "NSNumber+Joyy.h"
 
-@interface JYProfileViewController () <JYAvatarCreatorDelegate, JYProfileCardViewDelegate, UITableViewDataSource, UITableViewDelegate>
+@interface JYProfileViewController () <JYAvatarCreatorDelegate, JYProfileCardViewDelegate, JYProfileDataManagerDelegate, UITableViewDataSource, UITableViewDelegate>
 @property (nonatomic) JYAvatarCreator *avatarCreator;
-@property (nonatomic) JYMonth *month;
-@property (nonatomic) JYUser *user;
 @property (nonatomic) JYProfileCardView *cardView;
-@property (nonatomic) NSInteger networkThreadCount;
+@property (nonatomic) JYProfileDataManager *dataManager;
 @property (nonatomic) NSMutableArray *friendList;
 @property (nonatomic) NSMutableArray *inviteList;
 @property (nonatomic) NSMutableArray *postList;
@@ -47,38 +40,29 @@ static NSString *const kCellIdentifier = @"profileUserlineCell";
 
 @implementation JYProfileViewController
 
+- (instancetype)init
+{
+    if (self = [super init])
+    {
+        self.friendList = [NSMutableArray new];
+        self.postList = [NSMutableArray new];
+        self.inviteList = [NSMutableArray new];
+        self.winkList =[NSMutableArray new];
+
+        self.dataManager = [JYProfileDataManager new];
+        self.dataManager.delegate = self;
+        [self.dataManager start];
+    }
+    return self;
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     self.title = NSLocalizedString(@"Me", nil);
     self.navigationController.navigationBar.translucent = YES;
 
-    self.networkThreadCount = 0;
-    self.postList = [NSMutableArray new];
-    self.inviteList = [NSMutableArray new];
-    self.winkList =[NSMutableArray new];
-    self.month = [[JYMonth alloc] initWithDate:[NSDate date]];
-
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_apiTokenReady) name:kNotificationAPITokenReady object:nil];
-
-    self.user = [JYFriend myself];
-
-    if (self.user)
-    {
-        [self _initSubViews];
-    }
-
-//    [self _showRedDot:YES];
-}
-
-- (void)_initSubViews
-{
     [self.view addSubview:self.tableView];
-
-    [self _fetchFriends];
-    [self _fetchInvites];
-    [self _fetchWinks];
-    [self _fetchUserline];
 }
 
 - (UITableView *)tableView
@@ -109,7 +93,6 @@ static NSString *const kCellIdentifier = @"profileUserlineCell";
     if (!_cardView)
     {
         _cardView = [JYProfileCardView new];
-        _cardView.user = self.user;
         _cardView.delegate = self;
     }
     return _cardView;
@@ -125,24 +108,15 @@ static NSString *const kCellIdentifier = @"profileUserlineCell";
     return _avatarCreator;
 }
 
-- (void)dealloc
-{
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
-
-- (void)_apiTokenReady
-{
-    if (!self.user)
-    {
-        self.user = [JYFriend myself];
-        [self _initSubViews];
-    }
-}
-
 - (void)_showRedDot:(BOOL)show
 {
     NSDictionary *info = @{@"index": @(3), @"show": [NSNumber numberWithBool:show]};
     [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationDidChangeRedDot object:nil userInfo:info];
+}
+
+- (void)_fetchUserline
+{
+    [self.dataManager fetchUserline];
 }
 
 #pragma mark - JYProfileCardViewDelegate
@@ -246,232 +220,7 @@ static NSString *const kCellIdentifier = @"profileUserlineCell";
 
 #pragma mark - UITableView Delegate
 
-#pragma mark - Maintain table
-
-- (void)_receivedOldPosts:(NSMutableArray *)postList
-{
-    if ([postList count] == 0) // no more old post, do nothing
-    {
-        return;
-    }
-
-    [self.postList addObjectsFromArray:postList];
-    [self.tableView reloadData];
-    [self.tableView.mj_footer endRefreshing];
-}
-
 #pragma mark - Network
-
-- (void)_networkThreadBegin
-{
-    if (self.networkThreadCount == 0)
-    {
-        [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
-    }
-    self.networkThreadCount++;
-}
-
-- (void)_networkThreadEnd
-{
-    self.networkThreadCount--;
-    if (self.networkThreadCount <= 0)
-    {
-        [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-        [self.tableView.mj_footer endRefreshing];
-    }
-}
-
-- (void)_fetchUserline
-{
-    if (self.networkThreadCount > 0)
-    {
-        return;
-    }
-
-    uint64_t monthValue = self.month.value;
-    self.month = [self.month prev];
-    [self _fetchUserlineOfMonth:monthValue];
-}
-
-- (void)_fetchUserlineOfMonth:(uint64_t)month
-{
-    [self _networkThreadBegin];
-
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager managerWithToken];
-
-    NSString *url = [NSString apiURLWithPath:@"post/userline"];
-    NSDictionary *parameters = @{@"userid": @([self.user.userId unsignedLongLongValue]), @"month": @(month)};
-
-    __weak typeof(self) weakSelf = self;
-    [manager GET:url
-      parameters:parameters
-         success:^(NSURLSessionTask *operation, id responseObject) {
-             NSLog(@"post/userline fetch success responseObject: %@", responseObject);
-
-             // the post json is in ASC order, so iterate reversely
-             NSMutableArray *postList = [NSMutableArray new];
-             for (NSDictionary *dict in [responseObject reverseObjectEnumerator])
-             {
-                 NSError *error = nil;
-                 JYPost *post = (JYPost *)[MTLJSONAdapter modelOfClass:JYPost.class fromJSONDictionary:dict error:&error];
-                 if (post)
-                 {
-                     [postList addObject:post];
-                 }
-             }
-
-             [weakSelf _receivedOldPosts:postList];
-             [weakSelf _networkThreadEnd];
-         }
-         failure:^(NSURLSessionTask *operation, NSError *error) {
-             NSLog(@"Error: post/userline fetch failed with error: %@", error);
-             [weakSelf _networkThreadEnd];
-         }
-     ];
-}
-
-- (void)_fetchFriends
-{
-    NSString *url = [NSString apiURLWithPath:@"friends"];
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager managerWithToken];
-
-    __weak typeof(self) weakSelf = self;
-    [manager GET:url
-      parameters:nil
-         success:^(NSURLSessionTask *operation, id responseObject) {
-             NSLog(@"GET friends Success");
-
-             NSMutableArray *friendList = [NSMutableArray new];
-             for (NSDictionary *dict in responseObject)
-             {
-                 NSError *error = nil;
-                 JYFriend *friend = (JYFriend *)[MTLJSONAdapter modelOfClass:JYFriend.class fromJSONDictionary:dict error:&error];
-                 if (friend)
-                 {
-                     [friendList addObject:friend];
-                 }
-             }
-
-//              test only
-//                 JYUser *user = [JYFriend myself];
-//                 for (int i = 0; i < 10; ++i)
-//                 {
-//                     [friendList addObject:user];
-//                 }
-//
-
-             weakSelf.friendList = friendList;
-             weakSelf.cardView.friendCount = [friendList count];
-             [[JYFriendManager sharedInstance] receivedFriendList:friendList];
-         }
-         failure:^(NSURLSessionTask *operation, NSError *error) {
-             NSLog(@"GET friends error: %@", error);
-         }];
-}
-
-- (void)_fetchInvites
-{
-    NSString *url = [NSString apiURLWithPath:@"invites"];
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager managerWithToken];
-
-    __weak typeof(self) weakSelf = self;
-    [manager GET:url
-      parameters:[self _fetchInvitesParameters]
-         success:^(NSURLSessionTask *operation, id responseObject) {
-             NSLog(@"GET invites Success");
-             [weakSelf _didReceiveInvites:(NSArray *)responseObject];
-         }
-         failure:^(NSURLSessionTask *operation, NSError *error) {
-             NSLog(@"GET invites error: %@", error);
-         }];
-}
-
-- (NSDictionary *)_fetchInvitesParameters
-{
-    NSMutableDictionary *parameters = [NSMutableDictionary new];
-
-    JYInvite *maxInvite = (JYInvite *)[[JYLocalDataManager sharedInstance] maxIdObjectOfOfClass:JYInvite.class];
-    if (maxInvite)
-    {
-        [parameters setObject:[maxInvite.inviteId uint64Number] forKey:@"sinceid"];
-    }
-    else
-    {
-        [parameters setObject:@(0) forKey:@"sinceid"];
-    }
-
-    [parameters setObject:@(LLONG_MAX) forKey:@"beforeid"];
-
-    return parameters;
-}
-
-- (void)_didReceiveInvites:(NSArray *)invites
-{
-    NSMutableArray *inviteList = [NSMutableArray new];
-    for (NSDictionary *dict in invites)
-    {
-        NSError *error = nil;
-        JYInvite *invite = (JYInvite *)[MTLJSONAdapter modelOfClass:JYInvite.class fromJSONDictionary:dict error:&error];
-        if (invite)
-        {
-            [[JYLocalDataManager sharedInstance] insertObject:invite ofClass:JYInvite.class];
-            [inviteList addObject:invite];
-        }
-    }
-    [inviteList addObjectsFromArray:self.inviteList];
-    self.inviteList = inviteList;
-    self.cardView.inviteCount = [inviteList count];
-}
-
-- (void)_fetchWinks
-{
-    NSString *url = [NSString apiURLWithPath:@"winks"];
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager managerWithToken];
-
-    __weak typeof(self) weakSelf = self;
-    [manager GET:url
-      parameters:[self _fetchWinksParameters]
-         success:^(NSURLSessionTask *operation, id responseObject) {
-             NSLog(@"GET winks Success");
-
-             NSMutableArray *winkList = [NSMutableArray new];
-             for (NSDictionary *dict in responseObject) // results are in DESC
-             {
-                 NSError *error = nil;
-                 JYWink *wink = (JYWink *)[MTLJSONAdapter modelOfClass:JYWink.class fromJSONDictionary:dict error:&error];
-                 if (wink)
-                 {
-                     [[JYLocalDataManager sharedInstance] insertObject:wink ofClass:JYWink.class];
-                     [winkList addObject:wink];
-                 }
-             }
-             [winkList addObjectsFromArray:weakSelf.winkList];
-             weakSelf.winkList = winkList;
-             weakSelf.cardView.winkCount = [winkList count];
-         }
-         failure:^(NSURLSessionTask *operation, NSError *error) {
-             NSLog(@"GET winks error: %@", error);
-         }];
-}
-
-- (NSDictionary *)_fetchWinksParameters
-{
-    NSMutableDictionary *parameters = [NSMutableDictionary new];
-
-    JYWink *maxWink = (JYWink *)[[JYLocalDataManager sharedInstance] maxIdObjectOfOfClass:JYWink.class];
-    if (maxWink)
-    {
-        [parameters setObject:[maxWink.winkId uint64Number] forKey:@"sinceid"];
-    }
-    else
-    {
-        [parameters setObject:@(0) forKey:@"sinceid"];
-    }
-
-    [parameters setObject:@(LLONG_MAX) forKey:@"beforeid"];
-
-    return parameters;
-}
 
 - (void)_updateProfileRecord
 {
@@ -493,6 +242,81 @@ static NSString *const kCellIdentifier = @"profileUserlineCell";
     [parameters setObject:@YES forKey:@"boardcast"];
 
     return parameters;
+}
+
+#pragma mark - JYProfileDataManagerDelegate
+
+- (void)manager:(JYProfileDataManager *)manager didReceiveFriends:(NSMutableArray *)list
+{
+    if ([list count] == 0)
+    {
+        return;
+    }
+
+    self.friendList = list;
+
+    self.cardView.friendCount = [list count];
+    [self.cardView setNeedsLayout];
+    [self.cardView layoutIfNeeded];
+}
+
+- (void)manager:(JYProfileDataManager *)manager didReceivePosts:(NSMutableArray *)list
+{
+    if ([list count] == 0)
+    {
+        return;
+    }
+
+    [self.postList addObjectsFromArray:list];
+
+    if (self.isViewLoaded)
+    {
+        [self.tableView reloadData];
+        [self.tableView.mj_footer endRefreshing];
+    }
+}
+
+- (void)manager:(JYProfileDataManager *)manager didReceiveInvites:(NSMutableArray *)list
+{
+    if ([list count] == 0)
+    {
+        return;
+    }
+
+    [list addObjectsFromArray:self.inviteList];
+    self.inviteList = list;
+
+    self.cardView.inviteCount = [list count];
+    [self.cardView setNeedsLayout];
+    [self.cardView layoutIfNeeded];
+
+    NSUInteger count = [self.winkList count] + [self.inviteList count];
+    [self _showRedDot:(count > 0)];
+}
+
+- (void)manager:(JYProfileDataManager *)manager didReceiveWinks:(NSMutableArray *)list
+{
+    if ([list count] == 0)
+    {
+        return;
+    }
+
+    [list addObjectsFromArray:self.winkList];
+    self.winkList = list;
+
+    self.cardView.winkCount = [list count];
+    [self.cardView setNeedsLayout];
+    [self.cardView layoutIfNeeded];
+
+    NSUInteger count = [self.winkList count] + [self.inviteList count];
+    [self _showRedDot:(count > 0)];
+}
+
+- (void)manager:(JYProfileDataManager *)manager didReceiveOwnProfile:(JYUser *)me
+{
+    self.cardView.user = me;
+    [self.cardView setNeedsLayout];
+    [self.cardView layoutIfNeeded];
 }
 
 @end

@@ -75,6 +75,7 @@
 		D644BF781C17F453005187C2 /* JYUserlineViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D644BF771C17F453005187C2 /* JYUserlineViewController.m */; };
 		D644BF7B1C17F5AD005187C2 /* JYUserlineCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D644BF7A1C17F5AD005187C2 /* JYUserlineCell.m */; };
 		D650DE3F1C503BA100EA0CE5 /* UITabBarItem+Joyy.m in Sources */ = {isa = PBXBuildFile; fileRef = D650DE3E1C503BA100EA0CE5 /* UITabBarItem+Joyy.m */; };
+		D650DE421C506F9000EA0CE5 /* JYProfileDataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D650DE411C506F9000EA0CE5 /* JYProfileDataManager.m */; };
 		D65AFA5E1AEC715D007867D0 /* JYTimelineViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D65AFA5D1AEC715D007867D0 /* JYTimelineViewController.m */; };
 		D65F37461B04807D007B534C /* JYCommentlineCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D65F37451B04807D007B534C /* JYCommentlineCell.m */; };
 		D679B3011B97B1E5004EBA61 /* JYFilename.m in Sources */ = {isa = PBXBuildFile; fileRef = D679B3001B97B1E5004EBA61 /* JYFilename.m */; };
@@ -274,6 +275,8 @@
 		D644BF7A1C17F5AD005187C2 /* JYUserlineCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYUserlineCell.m; sourceTree = "<group>"; };
 		D650DE3D1C503BA100EA0CE5 /* UITabBarItem+Joyy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITabBarItem+Joyy.h"; sourceTree = "<group>"; };
 		D650DE3E1C503BA100EA0CE5 /* UITabBarItem+Joyy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITabBarItem+Joyy.m"; sourceTree = "<group>"; };
+		D650DE401C506F9000EA0CE5 /* JYProfileDataManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYProfileDataManager.h; sourceTree = "<group>"; };
+		D650DE411C506F9000EA0CE5 /* JYProfileDataManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYProfileDataManager.m; sourceTree = "<group>"; };
 		D65AFA5C1AEC715D007867D0 /* JYTimelineViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYTimelineViewController.h; sourceTree = "<group>"; };
 		D65AFA5D1AEC715D007867D0 /* JYTimelineViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYTimelineViewController.m; sourceTree = "<group>"; };
 		D65F37441B04807D007B534C /* JYCommentlineCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYCommentlineCell.h; sourceTree = "<group>"; };
@@ -994,12 +997,14 @@
 				D63147451C1A826500EAE05E /* JYFriendViewController.m */,
 				D63A01381C331BF600E74C36 /* JYProfileCreationViewController.h */,
 				D63A01391C331BF600E74C36 /* JYProfileCreationViewController.m */,
-				D6C89F7A1C2B5C9C00E96E99 /* JYProfileViewController.h */,
-				D6C89F7B1C2B5C9C00E96E99 /* JYProfileViewController.m */,
 				D6C89F811C2B9A8700E96E99 /* JYWinkViewController.h */,
 				D6C89F821C2B9A8700E96E99 /* JYWinkViewController.m */,
 				D61FAE5C1C4461BB00142450 /* JYInviteViewController.h */,
 				D61FAE5D1C4461BB00142450 /* JYInviteViewController.m */,
+				D6C89F7A1C2B5C9C00E96E99 /* JYProfileViewController.h */,
+				D6C89F7B1C2B5C9C00E96E99 /* JYProfileViewController.m */,
+				D650DE401C506F9000EA0CE5 /* JYProfileDataManager.h */,
+				D650DE411C506F9000EA0CE5 /* JYProfileDataManager.m */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -1209,6 +1214,7 @@
 				D67DD0E41B75302800333626 /* JYPeopleViewController.m in Sources */,
 				D65F37461B04807D007B534C /* JYCommentlineCell.m in Sources */,
 				D60726AE1C18179500A43717 /* JYMonth.m in Sources */,
+				D650DE421C506F9000EA0CE5 /* JYProfileDataManager.m in Sources */,
 				D63A013A1C331BF600E74C36 /* JYProfileCreationViewController.m in Sources */,
 				D61D1DAE1B4E336E00DE37DF /* TGCamera.m in Sources */,
 				D63F0D751AC9F6F80067C5EE /* JYManagementDataStore.m in Sources */,
