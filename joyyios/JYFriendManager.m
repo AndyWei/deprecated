@@ -47,10 +47,10 @@
         _friendDict = [NSMutableDictionary new];
         for (JYFriend *user in array)
         {
-            [self _insertFriend:user];
+            [self _addFriend:user];
         }
 
-        [self _insertFriend:[JYFriend myself]];
+        [self _addFriend:[JYFriend myself]];
     }
     return _friendDict;
 }
@@ -88,12 +88,12 @@
             {
                 [[JYLocalDataManager sharedInstance] updateObject:user ofClass:JYFriend.class];
             }
-            [self _insertFriend:user];
+            [self _addFriend:user];
         }
     }
 }
 
-- (void)_insertFriend:(JYFriend *)user
+- (void)_addFriend:(JYFriend *)user
 {
     if (user)
     {

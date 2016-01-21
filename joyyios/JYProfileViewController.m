@@ -15,6 +15,7 @@
 #import "JYFilename.h"
 #import "JYFriendManager.h"
 #import "JYFriendViewController.h"
+#import "JYInvite.h"
 #import "JYInviteViewController.h"
 #import "JYLocalDataManager.h"
 #import "JYProfileCardView.h"
@@ -22,6 +23,7 @@
 #import "JYProfileViewController.h"
 #import "JYPost.h"
 #import "JYUserlineCell.h"
+#import "JYWink.h"
 #import "JYWinkViewController.h"
 #import "NSNumber+Joyy.h"
 
@@ -44,10 +46,10 @@ static NSString *const kCellIdentifier = @"profileUserlineCell";
 {
     if (self = [super init])
     {
-        self.friendList = [NSMutableArray new];
         self.postList = [NSMutableArray new];
-        self.inviteList = [NSMutableArray new];
-        self.winkList =[NSMutableArray new];
+        self.friendList = [NSMutableArray new];
+        self.inviteList = [[JYLocalDataManager sharedInstance] selectObjectsOfClass:JYInvite.class limit:200 sort:@"DESC"];
+        self.winkList = [[JYLocalDataManager sharedInstance] selectObjectsOfClass:JYWink.class limit:500 sort:@"DESC"];
 
         self.dataManager = [JYProfileDataManager new];
         self.dataManager.delegate = self;
@@ -62,7 +64,13 @@ static NSString *const kCellIdentifier = @"profileUserlineCell";
     self.title = NSLocalizedString(@"Me", nil);
     self.navigationController.navigationBar.translucent = YES;
 
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_didAddFriend:) name:kNotificationDidAddFriend object:nil];
     [self.view addSubview:self.tableView];
+}
+
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (UITableView *)tableView
@@ -106,6 +114,28 @@ static NSString *const kCellIdentifier = @"profileUserlineCell";
         _avatarCreator.delegate = self;
     }
     return _avatarCreator;
+}
+
+- (void)setInviteList:(NSMutableArray *)inviteList
+{
+    _inviteList = inviteList;
+    self.cardView.inviteCount = [_inviteList count];
+    [self.cardView setNeedsLayout];
+    [self.cardView layoutIfNeeded];
+
+    NSUInteger count = [_winkList count] + [_inviteList count];
+    [self _showRedDot:(count > 0)];
+}
+
+- (void)setWinkList:(NSMutableArray *)winkList
+{
+    _winkList = winkList;
+    self.cardView.winkCount = [_inviteList count];
+    [self.cardView setNeedsLayout];
+    [self.cardView layoutIfNeeded];
+
+    NSUInteger count = [_winkList count] + [_inviteList count];
+    [self _showRedDot:(count > 0)];
 }
 
 - (void)_showRedDot:(BOOL)show
@@ -278,38 +308,14 @@ static NSString *const kCellIdentifier = @"profileUserlineCell";
 
 - (void)manager:(JYProfileDataManager *)manager didReceiveInvites:(NSMutableArray *)list
 {
-    if ([list count] == 0)
-    {
-        return;
-    }
-
     [list addObjectsFromArray:self.inviteList];
     self.inviteList = list;
-
-    self.cardView.inviteCount = [list count];
-    [self.cardView setNeedsLayout];
-    [self.cardView layoutIfNeeded];
-
-    NSUInteger count = [self.winkList count] + [self.inviteList count];
-    [self _showRedDot:(count > 0)];
 }
 
 - (void)manager:(JYProfileDataManager *)manager didReceiveWinks:(NSMutableArray *)list
 {
-    if ([list count] == 0)
-    {
-        return;
-    }
-
     [list addObjectsFromArray:self.winkList];
     self.winkList = list;
-
-    self.cardView.winkCount = [list count];
-    [self.cardView setNeedsLayout];
-    [self.cardView layoutIfNeeded];
-
-    NSUInteger count = [self.winkList count] + [self.inviteList count];
-    [self _showRedDot:(count > 0)];
 }
 
 - (void)manager:(JYProfileDataManager *)manager didReceiveOwnProfile:(JYUser *)me
@@ -317,6 +323,27 @@ static NSString *const kCellIdentifier = @"profileUserlineCell";
     self.cardView.user = me;
     [self.cardView setNeedsLayout];
     [self.cardView layoutIfNeeded];
+}
+
+#pragma mark - Notification handlers
+
+- (void)_didAddFriend:(NSNotification *)notification
+{
+    NSDictionary *info = [notification userInfo];
+    if (info)
+    {
+        id obj = [info objectForKey:@"friend"];
+        if (obj != [NSNull null])
+        {
+            JYFriend *friend = (JYFriend *)obj;
+            [self.friendList addObject:friend];
+            [[JYFriendManager sharedInstance] receivedFriendList:@[friend]];
+
+            self.cardView.friendCount = [self.friendList count];
+            [self.cardView setNeedsLayout];
+            [self.cardView layoutIfNeeded];
+        }
+    }
 }
 
 @end

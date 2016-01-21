@@ -75,10 +75,11 @@ PRIMARY KEY(id)) ";
 static NSString *const CREATE_COMMENT_INDEX_SQL = @"CREATE INDEX IF NOT EXISTS postid_index ON comment(postid)";
 static NSString *const SELECT_RANGE_SQL = @"SELECT * FROM %@ WHERE id > (?) AND id < (?) ORDER BY id DESC";
 static NSString *const SELECT_CONDITION_SQL = @"SELECT * FROM %@ WHERE (%@) ORDER BY id %@";
+static NSString *const SELECT_LIMIT_SQL = @"SELECT * FROM %@ ORDER BY id %@ LIMIT %u";
 static NSString *const SELECT_KEY_SQL = @"SELECT * FROM %@ WHERE %@ = ? ORDER BY id ASC";
 static NSString *const SELECT_ALL_SQL = @"SELECT * FROM %@ ORDER BY id ASC";
-static NSString *const SELECT_MIN_ID_SQL = @"SELECT id FROM %@ ORDER BY id ASC LIMIT 1";
-static NSString *const SELECT_MAX_ID_SQL = @"SELECT id FROM %@ ORDER BY id DESC LIMIT 1";
+static NSString *const SELECT_MIN_ID_SQL = @"SELECT * FROM %@ ORDER BY id ASC LIMIT 1";
+static NSString *const SELECT_MAX_ID_SQL = @"SELECT * FROM %@ ORDER BY id DESC LIMIT 1";
 
 @implementation JYLocalDataManager
 
@@ -177,23 +178,6 @@ static NSString *const SELECT_MAX_ID_SQL = @"SELECT id FROM %@ ORDER BY id DESC 
     });
 }
 
-- (id)selectObjectOfClass:(Class)modelClass withId:(NSNumber *)objId
-{
-    if(![modelClass conformsToProtocol:@protocol(MTLFMDBSerializing)])
-    {
-        return nil;
-    }
-
-    NSString *sql = [NSString stringWithFormat:SELECT_KEY_SQL, [modelClass FMDBTableName], [modelClass FMDBPrimaryKeys][0]];
-    NSMutableArray *result = [self _executeSelect:sql withId:objId ofClass: modelClass];
-
-    if ([result count] == 0)
-    {
-        return nil;
-    }
-    return result[0];
-}
-
 - (NSMutableArray *)selectObjectsOfClass:(Class)modelClass
 {
     if(![modelClass conformsToProtocol:@protocol(MTLFMDBSerializing)])
@@ -202,6 +186,18 @@ static NSString *const SELECT_MAX_ID_SQL = @"SELECT id FROM %@ ORDER BY id DESC 
     }
 
     NSString *sql = [NSString stringWithFormat:SELECT_ALL_SQL, [modelClass FMDBTableName]];
+    NSMutableArray *result = [self _executeSelect:sql ofClass:modelClass];
+    return result;
+}
+
+- (NSMutableArray *)selectObjectsOfClass:(Class)modelClass limit:(uint32_t)limit sort:(NSString *)sort
+{
+    if(![modelClass conformsToProtocol:@protocol(MTLFMDBSerializing)])
+    {
+        return [NSMutableArray new];
+    }
+
+    NSString *sql = [NSString stringWithFormat:SELECT_LIMIT_SQL, [modelClass FMDBTableName], sort, limit];
     NSMutableArray *result = [self _executeSelect:sql ofClass:modelClass];
     return result;
 }
@@ -257,6 +253,23 @@ static NSString *const SELECT_MAX_ID_SQL = @"SELECT id FROM %@ ORDER BY id DESC 
     }
 
     NSMutableArray *result = [self _executeSelect:sql ofClass:modelClass];
+    if ([result count] == 0)
+    {
+        return nil;
+    }
+    return result[0];
+}
+
+- (id)selectObjectOfClass:(Class)modelClass withId:(NSNumber *)objId
+{
+    if(![modelClass conformsToProtocol:@protocol(MTLFMDBSerializing)])
+    {
+        return nil;
+    }
+
+    NSString *sql = [NSString stringWithFormat:SELECT_KEY_SQL, [modelClass FMDBTableName], [modelClass FMDBPrimaryKeys][0]];
+    NSMutableArray *result = [self _executeSelect:sql withId:objId ofClass: modelClass];
+
     if ([result count] == 0)
     {
         return nil;

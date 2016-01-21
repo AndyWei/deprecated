@@ -130,7 +130,7 @@ static NSString *const kCellIdentifier = @"winkCell";
     [manager POST:url
        parameters:parameters
           success:^(NSURLSessionTask *operation, id responseObject) {
-              NSLog(@"POST accept/wink success. responseObject = %@", responseObject);
+              NSLog(@"POST wink/accept success. responseObject = %@", responseObject);
 
               if ([responseObject isKindOfClass:NSDictionary.class])
               {
@@ -138,10 +138,11 @@ static NSString *const kCellIdentifier = @"winkCell";
                   NSError *error = nil;
                   JYFriend *friend = (JYFriend *)[MTLJSONAdapter modelOfClass:JYFriend.class fromJSONDictionary:dict error:&error];
                   [weakSelf _didAddFriend:friend];
+                  [[JYLocalDataManager sharedInstance] deleteObject:wink ofClass:JYWink.class];
               }
           }
           failure:^(NSURLSessionTask *operation, NSError *error) {
-              NSLog(@"POST accept/wink fail. error = %@", error);
+              NSLog(@"POST wink/accept fail. error = %@", error);
           }
      ];
 }
@@ -164,7 +165,8 @@ static NSString *const kCellIdentifier = @"winkCell";
 
 - (void)_didAddFriend:(JYFriend *)friend
 {
-
+    NSDictionary *info = @{@"friend": friend};
+    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationDidAddFriend object:nil userInfo:info];
 }
 
 @end

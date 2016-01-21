@@ -140,6 +140,7 @@ static NSString *const kCellIdentifier = @"inviteCell";
                   NSError *error = nil;
                   JYFriend *friend = (JYFriend *)[MTLJSONAdapter modelOfClass:JYFriend.class fromJSONDictionary:dict error:&error];
                   [weakSelf _didAddFriend:friend];
+                  [[JYLocalDataManager sharedInstance] deleteObject:invite ofClass:JYInvite.class];
               }
           }
           failure:^(NSURLSessionTask *operation, NSError *error) {
@@ -166,7 +167,8 @@ static NSString *const kCellIdentifier = @"inviteCell";
 
 - (void)_didAddFriend:(JYFriend *)friend
 {
-    
+    NSDictionary *info = @{@"friend": friend};
+    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationDidAddFriend object:nil userInfo:info];
 }
 
 @end

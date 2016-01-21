@@ -997,14 +997,14 @@
 				D63147451C1A826500EAE05E /* JYFriendViewController.m */,
 				D63A01381C331BF600E74C36 /* JYProfileCreationViewController.h */,
 				D63A01391C331BF600E74C36 /* JYProfileCreationViewController.m */,
+				D650DE401C506F9000EA0CE5 /* JYProfileDataManager.h */,
+				D650DE411C506F9000EA0CE5 /* JYProfileDataManager.m */,
+				D6C89F7A1C2B5C9C00E96E99 /* JYProfileViewController.h */,
+				D6C89F7B1C2B5C9C00E96E99 /* JYProfileViewController.m */,
 				D6C89F811C2B9A8700E96E99 /* JYWinkViewController.h */,
 				D6C89F821C2B9A8700E96E99 /* JYWinkViewController.m */,
 				D61FAE5C1C4461BB00142450 /* JYInviteViewController.h */,
 				D61FAE5D1C4461BB00142450 /* JYInviteViewController.m */,
-				D6C89F7A1C2B5C9C00E96E99 /* JYProfileViewController.h */,
-				D6C89F7B1C2B5C9C00E96E99 /* JYProfileViewController.m */,
-				D650DE401C506F9000EA0CE5 /* JYProfileDataManager.h */,
-				D650DE411C506F9000EA0CE5 /* JYProfileDataManager.m */,
 			);
 			name = Controller;
 			sourceTree = "<group>";

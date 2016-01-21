@@ -62,6 +62,7 @@ extern NSString *const kNotificationAppDidStart;
 extern NSString *const kNotificationAppDidStop;
 extern NSString *const kNotificationCreateComment;
 extern NSString *const kNotificationDeleteComment;
+extern NSString *const kNotificationDidAddFriend;
 extern NSString *const kNotificationDidChangeCountryCode;
 extern NSString *const kNotificationDidChangeRedDot;
 extern NSString *const kNotificationDidCreateProfile;

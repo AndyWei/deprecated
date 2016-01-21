@@ -21,6 +21,7 @@
 - (id)maxIdObjectOfOfClass:(Class)modelClass;
 
 - (NSMutableArray *)selectObjectsOfClass:(Class)modelClass;
+- (NSMutableArray *)selectObjectsOfClass:(Class)modelClass limit:(uint32_t)limit sort:(NSString *)sort;
 - (NSMutableArray *)selectObjectsOfClass:(Class)modelClass withCondition:(NSString *)condition sort:(NSString *)sort;
 - (NSMutableArray *)selectObjectsOfClass:(Class)modelClass sinceId:(NSNumber *)minId beforeId:(NSNumber *)maxId;
 - (NSMutableArray *)selectObjectsOfClass:(Class)modelClass withProperty:(NSString *)property equals:(NSNumber *)value;
