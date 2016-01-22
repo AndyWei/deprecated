@@ -497,7 +497,7 @@ const CGFloat kButtonWidth = 60;
     [manager GET:url
       parameters:parameters
          success:^(NSURLSessionTask *operation, id responseObject) {
-             NSLog(@"GET users success. responseObject = %@", responseObject);
+//             NSLog(@"GET users success. responseObject = %@", responseObject);
 
              NSMutableArray *userList = [NSMutableArray new];
              for (NSDictionary *dict in responseObject)
@@ -532,7 +532,7 @@ const CGFloat kButtonWidth = 60;
     }
     [parameters setObject:self.zip forKey:@"zip"];
 
-    NSLog(@"fetch users parameters: %@", parameters);
+//    NSLog(@"fetch users parameters: %@", parameters);
     return parameters;
 }
 

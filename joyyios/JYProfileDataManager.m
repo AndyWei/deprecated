@@ -41,16 +41,11 @@
 
 - (void)start
 {
-    self.me = [JYFriend myself];
-
-    if (self.me)
-    {
-        [self.delegate manager:self didReceiveOwnProfile:self.me];
-    }
-
     if ([JYCredential current].tokenValidInSeconds > 0)
     {
-        [self _fetchData];
+        self.me = [JYFriend myself];
+        [self.delegate manager:self didReceiveOwnProfile:self.me];
+       [self _fetchData];
     }
 }
 
@@ -60,9 +55,8 @@
     {
         self.me = [JYFriend myself];
         [self.delegate manager:self didReceiveOwnProfile:self.me];
+        [self _fetchData];
     }
-
-    [self _fetchData];
 }
 
 - (void)_fetchData
@@ -91,7 +85,7 @@
     [manager GET:url
       parameters:parameters
          success:^(NSURLSessionTask *operation, id responseObject) {
-             NSLog(@"post/userline fetch success responseObject: %@", responseObject);
+             NSLog(@"GET post/userline fetch success responseObject: %@", responseObject);
 
              // the post json is in ASC order, so iterate reversely
              NSMutableArray *postList = [NSMutableArray new];
@@ -107,7 +101,7 @@
              [weakSelf _didReceivePosts:postList];
          }
          failure:^(NSURLSessionTask *operation, NSError *error) {
-             NSLog(@"Error: post/userline fetch failed with error: %@", error);
+             NSLog(@"Error: GET post/userline fetch failed with error: %@", error);
          }
      ];
 }
