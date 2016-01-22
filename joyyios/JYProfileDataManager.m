@@ -46,6 +46,10 @@
     if (self.me)
     {
         [self.delegate manager:self didReceiveOwnProfile:self.me];
+    }
+
+    if ([JYCredential current].tokenValidInSeconds > 0)
+    {
         [self _fetchData];
     }
 }
@@ -56,8 +60,9 @@
     {
         self.me = [JYFriend myself];
         [self.delegate manager:self didReceiveOwnProfile:self.me];
-        [self _fetchData];
     }
+
+    [self _fetchData];
 }
 
 - (void)_fetchData
