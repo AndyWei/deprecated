@@ -52,7 +52,7 @@ NSString *const kErrorTitle = @"😜: oops!";
 NSString *const kLikeText = @"♡";
 
 
-NSString *const kMessageDomain = @"winkrock.com";
+NSString *const kMessageDomain = @"joyy.im";
 NSString *const kMessageResource = @"iPhone";
 NSString *const kMessageBodyTypeAudio    = @"a:";
 NSString *const kMessageBodyTypeEmoji    = @"e:";
@@ -80,6 +80,6 @@ NSString *const kNotificationNeedGeoInfo = @"needGeoInfo";
 NSString *const kNotificationUserYRSReady = @"userYRSReady";
 
 NSString *const kURLAPIBase = @"http://api.winkrock.com:8000/v1/";
-//NSString *const kURLAPIBase = @"http://api.winkrock.com:8000/v1/";
+//NSString *const kURLAPIBase = @"http://dev.winkrock.com:8000/v1/";
 //NSString *const kURLAPIBase = @"http://192.168.1.104:8000/v1/";
 

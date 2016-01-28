@@ -11,7 +11,6 @@
 #import "JYXmppManager.h"
 
 @interface JYXmppManager() <XMPPStreamDelegate>
-@property(nonatomic) BOOL apiTokenReady;
 @property(nonatomic) JYXmppStatus xmppStatus;
 @property(nonatomic) XMPPReconnect *reconnect;
 @property(nonatomic, copy) JYXmppStatusHandler statusHandler;
@@ -60,7 +59,8 @@
     NSString *prefix = [deviceId substringToIndex:3];
     NSString *resource = [NSString stringWithFormat:@"%@_%@", kMessageResource, prefix];
 
-    return [XMPPJID jidWithUser:[JYCredential current].username domain:kMessageDomain resource:resource];
+    NSString *userIdString = [NSString stringWithFormat:@"%llu", [[JYCredential current].userId unsignedLongLongValue]];
+    return [XMPPJID jidWithUser:userIdString domain:kMessageDomain resource:resource];
 }
 
 + (NSFetchedResultsController *)fetcherOfSessions
@@ -108,7 +108,6 @@
     self = [super init];
     if (self)
     {
-        self.apiTokenReady = NO;
         [self setupStream];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_apiTokenReady) name:kNotificationAPITokenReady object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_appStop) name:kNotificationAppDidStop object:nil];
@@ -125,7 +124,7 @@
 - (void)start
 {
     NSLog(@"XMPP Manager started");
-    if (self.apiTokenReady)
+    if ([JYCredential current].tokenValidInSeconds > 0)
     {
         [self _xmppUserLogin:nil];
     }
@@ -133,7 +132,6 @@
 
 - (void)_apiTokenReady
 {
-    self.apiTokenReady = YES;
     AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
     if (appDelegate.shouldXmppGoOnline)
     {

@@ -25,8 +25,8 @@ static NSString *const kContactCellIdentifier = @"contactCell";
     [super viewDidLoad];
     self.title = NSLocalizedString(@"Chat", nil);
 
-    self.view.backgroundColor = JoyyWhite;
-    self.tableView.backgroundColor = JoyyWhite;
+    self.view.backgroundColor = JoyyWhitePure;
+    self.tableView.backgroundColor = JoyyWhitePure;
 
     // Connect to Message server
     [[JYXmppManager sharedInstance] start];
