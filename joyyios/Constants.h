@@ -73,6 +73,7 @@ extern NSString *const kNotificationDidSignIn;
 extern NSString *const kNotificationDidSignUp;
 extern NSString *const kNotificationNeedGeoInfo;
 extern NSString *const kNotificationUserYRSReady;
+extern NSString *const kNotificationWillChat;
 extern NSString *const kURLAPIBase;
 
 extern NSInteger const kSignInRetryInSeconds;

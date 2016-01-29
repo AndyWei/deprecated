@@ -75,12 +75,12 @@ static NSString *const kCellIdentifier = @"friendCell";
     NSMutableArray *usernames = [[NSMutableArray alloc] initWithCapacity:count];
     NSMutableDictionary *friendDict = [[NSMutableDictionary alloc] init];
 
-    for (JYFriend *user in list)
+    for (JYFriend *friend in list)
     {
-        if (user)
+        if (friend)
         {
-            [usernames addObject:user.username];
-            [friendDict setObject:user forKey:user.username];
+            [usernames addObject:friend.username];
+            [friendDict setObject:friend forKey:friend.username];
         }
     }
 
@@ -102,8 +102,8 @@ static NSString *const kCellIdentifier = @"friendCell";
     {
         NSInteger section = [collation sectionForObject:username collationStringSelector:@selector(self)];
         NSMutableArray *friendList = [self.friendArrays objectAtIndex:section];
-        JYFriend *user = friendDict[username];
-        [friendList addObject:user];
+        JYFriend *friend = friendDict[username];
+        [friendList addObject:friend];
     }
 }
 
@@ -163,9 +163,9 @@ static NSString *const kCellIdentifier = @"friendCell";
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 
     NSArray *array = [self.friendArrays objectAtIndex:indexPath.section];
-    JYFriend *user = array[indexPath.row];
+    JYFriend *friend = array[indexPath.row];
 
-    JYUserlineViewController *viewController = [[JYUserlineViewController alloc] initWithUser:user];
+    JYUserlineViewController *viewController = [[JYUserlineViewController alloc] initWithUser:friend];
     [self.navigationController pushViewController:viewController animated:YES];
 }
 
@@ -178,12 +178,15 @@ static NSString *const kCellIdentifier = @"friendCell";
         return;
     }
 
-    [self _chatWith:cell.user];
+    JYFriend *friend = (JYFriend *)cell.user;
+    [self _chatWith:friend];
 }
 
-- (void)_chatWith:(JYUser *)user
+- (void)_chatWith:(JYFriend *)friend
 {
-
+    NSDictionary *info = @{@"friend": friend};
+    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationWillChat object:nil userInfo:info];
+    [self.navigationController dismissViewControllerAnimated:NO completion:nil];
 }
 
 @end

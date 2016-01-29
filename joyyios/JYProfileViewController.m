@@ -72,6 +72,7 @@ static NSString *const kCellIdentifier = @"profileUserlineCell";
 {
     [super viewDidAppear:animated];
 
+    // refresh counters after nav back from WinkViewController or InviteViewController
     self.cardView.inviteCount = [self.inviteList count];
     self.cardView.winkCount = [self.winkList count];
     self.cardView.friendCount = [self.friendList count];

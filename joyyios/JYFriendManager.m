@@ -34,18 +34,21 @@
     NSLog(@"FriendsManager started");
 }
 
-- (void)dealloc
+- (NSMutableArray *)localFriendList
 {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    if (!_localFriendList)
+    {
+        _localFriendList = [[JYLocalDataManager sharedInstance] selectObjectsOfClass:JYFriend.class];
+    }
+    return _localFriendList;
 }
 
 - (NSMutableDictionary *)friendDict
 {
     if (!_friendDict)
     {
-        NSArray *array = [[JYLocalDataManager sharedInstance] selectObjectsOfClass:JYFriend.class];
         _friendDict = [NSMutableDictionary new];
-        for (JYFriend *user in array)
+        for (JYFriend *user in self.localFriendList)
         {
             [self _addFriend:user];
         }
@@ -91,6 +94,8 @@
             [self _addFriend:user];
         }
     }
+
+    [self.localFriendList addObjectsFromArray:friendList];
 }
 
 - (void)_addFriend:(JYFriend *)user

@@ -6,6 +6,8 @@
 //  Copyright (c) 2015 Joyy Inc. All rights reserved.
 //
 
+#import "JYFriendManager.h"
+#import "JYFriendViewController.h"
 #import "JYSessionListViewCell.h"
 #import "JYSessionListViewController.h"
 #import "JYSessionViewController.h"
@@ -28,6 +30,9 @@ static NSString *const kContactCellIdentifier = @"contactCell";
     self.view.backgroundColor = JoyyWhitePure;
     self.tableView.backgroundColor = JoyyWhitePure;
 
+    UIBarButtonItem *createButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(_showFriendList)];
+    self.navigationItem.rightBarButtonItem = createButton;
+
     // Connect to Message server
     [[JYXmppManager sharedInstance] start];
 
@@ -45,11 +50,13 @@ static NSString *const kContactCellIdentifier = @"contactCell";
     }
 
     [self.view addSubview:self.tableView];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_willChatWithFriend:) name:kNotificationWillChat object:nil];
 }
 
-- (void)didReceiveMemoryWarning
+- (void)dealloc
 {
-    [super didReceiveMemoryWarning];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (UITableView *)tableView
@@ -64,6 +71,38 @@ static NSString *const kContactCellIdentifier = @"contactCell";
         [_tableView registerClass:[JYSessionListViewCell class] forCellReuseIdentifier:kContactCellIdentifier];
     }
     return _tableView;
+}
+
+- (void)_willChatWithFriend:(NSNotification *)notification
+{
+    NSDictionary *info = [notification userInfo];
+    if (!info)
+    {
+        return;
+    }
+
+    id obj = [info objectForKey:@"friend"];
+    if (obj == [NSNull null])
+    {
+        return;
+    }
+
+    JYFriend *friend = (JYFriend *)obj;
+    [self _chatWithFriend:friend];
+}
+
+- (void)_showFriendList
+{
+    NSArray *friendList = [JYFriendManager sharedInstance].localFriendList;
+    JYFriendViewController *viewController = [[JYFriendViewController alloc] initWithFriendList:friendList];
+    [self.navigationController pushViewController:viewController animated:YES];
+}
+
+- (void)_chatWithFriend:(JYFriend *)friend
+{
+    JYSessionViewController *viewController = [JYSessionViewController new];
+    viewController.friend = friend;
+    [self.navigationController pushViewController:viewController animated:YES];
 }
 
 #pragma mark - UITableViewDataSource
@@ -98,20 +137,13 @@ static NSString *const kContactCellIdentifier = @"contactCell";
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    JYSessionViewController *viewController = [JYSessionViewController new];
+    [tableView deselectRowAtIndexPath:indexPath animated:NO];
+
     JYSessionListViewCell *cell = (JYSessionListViewCell *)[tableView cellForRowAtIndexPath:indexPath];
 
     if (cell.friend)
     {
-        viewController.friend = cell.friend;
-        [self.navigationController pushViewController:viewController animated:YES];
-        [tableView deselectRowAtIndexPath:indexPath animated:NO];
-    }
-    else
-    {
-        NSLog(@"Warning: The friend object is not available, cannot push message view controller");
-        // Use animation to tell user the table row has been selected 
-        [tableView deselectRowAtIndexPath:indexPath animated:YES];
+        [self _chatWithFriend:cell.friend];
     }
 }
 
@@ -123,4 +155,5 @@ static NSString *const kContactCellIdentifier = @"contactCell";
 {
     [self.tableView reloadData];
 }
+
 @end

@@ -16,4 +16,6 @@
 - (JYFriend *)friendWithBareJid:(NSString *)bareJid;
 - (JYFriend *)friendWithUsername:(NSString *)username;
 
+@property (nonatomic) NSMutableArray *localFriendList;
+
 @end
