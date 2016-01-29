@@ -33,9 +33,7 @@
 
 - (void)_apiTokenReady
 {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-        [self _getCognitoToken:@{ kAuthProviderName: [JYCredential current].userId }];
-    });
+    [self _getCognitoToken:@{ kAuthProviderName: [JYCredential current].userId }];
 }
 
 - (void)dealloc

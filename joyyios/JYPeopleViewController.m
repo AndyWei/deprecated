@@ -492,6 +492,10 @@ const CGFloat kButtonWidth = 60;
     AFHTTPSessionManager *manager = [AFHTTPSessionManager managerWithToken];
     NSString *url = [NSString apiURLWithPath:@"users"];
     NSDictionary *parameters = [self _parametersForFetchingUsers];
+    if (!parameters)
+    {
+        return;
+    }
 
     __weak typeof(self) weakSelf = self;
     [manager GET:url
@@ -524,12 +528,25 @@ const CGFloat kButtonWidth = 60;
     [parameters setObject:@(self.minUserId) forKey:@"beforeid"];
 
     AppDelegate *delegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-    [parameters setObject:delegate.locationManager.countryCode forKey:@"country"];
+
+    NSString *countryCode = delegate.locationManager.countryCode;
+    if (!countryCode)
+    {
+        countryCode = @"US";
+    }
+
 
     if (!self.zip)
     {
-        self.zip = [NSMutableString stringWithString:delegate.locationManager.zip];
+        NSString *zip = delegate.locationManager.zip;
+        if (!zip)
+        {
+            zip = @"94555";
+        }
+        self.zip = [NSMutableString stringWithString:zip];
     }
+
+    [parameters setObject:countryCode forKey:@"country"];
     [parameters setObject:self.zip forKey:@"zip"];
 
 //    NSLog(@"fetch users parameters: %@", parameters);

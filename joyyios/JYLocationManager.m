@@ -111,7 +111,7 @@ static NSString *const kZip = @"location_zip";
                    completionHandler:^(NSArray *placemarks, NSError *error) {
                        if (error)
                        {
-                           NSLog(@"Geocode failed with error %@", error);
+//                           NSLog(@"Geocode failed with error %@", error);
                        }
                        else
                        {
@@ -178,7 +178,6 @@ static NSString *const kZip = @"location_zip";
           failure:^(NSURLSessionTask *operation, NSError *error) {
               NSLog(@"POST user/appear error: %@", error);
           }];
-    
 }
 
 @end

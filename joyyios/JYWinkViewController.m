@@ -137,8 +137,7 @@ static NSString *const kCellIdentifier = @"winkCell";
                   NSDictionary *dict = (NSDictionary *)responseObject;
                   NSError *error = nil;
                   JYFriend *friend = (JYFriend *)[MTLJSONAdapter modelOfClass:JYFriend.class fromJSONDictionary:dict error:&error];
-                  [weakSelf _didAddFriend:friend];
-                  [[JYLocalDataManager sharedInstance] deleteObject:wink ofClass:JYWink.class];
+                  [weakSelf _didConvertWink:wink toFriend:friend];
               }
           }
           failure:^(NSURLSessionTask *operation, NSError *error) {
@@ -163,10 +162,31 @@ static NSString *const kCellIdentifier = @"winkCell";
     return parameters;
 }
 
-- (void)_didAddFriend:(JYFriend *)friend
+- (void)_didConvertWink:(JYWink *)wink toFriend:(JYFriend *)friend
 {
+    [self _removeWink:wink];
+
     NSDictionary *info = @{@"friend": friend};
     [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationDidAddFriend object:nil userInfo:info];
+}
+
+- (void)_removeWink:(JYWink *)wink
+{
+    [[JYLocalDataManager sharedInstance] deleteObject:wink ofClass:JYWink.class];
+
+    NSUInteger index = [self.winkList indexOfObject:wink];
+    if (index == NSNotFound)
+    {
+        return;
+    }
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.winkList removeObjectAtIndex:index];
+        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
+        [self.tableView beginUpdates];
+        [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+        [self.tableView endUpdates];
+    });
 }
 
 @end

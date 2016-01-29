@@ -141,7 +141,8 @@ static NSString *const kAWSTokenExpiryTimeKeyPrefix = @"aws_openid_token_expiry_
 - (AWSTask *)_getTokenFromWinkRock
 {
     NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
-    [config setHTTPAdditionalHeaders:@{@"Authorization": [NSString stringWithFormat:@"Bearer %@",[JYCredential current].token]}];
+    NSString *apiToken = [JYCredential current].token;
+    [config setHTTPAdditionalHeaders:@{@"Authorization": [NSString stringWithFormat:@"Bearer %@", apiToken]}];
     NSURLSession *session = [NSURLSession sessionWithConfiguration:config];
 
     NSURL *url = [NSURL URLWithString:[NSString apiURLWithPath:@"auth/cognito"]];

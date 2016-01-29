@@ -139,8 +139,7 @@ static NSString *const kCellIdentifier = @"inviteCell";
                   NSDictionary *dict = (NSDictionary *)responseObject;
                   NSError *error = nil;
                   JYFriend *friend = (JYFriend *)[MTLJSONAdapter modelOfClass:JYFriend.class fromJSONDictionary:dict error:&error];
-                  [weakSelf _didAddFriend:friend];
-                  [[JYLocalDataManager sharedInstance] deleteObject:invite ofClass:JYInvite.class];
+                  [weakSelf _didConvertInvite:invite toFriend:friend];
               }
           }
           failure:^(NSURLSessionTask *operation, NSError *error) {
@@ -165,10 +164,31 @@ static NSString *const kCellIdentifier = @"inviteCell";
     return parameters;
 }
 
-- (void)_didAddFriend:(JYFriend *)friend
+- (void)_didConvertInvite:(JYInvite *)invite toFriend:(JYFriend *)friend
 {
+    [self _removeInvite:invite];
+
     NSDictionary *info = @{@"friend": friend};
     [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationDidAddFriend object:nil userInfo:info];
+}
+
+- (void)_removeInvite:(JYInvite *)invite
+{
+    [[JYLocalDataManager sharedInstance] deleteObject:invite ofClass:JYInvite.class];
+
+    NSUInteger index = [self.inviteList indexOfObject:invite];
+    if (index == NSNotFound)
+    {
+        return;
+    }
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.inviteList removeObjectAtIndex:index];
+        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
+        [self.tableView beginUpdates];
+        [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+        [self.tableView endUpdates];
+    });
 }
 
 @end
