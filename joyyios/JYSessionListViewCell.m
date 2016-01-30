@@ -64,7 +64,7 @@ static const CGFloat kTimeLabelWidth = 80;
                            placeholderImage:nil
                                     success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
                                         weakSelf.avatarView.image = image;
-                                        weakSelf.friend.avatarImage = image;
+                                        weakSelf.friend.avatarThumbnailImage = image;
 
                                    } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
                                         NSLog(@"setImageWithURLRequest failed with error = %@", error);

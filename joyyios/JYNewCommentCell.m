@@ -126,10 +126,10 @@
 
     __weak typeof(self) weakSelf = self;
     [self.avatarView setImageWithURLRequest:request
-                          placeholderImage:owner.avatarImage
+                          placeholderImage:owner.avatarThumbnailImage
                                    success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
                                        weakSelf.avatarView.image = image;
-                                       owner.avatarImage = image;
+                                       owner.avatarThumbnailImage = image;
                                    } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
                                        NSLog(@"setImageWithURLRequest failed with error = %@", error);
                                    }];

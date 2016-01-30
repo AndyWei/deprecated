@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 Joyy Inc. All rights reserved.
 //
 
+#import <AFNetworking/UIImageView+AFNetworking.h>
 #import <CoreData/CoreData.h>
 
 #import "JYButton.h"
@@ -54,10 +55,11 @@ CGFloat const kEdgeInset = 10.f;
     [self configInputToolBar];
 
     // Profile Button
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"me_selected"]
-                                                                              style:UIBarButtonItemStylePlain
-                                                                             target:self
-                                                                             action:@selector(showPersonProfile)];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"me_selected"] style:UIBarButtonItemStylePlain target:self action:@selector(showPersonProfile)];
+
+    // Avatar
+    [self _fetchAvatarImage];
+
     // Start fetch data
     self.fetcher = [JYXmppManager fetcherForRemoteJid:self.thatJID];
     self.fetcher.delegate = self;
@@ -128,13 +130,33 @@ CGFloat const kEdgeInset = 10.f;
     }
 }
 
+#pragma mark - Avatar
+- (void)_fetchAvatarImage
+{
+    UIImageView *dummyView = [UIImageView new];
+
+    NSURLRequest *request = [NSURLRequest requestWithURL:self.friend.avatarThumbnailURL cachePolicy:NSURLRequestReturnCacheDataElseLoad timeoutInterval:5];
+
+    __weak typeof(self) weakSelf = self;
+    [dummyView setImageWithURLRequest:request
+                           placeholderImage:self.friend.avatarThumbnailImage
+                                    success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
+                                        weakSelf.remoteAvatar = [JSQMessagesAvatarImageFactory avatarImageWithImage:image diameter:kAvatarDiameter];
+                                        self.friend.avatarThumbnailImage = image;
+                                    } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
+                                        NSLog(@"setImageWithURLRequest failed with error = %@", error);
+                                    }];
+}
 #pragma mark - Properties
 
 - (JSQMessagesAvatarImage *)remoteAvatar
 {
     if (!_remoteAvatar)
     {
-        _remoteAvatar = [JSQMessagesAvatarImageFactory avatarImageWithImage:self.friend.avatarImage diameter:kAvatarDiameter];
+        if (self.friend.avatarThumbnailImage)
+        {
+            _remoteAvatar = [JSQMessagesAvatarImageFactory avatarImageWithImage:self.friend.avatarThumbnailImage diameter:kAvatarDiameter];
+        }
     }
 
     return _remoteAvatar;

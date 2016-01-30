@@ -9,6 +9,7 @@
 #import "JYFriend.h"
 #import "JYFriendManager.h"
 #import "JYLocalDataManager.h"
+#import "NSNumber+Joyy.h"
 
 @interface JYFriendManager ()
 @property (nonatomic) NSMutableDictionary *friendDict;
@@ -34,13 +35,10 @@
     NSLog(@"FriendsManager started");
 }
 
-- (NSMutableArray *)localFriendList
+- (NSArray *)localFriendList
 {
-    if (!_localFriendList)
-    {
-        _localFriendList = [[JYLocalDataManager sharedInstance] selectObjectsOfClass:JYFriend.class];
-    }
-    return _localFriendList;
+    NSArray *list = [[JYLocalDataManager sharedInstance] selectObjectsOfClass:JYFriend.class];
+    return list;
 }
 
 - (NSMutableDictionary *)friendDict
@@ -48,9 +46,10 @@
     if (!_friendDict)
     {
         _friendDict = [NSMutableDictionary new];
-        for (JYFriend *user in self.localFriendList)
+        NSMutableArray *list = [[JYLocalDataManager sharedInstance] selectObjectsOfClass:JYFriend.class];
+        for (JYFriend *friend in list)
         {
-            [self _addFriend:user];
+            [self _addFriend:friend];
         }
 
         [self _addFriend:[JYFriend myself]];
@@ -79,23 +78,21 @@
 
 - (void)receivedFriendList:(NSArray *)friendList
 {
-    for (JYFriend *user in friendList)
+    for (JYFriend *friend in friendList)
     {
-        if (user)
+        if (friend)
         {
-            if (!self.friendDict[user.userId]) // new friend
+            if (!self.friendDict[friend.userId]) // new friend
             {
-                [[JYLocalDataManager sharedInstance] insertObject:user ofClass:JYFriend.class];
+                [[JYLocalDataManager sharedInstance] insertObject:friend ofClass:JYFriend.class];
             }
             else
             {
-                [[JYLocalDataManager sharedInstance] updateObject:user ofClass:JYFriend.class];
+                [[JYLocalDataManager sharedInstance] updateObject:friend ofClass:JYFriend.class];
             }
-            [self _addFriend:user];
+            [self _addFriend:friend];
         }
     }
-
-    [self.localFriendList addObjectsFromArray:friendList];
 }
 
 - (void)_addFriend:(JYFriend *)user

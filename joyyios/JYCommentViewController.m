@@ -19,7 +19,6 @@
 #import "JYFriendManager.h"
 #import "JYLocalDataManager.h"
 
-
 @interface JYCommentViewController ()
 @property (nonatomic) JYComment *originalComment;
 @property (nonatomic) JYPost *post;

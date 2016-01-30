@@ -29,5 +29,6 @@
 @property (nonatomic) NSURL *avatarURL;
 @property (nonatomic) NSURL *avatarThumbnailURL;
 @property (nonatomic) UIImage *avatarImage;
+@property (nonatomic) UIImage *avatarThumbnailImage;
 
 @end

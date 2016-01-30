@@ -45,6 +45,7 @@
              @"sex": [NSNull null],
              @"age": [NSNull null],
              @"avatarImage": [NSNull null],
+             @"avatarThumbnailImage": [NSNull null],
              @"yrs": [NSNull null]
              };
 }

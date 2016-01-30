@@ -11,7 +11,6 @@
 #import "JYUserlineViewController.h"
 
 @interface JYFriendViewController () <JYUserBaseCellDelegate, UITableViewDataSource, UITableViewDelegate>
-@property (nonatomic) NSInteger networkThreadCount;
 @property (nonatomic) NSMutableArray *friendArrays;
 @property (nonatomic) UITableView *tableView;
 @end
