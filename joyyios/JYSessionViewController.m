@@ -27,7 +27,7 @@
 @property (nonatomic) XMPPJID *thatJID;
 @end
 
-CGFloat const kAvatarDiameter = 40.f;
+CGFloat const kAvatarDiameter = 35.f;
 CGFloat const kAccButtonWidth = 44.f;
 CGFloat const kMediaButtonWidth = 44.f;
 CGFloat const kLeftContainerWidth = kAccButtonWidth;
@@ -48,7 +48,8 @@ CGFloat const kEdgeInset = 10.f;
     XMPPJID *myJID = [JYXmppManager myJID];
     self.senderId = myJID.bare;
     self.senderDisplayName = [JYCredential current].username;
-    self.thatJID = [JYXmppManager jidWithUsername:self.friend.username];
+    NSString *friendUserId = [NSString stringWithFormat:@"%llu", [self.friend.userId unsignedLongLongValue]];
+    self.thatJID = [JYXmppManager jidWithUsername:friendUserId];
 
     [self configCollectionView];
     [self configBubbleImage];
@@ -304,11 +305,7 @@ CGFloat const kEdgeInset = 10.f;
 
 #pragma mark - JSQMessagesViewController method overrides
 
-- (void)didPressSendButton:(JYButton *)button
-           withMessageText:(NSString *)text
-                  senderId:(NSString *)senderId
-         senderDisplayName:(NSString *)senderDisplayName
-                      date:(NSDate *)date
+- (void)didPressSendButton:(JYButton *)button withMessageText:(NSString *)text senderId:(NSString *)senderId senderDisplayName:(NSString *)senderDisplayName date:(NSDate *)date
 {
     [self showSendButton:NO];
 

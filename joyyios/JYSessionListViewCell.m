@@ -32,7 +32,7 @@ static const CGFloat kTimeLabelWidth = 80;
     if (self)
     {
         self.opaque = YES;
-        self.backgroundColor = JoyyWhite;
+        self.backgroundColor = JoyyWhitePure;
     }
     return self;
 }
@@ -76,7 +76,7 @@ static const CGFloat kTimeLabelWidth = 80;
     if (!_avatarView)
     {
         CGFloat y = floor((CGRectGetHeight(self.frame) - kAvatarImageWidth) / 2);
-        _avatarView = [[UIImageView alloc] initWithFrame:CGRectMake(20, y, kAvatarImageWidth, kAvatarImageWidth)];
+        _avatarView = [[UIImageView alloc] initWithFrame:CGRectMake(10, y, kAvatarImageWidth, kAvatarImageWidth)];
         _avatarView.contentMode = UIViewContentModeScaleAspectFit;
         _avatarView.layer.cornerRadius = kAvatarImageWidth / 2;
         _avatarView.layer.masksToBounds = YES;
@@ -93,7 +93,7 @@ static const CGFloat kTimeLabelWidth = 80;
         CGRect frame = CGRectMake(x, 10, kTimeLabelWidth, 30);
         _timeLabel = [[TTTAttributedLabel alloc] initWithFrame:frame];
         _timeLabel.textInsets = UIEdgeInsetsMake(0, 0, 0, 8);
-        _timeLabel.backgroundColor = JoyyWhite;
+        _timeLabel.backgroundColor = JoyyWhitePure;
         _timeLabel.font = [UIFont systemFontOfSize:15];
         _timeLabel.textColor = JoyyGray;
         _timeLabel.textAlignment = NSTextAlignmentRight;
@@ -110,8 +110,8 @@ static const CGFloat kTimeLabelWidth = 80;
         CGFloat width = SCREEN_WIDTH - kTimeLabelWidth - x;
         CGRect frame = CGRectMake(x, 10, width, 30);
         _nameLabel = [[TTTAttributedLabel alloc] initWithFrame:frame];
-        _nameLabel.textInsets = UIEdgeInsetsMake(0, 20, 0, 0);
-        _nameLabel.backgroundColor = JoyyWhite;
+        _nameLabel.textInsets = UIEdgeInsetsMake(0, 10, 0, 0);
+        _nameLabel.backgroundColor = JoyyWhitePure;
         _nameLabel.font = [UIFont systemFontOfSize:19];
         _nameLabel.textColor = JoyyBlack;
         _nameLabel.textAlignment = NSTextAlignmentLeft;
@@ -129,8 +129,8 @@ static const CGFloat kTimeLabelWidth = 80;
         CGFloat width = SCREEN_WIDTH - x;
         CGRect frame = CGRectMake(x, y, width, 20);
         _messageLabel = [[TTTAttributedLabel alloc] initWithFrame:frame];
-        _messageLabel.textInsets = UIEdgeInsetsMake(0, 20, 0, kMarginRight);
-        _messageLabel.backgroundColor = JoyyWhite;
+        _messageLabel.textInsets = UIEdgeInsetsMake(0, 10, 0, kMarginRight);
+        _messageLabel.backgroundColor = JoyyWhitePure;
         _messageLabel.font = [UIFont systemFontOfSize:15];
         _messageLabel.textColor = JoyyGray;
         _messageLabel.textAlignment = NSTextAlignmentLeft;
