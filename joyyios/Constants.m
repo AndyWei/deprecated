@@ -54,13 +54,13 @@ NSString *const kLikeText = @"♡";
 
 NSString *const kMessageDomain = @"joyy.im";
 NSString *const kMessageResource = @"iPhone";
-NSString *const kMessageBodyTypeAudio    = @"a:";
-NSString *const kMessageBodyTypeEmoji    = @"e:";
-NSString *const kMessageBodyTypeGif      = @"g:";
-NSString *const kMessageBodyTypeImage    = @"i:";
-NSString *const kMessageBodyTypeLocation = @"l:";
-NSString *const kMessageBodyTypeText     = @"t:";
-NSString *const kMessageBodyTypeVideo    = @"v:";
+NSString *const kMessageBodyTypeAudio    = @"aud";
+NSString *const kMessageBodyTypeEmoji    = @"emo";
+NSString *const kMessageBodyTypeGif      = @"gif";
+NSString *const kMessageBodyTypeImage    = @"img";
+NSString *const kMessageBodyTypeLocation = @"loc:";
+NSString *const kMessageBodyTypeText     = @"txt";
+NSString *const kMessageBodyTypeVideo    = @"vid";
 
 NSString *const kNotificationAPITokenReady = @"apiTokenReady";
 NSString *const kNotificationAppDidStart = @"appDidStart";
@@ -79,6 +79,7 @@ NSString *const kNotificationDidSignUp = @"didSignUp";
 NSString *const kNotificationNeedGeoInfo = @"needGeoInfo";
 NSString *const kNotificationUserYRSReady = @"userYRSReady";
 NSString *const kNotificationWillChat = @"willChat";
+NSString *const kNotificationChatting = @"chatting";
 
 NSString *const kURLAPIBase = @"http://api.winkrock.com:8000/v1/";
 //NSString *const kURLAPIBase = @"http://dev.winkrock.com:8000/v1/";

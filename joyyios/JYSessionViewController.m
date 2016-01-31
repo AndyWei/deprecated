@@ -310,7 +310,7 @@ CGFloat const kEdgeInset = 10.f;
     [self showSendButton:NO];
 
     XMPPMessage *message = [XMPPMessage messageWithType:@"chat" to:self.thatJID];
-    NSString *body = [NSString stringWithFormat:@"%@%@", kMessageBodyTypeText, text];
+    NSString *body = text;
     [message addBody:body];
     [message addSubject:kMessageBodyTypeText];
     [[JYXmppManager sharedInstance].xmppStream sendElement:message];
@@ -422,7 +422,7 @@ CGFloat const kEdgeInset = 10.f;
 
     XMPPMessageArchiving_Message_CoreDataObject *coreDataMessage = [self.fetcher objectAtIndexPath:indexPath];
 
-    if ([coreDataMessage.message.body hasPrefix:kMessageBodyTypeText])
+    if ([coreDataMessage.message.subject isEqualToString:kMessageBodyTypeText])
     {
         if (coreDataMessage.isOutgoing)
         {

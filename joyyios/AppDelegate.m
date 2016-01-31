@@ -67,6 +67,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_didManuallySignUp) name:kNotificationDidSignUp object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_didCreateProfile) name:kNotificationDidCreateProfile object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_didChangeRedDot:) name:kNotificationDidChangeRedDot object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_willChatWithFriend:) name:kNotificationWillChat object:nil];
 
     [self _setupGlobalAppearance];
     [self _launchViewController];
@@ -267,6 +268,25 @@
     tabBarItem4.title = NSLocalizedString(@"Me", nil);
 
     return _tabBarController;
+}
+
+- (void)_willChatWithFriend:(NSNotification *)notification
+{
+    NSDictionary *info = [notification userInfo];
+    if (!info)
+    {
+        return;
+    }
+
+    id obj = [info objectForKey:@"friend"];
+    if (obj == [NSNull null])
+    {
+        return;
+    }
+
+    self.tabBarController.selectedIndex = 2;
+
+    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationChatting object:nil userInfo:info];
 }
 
 - (void)_didChangeRedDot:(NSNotification *)notification

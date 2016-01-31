@@ -183,9 +183,10 @@ static NSString *const kCellIdentifier = @"friendCell";
 
 - (void)_chatWith:(JYFriend *)friend
 {
+    [self.navigationController popViewControllerAnimated:NO];
+
     NSDictionary *info = @{@"friend": friend};
     [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationWillChat object:nil userInfo:info];
-    [self.navigationController dismissViewControllerAnimated:NO completion:nil];
 }
 
 @end

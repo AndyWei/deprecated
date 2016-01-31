@@ -45,7 +45,8 @@ static const CGFloat kTimeLabelWidth = 80;
     }
 
     _contact = contact;
-    self.messageLabel.text = [_contact.mostRecentMessageBody messageDisplayString];
+//    self.messageLabel.text = [_contact.mostRecentMessageBody messageDisplayString];
+    self.messageLabel.text = _contact.mostRecentMessageBody;
     self.timeLabel.text = [[JYMessageDateFormatter sharedInstance] autoStringFromDate:_contact.mostRecentMessageTimestamp];
     self.friend = [[JYFriendManager sharedInstance] friendWithBareJid:_contact.bareJidStr];
 }

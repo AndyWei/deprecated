@@ -22,6 +22,16 @@ static NSString *const kContactCellIdentifier = @"contactCell";
 
 @implementation JYSessionListViewController
 
+- (instancetype)init
+{
+    if (self = [super init])
+    {
+        // listen to notification now to avoid any missing 
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_chattingWithFriend:) name:kNotificationChatting object:nil];
+    }
+    return self;
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -50,8 +60,6 @@ static NSString *const kContactCellIdentifier = @"contactCell";
     }
 
     [self.view addSubview:self.tableView];
-
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_willChatWithFriend:) name:kNotificationWillChat object:nil];
 }
 
 - (void)dealloc
@@ -74,7 +82,7 @@ static NSString *const kContactCellIdentifier = @"contactCell";
     return _tableView;
 }
 
-- (void)_willChatWithFriend:(NSNotification *)notification
+- (void)_chattingWithFriend:(NSNotification *)notification
 {
     NSDictionary *info = [notification userInfo];
     if (!info)
@@ -87,9 +95,9 @@ static NSString *const kContactCellIdentifier = @"contactCell";
     {
         return;
     }
-
+    
     JYFriend *friend = (JYFriend *)obj;
-    [self _chatWithFriend:friend];
+    [self _showChatViewWithFriend:friend];
 }
 
 - (void)_showFriendList
@@ -99,7 +107,7 @@ static NSString *const kContactCellIdentifier = @"contactCell";
     [self.navigationController pushViewController:viewController animated:YES];
 }
 
-- (void)_chatWithFriend:(JYFriend *)friend
+- (void)_showChatViewWithFriend:(JYFriend *)friend
 {
     JYSessionViewController *viewController = [JYSessionViewController new];
     viewController.friend = friend;
@@ -144,7 +152,7 @@ static NSString *const kContactCellIdentifier = @"contactCell";
 
     if (cell.friend)
     {
-        [self _chatWithFriend:cell.friend];
+        [self _showChatViewWithFriend:cell.friend];
     }
 }
 

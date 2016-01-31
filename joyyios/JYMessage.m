@@ -34,40 +34,42 @@
         return _bodyType;
     }
 
-    NSString *body = self.coreDataMessage.message.body;
-    if (body == nil || [body length] == 0)
+    NSString *subject = self.coreDataMessage.message.subject;
+    if ([subject length] == 0)
     {
-        NSLog(@"Error: empty body in xmpp message = %@", self.coreDataMessage.message);
+        NSLog(@"Error: empty subject in xmpp message = %@", self.coreDataMessage.message);
         _bodyType = JYMessageBodyTypeUnknown;
         return _bodyType;
     }
 
-    // The body type information is stored at the beginning of "body" element
-    if ([body hasPrefix:kMessageBodyTypeText])
+    _bodyType = JYMessageBodyTypeText;
+
+    // The body type information is stored in the "subject" element
+    if ([subject isEqualToString:kMessageBodyTypeText])
     {
         _bodyType = JYMessageBodyTypeText;
     }
-    else if ([body hasPrefix:kMessageBodyTypeImage])
+    else if ([subject isEqualToString:kMessageBodyTypeImage])
     {
         _bodyType = JYMessageBodyTypeImage;
     }
-    else if ([body hasPrefix:kMessageBodyTypeEmoji])
+    else if ([subject isEqualToString:kMessageBodyTypeEmoji])
     {
         _bodyType = JYMessageBodyTypeEmoji;
     }
-    else if ([body hasPrefix:kMessageBodyTypeAudio])
+    else if ([subject isEqualToString:kMessageBodyTypeAudio])
     {
         _bodyType = JYMessageBodyTypeAudio;
     }
-    else if ([body hasPrefix:kMessageBodyTypeVideo])
+    else if ([subject isEqualToString:kMessageBodyTypeVideo])
     {
         _bodyType = JYMessageBodyTypeVideo;
     }
-    else if ([body hasPrefix:kMessageBodyTypeLocation])
+    else if ([subject isEqualToString:kMessageBodyTypeLocation])
     {
         _bodyType = JYMessageBodyTypeLocation;
     }
-    else if ([body hasPrefix:kMessageBodyTypeGif])
+    else if ([subject isEqualToString:kMessageBodyTypeGif])
     {
         _bodyType = JYMessageBodyTypeGif;
     }
@@ -82,7 +84,7 @@
 
 - (NSString *)senderDisplayName
 {
-    // TODO: use displayname from roster
+    // TODO: use displayname from JYFriendManager
     return self.coreDataMessage.isOutgoing? self.coreDataMessage.streamBareJidStr : self.coreDataMessage.bareJidStr;
 }
 
@@ -114,7 +116,7 @@
 {
     if (!_text)
     {
-        _text = [self.coreDataMessage.message.body messageDisplayString];
+        _text = self.coreDataMessage.message.body;
     }
 
     return _text;
