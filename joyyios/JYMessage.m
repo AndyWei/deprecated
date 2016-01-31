@@ -7,22 +7,55 @@
 //
 
 #import "JYMessage.h"
+#import "NSNumber+Joyy.h"
 
 @interface JYMessage ()
-@property(nonatomic) XMPPMessageArchiving_Message_CoreDataObject *coreDataMessage;
-@property(nonatomic) JYMessageBodyType bodyType;
 @end
 
 
 @implementation JYMessage
 
+#pragma mark - MTLFMDBSerializing methods
+
++ (NSDictionary *)FMDBColumnsByPropertyKey
+{
+    return @{
+             @"messageId": @"id",
+             @"userId": @"userid",
+             @"peerId": @"peerid",
+             @"isOutgoing": @"isoutgoing",
+             @"subject": @"subject",
+             @"body": @"body",
+             @"bodyType": [NSNull null],
+             @"text": [NSNull null],
+             @"media": [NSNull null],
+             @"timestamp": [NSNull null]
+             };
+}
+
++ (NSArray *)FMDBPrimaryKeys
+{
+    return @[@"id"];
+}
+
++ (NSString *)FMDBTableName
+{
+    return @"message";
+}
+
 #pragma mark - Initialization
 
-- (instancetype)initWithXMPPCoreDataMessage:(XMPPMessageArchiving_Message_CoreDataObject *)coreDataMessage
+- (instancetype)initWithXMPPMessage:(XMPPMessage *)message isOutgoing:(BOOL)isOutgoing
 {
-    self = [super init];
-    if (self) {
-        _coreDataMessage = coreDataMessage;
+    if (self = [super init])
+    {
+        uint64_t timestamp = (uint64_t)([NSDate timeIntervalSinceReferenceDate] * 1000000);
+        self.messageId = [NSNumber numberWithUnsignedLongLong:timestamp];
+        self.userId = [JYCredential current].userId;
+        self.subject = message.subject;
+        self.body = message.body;
+        self.isOutgoing = [NSNumber numberWithBool:isOutgoing];
+        self.peerId = isOutgoing? [message.to.bare uint64Number]:[message.from.bare uint64Number];
     }
     return self;
 }
@@ -34,10 +67,9 @@
         return _bodyType;
     }
 
-    NSString *subject = self.coreDataMessage.message.subject;
+    NSString *subject = self.subject;
     if ([subject length] == 0)
     {
-        NSLog(@"Error: empty subject in xmpp message = %@", self.coreDataMessage.message);
         _bodyType = JYMessageBodyTypeUnknown;
         return _bodyType;
     }
@@ -79,18 +111,20 @@
 
 - (NSString *)senderId
 {
-    return self.coreDataMessage.isOutgoing? self.coreDataMessage.streamBareJidStr : self.coreDataMessage.bareJidStr;
+    NSNumber *sender = [self.isOutgoing boolValue]? self.userId : self.peerId;
+    return [sender uint64String];
 }
 
 - (NSString *)senderDisplayName
 {
     // TODO: use displayname from JYFriendManager
-    return self.coreDataMessage.isOutgoing? self.coreDataMessage.streamBareJidStr : self.coreDataMessage.bareJidStr;
+    return self.senderId;
 }
 
 - (NSDate *)date
 {
-    return self.coreDataMessage.timestamp;
+    uint64_t timestamp = [self.messageId unsignedLongLongValue] / 1000000;
+    return [NSDate dateWithTimeIntervalSinceReferenceDate:timestamp];
 }
 
 - (BOOL)isTextMessage
@@ -106,17 +140,25 @@
     return isMedia;
 }
 
+- (BOOL)hasGapWith:(JYMessage *)that
+{
+    NSDate *d1 = self.timestamp;
+    NSDate *d2 = that.timestamp;
+    NSTimeInterval gap = [d1 timeIntervalSinceDate:d2];
+    return (gap > k5Minutes);
+}
+
 - (NSUInteger)messageHash
 {
-    NSUInteger milliSeconds = (NSUInteger)([self.coreDataMessage.timestamp timeIntervalSinceReferenceDate] * 1000.0);
-    return milliSeconds;
+    uint64_t timestamp = [self.messageId unsignedLongLongValue] / 1000000;
+    return (NSUInteger)timestamp;
 }
 
 - (NSString *)text
 {
     if (!_text)
     {
-        _text = self.coreDataMessage.message.body;
+        _text = self.body;
     }
 
     return _text;
@@ -141,11 +183,21 @@
             _media = [self _locationMediaItem];
             break;
         default:
-            NSAssert(NO, @"Ask media for incorrect bodyType = %tu", self.bodyType);
+            _media = nil;
             break;
     }
 
     return _media;
+}
+
+- (NSDate *)timestamp
+{
+    if (!_timestamp)
+    {
+        uint64_t t = [self.messageId unsignedLongLongValue] / 1000000;
+        _timestamp = [NSDate dateWithTimeIntervalSinceReferenceDate:t];
+    }
+    return _timestamp;
 }
 
 #pragma mark - Private methods

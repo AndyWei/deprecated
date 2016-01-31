@@ -9,6 +9,8 @@
 //
 
 #import <JSQMessagesViewController/JSQMessages.h>
+#import <Mantle/Mantle.h>
+#import "MTLFMDBAdapter.h"
 
 typedef NS_ENUM(NSUInteger, JYMessageBodyType)
 {
@@ -22,11 +24,23 @@ typedef NS_ENUM(NSUInteger, JYMessageBodyType)
     JYMessageBodyTypeVideo    = 7
 };
 
-@interface JYMessage : NSObject <JSQMessageData>
+@interface JYMessage: MTLModel <JSQMessageData, MTLFMDBSerializing>
 
-- (instancetype)initWithXMPPCoreDataMessage:(XMPPMessageArchiving_Message_CoreDataObject *)coreDataMessage;
+- (instancetype)initWithXMPPMessage:(XMPPMessage *)message isOutgoing:(BOOL)isOutgoing;
 - (BOOL)isTextMessage;
+- (BOOL)hasGapWith:(JYMessage *)that;
 
+// FMDB coloumns
+@property (nonatomic) NSNumber *messageId;
+@property (nonatomic) NSNumber *userId;
+@property (nonatomic) NSNumber *peerId;
+@property (nonatomic) NSNumber *isOutgoing;
+@property (nonatomic) NSString *subject;
+@property (nonatomic) NSString *body;
+
+// non FMDB coloumns
+@property (nonatomic) JYMessageBodyType bodyType;
+@property (nonatomic) NSDate *timestamp;
 @property (nonatomic) NSString *text;
 @property (nonatomic) id<JSQMessageMediaData> media;
 

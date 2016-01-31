@@ -164,9 +164,12 @@
 
 - (uint64_t)uint64Value
 {
+    NSArray *parts = [self componentsSeparatedByString:@"@"];
+    NSString *idString = parts[0];
+
     NSNumberFormatter *f = [[NSNumberFormatter alloc] init];
     f.numberStyle = NSNumberFormatterDecimalStyle;
-    NSNumber *number = [f numberFromString:self];
+    NSNumber *number = [f numberFromString:idString];
     return number.unsignedLongLongValue;
 }
 
@@ -174,41 +177,6 @@
 {
     uint64_t value = [self uint64Value];
     return [NSNumber numberWithUnsignedLongLong:value];
-}
-
-- (NSString *)messageDisplayString
-{
-    if ([self hasPrefix:kMessageBodyTypeText])
-    {
-        return [self substringFromIndex:[kMessageBodyTypeText length]];
-    }
-
-    if ([self hasPrefix:kMessageBodyTypeImage])
-    {
-        return @"🌋";
-    }
-
-    if ([self hasPrefix:kMessageBodyTypeVideo])
-    {
-        return @"🎬";
-    }
-
-    if ([self hasPrefix:kMessageBodyTypeAudio])
-    {
-        return @"🔊";
-    }
-
-    if ([self hasPrefix:kMessageBodyTypeLocation])
-    {
-        return @"📍";
-    }
-
-    if ([self hasPrefix:kMessageBodyTypeGif])
-    {
-        return @"🎬";
-    }
-
-    return nil;
 }
 
 - (NSString *)messageMediaURL

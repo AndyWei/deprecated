@@ -10,15 +10,17 @@
 #import <CoreData/CoreData.h>
 
 #import "JYButton.h"
+#import "JYLocalDataManager.h"
 #import "JYMessage.h"
 #import "JYSessionViewController.h"
 #import "JYXmppManager.h"
+#import "NSNumber+Joyy.h"
 
-@interface JYSessionViewController() <NSFetchedResultsControllerDelegate>
+@interface JYSessionViewController()
 @property (nonatomic) JSQMessagesBubbleImage *outgoingBubbleImageData;
 @property (nonatomic) JSQMessagesBubbleImage *incomingBubbleImageData;
 @property (nonatomic) JSQMessagesAvatarImage *remoteAvatar;
-@property (nonatomic) NSFetchedResultsController *fetcher;
+@property (nonatomic) NSMutableArray *messageList;
 @property (nonatomic) JYButton *accButton;
 @property (nonatomic) JYButton *cameraButton;
 @property (nonatomic) JYButton *micButton;
@@ -45,11 +47,10 @@ CGFloat const kEdgeInset = 10.f;
     self.title = self.friend.username;
     self.view.backgroundColor = JoyyWhite;
 
-    XMPPJID *myJID = [JYXmppManager myJID];
-    self.senderId = myJID.bare;
+    self.senderId = [[JYCredential current].userId uint64String];
     self.senderDisplayName = [JYCredential current].username;
-    NSString *friendUserId = [NSString stringWithFormat:@"%llu", [self.friend.userId unsignedLongLongValue]];
-    self.thatJID = [JYXmppManager jidWithUsername:friendUserId];
+    NSString *friendUserId = [self.friend.userId uint64String];
+    self.thatJID = [JYXmppManager jidWithUserId:friendUserId];
 
     [self configCollectionView];
     [self configBubbleImage];
@@ -61,15 +62,12 @@ CGFloat const kEdgeInset = 10.f;
     // Avatar
     [self _fetchAvatarImage];
 
-    // Start fetch data
-    self.fetcher = [JYXmppManager fetcherForRemoteJid:self.thatJID];
-    self.fetcher.delegate = self;
-    NSError *error = nil;
-    [self.fetcher performFetch:&error];
-    if (error)
-    {
-        NSLog(@"fetcher performFetch error = %@", error);
-    }
+    // Start load data
+    NSString *condition = [NSString stringWithFormat:@"userid = %@ AND peerid = %@", self.senderId, friendUserId];
+    self.messageList = [[JYLocalDataManager sharedInstance] selectObjectsOfClass:JYMessage.class withCondition:condition sort:@"ASC"];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_didReceiveMessage:) name:kNotificationDidReceiveMessage object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_didSendMessage:) name:kNotificationDidSendMessage object:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -315,36 +313,30 @@ CGFloat const kEdgeInset = 10.f;
     [message addSubject:kMessageBodyTypeText];
     [[JYXmppManager sharedInstance].xmppStream sendElement:message];
 
-    [self finishSendingMessageAnimated:YES];
+    [self showSendButton:YES];
 }
 
 #pragma mark - JSQMessages CollectionView DataSource
 
 - (id<JSQMessageData>)collectionView:(JSQMessagesCollectionView *)collectionView messageDataForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    XMPPMessageArchiving_Message_CoreDataObject *coreDataMessage = [self.fetcher objectAtIndexPath:indexPath];
-    JYMessage *message = [[JYMessage alloc] initWithXMPPCoreDataMessage:coreDataMessage];
+    JYMessage *message = self.messageList[indexPath.row];
     return message;
 }
 
 - (id<JSQMessageBubbleImageDataSource>)collectionView:(JSQMessagesCollectionView *)collectionView messageBubbleImageDataForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    XMPPMessageArchiving_Message_CoreDataObject *coreDataMessage = [self.fetcher objectAtIndexPath:indexPath];
-    if (coreDataMessage.isOutgoing)
-    {
-        return self.outgoingBubbleImageData;
-    }
-
-    return self.incomingBubbleImageData;
+    JYMessage *message = self.messageList[indexPath.row];
+    return [message.isOutgoing boolValue]? self.outgoingBubbleImageData: self.incomingBubbleImageData;
 }
 
 // Show avatar for incoming messages. For a incoming messages burst, only show avatar for the first one
 - (id<JSQMessageAvatarImageDataSource>)collectionView:(JSQMessagesCollectionView *)collectionView avatarImageDataForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    XMPPMessageArchiving_Message_CoreDataObject *message = [self.fetcher objectAtIndexPath:indexPath];
+    JYMessage *message = self.messageList[indexPath.row];
 
     // No avatar for outgoing message
-    if (message.isOutgoing)
+    if ([message.isOutgoing boolValue])
     {
         return nil;
     }
@@ -356,15 +348,14 @@ CGFloat const kEdgeInset = 10.f;
         return self.remoteAvatar;
     }
 
-    XMPPMessageArchiving_Message_CoreDataObject *prevMessage = [self.fetcher objectAtIndexPath:prev];
-
-    if (prevMessage.isOutgoing)
+    JYMessage *prevMessage = self.messageList[prev.row];
+    if ([prevMessage.isOutgoing boolValue])
     {
         return self.remoteAvatar;
     }
 
     // Show avatar if the previous one has over 5 minutes old
-    if ([message.timestamp timeIntervalSinceDate:prevMessage.timestamp] > k5Minutes)
+    if ([message hasGapWith:prevMessage])
     {
         return self.remoteAvatar;
     }
@@ -376,7 +367,7 @@ CGFloat const kEdgeInset = 10.f;
 - (NSAttributedString *)collectionView:(JSQMessagesCollectionView *)collectionView attributedTextForCellTopLabelAtIndexPath:(NSIndexPath *)indexPath
 {
     // Show timestamp label for messages 5+ minutes later than its prior
-    XMPPMessageArchiving_Message_CoreDataObject *message = [self.fetcher objectAtIndexPath:indexPath];
+    JYMessage *message = self.messageList[indexPath.row];
     NSAttributedString *timestampStr = [[JSQMessagesTimestampFormatter sharedFormatter] attributedTimestampForDate:message.timestamp];
 
     NSIndexPath *prev = [indexPath previous];
@@ -385,8 +376,8 @@ CGFloat const kEdgeInset = 10.f;
         return timestampStr;
     }
 
-    XMPPMessageArchiving_Message_CoreDataObject *prevMessage = [self.fetcher objectAtIndexPath:prev];
-    if ([message.timestamp timeIntervalSinceDate:prevMessage.timestamp] > k5Minutes)
+    JYMessage *prevMessage = self.messageList[prev.row];
+    if ([message hasGapWith:prevMessage])
     {
         return timestampStr;
     }
@@ -408,23 +399,23 @@ CGFloat const kEdgeInset = 10.f;
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
 {
-    return self.fetcher.sections.count;
+    return 1;
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-    return [[self.fetcher.sections objectAtIndex:section] numberOfObjects];
+    return [self.messageList count];
 }
 
 - (UICollectionViewCell *)collectionView:(JSQMessagesCollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     JSQMessagesCollectionViewCell *cell = (JSQMessagesCollectionViewCell *)[super collectionView:collectionView cellForItemAtIndexPath:indexPath];
 
-    XMPPMessageArchiving_Message_CoreDataObject *coreDataMessage = [self.fetcher objectAtIndexPath:indexPath];
+    JYMessage *message = self.messageList[indexPath.row];
 
-    if ([coreDataMessage.message.subject isEqualToString:kMessageBodyTypeText])
+    if (message.bodyType == JYMessageBodyTypeText)
     {
-        if (coreDataMessage.isOutgoing)
+        if ([message.isOutgoing boolValue])
         {
             cell.textView.textColor = JoyyWhitePure;
         }
@@ -452,9 +443,9 @@ CGFloat const kEdgeInset = 10.f;
         return kJSQMessagesCollectionViewCellLabelHeightDefault;
     }
 
-    XMPPMessageArchiving_Message_CoreDataObject *message = [self.fetcher objectAtIndexPath:indexPath];
-    XMPPMessageArchiving_Message_CoreDataObject *prevMessage = [self.fetcher objectAtIndexPath:prev];
-    if ([message.timestamp timeIntervalSinceDate:prevMessage.timestamp] > k5Minutes)
+    JYMessage *message = self.messageList[indexPath.row];
+    JYMessage *prevMessage = self.messageList[prev.row];
+    if ([message hasGapWith:prevMessage])
     {
         return kJSQMessagesCollectionViewCellLabelHeightDefault;
     }
@@ -497,14 +488,46 @@ CGFloat const kEdgeInset = 10.f;
     NSLog(@"Tapped cell at %@!", NSStringFromCGPoint(touchLocation));
 }
 
-#pragma mark - NSFetchedResultsControllerDelegate
+#pragma mark - Notifications
 
-// When a message received , XMPPFramework will archive the message to CoreData storage,
-// and if the message belongs to this conversation, the controllerDidChangeContent will be triggered
-- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
+- (void)_didReceiveMessage:(NSNotification *)notification
 {
-    [self.collectionView reloadData];
-    [self scrollToBottomAnimated:YES];
+    NSDictionary *info = [notification userInfo];
+    if (!info)
+    {
+        return;
+    }
+
+    id obj = [info objectForKey:@"message"];
+    if (obj == [NSNull null])
+    {
+        return;
+    }
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.messageList addObject:obj];
+        [self finishReceivingMessage];
+    });
+}
+
+- (void)_didSendMessage:(NSNotification *)notification
+{
+    NSDictionary *info = [notification userInfo];
+    if (!info)
+    {
+        return;
+    }
+
+    id obj = [info objectForKey:@"message"];
+    if (obj == [NSNull null])
+    {
+        return;
+    }
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.messageList addObject:obj];
+        [self finishSendingMessage];
+    });
 }
 
 @end

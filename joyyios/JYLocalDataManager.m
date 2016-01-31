@@ -72,11 +72,34 @@ static NSString *const CREATE_COMMENT_TABLE_SQL =
     content   TEXT    NOT NULL, \
 PRIMARY KEY(id)) ";
 
+static NSString *const CREATE_MESSAGE_TABLE_SQL =
+@"CREATE TABLE IF NOT EXISTS message ( \
+    id         INTEGER NOT NULL, \
+    userid     INTEGER NOT NULL, \
+    peerid     INTEGER NOT NULL, \
+    isoutgoing INTEGER NOT NULL, \
+    subject    TEXT    NOT NULL, \
+    body       TEXT    NOT NULL, \
+PRIMARY KEY(id)) ";
+
+static NSString *const CREATE_SESSION_TABLE_SQL =
+@"CREATE TABLE IF NOT EXISTS session ( \
+    id         INTEGER NOT NULL, \
+    userid     INTEGER NOT NULL, \
+    isoutgoing INTEGER NOT NULL, \
+    timestamp  INTEGER NOT NULL, \
+    subject    TEXT    NOT NULL, \
+    body       TEXT    NOT NULL, \
+PRIMARY KEY(id)) ";
+
 static NSString *const CREATE_COMMENT_INDEX_SQL = @"CREATE INDEX IF NOT EXISTS postid_index ON comment(postid)";
+static NSString *const CREATE_MESSAGE_PEERID_INDEX_SQL = @"CREATE INDEX IF NOT EXISTS peerid_index ON message(peerid)";
+static NSString *const CREATE_SESSION_USERID_INDEX_SQL = @"CREATE INDEX IF NOT EXISTS userid_index ON session(userid)";
 static NSString *const SELECT_RANGE_SQL = @"SELECT * FROM %@ WHERE id > (?) AND id < (?) ORDER BY id DESC";
 static NSString *const SELECT_CONDITION_SQL = @"SELECT * FROM %@ WHERE (%@) ORDER BY id %@";
 static NSString *const SELECT_LIMIT_SQL = @"SELECT * FROM %@ ORDER BY id %@ LIMIT %u";
 static NSString *const SELECT_KEY_SQL = @"SELECT * FROM %@ WHERE %@ = ? ORDER BY id ASC";
+static NSString *const SELECT_KEY_WITH_ORDER_SQL = @"SELECT * FROM %@ WHERE %@ = ? ORDER BY %@";
 static NSString *const SELECT_ALL_SQL = @"SELECT * FROM %@ ORDER BY id ASC";
 static NSString *const SELECT_MIN_ID_SQL = @"SELECT * FROM %@ ORDER BY id ASC LIMIT 1";
 static NSString *const SELECT_MAX_ID_SQL = @"SELECT * FROM %@ ORDER BY id DESC LIMIT 1";
@@ -120,9 +143,16 @@ static NSString *const SELECT_MAX_ID_SQL = @"SELECT * FROM %@ ORDER BY id DESC L
     [self _executeUpdateSQL:CREATE_INVITE_TABLE_SQL];
     [self _executeUpdateSQL:CREATE_WINK_TABLE_SQL];
     [self _executeUpdateSQL:CREATE_POST_TABLE_SQL];
+
     [self _executeUpdateSQL:CREATE_COMMENT_TABLE_SQL];
     [self _executeUpdateSQL:CREATE_COMMENT_INDEX_SQL];
 
+    [self _executeUpdateSQL:CREATE_MESSAGE_TABLE_SQL];
+    [self _executeUpdateSQL:CREATE_MESSAGE_PEERID_INDEX_SQL];
+
+    [self _executeUpdateSQL:CREATE_SESSION_TABLE_SQL];
+    [self _executeUpdateSQL:CREATE_SESSION_USERID_INDEX_SQL];
+    
     NSLog(@"LocalDataManager started");
 }
 
@@ -229,6 +259,13 @@ static NSString *const SELECT_MAX_ID_SQL = @"SELECT * FROM %@ ORDER BY id DESC L
 - (NSMutableArray *)selectObjectsOfClass:(Class)modelClass withProperty:(NSString *)property equals:(NSNumber *)value
 {
     NSString *sql = [NSString stringWithFormat:SELECT_KEY_SQL, [modelClass FMDBTableName], property];
+    NSMutableArray *result = [self _executeSelect:sql withId:value ofClass:modelClass];
+    return result;
+}
+
+- (NSMutableArray *)selectObjectsOfClass:(Class)modelClass withProperty:(NSString *)property equals:(NSNumber *)value orderBy:(NSString *)orderBy
+{
+    NSString *sql = [NSString stringWithFormat:SELECT_KEY_WITH_ORDER_SQL, [modelClass FMDBTableName], property, orderBy];
     NSMutableArray *result = [self _executeSelect:sql withId:value ofClass:modelClass];
     return result;
 }

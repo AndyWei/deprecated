@@ -6,9 +6,11 @@
 //  Copyright (c) 2015 Joyy Inc. All rights reserved.
 //
 
+#import "JYSession.h"
+
 @interface JYSessionListViewCell : UITableViewCell
 
-@property (nonatomic) XMPPMessageArchiving_Contact_CoreDataObject *contact;
+@property (nonatomic) JYSession *session;
 @property (nonatomic, readonly) JYFriend *friend;
 
 @end

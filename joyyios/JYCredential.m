@@ -7,6 +7,7 @@
 //
 
 #import <UICKeychainStore/UICKeychainStore.h>
+#import "NSNumber+Joyy.h"
 
 @interface JYCredential()
 @property (nonatomic) UICKeyChainStore *keychain;
@@ -71,7 +72,7 @@ static NSString *const kAPIYrsKey = @"api_yrs";
 - (void)setUserId:(NSNumber *)userId
 {
     _userId = userId;
-    self.keychain[kAPIUserIdKey] = [NSString stringWithFormat:@"%llu", [userId unsignedLongLongValue]];
+    self.keychain[kAPIUserIdKey] = [userId uint64String];
 }
 
 - (void)setUsername:(NSString *)username

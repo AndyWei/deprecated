@@ -16,4 +16,10 @@
     return [NSNumber numberWithUnsignedLongLong:value];
 }
 
+- (NSString *)uint64String
+{
+    uint64_t value = [self unsignedLongLongValue];
+    return [NSString stringWithFormat:@"%llu", value];
+}
+
 @end

@@ -18,7 +18,6 @@
 - (BOOL)onlyContainsAlphanumericUnderscore; // A-Z, a-z, 0-9, _
 
 - (NSString *)reversedString;
-- (NSString *)messageDisplayString;
 - (NSString *)messageMediaURL;
 - (NSString *)pureNumberString;
 - (NSNumber *)uint64Number;

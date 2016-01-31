@@ -8,6 +8,7 @@
 
 #import "JYFilename.h"
 #import "JYYRS.h"
+#import "NSNumber+Joyy.h"
 
 @interface JYUser ()
 @property (nonatomic) JYYRS *yrs;
@@ -154,7 +155,7 @@
 
 - (NSString *)reversedIdString
 {
-    NSString *idString = [NSString stringWithFormat:@"%llu", [self.userId unsignedLongLongValue]];
+    NSString *idString = [self.userId uint64String];
     return [idString reversedString];
 }
 

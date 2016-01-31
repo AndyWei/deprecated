@@ -69,6 +69,8 @@ extern NSString *const kNotificationDidCreateProfile;
 extern NSString *const kNotificationDidFindInContactsUsers;
 extern NSString *const kNotificationDidTapOnUser;
 extern NSString *const kNotificationDidTapReminderView;
+extern NSString *const kNotificationDidSendMessage;
+extern NSString *const kNotificationDidReceiveMessage;
 extern NSString *const kNotificationDidSignIn;
 extern NSString *const kNotificationDidSignUp;
 extern NSString *const kNotificationNeedGeoInfo;

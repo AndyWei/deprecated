@@ -7,15 +7,19 @@
 //
 
 #import "AppDelegate.h"
+#import "JYLocalDataManager.h"
+#import "JYMessage.h"
+#import "JYSession.h"
 #import "JYSoundPlayer.h"
 #import "JYXmppManager.h"
+#import "NSNumber+Joyy.h"
 
 @interface JYXmppManager() <XMPPStreamDelegate>
 @property(nonatomic) JYXmppStatus xmppStatus;
 @property(nonatomic) XMPPReconnect *reconnect;
 @property(nonatomic, copy) JYXmppStatusHandler statusHandler;
-@property(nonatomic, readonly)XMPPMessageArchiving *msgArchiving;
-@property(nonatomic, readonly)XMPPMessageArchivingCoreDataStorage *msgStorage;
+//@property(nonatomic, readonly)XMPPMessageArchiving *msgArchiving;
+//@property(nonatomic, readonly)XMPPMessageArchivingCoreDataStorage *msgStorage;
 //@property (nonatomic, readonly)XMPPRoster *roster;
 //@property (nonatomic, readonly)XMPPRosterCoreDataStorage *rosterStorage;
 //@property (nonatomic, readonly)XMPPvCardTempModule *vCard;
@@ -45,9 +49,9 @@
     return _sharedInstance;
 }
 
-+ (XMPPJID *)jidWithUsername:(NSString *)username
++ (XMPPJID *)jidWithUserId:(NSString *)userId
 {
-    return [XMPPJID jidWithUser:username domain:kMessageDomain resource:nil];
+    return [XMPPJID jidWithUser:userId domain:kMessageDomain resource:nil];
 }
 
 + (XMPPJID *)myJID
@@ -59,48 +63,8 @@
     NSString *prefix = [deviceId substringToIndex:3];
     NSString *resource = [NSString stringWithFormat:@"%@_%@", kMessageResource, prefix];
 
-    NSString *userIdString = [NSString stringWithFormat:@"%llu", [[JYCredential current].userId unsignedLongLongValue]];
+    NSString *userIdString = [[JYCredential current].userId uint64String];
     return [XMPPJID jidWithUser:userIdString domain:kMessageDomain resource:resource];
-}
-
-+ (NSFetchedResultsController *)fetcherOfSessions
-{
-    // Standard process for fetch XMPPMessageArchiving_Contact_CoreDataObject objects
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"XMPPMessageArchiving_Contact_CoreDataObject"];
-    NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"mostRecentMessageTimestamp" ascending:NO];
-    request.sortDescriptors = @[sort];
-    request.fetchBatchSize = 10;
-
-    // Select the messages between me and the peer
-    XMPPJID *myJID = [JYXmppManager myJID];
-    request.predicate = [NSPredicate predicateWithFormat:@"streamBareJidStr = %@", myJID.bare];
-
-    NSManagedObjectContext *context = [JYXmppManager sharedInstance].msgStorage.mainThreadManagedObjectContext;
-
-    // NOTE: DO NOT USE cache here, otherwise the messages would be disordered since XMPPFramework is writing to the same context
-    NSFetchedResultsController *controller = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:context sectionNameKeyPath:nil cacheName:nil];
-
-    return controller;
-}
-
-+ (NSFetchedResultsController *)fetcherForRemoteJid:(XMPPJID *)remoteJid
-{
-    // Standard process for fetch XMPPMessageArchiving_Message_CoreDataObject objects
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"XMPPMessageArchiving_Message_CoreDataObject"];
-    NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"timestamp" ascending:YES];
-    request.sortDescriptors = @[sort];
-    request.fetchBatchSize = 10;
-
-    // Select the messages between me and the peer
-    XMPPJID *myJID = [JYXmppManager myJID];
-    request.predicate = [NSPredicate predicateWithFormat:@"streamBareJidStr = %@ and bareJidStr = %@", myJID.bare, remoteJid.bare];
-
-    NSManagedObjectContext *context = [JYXmppManager sharedInstance].msgStorage.mainThreadManagedObjectContext;
-
-    // NOTE: DO NOT USE cache here, otherwise the messages would be disordered since XMPPFramework is writing to the same context
-    NSFetchedResultsController *controller = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:context sectionNameKeyPath:nil cacheName:nil];
-
-    return controller;
 }
 
 - (instancetype)init
@@ -154,9 +118,9 @@
     [_reconnect activate:_xmppStream];
 
     // message
-    _msgStorage = [[XMPPMessageArchivingCoreDataStorage alloc] init];
-    _msgArchiving = [[XMPPMessageArchiving alloc] initWithMessageArchivingStorage:_msgStorage];
-    [_msgArchiving activate:_xmppStream];
+//    _msgStorage = [[XMPPMessageArchivingCoreDataStorage alloc] init];
+//    _msgArchiving = [[XMPPMessageArchiving alloc] initWithMessageArchivingStorage:_msgStorage];
+//    [_msgArchiving activate:_xmppStream];
 
     // roster
 //    _rosterStorage = [[XMPPRosterCoreDataStorage alloc]init];
@@ -201,15 +165,15 @@
 {
     [_xmppStream removeDelegate:self];
     [_reconnect deactivate];
-    [_msgArchiving deactivate];
+//    [_msgArchiving deactivate];
     [_xmppStream disconnect];
 //    [_roster deactivate];
 //    [_vCard deactivate];
 //    [_avatar deactivate];
 
     _reconnect = nil;
-    _msgArchiving = nil;
-    _msgStorage = nil;
+//    _msgArchiving = nil;
+//    _msgStorage = nil;
     _xmppStream = nil;
 
 //    _roster = nil;
@@ -247,6 +211,18 @@
     NSLog(@"Status: xmpp went offline");
     XMPPPresence *p = [XMPPPresence presenceWithType:@"unavailable"];
     [self.xmppStream sendElement:p];
+}
+
+- (void)_saveSession:(JYSession *)session
+{
+    if ([[JYLocalDataManager sharedInstance] selectObjectOfClass:JYSession.class withId:session.peerId])
+    {
+        [[JYLocalDataManager sharedInstance] updateObject:session ofClass:JYSession.class];
+    }
+    else
+    {
+        [[JYLocalDataManager sharedInstance] insertObject:session ofClass:JYSession.class];
+    }
 }
 
 #pragma mark - XMPPStream delegate methods
@@ -314,12 +290,29 @@
     return NO;
 }
 
-- (void)xmppStream:(XMPPStream *)sender didReceiveMessage:(XMPPMessage *)message
+- (void)xmppStream:(XMPPStream *)sender didReceiveMessage:(XMPPMessage *)msg
 {
-    NSLog(@"Success: xmpp didReceiveMessage = %@", message);
+    NSLog(@"Success: xmpp didReceiveMessage = %@", msg);
+
+    if (!msg.isChatMessageWithBody)
+    {
+        return;
+    }
+
+    // save session
+    JYSession *session = [[JYSession alloc] initWithXMPPMessage:msg isOutgoing:NO];
+    [self _saveSession:session];
+
+    // save message
+    JYMessage *message = [[JYMessage alloc] initWithXMPPMessage:msg isOutgoing:NO];
+    [[JYLocalDataManager sharedInstance] insertObject:message ofClass:JYMessage.class];
+
+    // notify session view controller
+    NSDictionary *info = @{@"message": message};
+    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationDidReceiveMessage object:nil userInfo:info];
 
     // If there is a viewController to show the message, then no vibrate
-    NSString *fromJid = message.from.bare;
+    NSString *fromJid = msg.from.bare;
     BOOL willShowMessage = self.currentRemoteJid && [self.currentRemoteJid.bare isEqualToString:fromJid];
     [JYSoundPlayer playMessageReceivedAlertWithVibrate:!willShowMessage];
 }
@@ -334,9 +327,20 @@
     NSLog(@"Success: xmpp didSendIQ = %@", iq);
 }
 
-- (void)xmppStream:(XMPPStream *)sender didSendMessage:(XMPPMessage *)message
+- (void)xmppStream:(XMPPStream *)sender didSendMessage:(XMPPMessage *)msg
 {
-    NSLog(@"Success: xmpp didSendMessage = %@", message);
+    NSLog(@"Success: xmpp didSendMessage = %@", msg);
+
+    JYSession *session = [[JYSession alloc] initWithXMPPMessage:msg isOutgoing:YES];
+    [self _saveSession:session];
+
+    // save message
+    JYMessage *message = [[JYMessage alloc] initWithXMPPMessage:msg isOutgoing:YES];
+    [[JYLocalDataManager sharedInstance] insertObject:message ofClass:JYMessage.class];
+
+    // notify session view controller
+    NSDictionary *info = @{@"message": message};
+    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationDidSendMessage object:nil userInfo:info];
 }
 
 - (void)xmppStream:(XMPPStream *)sender didSendPresence:(XMPPPresence *)presence

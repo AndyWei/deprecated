@@ -9,5 +9,6 @@
 @interface NSNumber (Joyy)
 
 - (NSNumber *)uint64Number;
+- (NSString *)uint64String;
 
 @end

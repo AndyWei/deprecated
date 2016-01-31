@@ -8,17 +8,19 @@
 
 #import "JYFriendManager.h"
 #import "JYFriendViewController.h"
+#import "JYLocalDataManager.h"
+#import "JYSession.h"
 #import "JYSessionListViewCell.h"
 #import "JYSessionListViewController.h"
 #import "JYSessionViewController.h"
 #import "JYXmppManager.h"
 
-@interface JYSessionListViewController () <NSFetchedResultsControllerDelegate, UITableViewDataSource, UITableViewDelegate>
-@property (nonatomic) NSFetchedResultsController *fetcher;
+@interface JYSessionListViewController () <UITableViewDataSource, UITableViewDelegate>
+@property (nonatomic) NSArray *sessionList;
 @property (nonatomic) UITableView *tableView;
 @end
 
-static NSString *const kContactCellIdentifier = @"contactCell";
+static NSString *const kCellIdentifier = @"sessionCell";
 
 @implementation JYSessionListViewController
 
@@ -49,17 +51,19 @@ static NSString *const kContactCellIdentifier = @"contactCell";
     // Hide the "Back" text on the pushed view navigation bar
     self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:self.navigationItem.backBarButtonItem.style target:nil action:nil];
 
-    // Start fetch data
-    self.fetcher = [JYXmppManager fetcherOfSessions];
-    self.fetcher.delegate = self;
-    NSError *error = nil;
-    [self.fetcher performFetch:&error];
-    if (error)
-    {
-        NSLog(@"fetcher performFetch error = %@", error);
-    }
+    // Init as empty list
+    self.sessionList = @[];
 
     [self.view addSubview:self.tableView];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+
+    // refresh data source and table
+    self.sessionList = [[JYLocalDataManager sharedInstance] selectObjectsOfClass:JYSession.class withProperty:@"userid" equals:[JYCredential current].userId orderBy:@"timestamp DESC"];
+    [self.tableView reloadData];
 }
 
 - (void)dealloc
@@ -77,7 +81,7 @@ static NSString *const kContactCellIdentifier = @"contactCell";
         _tableView.backgroundColor = JoyyWhitePure;
         _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
         _tableView.showsHorizontalScrollIndicator = NO;
-        [_tableView registerClass:[JYSessionListViewCell class] forCellReuseIdentifier:kContactCellIdentifier];
+        [_tableView registerClass:[JYSessionListViewCell class] forCellReuseIdentifier:kCellIdentifier];
     }
     return _tableView;
 }
@@ -118,21 +122,19 @@ static NSString *const kContactCellIdentifier = @"contactCell";
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    NSInteger number = self.fetcher.sections.count;
-    return number;
+    return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    NSInteger number = [[self.fetcher.sections objectAtIndex:section] numberOfObjects];
+    NSInteger number = [self.sessionList count];
     return number;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    JYSessionListViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kContactCellIdentifier forIndexPath:indexPath];
-
-    cell.contact = [self.fetcher objectAtIndexPath:indexPath];
+    JYSessionListViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kCellIdentifier forIndexPath:indexPath];
+    cell.session = self.sessionList[indexPath.row];
 
     return cell;
 }
@@ -154,15 +156,6 @@ static NSString *const kContactCellIdentifier = @"contactCell";
     {
         [self _showChatViewWithFriend:cell.friend];
     }
-}
-
-#pragma mark - NSFetchedResultsControllerDelegate
-
-// When a message received , XMPPFramework will archive the message to CoreData storage, and update contacts.
-// Thus the controllerDidChangeContent will be triggered
-- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
-{
-    [self.tableView reloadData];
 }
 
 @end

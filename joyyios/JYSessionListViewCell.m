@@ -37,18 +37,20 @@ static const CGFloat kTimeLabelWidth = 80;
     return self;
 }
 
-- (void)setContact:(XMPPMessageArchiving_Contact_CoreDataObject *)contact
+- (void)setSession:(JYSession *)session
 {
-    if (!contact)
+    if (!session)
     {
         return;
     }
+    _session = session;
 
-    _contact = contact;
-//    self.messageLabel.text = [_contact.mostRecentMessageBody messageDisplayString];
-    self.messageLabel.text = _contact.mostRecentMessageBody;
-    self.timeLabel.text = [[JYMessageDateFormatter sharedInstance] autoStringFromDate:_contact.mostRecentMessageTimestamp];
-    self.friend = [[JYFriendManager sharedInstance] friendWithBareJid:_contact.bareJidStr];
+    self.messageLabel.text = [_session text];
+    self.friend = [[JYFriendManager sharedInstance] friendWithId:session.peerId];
+
+    NSTimeInterval timestamp = [session.timestamp doubleValue];
+    NSDate *date = [NSDate dateWithTimeIntervalSinceReferenceDate:timestamp];
+    self.timeLabel.text = [[JYMessageDateFormatter sharedInstance] autoStringFromDate:date];
 }
 
 - (void)setFriend:(JYFriend *)friend

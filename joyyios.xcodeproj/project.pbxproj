@@ -118,6 +118,7 @@
 		D6BD61741C1FF84B00EFC92C /* JYNewCommentCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D6BD61731C1FF84B00EFC92C /* JYNewCommentCell.m */; };
 		D6BD61771C2007EF00EFC92C /* JYNewCommentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6BD61761C2007EF00EFC92C /* JYNewCommentViewController.m */; };
 		D6BD617A1C20CC2300EFC92C /* JYReminderView.m in Sources */ = {isa = PBXBuildFile; fileRef = D6BD61791C20CC2300EFC92C /* JYReminderView.m */; };
+		D6C1C15E1C5DDC8A00D2ABFF /* JYSession.m in Sources */ = {isa = PBXBuildFile; fileRef = D6C1C15D1C5DDC8A00D2ABFF /* JYSession.m */; };
 		D6C82B551B0D9FAE00876F57 /* JYCommentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6C82B541B0D9FAE00876F57 /* JYCommentViewController.m */; };
 		D6C82B691B12553D00876F57 /* JYComment.m in Sources */ = {isa = PBXBuildFile; fileRef = D6C82B681B12553D00876F57 /* JYComment.m */; };
 		D6C89F7C1C2B5C9C00E96E99 /* JYProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6C89F7B1C2B5C9C00E96E99 /* JYProfileViewController.m */; };
@@ -362,6 +363,8 @@
 		D6BD61761C2007EF00EFC92C /* JYNewCommentViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYNewCommentViewController.m; sourceTree = "<group>"; };
 		D6BD61781C20CC2300EFC92C /* JYReminderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYReminderView.h; sourceTree = "<group>"; };
 		D6BD61791C20CC2300EFC92C /* JYReminderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYReminderView.m; sourceTree = "<group>"; };
+		D6C1C15C1C5DDC8A00D2ABFF /* JYSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYSession.h; sourceTree = "<group>"; };
+		D6C1C15D1C5DDC8A00D2ABFF /* JYSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYSession.m; sourceTree = "<group>"; };
 		D6C82B531B0D9FAE00876F57 /* JYCommentViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYCommentViewController.h; sourceTree = "<group>"; };
 		D6C82B541B0D9FAE00876F57 /* JYCommentViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYCommentViewController.m; sourceTree = "<group>"; };
 		D6C82B671B12553D00876F57 /* JYComment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYComment.h; sourceTree = "<group>"; };
@@ -711,8 +714,6 @@
 		D68486B31B8AC207005CA0C4 /* Message */ = {
 			isa = PBXGroup;
 			children = (
-				D68486BC1B8C59BF005CA0C4 /* JYMessage.h */,
-				D68486BD1B8C59BF005CA0C4 /* JYMessage.m */,
 				D6E3B0531B996F5400B707DF /* JYSessionListViewCell.h */,
 				D6E3B0541B996F5400B707DF /* JYSessionListViewCell.m */,
 				D6E3B05F1B9A38F500B707DF /* JYMessageDateFormatter.h */,
@@ -976,6 +977,8 @@
 				D6903D151C0B9E4A00CDC64F /* JYFriend.m */,
 				D62124541C4B26FA006ADB7F /* JYInvite.h */,
 				D62124551C4B26FA006ADB7F /* JYInvite.m */,
+				D68486BC1B8C59BF005CA0C4 /* JYMessage.h */,
+				D68486BD1B8C59BF005CA0C4 /* JYMessage.m */,
 				D61D1DE01B5366DC00DE37DF /* JYPost.h */,
 				D61D1DE11B5366DC00DE37DF /* JYPost.m */,
 				D67DD0EA1B75321A00333626 /* JYUser.h */,
@@ -984,6 +987,8 @@
 				D62124521C4B26EA006ADB7F /* JYWink.m */,
 				D6903D171C0BA44A00CDC64F /* JYYRS.h */,
 				D6903D181C0BA44A00CDC64F /* JYYRS.m */,
+				D6C1C15C1C5DDC8A00D2ABFF /* JYSession.h */,
+				D6C1C15D1C5DDC8A00D2ABFF /* JYSession.m */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -1294,6 +1299,7 @@
 				D6966B361BA3753A00AAD8D5 /* JYCountryListViewController.m in Sources */,
 				D67DD0E81B7530AF00333626 /* JYUserCard.m in Sources */,
 				D6E3B0551B996F5400B707DF /* JYSessionListViewCell.m in Sources */,
+				D6C1C15E1C5DDC8A00D2ABFF /* JYSession.m in Sources */,
 				D61D1D571B4A65F200DE37DF /* MDCSwipeToChooseView.m in Sources */,
 				D650DE3F1C503BA100EA0CE5 /* UITabBarItem+Joyy.m in Sources */,
 			);

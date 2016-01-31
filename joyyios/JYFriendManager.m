@@ -10,6 +10,7 @@
 #import "JYFriendManager.h"
 #import "JYLocalDataManager.h"
 #import "NSNumber+Joyy.h"
+#import "NSString+Joyy.h"
 
 @interface JYFriendManager ()
 @property (nonatomic) NSMutableDictionary *friendDict;
@@ -66,7 +67,7 @@
 {
     NSArray *parts = [bareJid componentsSeparatedByString:@"@"];
     NSString *idString = parts[0];
-    NSNumber *userid = [NSNumber numberWithLongLong:idString.longLongValue];
+    NSNumber *userid = [idString uint64Number];
 
     return [self friendWithId:userid];
 }
