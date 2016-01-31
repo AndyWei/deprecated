@@ -9,14 +9,16 @@
 #import "JYFriendManager.h"
 #import "JYFriendViewController.h"
 #import "JYLocalDataManager.h"
+#import "JYMessage.h"
 #import "JYSession.h"
 #import "JYSessionListViewCell.h"
 #import "JYSessionListViewController.h"
 #import "JYSessionViewController.h"
 #import "JYXmppManager.h"
 
+
 @interface JYSessionListViewController () <UITableViewDataSource, UITableViewDelegate>
-@property (nonatomic) NSArray *sessionList;
+@property (nonatomic) NSMutableArray *sessionList;
 @property (nonatomic) UITableView *tableView;
 @end
 
@@ -52,7 +54,7 @@ static NSString *const kCellIdentifier = @"sessionCell";
     self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:self.navigationItem.backBarButtonItem.style target:nil action:nil];
 
     // Init as empty list
-    self.sessionList = @[];
+    self.sessionList = [NSMutableArray new];
 
     [self.view addSubview:self.tableView];
 }
@@ -118,6 +120,24 @@ static NSString *const kCellIdentifier = @"sessionCell";
     [self.navigationController pushViewController:viewController animated:YES];
 }
 
+- (void)_deleteSessionAtIndexPath:(NSIndexPath *)indexPath
+{
+    JYSession *session = self.sessionList[indexPath.row];
+
+    // delete session
+    [[JYLocalDataManager sharedInstance] deleteObject:session ofClass:JYSession.class];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.sessionList removeObjectAtIndex:indexPath.row];
+        [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+    });
+
+    // delete all the messages in the session
+    NSString *userId = [[JYCredential current].userId uint64String];
+    NSString *peerId = [session.peerId uint64String];
+    NSString *condition = [NSString stringWithFormat:@"userid = %@ AND peerid = %@", userId, peerId];
+    [[JYLocalDataManager sharedInstance] deleteObjectsOfClass:JYMessage.class withCondition:condition];
+}
+
 #pragma mark - UITableViewDataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -156,6 +176,25 @@ static NSString *const kCellIdentifier = @"sessionCell";
     {
         [self _showChatViewWithFriend:cell.friend];
     }
+}
+
+// swipe-to-delete feature
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return YES;
+}
+
+- (NSArray *)tableView:(UITableView *)tableView editActionsForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSString *deleteText = NSLocalizedString(@"Delete", nil);
+
+    __weak typeof(self) weakSelf = self;
+    UITableViewRowAction *deleteAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDestructive title:deleteText  handler:^(UITableViewRowAction *action, NSIndexPath *indexPath){
+        [weakSelf _deleteSessionAtIndexPath:indexPath];
+    }];
+
+    deleteAction.backgroundColor = JoyyRed;
+    return @[deleteAction];
 }
 
 @end

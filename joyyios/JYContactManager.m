@@ -14,8 +14,6 @@
 #import "JYContactManager.h"
 #import "JYLocalDataManager.h"
 #import "JYManagementDataStore.h"
-#import "NSNumber+Joyy.h"
-#import "NSString+Joyy.h"
 
 @import AddressBook;
 @import Contacts;

@@ -15,7 +15,6 @@
 #import "JYLocalDataManager.h"
 #import "JYUserlineViewController.h"
 #import "JYContactCell.h"
-#import "NSNumber+Joyy.h"
 
 @interface JYInviteViewController () <JYUserBaseCellDelegate, UITableViewDataSource, UITableViewDelegate>
 @property (nonatomic) NSMutableArray *inviteList;

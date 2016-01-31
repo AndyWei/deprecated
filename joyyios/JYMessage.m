@@ -7,7 +7,6 @@
 //
 
 #import "JYMessage.h"
-#import "NSNumber+Joyy.h"
 
 @interface JYMessage ()
 @end

@@ -9,8 +9,6 @@
 #import "JYFriend.h"
 #import "JYFriendManager.h"
 #import "JYLocalDataManager.h"
-#import "NSNumber+Joyy.h"
-#import "NSString+Joyy.h"
 
 @interface JYFriendManager ()
 @property (nonatomic) NSMutableDictionary *friendDict;

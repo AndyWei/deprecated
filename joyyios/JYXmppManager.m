@@ -12,7 +12,6 @@
 #import "JYSession.h"
 #import "JYSoundPlayer.h"
 #import "JYXmppManager.h"
-#import "NSNumber+Joyy.h"
 
 @interface JYXmppManager() <XMPPStreamDelegate>
 @property(nonatomic) JYXmppStatus xmppStatus;

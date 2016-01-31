@@ -14,7 +14,6 @@
 #import "JYMessage.h"
 #import "JYSessionViewController.h"
 #import "JYXmppManager.h"
-#import "NSNumber+Joyy.h"
 
 @interface JYSessionViewController()
 @property (nonatomic) JSQMessagesBubbleImage *outgoingBubbleImageData;

@@ -21,7 +21,6 @@
 #import "JYUserCard.h"
 #import "JYYRS.h"
 #import "MDCSwipeToChoose.h"
-#import "NSNumber+Joyy.h"
 
 @interface JYPeopleViewController () <JYFacialGuestureDetectorDelegate, MDCSwipeToChooseDelegate>
 @property (nonatomic) AMPopTip *winkTip;

@@ -25,7 +25,6 @@
 #import "JYUserlineCell.h"
 #import "JYWink.h"
 #import "JYWinkViewController.h"
-#import "NSNumber+Joyy.h"
 
 @interface JYProfileViewController () <JYAvatarCreatorDelegate, JYProfileCardViewDelegate, JYProfileDataManagerDelegate, UITableViewDataSource, UITableViewDelegate>
 @property (nonatomic) JYAvatarCreator *avatarCreator;

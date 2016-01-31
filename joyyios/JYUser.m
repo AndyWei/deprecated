@@ -8,7 +8,6 @@
 
 #import "JYFilename.h"
 #import "JYYRS.h"
-#import "NSNumber+Joyy.h"
 
 @interface JYUser ()
 @property (nonatomic) JYYRS *yrs;

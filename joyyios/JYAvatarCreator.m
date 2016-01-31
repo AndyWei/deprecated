@@ -13,7 +13,6 @@
 #import "JYAvatarCreator.h"
 #import "JYFilename.h"
 #import "JYYRS.h"
-#import "NSString+Joyy.h"
 #import "TGCameraColor.h"
 #import "TGCameraViewController.h"
 

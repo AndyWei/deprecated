@@ -14,7 +14,6 @@
 #import "JYCredential.h"
 #import "JYLocalDataManager.h"
 #import "JYUserlineViewController.h"
-#import "NSString+Joyy.h"
 
 @interface JYContactViewController () <JYUserBaseCellDelegate, UITableViewDataSource, UITableViewDelegate>
 @property (nonatomic) NSMutableArray *userList;

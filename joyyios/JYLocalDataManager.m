@@ -95,6 +95,7 @@ PRIMARY KEY(id)) ";
 static NSString *const CREATE_COMMENT_INDEX_SQL = @"CREATE INDEX IF NOT EXISTS postid_index ON comment(postid)";
 static NSString *const CREATE_MESSAGE_PEERID_INDEX_SQL = @"CREATE INDEX IF NOT EXISTS peerid_index ON message(peerid)";
 static NSString *const CREATE_SESSION_USERID_INDEX_SQL = @"CREATE INDEX IF NOT EXISTS userid_index ON session(userid)";
+static NSString *const DELETE_CONDITION_SQL = @"DELETE FROM %@ WHERE %@";
 static NSString *const SELECT_RANGE_SQL = @"SELECT * FROM %@ WHERE id > (?) AND id < (?) ORDER BY id DESC";
 static NSString *const SELECT_CONDITION_SQL = @"SELECT * FROM %@ WHERE (%@) ORDER BY id %@";
 static NSString *const SELECT_LIMIT_SQL = @"SELECT * FROM %@ ORDER BY id %@ LIMIT %u";
@@ -200,11 +201,30 @@ static NSString *const SELECT_MAX_ID_SQL = @"SELECT * FROM %@ ORDER BY id DESC L
 
 - (void)deleteObject:(id)object ofClass:(Class)modelClass
 {
+    if(![modelClass conformsToProtocol:@protocol(MTLFMDBSerializing)])
+    {
+        return;
+    }
+
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
 
         NSString *stmt = [MTLFMDBAdapter deleteStatementForModelClass:modelClass];
         NSArray *params = [MTLFMDBAdapter primaryKeysValues:object];
         [self _executeUpdate:stmt withArgumentsInArray:params];
+    });
+}
+
+- (void)deleteObjectsOfClass:(Class)modelClass withCondition:(NSString *)condition
+{
+    if(![modelClass conformsToProtocol:@protocol(MTLFMDBSerializing)])
+    {
+        return;
+    }
+
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+
+        NSString *sql = [NSString stringWithFormat:DELETE_CONDITION_SQL, [modelClass FMDBTableName], condition];
+        [self _executeUpdateSQL:sql];
     });
 }
 

@@ -15,6 +15,7 @@
 - (void)updateObjects:(NSArray *)objectList ofClass:(Class)modelClass;
 - (void)updateObject:(id)object ofClass:(Class)modelClass;
 - (void)deleteObject:(id)object ofClass:(Class)modelClass;
+- (void)deleteObjectsOfClass:(Class)modelClass withCondition:(NSString *)condition;
 
 - (id)selectObjectOfClass:(Class)modelClass withId:(NSNumber *)objId;
 - (id)minIdObjectOfOfClass:(Class)modelClass;

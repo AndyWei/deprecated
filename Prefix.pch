@@ -32,6 +32,7 @@
 
 // Common
 #import "Constants.h"
+#import "NSNumber+Joyy.h"
 #import "NSString+Joyy.h"
 #import "NSIndexPath+Joyy.h"
 #import "UIColor+Joyy.h"

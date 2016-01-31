@@ -8,7 +8,6 @@
 
 #import "JYMessage.h"
 #import "JYSession.h"
-#import "NSString+Joyy.h"
 
 @interface JYSession ()
 @property (nonatomic) JYMessageBodyType bodyType;

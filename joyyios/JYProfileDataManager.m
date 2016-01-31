@@ -15,7 +15,6 @@
 #import "JYPost.h"
 #import "JYWink.h"
 #import "JYProfileDataManager.h"
-#import "NSNumber+Joyy.h"
 
 @interface JYProfileDataManager ()
 @property (nonatomic) JYMonth *month;

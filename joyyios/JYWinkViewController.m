@@ -15,7 +15,6 @@
 #import "JYWink.h"
 #import "JYWinkCell.h"
 #import "JYWinkViewController.h"
-#import "NSNumber+Joyy.h"
 
 @interface JYWinkViewController () <JYUserBaseCellDelegate, UITableViewDataSource, UITableViewDelegate>
 @property (nonatomic) NSMutableArray *winkList;
