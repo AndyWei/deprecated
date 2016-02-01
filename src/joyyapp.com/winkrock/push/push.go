@@ -120,11 +120,9 @@ func (h *Handler) send(userid int64, message string) {
         Message: aws.String(message),
         MessageAttributes: map[string]*sns.MessageAttributeValue{
             "Key": { // Required
-                DataType:    aws.String("String"), // Required
-                BinaryValue: []byte("PAYLOAD"),
+                DataType:    aws.String("String"),
                 StringValue: aws.String("String"),
             },
-            // More values...
         },
         TargetArn: aws.String(arn),
     }

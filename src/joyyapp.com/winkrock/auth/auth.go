@@ -158,6 +158,7 @@ func (h *Handler) SignIn(w http.ResponseWriter, req *http.Request) {
 type CheckExistenceParams struct {
     UserId int64  `param:"user" validate:"required"`
     Server string `param:"server" validate:"required"`
+    Token  string `param:"pass"`
 }
 
 func (h *Handler) CheckExistence(w http.ResponseWriter, req *http.Request) {
@@ -173,15 +174,16 @@ func (h *Handler) CheckExistence(w http.ResponseWriter, req *http.Request) {
         return
     }
 
+    // To avoid DB pressure, skip reading
     // read DB
-    var deleted bool
-    err := h.DB.Query(`SELECT deleted FROM user WHERE userid = ? LIMIT 1`,
-        p.UserId).Consistency(gocql.One).Scan(&deleted)
+    // var deleted bool
+    // err := h.DB.Query(`SELECT deleted FROM user WHERE userid = ? LIMIT 1`,
+    //     p.UserId).Consistency(gocql.One).Scan(&deleted)
 
-    if err != nil || deleted {
-        RespondError(w, ErrUserNotExist, http.StatusNotFound)
-        return
-    }
+    // if err != nil || deleted {
+    //     RespondError(w, ErrUserNotExist, http.StatusNotFound)
+    //     return
+    // }
 
     // success
     RespondTrue(w)

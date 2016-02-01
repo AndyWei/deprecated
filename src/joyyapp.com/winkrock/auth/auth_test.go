@@ -99,7 +99,7 @@ var checkExistenceTests = []struct {
     server   string
     code     int
 }{
-    {"check_existence_user1", "dummy_password", "winkrock.com", http.StatusOK},
+    {"check_existence_user1", "dummy_password", "joyy.im", http.StatusOK},
     {"check_existence_user2", "dummy_password", "jjjj.im", http.StatusBadRequest},
 }
 
@@ -115,7 +115,7 @@ func TestCheckExistence(test *testing.T) {
         assert.NotZero(userid)
         assert.NotEmpty(token)
 
-        url := fmt.Sprintf("/v1/xmpp/user_exists?user=%v&server=%v", userid, t.server)
+        url := fmt.Sprintf("/v1/xmpp/user_exists?user=%v&server=%v&pass=", userid, t.server)
         req, _ := http.NewRequest("GET", url, nil)
 
         resp := httptest.NewRecorder()
@@ -132,9 +132,9 @@ var checkPasswordTests = []struct {
     server   string
     code     int
 }{
-    {"check_password_user1", "dummy_password", "good_token", "winkrock.com", http.StatusOK},
+    {"check_password_user1", "dummy_password", "good_token", "joyy.im", http.StatusOK},
     {"check_password_user2", "dummy_password", "good_token", "jjjj.im", http.StatusBadRequest},
-    {"check_password_user3", "dummy_password", "bad_token", "winkrock.com", http.StatusUnauthorized},
+    {"check_password_user3", "dummy_password", "bad_token", "joyy.im", http.StatusUnauthorized},
 }
 
 func TestCheckPassword(test *testing.T) {
