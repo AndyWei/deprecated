@@ -307,9 +307,19 @@ CGFloat const kEdgeInset = 10.f;
     [self showSendButton:NO];
 
     XMPPMessage *message = [XMPPMessage messageWithType:@"chat" to:self.thatJID];
-    NSString *body = text;
-    [message addBody:body];
-    [message addSubject:kMessageBodyTypeText];
+
+    NSDictionary *dict = @{@"type": kMessageBodyTypeText, @"res": text};
+    NSError *err;
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dict options:0 error:&err];
+
+    if (err || !jsonData)
+    {
+        NSLog(@"Got an error: %@", err);
+        return;
+    }
+    NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+    [message addBody:jsonString];
+
     [[JYXmppManager sharedInstance].xmppStream sendElement:message];
 
     [self showSendButton:YES];

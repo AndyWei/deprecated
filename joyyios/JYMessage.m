@@ -9,6 +9,8 @@
 #import "JYMessage.h"
 
 @interface JYMessage ()
+@property (nonatomic) NSString *type;
+@property (nonatomic) NSDictionary *bodyDictionary;
 @end
 
 
@@ -23,8 +25,10 @@
              @"userId": @"userid",
              @"peerId": @"peerid",
              @"isOutgoing": @"isoutgoing",
-             @"subject": @"subject",
              @"body": @"body",
+             @"bodyDictionary": [NSNull null],
+             @"type": [NSNull null],
+             @"resource": [NSNull null],
              @"bodyType": [NSNull null],
              @"text": [NSNull null],
              @"media": [NSNull null],
@@ -51,12 +55,40 @@
         uint64_t timestamp = (uint64_t)([NSDate timeIntervalSinceReferenceDate] * 1000000);
         self.messageId = [NSNumber numberWithUnsignedLongLong:timestamp];
         self.userId = [JYCredential current].userId;
-        self.subject = message.subject;
         self.body = message.body;
         self.isOutgoing = [NSNumber numberWithBool:isOutgoing];
         self.peerId = isOutgoing? [message.to.bare uint64Number]:[message.from.bare uint64Number];
     }
     return self;
+}
+
+- (NSDictionary *)bodyDictionary
+{
+    if (!_bodyDictionary)
+    {
+        NSError *error;
+        NSData *objectData = [self.body dataUsingEncoding:NSUTF8StringEncoding];
+        _bodyDictionary = [NSJSONSerialization JSONObjectWithData:objectData options:NSJSONReadingMutableContainers error:&error];
+    }
+    return _bodyDictionary;
+}
+
+- (NSString *)type
+{
+    if (!_type)
+    {
+        _type = [self.bodyDictionary objectForKey:@"type"];
+    }
+    return _type;
+}
+
+- (NSString *)resource
+{
+    if (!_resource)
+    {
+        _resource = [self.bodyDictionary objectForKey:@"res"];
+    }
+    return _resource;
 }
 
 - (JYMessageBodyType)bodyType
@@ -66,8 +98,8 @@
         return _bodyType;
     }
 
-    NSString *subject = self.subject;
-    if ([subject length] == 0)
+
+    if ([self.type length] == 0)
     {
         _bodyType = JYMessageBodyTypeUnknown;
         return _bodyType;
@@ -76,31 +108,31 @@
     _bodyType = JYMessageBodyTypeText;
 
     // The body type information is stored in the "subject" element
-    if ([subject isEqualToString:kMessageBodyTypeText])
+    if ([self.type isEqualToString:kMessageBodyTypeText])
     {
         _bodyType = JYMessageBodyTypeText;
     }
-    else if ([subject isEqualToString:kMessageBodyTypeImage])
+    else if ([self.type isEqualToString:kMessageBodyTypeImage])
     {
         _bodyType = JYMessageBodyTypeImage;
     }
-    else if ([subject isEqualToString:kMessageBodyTypeEmoji])
+    else if ([self.type isEqualToString:kMessageBodyTypeEmoji])
     {
         _bodyType = JYMessageBodyTypeEmoji;
     }
-    else if ([subject isEqualToString:kMessageBodyTypeAudio])
+    else if ([self.type isEqualToString:kMessageBodyTypeAudio])
     {
         _bodyType = JYMessageBodyTypeAudio;
     }
-    else if ([subject isEqualToString:kMessageBodyTypeVideo])
+    else if ([self.type isEqualToString:kMessageBodyTypeVideo])
     {
         _bodyType = JYMessageBodyTypeVideo;
     }
-    else if ([subject isEqualToString:kMessageBodyTypeLocation])
+    else if ([self.type isEqualToString:kMessageBodyTypeLocation])
     {
         _bodyType = JYMessageBodyTypeLocation;
     }
-    else if ([subject isEqualToString:kMessageBodyTypeGif])
+    else if ([self.type isEqualToString:kMessageBodyTypeGif])
     {
         _bodyType = JYMessageBodyTypeGif;
     }
@@ -157,7 +189,7 @@
 {
     if (!_text)
     {
-        _text = self.body;
+        _text = self.resource;
     }
 
     return _text;

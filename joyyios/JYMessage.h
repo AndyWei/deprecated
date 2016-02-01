@@ -35,11 +35,11 @@ typedef NS_ENUM(NSUInteger, JYMessageBodyType)
 @property (nonatomic) NSNumber *userId;
 @property (nonatomic) NSNumber *peerId;
 @property (nonatomic) NSNumber *isOutgoing;
-@property (nonatomic) NSString *subject;
 @property (nonatomic) NSString *body;
 
 // non FMDB coloumns
 @property (nonatomic) JYMessageBodyType bodyType;
+@property (nonatomic) NSString *resource;
 @property (nonatomic) NSDate *timestamp;
 @property (nonatomic) NSString *text;
 @property (nonatomic) id<JSQMessageMediaData> media;

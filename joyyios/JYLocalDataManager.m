@@ -78,7 +78,6 @@ static NSString *const CREATE_MESSAGE_TABLE_SQL =
     userid     INTEGER NOT NULL, \
     peerid     INTEGER NOT NULL, \
     isoutgoing INTEGER NOT NULL, \
-    subject    TEXT    NOT NULL, \
     body       TEXT    NOT NULL, \
 PRIMARY KEY(id)) ";
 
@@ -88,7 +87,6 @@ static NSString *const CREATE_SESSION_TABLE_SQL =
     userid     INTEGER NOT NULL, \
     isoutgoing INTEGER NOT NULL, \
     timestamp  INTEGER NOT NULL, \
-    subject    TEXT    NOT NULL, \
     body       TEXT    NOT NULL, \
 PRIMARY KEY(id)) ";
 
@@ -153,7 +151,7 @@ static NSString *const SELECT_MAX_ID_SQL = @"SELECT * FROM %@ ORDER BY id DESC L
 
     [self _executeUpdateSQL:CREATE_SESSION_TABLE_SQL];
     [self _executeUpdateSQL:CREATE_SESSION_USERID_INDEX_SQL];
-    
+
     NSLog(@"LocalDataManager started");
 }
 
