@@ -8,6 +8,7 @@
 package push
 
 import (
+    "encoding/json"
     "errors"
     "github.com/aws/aws-sdk-go/aws"
     "github.com/aws/aws-sdk-go/aws/session"
@@ -90,7 +91,13 @@ func (h *Handler) Push(w http.ResponseWriter, req *http.Request) {
         return
     }
 
-    h.send(p.ToUserId, p.Message)
+    var messageMap map[string]interface{}
+    if err := json.Unmarshal([]byte(p.Message), &messageMap); err != nil {
+        RespondError(w, err, http.StatusBadRequest)
+        return
+    }
+
+    h.send(p.ToUserId, messageMap["title"].(string))
 
     RespondOK(w)
     return
