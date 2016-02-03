@@ -167,19 +167,7 @@
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)notification
 {
     NSLog(@"Notification = %@", notification);
-    NSString *notificationType = [notification objectForKey:@"type"];
-
-    if ([notificationType isEqualToString:@"xmpp"])
-    {
-        [JYSoundPlayer playMessageReceivedAlertWithVibrate:YES];
-    }
-    else
-    {
-        NSDictionary *aps = [notification objectForKey:@"aps"];
-        NSString *title = aps ? [aps objectForKey:@"alert"] : @"Notification";
-
-        [RKDropdownAlert title:title backgroundColor:FlatGreen textColor:JoyyWhite time:3];
-    }
+    self.tabBarController.selectedIndex = 2;
 }
 
 #pragma mark - Private methods

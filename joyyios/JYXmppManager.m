@@ -214,6 +214,11 @@
 
 - (void)_saveSession:(JYSession *)session
 {
+    // notify session list view controller
+    NSDictionary *info = @{@"session": session};
+    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationNeedUpdateSession object:nil userInfo:info];
+
+    // save to local store
     if ([[JYLocalDataManager sharedInstance] selectObjectOfClass:JYSession.class withId:session.peerId])
     {
         [[JYLocalDataManager sharedInstance] updateObject:session ofClass:JYSession.class];

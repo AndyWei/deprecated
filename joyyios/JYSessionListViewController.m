@@ -32,6 +32,7 @@ static NSString *const kCellIdentifier = @"sessionCell";
     {
         // listen to notification now to avoid any missing 
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_chattingWithFriend:) name:kNotificationChatting object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_updateSession:) name:kNotificationNeedUpdateSession object:nil];
     }
     return self;
 }
@@ -47,30 +48,63 @@ static NSString *const kCellIdentifier = @"sessionCell";
     UIBarButtonItem *createButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(_showFriendList)];
     self.navigationItem.rightBarButtonItem = createButton;
 
-    // Connect to Message server
-    [[JYXmppManager sharedInstance] start];
-
     // Hide the "Back" text on the pushed view navigation bar
     self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:self.navigationItem.backBarButtonItem.style target:nil action:nil];
 
     // Init as empty list
     self.sessionList = [NSMutableArray new];
+    NSNumber *userId = [JYCredential current].userId;
+    if (userId && [userId unsignedLongLongValue] > 0)
+    {
+        self.sessionList = [[JYLocalDataManager sharedInstance] selectObjectsOfClass:JYSession.class withProperty:@"userid" equals:userId orderBy:@"timestamp DESC"];
+    }
 
     [self.view addSubview:self.tableView];
-}
-
-- (void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:animated];
-
-    // refresh data source and table
-    self.sessionList = [[JYLocalDataManager sharedInstance] selectObjectsOfClass:JYSession.class withProperty:@"userid" equals:[JYCredential current].userId orderBy:@"timestamp DESC"];
-    [self.tableView reloadData];
 }
 
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)_updateSession:(NSNotification *)notification
+{
+    NSLog(@"in _updateSession");
+
+    NSDictionary *info = [notification userInfo];
+    if (!info)
+    {
+        return;
+    }
+
+    id obj = [info objectForKey:@"session"];
+    if (obj == [NSNull null])
+    {
+        return;
+    }
+
+    JYSession *session = (JYSession *)obj;
+    NSInteger index = [self _indexOfSessionWithPeerId:session.peerId];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.sessionList removeObjectAtIndex:index];
+        [self.sessionList insertObject:session atIndex:0];
+        [self.tableView reloadData];
+    });
+}
+
+- (NSInteger)_indexOfSessionWithPeerId:(NSNumber *)peerId
+{
+    uint64_t targetValue = [peerId unsignedLongLongValue];
+    NSUInteger count = [self.sessionList count];
+    for (NSUInteger i = 0; i < count; ++i)
+    {
+        JYSession *session = self.sessionList[i];
+        if ([session.peerId unsignedLongLongValue] == targetValue)
+        {
+            return i;
+        }
+    }
+    return NSNotFound;
 }
 
 - (UITableView *)tableView

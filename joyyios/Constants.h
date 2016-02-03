@@ -74,6 +74,7 @@ extern NSString *const kNotificationDidReceiveMessage;
 extern NSString *const kNotificationDidSignIn;
 extern NSString *const kNotificationDidSignUp;
 extern NSString *const kNotificationNeedGeoInfo;
+extern NSString *const kNotificationNeedUpdateSession;
 extern NSString *const kNotificationUserYRSReady;
 extern NSString *const kNotificationWillChat;
 extern NSString *const kNotificationChatting;
