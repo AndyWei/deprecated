@@ -10,5 +10,7 @@
 
 @interface JYAmazonClientManager: NSObject
 
+- (void)start;
+
 @end
 

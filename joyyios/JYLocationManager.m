@@ -50,9 +50,13 @@ static NSString *const kZip = @"location_zip";
 
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_apiTokenReady) name:kNotificationAPITokenReady object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_userYRSReady) name:kNotificationUserYRSReady object:nil];
-         NSLog(@"LocationManager created");
     }
     return self;
+}
+
+- (void)start
+{
+    NSLog(@"LocationManager started");
 }
 
 - (void)_apiTokenReady

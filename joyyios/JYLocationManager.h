@@ -10,6 +10,8 @@
 
 @interface JYLocationManager : NSObject
 
+- (void)start;
+
 @property (nonatomic) NSString *countryCode;
 @property (nonatomic) NSString *zip;
 

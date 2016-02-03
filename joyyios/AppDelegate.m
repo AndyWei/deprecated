@@ -104,11 +104,9 @@
     [[JYFriendManager sharedInstance] start];
     [[JYXmppManager sharedInstance] start];
 
-    self.deviceManager =[JYDeviceManager new];
-    self.locationManager = [JYLocationManager new];
-    self.amazonClientManager = [JYAmazonClientManager new];
-
-    self.credentialManager = [JYCredentialManager new];
+    [self.deviceManager start];
+    [self.locationManager start];
+    [self.amazonClientManager start];
     [self.credentialManager start];
 }
 
@@ -117,6 +115,33 @@
     NSLog(@"applicationWillTerminate");
     [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationAppDidStop object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (JYAmazonClientManager *)amazonClientManager
+{
+    if (!_amazonClientManager)
+    {
+        _amazonClientManager = [JYAmazonClientManager new];
+    }
+    return _amazonClientManager;
+}
+
+- (JYCredentialManager *)credentialManager
+{
+    if (!_credentialManager)
+    {
+        _credentialManager = [JYCredentialManager new];
+    }
+    return _credentialManager;
+}
+
+- (JYDeviceManager *)deviceManager
+{
+    if (!_deviceManager)
+    {
+        _deviceManager = [JYDeviceManager new];
+    }
+    return _deviceManager;
 }
 
 - (BOOL)shouldXmppGoOnline

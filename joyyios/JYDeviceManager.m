@@ -25,10 +25,13 @@ NSString *const kBadgeCount = @"badge_count";
         _badgeCount = [[NSUserDefaults standardUserDefaults] integerForKey:kBadgeCount];
 
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_apiTokenReady) name:kNotificationAPITokenReady object:nil];
-
-        NSLog(@"DeviceManager created");
     }
     return self;
+}
+
+- (void)start
+{
+    NSLog(@"DeviceManager started");
 }
 
 - (void)_apiTokenReady
@@ -41,13 +44,14 @@ NSString *const kBadgeCount = @"badge_count";
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
+- (void)_registerPushNotification
+{
+    UIUserNotificationSettings* settings = [UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeAlert | UIUserNotificationTypeBadge | UIUserNotificationTypeSound categories:nil];
+    [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
+}
+
 - (void)setDeviceToken:(NSString *)deviceToken
 {
-    if ([deviceToken isEqualToString:_deviceToken])
-    {
-        return;
-    }
-
     _deviceToken = deviceToken;
     [[NSUserDefaults standardUserDefaults] setObject:deviceToken forKey:kDeviceToken];
 
@@ -57,12 +61,6 @@ NSString *const kBadgeCount = @"badge_count";
 - (void)setBadgeCount:(NSInteger)count
 {
     [[NSUserDefaults standardUserDefaults] setInteger:count forKey:kBadgeCount];
-}
-
-- (void)_registerPushNotification
-{
-    UIUserNotificationSettings* settings = [UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeAlert | UIUserNotificationTypeBadge | UIUserNotificationTypeSound categories:nil];
-        [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
 }
 
 - (void)_registerDeviceToken:(NSString *)deviceToken
@@ -79,7 +77,6 @@ NSString *const kBadgeCount = @"badge_count";
           failure:^(NSURLSessionTask *operation, NSError *error) {
               NSLog(@"POST device/register error: %@", error);
           }];
-    
 }
 
 @end
