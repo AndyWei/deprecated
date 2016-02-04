@@ -38,7 +38,7 @@ const NSUInteger RED_DOT_TAG = 999;
             UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(20, 0, 8, 8)];
             label.tag = RED_DOT_TAG;
             [label setText:@""];
-            [label setBackgroundColor:JoyyRed];
+            [label setBackgroundColor:JoyyRedPure];
 
             label.layer.cornerRadius = label.frame.size.height/2;
             label.layer.masksToBounds = YES;

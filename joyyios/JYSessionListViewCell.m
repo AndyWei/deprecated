@@ -13,14 +13,12 @@
 #import "JYMessageDateFormatter.h"
 #import "JYSessionListViewCell.h"
 
-static const CGFloat kAvatarImageWidth = 70;
-static const CGFloat kTimeLabelWidth = 80;
-
 @interface JYSessionListViewCell ()
 @property (nonatomic) JYFriend *friend;
-@property (nonatomic) TTTAttributedLabel *nameLabel;
 @property (nonatomic) TTTAttributedLabel *messageLabel;
 @property (nonatomic) TTTAttributedLabel *timeLabel;
+@property (nonatomic) TTTAttributedLabel *usernameLabel;
+@property (nonatomic) UILabel *redDot;
 @property (nonatomic) UIImageView *avatarView;
 @end
 
@@ -33,6 +31,28 @@ static const CGFloat kTimeLabelWidth = 80;
     {
         self.opaque = YES;
         self.backgroundColor = JoyyWhitePure;
+
+        [self.contentView addSubview:self.avatarView];
+        [self.contentView addSubview:self.messageLabel];
+        [self.contentView addSubview:self.redDot];
+        [self.contentView addSubview:self.timeLabel];
+        [self.contentView addSubview:self.usernameLabel];
+
+        NSDictionary *views = @{
+                                @"avatarView": self.avatarView,
+                                @"messageLabel": self.messageLabel,
+                                @"redDot": self.redDot,
+                                @"timeLabel": self.timeLabel,
+                                @"usernameLabel": self.usernameLabel,
+                                };
+
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-10-[avatarView(50)]-10-[usernameLabel]-(>=10@500)-[timeLabel]-8-|" options:0 metrics:nil views:views]];
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-10-[avatarView(50)]-10-[messageLabel]-(>=8@500)-|" options:0 metrics:nil views:views]];
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-10-[avatarView(50)]-(-5)-[redDot(10)]-(>=8@500)-|" options:0 metrics:nil views:views]];
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-10-[avatarView(50)]-5@500-|" options:0 metrics:nil views:views]];
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-10-[redDot(10)]-5@500-|" options:0 metrics:nil views:views]];
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-10-[usernameLabel]-5-[messageLabel]-(>=5@500)-|" options:0 metrics:nil views:views]];
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-15-[timeLabel]-5-[messageLabel]-(>=5@500)-|" options:0 metrics:nil views:views]];
     }
     return self;
 }
@@ -51,13 +71,22 @@ static const CGFloat kTimeLabelWidth = 80;
     NSTimeInterval timestamp = [session.timestamp doubleValue];
     NSDate *date = [NSDate dateWithTimeIntervalSinceReferenceDate:timestamp];
     self.timeLabel.text = [[JYMessageDateFormatter sharedInstance] autoStringFromDate:date];
+
+    if ([session.hasRead boolValue])
+    {
+        self.redDot.alpha = 0.0f;
+    }
+    else
+    {
+        self.redDot.alpha = 1.0f;
+    }
 }
 
 - (void)setFriend:(JYFriend *)friend
 {
     _friend = friend;
 
-    self.nameLabel.text = friend.username;
+    self.usernameLabel.text = friend.username;
 
     // Fetch avatar image via network
     NSURLRequest *request = [NSURLRequest requestWithURL:friend.avatarThumbnailURL cachePolicy:NSURLRequestReturnCacheDataElseLoad timeoutInterval:5];
@@ -74,16 +103,31 @@ static const CGFloat kTimeLabelWidth = 80;
                                    }];
 }
 
+- (UILabel *)redDot
+{
+    if (!_redDot)
+    {
+        UILabel *label = [UILabel new];
+        label.translatesAutoresizingMaskIntoConstraints = NO;
+        [label setText:@""];
+        [label setBackgroundColor:JoyyRedPure];
+        label.layer.cornerRadius = 5;
+        label.layer.masksToBounds = YES;
+
+        _redDot = label;
+    }
+    return _redDot;
+}
+
 - (UIImageView *)avatarView
 {
     if (!_avatarView)
     {
-        CGFloat y = floor((CGRectGetHeight(self.frame) - kAvatarImageWidth) / 2);
-        _avatarView = [[UIImageView alloc] initWithFrame:CGRectMake(10, y, kAvatarImageWidth, kAvatarImageWidth)];
+        _avatarView = [UIImageView new];
+        _avatarView.translatesAutoresizingMaskIntoConstraints = NO;
         _avatarView.contentMode = UIViewContentModeScaleAspectFit;
-        _avatarView.layer.cornerRadius = kAvatarImageWidth / 2;
+        _avatarView.layer.cornerRadius = 25;
         _avatarView.layer.masksToBounds = YES;
-        [self addSubview:_avatarView];
     }
     return _avatarView;
 }
@@ -92,52 +136,40 @@ static const CGFloat kTimeLabelWidth = 80;
 {
     if (!_timeLabel)
     {
-        CGFloat x = SCREEN_WIDTH - kTimeLabelWidth;
-        CGRect frame = CGRectMake(x, 10, kTimeLabelWidth, 30);
-        _timeLabel = [[TTTAttributedLabel alloc] initWithFrame:frame];
-        _timeLabel.textInsets = UIEdgeInsetsMake(0, 0, 0, 8);
+        _timeLabel = [[TTTAttributedLabel alloc] initWithFrame:CGRectZero];
+        _timeLabel.translatesAutoresizingMaskIntoConstraints = NO;
         _timeLabel.backgroundColor = JoyyWhitePure;
         _timeLabel.font = [UIFont systemFontOfSize:15];
         _timeLabel.textColor = JoyyGray;
         _timeLabel.textAlignment = NSTextAlignmentRight;
-        [self addSubview:_timeLabel];
     }
     return _timeLabel;
 }
 
-- (TTTAttributedLabel *)nameLabel
+- (TTTAttributedLabel *)usernameLabel
 {
-    if (!_nameLabel)
+    if (!_usernameLabel)
     {
-        CGFloat x = CGRectGetMaxX(self.avatarView.frame);
-        CGFloat width = SCREEN_WIDTH - kTimeLabelWidth - x;
-        CGRect frame = CGRectMake(x, 10, width, 30);
-        _nameLabel = [[TTTAttributedLabel alloc] initWithFrame:frame];
-        _nameLabel.textInsets = UIEdgeInsetsMake(0, 10, 0, 0);
-        _nameLabel.backgroundColor = JoyyWhitePure;
-        _nameLabel.font = [UIFont systemFontOfSize:19];
-        _nameLabel.textColor = JoyyBlack;
-        _nameLabel.textAlignment = NSTextAlignmentLeft;
-        [self addSubview:_nameLabel];
+        _usernameLabel = [[TTTAttributedLabel alloc] initWithFrame:CGRectZero];
+        _usernameLabel.translatesAutoresizingMaskIntoConstraints = NO;
+        _usernameLabel.backgroundColor = JoyyWhitePure;
+        _usernameLabel.font = [UIFont systemFontOfSize:19];
+        _usernameLabel.textColor = JoyyBlackPure;
+        _usernameLabel.textAlignment = NSTextAlignmentLeft;
     }
-    return _nameLabel;
+    return _usernameLabel;
 }
 
 - (TTTAttributedLabel *)messageLabel
 {
     if (!_messageLabel)
     {
-        CGFloat x = CGRectGetMaxX(self.avatarView.frame);
-        CGFloat y = CGRectGetMaxY(self.nameLabel.frame);
-        CGFloat width = SCREEN_WIDTH - x;
-        CGRect frame = CGRectMake(x, y, width, 20);
-        _messageLabel = [[TTTAttributedLabel alloc] initWithFrame:frame];
-        _messageLabel.textInsets = UIEdgeInsetsMake(0, 10, 0, kMarginRight);
+        _messageLabel = [[TTTAttributedLabel alloc] initWithFrame:CGRectZero];
+        _messageLabel.translatesAutoresizingMaskIntoConstraints = NO;
         _messageLabel.backgroundColor = JoyyWhitePure;
-        _messageLabel.font = [UIFont systemFontOfSize:15];
+        _messageLabel.font = [UIFont systemFontOfSize:17];
         _messageLabel.textColor = JoyyGray;
         _messageLabel.textAlignment = NSTextAlignmentLeft;
-        [self addSubview:_messageLabel];
     }
     return _messageLabel;
 }

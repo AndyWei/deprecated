@@ -57,6 +57,7 @@ static NSString *const kCellIdentifier = @"sessionCell";
     if (userId && [userId unsignedLongLongValue] > 0)
     {
         self.sessionList = [[JYLocalDataManager sharedInstance] selectObjectsOfClass:JYSession.class withProperty:@"userid" equals:userId orderBy:@"timestamp DESC"];
+        [self _updateTabRedDot];
     }
 
     [self.view addSubview:self.tableView];
@@ -67,29 +68,20 @@ static NSString *const kCellIdentifier = @"sessionCell";
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (void)_updateSession:(NSNotification *)notification
+- (void)_updateTabRedDot
 {
-    NSLog(@"in _updateSession");
-
-    NSDictionary *info = [notification userInfo];
-    if (!info)
+    BOOL show = NO;
+    for (JYSession *session in self.sessionList)
     {
-        return;
+        if ([session.hasRead boolValue] == NO)
+        {
+            show = YES;
+            break;
+        }
     }
 
-    id obj = [info objectForKey:@"session"];
-    if (obj == [NSNull null])
-    {
-        return;
-    }
-
-    JYSession *session = (JYSession *)obj;
-    NSInteger index = [self _indexOfSessionWithPeerId:session.peerId];
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self.sessionList removeObjectAtIndex:index];
-        [self.sessionList insertObject:session atIndex:0];
-        [self.tableView reloadData];
-    });
+    NSDictionary *info = @{@"index": @(2), @"show": [NSNumber numberWithBool:show]};
+    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationDidChangeRedDot object:nil userInfo:info];
 }
 
 - (NSInteger)_indexOfSessionWithPeerId:(NSNumber *)peerId
@@ -120,6 +112,38 @@ static NSString *const kCellIdentifier = @"sessionCell";
         [_tableView registerClass:[JYSessionListViewCell class] forCellReuseIdentifier:kCellIdentifier];
     }
     return _tableView;
+}
+
+- (void)_updateSession:(NSNotification *)notification
+{
+    NSDictionary *info = [notification userInfo];
+    if (!info)
+    {
+        return;
+    }
+
+    id obj = [info objectForKey:@"session"];
+    if (obj == [NSNull null])
+    {
+        return;
+    }
+
+    JYSession *session = (JYSession *)obj;
+    NSInteger index = [self _indexOfSessionWithPeerId:session.peerId];
+    dispatch_async(dispatch_get_main_queue(), ^{
+
+        // must keep beginUpdates and endUpdates to make sure the table is refreshed
+        [self.tableView beginUpdates];
+        if (index != NSNotFound)
+        {
+            [self.sessionList removeObjectAtIndex:index];
+        }
+        [self.sessionList insertObject:session atIndex:0];
+        [self.tableView reloadData];
+        [self.tableView endUpdates];
+
+        [self _updateTabRedDot];
+    });
 }
 
 - (void)_chattingWithFriend:(NSNotification *)notification
@@ -161,8 +185,11 @@ static NSString *const kCellIdentifier = @"sessionCell";
     // delete session
     [[JYLocalDataManager sharedInstance] deleteObject:session ofClass:JYSession.class];
     dispatch_async(dispatch_get_main_queue(), ^{
+        [self.tableView beginUpdates];
         [self.sessionList removeObjectAtIndex:indexPath.row];
         [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+        [self.tableView endUpdates];
+        [self _updateTabRedDot];
     });
 
     // delete all the messages in the session
@@ -202,14 +229,18 @@ static NSString *const kCellIdentifier = @"sessionCell";
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    [tableView deselectRowAtIndexPath:indexPath animated:NO];
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+
+    JYSession *session = self.sessionList[indexPath.row];
+    session.hasRead = [NSNumber numberWithBool:YES];
+    [[JYLocalDataManager sharedInstance] updateObject:session ofClass:JYSession.class];
+
+    [self _updateTabRedDot];
 
     JYSessionListViewCell *cell = (JYSessionListViewCell *)[tableView cellForRowAtIndexPath:indexPath];
+    cell.session = session;
 
-    if (cell.friend)
-    {
-        [self _showChatViewWithFriend:cell.friend];
-    }
+    [self _showChatViewWithFriend:cell.friend];
 }
 
 // swipe-to-delete feature
@@ -227,7 +258,7 @@ static NSString *const kCellIdentifier = @"sessionCell";
         [weakSelf _deleteSessionAtIndexPath:indexPath];
     }];
 
-    deleteAction.backgroundColor = JoyyRed;
+    deleteAction.backgroundColor = JoyyRedPure;
     return @[deleteAction];
 }
 

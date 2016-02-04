@@ -86,6 +86,7 @@ static NSString *const CREATE_SESSION_TABLE_SQL =
     id         INTEGER NOT NULL, \
     userid     INTEGER NOT NULL, \
     isoutgoing INTEGER NOT NULL, \
+    hasread    INTEGER NOT NULL, \
     timestamp  INTEGER NOT NULL, \
     body       TEXT    NOT NULL, \
 PRIMARY KEY(id)) ";

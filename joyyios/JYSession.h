@@ -17,6 +17,7 @@
 @property (nonatomic) NSNumber *peerId;
 @property (nonatomic) NSNumber *userId;
 @property (nonatomic) NSNumber *isOutgoing;
+@property (nonatomic) NSNumber *hasRead;
 @property (nonatomic) NSNumber *timestamp;
 @property (nonatomic) NSString *body;
 @property (nonatomic) NSString *resource;

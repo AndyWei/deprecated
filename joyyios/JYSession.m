@@ -26,6 +26,7 @@
              @"userId": @"userid",
              @"body": @"body",
              @"isOutgoing": @"isoutgoing",
+             @"hasRead": @"hasread",
              @"timestamp": @"timestamp",
              @"bodyDictionary": [NSNull null],
              @"type": [NSNull null],
@@ -54,6 +55,7 @@
         self.userId = [JYCredential current].userId;
         self.body = message.body;
         self.isOutgoing = [NSNumber numberWithBool:isOutgoing];
+        self.hasRead = [NSNumber numberWithBool:isOutgoing]; // mark all incoming ones as unread
         self.peerId = isOutgoing? [message.to.bare uint64Number]:[message.from.bare uint64Number];
     }
     return self;

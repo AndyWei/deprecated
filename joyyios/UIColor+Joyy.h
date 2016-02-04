@@ -9,6 +9,7 @@
 #define JoyyBlack     [UIColor joyyBlackColor]
 #define JoyyBlack50   [UIColor joyyBlackColor50]
 #define JoyyBlack80   [UIColor joyyBlackColor80]
+#define JoyyBlackPure [UIColor blackColor]
 
 #define JoyyBlue      [UIColor joyyBlueColor]
 #define JoyyBlue50    [UIColor joyyBlueColor50]
@@ -25,15 +26,15 @@
 #define JoyyPink    [UIColor joyyPinkColor]
 #define JoyyPink50  [UIColor joyyPinkColor50]
 
-#define JoyyRed    [UIColor joyyRedColor]
-#define JoyyRed50  [UIColor joyyRedColor50]
+#define JoyyRed       [UIColor joyyRedColor]
+#define JoyyRed50     [UIColor joyyRedColor50]
+#define JoyyRedPure   [UIColor redColor]
 
 #define JoyyWhite     [UIColor joyyWhiteColor]
 #define JoyyWhite80   [UIColor joyyWhiteColor80]
 #define JoyyWhite50   [UIColor joyyWhiteColor50]
 
 #define JoyyWhiter    [UIColor joyyWhiterColor]
-
 #define JoyyWhitePure [UIColor whiteColor]
 
 
