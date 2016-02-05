@@ -308,10 +308,13 @@ CGFloat const kEdgeInset = 10.f;
 
     XMPPMessage *message = [XMPPMessage messageWithType:@"chat" to:self.thatJID];
     NSString *title = [NSString stringWithFormat:@"%@: %@", [JYCredential current].username, text];
+    uint64_t timestamp = (uint64_t)([NSDate timeIntervalSinceReferenceDate] * 1000000);
+
     NSDictionary *dict = @{
                            @"type": kMessageBodyTypeText,
                            @"res": text,
-                           @"title": title // for push notification purpose
+                           @"title": title, // for push notification purpose
+                           @"ts": @(timestamp)
                            };
     NSError *err;
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dict options:0 error:&err];

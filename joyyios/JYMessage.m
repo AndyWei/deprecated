@@ -52,8 +52,6 @@
 {
     if (self = [super init])
     {
-        uint64_t timestamp = (uint64_t)([NSDate timeIntervalSinceReferenceDate] * 1000000);
-        self.messageId = [NSNumber numberWithUnsignedLongLong:timestamp];
         self.userId = [JYCredential current].userId;
         self.body = message.body;
         self.isOutgoing = [NSNumber numberWithBool:isOutgoing];
@@ -71,6 +69,16 @@
         _bodyDictionary = [NSJSONSerialization JSONObjectWithData:objectData options:NSJSONReadingMutableContainers error:&error];
     }
     return _bodyDictionary;
+}
+
+- (NSNumber *)messageId
+{
+    if (!_messageId)
+    {
+        NSString *timestampStr = [self.bodyDictionary objectForKey:@"ts"];
+        _messageId = [timestampStr uint64Number];
+    }
+    return _messageId;
 }
 
 - (NSString *)type
@@ -181,7 +189,7 @@
 
 - (NSUInteger)messageHash
 {
-    uint64_t timestamp = [self.messageId unsignedLongLongValue] / 1000000;
+    uint64_t timestamp = [self.messageId unsignedLongLongValue];
     return (NSUInteger)timestamp;
 }
 
