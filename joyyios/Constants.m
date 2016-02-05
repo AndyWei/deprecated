@@ -80,6 +80,7 @@ NSString *const kNotificationDidSignIn = @"didSignIn";
 NSString *const kNotificationDidSignUp = @"didSignUp";
 NSString *const kNotificationNeedGeoInfo = @"needGeoInfo";
 NSString *const kNotificationNeedUpdateSession = @"needUpdateSession";
+NSString *const kNotificationUpdateBadgeCount = @"updateBadgeCount";
 NSString *const kNotificationUserYRSReady = @"userYRSReady";
 NSString *const kNotificationWillChat = @"willChat";
 NSString *const kNotificationChatting = @"chatting";

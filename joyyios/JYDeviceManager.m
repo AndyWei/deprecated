@@ -12,7 +12,6 @@
 @end
 
 NSString *const kDeviceToken = @"device_token";
-NSString *const kBadgeCount = @"badge_count";
 
 @implementation JYDeviceManager
 
@@ -22,7 +21,6 @@ NSString *const kBadgeCount = @"badge_count";
     if (self)
     {
         _deviceToken = [[NSUserDefaults standardUserDefaults] stringForKey:kDeviceToken];
-        _badgeCount = [[NSUserDefaults standardUserDefaults] integerForKey:kBadgeCount];
 
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_apiTokenReady) name:kNotificationAPITokenReady object:nil];
     }
@@ -56,11 +54,6 @@ NSString *const kBadgeCount = @"badge_count";
     [[NSUserDefaults standardUserDefaults] setObject:deviceToken forKey:kDeviceToken];
 
     [self _registerDeviceToken:deviceToken];
-}
-
-- (void)setBadgeCount:(NSInteger)count
-{
-    [[NSUserDefaults standardUserDefaults] setInteger:count forKey:kBadgeCount];
 }
 
 - (void)_registerDeviceToken:(NSString *)deviceToken

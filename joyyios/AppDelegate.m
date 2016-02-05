@@ -67,6 +67,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_didManuallySignUp) name:kNotificationDidSignUp object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_didCreateProfile) name:kNotificationDidCreateProfile object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_didChangeRedDot:) name:kNotificationDidChangeRedDot object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_updateBadgeCount:) name:kNotificationUpdateBadgeCount object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_willChatWithFriend:) name:kNotificationWillChat object:nil];
 
     [self _setupGlobalAppearance];
@@ -96,9 +97,6 @@
 {
     NSLog(@"applicationDidBecomeActive");
     [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationAppDidStart object:nil];
-
-    // TODO: Implement clear badge number logic in the right places.
-    application.applicationIconBadgeNumber = 0;
 
     [[JYLocalDataManager sharedInstance] start];
     [[JYFriendManager sharedInstance] start];
@@ -168,6 +166,9 @@
 {
     NSLog(@"Notification = %@", notification);
     self.tabBarController.selectedIndex = 2;
+
+//    NSDictionary *info = @{@"delta": @(1)};
+//    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationUpdateBadgeCount object:nil userInfo:info];
 }
 
 #pragma mark - Private methods
@@ -283,25 +284,6 @@
     return _tabBarController;
 }
 
-- (void)_willChatWithFriend:(NSNotification *)notification
-{
-    NSDictionary *info = [notification userInfo];
-    if (!info)
-    {
-        return;
-    }
-
-    id obj = [info objectForKey:@"friend"];
-    if (obj == [NSNull null])
-    {
-        return;
-    }
-
-    self.tabBarController.selectedIndex = 2;
-
-    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationChatting object:nil userInfo:info];
-}
-
 - (void)_didChangeRedDot:(NSNotification *)notification
 {
     NSDictionary *info = [notification userInfo];
@@ -333,6 +315,45 @@
 - (void)_didCreateProfile
 {
     [self _launchMainViewController];
+}
+
+- (void)_updateBadgeCount:(NSNotification *)notification
+{
+    NSDictionary *info = [notification userInfo];
+    if (!info)
+    {
+        return;
+    }
+
+    id obj = [info objectForKey:@"delta"];
+    if (obj == [NSNull null])
+    {
+        return;
+    }
+
+    NSNumber *delta = (NSNumber *)obj;
+    UIApplication *application = [UIApplication sharedApplication];
+    NSInteger newValue =  application.applicationIconBadgeNumber + [delta integerValue];
+    application.applicationIconBadgeNumber = (newValue >= 0)? newValue: 0;
+}
+
+- (void)_willChatWithFriend:(NSNotification *)notification
+{
+    NSDictionary *info = [notification userInfo];
+    if (!info)
+    {
+        return;
+    }
+
+    id obj = [info objectForKey:@"friend"];
+    if (obj == [NSNull null])
+    {
+        return;
+    }
+
+    self.tabBarController.selectedIndex = 2;
+
+    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationChatting object:nil userInfo:info];
 }
 
 #pragma mark - Introduction Pages

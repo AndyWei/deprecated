@@ -199,6 +199,12 @@ static NSString *const kCellIdentifier = @"sessionCell";
     [[JYLocalDataManager sharedInstance] deleteObjectsOfClass:JYMessage.class withCondition:condition];
 }
 
+- (void)_updateBadgeCountWithDelta:(NSInteger)delta
+{
+    NSDictionary *info = @{@"delta": @(delta)};
+    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationUpdateBadgeCount object:nil userInfo:info];
+}
+
 #pragma mark - UITableViewDataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
