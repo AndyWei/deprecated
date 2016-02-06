@@ -32,7 +32,7 @@ static NSString *const kCellIdentifier = @"sessionCell";
     {
         self.messageList = [NSMutableArray new];
 
-        // listen to notification now to avoid any missing
+        // listen to notification in init other than viewDidload is to avoid any missing
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_chattingWithFriend:) name:kNotificationChatting object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_updateSession:) name:kNotificationNeedUpdateSession object:nil];
     }
@@ -53,8 +53,15 @@ static NSString *const kCellIdentifier = @"sessionCell";
     // Hide the "Back" text on the pushed view navigation bar
     self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:self.navigationItem.backBarButtonItem.style target:nil action:nil];
 
-    [self _reloadMessageList];
     [self.view addSubview:self.tableView];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+
+    [self _reloadMessageList];
+    [self.tableView reloadData];
 }
 
 - (void)dealloc
@@ -74,7 +81,6 @@ static NSString *const kCellIdentifier = @"sessionCell";
     self.messageList = [NSMutableArray new];
 
     NSArray *sessions = [[JYLocalDataManager sharedInstance] selectObjectsOfClass:JYSession.class withProperty:@"user_id" equals:userId];
-
     NSString *userIdStr = [userId uint64String];
     for (JYSession *session in sessions)
     {
@@ -87,9 +93,15 @@ static NSString *const kCellIdentifier = @"sessionCell";
         }
     }
 
-    // TODO: sort by messageId
-
+    [self _sortMessageList];
     [self _updateTabRedDot];
+}
+
+- (void)_sortMessageList
+{
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"messageId" ascending:NO];
+    NSArray *sorted = [self.messageList sortedArrayUsingDescriptors:@[sortDescriptor]];
+    self.messageList = [NSMutableArray arrayWithArray:sorted];
 }
 
 - (void)_updateTabRedDot
@@ -97,9 +109,9 @@ static NSString *const kCellIdentifier = @"sessionCell";
     BOOL show = NO;
     for (JYMessage *message in self.messageList)
     {
-        if ([message.isUnread boolValue])
+        show = [message.isUnread boolValue];
+        if (show)
         {
-            show = YES;
             break;
         }
     }

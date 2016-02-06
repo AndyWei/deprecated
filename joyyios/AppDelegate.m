@@ -142,11 +142,6 @@
     return _deviceManager;
 }
 
-- (BOOL)shouldXmppGoOnline
-{
-    return self.tabBarController.selectedIndex == 2;
-}
-
 #pragma mark - Notifications
 
 - (void)application:(UIApplication *)application didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings

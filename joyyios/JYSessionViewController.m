@@ -61,12 +61,28 @@ CGFloat const kEdgeInset = 10.f;
     // Avatar
     [self _fetchAvatarImage];
 
-    // Start load data
-    NSString *condition = [NSString stringWithFormat:@"user_id = %@ AND peer_id = %@", self.senderId, friendUserId];
-    self.messageList = [[JYLocalDataManager sharedInstance] selectObjectsOfClass:JYMessage.class withCondition:condition sort:@"ASC"];
+    [self _reloadMessages];
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_didReceiveMessage:) name:kNotificationDidReceiveMessage object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_didSendMessage:) name:kNotificationDidSendMessage object:nil];
+}
+
+- (void)_reloadMessages
+{
+    // Start load data
+    NSString *friendUserId = [self.friend.userId uint64String];
+    NSString *condition = [NSString stringWithFormat:@"user_id = %@ AND peer_id = %@", self.senderId, friendUserId];
+    self.messageList = [[JYLocalDataManager sharedInstance] selectObjectsOfClass:JYMessage.class withCondition:condition sort:@"ASC"];
+
+    // mark all unread messages as read
+    for (JYMessage *message in self.messageList)
+    {
+        if ([message.isUnread boolValue])
+        {
+            message.isUnread = [NSNumber numberWithBool:NO];
+            [[JYLocalDataManager sharedInstance] updateObject:message ofClass:JYMessage.class];
+        }
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated
