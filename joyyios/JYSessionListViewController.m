@@ -30,7 +30,9 @@ static NSString *const kCellIdentifier = @"sessionCell";
 {
     if (self = [super init])
     {
-        // listen to notification now to avoid any missing 
+        self.messageList = [NSMutableArray new];
+
+        // listen to notification now to avoid any missing
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_chattingWithFriend:) name:kNotificationChatting object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_updateSession:) name:kNotificationNeedUpdateSession object:nil];
     }
@@ -151,6 +153,14 @@ static NSString *const kCellIdentifier = @"sessionCell";
     }
 
     JYMessage *message = (JYMessage *)messageObj;
+
+    if (!self.isViewLoaded)
+    {
+        [self.messageList addObject:message];
+        [self _updateTabRedDot];
+        return;
+    }
+
     NSInteger index = [self _indexOfMessageWithPeerId:message.peerId];
 
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -160,7 +170,6 @@ static NSString *const kCellIdentifier = @"sessionCell";
         }
         [self.messageList insertObject:message atIndex:0];
         [self.tableView reloadData];
-        [self.tableView layoutIfNeeded]; // This call is neccessary to make sure the cells are updated
     });
 
     [self _updateTabRedDot];
@@ -256,15 +265,7 @@ static NSString *const kCellIdentifier = @"sessionCell";
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 
-//    JYMessage *message = self.messageList[indexPath.row];
-//    session.hasRead = [NSNumber numberWithBool:YES];
-//    [[JYLocalDataManager sharedInstance] updateObject:session ofClass:JYSession.class];
-//
-//    [self _updateTabRedDot];
-
     JYSessionListViewCell *cell = (JYSessionListViewCell *)[tableView cellForRowAtIndexPath:indexPath];
-//    cell.message = message;
-
     [self _showChatViewWithFriend:cell.friend];
 }
 

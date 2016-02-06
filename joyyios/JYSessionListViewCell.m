@@ -74,8 +74,6 @@
     self.timeLabel.text = [[JYMessageDateFormatter sharedInstance] autoStringFromDate:message.timestamp];
 
     self.redDot.alpha = [message.isUnread boolValue]? 1.0f: 0.0f;
-
-    [self setNeedsDisplay];
 }
 
 - (void)setFriend:(JYFriend *)friend
