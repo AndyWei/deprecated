@@ -57,29 +57,25 @@
     return self;
 }
 
-- (void)setSession:(JYSession *)session
+- (void)setMessage:(JYMessage *)message
 {
-    if (!session)
+    _message = message;
+
+    if (!message)
     {
+        self.messageLabel.text = nil;
+        self.friend = nil;
+        self.timeLabel.text = nil;
         return;
     }
-    _session = session;
 
-    self.messageLabel.text = [_session text];
-    self.friend = [[JYFriendManager sharedInstance] friendWithId:session.peerId];
+    self.messageLabel.text = [_message liteText];
+    self.friend = [[JYFriendManager sharedInstance] friendWithId:message.peerId];
+    self.timeLabel.text = [[JYMessageDateFormatter sharedInstance] autoStringFromDate:message.timestamp];
 
-    NSTimeInterval timestamp = [session.timestamp doubleValue];
-    NSDate *date = [NSDate dateWithTimeIntervalSinceReferenceDate:timestamp];
-    self.timeLabel.text = [[JYMessageDateFormatter sharedInstance] autoStringFromDate:date];
+    self.redDot.alpha = [message.isUnread boolValue]? 1.0f: 0.0f;
 
-    if ([session.hasRead boolValue])
-    {
-        self.redDot.alpha = 0.0f;
-    }
-    else
-    {
-        self.redDot.alpha = 1.0f;
-    }
+    [self setNeedsDisplay];
 }
 
 - (void)setFriend:(JYFriend *)friend

@@ -62,7 +62,7 @@ CGFloat const kEdgeInset = 10.f;
     [self _fetchAvatarImage];
 
     // Start load data
-    NSString *condition = [NSString stringWithFormat:@"userid = %@ AND peerid = %@", self.senderId, friendUserId];
+    NSString *condition = [NSString stringWithFormat:@"user_id = %@ AND peer_id = %@", self.senderId, friendUserId];
     self.messageList = [[JYLocalDataManager sharedInstance] selectObjectsOfClass:JYMessage.class withCondition:condition sort:@"ASC"];
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_didReceiveMessage:) name:kNotificationDidReceiveMessage object:nil];

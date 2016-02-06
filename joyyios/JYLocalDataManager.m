@@ -74,35 +74,34 @@ PRIMARY KEY(id)) ";
 
 static NSString *const CREATE_MESSAGE_TABLE_SQL =
 @"CREATE TABLE IF NOT EXISTS message ( \
-    id         INTEGER NOT NULL, \
-    userid     INTEGER NOT NULL, \
-    peerid     INTEGER NOT NULL, \
-    isoutgoing INTEGER NOT NULL, \
-    body       TEXT    NOT NULL, \
+    id          INTEGER NOT NULL, \
+    user_id     INTEGER NOT NULL, \
+    peer_id     INTEGER NOT NULL, \
+    is_outgoing INTEGER NOT NULL, \
+    is_unread   INTEGER NOT NULL, \
+    body        TEXT    NOT NULL, \
 PRIMARY KEY(id)) ";
 
 static NSString *const CREATE_SESSION_TABLE_SQL =
 @"CREATE TABLE IF NOT EXISTS session ( \
-    id         INTEGER NOT NULL, \
-    userid     INTEGER NOT NULL, \
-    isoutgoing INTEGER NOT NULL, \
-    hasread    INTEGER NOT NULL, \
-    timestamp  INTEGER NOT NULL, \
-    body       TEXT    NOT NULL, \
+    id          INTEGER NOT NULL, \
+    user_id     INTEGER NOT NULL, \
+    is_group    INTEGER NOT NULL, \
 PRIMARY KEY(id)) ";
 
 static NSString *const CREATE_COMMENT_INDEX_SQL = @"CREATE INDEX IF NOT EXISTS postid_index ON comment(postid)";
-static NSString *const CREATE_MESSAGE_PEERID_INDEX_SQL = @"CREATE INDEX IF NOT EXISTS peerid_index ON message(peerid)";
-static NSString *const CREATE_SESSION_USERID_INDEX_SQL = @"CREATE INDEX IF NOT EXISTS userid_index ON session(userid)";
+static NSString *const CREATE_MESSAGE_PEERID_INDEX_SQL = @"CREATE INDEX IF NOT EXISTS peer_id_index ON message(peer_id)";
+static NSString *const CREATE_SESSION_USERID_INDEX_SQL = @"CREATE INDEX IF NOT EXISTS user_id_index ON session(user_id)";
 static NSString *const DELETE_CONDITION_SQL = @"DELETE FROM %@ WHERE %@";
-static NSString *const SELECT_RANGE_SQL = @"SELECT * FROM %@ WHERE id > (?) AND id < (?) ORDER BY id DESC";
+static NSString *const SELECT_ALL_SQL = @"SELECT * FROM %@ ORDER BY id ASC";
 static NSString *const SELECT_CONDITION_SQL = @"SELECT * FROM %@ WHERE (%@) ORDER BY id %@";
-static NSString *const SELECT_LIMIT_SQL = @"SELECT * FROM %@ ORDER BY id %@ LIMIT %u";
 static NSString *const SELECT_KEY_SQL = @"SELECT * FROM %@ WHERE %@ = ? ORDER BY id ASC";
 static NSString *const SELECT_KEY_WITH_ORDER_SQL = @"SELECT * FROM %@ WHERE %@ = ? ORDER BY %@";
-static NSString *const SELECT_ALL_SQL = @"SELECT * FROM %@ ORDER BY id ASC";
+static NSString *const SELECT_LIMIT_SQL = @"SELECT * FROM %@ ORDER BY id %@ LIMIT %u";
 static NSString *const SELECT_MIN_ID_SQL = @"SELECT * FROM %@ ORDER BY id ASC LIMIT 1";
 static NSString *const SELECT_MAX_ID_SQL = @"SELECT * FROM %@ ORDER BY id DESC LIMIT 1";
+static NSString *const SELECT_MAX_ID_CONDITION_SQL = @"SELECT * FROM %@ WHERE (%@) ORDER BY id DESC LIMIT 1";
+static NSString *const SELECT_RANGE_SQL = @"SELECT * FROM %@ WHERE id > (?) AND id < (?) ORDER BY id DESC";
 
 @implementation JYLocalDataManager
 
@@ -152,6 +151,9 @@ static NSString *const SELECT_MAX_ID_SQL = @"SELECT * FROM %@ ORDER BY id DESC L
 
     [self _executeUpdateSQL:CREATE_SESSION_TABLE_SQL];
     [self _executeUpdateSQL:CREATE_SESSION_USERID_INDEX_SQL];
+
+//    [self _executeUpdateSQL:@"DROP TABLE message"];
+//    [self _executeUpdateSQL:@"DROP TABLE session"];
 
     NSLog(@"LocalDataManager started");
 }
@@ -298,6 +300,17 @@ static NSString *const SELECT_MAX_ID_SQL = @"SELECT * FROM %@ ORDER BY id DESC L
 - (id)maxIdObjectOfOfClass:(Class)modelClass
 {
     NSString *sql = [NSString stringWithFormat:SELECT_MAX_ID_SQL, [modelClass FMDBTableName]];
+    return [self selectOneObjectOfOfClass:modelClass withSql:sql];
+}
+
+- (id)maxIdObjectOfOfClass:(Class)modelClass withCondition:(NSString *)condition
+{
+    if(![modelClass conformsToProtocol:@protocol(MTLFMDBSerializing)])
+    {
+        return nil;
+    }
+
+    NSString *sql = [NSString stringWithFormat:SELECT_MAX_ID_CONDITION_SQL, [modelClass FMDBTableName], condition];
     return [self selectOneObjectOfOfClass:modelClass withSql:sql];
 }
 

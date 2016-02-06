@@ -29,12 +29,14 @@ typedef NS_ENUM(NSUInteger, JYMessageBodyType)
 - (instancetype)initWithXMPPMessage:(XMPPMessage *)message isOutgoing:(BOOL)isOutgoing;
 - (BOOL)isTextMessage;
 - (BOOL)hasGapWith:(JYMessage *)that;
+- (NSString *)liteText;
 
 // FMDB coloumns
 @property (nonatomic) NSNumber *messageId;
 @property (nonatomic) NSNumber *userId;
 @property (nonatomic) NSNumber *peerId;
 @property (nonatomic) NSNumber *isOutgoing;
+@property (nonatomic) NSNumber *isUnread;
 @property (nonatomic) NSString *body;
 
 // non FMDB coloumns

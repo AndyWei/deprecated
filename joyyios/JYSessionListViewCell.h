@@ -6,11 +6,11 @@
 //  Copyright (c) 2015 Joyy Inc. All rights reserved.
 //
 
-#import "JYSession.h"
+#import "JYMessage.h"
 
 @interface JYSessionListViewCell : UITableViewCell
 
-@property (nonatomic) JYSession *session;
+@property (nonatomic) JYMessage *message;
 @property (nonatomic, readonly) JYFriend *friend;
 
 @end

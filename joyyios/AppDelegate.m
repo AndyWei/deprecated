@@ -287,17 +287,24 @@
 - (void)_didChangeRedDot:(NSNotification *)notification
 {
     NSDictionary *info = [notification userInfo];
-    if (info)
+    if (!info)
     {
-        id index = [info objectForKey:@"index"];
-        id show = [info objectForKey:@"show"];
-        if (index != [NSNull null] && show != [NSNull null])
-        {
-            NSUInteger itemIndex = [index unsignedIntegerValue];
-            BOOL shouldShow = [show boolValue];
-            [self.tabBarController.tabBar.items[itemIndex] showRedDot:shouldShow];
-        }
+        return;
     }
+
+    id index = [info objectForKey:@"index"];
+    id show = [info objectForKey:@"show"];
+
+    if (index == [NSNull null] && show == [NSNull null])
+    {
+        return;
+    }
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSUInteger itemIndex = [index unsignedIntegerValue];
+        BOOL shouldShow = [show boolValue];
+        [self.tabBarController.tabBar.items[itemIndex] showRedDot:shouldShow];
+    });
 }
 
 - (void)_didManuallySignIn

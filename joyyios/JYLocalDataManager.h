@@ -20,6 +20,7 @@
 - (id)selectObjectOfClass:(Class)modelClass withId:(NSNumber *)objId;
 - (id)minIdObjectOfOfClass:(Class)modelClass;
 - (id)maxIdObjectOfOfClass:(Class)modelClass;
+- (id)maxIdObjectOfOfClass:(Class)modelClass withCondition:(NSString *)condition;
 
 - (NSMutableArray *)selectObjectsOfClass:(Class)modelClass;
 - (NSMutableArray *)selectObjectsOfClass:(Class)modelClass limit:(uint32_t)limit sort:(NSString *)sort;

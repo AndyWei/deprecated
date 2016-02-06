@@ -18,7 +18,7 @@
 
 
 @interface JYSessionListViewController () <UITableViewDataSource, UITableViewDelegate>
-@property (nonatomic) NSMutableArray *sessionList;
+@property (nonatomic) NSMutableArray *messageList;
 @property (nonatomic) UITableView *tableView;
 @end
 
@@ -51,15 +51,7 @@ static NSString *const kCellIdentifier = @"sessionCell";
     // Hide the "Back" text on the pushed view navigation bar
     self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:self.navigationItem.backBarButtonItem.style target:nil action:nil];
 
-    // Init as empty list
-    self.sessionList = [NSMutableArray new];
-    NSNumber *userId = [JYCredential current].userId;
-    if (userId && [userId unsignedLongLongValue] > 0)
-    {
-        self.sessionList = [[JYLocalDataManager sharedInstance] selectObjectsOfClass:JYSession.class withProperty:@"userid" equals:userId orderBy:@"timestamp DESC"];
-        [self _updateTabRedDot];
-    }
-
+    [self _reloadMessageList];
     [self.view addSubview:self.tableView];
 }
 
@@ -68,12 +60,42 @@ static NSString *const kCellIdentifier = @"sessionCell";
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
+- (void)_reloadMessageList
+{
+    NSNumber *userId = [JYCredential current].userId;
+
+    if (!userId || [userId unsignedLongLongValue] == 0)
+    {
+        return;
+    }
+
+    self.messageList = [NSMutableArray new];
+
+    NSArray *sessions = [[JYLocalDataManager sharedInstance] selectObjectsOfClass:JYSession.class withProperty:@"user_id" equals:userId];
+
+    NSString *userIdStr = [userId uint64String];
+    for (JYSession *session in sessions)
+    {
+        NSString *peerIdStr = [session.sessionId uint64String];
+        NSString *condition = [NSString stringWithFormat:@"user_id = %@ AND peer_id = %@", userIdStr, peerIdStr];
+        JYMessage *message = [[JYLocalDataManager sharedInstance] maxIdObjectOfOfClass:JYMessage.class withCondition:condition];
+        if (message)
+        {
+            [self.messageList addObject:message];
+        }
+    }
+
+    // TODO: sort by messageId
+
+    [self _updateTabRedDot];
+}
+
 - (void)_updateTabRedDot
 {
     BOOL show = NO;
-    for (JYSession *session in self.sessionList)
+    for (JYMessage *message in self.messageList)
     {
-        if ([session.hasRead boolValue] == NO)
+        if ([message.isUnread boolValue])
         {
             show = YES;
             break;
@@ -84,14 +106,14 @@ static NSString *const kCellIdentifier = @"sessionCell";
     [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationDidChangeRedDot object:nil userInfo:info];
 }
 
-- (NSInteger)_indexOfSessionWithPeerId:(NSNumber *)peerId
+- (NSInteger)_indexOfMessageWithPeerId:(NSNumber *)peerId
 {
     uint64_t targetValue = [peerId unsignedLongLongValue];
-    NSUInteger count = [self.sessionList count];
+    NSUInteger count = [self.messageList count];
     for (NSUInteger i = 0; i < count; ++i)
     {
-        JYSession *session = self.sessionList[i];
-        if ([session.peerId unsignedLongLongValue] == targetValue)
+        JYMessage *message = self.messageList[i];
+        if ([message.peerId unsignedLongLongValue] == targetValue)
         {
             return i;
         }
@@ -122,28 +144,26 @@ static NSString *const kCellIdentifier = @"sessionCell";
         return;
     }
 
-    id obj = [info objectForKey:@"session"];
-    if (obj == [NSNull null])
+    id messageObj = [info objectForKey:@"message"];
+    if (messageObj == [NSNull null])
     {
         return;
     }
 
-    JYSession *session = (JYSession *)obj;
-    NSInteger index = [self _indexOfSessionWithPeerId:session.peerId];
-    dispatch_async(dispatch_get_main_queue(), ^{
+    JYMessage *message = (JYMessage *)messageObj;
+    NSInteger index = [self _indexOfMessageWithPeerId:message.peerId];
 
-        // must keep beginUpdates and endUpdates to make sure the table is refreshed
-        [self.tableView beginUpdates];
+    dispatch_async(dispatch_get_main_queue(), ^{
         if (index != NSNotFound)
         {
-            [self.sessionList removeObjectAtIndex:index];
+            [self.messageList removeObjectAtIndex:index];
         }
-        [self.sessionList insertObject:session atIndex:0];
+        [self.messageList insertObject:message atIndex:0];
         [self.tableView reloadData];
-        [self.tableView endUpdates];
-
-        [self _updateTabRedDot];
+        [self.tableView layoutIfNeeded]; // This call is neccessary to make sure the cells are updated
     });
+
+    [self _updateTabRedDot];
 }
 
 - (void)_chattingWithFriend:(NSNotification *)notification
@@ -180,22 +200,21 @@ static NSString *const kCellIdentifier = @"sessionCell";
 
 - (void)_deleteSessionAtIndexPath:(NSIndexPath *)indexPath
 {
-    JYSession *session = self.sessionList[indexPath.row];
+    JYMessage *message = self.messageList[indexPath.row];
 
     // delete session
-    [[JYLocalDataManager sharedInstance] deleteObject:session ofClass:JYSession.class];
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.tableView beginUpdates];
-        [self.sessionList removeObjectAtIndex:indexPath.row];
+        [self.messageList removeObjectAtIndex:indexPath.row];
         [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
         [self.tableView endUpdates];
         [self _updateTabRedDot];
     });
 
     // delete all the messages in the session
-    NSString *userId = [[JYCredential current].userId uint64String];
-    NSString *peerId = [session.peerId uint64String];
-    NSString *condition = [NSString stringWithFormat:@"userid = %@ AND peerid = %@", userId, peerId];
+    NSString *userIdStr = [[JYCredential current].userId uint64String];
+    NSString *peerIdStr = [message.peerId uint64String];
+    NSString *condition = [NSString stringWithFormat:@"user_id = %@ AND peer_id = %@", userIdStr, peerIdStr];
     [[JYLocalDataManager sharedInstance] deleteObjectsOfClass:JYMessage.class withCondition:condition];
 }
 
@@ -214,14 +233,14 @@ static NSString *const kCellIdentifier = @"sessionCell";
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    NSInteger number = [self.sessionList count];
+    NSInteger number = [self.messageList count];
     return number;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     JYSessionListViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kCellIdentifier forIndexPath:indexPath];
-    cell.session = self.sessionList[indexPath.row];
+    cell.message = self.messageList[indexPath.row];
 
     return cell;
 }
@@ -237,14 +256,14 @@ static NSString *const kCellIdentifier = @"sessionCell";
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 
-    JYSession *session = self.sessionList[indexPath.row];
-    session.hasRead = [NSNumber numberWithBool:YES];
-    [[JYLocalDataManager sharedInstance] updateObject:session ofClass:JYSession.class];
-
-    [self _updateTabRedDot];
+//    JYMessage *message = self.messageList[indexPath.row];
+//    session.hasRead = [NSNumber numberWithBool:YES];
+//    [[JYLocalDataManager sharedInstance] updateObject:session ofClass:JYSession.class];
+//
+//    [self _updateTabRedDot];
 
     JYSessionListViewCell *cell = (JYSessionListViewCell *)[tableView cellForRowAtIndexPath:indexPath];
-    cell.session = session;
+//    cell.message = message;
 
     [self _showChatViewWithFriend:cell.friend];
 }

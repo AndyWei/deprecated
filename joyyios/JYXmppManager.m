@@ -214,16 +214,7 @@
 
 - (void)_saveSession:(JYSession *)session
 {
-    // notify session list view controller
-    NSDictionary *info = @{@"session": session};
-    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationNeedUpdateSession object:nil userInfo:info];
-
-    // save to local store
-    if ([[JYLocalDataManager sharedInstance] selectObjectOfClass:JYSession.class withId:session.peerId])
-    {
-        [[JYLocalDataManager sharedInstance] updateObject:session ofClass:JYSession.class];
-    }
-    else
+    if ([[JYLocalDataManager sharedInstance] selectObjectOfClass:JYSession.class withId:session.sessionId] == nil)
     {
         [[JYLocalDataManager sharedInstance] insertObject:session ofClass:JYSession.class];
     }
@@ -303,17 +294,18 @@
         return;
     }
 
-    // save session
-    JYSession *session = [[JYSession alloc] initWithXMPPMessage:msg isOutgoing:NO];
-    [self _saveSession:session];
-
     // save message
     JYMessage *message = [[JYMessage alloc] initWithXMPPMessage:msg isOutgoing:NO];
     [[JYLocalDataManager sharedInstance] insertObject:message ofClass:JYMessage.class];
 
-    // notify session view controller
+    // notify session view controller and session list view controller
     NSDictionary *info = @{@"message": message};
     [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationDidReceiveMessage object:nil userInfo:info];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationNeedUpdateSession object:nil userInfo:info];
+
+    // notify session list view controller
+    JYSession *session = [[JYSession alloc] initWithXMPPMessage:msg isOutgoing:NO];
+    [self _saveSession:session];
 
     // If there is a viewController to show the message, then no vibrate
     NSString *fromJid = msg.from.bare;
@@ -335,16 +327,18 @@
 {
     NSLog(@"Success: xmpp didSendMessage = %@", msg);
 
-    JYSession *session = [[JYSession alloc] initWithXMPPMessage:msg isOutgoing:YES];
-    [self _saveSession:session];
-
     // save message
     JYMessage *message = [[JYMessage alloc] initWithXMPPMessage:msg isOutgoing:YES];
     [[JYLocalDataManager sharedInstance] insertObject:message ofClass:JYMessage.class];
 
-    // notify session view controller
+    // notify session view controller and session list view controller
     NSDictionary *info = @{@"message": message};
     [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationDidSendMessage object:nil userInfo:info];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationNeedUpdateSession object:nil userInfo:info];
+
+    // session
+    JYSession *session = [[JYSession alloc] initWithXMPPMessage:msg isOutgoing:YES];
+    [self _saveSession:session];
 }
 
 - (void)xmppStream:(XMPPStream *)sender didSendPresence:(XMPPPresence *)presence

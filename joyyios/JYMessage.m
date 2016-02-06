@@ -22,9 +22,10 @@
 {
     return @{
              @"messageId": @"id",
-             @"userId": @"userid",
-             @"peerId": @"peerid",
-             @"isOutgoing": @"isoutgoing",
+             @"userId": @"user_id",
+             @"peerId": @"peer_id",
+             @"isOutgoing": @"is_outgoing",
+             @"isUnread": @"is_unread",
              @"body": @"body",
              @"bodyDictionary": [NSNull null],
              @"type": [NSNull null],
@@ -55,6 +56,7 @@
         self.userId = [JYCredential current].userId;
         self.body = message.body;
         self.isOutgoing = [NSNumber numberWithBool:isOutgoing];
+        self.isUnread = [NSNumber numberWithBool:!isOutgoing];
         self.peerId = isOutgoing? [message.to.bare uint64Number]:[message.from.bare uint64Number];
     }
     return self;
@@ -237,6 +239,45 @@
         _timestamp = [NSDate dateWithTimeIntervalSinceReferenceDate:t];
     }
     return _timestamp;
+}
+
+- (NSString *)liteText
+{
+    NSString *ret = nil;
+    switch (self.bodyType)
+    {
+        case JYMessageBodyTypeText:
+            ret = self.resource;
+            break;
+
+        case JYMessageBodyTypeImage:
+            ret = @"🌋";
+            break;
+
+        case JYMessageBodyTypeEmoji:
+            ret = self.body;
+            break;
+
+        case JYMessageBodyTypeAudio:
+            ret = @"🔊";
+            break;
+
+        case JYMessageBodyTypeVideo:
+            ret = @"🎬";
+            break;
+
+        case JYMessageBodyTypeLocation:
+            ret = @"📍";
+            break;
+
+        case JYMessageBodyTypeGif:
+            ret = @"🎬";
+            break;
+            
+        default:
+            break;
+    }
+    return ret;
 }
 
 #pragma mark - Private methods

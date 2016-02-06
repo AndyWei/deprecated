@@ -12,14 +12,9 @@
 @interface JYSession: MTLModel <MTLFMDBSerializing>
 
 - (instancetype)initWithXMPPMessage:(XMPPMessage *)message isOutgoing:(BOOL)isOutgoing;
-- (NSString *)text;
 
-@property (nonatomic) NSNumber *peerId;
+@property (nonatomic) NSNumber *sessionId;
 @property (nonatomic) NSNumber *userId;
-@property (nonatomic) NSNumber *isOutgoing;
-@property (nonatomic) NSNumber *hasRead;
-@property (nonatomic) NSNumber *timestamp;
-@property (nonatomic) NSString *body;
-@property (nonatomic) NSString *resource;
+@property (nonatomic) NSNumber *isGroup;
 
 @end
