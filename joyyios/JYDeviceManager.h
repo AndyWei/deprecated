@@ -9,6 +9,7 @@
 @interface JYDeviceManager : NSObject
 
 - (void)start;
+- (void)updateDeviceBadgeCount:(NSInteger)count;
 
 @property (nonatomic) NSString *deviceToken;
 

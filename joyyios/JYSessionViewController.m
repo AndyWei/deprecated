@@ -75,14 +75,27 @@ CGFloat const kEdgeInset = 10.f;
     self.messageList = [[JYLocalDataManager sharedInstance] selectObjectsOfClass:JYMessage.class withCondition:condition sort:@"ASC"];
 
     // mark all unread messages as read
+    NSInteger delta = 0;
     for (JYMessage *message in self.messageList)
     {
         if ([message.isUnread boolValue])
         {
             message.isUnread = [NSNumber numberWithBool:NO];
             [[JYLocalDataManager sharedInstance] updateObject:message ofClass:JYMessage.class];
+            --delta;
         }
     }
+
+    if (delta != 0)
+    {
+        [self _updateBadgeCountWithDelta:delta];
+    }
+}
+
+- (void)_updateBadgeCountWithDelta:(NSInteger)delta
+{
+    NSDictionary *info = @{@"delta": @(delta)};
+    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationUpdateBadgeCount object:nil userInfo:info];
 }
 
 - (void)viewWillAppear:(BOOL)animated

@@ -56,9 +56,25 @@ NSString *const kDeviceToken = @"device_token";
     [self _registerDeviceToken:deviceToken];
 }
 
+- (void)updateDeviceBadgeCount:(NSInteger)count
+{
+    NSDictionary *parameters = @{ @"count": @(count) };
+    NSString *url = [NSString apiURLWithPath:@"device/badge"];
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager managerWithToken];
+
+    [manager POST:url
+       parameters:parameters
+          success:^(NSURLSessionTask *operation, id responseObject) {
+              NSLog(@"POST device/badge Success");
+          }
+          failure:^(NSURLSessionTask *operation, NSError *error) {
+              NSLog(@"POST device/badge error: %@", error);
+          }];
+}
+
 - (void)_registerDeviceToken:(NSString *)deviceToken
 {
-    NSDictionary *parameters = @{ @"dtoken": deviceToken, @"pns": @(kAPN) };
+    NSDictionary *parameters = @{ @"dtoken": deviceToken, @"service": @(kAPN) };
     NSString *url = [NSString apiURLWithPath:@"device/register"];
     AFHTTPSessionManager *manager = [AFHTTPSessionManager managerWithToken];
 

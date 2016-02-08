@@ -161,9 +161,6 @@
 {
     NSLog(@"Notification = %@", notification);
     self.tabBarController.selectedIndex = 2;
-
-//    NSDictionary *info = @{@"delta": @(1)};
-//    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationUpdateBadgeCount object:nil userInfo:info];
 }
 
 #pragma mark - Private methods
@@ -337,6 +334,8 @@
     UIApplication *application = [UIApplication sharedApplication];
     NSInteger newValue =  application.applicationIconBadgeNumber + [delta integerValue];
     application.applicationIconBadgeNumber = (newValue >= 0)? newValue: 0;
+
+    [self.deviceManager updateDeviceBadgeCount:application.applicationIconBadgeNumber];
 }
 
 - (void)_willChatWithFriend:(NSNotification *)notification
