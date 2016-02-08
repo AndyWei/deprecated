@@ -65,9 +65,10 @@ CREATE TABLE IF NOT EXISTS user (
  */
 CREATE TABLE IF NOT EXISTS user_device (
     userid           bigint  ,
-    pns              int     , -- the push notification service of the user device. Allowed values are: 1 - APNS, 2 - GCM, 3 - MPN
+    service          int     , -- the push notification service of the user device. Allowed values are: 1 - APNS, 2 - GCM, 3 - MPN
     dtoken           text    , -- the string that identify a user equipment. On iOS it is called device token, while on Android it is called registration ID
     arn              text    , -- the AWS SNS client endpoint ARN
+    badge            int     ,
 
     PRIMARY KEY (userid)
 ) WITH COMPACTION = {'class': 'LeveledCompactionStrategy', 'enabled': 'true'};

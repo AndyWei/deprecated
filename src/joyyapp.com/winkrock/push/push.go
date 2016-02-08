@@ -32,8 +32,8 @@ var (
  * Device endpoints
  */
 type RegisterDeviceParams struct {
-    PNS    int    `param:"pns" validate:"min=1,max=3"`
-    DToken string `param:"dtoken" validate:"required"`
+    Service int    `param:"service" validate:"min=1,max=3"`
+    DToken  string `param:"dtoken" validate:"required"`
 }
 
 func (h *Handler) RegisterDevice(w http.ResponseWriter, req *http.Request, userid int64, username string) {
@@ -44,15 +44,16 @@ func (h *Handler) RegisterDevice(w http.ResponseWriter, req *http.Request, useri
         return
     }
 
-    arn, err := h.endpointARN(userid)
+    device, err := h.getDeviceRecord(userid)
     if err != nil {
-        h.registerAndRespond(w, userid, p.PNS, p.DToken)
+        h.registerAndRespond(w, userid, p.Service, p.DToken)
         return
     }
 
+    arn := device["arn"].(string)
     dtoken, enabled, err := getAttributes(arn)
     if err != nil {
-        h.registerAndRespond(w, userid, p.PNS, p.DToken)
+        h.registerAndRespond(w, userid, p.Service, p.DToken)
         return
     }
 
@@ -69,6 +70,28 @@ func (h *Handler) RegisterDevice(w http.ResponseWriter, req *http.Request, useri
 func (h *Handler) RemoveDevice(w http.ResponseWriter, req *http.Request, userid int64, username string) {
 
     if err := h.DB.Query(`DELETE FROM user_device WHERE userid = ?`, userid).Exec(); err != nil {
+        RespondError(w, err, http.StatusBadGateway)
+        return
+    }
+
+    RespondOK(w)
+    return
+}
+
+type UpdateBadgeParams struct {
+    Count int `param:"count" validate:"min=0"`
+}
+
+func (h *Handler) UpdateBadge(w http.ResponseWriter, req *http.Request, userid int64, username string) {
+
+    var p UpdateBadgeParams
+    if err := ParseAndCheck(req, &p); err != nil {
+        RespondError(w, err, http.StatusBadRequest)
+        return
+    }
+
+    if err := h.DB.Query(`INSERT INTO user_device (userid, badge) VALUES (?, ?)`,
+        userid, p.Count).Exec(); err != nil {
         RespondError(w, err, http.StatusBadGateway)
         return
     }
@@ -116,15 +139,60 @@ func init() {
     svc = sns.New(session.New(), aws.NewConfig().WithRegion("us-east-1"))
 }
 
-func (h *Handler) send(userid int64, message string) {
+type APS struct {
+    Alert string `json:"alert"`
+    Badge int    `json:"badge"`
+    Sound string `json:"sound"`
+}
 
-    arn, err := h.endpointARN(userid)
+type APNS struct {
+    APS APS `json:"aps"`
+}
+
+/*
+ * Note: AWS SNS need the content of APNS field is in format of string, not usual json string.
+ * E.g., this is a good one:
+ * {"default":"andyw: hello","APNS":"{\"aps\":{\"alert\":\"andyw: hello\",\"badge\":1,\"sound\":\"default\"}}"}
+ * and this is a bad one:
+ * {"default":"andyw: hello","APNS":"{"aps\":{"alert":"andyw: hello","badge":1,"sound":"default"}}"}
+ *
+ * So we have to use 2-step-marshals keep the '\' characters
+ */
+type Notification struct {
+    Default string `json:"default"`
+    APNS    string `json:"APNS"`
+}
+
+func (h *Handler) send(userid int64, txt string) {
+
+    device, err := h.getDeviceRecord(userid)
     if err != nil {
         return // the receiver didn't register for receiving push notification, so do nothing
     }
 
+    badge := device["badge"].(int) + 1
+    apns := APNS{
+        APS: APS{
+            Alert: txt,
+            Badge: badge,
+            Sound: "default",
+        },
+    }
+
+    bytes, _ := json.Marshal(apns)
+    apnsStr := string(bytes[:])
+    n := Notification{
+        Default: txt,
+        APNS:    apnsStr,
+    }
+
+    bytes, _ = json.Marshal(n)
+    message := string(bytes[:])
+    arn := device["arn"].(string)
+
     params := &sns.PublishInput{
-        Message: aws.String(message),
+        Message:          aws.String(message),
+        MessageStructure: aws.String("json"),
         MessageAttributes: map[string]*sns.MessageAttributeValue{
             "Key": { // Required
                 DataType:    aws.String("String"),
@@ -140,17 +208,20 @@ func (h *Handler) send(userid int64, message string) {
         return
     }
 
+    // update badge count and ignore errors if any
+    h.DB.Query(`INSERT INTO user_device (userid, badge) VALUES (?, ?)`, userid, badge).Exec()
     return
 }
 
-func (h *Handler) registerAndRespond(w http.ResponseWriter, userid int64, pns int, dtoken string) {
-    arn, err := doRegister(pns, dtoken)
+func (h *Handler) registerAndRespond(w http.ResponseWriter, userid int64, service int, dtoken string) {
+
+    arn, err := doRegister(service, dtoken)
     if err != nil {
         RespondError(w, err, http.StatusBadGateway)
     }
 
-    if err := h.DB.Query(`INSERT INTO user_device (userid, pns, dtoken, arn) VALUES (?, ?, ?, ?)`,
-        userid, pns, dtoken, arn).Exec(); err != nil {
+    if err := h.DB.Query(`INSERT INTO user_device (userid, service, dtoken, arn) VALUES (?, ?, ?, ?)`,
+        userid, service, dtoken, arn).Exec(); err != nil {
         RespondError(w, err, http.StatusBadGateway)
         return
     }
@@ -159,13 +230,15 @@ func (h *Handler) registerAndRespond(w http.ResponseWriter, userid int64, pns in
     return
 }
 
-func (h *Handler) endpointARN(userid int64) (arn string, err error) {
-    stmt := "SELECT arn FROM user_device where userid = ?"
-    if err = h.DB.Query(stmt, userid).Scan(&arn); err != nil {
-        return "", err
+func (h *Handler) getDeviceRecord(userid int64) (device map[string]interface{}, err error) {
+
+    device = make(map[string]interface{})
+    stmt := "SELECT * FROM user_device where userid = ?"
+    if err = h.DB.Query(stmt, userid).Consistency(gocql.One).MapScan(device); err != nil {
+        return nil, err
     }
 
-    return arn, nil
+    return device, nil
 }
 
 func getAttributes(arn string) (dtoken string, enabled bool, err error) {
@@ -197,9 +270,9 @@ func setAttributes(arn, dtoken string) (err error) {
     return err
 }
 
-func doRegister(pns int, dtoken string) (arn string, err error) {
+func doRegister(service int, dtoken string) (arn string, err error) {
 
-    appArn, err := applicationARN(pns)
+    appArn, err := applicationARN(service)
     if err != nil {
         return "", err
     }
@@ -220,9 +293,9 @@ func doRegister(pns int, dtoken string) (arn string, err error) {
     return *resp.EndpointArn, nil
 }
 
-func applicationARN(pns int) (arn string, err error) {
+func applicationARN(service int) (arn string, err error) {
     err = nil
-    switch pns {
+    switch service {
     case 1:
         arn = kSnsArnApns
     default:
