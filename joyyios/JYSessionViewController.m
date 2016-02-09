@@ -8,9 +8,11 @@
 
 #import <AFNetworking/UIKit+AFNetworking.h>
 #import <AWSS3/AWSS3.h>
+#import <IDMPhotoBrowser/IDMPhotoBrowser.h>
 
 #import "JYButton.h"
 #import "JYFilename.h"
+#import "JYImageMediaItem.h"
 #import "JYLocalDataManager.h"
 #import "JYMessage.h"
 #import "JYSessionViewController.h"
@@ -308,20 +310,29 @@ CGFloat const kEdgeInset = 10.f;
 
 - (void)_showPhotoPicker
 {
-    UIImagePickerController *picker = [[UIImagePickerController alloc] init];
-    picker.delegate = self;
-    picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-
-    [self presentViewController:picker animated:YES completion:nil];
+    [self _showPickerWithSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
 }
 
 - (void)_showCamera
 {
+    [self _showPickerWithSourceType:UIImagePickerControllerSourceTypeCamera];
+}
+
+- (void)_showPickerWithSourceType:(UIImagePickerControllerSourceType)sourceType
+{
     UIImagePickerController *picker = [[UIImagePickerController alloc] init];
     picker.delegate = self;
-    picker.sourceType = UIImagePickerControllerSourceTypeCamera;
+    picker.sourceType = sourceType;
 
     [self presentViewController:picker animated:YES completion:nil];
+}
+
+- (void)_showImageBrowserWithImage:(UIImage *)image fromView:(UIView *)view
+{
+    IDMPhoto *photo = [IDMPhoto photoWithImage:image];
+    IDMPhotoBrowser *browser = [[IDMPhotoBrowser alloc] initWithPhotos:@[photo] animatedFromView:view];
+    browser.scaleImage = image;
+    [self presentViewController:browser animated:YES completion:nil];
 }
 
 - (void)showPersonProfile
@@ -571,7 +582,13 @@ CGFloat const kEdgeInset = 10.f;
 
 - (void)collectionView:(JSQMessagesCollectionView *)collectionView didTapMessageBubbleAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSLog(@"Tapped message bubble!");
+    JYMessage *message = self.messageList[indexPath.row];
+
+    if (message.bodyType == JYMessageBodyTypeImage)
+    {
+        JYImageMediaItem *item = (JYImageMediaItem *)message.media;
+        [self _showImageBrowserWithImage:item.image fromView:item.mediaView];
+    }
 }
 
 - (void)collectionView:(JSQMessagesCollectionView *)collectionView didTapCellAtIndexPath:(NSIndexPath *)indexPath touchLocation:(CGPoint)touchLocation

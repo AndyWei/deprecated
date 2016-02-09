@@ -12,4 +12,7 @@
 
 - (instancetype)initWithURL:(NSString *)url;
 
+@property (nonatomic) NSString *url;
+@property (nonatomic) UIImage *image;
+
 @end

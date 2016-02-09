@@ -12,8 +12,6 @@
 #import "JYImageMediaItem.h"
 
 @interface JYImageMediaItem ()
-@property (nonatomic) NSString *url;
-@property (nonatomic) UIImage *image;
 @property (nonatomic) UIImageView *cachedImageView;
 @end
 
