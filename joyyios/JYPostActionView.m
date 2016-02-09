@@ -6,7 +6,7 @@
 //  Copyright © 2015 Joyy Inc. All rights reserved.
 //
 
-#import <AFNetworking/UIImageView+AFNetworking.h>
+#import <AFNetworking/UIKit+AFNetworking.h>
 #import <TTTAttributedLabel/TTTAttributedLabel.h>
 
 #import "JYButton.h"

@@ -44,6 +44,7 @@ typedef NS_ENUM(NSUInteger, JYMessageBodyType)
 @property (nonatomic) NSString *resource;
 @property (nonatomic) NSDate *timestamp;
 @property (nonatomic) NSString *text;
+@property (nonatomic) NSString *URL;
 @property (nonatomic) id<JSQMessageMediaData> media;
 
 @end

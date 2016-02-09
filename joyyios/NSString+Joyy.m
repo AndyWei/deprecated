@@ -179,32 +179,6 @@
     return [NSNumber numberWithUnsignedLongLong:value];
 }
 
-- (NSString *)messageMediaURL
-{
-    if ([self hasPrefix:kMessageBodyTypeImage])
-    {
-        return [self substringFromIndex:[kMessageBodyTypeImage length]];
-    }
-
-    if ([self hasPrefix:kMessageBodyTypeAudio])
-    {
-        return [self substringFromIndex:[kMessageBodyTypeAudio length]];
-    }
-
-    if ([self hasPrefix:kMessageBodyTypeVideo])
-    {
-        return [self substringFromIndex:[kMessageBodyTypeVideo length]];
-    }
-
-    if ([self hasPrefix:kMessageBodyTypeGif])
-    {
-        return [self substringFromIndex:[kMessageBodyTypeGif length]];
-    }
-
-    return nil;
-
-}
-
 - (NSString *)pureNumberString
 {
     return [[self componentsSeparatedByCharactersInSet:[[NSCharacterSet decimalDigitCharacterSet] invertedSet]] componentsJoinedByString:@""];

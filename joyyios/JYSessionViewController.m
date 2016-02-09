@@ -6,16 +6,17 @@
 //  Copyright (c) 2015 Joyy Inc. All rights reserved.
 //
 
-#import <AFNetworking/UIImageView+AFNetworking.h>
-#import <CoreData/CoreData.h>
+#import <AFNetworking/UIKit+AFNetworking.h>
+#import <AWSS3/AWSS3.h>
 
 #import "JYButton.h"
+#import "JYFilename.h"
 #import "JYLocalDataManager.h"
 #import "JYMessage.h"
 #import "JYSessionViewController.h"
 #import "JYXmppManager.h"
 
-@interface JYSessionViewController()
+@interface JYSessionViewController() <UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 @property (nonatomic) JSQMessagesBubbleImage *outgoingBubbleImageData;
 @property (nonatomic) JSQMessagesBubbleImage *incomingBubbleImageData;
 @property (nonatomic) JSQMessagesAvatarImage *remoteAvatar;
@@ -222,7 +223,7 @@ CGFloat const kEdgeInset = 10.f;
         UIImage *icon = [UIImage imageNamed:@"camera"];
         _cameraButton = [JYButton iconButtonWithFrame:frame icon:icon color:JoyyBlue];
         _cameraButton.contentEdgeInsets = UIEdgeInsetsMake(0, kEdgeInset, kEdgeInset, kEdgeInset);
-        [_cameraButton addTarget:self action:@selector(cameraButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+        [_cameraButton addTarget:self action:@selector(_showCamera) forControlEvents:UIControlEventTouchUpInside];
     }
     return _cameraButton;
 }
@@ -275,8 +276,7 @@ CGFloat const kEdgeInset = 10.f;
     __weak typeof(self) weakSelf = self;
     [alert addAction:[UIAlertAction actionWithTitle:photo style:UIAlertActionStyleDefault
                                             handler:^(UIAlertAction * action) {
-                                                [JSQSystemSoundPlayer jsq_playMessageSentSound];
-                                                [weakSelf finishSendingMessageAnimated:YES];
+                                                [weakSelf _showPhotoPicker];
                                             }]];
 
     [alert addAction:[UIAlertAction actionWithTitle:video style:UIAlertActionStyleDefault
@@ -296,11 +296,6 @@ CGFloat const kEdgeInset = 10.f;
     [self presentViewController:alert animated:YES completion:nil];
 }
 
-- (void)cameraButtonPressed
-{
-    NSLog(@"cameraButtonPressed");
-}
-
 - (void)micButtonTouchDown
 {
     NSLog(@"micButtonTouchDown");
@@ -311,9 +306,57 @@ CGFloat const kEdgeInset = 10.f;
     NSLog(@"micButtonTouchRelease");
 }
 
+- (void)_showPhotoPicker
+{
+    UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+    picker.delegate = self;
+    picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+
+    [self presentViewController:picker animated:YES completion:nil];
+}
+
+- (void)_showCamera
+{
+    UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+    picker.delegate = self;
+    picker.sourceType = UIImagePickerControllerSourceTypeCamera;
+
+    [self presentViewController:picker animated:YES completion:nil];
+}
+
 - (void)showPersonProfile
 {
 
+}
+
+
+#pragma mark - UIImagePickerControllerDelegate
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
+{
+    [picker dismissViewControllerAnimated:YES completion:nil];
+
+    // resize image
+    UIImage *originalImage = info[UIImagePickerControllerOriginalImage];
+    CGFloat min = fmin(originalImage.size.width, originalImage.size.height);
+    if (min == 0.0f)
+    {
+        return;
+    }
+
+    CGFloat factor = fmin(kPhotoWidth/min, 1);
+    CGFloat width = originalImage.size.width * factor;
+    CGFloat heigth = originalImage.size.height * factor;
+    UIImage *image = [originalImage imageScaledToSize:CGSizeMake(width, heigth)];
+
+    // send image
+    __weak typeof(self) weakSelf = self;
+    [self _sendImage:image success:^(UIImage *image, NSString *url) {
+
+        [weakSelf _sendMessageWithType:kMessageBodyTypeImage message:url andAlert:@"send you a photo"];
+    } failure:^(NSError *error) {
+        NSLog(@"send image error = %@", error);
+    }];
 }
 
 #pragma mark - TextView delegate
@@ -334,14 +377,19 @@ CGFloat const kEdgeInset = 10.f;
 - (void)didPressSendButton:(JYButton *)button withMessageText:(NSString *)text senderId:(NSString *)senderId senderDisplayName:(NSString *)senderDisplayName date:(NSDate *)date
 {
     [self showSendButton:NO];
+    [self _sendMessageWithType:kMessageBodyTypeText message:text andAlert:text];
+    [self showSendButton:YES];
+}
 
-    XMPPMessage *message = [XMPPMessage messageWithType:@"chat" to:self.thatJID];
-    NSString *title = [NSString stringWithFormat:@"%@: %@", [JYCredential current].username, text];
+- (void)_sendMessageWithType:(NSString *)type message:(NSString *)message andAlert:(NSString *)alert
+{
+    XMPPMessage *msg = [XMPPMessage messageWithType:@"chat" to:self.thatJID];
+    NSString *title = [NSString stringWithFormat:@"%@: %@", [JYCredential current].username, alert];
     uint64_t timestamp = (uint64_t)([NSDate timeIntervalSinceReferenceDate] * 1000000);
 
     NSDictionary *dict = @{
-                           @"type": kMessageBodyTypeText,
-                           @"res": text,
+                           @"type": type,
+                           @"res": message,
                            @"title": title, // for push notification purpose
                            @"ts": @(timestamp)
                            };
@@ -354,11 +402,9 @@ CGFloat const kEdgeInset = 10.f;
         return;
     }
     NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
-    [message addBody:jsonString];
+    [msg addBody:jsonString];
 
-    [[JYXmppManager sharedInstance].xmppStream sendElement:message];
-
-    [self showSendButton:YES];
+    [[JYXmppManager sharedInstance].xmppStream sendElement:msg];
 }
 
 #pragma mark - JSQMessages CollectionView DataSource
@@ -573,6 +619,60 @@ CGFloat const kEdgeInset = 10.f;
         [self.messageList addObject:obj];
         [self finishSendingMessage];
     });
+}
+
+#pragma mark S3
+- (void)_sendImage:(UIImage *)image success:(ImageHandler)success failure:(FailureHandler)failure
+{
+    NSURL *fileURL = [NSURL fileURLWithPath:[NSTemporaryDirectory() stringByAppendingPathComponent:@"message"]];
+
+    NSData *imageData = UIImageJPEGRepresentation(image, kPhotoQuality);
+    [imageData writeToURL:fileURL atomically:YES];
+
+    NSString *s3filename = [[JYFilename sharedInstance] randomFilenameWithHttpContentType:kContentTypeJPG];
+    NSString *s3region = [JYFilename sharedInstance].region;
+    NSString *s3url = [NSString stringWithFormat:@"%@:%@", s3region, s3filename];
+
+    AWSS3TransferManager *transferManager = [AWSS3TransferManager defaultS3TransferManager];
+    if (!transferManager)
+    {
+        NSLog(@"Error: no S3 transferManager");
+        if (failure)
+        {
+            NSError *error = [NSError errorWithDomain:@"winkrock" code:2000 userInfo:@{@"error": @"no S3 transferManager"}];
+            dispatch_async(dispatch_get_main_queue(), ^(void){ failure(error); });
+        }
+        return;
+    }
+
+    AWSS3TransferManagerUploadRequest *request = [AWSS3TransferManagerUploadRequest new];
+    request.bucket = [JYFilename sharedInstance].messageBucketName;
+    request.key = s3filename;
+    request.body = fileURL;
+    request.contentType = kContentTypeJPG;
+
+    [[transferManager upload:request] continueWithBlock:^id(AWSTask *task) {
+        if (task.error)
+        {
+            NSLog(@"Error: AWSS3TransferManager upload error = %@", task.error);
+
+            if (failure)
+            {
+                dispatch_async(dispatch_get_main_queue(), ^(void){ failure(task.error); });
+            }
+        }
+        if (task.result)
+        {
+            AWSS3TransferManagerUploadOutput *uploadOutput = task.result;
+            NSLog(@"Success: AWSS3TransferManager upload task.result = %@", uploadOutput);
+
+            if (success)
+            {
+                dispatch_async(dispatch_get_main_queue(), ^(void){ success(image, s3url); });
+            }
+        }
+        return nil;
+    }];
 }
 
 @end

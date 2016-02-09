@@ -18,6 +18,7 @@
 @property (nonatomic) NSDictionary *continetRegionDict;
 @property (nonatomic) NSDictionary *regionPostURLDict;
 @property (nonatomic) NSDictionary *regionAvatarURLDict;
+@property (nonatomic) NSDictionary *regionMessageURLDict;
 @property (nonatomic) NSString *bucketPrefix;
 @property (nonatomic) NSString *continent;
 @end
@@ -149,7 +150,12 @@
     return self.regionPostURLDict[region];
 }
 
-// Mapping region value to post URL prefix
+- (NSString *)messageURLPrefixOfRegion:(NSString *)region
+{
+    return self.regionMessageURLDict[region];
+}
+
+// Mapping region value to avatar URL prefix
 - (NSDictionary *)regionAvatarURLDict
 {
     if (!_regionAvatarURLDict)
@@ -175,6 +181,20 @@
                           };
     }
     return _regionPostURLDict;
+}
+
+// Mapping region value to message URL prefix
+- (NSDictionary *)regionMessageURLDict
+{
+    if (!_regionMessageURLDict)
+    {
+        _regionMessageURLDict = @{
+                               @"0": @"https://joyyim.s3.amazonaws.com/", // north america s3
+                               @"1": @"https://as-jy-im-ap-southeast-1.amazonaws.com/", // asia s3
+                               @"2": @"https://eu-jy-im.eu-central-1.amazonaws.com/"  // europe s3
+                               };
+    }
+    return _regionMessageURLDict;
 }
 
 - (NSString *)region

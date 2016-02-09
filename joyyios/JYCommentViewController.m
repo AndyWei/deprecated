@@ -7,7 +7,7 @@
 //
 
 #import <AFNetworking/AFNetworking.h>
-#import <AFNetworking/UIImageView+AFNetworking.h>
+#import <AFNetworking/UIKit+AFNetworking.h>
 #import <KVNProgress/KVNProgress.h>
 #import <MJRefresh/MJRefresh.h>
 #import <MSWeakTimer/MSWeakTimer.h>

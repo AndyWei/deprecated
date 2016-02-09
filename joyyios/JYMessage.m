@@ -6,6 +6,8 @@
 //  Copyright (c) 2015 Joyy Inc. All rights reserved.
 //
 
+#import "JYFilename.h"
+#import "JYImageMediaItem.h"
 #import "JYMessage.h"
 
 @interface JYMessage ()
@@ -27,6 +29,7 @@
              @"isOutgoing": @"is_outgoing",
              @"isUnread": @"is_unread",
              @"body": @"body",
+             @"URL": [NSNull null],
              @"bodyDictionary": [NSNull null],
              @"type": [NSNull null],
              @"resource": [NSNull null],
@@ -108,10 +111,9 @@
         return _bodyType;
     }
 
-
     if ([self.type length] == 0)
     {
-        _bodyType = JYMessageBodyTypeUnknown;
+        _bodyType = JYMessageBodyTypeText;
         return _bodyType;
     }
 
@@ -152,7 +154,7 @@
 
 - (NSString *)senderId
 {
-    NSNumber *sender = [self.isOutgoing boolValue]? self.userId : self.peerId;
+    NSNumber *sender = [self.isOutgoing boolValue]? self.userId: self.peerId;
     return [sender uint64String];
 }
 
@@ -175,10 +177,7 @@
 
 - (BOOL)isMediaMessage
 {
-    BOOL isMedia = (self.bodyType == JYMessageBodyTypeImage ||
-                    self.bodyType == JYMessageBodyTypeVideo ||
-                    self.bodyType == JYMessageBodyTypeLocation);
-    return isMedia;
+    return (self.bodyType == JYMessageBodyTypeImage || self.bodyType == JYMessageBodyTypeVideo || self.bodyType == JYMessageBodyTypeLocation);
 }
 
 - (BOOL)hasGapWith:(JYMessage *)that
@@ -205,38 +204,12 @@
     return _text;
 }
 
-- (id<JSQMessageMediaData>)media
-{
-    if (_media)
-    {
-        return _media;
-    }
-
-    switch (self.bodyType)
-    {
-        case JYMessageBodyTypeImage:
-            _media = [self _imageMediaItem];
-            break;
-        case JYMessageBodyTypeVideo:
-            _media = [self _videoMediaItem];
-            break;
-        case JYMessageBodyTypeLocation:
-            _media = [self _locationMediaItem];
-            break;
-        default:
-            _media = nil;
-            break;
-    }
-
-    return _media;
-}
-
 - (NSDate *)timestamp
 {
     if (!_timestamp)
     {
-        uint64_t t = [self.messageId unsignedLongLongValue] / 1000000;
-        _timestamp = [NSDate dateWithTimeIntervalSinceReferenceDate:t];
+        uint64_t seconds = [self.messageId unsignedLongLongValue] / 1000000;
+        _timestamp = [NSDate dateWithTimeIntervalSinceReferenceDate:seconds];
     }
     return _timestamp;
 }
@@ -280,14 +253,64 @@
     return ret;
 }
 
+- (NSString *)URL
+{
+    if (self.bodyType == JYMessageBodyTypeText)
+    {
+        return nil;
+    }
+
+    if (!_URL)
+    {
+        NSArray *array = [self.resource componentsSeparatedByString:@":"];
+
+        if ([array count] != 2)
+        {
+            NSLog(@"Illegal resource: %@", self.resource);
+            return nil;
+        }
+
+        NSString *region = array[0];
+        NSString *prefix = [[JYFilename sharedInstance] messageURLPrefixOfRegion:region];
+        NSString *filename = array[1];
+        _URL = [prefix stringByAppendingString:filename];
+    }
+    return _URL;
+}
+
+- (id<JSQMessageMediaData>)media
+{
+    if (_media)
+    {
+        return _media;
+    }
+
+    switch (self.bodyType)
+    {
+        case JYMessageBodyTypeImage:
+            _media = [self _imageMediaItem];
+            break;
+        case JYMessageBodyTypeVideo:
+            _media = [self _videoMediaItem];
+            break;
+        case JYMessageBodyTypeLocation:
+            _media = [self _locationMediaItem];
+            break;
+        default:
+            _media = nil;
+            break;
+    }
+
+    return _media;
+}
+
 #pragma mark - Private methods
 
-- (JSQPhotoMediaItem *)_imageMediaItem
+- (JYImageMediaItem *)_imageMediaItem
 {
-    // TODO: get image data from message
-    UIImage *image = nil;
-    JSQPhotoMediaItem *mediaItem = [[JSQPhotoMediaItem alloc] initWithImage:image];
-    return mediaItem;
+    JYImageMediaItem *item = [[JYImageMediaItem alloc] initWithURL:self.URL];
+    item.appliesMediaViewMaskAsOutgoing = [self.isOutgoing boolValue];
+    return item;
 }
 
 - (JSQVideoMediaItem *)_videoMediaItem
