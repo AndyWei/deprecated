@@ -9,7 +9,7 @@
 #import <JSQMessagesViewController/JSQMessages.h>
 #import "JYFriend.h"
 
-typedef void(^ImageHandler)(UIImage *image, NSString *url);
+typedef void(^ImageHandler)(NSString *url);
 
 @interface JYSessionViewController : JSQMessagesViewController
 

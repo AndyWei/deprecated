@@ -24,9 +24,18 @@ typedef NS_ENUM(NSUInteger, JYMessageBodyType)
     JYMessageBodyTypeVideo    = 7
 };
 
+typedef NS_ENUM(NSUInteger, JYMessageUploadStatus)
+{
+    JYMessageUploadStatusNone    = 0,
+    JYMessageUploadStatusOngoing = 1,
+    JYMessageUploadStatusSuccess = 2,
+    JYMessageUploadStatusFail    = 3
+};
+
 @interface JYMessage: MTLModel <JSQMessageData, MTLFMDBSerializing>
 
 - (instancetype)initWithXMPPMessage:(XMPPMessage *)message isOutgoing:(BOOL)isOutgoing;
+- (instancetype)initWithImage:(UIImage *)image;
 - (BOOL)isTextMessage;
 - (BOOL)hasGapWith:(JYMessage *)that;
 - (NSString *)liteText;
@@ -40,6 +49,7 @@ typedef NS_ENUM(NSUInteger, JYMessageBodyType)
 @property (nonatomic) NSString *body;
 
 // non FMDB coloumns
+@property (nonatomic) JYMessageUploadStatus uploadStatus;
 @property (nonatomic) JYMessageBodyType bodyType;
 @property (nonatomic) NSString *resource;
 @property (nonatomic) NSDate *timestamp;

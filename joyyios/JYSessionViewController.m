@@ -9,6 +9,7 @@
 #import <AFNetworking/UIKit+AFNetworking.h>
 #import <AWSS3/AWSS3.h>
 #import <IDMPhotoBrowser/IDMPhotoBrowser.h>
+#import <KVNProgress/KVNProgress.h>
 
 #import "JYButton.h"
 #import "JYFilename.h"
@@ -335,11 +336,25 @@ CGFloat const kEdgeInset = 10.f;
     [self presentViewController:browser animated:YES completion:nil];
 }
 
-- (void)showPersonProfile
+- (void)_showOngoingMessage:(JYMessage *)message
 {
+    [self.messageList addObject:message];
+    [self _refresh];
 
+    if (self.automaticallyScrollsToMostRecentMessage) {
+        [self scrollToBottomAnimated:YES];
+    }
 }
 
+- (void)_refresh
+{
+    [self.collectionView.collectionViewLayout invalidateLayoutWithContext:[JSQMessagesCollectionViewFlowLayoutInvalidationContext context]];
+    [self.collectionView reloadData];
+}
+
+- (void)showPersonProfile
+{
+}
 
 #pragma mark - UIImagePickerControllerDelegate
 
@@ -360,13 +375,21 @@ CGFloat const kEdgeInset = 10.f;
     CGFloat heigth = originalImage.size.height * factor;
     UIImage *image = [originalImage imageScaledToSize:CGSizeMake(width, heigth)];
 
+    // show JYMessage
+    JYMessage *message = [[JYMessage alloc] initWithImage:image];
+    message.uploadStatus = JYMessageUploadStatusOngoing;
+    [self _showOngoingMessage:message];
+
     // send image
     __weak typeof(self) weakSelf = self;
-    [self _sendImage:image success:^(UIImage *image, NSString *url) {
-
+    [self _sendImage:image success:^(NSString *url) {
+        message.uploadStatus = JYMessageUploadStatusSuccess;
+        [weakSelf _refresh];
         [weakSelf _sendMessageWithType:kMessageBodyTypeImage message:url andAlert:@"send you a photo"];
     } failure:^(NSError *error) {
         NSLog(@"send image error = %@", error);
+        message.uploadStatus = JYMessageUploadStatusFail;
+        [weakSelf _refresh];
     }];
 }
 
@@ -529,7 +552,30 @@ CGFloat const kEdgeInset = 10.f;
                                               NSUnderlineStyleAttributeName : @(NSUnderlineStyleSingle | NSUnderlinePatternSolid) };
     }
 
+    [self _updateProgeressHudForMessage:message];
+
     return cell;
+}
+
+- (void)_updateProgeressHudForMessage:(JYMessage *)message
+{
+    if (![message isMediaMessage])
+    {
+        return;
+    }
+
+    if (message.uploadStatus == JYMessageUploadStatusOngoing)
+    {
+        [KVNProgress showWithStatus:@"Uploading" onView:message.media.mediaView];
+    }
+    else if (message.uploadStatus == JYMessageUploadStatusSuccess)
+    {
+        [KVNProgress dismiss];
+    }
+    else if (message.uploadStatus == JYMessageUploadStatusFail)
+    {
+        [KVNProgress dismiss];
+    }
 }
 
 #pragma mark - JSQMessages collection view flow layout delegate
@@ -632,8 +678,16 @@ CGFloat const kEdgeInset = 10.f;
         return;
     }
 
+    JYMessage *message = (JYMessage *)obj;
+
+    // Only handle txt in this way, all the other type media outgoing messages was handled separately
+    if (message.bodyType != JYMessageBodyTypeText)
+    {
+        return;
+    }
+
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self.messageList addObject:obj];
+        [self.messageList addObject:message];
         [self finishSendingMessage];
     });
 }
@@ -685,7 +739,7 @@ CGFloat const kEdgeInset = 10.f;
 
             if (success)
             {
-                dispatch_async(dispatch_get_main_queue(), ^(void){ success(image, s3url); });
+                dispatch_async(dispatch_get_main_queue(), ^(void){ success(s3url); });
             }
         }
         return nil;

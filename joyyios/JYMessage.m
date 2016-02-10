@@ -13,6 +13,7 @@
 @interface JYMessage ()
 @property (nonatomic) NSString *type;
 @property (nonatomic) NSDictionary *bodyDictionary;
+@property (nonatomic) id mediaUnderneath;
 @end
 
 
@@ -31,12 +32,14 @@
              @"body": @"body",
              @"URL": [NSNull null],
              @"bodyDictionary": [NSNull null],
-             @"type": [NSNull null],
-             @"resource": [NSNull null],
              @"bodyType": [NSNull null],
-             @"text": [NSNull null],
              @"media": [NSNull null],
-             @"timestamp": [NSNull null]
+             @"mediaUnderneath": [NSNull null],
+             @"resource": [NSNull null],
+             @"text": [NSNull null],
+             @"timestamp": [NSNull null],
+             @"type": [NSNull null],
+             @"uploadStatus": [NSNull null]
              };
 }
 
@@ -56,11 +59,27 @@
 {
     if (self = [super init])
     {
-        self.userId = [JYCredential current].userId;
-        self.body = message.body;
-        self.isOutgoing = [NSNumber numberWithBool:isOutgoing];
-        self.isUnread = [NSNumber numberWithBool:!isOutgoing];
-        self.peerId = isOutgoing? [message.to.bare uint64Number]:[message.from.bare uint64Number];
+        _userId = [JYCredential current].userId;
+        _body = message.body;
+        _isOutgoing = [NSNumber numberWithBool:isOutgoing];
+        _isUnread = [NSNumber numberWithBool:!isOutgoing];
+        _uploadStatus = JYMessageUploadStatusNone;
+        _peerId = isOutgoing? [message.to.bare uint64Number]:[message.from.bare uint64Number];
+    }
+    return self;
+}
+
+- (instancetype)initWithImage:(UIImage *)image
+{
+    if (self = [super init])
+    {
+        _userId = [JYCredential current].userId;
+        _body = @"image";
+        _isOutgoing = [NSNumber numberWithBool:YES];
+        _isUnread = [NSNumber numberWithBool:NO];
+        _uploadStatus = JYMessageUploadStatusNone;
+        _bodyType = JYMessageBodyTypeImage;
+        _mediaUnderneath = image;
     }
     return self;
 }
@@ -306,14 +325,22 @@
 
 #pragma mark - Private methods
 
-- (JYImageMediaItem *)_imageMediaItem
+- (JSQMediaItem *)_imageMediaItem
 {
+    // local image
+    if (self.mediaUnderneath)
+    {
+        JSQPhotoMediaItem *photoItem = [[JSQPhotoMediaItem alloc] initWithImage:self.mediaUnderneath];
+        photoItem.appliesMediaViewMaskAsOutgoing = YES;
+        return photoItem;
+    }
+
     JYImageMediaItem *item = [[JYImageMediaItem alloc] initWithURL:self.URL];
     item.appliesMediaViewMaskAsOutgoing = [self.isOutgoing boolValue];
     return item;
 }
 
-- (JSQVideoMediaItem *)_videoMediaItem
+- (JSQMediaItem *)_videoMediaItem
 {
     // TODO: get video data from message and generate fileURL
     NSURL *fileURL = nil;
@@ -321,7 +348,7 @@
     return mediaItem;
 }
 
-- (JSQLocationMediaItem *)_locationMediaItem
+- (JSQMediaItem *)_locationMediaItem
 {
     // TODO: get location data from message
     CLLocation *location = nil;
