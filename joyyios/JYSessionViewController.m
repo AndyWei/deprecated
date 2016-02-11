@@ -9,7 +9,7 @@
 #import <AFNetworking/UIKit+AFNetworking.h>
 #import <AWSS3/AWSS3.h>
 #import <IDMPhotoBrowser/IDMPhotoBrowser.h>
-#import <KVNProgress/KVNProgress.h>
+#import <M13ProgressSuite/M13ProgressViewImage.h>
 
 #import "JYButton.h"
 #import "JYFilename.h"
@@ -352,6 +352,32 @@ CGFloat const kEdgeInset = 10.f;
     [self.collectionView reloadData];
 }
 
+- (void)_sendMessage:(JYMessage *)message withImage:(UIImage *)image
+{
+    __weak typeof(self) weakSelf = self;
+    [self _sendImage:image success:^(NSString *url) {
+
+        // TODO: there is a bug: if _sendMessageWithType fail due to xmpp connect issue, the sender will consider the photo has been sent
+        message.uploadStatus = JYMessageUploadStatusSuccess;
+        [weakSelf _refresh];
+        [weakSelf _sendMessageWithType:kMessageBodyTypeImage message:url andAlert:@"send you a photo"];
+    } failure:^(NSError *error) {
+        NSLog(@"send image error = %@", error);
+        message.uploadStatus = JYMessageUploadStatusFailure;
+        [weakSelf _refresh];
+    }];
+}
+
+- (void)_resendImageMessage:(JYMessage *)message
+{
+    message.uploadStatus = JYMessageUploadStatusOngoing;
+    [self _refresh];
+
+    // send image
+    UIImage *image = (UIImage *)message.mediaUnderneath;
+    [self _sendMessage:message withImage:image];
+}
+
 - (void)showPersonProfile
 {
 }
@@ -381,16 +407,7 @@ CGFloat const kEdgeInset = 10.f;
     [self _showOngoingMessage:message];
 
     // send image
-    __weak typeof(self) weakSelf = self;
-    [self _sendImage:image success:^(NSString *url) {
-        message.uploadStatus = JYMessageUploadStatusSuccess;
-        [weakSelf _refresh];
-        [weakSelf _sendMessageWithType:kMessageBodyTypeImage message:url andAlert:@"send you a photo"];
-    } failure:^(NSError *error) {
-        NSLog(@"send image error = %@", error);
-        message.uploadStatus = JYMessageUploadStatusFail;
-        [weakSelf _refresh];
-    }];
+    [self _sendMessage:message withImage:image];
 }
 
 #pragma mark - TextView delegate
@@ -564,17 +581,33 @@ CGFloat const kEdgeInset = 10.f;
         return;
     }
 
-    if (message.uploadStatus == JYMessageUploadStatusOngoing)
+    if (message.uploadStatus == JYMessageUploadStatusNone)
     {
-        [KVNProgress showWithStatus:@"Uploading" onView:message.media.mediaView];
+        message.progressView.alpha = 0.0f;
+    }
+    else if (message.uploadStatus == JYMessageUploadStatusOngoing)
+    {
+        message.progressView.primaryColor = JoyyBlue;
+        message.progressView.secondaryColor = JoyyBlue;
+        message.progressView.alpha = 1.0f;
+        message.progressView.animationDuration = 0.5f;
+        [message.progressView setProgress:0.0f animated:NO];
+        [message.progressView setProgress:1.0f animated:YES];
     }
     else if (message.uploadStatus == JYMessageUploadStatusSuccess)
     {
-        [KVNProgress dismiss];
+        [message.progressView performAction:M13ProgressViewActionSuccess animated:YES];
+        message.uploadStatus = JYMessageUploadStatusNone;
+
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            message.progressView.alpha = 0.0f;
+        });
     }
-    else if (message.uploadStatus == JYMessageUploadStatusFail)
+    else if (message.uploadStatus == JYMessageUploadStatusFailure)
     {
-        [KVNProgress dismiss];
+        message.progressView.primaryColor = JoyyRedPure;
+        message.progressView.secondaryColor = JoyyRedPure;
+        [message.progressView performAction:M13ProgressViewActionFailure animated:YES];
     }
 }
 
@@ -632,6 +665,12 @@ CGFloat const kEdgeInset = 10.f;
 
     if (message.bodyType == JYMessageBodyTypeImage)
     {
+        if (message.uploadStatus == JYMessageUploadStatusFailure)
+        {
+            [self _resendImageMessage:message];
+            return;
+        }
+
         JYImageMediaItem *item = (JYImageMediaItem *)message.media;
         [self _showImageBrowserWithImage:item.image fromView:item.mediaView];
     }

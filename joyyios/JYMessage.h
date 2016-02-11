@@ -9,6 +9,7 @@
 //
 
 #import <JSQMessagesViewController/JSQMessages.h>
+#import <M13ProgressSuite/M13ProgressViewPie.h>
 #import <Mantle/Mantle.h>
 #import "MTLFMDBAdapter.h"
 
@@ -29,7 +30,7 @@ typedef NS_ENUM(NSUInteger, JYMessageUploadStatus)
     JYMessageUploadStatusNone    = 0,
     JYMessageUploadStatusOngoing = 1,
     JYMessageUploadStatusSuccess = 2,
-    JYMessageUploadStatusFail    = 3
+    JYMessageUploadStatusFailure = 3
 };
 
 @interface JYMessage: MTLModel <JSQMessageData, MTLFMDBSerializing>
@@ -56,5 +57,7 @@ typedef NS_ENUM(NSUInteger, JYMessageUploadStatus)
 @property (nonatomic) NSString *text;
 @property (nonatomic) NSString *URL;
 @property (nonatomic) id<JSQMessageMediaData> media;
+@property (nonatomic) id mediaUnderneath;
+@property (nonatomic) M13ProgressViewPie *progressView;
 
 @end

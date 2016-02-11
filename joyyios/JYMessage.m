@@ -13,7 +13,6 @@
 @interface JYMessage ()
 @property (nonatomic) NSString *type;
 @property (nonatomic) NSDictionary *bodyDictionary;
-@property (nonatomic) id mediaUnderneath;
 @end
 
 
@@ -35,6 +34,7 @@
              @"bodyType": [NSNull null],
              @"media": [NSNull null],
              @"mediaUnderneath": [NSNull null],
+             @"progressView": [NSNull null],
              @"resource": [NSNull null],
              @"text": [NSNull null],
              @"timestamp": [NSNull null],
@@ -73,6 +73,8 @@
 {
     if (self = [super init])
     {
+        uint64_t timestamp = (uint64_t)([NSDate timeIntervalSinceReferenceDate] * 1000000);
+        _messageId = [NSNumber numberWithUnsignedLongLong:timestamp];
         _userId = [JYCredential current].userId;
         _body = @"image";
         _isOutgoing = [NSNumber numberWithBool:YES];
@@ -321,6 +323,28 @@
     }
 
     return _media;
+}
+
+- (M13ProgressViewPie *)progressView
+{
+    if (![self isMediaMessage])
+    {
+        return nil;
+    }
+
+    if (!_progressView)
+    {
+        CGFloat x = CGRectGetMidX(self.media.mediaView.frame);
+        CGFloat y = CGRectGetMidY(self.media.mediaView.frame);
+        CGRect frame = CGRectMake(x-25, y-25, 50, 50);
+
+        _progressView = [[M13ProgressViewPie alloc] initWithFrame:frame];
+        _progressView.primaryColor = JoyyBlue;
+        _progressView.secondaryColor = JoyyBlue;
+
+        [self.media.mediaView addSubview:_progressView];
+    }
+    return _progressView;
 }
 
 #pragma mark - Private methods
