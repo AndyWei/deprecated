@@ -13,6 +13,7 @@
 @interface JYMessage ()
 @property (nonatomic) NSString *type;
 @property (nonatomic) NSDictionary *bodyDictionary;
+@property (nonatomic) CGSize dimensions;
 @end
 
 
@@ -32,6 +33,7 @@
              @"URL": [NSNull null],
              @"bodyDictionary": [NSNull null],
              @"bodyType": [NSNull null],
+             @"dimensions": [NSNull null],
              @"media": [NSNull null],
              @"mediaUnderneath": [NSNull null],
              @"progressView": [NSNull null],
@@ -65,6 +67,7 @@
         _isUnread = [NSNumber numberWithBool:!isOutgoing];
         _uploadStatus = JYMessageUploadStatusNone;
         _peerId = isOutgoing? [message.to.bare uint64Number]:[message.from.bare uint64Number];
+        _dimensions = CGSizeZero;
     }
     return self;
 }
@@ -75,6 +78,7 @@
     {
         uint64_t timestamp = (uint64_t)([NSDate timeIntervalSinceReferenceDate] * 1000000);
         _messageId = [NSNumber numberWithUnsignedLongLong:timestamp];
+
         _userId = [JYCredential current].userId;
         _body = @"image";
         _isOutgoing = [NSNumber numberWithBool:YES];
@@ -82,6 +86,7 @@
         _uploadStatus = JYMessageUploadStatusNone;
         _bodyType = JYMessageBodyTypeImage;
         _mediaUnderneath = image;
+        _dimensions = image.size;
     }
     return self;
 }
@@ -299,6 +304,28 @@
     return _URL;
 }
 
+- (M13ProgressViewPie *)progressView
+{
+    if (![self isMediaMessage])
+    {
+        return nil;
+    }
+
+    if (!_progressView)
+    {
+        CGFloat x = CGRectGetMidX(self.media.mediaView.frame);
+        CGFloat y = CGRectGetMidY(self.media.mediaView.frame);
+        CGRect frame = CGRectMake(x-25, y-25, 50, 50);
+
+        _progressView = [[M13ProgressViewPie alloc] initWithFrame:frame];
+        _progressView.primaryColor = JoyyBlue;
+        _progressView.secondaryColor = JoyyBlue;
+
+        [self.media.mediaView addSubview:_progressView];
+    }
+    return _progressView;
+}
+
 - (id<JSQMessageMediaData>)media
 {
     if (_media)
@@ -325,42 +352,43 @@
     return _media;
 }
 
-- (M13ProgressViewPie *)progressView
+- (CGSize)dimensions
 {
-    if (![self isMediaMessage])
+    if (_dimensions.width > 0 && _dimensions.height > 0)
     {
-        return nil;
+        return _dimensions;
     }
 
-    if (!_progressView)
+    if ([self.bodyDictionary objectForKey:@"w"] && [self.bodyDictionary objectForKey:@"h"])
     {
-        CGFloat x = CGRectGetMidX(self.media.mediaView.frame);
-        CGFloat y = CGRectGetMidY(self.media.mediaView.frame);
-        CGRect frame = CGRectMake(x-25, y-25, 50, 50);
+        NSInteger width = [[self.bodyDictionary objectForKey:@"w"] integerValue];
+        NSInteger height = [[self.bodyDictionary objectForKey:@"h"] integerValue];
 
-        _progressView = [[M13ProgressViewPie alloc] initWithFrame:frame];
-        _progressView.primaryColor = JoyyBlue;
-        _progressView.secondaryColor = JoyyBlue;
-
-        [self.media.mediaView addSubview:_progressView];
+        return CGSizeMake(width, height);
     }
-    return _progressView;
+
+    return CGSizeMake(kMessageMediaWidthDefault, kMessageMediaHeightDefault);
 }
 
 #pragma mark - Private methods
 
 - (JSQMediaItem *)_imageMediaItem
 {
+    JYImageMediaItem *item = nil;
+
     // local image
     if (self.mediaUnderneath)
     {
-        JSQPhotoMediaItem *photoItem = [[JSQPhotoMediaItem alloc] initWithImage:self.mediaUnderneath];
-        photoItem.appliesMediaViewMaskAsOutgoing = YES;
-        return photoItem;
+        item = [[JYImageMediaItem alloc] initWithImage:self.mediaUnderneath];
+        item.appliesMediaViewMaskAsOutgoing = YES;
+    }
+    else
+    {
+        item = [[JYImageMediaItem alloc] initWithURL:self.URL];
+        item.appliesMediaViewMaskAsOutgoing = [self.isOutgoing boolValue];
     }
 
-    JYImageMediaItem *item = [[JYImageMediaItem alloc] initWithURL:self.URL];
-    item.appliesMediaViewMaskAsOutgoing = [self.isOutgoing boolValue];
+    item.imageDimensions = self.dimensions;
     return item;
 }
 

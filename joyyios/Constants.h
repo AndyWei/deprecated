@@ -21,6 +21,8 @@ extern CGFloat const kFontSizeDetail;
 extern CGFloat const kMarginLeft;
 extern CGFloat const kMarginRight;
 extern CGFloat const kMarginTop;
+extern CGFloat const kMessageMediaWidthDefault;
+extern CGFloat const kMessageMediaHeightDefault;
 extern CGFloat const kPhotoQuality;
 extern CGFloat const kPhotoWidth;  // exact pixel size
 extern CGFloat const kThumbnailWidth;

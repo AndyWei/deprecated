@@ -16,6 +16,7 @@
 #import "JYImageMediaItem.h"
 #import "JYLocalDataManager.h"
 #import "JYMessage.h"
+#import "JYMessageSender.h"
 #import "JYSessionViewController.h"
 #import "JYXmppManager.h"
 
@@ -23,10 +24,11 @@
 @property (nonatomic) JSQMessagesBubbleImage *outgoingBubbleImageData;
 @property (nonatomic) JSQMessagesBubbleImage *incomingBubbleImageData;
 @property (nonatomic) JSQMessagesAvatarImage *remoteAvatar;
-@property (nonatomic) NSMutableArray *messageList;
 @property (nonatomic) JYButton *accButton;
 @property (nonatomic) JYButton *cameraButton;
 @property (nonatomic) JYButton *micButton;
+@property (nonatomic) JYMessageSender *messageSender;
+@property (nonatomic) NSMutableArray *messageList;
 @property (nonatomic) UIView *leftContainerView;
 @property (nonatomic) UIView *rightContainerView;
 @property (nonatomic) XMPPJID *thatJID;
@@ -52,8 +54,6 @@ CGFloat const kEdgeInset = 10.f;
 
     self.senderId = [[JYCredential current].userId uint64String];
     self.senderDisplayName = [JYCredential current].username;
-    NSString *friendUserId = [self.friend.userId uint64String];
-    self.thatJID = [JYXmppManager jidWithUserId:friendUserId];
 
     [self configCollectionView];
     [self configBubbleImage];
@@ -179,6 +179,25 @@ CGFloat const kEdgeInset = 10.f;
                                     }];
 }
 #pragma mark - Properties
+
+- (XMPPJID *)thatJID
+{
+    if (!_thatJID)
+    {
+        NSString *friendUserId = [self.friend.userId uint64String];
+        _thatJID = [JYXmppManager jidWithUserId:friendUserId];
+    }
+    return _thatJID;
+}
+
+- (JYMessageSender *)messageSender
+{
+    if (!_messageSender)
+    {
+        _messageSender = [[JYMessageSender alloc] initWithThatJID:self.thatJID];
+    }
+    return _messageSender;
+}
 
 - (JSQMessagesAvatarImage *)remoteAvatar
 {
@@ -360,7 +379,7 @@ CGFloat const kEdgeInset = 10.f;
         // TODO: there is a bug: if _sendMessageWithType fail due to xmpp connect issue, the sender will consider the photo has been sent
         message.uploadStatus = JYMessageUploadStatusSuccess;
         [weakSelf _refresh];
-        [weakSelf _sendMessageWithType:kMessageBodyTypeImage message:url andAlert:@"send you a photo"];
+        [weakSelf.messageSender sendImageWithDimensions:image.size URL:url];
     } failure:^(NSError *error) {
         NSLog(@"send image error = %@", error);
         message.uploadStatus = JYMessageUploadStatusFailure;
@@ -428,35 +447,11 @@ CGFloat const kEdgeInset = 10.f;
 - (void)didPressSendButton:(JYButton *)button withMessageText:(NSString *)text senderId:(NSString *)senderId senderDisplayName:(NSString *)senderDisplayName date:(NSDate *)date
 {
     [self showSendButton:NO];
-    [self _sendMessageWithType:kMessageBodyTypeText message:text andAlert:text];
+    [self.messageSender sendText:text];
     [self showSendButton:YES];
 }
 
-- (void)_sendMessageWithType:(NSString *)type message:(NSString *)message andAlert:(NSString *)alert
-{
-    XMPPMessage *msg = [XMPPMessage messageWithType:@"chat" to:self.thatJID];
-    NSString *title = [NSString stringWithFormat:@"%@: %@", [JYCredential current].username, alert];
-    uint64_t timestamp = (uint64_t)([NSDate timeIntervalSinceReferenceDate] * 1000000);
 
-    NSDictionary *dict = @{
-                           @"type": type,
-                           @"res": message,
-                           @"title": title, // for push notification purpose
-                           @"ts": @(timestamp)
-                           };
-    NSError *err;
-    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dict options:0 error:&err];
-
-    if (err || !jsonData)
-    {
-        NSLog(@"Got an error: %@", err);
-        return;
-    }
-    NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
-    [msg addBody:jsonString];
-
-    [[JYXmppManager sharedInstance].xmppStream sendElement:msg];
-}
 
 #pragma mark - JSQMessages CollectionView DataSource
 

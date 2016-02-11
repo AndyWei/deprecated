@@ -13,6 +13,7 @@
 
 @interface JYImageMediaItem ()
 @property (nonatomic) UIImageView *cachedImageView;
+@property (nonatomic) BOOL hasFetchedImage;
 @end
 
 @implementation JYImageMediaItem
@@ -27,6 +28,20 @@
         _url = [url copy];
         _image = nil;
         _cachedImageView = nil;
+        _hasFetchedImage = NO;
+    }
+    return self;
+}
+
+- (instancetype)initWithImage:(UIImage *)image
+{
+    self = [super init];
+    if (self)
+    {
+        _url = nil;
+        _image = image;
+        _cachedImageView = nil;
+        _hasFetchedImage = NO;
     }
     return self;
 }
@@ -43,6 +58,7 @@
     [super clearCachedMediaViews];
     _image = nil;
     _cachedImageView = nil;
+    _hasFetchedImage = NO;
 }
 
 #pragma mark - Setters
@@ -52,29 +68,27 @@
     _url = [url copy];
     _image = nil;
     _cachedImageView = nil;
+    _hasFetchedImage = NO;
 }
 
 - (void)setAppliesMediaViewMaskAsOutgoing:(BOOL)appliesMediaViewMaskAsOutgoing
 {
     [super setAppliesMediaViewMaskAsOutgoing:appliesMediaViewMaskAsOutgoing];
-    _cachedImageView = nil;
 }
 
 #pragma mark - Network
 
 - (void)_fetchImage
 {
-    // Get network image
     NSURL *url = [NSURL URLWithString:self.url];
     NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestReturnCacheDataElseLoad timeoutInterval:5];
 
     __weak typeof(self) weakSelf = self;
-    [self.cachedImageView setImageWithURLRequest:request placeholderImage:nil
-                                         success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image){
+    [self.cachedImageView setImageWithURLRequest:request placeholderImage:nil success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image){
          weakSelf.image = image;
          weakSelf.cachedImageView.image = image;
      }failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error){
-         NSLog(@"Error: get person full avatar error: %@", error);
+         NSLog(@"Error: get message image error: %@", error);
      }];
 }
 
@@ -82,14 +96,22 @@
 
 - (UIView *)mediaView
 {
+    if (self.image)
+    {
+        return self.cachedImageView;
+    }
+
     if (self.url == nil)
     {
         return nil;
     }
 
-    if (!self.image)
+    if (!self.hasFetchedImage)
     {
-        [self _fetchImage];
+        self.hasFetchedImage = YES;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self _fetchImage];
+        });
     }
 
     return self.cachedImageView;
@@ -100,7 +122,7 @@
     if (!_cachedImageView)
     {
         CGSize size = [self mediaViewDisplaySize];
-        UIImageView *imageView = [[UIImageView alloc] init];
+        UIImageView *imageView = [[UIImageView alloc] initWithImage:_image];
         imageView.frame = CGRectMake(0.0f, 0.0f, size.width, size.height);
         imageView.contentMode = UIViewContentModeScaleAspectFill;
         imageView.clipsToBounds = YES;
@@ -108,6 +130,18 @@
         _cachedImageView = imageView;
     }
     return _cachedImageView;
+}
+
+- (CGSize)mediaViewDisplaySize
+{
+    CGFloat min = fmin(kMessageMediaWidthDefault, kMessageMediaHeightDefault);
+    CGFloat max = fmax(kMessageMediaWidthDefault, kMessageMediaHeightDefault);
+    if (self.imageDimensions.width < self.imageDimensions.height)
+    {
+        return CGSizeMake(min, max);
+    }
+
+    return CGSizeMake(max, min);
 }
 
 - (NSUInteger)mediaHash

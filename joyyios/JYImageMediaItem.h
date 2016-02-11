@@ -11,8 +11,10 @@
 @interface JYImageMediaItem : JSQMediaItem <JSQMessageMediaData, NSCoding, NSCopying>
 
 - (instancetype)initWithURL:(NSString *)url;
+- (instancetype)initWithImage:(UIImage *)image;
 
 @property (nonatomic) NSString *url;
 @property (nonatomic) UIImage *image;
+@property (nonatomic) CGSize imageDimensions;
 
 @end
