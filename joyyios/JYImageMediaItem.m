@@ -6,7 +6,7 @@
 //  Copyright © 2016 Joyy Inc. All rights reserved.
 //
 
-#import <AFNetworking/UIKit+AFNetworking.h>
+#import <SDWebImage/UIImageView+WebCache.h>
 
 #import "JSQMessagesMediaViewBubbleImageMasker.h"
 #import "JYImageMediaItem.h"
@@ -80,16 +80,13 @@
 
 - (void)_fetchImage
 {
-    NSURL *url = [NSURL URLWithString:self.url];
-    NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestReturnCacheDataElseLoad timeoutInterval:5];
-
     __weak typeof(self) weakSelf = self;
-    [self.cachedImageView setImageWithURLRequest:request placeholderImage:nil success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image){
-         weakSelf.image = image;
-         weakSelf.cachedImageView.image = image;
-     }failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error){
-         NSLog(@"Error: get message image error: %@", error);
-     }];
+
+    [self.cachedImageView sd_setImageWithURL:[NSURL URLWithString:self.url] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+
+        weakSelf.image = image;
+        weakSelf.cachedImageView.image = image;
+    }];
 }
 
 #pragma mark - JSQMessageMediaData protocol

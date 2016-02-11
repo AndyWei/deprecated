@@ -6,6 +6,8 @@
 //  Copyright (c) 2015 Joyy Inc. All rights reserved.
 //
 
+#import <SDWebImage/SDWebImageManager.h>
+
 #import "JYFriendManager.h"
 #import "JYFriendViewController.h"
 #import "JYLocalDataManager.h"
@@ -236,6 +238,18 @@ static NSString *const kCellIdentifier = @"sessionCell";
     NSString *userIdStr = [[JYCredential current].userId uint64String];
     NSString *peerIdStr = [message.peerId uint64String];
     NSString *condition = [NSString stringWithFormat:@"user_id = %@ AND peer_id = %@", userIdStr, peerIdStr];
+
+    // delete all cached images
+    NSArray *messages = [[JYLocalDataManager sharedInstance] selectObjectsOfClass:JYMessage.class withCondition:condition sort:@"ASC"];
+    for (JYMessage *msg in messages)
+    {
+        if (msg.bodyType == JYMessageBodyTypeImage)
+        {
+            NSURL *url = [NSURL URLWithString:msg.URL];
+            NSString *key = [SDWebImageManager.sharedManager cacheKeyForURL:url];
+            [[SDImageCache sharedImageCache] removeImageForKey:key];
+        }
+    }
     [[JYLocalDataManager sharedInstance] deleteObjectsOfClass:JYMessage.class withCondition:condition];
 }
 
