@@ -272,6 +272,7 @@ DEPENDENCIES:
   - MJRefresh
   - MSWeakTimer
   - RKDropdownAlert
+  - SDWebImage
   - SlackTextViewController
   - TTTAttributedLabel
   - UICKeyChainStore
