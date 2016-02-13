@@ -548,7 +548,8 @@ CGFloat const kEdgeInset = 10.f;
 {
     JSQMessagesCollectionViewCell *cell = (JSQMessagesCollectionViewCell *)[super collectionView:collectionView cellForItemAtIndexPath:indexPath];
 
-    JYMessage *message = self.messageList[indexPath.row];
+    NSUInteger row = indexPath.row;
+    JYMessage *message = self.messageList[row];
 
     if (message.bodyType == JYMessageBodyTypeText)
     {
@@ -562,6 +563,17 @@ CGFloat const kEdgeInset = 10.f;
 
         cell.textView.linkTextAttributes = @{ NSForegroundColorAttributeName : cell.textView.textColor,
                                               NSUnderlineStyleAttributeName : @(NSUnderlineStyleSingle | NSUnderlinePatternSolid) };
+    }
+    else if (message.bodyType == JYMessageBodyTypeImage)
+    {
+        JYImageMediaItem *item = (JYImageMediaItem *)message.media;
+        if (!item.image)
+        {
+            __weak typeof(cell) weakCell = cell;
+            [item fetchImageWithCompletion:^{
+                [weakCell setNeedsLayout];
+            }];
+        }
     }
 
     [self _updateProgeressHudForMessage:message];
@@ -692,9 +704,24 @@ CGFloat const kEdgeInset = 10.f;
         return;
     }
 
+    [self _showReceivedMessage:obj];
+}
+
+- (void)_showReceivedMessage:(JYMessage *)message
+{
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self.messageList addObject:obj];
-        [self finishReceivingMessage];
+
+        [self.collectionView performBatchUpdates:^{
+
+            NSUInteger count = [self.messageList count];
+            [self.messageList addObject:message];
+
+            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:count inSection:0];
+            [self.collectionView insertItemsAtIndexPaths:@[indexPath]];
+
+        } completion:^(BOOL finished) {
+            [self scrollToBottomAnimated:YES];
+        }];
     });
 }
 

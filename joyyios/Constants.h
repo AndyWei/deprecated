@@ -92,6 +92,7 @@ extern NSUInteger const kAPN;
 extern UInt16  const kMessagePort;
 
 typedef void(^SuccessHandler)();
+typedef void(^CompletionHandler)();
 typedef void(^FailureHandler)(NSError *error);
 
 #define NAVIGATION_BAR_HEIGHT       (self.navigationController.navigationBar.frame.size.height)    // 44

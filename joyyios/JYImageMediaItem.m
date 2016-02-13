@@ -6,6 +6,7 @@
 //  Copyright © 2016 Joyy Inc. All rights reserved.
 //
 
+#import <AFNetworking/UIKit+AFNetworking.h>
 #import <SDWebImage/UIImageView+WebCache.h>
 
 #import "JSQMessagesMediaViewBubbleImageMasker.h"
@@ -13,7 +14,6 @@
 
 @interface JYImageMediaItem ()
 @property (nonatomic) UIImageView *cachedImageView;
-@property (nonatomic) BOOL hasFetchedImage;
 @end
 
 @implementation JYImageMediaItem
@@ -28,7 +28,6 @@
         _url = [url copy];
         _image = nil;
         _cachedImageView = nil;
-        _hasFetchedImage = NO;
     }
     return self;
 }
@@ -41,7 +40,6 @@
         _url = nil;
         _image = image;
         _cachedImageView = nil;
-        _hasFetchedImage = NO;
     }
     return self;
 }
@@ -56,20 +54,9 @@
 - (void)clearCachedMediaViews
 {
     [super clearCachedMediaViews];
-    _image = nil;
-    _cachedImageView = nil;
-    _hasFetchedImage = NO;
 }
 
 #pragma mark - Setters
-
-- (void)setUrl:(NSString *)url
-{
-    _url = [url copy];
-    _image = nil;
-    _cachedImageView = nil;
-    _hasFetchedImage = NO;
-}
 
 - (void)setAppliesMediaViewMaskAsOutgoing:(BOOL)appliesMediaViewMaskAsOutgoing
 {
@@ -78,7 +65,7 @@
 
 #pragma mark - Network
 
-- (void)_fetchImage
+- (void)fetchImage
 {
     __weak typeof(self) weakSelf = self;
 
@@ -86,6 +73,22 @@
 
         weakSelf.image = image;
         weakSelf.cachedImageView.image = image;
+    }];
+}
+
+- (void)fetchImageWithCompletion:(CompletionHandler)handler
+{
+    __weak typeof(self) weakSelf = self;
+
+    [self.cachedImageView sd_setImageWithURL:[NSURL URLWithString:self.url] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+
+        weakSelf.image = image;
+        weakSelf.cachedImageView.image = image;
+
+        if (handler)
+        {
+            handler();
+        }
     }];
 }
 
@@ -98,17 +101,9 @@
         return self.cachedImageView;
     }
 
-    if (self.url == nil)
+    if (!self.url)
     {
         return nil;
-    }
-
-    if (!self.hasFetchedImage)
-    {
-        self.hasFetchedImage = YES;
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self _fetchImage];
-        });
     }
 
     return self.cachedImageView;
@@ -150,7 +145,11 @@
 
 - (NSUInteger)hash
 {
-    return super.hash ^ self.url.hash;
+    if (self.url)
+    {
+         return self.url.hash;
+    }
+    return self.image.hash;
 }
 
 - (NSString *)description
