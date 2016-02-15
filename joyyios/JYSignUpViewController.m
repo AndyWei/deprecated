@@ -125,6 +125,7 @@
 
     [manager POST:url
       parameters:parameters
+        progress:nil
          success:^(NSURLSessionTask *operation, id responseObject) {
              NSLog(@"SignUp Success responseObject: %@", responseObject);
 
@@ -163,6 +164,7 @@
     __weak typeof(self) weakSelf = self;
     [manager GET:url
        parameters:parameters
+        progress:nil
           success:^(NSURLSessionTask *operation, id responseObject) {
               NSLog(@"Success: username/existence responseObject: %@", responseObject);
               [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;

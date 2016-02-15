@@ -128,6 +128,7 @@ static NSString *const kCellIdentifier = @"winkCell";
     __weak typeof(self) weakSelf = self;
     [manager POST:url
        parameters:parameters
+         progress:nil
           success:^(NSURLSessionTask *operation, id responseObject) {
               NSLog(@"POST wink/accept success. responseObject = %@", responseObject);
 

@@ -344,6 +344,7 @@
     __weak typeof(self) weakSelf = self;
     [manager GET:url
       parameters: [self _readRemoteUsersParameters]
+        progress:nil
          success:^(NSURLSessionTask *operation, id responseObject) {
              NSLog(@"GET contacts Success");
 

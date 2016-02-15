@@ -54,6 +54,7 @@
 
     [manager POST:url
         parameters:parameters
+          progress:nil
         success:^(NSURLSessionTask *operation, id responseObject) {
             NSLog(@"SignIn Success responseObject: %@", responseObject);
 

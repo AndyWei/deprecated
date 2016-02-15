@@ -64,6 +64,7 @@ NSString *const kDeviceToken = @"device_token";
 
     [manager POST:url
        parameters:parameters
+         progress:nil
           success:^(NSURLSessionTask *operation, id responseObject) {
               NSLog(@"POST device/badge Success");
           }
@@ -80,6 +81,7 @@ NSString *const kDeviceToken = @"device_token";
 
     [manager POST:url
        parameters:parameters
+         progress:nil
           success:^(NSURLSessionTask *operation, id responseObject) {
               NSLog(@"POST device/register Success");
           }

@@ -1,29 +1,23 @@
 PODS:
-  - AFNetworking (2.6.3):
-    - AFNetworking/NSURLConnection (= 2.6.3)
-    - AFNetworking/NSURLSession (= 2.6.3)
-    - AFNetworking/Reachability (= 2.6.3)
-    - AFNetworking/Security (= 2.6.3)
-    - AFNetworking/Serialization (= 2.6.3)
-    - AFNetworking/UIKit (= 2.6.3)
-  - AFNetworking/NSURLConnection (2.6.3):
+  - AFNetworking (3.0.4):
+    - AFNetworking/NSURLSession (= 3.0.4)
+    - AFNetworking/Reachability (= 3.0.4)
+    - AFNetworking/Security (= 3.0.4)
+    - AFNetworking/Serialization (= 3.0.4)
+    - AFNetworking/UIKit (= 3.0.4)
+  - AFNetworking/NSURLSession (3.0.4):
     - AFNetworking/Reachability
     - AFNetworking/Security
     - AFNetworking/Serialization
-  - AFNetworking/NSURLSession (2.6.3):
-    - AFNetworking/Reachability
-    - AFNetworking/Security
-    - AFNetworking/Serialization
-  - AFNetworking/Reachability (2.6.3)
-  - AFNetworking/Security (2.6.3)
-  - AFNetworking/Serialization (2.6.3)
-  - AFNetworking/UIKit (2.6.3):
-    - AFNetworking/NSURLConnection
+  - AFNetworking/Reachability (3.0.4)
+  - AFNetworking/Security (3.0.4)
+  - AFNetworking/Serialization (3.0.4)
+  - AFNetworking/UIKit (3.0.4):
     - AFNetworking/NSURLSession
   - AMPopTip (0.10.1)
-  - AWSCore (2.3.1)
-  - AWSS3 (2.3.1):
-    - AWSCore (= 2.3.1)
+  - AWSCore (2.3.5)
+  - AWSS3 (2.3.5):
+    - AWSCore (= 2.3.5)
   - ChameleonFramework (2.0.4):
     - ChameleonFramework/Default (= 2.0.4)
   - ChameleonFramework/Default (2.0.4)
@@ -33,16 +27,14 @@ PODS:
   - CocoaLumberjack/Core (1.9.2)
   - CocoaLumberjack/Extensions (1.9.2):
     - CocoaLumberjack/Core
-  - Crashlytics (3.4.1):
-    - Fabric (~> 1.6.0)
+  - Crashlytics (3.6.0):
+    - Fabric (~> 1.6.3)
   - DACircularProgress (2.3.1)
-  - Fabric (1.6.1)
+  - Fabric (1.6.5)
   - FDFullscreenPopGesture (1.1)
-  - FMDB (2.5):
-    - FMDB/standard (= 2.5)
-  - FMDB/common (2.5)
-  - FMDB/standard (2.5):
-    - FMDB/common
+  - FMDB (2.6):
+    - FMDB/standard (= 2.6)
+  - FMDB/standard (2.6)
   - IDMPhotoBrowser (1.8.1):
     - DACircularProgress
     - pop
@@ -51,7 +43,7 @@ PODS:
     - JSQSystemSoundPlayer (~> 2.0.1)
   - JSQSystemSoundPlayer (2.0.1)
   - JVFloatLabeledTextField (1.1.0)
-  - KVNProgress (2.2.1)
+  - KVNProgress (2.2.2)
   - KVOController (1.0.3)
   - libextobjc (0.4.1):
     - libextobjc/EXTADT (= 0.4.1)
@@ -93,18 +85,18 @@ PODS:
   - Mantle (2.0.6):
     - Mantle/extobjc (= 2.0.6)
   - Mantle/extobjc (2.0.6)
-  - MJRefresh (3.0.7)
+  - MJRefresh (3.1.0)
   - MSWeakTimer (1.1.0)
-  - pop (1.0.8)
+  - pop (1.0.9)
   - RKDropdownAlert (0.3.0)
-  - SDWebImage (3.7.3):
-    - SDWebImage/Core (= 3.7.3)
-  - SDWebImage/Core (3.7.3)
-  - SlackTextViewController (1.7.2)
+  - SDWebImage (3.7.5):
+    - SDWebImage/Core (= 3.7.5)
+  - SDWebImage/Core (3.7.5)
+  - SlackTextViewController (1.9)
   - TTTAttributedLabel (1.13.4)
   - UICKeyChainStore (2.1.0)
   - UIView+Positioning (1.1)
-  - VMaskTextField (1.0.4)
+  - VMaskTextField (1.0.8)
   - XMPPFramework (3.6.5):
     - XMPPFramework/Authentication (= 3.6.5)
     - XMPPFramework/BandwidthMonitor (= 3.6.5)
@@ -282,38 +274,38 @@ DEPENDENCIES:
   - YTKKeyValueStore
 
 SPEC CHECKSUMS:
-  AFNetworking: cb8d14a848e831097108418f5d49217339d4eb60
+  AFNetworking: a0075feb321559dc78d9d85b55d11caa19eabb93
   AMPopTip: b0b5d009f3ed47b10f118438a18e0ab5cd03c40d
-  AWSCore: 7ad34b4bc285b778a3df699cb6f00aad3d1c446f
-  AWSS3: b7f4a0ad4da6dcc172e757dcb2b2423d26b32325
+  AWSCore: 8022eda5778fd7b87c9182709d8a27388e1a31fb
+  AWSS3: 967f4ad3c91f1ed2c9dca09a9dcf905111232a87
   ChameleonFramework: 5abe69b1f2a6cc79c3c435fcd9d3d855748225ee
   CocoaAsyncSocket: f5783bdedd232d91b89769bc4b5a1580aed518ad
   CocoaLumberjack: 628fca2e88ef06f7cf6817309aa405f325d9a6fa
-  Crashlytics: 41574a245bc6ae10c55d57f385ebd2004e5bee05
+  Crashlytics: e4e8d02914f2608fbc7bf42b1a7af838b0db67a2
   DACircularProgress: 4dd437c0fc3da5161cb289e07ac449493d41db71
-  Fabric: bf0ceb04e7c924090efc5f8c55e4fbcca189e0a0
+  Fabric: 338ffd3c2afcab120638907b4251189de9ad17b3
   FDFullscreenPopGesture: a8a620179e3d9c40e8e00256dcee1c1a27c6d0f0
-  FMDB: 96e8f1bcc1329e269330f99770ad4285d9003e52
+  FMDB: c1968bab3ab0aed38f66cb778ae1e7fa9a652b6e
   IDMPhotoBrowser: 99eccfe6431e182f64e2fe57ac654316fbf81576
   JSQMessagesViewController: 73cab48aa92fc2d512f3b6724f3425cc47a19eb5
   JSQSystemSoundPlayer: c5850e77a4363ffd374cd851154b9af93264ed8d
   JVFloatLabeledTextField: ea4a3d8387ddd43724c472bb2b8ab39b79af05d4
-  KVNProgress: 7001d2d16a2755cee5599e8e485befe056f2197b
+  KVNProgress: 4697347e21e37fdaa5264ebc24e377c205a50328
   KVOController: 9fd8f0343670994e4b6f9f0b31f5a45663f3e1cf
   libextobjc: a650fc1bf489a3d3a9bc2e621efa3e1006fc5471
   libPhoneNumber-iOS: 7bfd00f843fdcd82b5182b463e8eb3b27579f41d
   M13ProgressSuite: 03d194af6359da440641ba758aed5a18b0386a86
   Mantle: 299966b00759634931699f69cb6a30b9239b944d
-  MJRefresh: f3e1228ec3d38c7ba5208d58032631a52f39f495
+  MJRefresh: 743e6404967d1c2c688472ea3ecfde247d872db4
   MSWeakTimer: 9426150f933b80ed3acf3f6d228e4b61f0e303c8
-  pop: bb773ae2c791ca2629de13b347e7a8b450fa6a57
+  pop: f667631a5108a2e60d9e8797c9b32ddaf2080bce
   RKDropdownAlert: f4b3364c251829ad439dc666836a1f2dad26f4c7
-  SDWebImage: 1d2b1a1efda1ade1b00b6f8498865f8ddedc8a84
-  SlackTextViewController: 1f4e8f68c156ef93de73fd422db2b8d5d5b0f4e7
+  SDWebImage: 69c6303e3348fba97e03f65d65d4fbc26740f461
+  SlackTextViewController: d51503f7be846cb9976a273499dc90f2445e9447
   TTTAttributedLabel: 0a2ac7b2dd726d32a070dafb01446026b11e624f
   UICKeyChainStore: f1cbd42216a113f0165de1e733e62905b8823432
   UIView+Positioning: e93fe9e3186d1ed7d60e344aa12787911e902056
-  VMaskTextField: 633dfde6182fb3ea6604abb675e05cdc108006df
+  VMaskTextField: e77fe33633f999c5c38e70bed0afece0625624a4
   XMPPFramework: 7ae77710dd86f1826f5451dc5f3cf9f4d2a62072
   YTKKeyValueStore: 4d002941540dd5108fa23009b71e0f2f937f7a0f
 

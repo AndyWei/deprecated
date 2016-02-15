@@ -453,6 +453,7 @@ const CGFloat kButtonWidth = 60;
     __weak typeof(self) weakSelf = self;
     [manager POST:url
       parameters:parameters
+        progress:nil
          success:^(NSURLSessionTask *operation, id responseObject) {
              NSLog(@"POST wink success. that username = %@", user.username);
              [weakSelf _networkThreadEnd];
@@ -499,6 +500,7 @@ const CGFloat kButtonWidth = 60;
     __weak typeof(self) weakSelf = self;
     [manager GET:url
       parameters:parameters
+        progress:nil
          success:^(NSURLSessionTask *operation, id responseObject) {
 //             NSLog(@"GET users success. responseObject = %@", responseObject);
 

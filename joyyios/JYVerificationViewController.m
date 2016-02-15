@@ -313,6 +313,7 @@ static NSString *const kVerificationCellIdentifier = @"verificationCell";
     __weak typeof(self) weakSelf = self;
     [manager POST:url
       parameters:parameters
+        progress:nil
          success:^(NSURLSessionTask *operation, id responseObject) {
              NSLog(@"Success: POST code/validate. responseObject = %@", responseObject);
              [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;

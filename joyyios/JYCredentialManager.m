@@ -86,6 +86,7 @@
     __weak typeof(self) weakSelf = self;
     [manager POST:url
       parameters:parameters
+        progress:nil
          success:^(NSURLSessionTask *operation, id responseObject) {
 
              NSLog(@"Success: autoSignIn responseObject = %@", responseObject);

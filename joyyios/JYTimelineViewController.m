@@ -826,6 +826,7 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
     __weak typeof(self) weakSelf = self;
     [manager POST:url
        parameters:parameters
+         progress:nil
           success:^(NSURLSessionTask *operation, id responseObject) {
               NSLog(@"like post like success responseObject: %@", responseObject);
               
@@ -993,6 +994,7 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
     __weak typeof(self) weakSelf = self;
     [manager GET:url
       parameters:parameters
+        progress:nil
          success:^(NSURLSessionTask *operation, id responseObject) {
              NSLog(@"post/timeline fetch success responseObject: %@", responseObject);
 
@@ -1037,6 +1039,7 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
     __weak typeof(self) weakSelf = self;
     [manager GET:url
       parameters:parameters
+        progress:nil
          success:^(NSURLSessionTask *operation, id responseObject) {
              NSLog(@"GET post/commentline success responseObject: %@", responseObject);
 
@@ -1088,6 +1091,7 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
     __weak typeof(self) weakSelf = self;
     [manager POST:url
        parameters:parameters
+         progress:nil
           success:^(NSURLSessionTask *operation, id responseObject) {
               NSLog(@"delete post success");
 
@@ -1151,6 +1155,7 @@ static NSString *const kTimelineCellIdentifier = @"timelineCell";
     __weak typeof(self) weakSelf = self;
     [manager POST:url
        parameters:parameters
+         progress:nil
           success:^(NSURLSessionTask *operation, id responseObject) {
               NSLog(@"delete comment success");
 

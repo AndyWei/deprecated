@@ -92,6 +92,7 @@
 
     [manager POST:url
        parameters:parameters
+         progress:nil
           success:^(NSURLSessionTask *operation, id responseObject) {
 
               NSLog(@"Success: post/create response = %@", responseObject);

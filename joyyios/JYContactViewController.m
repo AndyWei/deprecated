@@ -126,6 +126,7 @@ static NSString *const kCellIdentifier = @"contactCell";
     __weak typeof(self) weakSelf = self;
     [manager POST:url
        parameters:parameters
+         progress:nil
           success:^(NSURLSessionTask *operation, id responseObject) {
               NSLog(@"POST invite success. that username = %@", user.username);
               [weakSelf _didInviteUser:user];

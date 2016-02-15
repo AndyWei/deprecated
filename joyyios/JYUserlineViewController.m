@@ -124,8 +124,8 @@ static CGFloat kCardViewDefaultHeight = 150;
 
         weakSelf.cardView.coverView.image = image;
         [weakSelf.cardView.avatarButton setImage:image forState:UIControlStateNormal];
-    } failure:^(NSError *error) {
-         NSLog(@"_updateCardViewContent setImageForState failed with error = %@", error);
+    } failure:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, NSError * _Nonnull error) {
+        NSLog(@"_updateCardViewContent setImageForState failed with error = %@", error);
     }];
 }
 
@@ -254,6 +254,7 @@ static CGFloat kCardViewDefaultHeight = 150;
     __weak typeof(self) weakSelf = self;
     [manager GET:url
       parameters:parameters
+        progress:nil
          success:^(NSURLSessionTask *operation, id responseObject) {
              NSLog(@"post/userline fetch success responseObject: %@", responseObject);
 

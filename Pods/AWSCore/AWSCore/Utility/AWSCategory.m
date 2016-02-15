@@ -1,17 +1,17 @@
-/*
- Copyright 2010-2015 Amazon.com, Inc. or its affiliates. All Rights Reserved.
-
- Licensed under the Apache License, Version 2.0 (the "License").
- You may not use this file except in compliance with the License.
- A copy of the License is located at
-
- http://aws.amazon.com/apache2.0
-
- or in the "license" file accompanying this file. This file is distributed
- on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
- express or implied. See the License for the specific language governing
- permissions and limitations under the License.
- */
+//
+// Copyright 2010-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License").
+// You may not use this file except in compliance with the License.
+// A copy of the License is located at
+//
+// http://aws.amazon.com/apache2.0
+//
+// or in the "license" file accompanying this file. This file is distributed
+// on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+// express or implied. See the License for the specific language governing
+// permissions and limitations under the License.
+//
 
 #import "AWSCategory.h"
 #import <objc/runtime.h>
@@ -26,6 +26,7 @@ NSString *const AWSDateISO8601DateFormat1 = @"yyyy-MM-dd'T'HH:mm:ss'Z'";
 NSString *const AWSDateISO8601DateFormat2 = @"yyyyMMdd'T'HHmmss'Z'";
 NSString *const AWSDateISO8601DateFormat3 = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 NSString *const AWSDateShortDateFormat1 = @"yyyyMMdd";
+NSString *const AWSDateShortDateFormat2 = @"yyyy-MM-dd";
 
 @interface AWSCategory : NSObject
 
@@ -88,6 +89,9 @@ static NSTimeInterval _clockskew = 0.0;
     if ([dateFormat isEqualToString:AWSDateShortDateFormat1]) {
         return [[NSDate aws_ShortDateFormat1Formatter] dateFromString:string];
     }
+    if ([dateFormat isEqualToString:AWSDateShortDateFormat2]) {
+        return [[NSDate aws_ShortDateFormat2Formatter] dateFromString:string];
+    }
 
     NSDateFormatter *dateFormatter = [NSDateFormatter new];
     dateFormatter.timeZone = [NSTimeZone timeZoneWithName:@"GMT"];
@@ -112,6 +116,9 @@ static NSTimeInterval _clockskew = 0.0;
     }
     if ([dateFormat isEqualToString:AWSDateShortDateFormat1]) {
         return [[NSDate aws_ShortDateFormat1Formatter] stringFromDate:self];
+    }
+    if ([dateFormat isEqualToString:AWSDateShortDateFormat2]) {
+        return [[NSDate aws_ShortDateFormat2Formatter] stringFromDate:self];
     }
 
     NSDateFormatter *dateFormatter = [NSDateFormatter new];
@@ -187,6 +194,20 @@ static NSTimeInterval _clockskew = 0.0;
         _dateFormatter.timeZone = [NSTimeZone timeZoneWithName:@"GMT"];
         _dateFormatter.locale = [NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"];
         _dateFormatter.dateFormat = AWSDateShortDateFormat1;
+    });
+
+    return _dateFormatter;
+}
+
++ (NSDateFormatter *)aws_ShortDateFormat2Formatter {
+    static NSDateFormatter *_dateFormatter = nil;
+
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _dateFormatter = [NSDateFormatter new];
+        _dateFormatter.timeZone = [NSTimeZone timeZoneWithName:@"GMT"];
+        _dateFormatter.locale = [NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"];
+        _dateFormatter.dateFormat = AWSDateShortDateFormat2;
     });
 
     return _dateFormatter;

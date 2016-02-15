@@ -83,6 +83,7 @@
     __weak typeof(self) weakSelf = self;
     [manager GET:url
       parameters:parameters
+        progress:nil
          success:^(NSURLSessionTask *operation, id responseObject) {
              NSLog(@"GET post/userline fetch success responseObject: %@", responseObject);
 
@@ -113,6 +114,7 @@
     __weak typeof(self) weakSelf = self;
     [manager GET:url
       parameters:nil
+        progress:nil
          success:^(NSURLSessionTask *operation, id responseObject) {
              NSLog(@"GET friends Success");
 
@@ -150,6 +152,7 @@
     __weak typeof(self) weakSelf = self;
     [manager GET:url
       parameters:[self _fetchInvitesParameters]
+        progress:nil
          success:^(NSURLSessionTask *operation, id responseObject) {
              NSLog(@"GET invites Success");
              [weakSelf _didReceiveInvites:(NSMutableArray *)responseObject];
@@ -186,6 +189,7 @@
     __weak typeof(self) weakSelf = self;
     [manager GET:url
       parameters:[self _fetchWinksParameters]
+        progress:nil
          success:^(NSURLSessionTask *operation, id responseObject) {
              NSLog(@"GET winks Success");
 

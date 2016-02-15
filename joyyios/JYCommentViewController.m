@@ -351,6 +351,7 @@ static NSString *const kCommentlineCellIdentifier = @"commentlineCell";
     __weak typeof(self) weakSelf = self;
     [manager POST:url
        parameters:[self _parametersForCreatingComment]
+         progress:nil
           success:^(NSURLSessionTask *operation, id responseObject) {
               NSLog(@"Comment POST Success responseObject: %@", responseObject);
 
@@ -404,6 +405,7 @@ static NSString *const kCommentlineCellIdentifier = @"commentlineCell";
     __weak typeof(self) weakSelf = self;
     [manager GET:url
       parameters:parameters
+        progress:nil
          success:^(NSURLSessionTask *operation, id responseObject) {
              NSLog(@"GET post/commentline success responseObject: %@", responseObject);
 

@@ -357,6 +357,7 @@ CGFloat const kCountryNumberWidth = 60;
     __weak typeof(self) weakSelf = self;
     [manager POST:url
       parameters:parameters
+        progress:nil
          success:^(NSURLSessionTask *operation, id responseObject) {
              NSLog(@"Success: POST code/request");
              [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;

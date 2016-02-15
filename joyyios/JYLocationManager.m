@@ -176,6 +176,7 @@ static NSString *const kZip = @"location_zip";
 
     [manager POST:url
        parameters:parameters
+         progress:nil
           success:^(NSURLSessionTask *operation, id responseObject) {
               NSLog(@"POST user/appear Success. zip = %@", zip);
           }
