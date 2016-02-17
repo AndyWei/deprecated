@@ -10,6 +10,11 @@
 		743498E564A05714440866C9 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8E034C4F8FC61E210B60EDCC /* libPods.a */; };
 		D60726AE1C18179500A43717 /* JYMonth.m in Sources */ = {isa = PBXBuildFile; fileRef = D60726AD1C18179500A43717 /* JYMonth.m */; };
 		D60726B41C18FBFE00A43717 /* JYCardView.m in Sources */ = {isa = PBXBuildFile; fileRef = D60726B31C18FBFE00A43717 /* JYCardView.m */; };
+		D60E1D3B1C73B6F500C17C53 /* UIImage+Joyy.m in Sources */ = {isa = PBXBuildFile; fileRef = D60E1D3A1C73B6F500C17C53 /* UIImage+Joyy.m */; };
+		D60E1D3E1C73FF4300C17C53 /* JYMessageIncomingTextCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D60E1D3D1C73FF4300C17C53 /* JYMessageIncomingTextCell.m */; };
+		D60E1D411C73FF5E00C17C53 /* JYMessageIncomingMediaCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D60E1D401C73FF5E00C17C53 /* JYMessageIncomingMediaCell.m */; };
+		D60E1D441C73FF7400C17C53 /* JYMessageOutgoingTextCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D60E1D431C73FF7400C17C53 /* JYMessageOutgoingTextCell.m */; };
+		D60E1D471C73FF8A00C17C53 /* JYMessageOutgoingMediaCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D60E1D461C73FF8A00C17C53 /* JYMessageOutgoingMediaCell.m */; };
 		D61D1D471B4A65F200DE37DF /* MDCGeometry.m in Sources */ = {isa = PBXBuildFile; fileRef = D61D1D2B1B4A65F200DE37DF /* MDCGeometry.m */; };
 		D61D1D491B4A65F200DE37DF /* MDCViewState.m in Sources */ = {isa = PBXBuildFile; fileRef = D61D1D2E1B4A65F200DE37DF /* MDCViewState.m */; };
 		D61D1D4D1B4A65F200DE37DF /* UIView+MDCBorderedLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = D61D1D331B4A65F200DE37DF /* UIView+MDCBorderedLabel.m */; };
@@ -43,6 +48,9 @@
 		D61D1DE61B536B2700DE37DF /* JYTimelineCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D61D1DE51B536B2700DE37DF /* JYTimelineCell.m */; };
 		D61E99C71C69CDF70033B5C4 /* JYImageMediaItem.m in Sources */ = {isa = PBXBuildFile; fileRef = D61E99C61C69CDF70033B5C4 /* JYImageMediaItem.m */; };
 		D61E99CA1C6CFA590033B5C4 /* JYMessageSender.m in Sources */ = {isa = PBXBuildFile; fileRef = D61E99C91C6CFA590033B5C4 /* JYMessageSender.m */; };
+		D61E99CD1C723B040033B5C4 /* JYSessionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D61E99CC1C723B040033B5C4 /* JYSessionViewController.m */; };
+		D61E99D01C723B800033B5C4 /* JYMessageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D61E99CF1C723B800033B5C4 /* JYMessageCell.m */; };
+		D61E99D81C723F110033B5C4 /* JYMessageTextCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D61E99D71C723F110033B5C4 /* JYMessageTextCell.m */; };
 		D61FAE5E1C4461BB00142450 /* JYInviteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D61FAE5D1C4461BB00142450 /* JYInviteViewController.m */; };
 		D62124531C4B26EA006ADB7F /* JYWink.m in Sources */ = {isa = PBXBuildFile; fileRef = D62124521C4B26EA006ADB7F /* JYWink.m */; };
 		D62124561C4B26FA006ADB7F /* JYInvite.m in Sources */ = {isa = PBXBuildFile; fileRef = D62124551C4B26FA006ADB7F /* JYInvite.m */; };
@@ -86,8 +94,9 @@
 		D67DD0EC1B75321A00333626 /* JYUser.m in Sources */ = {isa = PBXBuildFile; fileRef = D67DD0EB1B75321A00333626 /* JYUser.m */; };
 		D6825BC71BE897F400F3695D /* JYLocationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D6825BC61BE897F400F3695D /* JYLocationManager.m */; };
 		D6825BCA1BE89F5A00F3695D /* libFlurry_7.3.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D6825BC91BE89F5A00F3695D /* libFlurry_7.3.0.a */; };
-		D68486B61B8AC267005CA0C4 /* JYSessionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D68486B51B8AC267005CA0C4 /* JYSessionViewController.m */; };
+		D68486B61B8AC267005CA0C4 /* JYOldSessionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D68486B51B8AC267005CA0C4 /* JYOldSessionViewController.m */; };
 		D68486BE1B8C59BF005CA0C4 /* JYMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = D68486BD1B8C59BF005CA0C4 /* JYMessage.m */; };
+		D688FC1D1C7427DD003FD76F /* JYMessageMediaCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D688FC1C1C7427DD003FD76F /* JYMessageMediaCell.m */; };
 		D689ED6A1AE42C8300CB4D2B /* UIView+Joyy.m in Sources */ = {isa = PBXBuildFile; fileRef = D689ED691AE42C8300CB4D2B /* UIView+Joyy.m */; };
 		D68DAF961AC4CACD00838E7E /* Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = D68DAF931AC4CACD00838E7E /* Constants.m */; };
 		D68DAF971AC4CACD00838E7E /* JYSignInViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D68DAF951AC4CACD00838E7E /* JYSignInViewController.m */; };
@@ -147,6 +156,16 @@
 		D60726AD1C18179500A43717 /* JYMonth.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYMonth.m; sourceTree = "<group>"; };
 		D60726B21C18FBFE00A43717 /* JYCardView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYCardView.h; sourceTree = "<group>"; };
 		D60726B31C18FBFE00A43717 /* JYCardView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYCardView.m; sourceTree = "<group>"; };
+		D60E1D391C73B6F500C17C53 /* UIImage+Joyy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Joyy.h"; sourceTree = "<group>"; };
+		D60E1D3A1C73B6F500C17C53 /* UIImage+Joyy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Joyy.m"; sourceTree = "<group>"; };
+		D60E1D3C1C73FF4300C17C53 /* JYMessageIncomingTextCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYMessageIncomingTextCell.h; sourceTree = "<group>"; };
+		D60E1D3D1C73FF4300C17C53 /* JYMessageIncomingTextCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYMessageIncomingTextCell.m; sourceTree = "<group>"; };
+		D60E1D3F1C73FF5E00C17C53 /* JYMessageIncomingMediaCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYMessageIncomingMediaCell.h; sourceTree = "<group>"; };
+		D60E1D401C73FF5E00C17C53 /* JYMessageIncomingMediaCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYMessageIncomingMediaCell.m; sourceTree = "<group>"; };
+		D60E1D421C73FF7400C17C53 /* JYMessageOutgoingTextCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYMessageOutgoingTextCell.h; sourceTree = "<group>"; };
+		D60E1D431C73FF7400C17C53 /* JYMessageOutgoingTextCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYMessageOutgoingTextCell.m; sourceTree = "<group>"; };
+		D60E1D451C73FF8A00C17C53 /* JYMessageOutgoingMediaCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYMessageOutgoingMediaCell.h; sourceTree = "<group>"; };
+		D60E1D461C73FF8A00C17C53 /* JYMessageOutgoingMediaCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYMessageOutgoingMediaCell.m; sourceTree = "<group>"; };
 		D61D1D2A1B4A65F200DE37DF /* MDCGeometry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDCGeometry.h; sourceTree = "<group>"; };
 		D61D1D2B1B4A65F200DE37DF /* MDCGeometry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDCGeometry.m; sourceTree = "<group>"; };
 		D61D1D2D1B4A65F200DE37DF /* MDCViewState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDCViewState.h; sourceTree = "<group>"; };
@@ -214,6 +233,12 @@
 		D61E99C61C69CDF70033B5C4 /* JYImageMediaItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYImageMediaItem.m; sourceTree = "<group>"; };
 		D61E99C81C6CFA590033B5C4 /* JYMessageSender.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYMessageSender.h; sourceTree = "<group>"; };
 		D61E99C91C6CFA590033B5C4 /* JYMessageSender.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYMessageSender.m; sourceTree = "<group>"; };
+		D61E99CB1C723B040033B5C4 /* JYSessionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYSessionViewController.h; sourceTree = "<group>"; };
+		D61E99CC1C723B040033B5C4 /* JYSessionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYSessionViewController.m; sourceTree = "<group>"; };
+		D61E99CE1C723B800033B5C4 /* JYMessageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYMessageCell.h; sourceTree = "<group>"; };
+		D61E99CF1C723B800033B5C4 /* JYMessageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYMessageCell.m; sourceTree = "<group>"; };
+		D61E99D61C723F110033B5C4 /* JYMessageTextCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYMessageTextCell.h; sourceTree = "<group>"; };
+		D61E99D71C723F110033B5C4 /* JYMessageTextCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYMessageTextCell.m; sourceTree = "<group>"; };
 		D61FAE5C1C4461BB00142450 /* JYInviteViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYInviteViewController.h; sourceTree = "<group>"; };
 		D61FAE5D1C4461BB00142450 /* JYInviteViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYInviteViewController.m; sourceTree = "<group>"; };
 		D62124511C4B26EA006ADB7F /* JYWink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYWink.h; sourceTree = "<group>"; };
@@ -300,10 +325,12 @@
 		D6825BC61BE897F400F3695D /* JYLocationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYLocationManager.m; sourceTree = "<group>"; };
 		D6825BC81BE89F4700F3695D /* Flurry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Flurry.h; sourceTree = "<group>"; };
 		D6825BC91BE89F5A00F3695D /* libFlurry_7.3.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libFlurry_7.3.0.a; sourceTree = "<group>"; };
-		D68486B41B8AC267005CA0C4 /* JYSessionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYSessionViewController.h; sourceTree = "<group>"; };
-		D68486B51B8AC267005CA0C4 /* JYSessionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = JYSessionViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		D68486B41B8AC267005CA0C4 /* JYOldSessionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYOldSessionViewController.h; sourceTree = "<group>"; };
+		D68486B51B8AC267005CA0C4 /* JYOldSessionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = JYOldSessionViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		D68486BC1B8C59BF005CA0C4 /* JYMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYMessage.h; sourceTree = "<group>"; };
 		D68486BD1B8C59BF005CA0C4 /* JYMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYMessage.m; sourceTree = "<group>"; };
+		D688FC1B1C7427DD003FD76F /* JYMessageMediaCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYMessageMediaCell.h; sourceTree = "<group>"; };
+		D688FC1C1C7427DD003FD76F /* JYMessageMediaCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYMessageMediaCell.m; sourceTree = "<group>"; };
 		D689ED681AE42C8300CB4D2B /* UIView+Joyy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Joyy.h"; sourceTree = "<group>"; };
 		D689ED691AE42C8300CB4D2B /* UIView+Joyy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Joyy.m"; sourceTree = "<group>"; };
 		D68DAF921AC4CACD00838E7E /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
@@ -634,6 +661,46 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
+		D61E99D41C723EAA0033B5C4 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				D6E3B0531B996F5400B707DF /* JYSessionListViewCell.h */,
+				D6E3B0541B996F5400B707DF /* JYSessionListViewCell.m */,
+				D61E99CE1C723B800033B5C4 /* JYMessageCell.h */,
+				D61E99CF1C723B800033B5C4 /* JYMessageCell.m */,
+				D61E99D61C723F110033B5C4 /* JYMessageTextCell.h */,
+				D61E99D71C723F110033B5C4 /* JYMessageTextCell.m */,
+				D60E1D3C1C73FF4300C17C53 /* JYMessageIncomingTextCell.h */,
+				D60E1D3D1C73FF4300C17C53 /* JYMessageIncomingTextCell.m */,
+				D60E1D421C73FF7400C17C53 /* JYMessageOutgoingTextCell.h */,
+				D60E1D431C73FF7400C17C53 /* JYMessageOutgoingTextCell.m */,
+				D688FC1B1C7427DD003FD76F /* JYMessageMediaCell.h */,
+				D688FC1C1C7427DD003FD76F /* JYMessageMediaCell.m */,
+				D60E1D3F1C73FF5E00C17C53 /* JYMessageIncomingMediaCell.h */,
+				D60E1D401C73FF5E00C17C53 /* JYMessageIncomingMediaCell.m */,
+				D60E1D451C73FF8A00C17C53 /* JYMessageOutgoingMediaCell.h */,
+				D60E1D461C73FF8A00C17C53 /* JYMessageOutgoingMediaCell.m */,
+				D61E99C51C69CDF70033B5C4 /* JYImageMediaItem.h */,
+				D61E99C61C69CDF70033B5C4 /* JYImageMediaItem.m */,
+			);
+			name = View;
+			sourceTree = "<group>";
+		};
+		D61E99D51C723EBE0033B5C4 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				D62C2C661B90261000233F5B /* JYSessionListViewController.h */,
+				D62C2C671B90261000233F5B /* JYSessionListViewController.m */,
+				D68486B41B8AC267005CA0C4 /* JYOldSessionViewController.h */,
+				D68486B51B8AC267005CA0C4 /* JYOldSessionViewController.m */,
+				D61E99C81C6CFA590033B5C4 /* JYMessageSender.h */,
+				D61E99C91C6CFA590033B5C4 /* JYMessageSender.m */,
+				D61E99CB1C723B040033B5C4 /* JYSessionViewController.h */,
+				D61E99CC1C723B040033B5C4 /* JYSessionViewController.m */,
+			);
+			name = Controller;
+			sourceTree = "<group>";
+		};
 		D62C2C6A1B917FE500233F5B /* Vendor */ = {
 			isa = PBXGroup;
 			children = (
@@ -720,18 +787,10 @@
 		D68486B31B8AC207005CA0C4 /* Message */ = {
 			isa = PBXGroup;
 			children = (
-				D6E3B0531B996F5400B707DF /* JYSessionListViewCell.h */,
-				D6E3B0541B996F5400B707DF /* JYSessionListViewCell.m */,
+				D61E99D51C723EBE0033B5C4 /* Controller */,
+				D61E99D41C723EAA0033B5C4 /* View */,
 				D6E3B05F1B9A38F500B707DF /* JYMessageDateFormatter.h */,
 				D6E3B0601B9A38F500B707DF /* JYMessageDateFormatter.m */,
-				D62C2C661B90261000233F5B /* JYSessionListViewController.h */,
-				D62C2C671B90261000233F5B /* JYSessionListViewController.m */,
-				D68486B41B8AC267005CA0C4 /* JYSessionViewController.h */,
-				D68486B51B8AC267005CA0C4 /* JYSessionViewController.m */,
-				D61E99C51C69CDF70033B5C4 /* JYImageMediaItem.h */,
-				D61E99C61C69CDF70033B5C4 /* JYImageMediaItem.m */,
-				D61E99C81C6CFA590033B5C4 /* JYMessageSender.h */,
-				D61E99C91C6CFA590033B5C4 /* JYMessageSender.m */,
 			);
 			name = Message;
 			sourceTree = "<group>";
@@ -789,6 +848,8 @@
 				D6966B311BA2BB2B00AAD8D5 /* UITextField+Joyy.m */,
 				D689ED681AE42C8300CB4D2B /* UIView+Joyy.h */,
 				D689ED691AE42C8300CB4D2B /* UIView+Joyy.m */,
+				D60E1D391C73B6F500C17C53 /* UIImage+Joyy.h */,
+				D60E1D3A1C73B6F500C17C53 /* UIImage+Joyy.m */,
 			);
 			name = Common;
 			sourceTree = "<group>";
@@ -1197,6 +1258,7 @@
 				D6B8D3041C322F6400B30548 /* JYAvatarCreator.m in Sources */,
 				D693798D1B54E8BC00E64F3A /* JYPhotoCaptionViewController.m in Sources */,
 				D68DAF961AC4CACD00838E7E /* Constants.m in Sources */,
+				D60E1D471C73FF8A00C17C53 /* JYMessageOutgoingMediaCell.m in Sources */,
 				D61D1D551B4A65F200DE37DF /* MDCSwipeResult.m in Sources */,
 				D6BD61741C1FF84B00EFC92C /* JYNewCommentCell.m in Sources */,
 				D6D622561C0D317E0039C4A7 /* JYPostMediaView.m in Sources */,
@@ -1242,6 +1304,7 @@
 				D679B3011B97B1E5004EBA61 /* JYFilename.m in Sources */,
 				D63F0DA21ACD08260067C5EE /* UIColor+Joyy.m in Sources */,
 				D61D1D491B4A65F200DE37DF /* MDCViewState.m in Sources */,
+				D61E99D01C723B800033B5C4 /* JYMessageCell.m in Sources */,
 				D69FF6E71B96474200466FE5 /* JYAuthenticationClient.m in Sources */,
 				D6C82B551B0D9FAE00876F57 /* JYCommentViewController.m in Sources */,
 				D6B2F05B1ACE630F009601B0 /* JYAutoCompleteTextField.m in Sources */,
@@ -1261,14 +1324,17 @@
 				D62124531C4B26EA006ADB7F /* JYWink.m in Sources */,
 				D69FF6D61B94144100466FE5 /* JYSoundPlayer.m in Sources */,
 				D61D1DA21B4E336E00DE37DF /* TGCameraAuthorizationViewController.m in Sources */,
+				D61E99CD1C723B040033B5C4 /* JYSessionViewController.m in Sources */,
 				D62124591C4B2CCB006ADB7F /* NSNumber+Joyy.m in Sources */,
 				D6C89F831C2B9A8700E96E99 /* JYWinkViewController.m in Sources */,
 				D6F7F1381BA71ADF008118DA /* JYVerificationViewController.m in Sources */,
 				D63F0D7D1ACA5E260067C5EE /* JYPhoneNumberViewController.m in Sources */,
 				D6966B321BA2BB2B00AAD8D5 /* UITextField+Joyy.m in Sources */,
+				D60E1D411C73FF5E00C17C53 /* JYMessageIncomingMediaCell.m in Sources */,
 				D6C89F801C2B62BC00E96E99 /* JYProfileCardView.m in Sources */,
 				D63B69B61AC53BB4005600A9 /* JYFloatLabeledTextField.m in Sources */,
 				D6F301B31C13B68000821FEF /* JYPostCommentCell.m in Sources */,
+				D688FC1D1C7427DD003FD76F /* JYMessageMediaCell.m in Sources */,
 				D6903D101C07CFE000CDC64F /* JYPostCommentView.m in Sources */,
 				D60726B41C18FBFE00A43717 /* JYCardView.m in Sources */,
 				D65AFA5E1AEC715D007867D0 /* JYTimelineViewController.m in Sources */,
@@ -1289,6 +1355,7 @@
 				D6BD61711C1E788500EFC92C /* JYPostCreator.m in Sources */,
 				D68486BE1B8C59BF005CA0C4 /* JYMessage.m in Sources */,
 				D63F0D551AC7ACB70067C5EE /* JYSignUpViewController.m in Sources */,
+				D60E1D441C73FF7400C17C53 /* JYMessageOutgoingTextCell.m in Sources */,
 				D6BD617A1C20CC2300EFC92C /* JYReminderView.m in Sources */,
 				D6966B3A1BA3873200AAD8D5 /* JYCountryViewCell.m in Sources */,
 				D6B8D3011C2BA75000B30548 /* JYWinkCell.m in Sources */,
@@ -1297,7 +1364,7 @@
 				D63A014B1C335BA700E74C36 /* JYYearPickerView.m in Sources */,
 				D61D1DAC1B4E336E00DE37DF /* TGAssetsLibrary.m in Sources */,
 				D61D1DBC1B4E336E00DE37DF /* TGAssetImageFile.m in Sources */,
-				D68486B61B8AC267005CA0C4 /* JYSessionViewController.m in Sources */,
+				D68486B61B8AC267005CA0C4 /* JYOldSessionViewController.m in Sources */,
 				D6BD61771C2007EF00EFC92C /* JYNewCommentViewController.m in Sources */,
 				D67DD0EC1B75321A00333626 /* JYUser.m in Sources */,
 				D6903D191C0BA44A00CDC64F /* JYYRS.m in Sources */,
@@ -1305,12 +1372,15 @@
 				D6903D0A1C07A9C200CDC64F /* JYUserView.m in Sources */,
 				D61D1DB81B4E336E00DE37DF /* TGCameraShot.m in Sources */,
 				D63591951BEA913500BFFF82 /* JYDeviceManager.m in Sources */,
+				D61E99D81C723F110033B5C4 /* JYMessageTextCell.m in Sources */,
 				D69FF6E51B96474200466FE5 /* JYAuthenticatedIdentityProvider.m in Sources */,
 				D61D1DA01B4E336E00DE37DF /* UIImage+CameraFilters.m in Sources */,
+				D60E1D3E1C73FF4300C17C53 /* JYMessageIncomingTextCell.m in Sources */,
 				D62C2C681B90261000233F5B /* JYSessionListViewController.m in Sources */,
 				D6966B361BA3753A00AAD8D5 /* JYCountryListViewController.m in Sources */,
 				D67DD0E81B7530AF00333626 /* JYUserCard.m in Sources */,
 				D6E3B0551B996F5400B707DF /* JYSessionListViewCell.m in Sources */,
+				D60E1D3B1C73B6F500C17C53 /* UIImage+Joyy.m in Sources */,
 				D6C1C15E1C5DDC8A00D2ABFF /* JYSession.m in Sources */,
 				D61D1D571B4A65F200DE37DF /* MDCSwipeToChooseView.m in Sources */,
 				D650DE3F1C503BA100EA0CE5 /* UITabBarItem+Joyy.m in Sources */,

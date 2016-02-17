@@ -13,7 +13,6 @@
 @interface JYMessage ()
 @property (nonatomic) NSString *type;
 @property (nonatomic) NSDictionary *bodyDictionary;
-@property (nonatomic) CGSize dimensions;
 @end
 
 
@@ -34,6 +33,7 @@
              @"bodyDictionary": [NSNull null],
              @"bodyType": [NSNull null],
              @"dimensions": [NSNull null],
+             @"displayDimensions": [NSNull null],
              @"media": [NSNull null],
              @"mediaUnderneath": [NSNull null],
              @"progressView": [NSNull null],
@@ -368,6 +368,18 @@
     }
 
     return CGSizeMake(kMessageMediaWidthDefault, kMessageMediaHeightDefault);
+}
+
+- (CGSize)displayDimensions
+{
+    CGFloat min = fmin(kMessageMediaWidthDefault, kMessageMediaHeightDefault);
+    CGFloat max = fmax(kMessageMediaWidthDefault, kMessageMediaHeightDefault);
+    if (self.dimensions.width < self.dimensions.height)
+    {
+        return CGSizeMake(min, max);
+    }
+
+    return CGSizeMake(max, min);
 }
 
 #pragma mark - Private methods

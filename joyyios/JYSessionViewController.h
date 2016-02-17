@@ -2,16 +2,13 @@
 //  JYSessionViewController.h
 //  joyyios
 //
-//  Created by Ping Yang on 8/23/15.
-//  Copyright (c) 2015 Joyy Inc. All rights reserved.
+//  Created by Ping Yang on 2/15/16.
+//  Copyright © 2016 Joyy Inc. All rights reserved.
 //
 
-#import <JSQMessagesViewController/JSQMessages.h>
-#import "JYFriend.h"
+#import <SlackTextViewController/SLKTextViewController.h>
 
-typedef void(^ImageHandler)(NSString *url);
-
-@interface JYSessionViewController : JSQMessagesViewController
+@interface JYSessionViewController : SLKTextViewController
 
 @property (nonatomic) JYFriend *friend;
 

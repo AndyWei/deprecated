@@ -50,6 +50,8 @@ typedef NS_ENUM(NSUInteger, JYMessageUploadStatus)
 @property (nonatomic) NSString *body;
 
 // non FMDB coloumns
+@property (nonatomic) CGSize dimensions;
+@property (nonatomic) CGSize displayDimensions;
 @property (nonatomic) JYMessageUploadStatus uploadStatus;
 @property (nonatomic) JYMessageBodyType bodyType;
 @property (nonatomic) NSString *resource;

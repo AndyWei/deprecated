@@ -11,4 +11,7 @@
 
 + (UIView *)viewWithImageNamed:(NSString *)imageName;
 
+- (void)pinSubview:(UIView *)subview toEdge:(NSLayoutAttribute)attribute;
+- (void)pinAllEdgesOfSubview:(UIView *)subview;
+
 @end

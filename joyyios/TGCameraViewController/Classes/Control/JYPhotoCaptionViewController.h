@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 Joyy Inc. All rights reserved.
 //
 
-#import "SLKTextViewController.h"
+#import <SlackTextViewController/SLKTextViewController.h>
 #import "TGCamera.h"
 
 @interface JYPhotoCaptionViewController : SLKTextViewController <TGCaptionViewControllerInterface>
