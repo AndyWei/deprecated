@@ -682,6 +682,8 @@
 				D60E1D461C73FF8A00C17C53 /* JYMessageOutgoingMediaCell.m */,
 				D61E99C51C69CDF70033B5C4 /* JYImageMediaItem.h */,
 				D61E99C61C69CDF70033B5C4 /* JYImageMediaItem.m */,
+				D6E3B05F1B9A38F500B707DF /* JYMessageDateFormatter.h */,
+				D6E3B0601B9A38F500B707DF /* JYMessageDateFormatter.m */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -789,8 +791,6 @@
 			children = (
 				D61E99D51C723EBE0033B5C4 /* Controller */,
 				D61E99D41C723EAA0033B5C4 /* View */,
-				D6E3B05F1B9A38F500B707DF /* JYMessageDateFormatter.h */,
-				D6E3B0601B9A38F500B707DF /* JYMessageDateFormatter.m */,
 			);
 			name = Message;
 			sourceTree = "<group>";

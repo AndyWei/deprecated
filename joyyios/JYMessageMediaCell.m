@@ -30,7 +30,13 @@
 
 - (void)fetchMessageImage
 {
-    [self.contentImageView sd_setImageWithURL:[NSURL URLWithString:self.message.URL]];
+    __weak typeof (self) weakSelf = self;
+    [self.contentImageView sd_setImageWithURL:[NSURL URLWithString:self.message.URL]
+                             placeholderImage:self.message.mediaUnderneath
+                                    completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+        weakSelf.contentImageView.image = image;
+        weakSelf.message.mediaUnderneath = image;
+    }];
 }
 
 - (void)setMessage:(JYMessage *)message

@@ -6,6 +6,8 @@
 //  Copyright © 2016 Joyy Inc. All rights reserved.
 //
 
+#import <AWSS3/AWSS3.h>
+#import <IDMPhotoBrowser/IDMPhotoBrowser.h>
 #import <MJRefresh/MJRefresh.h>
 
 #import "JYLocalDataManager.h"
@@ -48,8 +50,14 @@ static NSString *const kOutgoingTextCell = @"outgoingTextCell";
 {
     [super viewDidLoad];
 
+    self.title = self.friend.username;
+
     [self _reloadMessages];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_didReceiveMessage:) name:kNotificationDidReceiveMessage object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_didSendMessage:) name:kNotificationDidSendMessage object:nil];
+
     [self _configTableView];
+    self.edgesForExtendedLayout = UIRectEdgeNone;
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -193,6 +201,92 @@ static NSString *const kOutgoingTextCell = @"outgoingTextCell";
 
 #pragma mark - UITableView Delegate
 
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    JYMessage *message = self.messageList[indexPath.row];
 
+    if (message.bodyType == JYMessageBodyTypeImage)
+    {
+        if (message.uploadStatus == JYMessageUploadStatusFailure)
+        {
+//            [self _resendImageMessage:message];
+            return;
+        }
+
+        JYMessageMediaCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+        [self _showImageBrowserWithImage:message.mediaUnderneath fromView:cell.contentImageView];
+    }
+}
+
+#pragma mark - Private Methods
+
+- (void)_showImageBrowserWithImage:(UIImage *)image fromView:(UIView *)view
+{
+    IDMPhoto *photo = [IDMPhoto photoWithImage:image];
+    IDMPhotoBrowser *browser = [[IDMPhotoBrowser alloc] initWithPhotos:@[photo] animatedFromView:view];
+    browser.scaleImage = image;
+    [self presentViewController:browser animated:YES completion:nil];
+}
+
+- (void)_showMessage:(JYMessage *)message
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+
+        [self.tableView beginUpdates];
+
+        NSUInteger count = [self.messageList count];
+        [self.messageList addObject:message];
+        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:count inSection:0];
+        [self.tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+
+        [self.tableView endUpdates];
+
+        [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:NO];
+    });
+}
+
+#pragma mark - Notifications
+
+- (void)_didReceiveMessage:(NSNotification *)notification
+{
+    NSDictionary *info = [notification userInfo];
+    if (!info)
+    {
+        return;
+    }
+
+    id obj = [info objectForKey:@"message"];
+    if (obj == [NSNull null])
+    {
+        return;
+    }
+
+    [self _showMessage:obj];
+}
+
+- (void)_didSendMessage:(NSNotification *)notification
+{
+    NSDictionary *info = [notification userInfo];
+    if (!info)
+    {
+        return;
+    }
+
+    id obj = [info objectForKey:@"message"];
+    if (obj == [NSNull null])
+    {
+        return;
+    }
+
+    JYMessage *message = (JYMessage *)obj;
+
+    // Only handle txt in this way, all the other type media outgoing messages was handled separately
+    if (message.bodyType != JYMessageBodyTypeText)
+    {
+        return;
+    }
+
+    [self _showMessage:message];
+}
 
 @end
