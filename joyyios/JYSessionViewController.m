@@ -10,6 +10,8 @@
 #import <IDMPhotoBrowser/IDMPhotoBrowser.h>
 #import <MJRefresh/MJRefresh.h>
 
+#import "JYButton.h"
+#import "JYInputBarContainer.h"
 #import "JYLocalDataManager.h"
 #import "JYMessageTextCell.h"
 #import "JYMessageIncomingMediaCell.h"
@@ -20,7 +22,9 @@
 #import "JYXmppManager.h"
 
 @interface JYSessionViewController () <UINavigationControllerDelegate, UIImagePickerControllerDelegate>
-
+@property (nonatomic) JYButton *cameraButton;
+@property (nonatomic) JYButton *micButton;
+@property (nonatomic) JYInputBarContainer *rightContainer;
 @property (nonatomic) NSMutableArray *messageList;
 @property (nonatomic) XMPPJID *thatJID;
 @end
@@ -37,6 +41,7 @@ static NSString *const kOutgoingTextCell = @"outgoingTextCell";
     if (self = [super initWithTableViewStyle:UITableViewStylePlain])
     {
         self.inverted = NO;
+        self.textInputbar.autoHideRightButton = NO;
     }
     return self;
 }
@@ -50,13 +55,21 @@ static NSString *const kOutgoingTextCell = @"outgoingTextCell";
 {
     [super viewDidLoad];
 
+    self.shouldClearTextAtRightButtonPress = YES;
+    self.shouldScrollToBottomAfterKeyboardShows = YES;
+
+    // the freind
     self.title = self.friend.username;
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"me_selected"] style:UIBarButtonItemStylePlain target:self action:@selector(_showFriendProfile)];
 
     [self _reloadMessages];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_didReceiveMessage:) name:kNotificationDidReceiveMessage object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_didSendMessage:) name:kNotificationDidSendMessage object:nil];
 
     [self _configTableView];
+    [self _configTextInputbar];
+
+    self.extendedLayoutIncludesOpaqueBars = YES;
     self.edgesForExtendedLayout = UIRectEdgeNone;
 }
 
@@ -77,6 +90,52 @@ static NSString *const kOutgoingTextCell = @"outgoingTextCell";
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
+- (void)_configTableView
+{
+    self.tableView.estimatedRowHeight = 50;
+    self.tableView.backgroundColor = JoyyWhite;
+    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    self.tableView.showsHorizontalScrollIndicator = NO;
+    self.tableView.showsVerticalScrollIndicator = YES;
+
+    [self.tableView registerClass:JYMessageIncomingMediaCell.class forCellReuseIdentifier:kIncomingMediaCell];
+    [self.tableView registerClass:JYMessageIncomingTextCell.class forCellReuseIdentifier:kIncomingTextCell];
+    [self.tableView registerClass:JYMessageOutgoingMediaCell.class forCellReuseIdentifier:kOutgoingMediaCell];
+    [self.tableView registerClass:JYMessageOutgoingTextCell.class forCellReuseIdentifier:kOutgoingTextCell];
+
+    // Setup the pull-up-to-refresh footer
+    MJRefreshNormalHeader *header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(_fetchOldMessages)];
+    header.stateLabel.hidden = YES;
+    self.tableView.mj_header = header;
+}
+
+- (void)_configTextInputbar
+{
+    [self.leftButton setImage:[UIImage imageNamed:@"upload"] forState:UIControlStateNormal];
+    [self.leftButton setImageEdgeInsets:UIEdgeInsetsMake(4, 4, 4, 4)];
+    [self.leftButton setTintColor:JoyyBlue];
+
+    [self.rightButton setTitle:NSLocalizedString(@"    Send    ", nil) forState:UIControlStateNormal];
+    self.rightButton.titleLabel.font = [UIFont boldSystemFontOfSize:17.0];
+    self.rightButton.tintColor = JoyyBlue;
+
+    [self.textInputbar addSubview:self.rightContainer];
+    NSDictionary *views = @{
+                            @"rightContainer": self.rightContainer
+                            };
+
+    [self.textInputbar addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(>=0@500)-[rightContainer(95)]-0-|" options:0 metrics:nil views:views]];
+    [self.textInputbar addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[rightContainer]-0-|" options:0 metrics:nil views:views]];
+
+    [self showSendButton:NO];
+}
+
+- (void)showSendButton:(BOOL)show
+{
+    self.rightContainer.hidden = show;
+    self.rightButton.tintColor = show? JoyyBlue: ClearColor;
+}
+
 #pragma mark - Properties
 
 - (XMPPJID *)thatJID
@@ -88,6 +147,114 @@ static NSString *const kOutgoingTextCell = @"outgoingTextCell";
     }
     return _thatJID;
 }
+
+- (JYInputBarContainer *)rightContainer
+{
+    if (!_rightContainer)
+    {
+        UIImage *camera = [UIImage imageNamed:@"camera"];
+        UIImage *mic = [UIImage imageNamed:@"microphone"];
+        JYInputBarContainer *container = [[JYInputBarContainer alloc] initWithCameraImage:camera micImage:mic];
+
+        [container.cameraButton addTarget:self action:@selector(_showCamera) forControlEvents:UIControlEventTouchUpInside];
+        [container.micButton addTarget:self action:@selector(_micButtonTouchDown) forControlEvents:UIControlEventTouchDown];
+        [container.micButton addTarget:self action:@selector(_micButtonTouchRelease) forControlEvents:UIControlEventTouchUpInside];
+        [container.micButton addTarget:self action:@selector(_micButtonTouchRelease) forControlEvents:UIControlEventTouchUpOutside];
+
+        _rightContainer = container;
+    }
+    return _rightContainer;
+}
+
+#pragma mark - TextView delegate
+
+- (void)textViewDidChange:(UITextView *)textView
+{
+    [super textViewDidChange:textView];
+
+    if (textView != self.textInputbar.textView) {
+        return;
+    }
+
+    BOOL hasText = ![textView.text isInvisible];
+    [self showSendButton:hasText];
+}
+
+#pragma mark - Actions
+
+- (void)didPressLeftButton:(id)sender
+{
+    NSString *title  = NSLocalizedString(@"Media messages", nil);
+    NSString *cancel = NSLocalizedString(@"Cancel", nil);
+    NSString *photo = NSLocalizedString(@"Send photo", nil);
+    NSString *video = NSLocalizedString(@"Send video", nil);
+    NSString *location = NSLocalizedString(@"Send location", nil);
+
+
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:title
+                                                                   message:nil
+                                                            preferredStyle:UIAlertControllerStyleActionSheet];
+
+    __weak typeof(self) weakSelf = self;
+    [alert addAction:[UIAlertAction actionWithTitle:photo style:UIAlertActionStyleDefault
+                                            handler:^(UIAlertAction * action) {
+                                                [weakSelf _showPhotoPicker];
+                                            }]];
+
+    [alert addAction:[UIAlertAction actionWithTitle:video style:UIAlertActionStyleDefault
+                                            handler:^(UIAlertAction * action) {
+
+                                            }]];
+
+    [alert addAction:[UIAlertAction actionWithTitle:location style:UIAlertActionStyleDefault
+                                            handler:^(UIAlertAction * action) {
+
+                                            }]];
+
+    [alert addAction:[UIAlertAction actionWithTitle:cancel style:UIAlertActionStyleCancel handler:nil]];
+
+    [self presentViewController:alert animated:YES completion:nil];
+
+    [super didPressLeftButton:sender];
+}
+
+- (void)didPressRightButton:(id)sender
+{
+    //
+
+    [super didPressRightButton:sender];
+}
+
+- (void)_micButtonTouchDown
+{
+    NSLog(@"_micButtonTouchDown");
+}
+
+- (void)_micButtonTouchRelease
+{
+    NSLog(@"_micButtonTouchRelease");
+}
+
+- (void)_showPhotoPicker
+{
+    [self _showPickerWithSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
+}
+
+- (void)_showCamera
+{
+    [self _showPickerWithSourceType:UIImagePickerControllerSourceTypeCamera];
+}
+
+- (void)_showPickerWithSourceType:(UIImagePickerControllerSourceType)sourceType
+{
+    UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+    picker.delegate = self;
+    picker.sourceType = sourceType;
+
+    [self presentViewController:picker animated:YES completion:nil];
+}
+
+#pragma mark - Data
 
 - (void)_reloadMessages
 {
@@ -125,25 +292,6 @@ static NSString *const kOutgoingTextCell = @"outgoingTextCell";
 {
     NSDictionary *info = @{@"delta": @(delta)};
     [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationUpdateBadgeCount object:nil userInfo:info];
-}
-
-- (void)_configTableView
-{
-    self.tableView.estimatedRowHeight = 50;
-    self.tableView.backgroundColor = JoyyWhite;
-    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    self.tableView.showsHorizontalScrollIndicator = NO;
-    self.tableView.showsVerticalScrollIndicator = YES;
-
-    [self.tableView registerClass:JYMessageIncomingMediaCell.class forCellReuseIdentifier:kIncomingMediaCell];
-    [self.tableView registerClass:JYMessageIncomingTextCell.class forCellReuseIdentifier:kIncomingTextCell];
-    [self.tableView registerClass:JYMessageOutgoingMediaCell.class forCellReuseIdentifier:kOutgoingMediaCell];
-    [self.tableView registerClass:JYMessageOutgoingTextCell.class forCellReuseIdentifier:kOutgoingTextCell];
-
-        // Setup the pull-up-to-refresh footer
-    MJRefreshNormalHeader *header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(_fetchOldMessages)];
-    header.stateLabel.hidden = YES;
-    self.tableView.mj_header = header;
 }
 
 - (void)_fetchOldMessages
@@ -191,8 +339,6 @@ static NSString *const kOutgoingTextCell = @"outgoingTextCell";
 
     cell.message = message;
 
-    cell.transform = self.tableView.transform;
-
     [cell setNeedsUpdateConstraints];
     [cell updateConstraintsIfNeeded];
 
@@ -220,6 +366,10 @@ static NSString *const kOutgoingTextCell = @"outgoingTextCell";
 
 #pragma mark - Private Methods
 
+- (void)_showFriendProfile
+{
+}
+
 - (void)_showImageBrowserWithImage:(UIImage *)image fromView:(UIView *)view
 {
     IDMPhoto *photo = [IDMPhoto photoWithImage:image];
@@ -232,13 +382,12 @@ static NSString *const kOutgoingTextCell = @"outgoingTextCell";
 {
     dispatch_async(dispatch_get_main_queue(), ^{
 
-        [self.tableView beginUpdates];
-
         NSUInteger count = [self.messageList count];
-        [self.messageList addObject:message];
         NSIndexPath *indexPath = [NSIndexPath indexPathForRow:count inSection:0];
-        [self.tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
 
+        [self.tableView beginUpdates];
+        [self.messageList addObject:message];
+        [self.tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationTop];
         [self.tableView endUpdates];
 
         [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:NO];
