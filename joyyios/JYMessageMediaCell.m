@@ -18,6 +18,7 @@
     if (self)
     {
         [self.contentView addSubview:self.mediaContainerView];
+        [self.mediaContainerView addSubview:self.contentImageView];
     }
     return self;
 }
@@ -31,7 +32,7 @@
 - (void)fetchMessageImage
 {
     __weak typeof (self) weakSelf = self;
-    [self.contentImageView sd_setImageWithURL:[NSURL URLWithString:self.message.URL]
+    [self.contentImageView sd_setImageWithURL:[NSURL URLWithString:self.message.url]
                              placeholderImage:self.message.mediaUnderneath
                                     completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
         weakSelf.contentImageView.image = image;
@@ -52,7 +53,14 @@
     [self.mediaContainerView addSubview:self.contentImageView];
     [self.mediaContainerView pinAllEdgesOfSubview:self.contentImageView];
 
-    [self fetchMessageImage];
+    if (message.mediaUnderneath)
+    {
+        self.contentImageView.image = message.mediaUnderneath;
+    }
+    else
+    {
+        [self fetchMessageImage];
+    }
 }
 
 - (UIView *)mediaContainerView

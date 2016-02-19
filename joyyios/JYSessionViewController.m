@@ -11,6 +11,7 @@
 #import <MJRefresh/MJRefresh.h>
 
 #import "JYButton.h"
+#import "JYFilename.h"
 #import "JYInputBarContainer.h"
 #import "JYLocalDataManager.h"
 #import "JYMessageTextCell.h"
@@ -18,13 +19,13 @@
 #import "JYMessageIncomingTextCell.h"
 #import "JYMessageOutgoingMediaCell.h"
 #import "JYMessageOutgoingTextCell.h"
+#import "JYMessageSender.h"
 #import "JYSessionViewController.h"
 #import "JYXmppManager.h"
 
 @interface JYSessionViewController () <UINavigationControllerDelegate, UIImagePickerControllerDelegate>
-@property (nonatomic) JYButton *cameraButton;
-@property (nonatomic) JYButton *micButton;
 @property (nonatomic) JYInputBarContainer *rightContainer;
+@property (nonatomic) JYMessageSender *messageSender;
 @property (nonatomic) NSMutableArray *messageList;
 @property (nonatomic) XMPPJID *thatJID;
 @end
@@ -55,7 +56,6 @@ static NSString *const kOutgoingTextCell = @"outgoingTextCell";
 {
     [super viewDidLoad];
 
-    self.shouldClearTextAtRightButtonPress = YES;
     self.shouldScrollToBottomAfterKeyboardShows = YES;
 
     // the freind
@@ -92,7 +92,7 @@ static NSString *const kOutgoingTextCell = @"outgoingTextCell";
 
 - (void)_configTableView
 {
-    self.tableView.estimatedRowHeight = 50;
+    self.tableView.estimatedRowHeight = 70;
     self.tableView.backgroundColor = JoyyWhite;
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.tableView.showsHorizontalScrollIndicator = NO;
@@ -146,6 +146,15 @@ static NSString *const kOutgoingTextCell = @"outgoingTextCell";
         _thatJID = [JYXmppManager jidWithUserId:friendUserId];
     }
     return _thatJID;
+}
+
+- (JYMessageSender *)messageSender
+{
+    if (!_messageSender)
+    {
+        _messageSender = [[JYMessageSender alloc] initWithThatJID:self.thatJID];
+    }
+    return _messageSender;
 }
 
 - (JYInputBarContainer *)rightContainer
@@ -220,7 +229,9 @@ static NSString *const kOutgoingTextCell = @"outgoingTextCell";
 
 - (void)didPressRightButton:(id)sender
 {
-    //
+    [self showSendButton:NO];
+    [self.messageSender sendText:self.textInputbar.textView.text];
+    [self showSendButton:YES];
 
     [super didPressRightButton:sender];
 }
@@ -252,6 +263,108 @@ static NSString *const kOutgoingTextCell = @"outgoingTextCell";
     picker.sourceType = sourceType;
 
     [self presentViewController:picker animated:YES completion:nil];
+}
+
+- (void)_resendImageMessage:(JYMessage *)message
+{
+    message.uploadStatus = JYMessageUploadStatusOngoing;
+    [self _refresh];
+
+    UIImage *image = (UIImage *)message.mediaUnderneath;
+    [self _sendMessage:message withImage:image];
+}
+
+- (void)_sendMessage:(JYMessage *)message withImage:(UIImage *)image
+{
+    __weak typeof(self) weakSelf = self;
+    [self _sendImage:image success:^(NSString *url) {
+
+        // TODO: there is a bug: if _sendMessageWithType fail due to xmpp connect issue, the sender will consider the photo has been sent
+        message.uploadStatus = JYMessageUploadStatusSuccess;
+        [weakSelf _refresh];
+        [weakSelf.messageSender sendImageWithDimensions:image.size URL:url];
+    } failure:^(NSError *error) {
+        NSLog(@"send image error = %@", error);
+        message.uploadStatus = JYMessageUploadStatusFailure;
+        [weakSelf _refresh];
+    }];
+}
+
+- (void)_refresh
+{
+    [self.tableView reloadData];
+}
+
+- (void)_showFriendProfile
+{
+}
+
+- (void)_showImageBrowserWithImage:(UIImage *)image fromView:(UIView *)view
+{
+    IDMPhoto *photo = [IDMPhoto photoWithImage:image];
+    IDMPhotoBrowser *browser = [[IDMPhotoBrowser alloc] initWithPhotos:@[photo] animatedFromView:view];
+    browser.scaleImage = image;
+    [self presentViewController:browser animated:YES completion:nil];
+}
+
+- (void)_showMessage:(JYMessage *)message
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+
+        NSUInteger count = [self.messageList count];
+        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:count inSection:0];
+
+        [self.tableView beginUpdates];
+        [self.messageList addObject:message];
+        [self.tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+        [self.tableView endUpdates];
+
+        [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:NO];
+    });
+}
+
+- (void)_showOngoingMessage:(JYMessage *)message
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+
+        NSUInteger count = [self.messageList count];
+        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:count inSection:0];
+
+        [self.tableView beginUpdates];
+        [self.messageList addObject:message];
+        [self.tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+        [self.tableView endUpdates];
+
+        [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:NO];
+    });
+}
+
+#pragma mark - UIImagePickerControllerDelegate
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
+{
+    [picker dismissViewControllerAnimated:YES completion:nil];
+
+    // resize image
+    UIImage *originalImage = info[UIImagePickerControllerOriginalImage];
+    CGFloat min = fmin(originalImage.size.width, originalImage.size.height);
+    if (min == 0.0f)
+    {
+        return;
+    }
+
+    CGFloat factor = fmin(kPhotoWidth/min, 1);
+    CGFloat width = originalImage.size.width * factor;
+    CGFloat heigth = originalImage.size.height * factor;
+    UIImage *image = [originalImage imageScaledToSize:CGSizeMake(width, heigth)];
+
+    // show JYMessage
+    JYMessage *message = [[JYMessage alloc] initWithImage:image];
+    message.uploadStatus = JYMessageUploadStatusOngoing;
+    [self _showOngoingMessage:message];
+
+    // send image
+    [self _sendMessage:message withImage:image];
 }
 
 #pragma mark - Data
@@ -355,43 +468,13 @@ static NSString *const kOutgoingTextCell = @"outgoingTextCell";
     {
         if (message.uploadStatus == JYMessageUploadStatusFailure)
         {
-//            [self _resendImageMessage:message];
+            [self _resendImageMessage:message];
             return;
         }
 
         JYMessageMediaCell *cell = [tableView cellForRowAtIndexPath:indexPath];
         [self _showImageBrowserWithImage:message.mediaUnderneath fromView:cell.contentImageView];
     }
-}
-
-#pragma mark - Private Methods
-
-- (void)_showFriendProfile
-{
-}
-
-- (void)_showImageBrowserWithImage:(UIImage *)image fromView:(UIView *)view
-{
-    IDMPhoto *photo = [IDMPhoto photoWithImage:image];
-    IDMPhotoBrowser *browser = [[IDMPhotoBrowser alloc] initWithPhotos:@[photo] animatedFromView:view];
-    browser.scaleImage = image;
-    [self presentViewController:browser animated:YES completion:nil];
-}
-
-- (void)_showMessage:(JYMessage *)message
-{
-    dispatch_async(dispatch_get_main_queue(), ^{
-
-        NSUInteger count = [self.messageList count];
-        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:count inSection:0];
-
-        [self.tableView beginUpdates];
-        [self.messageList addObject:message];
-        [self.tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationTop];
-        [self.tableView endUpdates];
-
-        [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:NO];
-    });
 }
 
 #pragma mark - Notifications
@@ -430,12 +513,64 @@ static NSString *const kOutgoingTextCell = @"outgoingTextCell";
     JYMessage *message = (JYMessage *)obj;
 
     // Only handle txt in this way, all the other type media outgoing messages was handled separately
-    if (message.bodyType != JYMessageBodyTypeText)
+    if (message.bodyType == JYMessageBodyTypeText)
     {
+        [self _showMessage:message];
+    }
+}
+
+#pragma mark S3
+- (void)_sendImage:(UIImage *)image success:(ImageHandler)success failure:(FailureHandler)failure
+{
+    NSURL *fileURL = [NSURL fileURLWithPath:[NSTemporaryDirectory() stringByAppendingPathComponent:@"message"]];
+
+    NSData *imageData = UIImageJPEGRepresentation(image, kPhotoQuality);
+    [imageData writeToURL:fileURL atomically:YES];
+
+    NSString *s3filename = [[JYFilename sharedInstance] randomFilenameWithHttpContentType:kContentTypeJPG];
+    NSString *s3region = [JYFilename sharedInstance].region;
+    NSString *s3url = [NSString stringWithFormat:@"%@:%@", s3region, s3filename];
+
+    AWSS3TransferManager *transferManager = [AWSS3TransferManager defaultS3TransferManager];
+    if (!transferManager)
+    {
+        NSLog(@"Error: no S3 transferManager");
+        if (failure)
+        {
+            NSError *error = [NSError errorWithDomain:@"winkrock" code:2000 userInfo:@{@"error": @"no S3 transferManager"}];
+            dispatch_async(dispatch_get_main_queue(), ^(void){ failure(error); });
+        }
         return;
     }
 
-    [self _showMessage:message];
+    AWSS3TransferManagerUploadRequest *request = [AWSS3TransferManagerUploadRequest new];
+    request.bucket = [JYFilename sharedInstance].messageBucketName;
+    request.key = s3filename;
+    request.body = fileURL;
+    request.contentType = kContentTypeJPG;
+
+    [[transferManager upload:request] continueWithBlock:^id(AWSTask *task) {
+        if (task.error)
+        {
+            NSLog(@"Error: AWSS3TransferManager upload error = %@", task.error);
+
+            if (failure)
+            {
+                dispatch_async(dispatch_get_main_queue(), ^(void){ failure(task.error); });
+            }
+        }
+        if (task.result)
+        {
+            AWSS3TransferManagerUploadOutput *uploadOutput = task.result;
+            NSLog(@"Success: AWSS3TransferManager upload task.result = %@", uploadOutput);
+
+            if (success)
+            {
+                dispatch_async(dispatch_get_main_queue(), ^(void){ success(s3url); });
+            }
+        }
+        return nil;
+    }];
 }
 
 @end

@@ -29,7 +29,6 @@
              @"isOutgoing": @"is_outgoing",
              @"isUnread": @"is_unread",
              @"body": @"body",
-             @"URL": [NSNull null],
              @"bodyDictionary": [NSNull null],
              @"bodyType": [NSNull null],
              @"dimensions": [NSNull null],
@@ -41,7 +40,8 @@
              @"text": [NSNull null],
              @"timestamp": [NSNull null],
              @"type": [NSNull null],
-             @"uploadStatus": [NSNull null]
+             @"uploadStatus": [NSNull null],
+             @"url": [NSNull null]
              };
 }
 
@@ -279,14 +279,14 @@
     return ret;
 }
 
-- (NSString *)URL
+- (NSString *)url
 {
     if (self.bodyType == JYMessageBodyTypeText)
     {
         return nil;
     }
 
-    if (!_URL)
+    if (!_url)
     {
         NSArray *array = [self.resource componentsSeparatedByString:@":"];
 
@@ -299,9 +299,9 @@
         NSString *region = array[0];
         NSString *prefix = [[JYFilename sharedInstance] messageURLPrefixOfRegion:region];
         NSString *filename = array[1];
-        _URL = [prefix stringByAppendingString:filename];
+        _url = [prefix stringByAppendingString:filename];
     }
-    return _URL;
+    return _url;
 }
 
 - (M13ProgressViewPie *)progressView
@@ -396,7 +396,7 @@
     }
     else
     {
-        item = [[JYImageMediaItem alloc] initWithURL:self.URL];
+        item = [[JYImageMediaItem alloc] initWithURL:self.url];
         item.appliesMediaViewMaskAsOutgoing = [self.isOutgoing boolValue];
     }
 

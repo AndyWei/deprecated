@@ -245,7 +245,7 @@ static NSString *const kCellIdentifier = @"sessionCell";
     {
         if (msg.bodyType == JYMessageBodyTypeImage)
         {
-            NSURL *url = [NSURL URLWithString:msg.URL];
+            NSURL *url = [NSURL URLWithString:msg.url];
             NSString *key = [SDWebImageManager.sharedManager cacheKeyForURL:url];
             [[SDImageCache sharedImageCache] removeImageForKey:key];
         }

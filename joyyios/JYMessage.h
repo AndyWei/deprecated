@@ -57,7 +57,7 @@ typedef NS_ENUM(NSUInteger, JYMessageUploadStatus)
 @property (nonatomic) NSString *resource;
 @property (nonatomic) NSDate *timestamp;
 @property (nonatomic) NSString *text;
-@property (nonatomic) NSString *URL;
+@property (nonatomic) NSString *url;
 @property (nonatomic) id<JSQMessageMediaData> media;
 @property (nonatomic) id mediaUnderneath;
 @property (nonatomic) M13ProgressViewPie *progressView;

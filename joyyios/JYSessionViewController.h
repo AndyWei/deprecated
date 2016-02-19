@@ -8,8 +8,8 @@
 
 #import <SlackTextViewController/SLKTextViewController.h>
 
+typedef void(^ImageHandler)(NSString *url);
+
 @interface JYSessionViewController : SLKTextViewController
-
 @property (nonatomic) JYFriend *friend;
-
 @end
