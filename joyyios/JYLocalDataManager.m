@@ -101,6 +101,7 @@ static NSString *const SELECT_LIMIT_SQL = @"SELECT * FROM %@ ORDER BY id %@ LIMI
 static NSString *const SELECT_MIN_ID_SQL = @"SELECT * FROM %@ ORDER BY id ASC LIMIT 1";
 static NSString *const SELECT_MAX_ID_SQL = @"SELECT * FROM %@ ORDER BY id DESC LIMIT 1";
 static NSString *const SELECT_MAX_ID_CONDITION_SQL = @"SELECT * FROM %@ WHERE (%@) ORDER BY id DESC LIMIT 1";
+static NSString *const SELECT_MAX_N_CONDITION_SQL = @"SELECT * FROM %@ WHERE id < (?) AND %@ ORDER BY id DESC LIMIT %u";
 static NSString *const SELECT_RANGE_SQL = @"SELECT * FROM %@ WHERE id > (?) AND id < (?) ORDER BY id DESC";
 
 @implementation JYLocalDataManager
@@ -265,6 +266,18 @@ static NSString *const SELECT_RANGE_SQL = @"SELECT * FROM %@ WHERE id > (?) AND 
     return result;
 }
 
+- (NSMutableArray *)selectObjectsOfClass:(Class)modelClass beforeId:(NSNumber *)maxId withCondition:(NSString *)condition limit:(uint32_t)limit
+{
+    if(![modelClass conformsToProtocol:@protocol(MTLFMDBSerializing)])
+    {
+        return [NSMutableArray new];
+    }
+
+    NSString *sql = [NSString stringWithFormat:SELECT_MAX_N_CONDITION_SQL, [modelClass FMDBTableName], condition, limit];
+    NSMutableArray *result = [self _executeSelect:sql maxId:maxId ofClass:modelClass];
+    return result;
+}
+
 - (NSMutableArray *)selectObjectsOfClass:(Class)modelClass sinceId:(NSNumber *)minId beforeId:(NSNumber *)maxId
 {
     if(![modelClass conformsToProtocol:@protocol(MTLFMDBSerializing)])
@@ -351,6 +364,25 @@ static NSString *const SELECT_RANGE_SQL = @"SELECT * FROM %@ WHERE id > (?) AND 
     __block NSMutableArray * result = [NSMutableArray array];
     [_dbQueue inDatabase:^(FMDatabase *db) {
         FMResultSet * rs = [db executeQuery:sql, minId, maxId];
+        while ([rs next]) {
+            NSError *error = nil;
+            id item = [MTLFMDBAdapter modelOfClass:modelClass fromFMResultSet:rs error:&error];
+            if (!error)
+            {
+                [result addObject:item];
+            }
+        }
+        [rs close];
+    }];
+
+    return result;
+}
+
+- (NSMutableArray *)_executeSelect:(NSString *)sql maxId:(NSNumber *)maxId ofClass:(Class)modelClass
+{
+    __block NSMutableArray * result = [NSMutableArray array];
+    [_dbQueue inDatabase:^(FMDatabase *db) {
+        FMResultSet * rs = [db executeQuery:sql, maxId];
         while ([rs next]) {
             NSError *error = nil;
             id item = [MTLFMDBAdapter modelOfClass:modelClass fromFMResultSet:rs error:&error];

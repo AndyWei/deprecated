@@ -24,16 +24,18 @@
 #import "JYXmppManager.h"
 
 @interface JYSessionViewController () <UINavigationControllerDelegate, UIImagePickerControllerDelegate>
+@property (nonatomic) BOOL isLoading;
 @property (nonatomic) JYInputBarContainer *rightContainer;
 @property (nonatomic) JYMessageSender *messageSender;
 @property (nonatomic) NSMutableArray *messageList;
+@property (nonatomic) NSNumber *minMessageId;
 @property (nonatomic) XMPPJID *thatJID;
 @end
 
 static NSString *const kIncomingMediaCell = @"incomingMediaCell";
-static NSString *const kIncomingTextCell = @"incomingTextCell";
+static NSString *const kIncomingTextCell  = @"incomingTextCell";
 static NSString *const kOutgoingMediaCell = @"outgoingMediaCell";
-static NSString *const kOutgoingTextCell = @"outgoingTextCell";
+static NSString *const kOutgoingTextCell  = @"outgoingTextCell";
 
 @implementation JYSessionViewController
 
@@ -43,6 +45,9 @@ static NSString *const kOutgoingTextCell = @"outgoingTextCell";
     {
         self.inverted = NO;
         self.textInputbar.autoHideRightButton = NO;
+        self.isLoading = NO;
+        self.messageList = [NSMutableArray new];
+        self.minMessageId = [NSNumber numberWithUnsignedLongLong:LLONG_MAX];
     }
     return self;
 }
@@ -55,6 +60,7 @@ static NSString *const kOutgoingTextCell = @"outgoingTextCell";
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.navigationController.navigationBar.translucent = NO;
 
     self.shouldScrollToBottomAfterKeyboardShows = YES;
 
@@ -62,7 +68,7 @@ static NSString *const kOutgoingTextCell = @"outgoingTextCell";
     self.title = self.friend.username;
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"me_selected"] style:UIBarButtonItemStylePlain target:self action:@selector(_showFriendProfile)];
 
-    [self _reloadMessages];
+    [self _loadMessages];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_didReceiveMessage:) name:kNotificationDidReceiveMessage object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_didSendMessage:) name:kNotificationDidSendMessage object:nil];
 
@@ -92,7 +98,7 @@ static NSString *const kOutgoingTextCell = @"outgoingTextCell";
 
 - (void)_configTableView
 {
-    self.tableView.estimatedRowHeight = 70;
+    // Note: DO NOT use estimatedRowHeight, it will cause table view jump on auto load
     self.tableView.backgroundColor = JoyyWhite;
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.tableView.showsHorizontalScrollIndicator = NO;
@@ -102,15 +108,11 @@ static NSString *const kOutgoingTextCell = @"outgoingTextCell";
     [self.tableView registerClass:JYMessageIncomingTextCell.class forCellReuseIdentifier:kIncomingTextCell];
     [self.tableView registerClass:JYMessageOutgoingMediaCell.class forCellReuseIdentifier:kOutgoingMediaCell];
     [self.tableView registerClass:JYMessageOutgoingTextCell.class forCellReuseIdentifier:kOutgoingTextCell];
-
-    // Setup the pull-up-to-refresh footer
-    MJRefreshNormalHeader *header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(_fetchOldMessages)];
-    header.stateLabel.hidden = YES;
-    self.tableView.mj_header = header;
 }
 
 - (void)_configTextInputbar
 {
+    self.textInputbar.translucent = NO;
     [self.leftButton setImage:[UIImage imageNamed:@"upload"] forState:UIControlStateNormal];
     [self.leftButton setImageEdgeInsets:UIEdgeInsetsMake(4, 4, 4, 4)];
     [self.leftButton setTintColor:JoyyBlue];
@@ -321,19 +323,17 @@ static NSString *const kOutgoingTextCell = @"outgoingTextCell";
     });
 }
 
-- (void)_showOngoingMessage:(JYMessage *)message
+- (void)_pullToRefresh
 {
-    dispatch_async(dispatch_get_main_queue(), ^{
+    if (self.isLoading)
+    {
+        return;
+    }
 
-        NSUInteger count = [self.messageList count];
-        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:count inSection:0];
-
-        [self.tableView beginUpdates];
-        [self.messageList addObject:message];
-        [self.tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-        [self.tableView endUpdates];
-
-        [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:NO];
+    self.isLoading = YES;
+    [self _loadMessages];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        self.isLoading = NO;
     });
 }
 
@@ -359,7 +359,7 @@ static NSString *const kOutgoingTextCell = @"outgoingTextCell";
     // show JYMessage
     JYMessage *message = [[JYMessage alloc] initWithImage:image];
     message.uploadStatus = JYMessageUploadStatusOngoing;
-    [self _showOngoingMessage:message];
+    [self _showMessage:message];
 
     // send image
     [self _sendMessage:message withImage:image];
@@ -367,23 +367,25 @@ static NSString *const kOutgoingTextCell = @"outgoingTextCell";
 
 #pragma mark - Data
 
-- (void)_reloadMessages
+- (void)_loadMessages
 {
     // Start load data
     NSString *friendUserId = [self.friend.userId uint64String];
     NSString *senderId = [[JYCredential current].userId uint64String];
-//    NSString *condition = [NSString stringWithFormat:@"user_id = %@ AND peer_id = %@", senderId, friendUserId];
-//    self.messageList = [[JYLocalDataManager sharedInstance] selectObjectsOfClass:JYMessage.class withCondition:condition sort:@"ASC"];
-
     NSString *condition = [NSString stringWithFormat:@"user_id = %@ AND peer_id = %@", senderId, friendUserId];
 
-    NSArray *array = [[JYLocalDataManager sharedInstance] selectObjectsOfClass:JYMessage.class withCondition:condition sort:@"DESC LIMIT 80"];
-    self.messageList = [NSMutableArray arrayWithArray:[[array reverseObjectEnumerator] allObjects]];
+    NSArray *messageList = [[JYLocalDataManager sharedInstance] selectObjectsOfClass:JYMessage.class beforeId:self.minMessageId withCondition:condition limit:20];
+    if ([messageList count] == 0)
+    {
+        return;
+    }
+
+    JYMessage *min = [messageList lastObject];
+    self.minMessageId = min.messageId;
 
 
-    // mark all unread messages as read
     NSInteger delta = 0;
-    for (JYMessage *message in self.messageList)
+    for (JYMessage *message in messageList)
     {
         if ([message.isUnread boolValue])
         {
@@ -397,16 +399,31 @@ static NSString *const kOutgoingTextCell = @"outgoingTextCell";
     {
         [self _updateBadgeCountWithDelta:delta];
     }
+
+    for (JYMessage *message in messageList)
+    {
+        [self.messageList insertObject:message atIndex:0];
+    }
+
+    [self _refreshWithElegance];
+}
+
+- (void)_refreshWithElegance
+{
+    CGSize beforeContentSize = self.tableView.contentSize;
+    [self.tableView reloadData];
+    CGSize afterContentSize = self.tableView.contentSize;
+    
+    CGFloat delta = afterContentSize.height - beforeContentSize.height;
+    CGPoint afterContentOffset = self.tableView.contentOffset;
+    CGPoint newContentOffset = CGPointMake(afterContentOffset.x, afterContentOffset.y + delta);
+    [self.tableView setContentOffset:newContentOffset animated:NO];
 }
 
 - (void)_updateBadgeCountWithDelta:(NSInteger)delta
 {
     NSDictionary *info = @{@"delta": @(delta)};
     [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationUpdateBadgeCount object:nil userInfo:info];
-}
-
-- (void)_fetchOldMessages
-{
 }
 
 #pragma mark - UITableViewDataSource
@@ -474,6 +491,19 @@ static NSString *const kOutgoingTextCell = @"outgoingTextCell";
         [self _showImageBrowserWithImage:message.media fromView:cell.contentImageView];
     }
 }
+
+#pragma mark -
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+{
+    if (scrollView.contentOffset.y < 0)
+    {
+        [self _pullToRefresh];
+    }
+
+    [super scrollViewDidScroll:scrollView];
+}
+
 
 #pragma mark - Notifications
 
