@@ -269,9 +269,7 @@ static NSString *const kOutgoingTextCell = @"outgoingTextCell";
 {
     message.uploadStatus = JYMessageUploadStatusOngoing;
     [self _refresh];
-
-    UIImage *image = (UIImage *)message.mediaUnderneath;
-    [self _sendMessage:message withImage:image];
+    [self _sendMessage:message withImage:message.media];
 }
 
 - (void)_sendMessage:(JYMessage *)message withImage:(UIImage *)image
@@ -464,7 +462,7 @@ static NSString *const kOutgoingTextCell = @"outgoingTextCell";
 {
     JYMessage *message = self.messageList[indexPath.row];
 
-    if (message.bodyType == JYMessageBodyTypeImage)
+    if (message.type == JYMessageTypeImage)
     {
         if (message.uploadStatus == JYMessageUploadStatusFailure)
         {
@@ -473,7 +471,7 @@ static NSString *const kOutgoingTextCell = @"outgoingTextCell";
         }
 
         JYMessageMediaCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-        [self _showImageBrowserWithImage:message.mediaUnderneath fromView:cell.contentImageView];
+        [self _showImageBrowserWithImage:message.media fromView:cell.contentImageView];
     }
 }
 
@@ -513,7 +511,7 @@ static NSString *const kOutgoingTextCell = @"outgoingTextCell";
     JYMessage *message = (JYMessage *)obj;
 
     // Only handle txt in this way, all the other type media outgoing messages was handled separately
-    if (message.bodyType == JYMessageBodyTypeText)
+    if (message.type == JYMessageTypeText)
     {
         [self _showMessage:message];
     }

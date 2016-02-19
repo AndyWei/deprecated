@@ -7,11 +7,10 @@
 //
 
 #import "JYFilename.h"
-#import "JYImageMediaItem.h"
 #import "JYMessage.h"
 
 @interface JYMessage ()
-@property (nonatomic) NSString *type;
+@property (nonatomic) NSString *typeString;
 @property (nonatomic) NSDictionary *bodyDictionary;
 @end
 
@@ -30,16 +29,14 @@
              @"isUnread": @"is_unread",
              @"body": @"body",
              @"bodyDictionary": [NSNull null],
-             @"bodyType": [NSNull null],
              @"dimensions": [NSNull null],
              @"displayDimensions": [NSNull null],
              @"media": [NSNull null],
-             @"mediaUnderneath": [NSNull null],
-             @"progressView": [NSNull null],
              @"resource": [NSNull null],
              @"text": [NSNull null],
              @"timestamp": [NSNull null],
              @"type": [NSNull null],
+             @"typeString": [NSNull null],
              @"uploadStatus": [NSNull null],
              @"url": [NSNull null]
              };
@@ -84,8 +81,8 @@
         _isOutgoing = [NSNumber numberWithBool:YES];
         _isUnread = [NSNumber numberWithBool:NO];
         _uploadStatus = JYMessageUploadStatusNone;
-        _bodyType = JYMessageBodyTypeImage;
-        _mediaUnderneath = image;
+        _type = JYMessageTypeImage;
+        _media = image;
         _dimensions = image.size;
     }
     return self;
@@ -112,13 +109,13 @@
     return _messageId;
 }
 
-- (NSString *)type
+- (NSString *)typeString
 {
-    if (!_type)
+    if (!_typeString)
     {
-        _type = [self.bodyDictionary objectForKey:@"type"];
+        _typeString = [self.bodyDictionary objectForKey:@"type"];
     }
-    return _type;
+    return _typeString;
 }
 
 - (NSString *)resource
@@ -130,80 +127,72 @@
     return _resource;
 }
 
-- (JYMessageBodyType)bodyType
+- (JYMessageType)type
 {
-    if (_bodyType != JYMessageBodyTypeUnknown)
+    if (_type != JYMessageTypeUnknown)
     {
-        return _bodyType;
+        return _type;
     }
 
-    if ([self.type length] == 0)
+    if ([self.typeString length] == 0)
     {
-        _bodyType = JYMessageBodyTypeText;
-        return _bodyType;
+        _type = JYMessageTypeText;
+        return _type;
     }
 
-    _bodyType = JYMessageBodyTypeText;
+    _type = JYMessageTypeText;
 
     // The body type information is stored in the "subject" element
-    if ([self.type isEqualToString:kMessageBodyTypeText])
+    if ([self.typeString isEqualToString:kMessageBodyTypeText])
     {
-        _bodyType = JYMessageBodyTypeText;
+        _type = JYMessageTypeText;
     }
-    else if ([self.type isEqualToString:kMessageBodyTypeImage])
+    else if ([self.typeString isEqualToString:kMessageBodyTypeImage])
     {
-        _bodyType = JYMessageBodyTypeImage;
+        _type = JYMessageTypeImage;
     }
-    else if ([self.type isEqualToString:kMessageBodyTypeEmoji])
+    else if ([self.typeString isEqualToString:kMessageBodyTypeEmoji])
     {
-        _bodyType = JYMessageBodyTypeEmoji;
+        _type = JYMessageTypeEmoji;
     }
-    else if ([self.type isEqualToString:kMessageBodyTypeAudio])
+    else if ([self.typeString isEqualToString:kMessageBodyTypeAudio])
     {
-        _bodyType = JYMessageBodyTypeAudio;
+        _type = JYMessageTypeAudio;
     }
-    else if ([self.type isEqualToString:kMessageBodyTypeVideo])
+    else if ([self.typeString isEqualToString:kMessageBodyTypeVideo])
     {
-        _bodyType = JYMessageBodyTypeVideo;
+        _type = JYMessageTypeVideo;
     }
-    else if ([self.type isEqualToString:kMessageBodyTypeLocation])
+    else if ([self.typeString isEqualToString:kMessageBodyTypeLocation])
     {
-        _bodyType = JYMessageBodyTypeLocation;
+        _type = JYMessageTypeLocation;
     }
-    else if ([self.type isEqualToString:kMessageBodyTypeGif])
+    else if ([self.typeString isEqualToString:kMessageBodyTypeGif])
     {
-        _bodyType = JYMessageBodyTypeGif;
+        _type = JYMessageTypeGif;
     }
 
-    return _bodyType;
+    return _type;
 }
 
-- (NSString *)senderId
+- (NSDate *)timestamp
 {
-    NSNumber *sender = [self.isOutgoing boolValue]? self.userId: self.peerId;
-    return [sender uint64String];
-}
-
-- (NSString *)senderDisplayName
-{
-    // TODO: use displayname from JYFriendManager
-    return self.senderId;
-}
-
-- (NSDate *)date
-{
-    uint64_t timestamp = [self.messageId unsignedLongLongValue] / 1000000;
-    return [NSDate dateWithTimeIntervalSinceReferenceDate:timestamp];
+    if (!_timestamp)
+    {
+        uint64_t seconds = [self.messageId unsignedLongLongValue] / 1000000;
+        _timestamp = [NSDate dateWithTimeIntervalSinceReferenceDate:seconds];
+    }
+    return _timestamp;
 }
 
 - (BOOL)isTextMessage
 {
-    return (self.bodyType == JYMessageBodyTypeText);
+    return (self.type == JYMessageTypeText);
 }
 
 - (BOOL)isMediaMessage
 {
-    return (self.bodyType == JYMessageBodyTypeImage || self.bodyType == JYMessageBodyTypeVideo || self.bodyType == JYMessageBodyTypeLocation);
+    return (self.type == JYMessageTypeImage || self.type == JYMessageTypeVideo || self.type == JYMessageTypeLocation);
 }
 
 - (BOOL)hasGapWith:(JYMessage *)that
@@ -230,46 +219,36 @@
     return _text;
 }
 
-- (NSDate *)timestamp
-{
-    if (!_timestamp)
-    {
-        uint64_t seconds = [self.messageId unsignedLongLongValue] / 1000000;
-        _timestamp = [NSDate dateWithTimeIntervalSinceReferenceDate:seconds];
-    }
-    return _timestamp;
-}
-
 - (NSString *)liteText
 {
     NSString *ret = nil;
-    switch (self.bodyType)
+    switch (self.type)
     {
-        case JYMessageBodyTypeText:
+        case JYMessageTypeText:
             ret = self.resource;
             break;
 
-        case JYMessageBodyTypeImage:
+        case JYMessageTypeImage:
             ret = @"🌋";
             break;
 
-        case JYMessageBodyTypeEmoji:
+        case JYMessageTypeEmoji:
             ret = self.body;
             break;
 
-        case JYMessageBodyTypeAudio:
+        case JYMessageTypeAudio:
             ret = @"🔊";
             break;
 
-        case JYMessageBodyTypeVideo:
+        case JYMessageTypeVideo:
             ret = @"🎬";
             break;
 
-        case JYMessageBodyTypeLocation:
+        case JYMessageTypeLocation:
             ret = @"📍";
             break;
 
-        case JYMessageBodyTypeGif:
+        case JYMessageTypeGif:
             ret = @"🎬";
             break;
             
@@ -281,7 +260,7 @@
 
 - (NSString *)url
 {
-    if (self.bodyType == JYMessageBodyTypeText)
+    if (self.type == JYMessageTypeText)
     {
         return nil;
     }
@@ -304,53 +283,6 @@
     return _url;
 }
 
-- (M13ProgressViewPie *)progressView
-{
-    if (![self isMediaMessage])
-    {
-        return nil;
-    }
-
-    if (!_progressView)
-    {
-        CGFloat x = CGRectGetMidX(self.media.mediaView.frame);
-        CGFloat y = CGRectGetMidY(self.media.mediaView.frame);
-        CGRect frame = CGRectMake(x-25, y-25, 50, 50);
-
-        _progressView = [[M13ProgressViewPie alloc] initWithFrame:frame];
-        _progressView.primaryColor = JoyyBlue;
-        _progressView.secondaryColor = JoyyBlue;
-
-        [self.media.mediaView addSubview:_progressView];
-    }
-    return _progressView;
-}
-
-- (id<JSQMessageMediaData>)media
-{
-    if (_media)
-    {
-        return _media;
-    }
-
-    switch (self.bodyType)
-    {
-        case JYMessageBodyTypeImage:
-            _media = [self _imageMediaItem];
-            break;
-        case JYMessageBodyTypeVideo:
-            _media = [self _videoMediaItem];
-            break;
-        case JYMessageBodyTypeLocation:
-            _media = [self _locationMediaItem];
-            break;
-        default:
-            _media = nil;
-            break;
-    }
-
-    return _media;
-}
 
 - (CGSize)dimensions
 {
@@ -380,44 +312,6 @@
     }
 
     return CGSizeMake(max, min);
-}
-
-#pragma mark - Private methods
-
-- (JSQMediaItem *)_imageMediaItem
-{
-    JYImageMediaItem *item = nil;
-
-    // local image
-    if (self.mediaUnderneath)
-    {
-        item = [[JYImageMediaItem alloc] initWithImage:self.mediaUnderneath];
-        item.appliesMediaViewMaskAsOutgoing = YES;
-    }
-    else
-    {
-        item = [[JYImageMediaItem alloc] initWithURL:self.url];
-        item.appliesMediaViewMaskAsOutgoing = [self.isOutgoing boolValue];
-    }
-
-    item.imageDimensions = self.dimensions;
-    return item;
-}
-
-- (JSQMediaItem *)_videoMediaItem
-{
-    // TODO: get video data from message and generate fileURL
-    NSURL *fileURL = nil;
-    JSQVideoMediaItem *mediaItem = [[JSQVideoMediaItem alloc] initWithFileURL:fileURL isReadyToPlay:NO];
-    return mediaItem;
-}
-
-- (JSQMediaItem *)_locationMediaItem
-{
-    // TODO: get location data from message
-    CLLocation *location = nil;
-    JSQLocationMediaItem *mediaItem = [[JSQLocationMediaItem alloc] initWithLocation:location];
-    return mediaItem;
 }
 
 @end

@@ -39,9 +39,6 @@ PODS:
     - DACircularProgress
     - pop
     - SDWebImage
-  - JSQMessagesViewController (7.2.0):
-    - JSQSystemSoundPlayer (~> 2.0.1)
-  - JSQSystemSoundPlayer (2.0.1)
   - JVFloatLabeledTextField (1.1.0)
   - KVNProgress (2.2.2)
   - KVOController (1.0.3)
@@ -253,7 +250,6 @@ DEPENDENCIES:
   - FDFullscreenPopGesture
   - FMDB
   - IDMPhotoBrowser
-  - JSQMessagesViewController
   - JVFloatLabeledTextField
   - KVNProgress
   - KVOController
@@ -287,8 +283,6 @@ SPEC CHECKSUMS:
   FDFullscreenPopGesture: a8a620179e3d9c40e8e00256dcee1c1a27c6d0f0
   FMDB: c1968bab3ab0aed38f66cb778ae1e7fa9a652b6e
   IDMPhotoBrowser: 99eccfe6431e182f64e2fe57ac654316fbf81576
-  JSQMessagesViewController: 73cab48aa92fc2d512f3b6724f3425cc47a19eb5
-  JSQSystemSoundPlayer: c5850e77a4363ffd374cd851154b9af93264ed8d
   JVFloatLabeledTextField: ea4a3d8387ddd43724c472bb2b8ab39b79af05d4
   KVNProgress: 4697347e21e37fdaa5264ebc24e377c205a50328
   KVOController: 9fd8f0343670994e4b6f9f0b31f5a45663f3e1cf

@@ -243,7 +243,7 @@ static NSString *const kCellIdentifier = @"sessionCell";
     NSArray *messages = [[JYLocalDataManager sharedInstance] selectObjectsOfClass:JYMessage.class withCondition:condition sort:@"ASC"];
     for (JYMessage *msg in messages)
     {
-        if (msg.bodyType == JYMessageBodyTypeImage)
+        if (msg.type == JYMessageTypeImage)
         {
             NSURL *url = [NSURL URLWithString:msg.url];
             NSString *key = [SDWebImageManager.sharedManager cacheKeyForURL:url];

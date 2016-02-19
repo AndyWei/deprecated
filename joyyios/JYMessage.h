@@ -8,21 +8,19 @@
 //  Copyright (c) 2015 Joyy Inc. All rights reserved.
 //
 
-#import <JSQMessagesViewController/JSQMessages.h>
-#import <M13ProgressSuite/M13ProgressViewPie.h>
 #import <Mantle/Mantle.h>
 #import "MTLFMDBAdapter.h"
 
-typedef NS_ENUM(NSUInteger, JYMessageBodyType)
+typedef NS_ENUM(NSUInteger, JYMessageType)
 {
-    JYMessageBodyTypeUnknown  = 0,
-    JYMessageBodyTypeAudio    = 1,
-    JYMessageBodyTypeEmoji    = 2,
-    JYMessageBodyTypeGif      = 3,
-    JYMessageBodyTypeImage    = 4,
-    JYMessageBodyTypeLocation = 5,
-    JYMessageBodyTypeText     = 6,
-    JYMessageBodyTypeVideo    = 7
+    JYMessageTypeUnknown  = 0,
+    JYMessageTypeAudio    = 1,
+    JYMessageTypeEmoji    = 2,
+    JYMessageTypeGif      = 3,
+    JYMessageTypeImage    = 4,
+    JYMessageTypeLocation = 5,
+    JYMessageTypeText     = 6,
+    JYMessageTypeVideo    = 7
 };
 
 typedef NS_ENUM(NSUInteger, JYMessageUploadStatus)
@@ -33,12 +31,15 @@ typedef NS_ENUM(NSUInteger, JYMessageUploadStatus)
     JYMessageUploadStatusFailure = 3
 };
 
-@interface JYMessage: MTLModel <JSQMessageData, MTLFMDBSerializing>
+@interface JYMessage: MTLModel <MTLFMDBSerializing>
 
 - (instancetype)initWithXMPPMessage:(XMPPMessage *)message isOutgoing:(BOOL)isOutgoing;
 - (instancetype)initWithImage:(UIImage *)image;
+
 - (BOOL)isTextMessage;
+- (BOOL)isMediaMessage;
 - (BOOL)hasGapWith:(JYMessage *)that;
+
 - (NSString *)liteText;
 
 // FMDB coloumns
@@ -53,13 +54,11 @@ typedef NS_ENUM(NSUInteger, JYMessageUploadStatus)
 @property (nonatomic) CGSize dimensions;
 @property (nonatomic) CGSize displayDimensions;
 @property (nonatomic) JYMessageUploadStatus uploadStatus;
-@property (nonatomic) JYMessageBodyType bodyType;
+@property (nonatomic) JYMessageType type;
 @property (nonatomic) NSString *resource;
 @property (nonatomic) NSDate *timestamp;
 @property (nonatomic) NSString *text;
 @property (nonatomic) NSString *url;
-@property (nonatomic) id<JSQMessageMediaData> media;
-@property (nonatomic) id mediaUnderneath;
-@property (nonatomic) M13ProgressViewPie *progressView;
+@property (nonatomic) id media;
 
 @end

@@ -33,10 +33,10 @@
 {
     __weak typeof (self) weakSelf = self;
     [self.contentImageView sd_setImageWithURL:[NSURL URLWithString:self.message.url]
-                             placeholderImage:self.message.mediaUnderneath
+                             placeholderImage:self.message.media
                                     completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
         weakSelf.contentImageView.image = image;
-        weakSelf.message.mediaUnderneath = image;
+        weakSelf.message.media = image;
     }];
 }
 
@@ -53,9 +53,9 @@
     [self.mediaContainerView addSubview:self.contentImageView];
     [self.mediaContainerView pinAllEdgesOfSubview:self.contentImageView];
 
-    if (message.mediaUnderneath)
+    if (message.media)
     {
-        self.contentImageView.image = message.mediaUnderneath;
+        self.contentImageView.image = message.media;
     }
     else
     {
