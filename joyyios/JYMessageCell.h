@@ -12,6 +12,8 @@
 @interface JYMessageCell : UITableViewCell
 
 @property (nonatomic) JYMessage *message;
+@property (nonatomic) NSString *topLabelText;
+@property (nonatomic) TTTAttributedLabel *topLabel;
 @property (nonatomic) UIImageView *avatarView;
 
 @end

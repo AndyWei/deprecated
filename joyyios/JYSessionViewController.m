@@ -14,12 +14,13 @@
 #import "JYFilename.h"
 #import "JYInputBarContainer.h"
 #import "JYLocalDataManager.h"
-#import "JYMessageTextCell.h"
+#import "JYMessageDateFormatter.h"
 #import "JYMessageIncomingMediaCell.h"
 #import "JYMessageIncomingTextCell.h"
 #import "JYMessageOutgoingMediaCell.h"
 #import "JYMessageOutgoingTextCell.h"
 #import "JYMessageSender.h"
+#import "JYMessageTextCell.h"
 #import "JYSessionViewController.h"
 #import "JYXmppManager.h"
 
@@ -99,7 +100,7 @@ static NSString *const kOutgoingTextCell  = @"outgoingTextCell";
 - (void)_configTableView
 {
     // Note: DO NOT use estimatedRowHeight, it will cause table view jump on auto load
-    self.tableView.backgroundColor = JoyyWhite;
+    self.tableView.backgroundColor = JoyyWhiter;
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.tableView.showsHorizontalScrollIndicator = NO;
     self.tableView.showsVerticalScrollIndicator = YES;
@@ -290,11 +291,6 @@ static NSString *const kOutgoingTextCell  = @"outgoingTextCell";
     }];
 }
 
-- (void)_refresh
-{
-    [self.tableView reloadData];
-}
-
 - (void)_showFriendProfile
 {
 }
@@ -332,8 +328,9 @@ static NSString *const kOutgoingTextCell  = @"outgoingTextCell";
 
     self.isLoading = YES;
     [self _loadMessages];
+    __weak typeof(self) weakSelf = self;
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        self.isLoading = NO;
+        weakSelf.isLoading = NO;
     });
 }
 
@@ -420,6 +417,11 @@ static NSString *const kOutgoingTextCell  = @"outgoingTextCell";
     [self.tableView setContentOffset:newContentOffset animated:NO];
 }
 
+- (void)_refresh
+{
+    [self.tableView reloadData];
+}
+
 - (void)_updateBadgeCountWithDelta:(NSInteger)delta
 {
     NSDictionary *info = @{@"delta": @(delta)};
@@ -438,16 +440,44 @@ static NSString *const kOutgoingTextCell  = @"outgoingTextCell";
     return self.messageList.count;
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(nonnull NSIndexPath *)indexPath
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    // media cell height is simple
+    BOOL hasToplable = [self _shouldShowTimestampAtIndexPath:indexPath];
+
     JYMessage *message = self.messageList[indexPath.row];
     if ([message isMediaMessage])
     {
-        CGFloat height = message.displayDimensions.height + 10;
+        CGFloat height = message.displayDimensions.height + 20.0f; // media and spaces
+        if (hasToplable)
+        {
+            height += 30.0f;
+        }
         return height;
     }
 
-    return UITableViewAutomaticDimension;
+    // text cell height needs a dummy cell to really layout the text
+    static JYMessageIncomingTextCell* dummyCell = nil;
+    if (!dummyCell)
+    {
+        dummyCell = [[JYMessageIncomingTextCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kIncomingTextCell];
+    }
+
+    dummyCell.message = message;
+    dummyCell.topLabelText = hasToplable? [[JYMessageDateFormatter sharedInstance] timestampForDate:message.timestamp]: nil;
+
+    [dummyCell setNeedsUpdateConstraints];
+    [dummyCell updateConstraintsIfNeeded];
+
+    dummyCell.bounds = CGRectMake(0.0f, 0.0f, CGRectGetWidth(tableView.bounds), CGRectGetHeight(dummyCell.bounds));
+
+    [dummyCell setNeedsLayout];
+    [dummyCell layoutIfNeeded];
+
+    // Get the actual height required for the cell's contentView
+    CGFloat height = [dummyCell.contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize].height;
+    
+    return height;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -464,13 +494,35 @@ static NSString *const kOutgoingTextCell  = @"outgoingTextCell";
     }
 
     JYMessageCell *cell = (JYMessageCell *)[tableView dequeueReusableCellWithIdentifier:identifier forIndexPath:indexPath];
-
     cell.message = message;
+
+    if ([self _shouldShowTimestampAtIndexPath:indexPath])
+    {
+        cell.topLabelText = [[JYMessageDateFormatter sharedInstance] timestampForDate:message.timestamp];
+    }
+    else
+    {
+        cell.topLabelText = nil;
+    }
 
     [cell setNeedsUpdateConstraints];
     [cell updateConstraintsIfNeeded];
 
     return cell;
+}
+
+- (BOOL)_shouldShowTimestampAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSIndexPath *prev = [indexPath previous];
+    if (!prev)
+    {
+        return YES;
+    }
+
+    JYMessage *current = self.messageList[indexPath.row];
+    JYMessage *previos = self.messageList[prev.row];
+
+    return [current hasGapWith:previos];
 }
 
 #pragma mark - UITableView Delegate

@@ -9,5 +9,5 @@
 #import "JYMessageMediaCell.h"
 
 @interface JYMessageIncomingMediaCell : JYMessageMediaCell
-
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier;
 @end

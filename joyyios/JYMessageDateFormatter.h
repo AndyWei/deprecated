@@ -11,5 +11,5 @@
 + (JYMessageDateFormatter *)sharedInstance;
 
 - (NSString *)autoStringFromDate:(NSDate *)date;
-
+- (NSString *)timestampForDate:(NSDate *)date;
 @end

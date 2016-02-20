@@ -38,7 +38,7 @@
     else
     {
         self.contentLabel.textColor = JoyyBlack;
-        self.contentLabel.backgroundColor = JoyyWhitePure;
+        self.contentLabel.backgroundColor = rgb(173, 210, 195);
     }
 
     self.contentLabel.text = [message text];
@@ -53,7 +53,7 @@
         label.translatesAutoresizingMaskIntoConstraints = NO;
         label.font = [UIFont systemFontOfSize:16];
         label.textAlignment = NSTextAlignmentLeft;
-        label.textInsets = UIEdgeInsetsMake(10, 10, 10, 10);
+        label.textInsets = UIEdgeInsetsMake(8, 8, 8, 8);
         label.numberOfLines = 0;
         label.lineBreakMode = NSLineBreakByWordWrapping;
         label.preferredMaxLayoutWidth = SCREEN_WIDTH - 130;

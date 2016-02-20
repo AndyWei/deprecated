@@ -21,6 +21,7 @@
     dispatch_once(&done, ^{
         _sharedInstance = [JYMessageDateFormatter new];
         _sharedInstance.locale = [NSLocale currentLocale];
+        _sharedInstance.doesRelativeDateFormatting = YES;
     });
 
     return _sharedInstance;
@@ -44,6 +45,17 @@
 
     self.dateStyle = NSDateFormatterShortStyle;
     self.timeStyle = NSDateFormatterNoStyle;
+    return [self stringFromDate:date];
+}
+
+- (NSString *)timestampForDate:(NSDate *)date
+{
+    if (!date) {
+        return nil;
+    }
+
+    [self setDateStyle:NSDateFormatterMediumStyle];
+    [self setTimeStyle:NSDateFormatterShortStyle];
     return [self stringFromDate:date];
 }
 

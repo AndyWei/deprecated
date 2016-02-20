@@ -9,5 +9,5 @@
 #import "JYMessageTextCell.h"
 
 @interface JYMessageOutgoingTextCell : JYMessageTextCell
-
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier;
 @end
