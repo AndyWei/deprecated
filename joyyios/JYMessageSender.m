@@ -25,15 +25,22 @@
     return self;
 }
 
-- (BOOL)sendText:(NSString *)text
+- (BOOL)sendTextMessageWithContent:(NSString *)content
 {
-    return [self _sendMessageWithType:kMessageBodyTypeText resource:text dimensions:CGSizeZero alert:text];
+    return [self _sendMessageWithType:kMessageBodyTypeText resource:content dimensions:CGSizeZero alert:content];
 }
 
-- (BOOL)sendImageWithDimensions:(CGSize)dimensions URL:(NSString *)url
+- (BOOL)sendImageMessageWithDimensions:(CGSize)dimensions url:(NSString *)url
 {
     NSString *alert = NSLocalizedString(@"send you a photo", nil);
     return [self _sendMessageWithType:kMessageBodyTypeImage resource:url dimensions:dimensions alert:alert];
+}
+
+- (BOOL)sendAudioMessageWithDuration:(NSTimeInterval)duration url:(NSString *)url
+{
+    NSString *alert = NSLocalizedString(@"send you a voice message", nil);
+    CGSize dimensions = CGSizeMake(duration, 35);
+    return [self _sendMessageWithType:kMessageBodyTypeAudio resource:url dimensions:dimensions alert:alert];
 }
 
 - (BOOL)_sendMessageWithType:(NSString *)type resource:(NSString *)resource dimensions:(CGSize)dimensions alert:(NSString *)alert

@@ -8,9 +8,10 @@
 
 @interface NSString (Joyy)
 
-+ (NSString *)agoStringForTimeInterval:(NSTimeInterval)interval;
 + (NSString *)apiURLWithPath:(NSString *)path;
 + (NSString *)dialingCodeForCountryCode:(NSString *)countryCode;
++ (NSString *)stringWithTimeInterval:(NSTimeInterval)interval;
++ (NSString *)stringWithTimestampInMiliSeconds;
 
 - (BOOL)isInvisible;
 - (BOOL)isValidEmail;

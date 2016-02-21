@@ -96,6 +96,10 @@
 		D68486BE1B8C59BF005CA0C4 /* JYMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = D68486BD1B8C59BF005CA0C4 /* JYMessage.m */; };
 		D688FC1D1C7427DD003FD76F /* JYMessageMediaCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D688FC1C1C7427DD003FD76F /* JYMessageMediaCell.m */; };
 		D688FC201C763BEC003FD76F /* JYInputBarContainer.m in Sources */ = {isa = PBXBuildFile; fileRef = D688FC1F1C763BEC003FD76F /* JYInputBarContainer.m */; };
+		D688FC231C791E02003FD76F /* JYS3Uploader.m in Sources */ = {isa = PBXBuildFile; fileRef = D688FC221C791E02003FD76F /* JYS3Uploader.m */; };
+		D688FC251C7935D5003FD76F /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D688FC241C7935D5003FD76F /* AVFoundation.framework */; };
+		D688FC2B1C7937B9003FD76F /* NSURL+Joyy.m in Sources */ = {isa = PBXBuildFile; fileRef = D688FC2A1C7937B9003FD76F /* NSURL+Joyy.m */; };
+		D688FC2E1C794D7A003FD76F /* JYAudioRecorder.m in Sources */ = {isa = PBXBuildFile; fileRef = D688FC2D1C794D7A003FD76F /* JYAudioRecorder.m */; };
 		D689ED6A1AE42C8300CB4D2B /* UIView+Joyy.m in Sources */ = {isa = PBXBuildFile; fileRef = D689ED691AE42C8300CB4D2B /* UIView+Joyy.m */; };
 		D68DAF961AC4CACD00838E7E /* Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = D68DAF931AC4CACD00838E7E /* Constants.m */; };
 		D68DAF971AC4CACD00838E7E /* JYSignInViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D68DAF951AC4CACD00838E7E /* JYSignInViewController.m */; };
@@ -328,6 +332,13 @@
 		D688FC1C1C7427DD003FD76F /* JYMessageMediaCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYMessageMediaCell.m; sourceTree = "<group>"; };
 		D688FC1E1C763BEC003FD76F /* JYInputBarContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYInputBarContainer.h; sourceTree = "<group>"; };
 		D688FC1F1C763BEC003FD76F /* JYInputBarContainer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYInputBarContainer.m; sourceTree = "<group>"; };
+		D688FC211C791E02003FD76F /* JYS3Uploader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYS3Uploader.h; sourceTree = "<group>"; };
+		D688FC221C791E02003FD76F /* JYS3Uploader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYS3Uploader.m; sourceTree = "<group>"; };
+		D688FC241C7935D5003FD76F /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		D688FC291C7937B9003FD76F /* NSURL+Joyy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURL+Joyy.h"; sourceTree = "<group>"; };
+		D688FC2A1C7937B9003FD76F /* NSURL+Joyy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSURL+Joyy.m"; sourceTree = "<group>"; };
+		D688FC2C1C794D7A003FD76F /* JYAudioRecorder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYAudioRecorder.h; sourceTree = "<group>"; };
+		D688FC2D1C794D7A003FD76F /* JYAudioRecorder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYAudioRecorder.m; sourceTree = "<group>"; };
 		D689ED681AE42C8300CB4D2B /* UIView+Joyy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Joyy.h"; sourceTree = "<group>"; };
 		D689ED691AE42C8300CB4D2B /* UIView+Joyy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Joyy.m"; sourceTree = "<group>"; };
 		D68DAF921AC4CACD00838E7E /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
@@ -437,6 +448,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D688FC251C7935D5003FD76F /* AVFoundation.framework in Frameworks */,
 				D6825BCA1BE89F5A00F3695D /* libFlurry_7.3.0.a in Frameworks */,
 				D69FF6D31B94105F00466FE5 /* AudioToolbox.framework in Frameworks */,
 				D63F0DA51ACD16190067C5EE /* CoreLocation.framework in Frameworks */,
@@ -694,6 +706,10 @@
 				D61E99CC1C723B040033B5C4 /* JYSessionViewController.m */,
 				D61E99C81C6CFA590033B5C4 /* JYMessageSender.h */,
 				D61E99C91C6CFA590033B5C4 /* JYMessageSender.m */,
+				D688FC211C791E02003FD76F /* JYS3Uploader.h */,
+				D688FC221C791E02003FD76F /* JYS3Uploader.m */,
+				D688FC2C1C794D7A003FD76F /* JYAudioRecorder.h */,
+				D688FC2D1C794D7A003FD76F /* JYAudioRecorder.m */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -845,6 +861,8 @@
 				D689ED691AE42C8300CB4D2B /* UIView+Joyy.m */,
 				D60E1D391C73B6F500C17C53 /* UIImage+Joyy.h */,
 				D60E1D3A1C73B6F500C17C53 /* UIImage+Joyy.m */,
+				D688FC291C7937B9003FD76F /* NSURL+Joyy.h */,
+				D688FC2A1C7937B9003FD76F /* NSURL+Joyy.m */,
 			);
 			name = Common;
 			sourceTree = "<group>";
@@ -1094,6 +1112,7 @@
 		E8953528E7D4E03D9881458B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				D688FC241C7935D5003FD76F /* AVFoundation.framework */,
 				D69FF6D21B94105F00466FE5 /* AudioToolbox.framework */,
 				D63F0DA41ACD16190067C5EE /* CoreLocation.framework */,
 				8E034C4F8FC61E210B60EDCC /* libPods.a */,
@@ -1256,7 +1275,9 @@
 				D60E1D471C73FF8A00C17C53 /* JYMessageOutgoingMediaCell.m in Sources */,
 				D61D1D551B4A65F200DE37DF /* MDCSwipeResult.m in Sources */,
 				D6BD61741C1FF84B00EFC92C /* JYNewCommentCell.m in Sources */,
+				D688FC2E1C794D7A003FD76F /* JYAudioRecorder.m in Sources */,
 				D6D622561C0D317E0039C4A7 /* JYPostMediaView.m in Sources */,
+				D688FC2B1C7937B9003FD76F /* NSURL+Joyy.m in Sources */,
 				D61D1D4D1B4A65F200DE37DF /* UIView+MDCBorderedLabel.m in Sources */,
 				D63A014E1C3CA22A00E74C36 /* JYContactViewController.m in Sources */,
 				D689ED6A1AE42C8300CB4D2B /* UIView+Joyy.m in Sources */,
@@ -1285,6 +1306,7 @@
 				D61FAE5E1C4461BB00142450 /* JYInviteViewController.m in Sources */,
 				D67DD0E41B75302800333626 /* JYPeopleViewController.m in Sources */,
 				D65F37461B04807D007B534C /* JYCommentlineCell.m in Sources */,
+				D688FC231C791E02003FD76F /* JYS3Uploader.m in Sources */,
 				D60726AE1C18179500A43717 /* JYMonth.m in Sources */,
 				D61E99CA1C6CFA590033B5C4 /* JYMessageSender.m in Sources */,
 				D650DE421C506F9000EA0CE5 /* JYProfileDataManager.m in Sources */,

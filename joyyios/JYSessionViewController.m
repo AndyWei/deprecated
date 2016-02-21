@@ -6,12 +6,11 @@
 //  Copyright © 2016 Joyy Inc. All rights reserved.
 //
 
-#import <AWSS3/AWSS3.h>
 #import <IDMPhotoBrowser/IDMPhotoBrowser.h>
 #import <MJRefresh/MJRefresh.h>
 
+#import "JYAudioRecorder.h"
 #import "JYButton.h"
-#import "JYFilename.h"
 #import "JYInputBarContainer.h"
 #import "JYLocalDataManager.h"
 #import "JYMessageDateFormatter.h"
@@ -21,13 +20,16 @@
 #import "JYMessageOutgoingTextCell.h"
 #import "JYMessageSender.h"
 #import "JYMessageTextCell.h"
+#import "JYS3Uploader.h"
 #import "JYSessionViewController.h"
 #import "JYXmppManager.h"
 
-@interface JYSessionViewController () <UINavigationControllerDelegate, UIImagePickerControllerDelegate>
+@interface JYSessionViewController () <JYAudioRecorderDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 @property (nonatomic) BOOL isLoading;
+@property (nonatomic) JYAudioRecorder *recorder;
 @property (nonatomic) JYInputBarContainer *rightContainer;
 @property (nonatomic) JYMessageSender *messageSender;
+@property (nonatomic) JYS3Uploader *uploader;
 @property (nonatomic) NSMutableArray *messageList;
 @property (nonatomic) NSNumber *minMessageId;
 @property (nonatomic) XMPPJID *thatJID;
@@ -160,6 +162,15 @@ static NSString *const kOutgoingTextCell  = @"outgoingTextCell";
     return _messageSender;
 }
 
+- (JYS3Uploader *)uploader
+{
+    if (!_uploader)
+    {
+        _uploader = [JYS3Uploader new];
+    }
+    return _uploader;
+}
+
 - (JYInputBarContainer *)rightContainer
 {
     if (!_rightContainer)
@@ -176,6 +187,30 @@ static NSString *const kOutgoingTextCell  = @"outgoingTextCell";
         _rightContainer = container;
     }
     return _rightContainer;
+}
+
+- (JYAudioRecorder *)recorder
+{
+    if (!_recorder)
+    {
+        _recorder = [JYAudioRecorder new];
+        _recorder.delegate = self;
+    }
+    return _recorder;
+}
+
+
+#pragma mark - JYAudioRecorderDelegate Methods
+
+- (void)recorder:(JYAudioRecorder *)recorder didRecordAudioFile:(NSURL *)fileURL duration:(NSTimeInterval)duration
+{
+    __weak typeof(self) weakSelf = self;
+    [self.uploader uploadAudioFile:fileURL success:^(NSString *url) {
+
+        [weakSelf.messageSender sendAudioMessageWithDuration:duration url:url];
+    } failure:^(NSError *error) {
+        NSLog(@"upload audio message failed with error = %@", error);
+    }];
 }
 
 #pragma mark - TextView delegate
@@ -199,8 +234,8 @@ static NSString *const kOutgoingTextCell  = @"outgoingTextCell";
     NSString *title  = NSLocalizedString(@"Media messages", nil);
     NSString *cancel = NSLocalizedString(@"Cancel", nil);
     NSString *photo = NSLocalizedString(@"Send photo", nil);
-    NSString *video = NSLocalizedString(@"Send video", nil);
-    NSString *location = NSLocalizedString(@"Send location", nil);
+//    NSString *video = NSLocalizedString(@"Send video", nil);
+//    NSString *location = NSLocalizedString(@"Send location", nil);
 
 
     UIAlertController* alert = [UIAlertController alertControllerWithTitle:title
@@ -213,15 +248,15 @@ static NSString *const kOutgoingTextCell  = @"outgoingTextCell";
                                                 [weakSelf _showPhotoPicker];
                                             }]];
 
-    [alert addAction:[UIAlertAction actionWithTitle:video style:UIAlertActionStyleDefault
-                                            handler:^(UIAlertAction * action) {
-
-                                            }]];
-
-    [alert addAction:[UIAlertAction actionWithTitle:location style:UIAlertActionStyleDefault
-                                            handler:^(UIAlertAction * action) {
-
-                                            }]];
+//    [alert addAction:[UIAlertAction actionWithTitle:video style:UIAlertActionStyleDefault
+//                                            handler:^(UIAlertAction * action) {
+//
+//                                            }]];
+//
+//    [alert addAction:[UIAlertAction actionWithTitle:location style:UIAlertActionStyleDefault
+//                                            handler:^(UIAlertAction * action) {
+//
+//                                            }]];
 
     [alert addAction:[UIAlertAction actionWithTitle:cancel style:UIAlertActionStyleCancel handler:nil]];
 
@@ -233,7 +268,7 @@ static NSString *const kOutgoingTextCell  = @"outgoingTextCell";
 - (void)didPressRightButton:(id)sender
 {
     [self showSendButton:NO];
-    [self.messageSender sendText:self.textInputbar.textView.text];
+    [self.messageSender sendTextMessageWithContent:self.textInputbar.textView.text];
     [self showSendButton:YES];
 
     [super didPressRightButton:sender];
@@ -241,12 +276,12 @@ static NSString *const kOutgoingTextCell  = @"outgoingTextCell";
 
 - (void)_micButtonTouchDown
 {
-    NSLog(@"_micButtonTouchDown");
+    [self.recorder start];
 }
 
 - (void)_micButtonTouchRelease
 {
-    NSLog(@"_micButtonTouchRelease");
+    [self.recorder stop];
 }
 
 - (void)_showPhotoPicker
@@ -278,12 +313,12 @@ static NSString *const kOutgoingTextCell  = @"outgoingTextCell";
 - (void)_sendMessage:(JYMessage *)message withImage:(UIImage *)image
 {
     __weak typeof(self) weakSelf = self;
-    [self _sendImage:image success:^(NSString *url) {
+    [self.uploader uploadImage:image success:^(NSString *url) {
 
         // TODO: there is a bug: if _sendMessageWithType fail due to xmpp connect issue, the sender will consider the photo has been sent
         message.uploadStatus = JYMessageUploadStatusSuccess;
         [weakSelf _refresh];
-        [weakSelf.messageSender sendImageWithDimensions:image.size URL:url];
+        [weakSelf.messageSender sendImageMessageWithDimensions:image.size url:url];
     } failure:^(NSError *error) {
         NSLog(@"send image error = %@", error);
         message.uploadStatus = JYMessageUploadStatusFailure;
@@ -333,36 +368,6 @@ static NSString *const kOutgoingTextCell  = @"outgoingTextCell";
         weakSelf.isLoading = NO;
     });
 }
-
-#pragma mark - UIImagePickerControllerDelegate
-
-- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
-{
-    [picker dismissViewControllerAnimated:YES completion:nil];
-
-    // resize image
-    UIImage *originalImage = info[UIImagePickerControllerOriginalImage];
-    CGFloat min = fmin(originalImage.size.width, originalImage.size.height);
-    if (min == 0.0f)
-    {
-        return;
-    }
-
-    CGFloat factor = fmin(kPhotoWidth/min, 1);
-    CGFloat width = originalImage.size.width * factor;
-    CGFloat heigth = originalImage.size.height * factor;
-    UIImage *image = [originalImage imageScaledToSize:CGSizeMake(width, heigth)];
-
-    // show JYMessage
-    JYMessage *message = [[JYMessage alloc] initWithImage:image];
-    message.uploadStatus = JYMessageUploadStatusOngoing;
-    [self _showMessage:message];
-
-    // send image
-    [self _sendMessage:message withImage:image];
-}
-
-#pragma mark - Data
 
 - (void)_loadMessages
 {
@@ -544,7 +549,7 @@ static NSString *const kOutgoingTextCell  = @"outgoingTextCell";
     }
 }
 
-#pragma mark -
+#pragma mark - UIScrollViewDelegate methods
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
@@ -599,58 +604,32 @@ static NSString *const kOutgoingTextCell  = @"outgoingTextCell";
     }
 }
 
-#pragma mark S3
-- (void)_sendImage:(UIImage *)image success:(ImageHandler)success failure:(FailureHandler)failure
+#pragma mark - UIImagePickerControllerDelegate
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
 {
-    NSURL *fileURL = [NSURL fileURLWithPath:[NSTemporaryDirectory() stringByAppendingPathComponent:@"message"]];
+    [picker dismissViewControllerAnimated:YES completion:nil];
 
-    NSData *imageData = UIImageJPEGRepresentation(image, kPhotoQuality);
-    [imageData writeToURL:fileURL atomically:YES];
-
-    NSString *s3filename = [[JYFilename sharedInstance] randomFilenameWithHttpContentType:kContentTypeJPG];
-    NSString *s3region = [JYFilename sharedInstance].region;
-    NSString *s3url = [NSString stringWithFormat:@"%@:%@", s3region, s3filename];
-
-    AWSS3TransferManager *transferManager = [AWSS3TransferManager defaultS3TransferManager];
-    if (!transferManager)
+    // resize image
+    UIImage *originalImage = info[UIImagePickerControllerOriginalImage];
+    CGFloat min = fmin(originalImage.size.width, originalImage.size.height);
+    if (min == 0.0f)
     {
-        NSLog(@"Error: no S3 transferManager");
-        if (failure)
-        {
-            NSError *error = [NSError errorWithDomain:@"winkrock" code:2000 userInfo:@{@"error": @"no S3 transferManager"}];
-            dispatch_async(dispatch_get_main_queue(), ^(void){ failure(error); });
-        }
         return;
     }
 
-    AWSS3TransferManagerUploadRequest *request = [AWSS3TransferManagerUploadRequest new];
-    request.bucket = [JYFilename sharedInstance].messageBucketName;
-    request.key = s3filename;
-    request.body = fileURL;
-    request.contentType = kContentTypeJPG;
+    CGFloat factor = fmin(kPhotoWidth/min, 1);
+    CGFloat width = originalImage.size.width * factor;
+    CGFloat heigth = originalImage.size.height * factor;
+    UIImage *image = [originalImage imageScaledToSize:CGSizeMake(width, heigth)];
 
-    [[transferManager upload:request] continueWithBlock:^id(AWSTask *task) {
-        if (task.error)
-        {
-            NSLog(@"Error: AWSS3TransferManager upload error = %@", task.error);
+    // show JYMessage
+    JYMessage *message = [[JYMessage alloc] initWithImage:image];
+    message.uploadStatus = JYMessageUploadStatusOngoing;
+    [self _showMessage:message];
 
-            if (failure)
-            {
-                dispatch_async(dispatch_get_main_queue(), ^(void){ failure(task.error); });
-            }
-        }
-        if (task.result)
-        {
-            AWSS3TransferManagerUploadOutput *uploadOutput = task.result;
-            NSLog(@"Success: AWSS3TransferManager upload task.result = %@", uploadOutput);
-
-            if (success)
-            {
-                dispatch_async(dispatch_get_main_queue(), ^(void){ success(s3url); });
-            }
-        }
-        return nil;
-    }];
+    // send image
+    [self _sendMessage:message withImage:image];
 }
 
 @end

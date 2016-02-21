@@ -10,7 +10,7 @@
 
 @implementation NSString (Joyy)
 
-+ (NSString *)agoStringForTimeInterval:(NSTimeInterval)interval
++ (NSString *)stringWithTimeInterval:(NSTimeInterval)interval
 {
     NSString *ago = NSLocalizedString(@"ago", nil);
     int numberOfDays = interval / 86400;
@@ -45,6 +45,12 @@
 + (NSString *)apiURLWithPath:(NSString *)path
 {
     return [NSString stringWithFormat:@"%@%@", kURLAPIBase, path];
+}
+
++ (NSString *)stringWithTimestampInMiliSeconds
+{
+    long long timestamp = [@(floor([NSDate timeIntervalSinceReferenceDate] * 1000)) longLongValue];
+    return [NSString stringWithFormat:@"%lld",timestamp];
 }
 
 + (NSString *)dialingCodeForCountryCode:(NSString *)countryCode

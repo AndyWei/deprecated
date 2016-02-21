@@ -48,6 +48,7 @@ AWSRegionType const kCognitoRegionType = AWSRegionUSEast1;
 // Flurry
 NSString *const kFlurryKey = @"3RRHRXVTX38ZCW3QRHV6";
 
+NSString *const kContentTypeAudioMPEG = @"audio/mpeg";
 NSString *const kContentTypeJPG = @"image/jpeg";
 NSString *const kErrorSignInFailed = @"Incorrect password";
 NSString *const kErrorTitle = @"😜: oops!";

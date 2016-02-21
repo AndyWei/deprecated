@@ -10,7 +10,8 @@
 
 - (instancetype)initWithThatJID:(XMPPJID *)thatJID;
 
-- (BOOL)sendText:(NSString *)text;
-- (BOOL)sendImageWithDimensions:(CGSize)dimensions URL:(NSString *)url;
+- (BOOL)sendAudioMessageWithDuration:(NSTimeInterval)duration url:(NSString *)url;
+- (BOOL)sendTextMessageWithContent:(NSString *)content;
+- (BOOL)sendImageMessageWithDimensions:(CGSize)dimensions url:(NSString *)url;
 
 @end

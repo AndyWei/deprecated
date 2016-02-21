@@ -45,6 +45,10 @@
     {
         suffix = @"jpg";
     }
+    else if ([contentType isEqualToString:kContentTypeAudioMPEG])
+    {
+        suffix = @"m4a";
+    }
     return [self randomFilenameWithSuffix:suffix];
 }
 
@@ -59,15 +63,9 @@
 {
     NSString *first = [[JYCredential current].username substringToIndex:1];  // "j" for jack
     NSString *randString = [self randomFourDigits];              // "0176"
-    NSString *timestamp = [self timeInMiliSeconds];              // 458354045799
+    NSString *timestamp = [NSString stringWithTimestampInMiliSeconds];              // 458354045799
 
     return [NSString stringWithFormat:@"%@%@_%@.%@", first, randString, timestamp, suffix]; // "j0176_458354045799.jpg"
-}
-
-- (NSString *)timeInMiliSeconds
-{
-    long long timestamp = [@(floor([NSDate timeIntervalSinceReferenceDate] * 1000)) longLongValue];
-    return [NSString stringWithFormat:@"%lld",timestamp];
 }
 
 - (NSString *)urlForAvatarWithRegion:(NSString *)region filename:(NSString *)filename

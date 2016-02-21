@@ -46,6 +46,7 @@ extern AWSRegionType const kCognitoRegionType;
 // Flurry
 extern NSString *const kFlurryKey;
 
+extern NSString *const kContentTypeAudioMPEG;
 extern NSString *const kContentTypeJPG;
 extern NSString *const kErrorSignInFailed;
 extern NSString *const kErrorTitle;

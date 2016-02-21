@@ -35,6 +35,7 @@
 #import "NSNumber+Joyy.h"
 #import "NSString+Joyy.h"
 #import "NSIndexPath+Joyy.h"
+#import "NSURL+Joyy.h"
 #import "UIColor+Joyy.h"
 #import "UIImage+Joyy.h"
 #import "UIView+Joyy.h"

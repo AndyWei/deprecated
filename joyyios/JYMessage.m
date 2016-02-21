@@ -304,6 +304,11 @@
 
 - (CGSize)displayDimensions
 {
+    if (self.type == JYMessageTypeAudio)
+    {
+        return CGSizeMake(100, 35);
+    }
+
     CGFloat min = fmin(kMessageMediaWidthDefault, kMessageMediaHeightDefault);
     CGFloat max = fmax(kMessageMediaWidthDefault, kMessageMediaHeightDefault);
     if (self.dimensions.width < self.dimensions.height)

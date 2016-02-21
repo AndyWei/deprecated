@@ -17,7 +17,6 @@
 - (NSString *)randomFourDigits;
 - (NSString *)randomFilenameWithHttpContentType:(NSString *)contentType;
 - (NSString *)randomFilenameWithSuffix:(NSString *)suffix;
-- (NSString *)timeInMiliSeconds;
 - (NSString *)urlForAvatarWithRegion:(NSString *)region filename:(NSString *)filename;
 - (NSString *)urlForPostWithRegion:(NSString *)region filename:(NSString *)filename;
 - (NSString *)urlWithRegion:(NSString *)region filename:(NSString *)filename type:(NSString *)type;
