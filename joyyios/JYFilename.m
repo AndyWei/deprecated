@@ -59,13 +59,21 @@
     return randString;
 }
 
+- (u_int32_t)random10000
+{
+    u_int32_t rand = arc4random_uniform(10000);
+    return rand;
+}
+
 - (NSString *)randomFilenameWithSuffix:(NSString *)suffix
 {
     NSString *first = [[JYCredential current].username substringToIndex:1];  // "j" for jack
-    NSString *randString = [self randomFourDigits];              // "0176"
-    NSString *timestamp = [NSString stringWithTimestampInMiliSeconds];              // 458354045799
 
-    return [NSString stringWithFormat:@"%@%@_%@.%@", first, randString, timestamp, suffix]; // "j0176_458354045799.jpg"
+    uint64_t timestamp = (uint64_t)[NSDate timeIntervalSinceReferenceDate] * 1000000; // 1 million per second
+    NSString *timestampString = [[NSString base62String:timestamp] reversedString];
+    NSString *randomString = [NSString base62String:[self random10000]];
+
+    return [NSString stringWithFormat:@"%@%@%@.%@", randomString, timestampString, first, suffix]; // [rand][Base62String][j].jpg
 }
 
 - (NSString *)urlForAvatarWithRegion:(NSString *)region filename:(NSString *)filename

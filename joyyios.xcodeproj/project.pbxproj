@@ -125,6 +125,7 @@
 		D69FF6DB1B96471600466FE5 /* JYAmazonClientManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D69FF6DA1B96471600466FE5 /* JYAmazonClientManager.m */; };
 		D69FF6E51B96474200466FE5 /* JYAuthenticatedIdentityProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = D69FF6E01B96474200466FE5 /* JYAuthenticatedIdentityProvider.m */; };
 		D69FF6E71B96474200466FE5 /* JYAuthenticationClient.m in Sources */ = {isa = PBXBuildFile; fileRef = D69FF6E21B96474200466FE5 /* JYAuthenticationClient.m */; };
+		D6AE655B1C79AC06003C01E0 /* JYAudioPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = D6AE655A1C79AC06003C01E0 /* JYAudioPlayer.m */; };
 		D6B2F05B1ACE630F009601B0 /* JYAutoCompleteTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B2F05A1ACE630F009601B0 /* JYAutoCompleteTextField.m */; };
 		D6B8D3011C2BA75000B30548 /* JYWinkCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B8D3001C2BA75000B30548 /* JYWinkCell.m */; };
 		D6B8D3041C322F6400B30548 /* JYAvatarCreator.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B8D3031C322F6400B30548 /* JYAvatarCreator.m */; };
@@ -390,6 +391,8 @@
 		D69FF6E01B96474200466FE5 /* JYAuthenticatedIdentityProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYAuthenticatedIdentityProvider.m; sourceTree = "<group>"; };
 		D69FF6E11B96474200466FE5 /* JYAuthenticationClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYAuthenticationClient.h; sourceTree = "<group>"; };
 		D69FF6E21B96474200466FE5 /* JYAuthenticationClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYAuthenticationClient.m; sourceTree = "<group>"; };
+		D6AE65591C79AC06003C01E0 /* JYAudioPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYAudioPlayer.h; sourceTree = "<group>"; };
+		D6AE655A1C79AC06003C01E0 /* JYAudioPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYAudioPlayer.m; sourceTree = "<group>"; };
 		D6B2F0591ACE630F009601B0 /* JYAutoCompleteTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYAutoCompleteTextField.h; sourceTree = "<group>"; };
 		D6B2F05A1ACE630F009601B0 /* JYAutoCompleteTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYAutoCompleteTextField.m; sourceTree = "<group>"; };
 		D6B8D2FF1C2BA75000B30548 /* JYWinkCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYWinkCell.h; sourceTree = "<group>"; };
@@ -673,6 +676,8 @@
 		D61E99D41C723EAA0033B5C4 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				D6AE65591C79AC06003C01E0 /* JYAudioPlayer.h */,
+				D6AE655A1C79AC06003C01E0 /* JYAudioPlayer.m */,
 				D6E3B0531B996F5400B707DF /* JYSessionListViewCell.h */,
 				D6E3B0541B996F5400B707DF /* JYSessionListViewCell.m */,
 				D61E99CE1C723B800033B5C4 /* JYMessageCell.h */,
@@ -1343,6 +1348,7 @@
 				D61D1DA21B4E336E00DE37DF /* TGCameraAuthorizationViewController.m in Sources */,
 				D61E99CD1C723B040033B5C4 /* JYSessionViewController.m in Sources */,
 				D62124591C4B2CCB006ADB7F /* NSNumber+Joyy.m in Sources */,
+				D6AE655B1C79AC06003C01E0 /* JYAudioPlayer.m in Sources */,
 				D6C89F831C2B9A8700E96E99 /* JYWinkViewController.m in Sources */,
 				D6F7F1381BA71ADF008118DA /* JYVerificationViewController.m in Sources */,
 				D63F0D7D1ACA5E260067C5EE /* JYPhoneNumberViewController.m in Sources */,

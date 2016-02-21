@@ -51,9 +51,14 @@
 
 - (void)_reset
 {
-    if (self.contentImageView.superview)
+    if (_audioPlayer && _audioPlayer.superview)
     {
-        [self.contentImageView removeFromSuperview];
+        [_audioPlayer removeFromSuperview];
+    }
+
+    if (_contentImageView && _contentImageView.superview)
+    {
+        [_contentImageView removeFromSuperview];
     }
 }
 
@@ -75,18 +80,10 @@
 
 - (void)_setupAudioView
 {
-    self.contentImageView.frame = CGRectMake(0, 0, self.message.displayDimensions.width, self.message.displayDimensions.height);
-    [self.mediaContainerView addSubview:self.contentImageView];
-    [self.mediaContainerView pinAllEdgesOfSubview:self.contentImageView];
-
-    if (self.message.media)
-    {
-        self.contentImageView.image = self.message.media;
-    }
-    else
-    {
-        [self fetchMessageImage];
-    }
+    self.audioPlayer.url = [NSURL URLWithString:self.message.url];
+    self.audioPlayer.textLabel.text = [NSString stringWithFormat:@"%.f", self.message.dimensions.width];
+    [self.mediaContainerView addSubview:self.audioPlayer];
+    [self.mediaContainerView pinAllEdgesOfSubview:self.audioPlayer];
 }
 
 - (UIView *)mediaContainerView
@@ -111,6 +108,15 @@
         _contentImageView.layer.masksToBounds= YES;
     }
     return _contentImageView;
+}
+
+- (JYAudioPlayer *)audioPlayer
+{
+    if (!_audioPlayer)
+    {
+        _audioPlayer = [JYAudioPlayer new];
+    }
+    return _audioPlayer;
 }
 
 - (void)fetchMessageImage

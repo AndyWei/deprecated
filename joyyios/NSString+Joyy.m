@@ -53,6 +53,19 @@
     return [NSString stringWithFormat:@"%lld",timestamp];
 }
 
++ (NSString *)base62String:(uint64_t)num
+{
+    NSString *alphabet = @"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    uint64_t base = [alphabet length];
+    NSMutableString *result = [NSMutableString string];
+    while (num > 0) {
+        NSString *digit = [alphabet substringWithRange:NSMakeRange(num % base, 1)];
+        [result insertString:digit atIndex:0];
+        num /= base;
+    }
+    return result;
+}
+
 + (NSString *)dialingCodeForCountryCode:(NSString *)countryCode
 {
     static NSDictionary *dialCodeDict = nil;

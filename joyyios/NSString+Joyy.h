@@ -10,6 +10,7 @@
 
 + (NSString *)apiURLWithPath:(NSString *)path;
 + (NSString *)dialingCodeForCountryCode:(NSString *)countryCode;
++ (NSString *)base62String:(uint64_t)num;
 + (NSString *)stringWithTimeInterval:(NSTimeInterval)interval;
 + (NSString *)stringWithTimestampInMiliSeconds;
 

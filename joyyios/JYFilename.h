@@ -14,7 +14,6 @@
 - (NSString *)postURLPrefixOfRegion:(NSString *)region;
 - (NSString *)messageURLPrefixOfRegion:(NSString *)region;
 
-- (NSString *)randomFourDigits;
 - (NSString *)randomFilenameWithHttpContentType:(NSString *)contentType;
 - (NSString *)randomFilenameWithSuffix:(NSString *)suffix;
 - (NSString *)urlForAvatarWithRegion:(NSString *)region filename:(NSString *)filename;

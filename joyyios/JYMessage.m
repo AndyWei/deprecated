@@ -192,7 +192,7 @@
 
 - (BOOL)isMediaMessage
 {
-    return (self.type == JYMessageTypeImage || self.type == JYMessageTypeVideo || self.type == JYMessageTypeLocation);
+    return ![self isTextMessage];
 }
 
 - (BOOL)hasGapWith:(JYMessage *)that
@@ -282,7 +282,6 @@
     }
     return _url;
 }
-
 
 - (CGSize)dimensions
 {
