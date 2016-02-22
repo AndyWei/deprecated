@@ -678,6 +678,8 @@
 			children = (
 				D6AE65591C79AC06003C01E0 /* JYAudioPlayer.h */,
 				D6AE655A1C79AC06003C01E0 /* JYAudioPlayer.m */,
+				D688FC2C1C794D7A003FD76F /* JYAudioRecorder.h */,
+				D688FC2D1C794D7A003FD76F /* JYAudioRecorder.m */,
 				D6E3B0531B996F5400B707DF /* JYSessionListViewCell.h */,
 				D6E3B0541B996F5400B707DF /* JYSessionListViewCell.m */,
 				D61E99CE1C723B800033B5C4 /* JYMessageCell.h */,
@@ -713,8 +715,6 @@
 				D61E99C91C6CFA590033B5C4 /* JYMessageSender.m */,
 				D688FC211C791E02003FD76F /* JYS3Uploader.h */,
 				D688FC221C791E02003FD76F /* JYS3Uploader.m */,
-				D688FC2C1C794D7A003FD76F /* JYAudioRecorder.h */,
-				D688FC2D1C794D7A003FD76F /* JYAudioRecorder.m */,
 			);
 			name = Controller;
 			sourceTree = "<group>";

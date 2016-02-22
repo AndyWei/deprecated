@@ -12,10 +12,11 @@
 - (void)recorder:(JYAudioRecorder *)recorder didRecordAudioFile:(NSURL *)fileURL duration:(NSTimeInterval)duration;
 @end
 
-@interface JYAudioRecorder : NSObject
+@interface JYAudioRecorder: UIView
 
 - (void)start;
 - (void)stop;
+- (void)cancel;
 
 @property (nonatomic, weak) id<JYAudioRecorderDelegate> delegate;
 

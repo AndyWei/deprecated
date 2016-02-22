@@ -19,9 +19,9 @@
 #import "JYMessageOutgoingMediaCell.h"
 #import "JYMessageOutgoingTextCell.h"
 #import "JYMessageSender.h"
-#import "JYMessageTextCell.h"
 #import "JYS3Uploader.h"
 #import "JYSessionViewController.h"
+#import "JYSoundPlayer.h"
 #import "JYXmppManager.h"
 
 @interface JYSessionViewController () <JYAudioRecorderDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate>
@@ -180,9 +180,9 @@ static NSString *const kOutgoingTextCell  = @"outgoingTextCell";
         JYInputBarContainer *container = [[JYInputBarContainer alloc] initWithCameraImage:camera micImage:mic];
 
         [container.cameraButton addTarget:self action:@selector(_showCamera) forControlEvents:UIControlEventTouchUpInside];
-        [container.micButton addTarget:self action:@selector(_micButtonTouchDown) forControlEvents:UIControlEventTouchDown];
-        [container.micButton addTarget:self action:@selector(_micButtonTouchRelease) forControlEvents:UIControlEventTouchUpInside];
-        [container.micButton addTarget:self action:@selector(_micButtonTouchRelease) forControlEvents:UIControlEventTouchUpOutside];
+        [container.micButton addTarget:self action:@selector(_micButtonDown) forControlEvents:UIControlEventTouchDown];
+        [container.micButton addTarget:self action:@selector(_micButtonRelease) forControlEvents:UIControlEventTouchUpInside];
+        [container.micButton addTarget:self action:@selector(_micButtonCancel) forControlEvents:UIControlEventTouchCancel];
 
         _rightContainer = container;
     }
@@ -194,6 +194,9 @@ static NSString *const kOutgoingTextCell  = @"outgoingTextCell";
     if (!_recorder)
     {
         _recorder = [JYAudioRecorder new];
+        CGFloat width = CGRectGetWidth(self.textInputbar.bounds) - CGRectGetWidth(self.rightContainer.micButton.bounds) - 20;
+        CGFloat heigh = CGRectGetHeight(self.textInputbar.bounds);
+        _recorder.frame = CGRectMake(0, 0, width, heigh);
         _recorder.delegate = self;
     }
     return _recorder;
@@ -274,14 +277,26 @@ static NSString *const kOutgoingTextCell  = @"outgoingTextCell";
     [super didPressRightButton:sender];
 }
 
-- (void)_micButtonTouchDown
+- (void)_micButtonDown
 {
+    NSLog(@"Down");
+//    [JYSoundPlayer playAudioRecordingStartedAlert];
+    [self.textInputbar addSubview:self.recorder];
     [self.recorder start];
 }
 
-- (void)_micButtonTouchRelease
+- (void)_micButtonRelease
 {
+    NSLog(@"Release");
+//    [JYSoundPlayer playVibrate];
     [self.recorder stop];
+}
+
+-(void)_micButtonCancel
+{
+    NSLog(@"Cancel");
+//    [JYSoundPlayer playAudioRecordingCanceledAlert];
+    [self.recorder cancel];
 }
 
 - (void)_showPhotoPicker

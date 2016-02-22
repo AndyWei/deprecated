@@ -13,7 +13,7 @@
 @interface JYAudioPlayer ()
 @property (nonatomic) AVPlayer *player;
 @property (nonatomic) BOOL isPlaying;
-@property (nonatomic) UIImageView *soundImageView;
+@property (nonatomic) UIImageView *imageView;
 @property (nonatomic, getter=isTrackingInside) BOOL trackingInside;
 @end
 
@@ -26,18 +26,21 @@
         self.translatesAutoresizingMaskIntoConstraints = NO;
         self.trackingInside = NO;
 
-        [self addSubview:self.soundImageView];
+        [self addSubview:self.imageView];
         [self addSubview:self.textLabel];
 
         NSDictionary *views = @{
-                                @"soundImageView": self.soundImageView,
+                                @"imageView": self.imageView,
                                 @"textLabel": self.textLabel
                                 };
 
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-10-[soundImageView(25)]-10-[textLabel]-10-|" options:0 metrics:nil views:views]];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-5-[soundImageView(25)]-5-|" options:0 metrics:nil views:views]];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-5-[textLabel(25)]-5-|" options:0 metrics:nil views:views]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-10-[imageView(25)]-10-[textLabel]-10-|" options:0 metrics:nil views:views]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(>=0@500)-[imageView(25)]-(>=0@500)-|" options:0 metrics:nil views:views]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(>=0@500)-[textLabel]-(>=0@500)-|" options:0 metrics:nil views:views]];
 
+        [self pinCenterYOfSubviews:@[self.imageView, self.textLabel]];
+
+        // action
         [self addTarget:self action:@selector(_action) forControlEvents:UIControlEventTouchUpInside];
     }
     return self;
@@ -75,15 +78,16 @@
     self.isPlaying = NO;
 }
 
-- (UIImageView *)soundImageView
+- (UIImageView *)imageView
 {
-    if (!_soundImageView)
+    if (!_imageView)
     {
-        _soundImageView = [UIImageView new];
-        _soundImageView.translatesAutoresizingMaskIntoConstraints = NO;
-        _soundImageView.image = [UIImage imageNamed:@"sound"];
+        _imageView = [UIImageView new];
+        _imageView.translatesAutoresizingMaskIntoConstraints = NO;
+        _imageView.contentMode = UIViewContentModeScaleAspectFit;
+        _imageView.image = [UIImage imageNamed:@"sound"];
     }
-    return _soundImageView;
+    return _imageView;
 }
 
 - (TTTAttributedLabel *)textLabel

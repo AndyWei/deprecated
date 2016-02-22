@@ -38,7 +38,7 @@
     else
     {
         self.contentLabel.textColor = JoyyBlack;
-        self.contentLabel.backgroundColor = rgb(173, 210, 195);
+        self.contentLabel.backgroundColor = rgb(255, 239, 213);
     }
 
     self.contentLabel.text = [message text];

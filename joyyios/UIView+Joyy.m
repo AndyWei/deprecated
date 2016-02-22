@@ -18,7 +18,7 @@
     return imageView;
 }
 
-- (void)pinSubview:(UIView *)subview toEdge:(NSLayoutAttribute)attribute
+- (void)pinSubview:(UIView *)subview to:(NSLayoutAttribute)attribute
 {
     [self addConstraint:[NSLayoutConstraint constraintWithItem:self
                                                      attribute:attribute
@@ -31,10 +31,26 @@
 
 - (void)pinAllEdgesOfSubview:(UIView *)subview
 {
-    [self pinSubview:subview toEdge:NSLayoutAttributeBottom];
-    [self pinSubview:subview toEdge:NSLayoutAttributeTop];
-    [self pinSubview:subview toEdge:NSLayoutAttributeLeading];
-    [self pinSubview:subview toEdge:NSLayoutAttributeTrailing];
+    [self pinSubview:subview to:NSLayoutAttributeBottom];
+    [self pinSubview:subview to:NSLayoutAttributeTop];
+    [self pinSubview:subview to:NSLayoutAttributeLeading];
+    [self pinSubview:subview to:NSLayoutAttributeTrailing];
+}
+
+- (void)pinCenterXOfSubviews:(NSArray *)subviews
+{
+    for (UIView *view in subviews)
+    {
+        [self pinSubview:view to:NSLayoutAttributeCenterX];
+    }
+}
+
+- (void)pinCenterYOfSubviews:(NSArray *)subviews
+{
+    for (UIView *view in subviews)
+    {
+        [self pinSubview:view to:NSLayoutAttributeCenterY];
+    }
 }
 
 @end

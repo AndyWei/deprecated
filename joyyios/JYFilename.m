@@ -67,13 +67,13 @@
 
 - (NSString *)randomFilenameWithSuffix:(NSString *)suffix
 {
-    NSString *first = [[JYCredential current].username substringToIndex:1];  // "j" for jack
+    uint64_t timestamp = (uint64_t)[NSDate timeIntervalSinceReferenceDate] * 1000000;
+    uint64_t rand = [self random10000];
+    uint64_t value = timestamp * 10000 + rand;
+    NSString *str = [[NSString base62String:value] reversedString]; // reversed timestamp string is required by S3
+    NSString *first = [[JYCredential current].username substringToIndex:1];  // "j" for jayden
 
-    uint64_t timestamp = (uint64_t)[NSDate timeIntervalSinceReferenceDate] * 1000000; // 1 million per second
-    NSString *timestampString = [[NSString base62String:timestamp] reversedString];
-    NSString *randomString = [NSString base62String:[self random10000]];
-
-    return [NSString stringWithFormat:@"%@%@%@.%@", randomString, timestampString, first, suffix]; // [rand][Base62String][j].jpg
+    return [NSString stringWithFormat:@"%@%@.%@", str, first, suffix];
 }
 
 - (NSString *)urlForAvatarWithRegion:(NSString *)region filename:(NSString *)filename
