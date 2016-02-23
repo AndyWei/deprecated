@@ -7,6 +7,7 @@
 //
 
 #import <AVFoundation/AVFoundation.h>
+#import <JazzHands/IFTTTJazzHands.h>
 #import <MSWeakTimer/MSWeakTimer.h>
 #import <TTTAttributedLabel/TTTAttributedLabel.h>
 
@@ -25,6 +26,11 @@
 
 @property (nonatomic) MSWeakTimer *durationTimer;
 @property (nonatomic) uint32_t duration;
+
+@property (nonatomic) IFTTTAnimator *animator;
+@property (nonatomic) IFTTTPathPositionAnimation *micFlyingAnimation;
+@property (nonatomic) UIImageView *mic;
+@property (nonatomic) CAShapeLayer *micPathLayer;
 @end
 
 @implementation JYAudioRecorder
@@ -55,6 +61,12 @@
     return self;
 }
 
+- (UIImage *)microPhone
+{
+    UIImage *image = [UIImage imageNamed:@"microphone"];
+    return [image imageMaskedWithColor:JoyyRedPure];
+}
+
 - (UIImageView *)imageView
 {
     if (!_imageView)
@@ -62,8 +74,7 @@
         _imageView = [UIImageView new];
         _imageView.translatesAutoresizingMaskIntoConstraints = NO;
         _imageView.contentMode = UIViewContentModeScaleAspectFit;
-        UIImage *image = [UIImage imageNamed:@"microphone"];
-        _imageView.image = [image imageMaskedWithColor:JoyyRedPure];
+        _imageView.image = [self microPhone];
     }
     return _imageView;
 }
@@ -110,6 +121,7 @@
     
     // mic icon animation
     self.imageView.alpha = 1.0;
+    self.imageView.backgroundColor = JoyyWhitePure;
     [UIView animateWithDuration:0.5
                           delay:0
                         options:UIViewAnimationOptionRepeat | UIViewAnimationOptionAutoreverse
@@ -122,22 +134,24 @@
 - (void)stop
 {
     self.stopTimestamp = [NSDate date];
-    [self _doStop];
+    [self.avRecorder stop];
+    [self _stopDurationTimer];
+
+    [self.imageView.layer removeAllAnimations];
+    [self removeFromSuperview];
 }
 
 - (void)cancel
 {
     self.stopTimestamp = [NSDate dateWithTimeIntervalSince1970:0]; // invalid timestamp to indicate cancel
-    [self _doStop];
-    _avRecorder = nil; // force re-init recorder for next time use
-}
-
-- (void)_doStop
-{
     [self.avRecorder stop];
     [self _stopDurationTimer];
+
+    _avRecorder = nil; // force re-init recorder for next time use
+
     [self.imageView.layer removeAllAnimations];
-    [self removeFromSuperview];
+    self.imageView.alpha = 1.0f;
+    [self _playCancelAnimation];
 }
 
 - (AVAudioRecorder *)avRecorder
@@ -217,6 +231,23 @@
     uint32_t minutes = self.duration / 60;
     uint32_t seconds = self.duration % 60;
     self.durationLabel.text = [NSString stringWithFormat:@"%u:%02u", minutes, seconds];
+}
+
+#pragma mark - animation
+
+- (void)_playCancelAnimation
+{
+    [UIView animateKeyframesWithDuration:2.0 delay:0.0 options:UIViewKeyframeAnimationOptionCalculationModeLinear animations:^{
+        [UIView addKeyframeWithRelativeStartTime:0.0 relativeDuration:0.5 animations:^{
+            self.imageView.backgroundColor = JoyyRedPure;
+        }];
+
+        [UIView addKeyframeWithRelativeStartTime:0.5 relativeDuration:0.5 animations:^{
+            self.imageView.frame = CGRectMake(100, 200, CGRectGetWidth(self.imageView.frame), CGRectGetHeight(self.imageView.frame));
+        }];
+    } completion:^(BOOL finished) {
+        [self removeFromSuperview];
+    }];
 }
 
 @end
