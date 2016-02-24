@@ -19,5 +19,5 @@
 - (void)cancel;
 
 @property (nonatomic, weak) id<JYAudioRecorderDelegate> delegate;
-
+@property (nonatomic) UIScrollView *scrollView;
 @end

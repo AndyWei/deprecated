@@ -26,13 +26,16 @@
 
 @interface JYSessionViewController () <JYAudioRecorderDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 @property (nonatomic) BOOL isLoading;
+@property (nonatomic) BOOL panRecognizerEnabled;
 @property (nonatomic) JYAudioRecorder *recorder;
 @property (nonatomic) JYInputBarContainer *rightContainer;
 @property (nonatomic) JYMessageSender *messageSender;
 @property (nonatomic) JYS3Uploader *uploader;
 @property (nonatomic) NSMutableArray *messageList;
 @property (nonatomic) NSNumber *minMessageId;
+@property (nonatomic) UIPanGestureRecognizer *panRecognizer;
 @property (nonatomic) XMPPJID *thatJID;
+
 @end
 
 static NSString *const kIncomingMediaCell = @"incomingMediaCell";
@@ -124,6 +127,8 @@ static NSString *const kOutgoingTextCell  = @"outgoingTextCell";
     self.rightButton.titleLabel.font = [UIFont boldSystemFontOfSize:17.0];
     self.rightButton.tintColor = JoyyBlue;
 
+    [self.textInputbar addGestureRecognizer:self.panRecognizer];
+    self.panRecognizerEnabled = NO;
     [self.textInputbar addSubview:self.rightContainer];
     NSDictionary *views = @{
                             @"rightContainer": self.rightContainer
@@ -180,9 +185,8 @@ static NSString *const kOutgoingTextCell  = @"outgoingTextCell";
         JYInputBarContainer *container = [[JYInputBarContainer alloc] initWithCameraImage:camera micImage:mic];
 
         [container.cameraButton addTarget:self action:@selector(_showCamera) forControlEvents:UIControlEventTouchUpInside];
-        [container.micButton addTarget:self action:@selector(_micButtonDown) forControlEvents:UIControlEventTouchDown];
-        [container.micButton addTarget:self action:@selector(_micButtonRelease) forControlEvents:UIControlEventTouchUpInside];
-        [container.micButton addTarget:self action:@selector(_micButtonCancel) forControlEvents:UIControlEventTouchCancel];
+        [container.micButton addTarget:self action:@selector(_audioRecordStart) forControlEvents:UIControlEventTouchDown];
+        [container.micButton addTarget:self action:@selector(_audioRecordEnd) forControlEvents:UIControlEventTouchUpInside];
 
         _rightContainer = container;
     }
@@ -195,6 +199,7 @@ static NSString *const kOutgoingTextCell  = @"outgoingTextCell";
     {
         _recorder = [JYAudioRecorder new];
         CGFloat width = CGRectGetWidth(self.textInputbar.bounds) - CGRectGetWidth(self.rightContainer.micButton.bounds) - 20;
+//        CGFloat width = CGRectGetWidth(self.textInputbar.bounds);
         CGFloat heigh = CGRectGetHeight(self.textInputbar.bounds);
         _recorder.frame = CGRectMake(0, 0, width, heigh);
         _recorder.delegate = self;
@@ -285,28 +290,6 @@ static NSString *const kOutgoingTextCell  = @"outgoingTextCell";
     [self showSendButton:NO];
 
     [super didPressRightButton:sender];
-}
-
-- (void)_micButtonDown
-{
-    NSLog(@"Down");
-//    [JYSoundPlayer playAudioRecordingStartedAlert];
-    [self.textInputbar addSubview:self.recorder];
-    [self.recorder start];
-}
-
-- (void)_micButtonRelease
-{
-    NSLog(@"Release");
-//    [JYSoundPlayer playVibrate];
-    [self.recorder stop];
-}
-
--(void)_micButtonCancel
-{
-    NSLog(@"Cancel");
-//    [JYSoundPlayer playAudioRecordingCanceledAlert];
-    [self.recorder cancel];
 }
 
 - (void)_showPhotoPicker
@@ -650,6 +633,70 @@ static NSString *const kOutgoingTextCell  = @"outgoingTextCell";
 
     // send image
     [self _sendMessage:message withImage:image];
+}
+
+#pragma mark - Audio
+
+- (void)_audioRecordStart
+{
+    NSLog(@"Down");
+    //    [JYSoundPlayer playAudioRecordingStartedAlert];
+    self.panRecognizerEnabled = YES;
+    [self.textInputbar addSubview:self.recorder];
+    [self.recorder start];
+}
+
+- (void)_audioRecordEnd
+{
+    NSLog(@"Release");
+    //    [JYSoundPlayer playVibrate];
+    [self.recorder stop];
+    self.panRecognizerEnabled = NO;
+}
+
+-(void)_audioRecordCancel
+{
+    NSLog(@"Cancel");
+    //    [JYSoundPlayer playAudioRecordingCanceledAlert];
+    [self.recorder cancel];
+}
+
+- (UIPanGestureRecognizer *)panRecognizer
+{
+    if (!_panRecognizer)
+    {
+        _panRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePan:)];
+        _panRecognizer.minimumNumberOfTouches = 1;
+        _panRecognizer.maximumNumberOfTouches = 1;
+    }
+    return _panRecognizer;
+}
+
+- (void)handlePan:(UIPanGestureRecognizer *)recognizer
+{
+    // Note: panRecognizerEnabled is different with panRecognizer.enabled
+    // we need panRecognizer.enabled always YES to detect the tap-on-micButton-then-slide-left case
+    if (!self.panRecognizerEnabled)
+    {
+        return;
+    }
+
+    if (recognizer.state == UIGestureRecognizerStateEnded)
+    {
+        [self _audioRecordEnd];
+    }
+    else if (recognizer.state == UIGestureRecognizerStateChanged)
+    {
+        CGPoint translation = [recognizer translationInView:self.view];
+        CGFloat x = -translation.x;
+        self.recorder.scrollView.contentOffset = CGPointMake(x, 0);
+
+        if (x > 80)
+        {
+            self.panRecognizerEnabled = NO;
+            [self _audioRecordCancel];
+        }
+    }
 }
 
 @end

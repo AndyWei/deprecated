@@ -10,16 +10,17 @@
 #import <MSWeakTimer/MSWeakTimer.h>
 #import <TTTAttributedLabel/TTTAttributedLabel.h>
 
+#import "JYButton.h"
 #import "JYAudioRecorder.h"
 
-@interface JYAudioRecorder () <AVAudioRecorderDelegate>
+@interface JYAudioRecorder () <AVAudioRecorderDelegate, UIScrollViewDelegate>
 @property (nonatomic) AVAudioRecorder *avRecorder;
 @property (nonatomic) NSDate *startTimestamp;
 @property (nonatomic) NSDate *stopTimestamp;
 @property (nonatomic) NSDictionary *recorderSetting;
 @property (nonatomic) NSURL *outputFileURL;
 
-@property (nonatomic) TTTAttributedLabel *hintLabel;
+@property (nonatomic) JYButton *slideButton;
 @property (nonatomic) TTTAttributedLabel *durationLabel;
 @property (nonatomic) UIImageView *imageView;
 
@@ -37,21 +38,21 @@
         self.backgroundColor = JoyyWhitePure;
 
         [self addSubview:self.imageView];
-        [self addSubview:self.hintLabel];
+        [self addSubview:self.scrollView];
         [self addSubview:self.durationLabel];
 
         NSDictionary *views = @{
                                 @"imageView": self.imageView,
-                                @"hintLabel": self.hintLabel,
+                                @"scrollView": self.scrollView,
                                 @"durationLabel": self.durationLabel
                                 };
 
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-10-[imageView(25)]-15-[durationLabel(100)]-10-[hintLabel]-10-|" options:0 metrics:nil views:views]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-10-[imageView(25)]-15-[durationLabel(50)]-3-[scrollView]-0-|" options:0 metrics:nil views:views]];
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(>=0@500)-[imageView(25)]-(>=0@500)-|" options:0 metrics:nil views:views]];
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(>=0@500)-[durationLabel]-(>=0@500)-|" options:0 metrics:nil views:views]];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(>=0@500)-[hintLabel]-(>=0@500)-|" options:0 metrics:nil views:views]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(>=0@500)-[scrollView]-(>=0@500)-|" options:0 metrics:nil views:views]];
 
-        [self pinCenterYOfSubviews:@[self.imageView, self.hintLabel, self.durationLabel]];
+        [self pinCenterYOfSubviews:@[self.imageView, self.durationLabel, self.scrollView]];
     }
     return self;
 }
@@ -81,20 +82,33 @@
     return _durationLabel;
 }
 
-- (TTTAttributedLabel *)hintLabel
+- (UIScrollView *)scrollView
 {
-    if (!_hintLabel)
+    if (!_scrollView)
     {
-        TTTAttributedLabel *label = [[TTTAttributedLabel alloc] initWithFrame:CGRectZero];
-        label.translatesAutoresizingMaskIntoConstraints = NO;
-        label.font = [UIFont systemFontOfSize:16];
-        label.backgroundColor = ClearColor;
-        label.textColor = JoyyGray;
-        label.textAlignment = NSTextAlignmentLeft;
-        label.text = NSLocalizedString(@"slide up or left to cancel", nil);
-        _hintLabel = label;
+        _scrollView = [UIScrollView new];
+        _scrollView.translatesAutoresizingMaskIntoConstraints = NO;
+        _scrollView.delegate = self;
+        [_scrollView addSubview:self.slideButton];
+        _scrollView.contentSize = CGSizeMake(CGRectGetWidth(self.slideButton.frame), CGRectGetHeight(self.slideButton.frame));
+        _scrollView.showsHorizontalScrollIndicator = NO;
+        _scrollView.showsVerticalScrollIndicator = NO;
     }
-    return _hintLabel;
+    return _scrollView;
+}
+
+- (JYButton *)slideButton
+{
+    if (!_slideButton)
+    {
+        CGRect frame = CGRectMake(0, 0, 1600, 44);
+        JYButton *button = [[JYButton alloc] initWithFrame:frame buttonStyle:JYButtonStyleTitle];
+        button.textLabel.text = NSLocalizedString(@"    slide to cancel <", nil);
+        button.textLabel.textAlignment = NSTextAlignmentLeft;
+        button.contentColor = JoyyGray;
+        _slideButton = button;
+    }
+    return _slideButton;
 }
 
 - (void)start
@@ -106,7 +120,10 @@
     // duration label
     self.durationLabel.text = @"0:00";
     [self _startDurationTimer];
-    
+
+    // scroll view
+    self.scrollView.contentOffset = CGPointMake(0, 0);
+
     // mic icon animation
     self.imageView.alpha = 1.0;
     self.imageView.image = [UIImage imageNamed:@"microphone" maskedWithColor:JoyyRedPure];
@@ -243,19 +260,35 @@
 
 - (void)_playStopAnimation
 {
-    [UIView animateKeyframesWithDuration:2.0 delay:0.0 options:UIViewKeyframeAnimationOptionCalculationModeLinear animations:^{
-        [UIView addKeyframeWithRelativeStartTime:0.0 relativeDuration:0.5 animations:^{
-            self.imageView.image = [UIImage imageNamed:@"sound" maskedWithColor:JoyyGray];
-            self.imageView.backgroundColor = ClearColor;
-        }];
+    self.imageView.image = [UIImage imageNamed:@"sound" maskedWithColor:JoyyBlue];
+    self.imageView.backgroundColor = ClearColor;
 
-        [UIView addKeyframeWithRelativeStartTime:0.5 relativeDuration:0.5 animations:^{
-            self.imageView.center = CGPointMake(SCREEN_WIDTH - 130, -20);
-            self.imageView.backgroundColor = JoyyBlue;
-        }];
-    } completion:^(BOOL finished) {
+    CAKeyframeAnimation *animation = [CAKeyframeAnimation animationWithKeyPath:@"position"];
+    animation.calculationMode = kCAAnimationPaced;
+    animation.fillMode = kCAFillModeForwards;
+    animation.removedOnCompletion = YES;
+    animation.repeatCount = 1;
+    animation.rotationMode = @"auto";
+    animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionLinear];
+    animation.duration = 1.0;
+
+    // path
+    CGPoint startPoint = self.imageView.center;
+    CGPoint endPoint = CGPointMake(SCREEN_WIDTH - 130, 0);
+    CGPoint centerPoint = CGPointMake((startPoint.x + endPoint.x)/2, (startPoint.y + endPoint.y)/2);
+    CGFloat radius = (endPoint.x - startPoint.x) / 2;
+    UIBezierPath *path = [UIBezierPath bezierPath];
+    [path moveToPoint:startPoint];
+
+    [path addArcWithCenter:centerPoint radius:radius startAngle:(M_PI) endAngle:0 clockwise:YES];
+    animation.path = path.CGPath;
+
+    [CATransaction begin];
+    [CATransaction setCompletionBlock:^{
         [self removeFromSuperview];
     }];
+    [self.imageView.layer addAnimation:animation forKey:@"recordingDoneAnimation"];
+    [CATransaction commit];
 }
 
 @end
