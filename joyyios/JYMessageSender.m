@@ -6,7 +6,6 @@
 //  Copyright © 2016 Joyy Inc. All rights reserved.
 //
 
-#import "JYMessage.h"
 #import "JYMessageSender.h"
 #import "JYXmppManager.h"
 

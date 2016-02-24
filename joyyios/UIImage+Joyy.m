@@ -10,6 +10,12 @@
 
 @implementation UIImage (Joyy)
 
++ (instancetype)imageNamed:(NSString *)name maskedWithColor:(UIColor *)maskColor
+{
+    UIImage *image = [UIImage imageNamed:name];
+    return [image imageMaskedWithColor:maskColor];
+}
+
 - (instancetype)imageMaskedWithColor:(UIColor *)maskColor
 {
     NSParameterAssert(maskColor != nil);

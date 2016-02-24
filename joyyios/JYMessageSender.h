@@ -6,6 +6,8 @@
 //  Copyright © 2016 Joyy Inc. All rights reserved.
 //
 
+#import "JYMessage.h"
+
 @interface JYMessageSender : NSObject
 
 - (instancetype)initWithThatJID:(XMPPJID *)thatJID;

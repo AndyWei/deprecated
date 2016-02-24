@@ -34,7 +34,9 @@ typedef NS_ENUM(NSUInteger, JYMessageUploadStatus)
 @interface JYMessage: MTLModel <MTLFMDBSerializing>
 
 - (instancetype)initWithXMPPMessage:(XMPPMessage *)message isOutgoing:(BOOL)isOutgoing;
+- (instancetype)initWithText:(NSString *)text;
 - (instancetype)initWithImage:(UIImage *)image;
+- (instancetype)initWithAudioFile:(NSURL *)fileURL duration:(NSTimeInterval)duration;
 
 - (BOOL)isTextMessage;
 - (BOOL)isMediaMessage;

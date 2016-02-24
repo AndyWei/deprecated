@@ -7,7 +7,6 @@
 //
 
 #import <AVFoundation/AVFoundation.h>
-#import <JazzHands/IFTTTJazzHands.h>
 #import <MSWeakTimer/MSWeakTimer.h>
 #import <TTTAttributedLabel/TTTAttributedLabel.h>
 
@@ -27,10 +26,6 @@
 @property (nonatomic) MSWeakTimer *durationTimer;
 @property (nonatomic) uint32_t duration;
 
-@property (nonatomic) IFTTTAnimator *animator;
-@property (nonatomic) IFTTTPathPositionAnimation *micFlyingAnimation;
-@property (nonatomic) UIImageView *mic;
-@property (nonatomic) CAShapeLayer *micPathLayer;
 @end
 
 @implementation JYAudioRecorder
@@ -61,12 +56,6 @@
     return self;
 }
 
-- (UIImage *)microPhone
-{
-    UIImage *image = [UIImage imageNamed:@"microphone"];
-    return [image imageMaskedWithColor:JoyyRedPure];
-}
-
 - (UIImageView *)imageView
 {
     if (!_imageView)
@@ -74,7 +63,6 @@
         _imageView = [UIImageView new];
         _imageView.translatesAutoresizingMaskIntoConstraints = NO;
         _imageView.contentMode = UIViewContentModeScaleAspectFit;
-        _imageView.image = [self microPhone];
     }
     return _imageView;
 }
@@ -121,6 +109,7 @@
     
     // mic icon animation
     self.imageView.alpha = 1.0;
+    self.imageView.image = [UIImage imageNamed:@"microphone" maskedWithColor:JoyyRedPure];
     self.imageView.backgroundColor = JoyyWhitePure;
     [UIView animateWithDuration:0.5
                           delay:0
@@ -138,7 +127,8 @@
     [self _stopDurationTimer];
 
     [self.imageView.layer removeAllAnimations];
-    [self removeFromSuperview];
+    self.imageView.alpha = 1.0f;
+    [self _playStopAnimation];
 }
 
 - (void)cancel
@@ -243,7 +233,25 @@
         }];
 
         [UIView addKeyframeWithRelativeStartTime:0.5 relativeDuration:0.5 animations:^{
-            self.imageView.frame = CGRectMake(100, 200, CGRectGetWidth(self.imageView.frame), CGRectGetHeight(self.imageView.frame));
+            self.imageView.center = CGPointMake(200, 200);
+        }];
+    } completion:^(BOOL finished) {
+        [self removeFromSuperview];
+
+    }];
+}
+
+- (void)_playStopAnimation
+{
+    [UIView animateKeyframesWithDuration:2.0 delay:0.0 options:UIViewKeyframeAnimationOptionCalculationModeLinear animations:^{
+        [UIView addKeyframeWithRelativeStartTime:0.0 relativeDuration:0.5 animations:^{
+            self.imageView.image = [UIImage imageNamed:@"sound" maskedWithColor:JoyyGray];
+            self.imageView.backgroundColor = ClearColor;
+        }];
+
+        [UIView addKeyframeWithRelativeStartTime:0.5 relativeDuration:0.5 animations:^{
+            self.imageView.center = CGPointMake(SCREEN_WIDTH - 130, -20);
+            self.imageView.backgroundColor = JoyyBlue;
         }];
     } completion:^(BOOL finished) {
         [self removeFromSuperview];

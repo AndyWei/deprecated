@@ -12,5 +12,6 @@
 
 @property (nonatomic) NSURL *url;
 @property (nonatomic) TTTAttributedLabel *textLabel;
+@property (nonatomic) UIImageView *imageView;
 
 @end

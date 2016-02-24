@@ -202,17 +202,23 @@ static NSString *const kOutgoingTextCell  = @"outgoingTextCell";
     return _recorder;
 }
 
-
 #pragma mark - JYAudioRecorderDelegate Methods
 
 - (void)recorder:(JYAudioRecorder *)recorder didRecordAudioFile:(NSURL *)fileURL duration:(NSTimeInterval)duration
 {
+    JYMessage *message = [[JYMessage alloc] initWithAudioFile:fileURL duration:duration];
+
     __weak typeof(self) weakSelf = self;
     [self.uploader uploadAudioFile:fileURL success:^(NSString *url) {
 
-        [weakSelf.messageSender sendAudioMessageWithDuration:duration url:url];
+        BOOL success = [weakSelf.messageSender sendAudioMessageWithDuration:duration url:url];
+        message.uploadStatus = success? JYMessageUploadStatusNone : JYXmppStatusRegisterFailure;
+        [weakSelf _showMessage:message];
     } failure:^(NSError *error) {
+
         NSLog(@"upload audio message failed with error = %@", error);
+         message.uploadStatus = JYMessageUploadStatusFailure;
+        [weakSelf _showMessage:message];
     }];
 }
 
@@ -270,9 +276,13 @@ static NSString *const kOutgoingTextCell  = @"outgoingTextCell";
 
 - (void)didPressRightButton:(id)sender
 {
+    NSString *text = self.textInputbar.textView.text;
+    BOOL success = [self.messageSender sendTextMessageWithContent:text];
+    JYMessage *message = [[JYMessage alloc] initWithText:text];
+    message.uploadStatus = success? JYMessageUploadStatusNone: JYXmppStatusLoginFailure;
+
+    [self _showMessage:message];
     [self showSendButton:NO];
-    [self.messageSender sendTextMessageWithContent:self.textInputbar.textView.text];
-    [self showSendButton:YES];
 
     [super didPressRightButton:sender];
 }
@@ -330,10 +340,9 @@ static NSString *const kOutgoingTextCell  = @"outgoingTextCell";
     __weak typeof(self) weakSelf = self;
     [self.uploader uploadImage:image success:^(NSString *url) {
 
-        // TODO: there is a bug: if _sendMessageWithType fail due to xmpp connect issue, the sender will consider the photo has been sent
-        message.uploadStatus = JYMessageUploadStatusSuccess;
+        BOOL success = [weakSelf.messageSender sendImageMessageWithDimensions:image.size url:url];
+        message.uploadStatus = success? JYMessageUploadStatusSuccess: JYMessageUploadStatusFailure;
         [weakSelf _refresh];
-        [weakSelf.messageSender sendImageMessageWithDimensions:image.size url:url];
     } failure:^(NSError *error) {
         NSLog(@"send image error = %@", error);
         message.uploadStatus = JYMessageUploadStatusFailure;
@@ -598,25 +607,21 @@ static NSString *const kOutgoingTextCell  = @"outgoingTextCell";
 
 - (void)_didSendMessage:(NSNotification *)notification
 {
-    NSDictionary *info = [notification userInfo];
-    if (!info)
-    {
-        return;
-    }
+//    NSDictionary *info = [notification userInfo];
+//    if (!info)
+//    {
+//        return;
+//    }
+//
+//    id obj = [info objectForKey:@"message"];
+//    if (obj == [NSNull null])
+//    {
+//        return;
+//    }
+//
+//    JYMessage *message = (JYMessage *)obj;
 
-    id obj = [info objectForKey:@"message"];
-    if (obj == [NSNull null])
-    {
-        return;
-    }
-
-    JYMessage *message = (JYMessage *)obj;
-
-    // Only handle txt in this way, all the other type media outgoing messages was handled separately
-    if (message.type == JYMessageTypeText)
-    {
-        [self _showMessage:message];
-    }
+    // TODO: update message status
 }
 
 #pragma mark - UIImagePickerControllerDelegate

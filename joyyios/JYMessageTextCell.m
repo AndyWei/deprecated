@@ -34,11 +34,13 @@
     {
         self.contentLabel.textColor = JoyyWhitePure;
         self.contentLabel.backgroundColor = JoyyBlue;
+        self.contentLabel.layer.borderColor = JoyyBlue.CGColor;
     }
     else
     {
         self.contentLabel.textColor = JoyyBlack;
-        self.contentLabel.backgroundColor = rgb(255, 239, 213);
+        self.contentLabel.backgroundColor = JoyyWhitePure;
+        self.contentLabel.layer.borderColor = JoyyWhite.CGColor;
     }
 
     self.contentLabel.text = [message text];
@@ -57,6 +59,7 @@
         label.numberOfLines = 0;
         label.lineBreakMode = NSLineBreakByWordWrapping;
         label.preferredMaxLayoutWidth = SCREEN_WIDTH - 130;
+        label.layer.borderWidth = 0.5;
         label.layer.cornerRadius = 6;
         label.layer.masksToBounds = YES;
 

@@ -69,23 +69,55 @@
     return self;
 }
 
+- (instancetype)initWithText:(NSString *)text
+{
+    if (self = [super init])
+    {
+        [self _commonInit];
+        _text = text;
+        _type = JYMessageTypeText;
+        _dimensions = CGSizeZero;
+    }
+    return self;
+}
+
 - (instancetype)initWithImage:(UIImage *)image
 {
     if (self = [super init])
     {
-        uint64_t timestamp = (uint64_t)([NSDate timeIntervalSinceReferenceDate] * 1000000);
-        _messageId = [NSNumber numberWithUnsignedLongLong:timestamp];
-
-        _userId = [JYCredential current].userId;
+        [self _commonInit];
         _body = @"image";
-        _isOutgoing = [NSNumber numberWithBool:YES];
-        _isUnread = [NSNumber numberWithBool:NO];
-        _uploadStatus = JYMessageUploadStatusNone;
+
         _type = JYMessageTypeImage;
         _media = image;
         _dimensions = image.size;
     }
     return self;
+}
+
+- (instancetype)initWithAudioFile:(NSURL *)fileURL duration:(NSTimeInterval)duration
+{
+    if (self = [super init])
+    {
+        [self _commonInit];
+        _body = @"audio";
+
+        _type = JYMessageTypeAudio;
+        _media = fileURL;
+        _dimensions = CGSizeMake(duration, 35);;
+    }
+    return self;
+}
+
+- (void)_commonInit
+{
+    uint64_t timestamp = (uint64_t)([NSDate timeIntervalSinceReferenceDate] * 1000000);
+    _messageId = [NSNumber numberWithUnsignedLongLong:timestamp];
+
+    _userId = [JYCredential current].userId;
+    _isOutgoing = [NSNumber numberWithBool:YES];
+    _isUnread = [NSNumber numberWithBool:NO];
+    _uploadStatus = JYMessageUploadStatusNone;
 }
 
 - (NSDictionary *)bodyDictionary

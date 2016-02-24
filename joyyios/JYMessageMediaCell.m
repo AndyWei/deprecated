@@ -18,16 +18,9 @@
     if (self)
     {
         [self.contentView addSubview:self.mediaContainerView];
-//        [self.mediaContainerView addSubview:self.contentImageView];
     }
     return self;
 }
-
-//- (void)prepareForReuse
-//{
-//    [super prepareForReuse];
-//    self.contentImageView.image = nil;
-//}
 
 - (void)setMessage:(JYMessage *)message
 {
@@ -80,10 +73,40 @@
 
 - (void)_setupAudioView
 {
+    [self _updateTimeText];
     self.audioPlayer.url = [NSURL URLWithString:self.message.url];
-    self.audioPlayer.textLabel.text = [NSString stringWithFormat:@"%.f", self.message.dimensions.width];
+
     [self.mediaContainerView addSubview:self.audioPlayer];
     [self.mediaContainerView pinAllEdgesOfSubview:self.audioPlayer];
+
+    if ([self.message.isOutgoing boolValue])
+    {
+        self.audioPlayer.backgroundColor = JoyyBlue;
+        self.audioPlayer.layer.borderColor = JoyyBlue.CGColor;
+        self.audioPlayer.imageView.image = [UIImage imageNamed:@"sound" maskedWithColor:JoyyGray];
+    }
+    else
+    {
+        self.audioPlayer.backgroundColor = JoyyWhitePure;
+        self.audioPlayer.layer.borderColor = JoyyWhite.CGColor;
+        self.audioPlayer.imageView.image = [UIImage imageNamed:@"sound" maskedWithColor:JoyyGray];
+    }
+}
+
+- (void)_updateTimeText
+{
+    uint32_t seconds = (uint32_t)ceil(self.message.dimensions.width);
+    uint32_t min = seconds / 60;
+    uint32_t sec = seconds % 60;
+
+    if (min == 0)
+    {
+        self.audioPlayer.textLabel.text = [NSString stringWithFormat:@"%.d\"", sec];
+    }
+    else
+    {
+        self.audioPlayer.textLabel.text = [NSString stringWithFormat:@"%.d\'%.d\"", min, sec];
+    }
 }
 
 - (UIView *)mediaContainerView
@@ -115,6 +138,7 @@
     if (!_audioPlayer)
     {
         _audioPlayer = [JYAudioPlayer new];
+        _audioPlayer.layer.borderWidth = 0.5;
     }
     return _audioPlayer;
 }

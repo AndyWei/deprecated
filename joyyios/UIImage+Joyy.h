@@ -8,6 +8,7 @@
 
 @interface UIImage (Joyy)
 
++ (instancetype)imageNamed:(NSString *)name maskedWithColor:(UIColor *)maskColor;
 - (instancetype)imageMaskedWithColor:(UIColor *)maskColor;
 
 @end

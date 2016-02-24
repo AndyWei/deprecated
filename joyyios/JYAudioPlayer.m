@@ -13,7 +13,6 @@
 @interface JYAudioPlayer ()
 @property (nonatomic) AVPlayer *player;
 @property (nonatomic) BOOL isPlaying;
-@property (nonatomic) UIImageView *imageView;
 @property (nonatomic, getter=isTrackingInside) BOOL trackingInside;
 @end
 
@@ -34,8 +33,8 @@
                                 @"textLabel": self.textLabel
                                 };
 
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-10-[imageView(25)]-10-[textLabel]-10-|" options:0 metrics:nil views:views]];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(>=0@500)-[imageView(25)]-(>=0@500)-|" options:0 metrics:nil views:views]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-10-[imageView(25)]-30-[textLabel]-10-|" options:0 metrics:nil views:views]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-5-[imageView(25)]-5-|" options:0 metrics:nil views:views]];
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(>=0@500)-[textLabel]-(>=0@500)-|" options:0 metrics:nil views:views]];
 
         [self pinCenterYOfSubviews:@[self.imageView, self.textLabel]];
@@ -85,7 +84,6 @@
         _imageView = [UIImageView new];
         _imageView.translatesAutoresizingMaskIntoConstraints = NO;
         _imageView.contentMode = UIViewContentModeScaleAspectFit;
-        _imageView.image = [UIImage imageNamed:@"sound"];
     }
     return _imageView;
 }
@@ -98,7 +96,7 @@
         label.translatesAutoresizingMaskIntoConstraints = NO;
         label.font = [UIFont systemFontOfSize:14];
         label.backgroundColor = ClearColor;
-        label.textColor = JoyyWhite;
+        label.textColor = JoyyGray;
         _textLabel = label;
     }
     return _textLabel;
