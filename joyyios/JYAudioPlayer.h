@@ -6,12 +6,10 @@
 //  Copyright © 2016 Joyy Inc. All rights reserved.
 //
 
-#import <TTTAttributedLabel/TTTAttributedLabel.h>
+#import "JYMessage.h"
 
-@interface JYAudioPlayer : UIControl
+@interface JYAudioPlayer : UIView
 
-@property (nonatomic) NSURL *url;
-@property (nonatomic) TTTAttributedLabel *textLabel;
-@property (nonatomic) UIImageView *imageView;
+@property (nonatomic) JYMessage *message;
 
 @end

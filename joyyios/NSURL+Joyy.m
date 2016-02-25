@@ -16,4 +16,9 @@
     return [NSURL fileURLWithPath:[NSTemporaryDirectory() stringByAppendingPathComponent:filename]];
 }
 
++ (NSURL *)temporaryFileURLWithFilename:(NSString *)filename
+{
+    return [NSURL fileURLWithPath:[NSTemporaryDirectory() stringByAppendingPathComponent:filename]];
+}
+
 @end

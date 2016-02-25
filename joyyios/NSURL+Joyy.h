@@ -9,5 +9,6 @@
 @interface NSURL (Joyy)
 
 + (NSURL *)uniqueTemporaryFileURL;
++ (NSURL *)temporaryFileURLWithFilename:(NSString *)filename;
 
 @end

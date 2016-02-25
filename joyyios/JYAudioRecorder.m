@@ -89,10 +89,10 @@
         _scrollView = [UIScrollView new];
         _scrollView.translatesAutoresizingMaskIntoConstraints = NO;
         _scrollView.delegate = self;
-        [_scrollView addSubview:self.slideButton];
         _scrollView.contentSize = CGSizeMake(CGRectGetWidth(self.slideButton.frame), CGRectGetHeight(self.slideButton.frame));
         _scrollView.showsHorizontalScrollIndicator = NO;
         _scrollView.showsVerticalScrollIndicator = NO;
+        [_scrollView addSubview:self.slideButton];
     }
     return _scrollView;
 }
