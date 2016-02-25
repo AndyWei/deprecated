@@ -260,7 +260,7 @@
 
 - (void)_playStopAnimation
 {
-    self.imageView.image = [UIImage imageNamed:@"sound" maskedWithColor:JoyyBlue];
+    self.imageView.image = [UIImage imageNamed:@"sound2" maskedWithColor:JoyyBlue];
     self.imageView.backgroundColor = ClearColor;
 
     CAKeyframeAnimation *animation = [CAKeyframeAnimation animationWithKeyPath:@"position"];

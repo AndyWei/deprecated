@@ -108,6 +108,8 @@
     {
         _audioPlayer = [JYAudioPlayer new];
         _audioPlayer.layer.borderWidth = 0.5;
+        _audioPlayer.layer.cornerRadius = 12;
+        _audioPlayer.layer.masksToBounds= YES;
     }
     return _audioPlayer;
 }

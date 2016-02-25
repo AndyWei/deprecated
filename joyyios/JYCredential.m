@@ -25,13 +25,15 @@ static NSString *const kAPIYrsKey = @"api_yrs";
 
 @implementation JYCredential
 
+// Note: do not use the dispatch-done pattern here, which may cause "OSStatus error -34018"
+// The good way to go is instantiate the keychain (or keychain wrapper) on the main thread
 + (JYCredential *)current
 {
-    static JYCredential *_current;
-    static dispatch_once_t done;
-    dispatch_once(&done, ^{
+    static JYCredential *_current = nil;
+    if (!_current)
+    {
         _current = [JYCredential new];
-    });
+    };
     return _current;
 }
 

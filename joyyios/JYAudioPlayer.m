@@ -23,6 +23,54 @@
 
 @implementation JYAudioPlayer
 
++ (UIImage *)soundImage
+{
+    static UIImage *_sound = nil;
+    static dispatch_once_t done;
+
+    dispatch_once(&done, ^{
+        _sound = [UIImage imageNamed:@"sound2" maskedWithColor:JoyyGray];
+    });
+
+    return _sound;
+}
+
++ (UIImage *)soundImage1
+{
+    static UIImage *_sound1 = nil;
+    static dispatch_once_t done1;
+
+    dispatch_once(&done1, ^{
+        _sound1 = [UIImage imageNamed:@"sound1" maskedWithColor:JoyyWhite];
+    });
+
+    return _sound1;
+}
+
++ (UIImage *)soundImage2
+{
+    static UIImage *_sound2 = nil;
+    static dispatch_once_t done2;
+
+    dispatch_once(&done2, ^{
+        _sound2 = [UIImage imageNamed:@"sound2" maskedWithColor:JoyyWhite];
+    });
+
+    return _sound2;
+}
+
++ (UIImage *)soundImage3
+{
+    static UIImage *_sound3 = nil;
+    static dispatch_once_t done3;
+
+    dispatch_once(&done3, ^{
+        _sound3 = [UIImage imageNamed:@"sound3" maskedWithColor:JoyyWhite];
+    });
+
+    return _sound3;
+}
+
 - (instancetype)init
 {
     if (self = [super init])
@@ -35,7 +83,7 @@
                                 @"button": self.button
                                 };
 
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-10-[button(100)]-10-|" options:0 metrics:nil views:views]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-10-[button(90)]-10-|" options:0 metrics:nil views:views]];
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[button(35)]-0-|" options:0 metrics:nil views:views]];
 
         [self.button addTarget:self action:@selector(_action) forControlEvents:UIControlEventTouchUpInside];
@@ -49,8 +97,13 @@
     {
         _button = [[JYButton alloc] initWithFrame:CGRectZero buttonStyle:JYButtonStyleImageWithTitle];
         _button.translatesAutoresizingMaskIntoConstraints = NO;
-        _button.imageView.image = [UIImage imageNamed:@"sound" maskedWithColor:JoyyGray];
+        _button.textLabel.textAlignment = NSTextAlignmentRight;
+        _button.imageView.image = [JYAudioPlayer soundImage];
         _button.contentColor = JoyyGray;
+
+        _button.imageView.animationImages = @[[JYAudioPlayer soundImage1], [JYAudioPlayer soundImage2], [JYAudioPlayer soundImage3]];
+        _button.imageView.animationDuration = 1.0f;
+        _button.imageView.animationRepeatCount = 0; // forever
     }
     return _button;
 }
@@ -59,17 +112,13 @@
 {
     if (self.isPlaying)
     {
-        [self.player pause];
-        self.isPlaying = NO;
-        self.button.contentColor = JoyyGray;
+        [self _pause];
         return;
     }
 
     if (self.fileURL)
     {
-        [self.player play];
-        self.isPlaying = YES;
-        self.button.contentColor = JoyyWhite;
+        [self _play];
         return;
     }
 
@@ -132,6 +181,34 @@
     self.button.foregroundColor = foregroundColor;
 }
 
+- (void)_play
+{
+    [self.player play];
+    self.isPlaying = YES;
+    self.button.contentColor = JoyyWhite;
+    [self.button.imageView startAnimating];
+}
+
+- (void)_pause
+{
+    [self.player pause];
+    [self _stopUI];
+    self.button.imageView.image = [UIImage imageNamed:@"pause" maskedWithColor:JoyyWhite];
+}
+
+- (void)_stop
+{
+    [self.player stop];
+    [self _stopUI];
+}
+
+- (void)_stopUI
+{
+    self.isPlaying = NO;
+    [self.button.imageView stopAnimating];
+    self.button.contentColor = JoyyGray;
+}
+
 - (void)_downloadAndPlay
 {
     NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
@@ -146,7 +223,7 @@
         NSLog(@"File downloaded to: %@", filePath);
         weakSelf.fileURL = filePath;
         weakSelf.message.media = filePath;
-        [weakSelf.player play];
+        [weakSelf _play];
     }];
     [downloadTask resume];
 }
@@ -155,8 +232,7 @@
 
 - (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag
 {
-    self.isPlaying = NO;
-    self.button.contentColor = JoyyGray;
+    [self _stop];
 }
 
 @end
