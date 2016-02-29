@@ -218,6 +218,7 @@ static NSString *const kOutgoingTextCell  = @"outgoingTextCell";
 
         BOOL success = [weakSelf.messageSender sendAudioMessageWithDuration:duration url:url];
         message.uploadStatus = success? JYMessageUploadStatusNone : JYXmppStatusRegisterFailure;
+        message.url = url;
         [weakSelf _showMessage:message];
     } failure:^(NSError *error) {
 
@@ -640,7 +641,7 @@ static NSString *const kOutgoingTextCell  = @"outgoingTextCell";
 - (void)_audioRecordStart
 {
     NSLog(@"Down");
-    //    [JYSoundPlayer playAudioRecordingStartedAlert];
+    [[JYSoundPlayer sharedInstance] playStartWithVibrate:YES];
     self.panRecognizerEnabled = YES;
     [self.textInputbar addSubview:self.recorder];
     [self.recorder start];
@@ -649,15 +650,15 @@ static NSString *const kOutgoingTextCell  = @"outgoingTextCell";
 - (void)_audioRecordEnd
 {
     NSLog(@"Release");
-    //    [JYSoundPlayer playVibrate];
-    [self.recorder stop];
     self.panRecognizerEnabled = NO;
+//    [[JYSoundPlayer sharedInstance] playEndWithVibrate:YES];
+    [self.recorder stop];
 }
 
 -(void)_audioRecordCancel
 {
     NSLog(@"Cancel");
-    //    [JYSoundPlayer playAudioRecordingCanceledAlert];
+    [[JYSoundPlayer sharedInstance] playCancelWithVibrate:YES];
     [self.recorder cancel];
 }
 

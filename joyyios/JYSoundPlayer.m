@@ -6,10 +6,14 @@
 //  Copyright (c) 2015 Joyy Inc. All rights reserved.
 //
 
-
+#import <AVFoundation/AVFoundation.h>
 #import <AudioToolbox/AudioToolbox.h>
 
 #import "JYSoundPlayer.h"
+
+@interface JYSoundPlayer ()
+@property (nonatomic) AVAudioPlayer *player;
+@end
 
 @implementation JYSoundPlayer
 
@@ -25,12 +29,12 @@
     return _sharedInstance;
 }
 
-+ (void)playVibrate
+- (void)playVibrate
 {
     AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
 }
 
-+ (void)playMessageReceivedAlertWithVibrate:(BOOL)vibrate
+- (void)playMessageReceivedAlertWithVibrate:(BOOL)vibrate
 {
     NSURL *fileURL = [NSURL URLWithString:@"/System/Library/Audio/UISounds/Tink.caf"];
     SystemSoundID soundID = 0;
@@ -48,32 +52,33 @@
     }
 }
 
-+ (void)playAudioRecordingStartedAlert
+- (void)playStartWithVibrate:(BOOL)vibrate
 {
-    NSURL *fileURL = [NSURL URLWithString:@"/System/Library/Audio/UISounds/SIMToolkitGeneralBeep.caf"];
-    SystemSoundID soundID = 0;
-    AudioServicesCreateSystemSoundID((__bridge_retained CFURLRef)fileURL, &soundID);
-
-    if (soundID == 0)
-    {
-        soundID = 1113; // use BeginRecording sound as default
-    }
-    AudioServicesPlaySystemSound(soundID); // SIMToolkitGeneralBeep
-    AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
+    NSURL *url = [[NSBundle mainBundle] URLForResource:@"beep_short_on" withExtension:@"wav"];
+    [self playFile:url withVibrate:vibrate];
 }
 
-+ (void)playAudioRecordingCanceledAlert
+- (void)playCancelWithVibrate:(BOOL)vibrate
 {
-    NSURL *fileURL = [NSURL URLWithString:@"/System/Library/Audio/UISounds/SIMToolkitNegativeACK.caf"];
-    SystemSoundID soundID = 0;
-    AudioServicesCreateSystemSoundID((__bridge_retained CFURLRef)fileURL, &soundID);
+    NSURL *url = [[NSBundle mainBundle] URLForResource:@"beep_short_off" withExtension:@"wav"];
+    [self playFile:url withVibrate:vibrate];
+}
 
-    if (soundID == 0)
+- (void)playFile:(NSURL *)fileURL withVibrate:(BOOL)vibrate
+{
+    AVAudioSession *audioSession = [AVAudioSession sharedInstance];
+    NSError *err = nil;
+    [audioSession setCategory: AVAudioSessionCategoryPlayback  error:&err];
+
+    NSError *error = nil;
+    self.player = [[AVAudioPlayer alloc] initWithContentsOfURL:fileURL error:&error];
+    self.player.volume = 1.5;
+    [self.player play];
+
+    if (vibrate)
     {
-        soundID = 1114; // use EndRecording sound as default
+        AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
     }
-    AudioServicesPlaySystemSound(soundID); // SIMToolkitNegativeACK
-    AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
 }
 
 @end

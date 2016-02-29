@@ -87,6 +87,8 @@
 		D650DE421C506F9000EA0CE5 /* JYProfileDataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D650DE411C506F9000EA0CE5 /* JYProfileDataManager.m */; };
 		D65AFA5E1AEC715D007867D0 /* JYTimelineViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D65AFA5D1AEC715D007867D0 /* JYTimelineViewController.m */; };
 		D65F37461B04807D007B534C /* JYCommentlineCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D65F37451B04807D007B534C /* JYCommentlineCell.m */; };
+		D663680F1C80DDC6009159B2 /* beep_short_on.wav in Resources */ = {isa = PBXBuildFile; fileRef = D663680E1C80DDC6009159B2 /* beep_short_on.wav */; };
+		D66368111C80DE45009159B2 /* beep_short_off.wav in Resources */ = {isa = PBXBuildFile; fileRef = D66368101C80DE45009159B2 /* beep_short_off.wav */; };
 		D679B3011B97B1E5004EBA61 /* JYFilename.m in Sources */ = {isa = PBXBuildFile; fileRef = D679B3001B97B1E5004EBA61 /* JYFilename.m */; };
 		D67DD0E41B75302800333626 /* JYPeopleViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D67DD0E31B75302800333626 /* JYPeopleViewController.m */; };
 		D67DD0E81B7530AF00333626 /* JYUserCard.m in Sources */ = {isa = PBXBuildFile; fileRef = D67DD0E71B7530AF00333626 /* JYUserCard.m */; };
@@ -315,6 +317,8 @@
 		D65AFA5D1AEC715D007867D0 /* JYTimelineViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYTimelineViewController.m; sourceTree = "<group>"; };
 		D65F37441B04807D007B534C /* JYCommentlineCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYCommentlineCell.h; sourceTree = "<group>"; };
 		D65F37451B04807D007B534C /* JYCommentlineCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYCommentlineCell.m; sourceTree = "<group>"; };
+		D663680E1C80DDC6009159B2 /* beep_short_on.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = beep_short_on.wav; sourceTree = "<group>"; };
+		D66368101C80DE45009159B2 /* beep_short_off.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = beep_short_off.wav; sourceTree = "<group>"; };
 		D679B2FF1B97B1E5004EBA61 /* JYFilename.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYFilename.h; sourceTree = "<group>"; };
 		D679B3001B97B1E5004EBA61 /* JYFilename.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYFilename.m; sourceTree = "<group>"; };
 		D67DD0E21B75302800333626 /* JYPeopleViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYPeopleViewController.h; sourceTree = "<group>"; };
@@ -764,6 +768,8 @@
 				D6E7BCC91BF66C4500954A1D /* JYLocalDataManager.m */,
 				D6825BC51BE897F400F3695D /* JYLocationManager.h */,
 				D6825BC61BE897F400F3695D /* JYLocationManager.m */,
+				D69FF6D41B94144100466FE5 /* JYSoundPlayer.h */,
+				D69FF6D51B94144100466FE5 /* JYSoundPlayer.m */,
 				D62C2C5E1B8E887200233F5B /* JYXmppManager.h */,
 				D62C2C5F1B8E887200233F5B /* JYXmppManager.m */,
 			);
@@ -804,6 +810,15 @@
 			name = Userline;
 			sourceTree = "<group>";
 		};
+		D66368081C7FE323009159B2 /* Sound */ = {
+			isa = PBXGroup;
+			children = (
+				D663680E1C80DDC6009159B2 /* beep_short_on.wav */,
+				D66368101C80DE45009159B2 /* beep_short_off.wav */,
+			);
+			name = Sound;
+			sourceTree = "<group>";
+		};
 		D68486B31B8AC207005CA0C4 /* Message */ = {
 			isa = PBXGroup;
 			children = (
@@ -840,8 +855,6 @@
 				D632E99D1C28CC5B00D5837C /* JYRefreshHeader.m */,
 				D6BD61781C20CC2300EFC92C /* JYReminderView.h */,
 				D6BD61791C20CC2300EFC92C /* JYReminderView.m */,
-				D69FF6D41B94144100466FE5 /* JYSoundPlayer.h */,
-				D69FF6D51B94144100466FE5 /* JYSoundPlayer.m */,
 				D63A014F1C3CAD0500E74C36 /* JYUserBaseCell.h */,
 				D63A01501C3CAD0500E74C36 /* JYUserBaseCell.m */,
 				D6903D081C07A9C200CDC64F /* JYUserView.h */,
@@ -986,6 +999,7 @@
 				D63B69AB1AC5184D005600A9 /* People */,
 				D6B9B7451BAF6DB8001F9500 /* Profile */,
 				D68DAF9A1AC4CD1800838E7E /* Sign */,
+				D66368081C7FE323009159B2 /* Sound */,
 				D61D1D5B1B4DBA5D00DE37DF /* Timeline */,
 				D644BF751C17F3E6005187C2 /* Userline */,
 				D62C2C6A1B917FE500233F5B /* Vendor */,
@@ -1197,9 +1211,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				D61D1DD41B4E336E00DE37DF /* TGCameraViewController.bundle in Resources */,
+				D66368111C80DE45009159B2 /* beep_short_off.wav in Resources */,
 				D69202C31AC4C7C0001C1C3D /* LaunchScreen.xib in Resources */,
 				D61D1DD61B4E336E00DE37DF /* TGCameraViewController.xcassets in Resources */,
 				D69202C01AC4C7C0001C1C3D /* Images.xcassets in Resources */,
+				D663680F1C80DDC6009159B2 /* beep_short_on.wav in Resources */,
 				D61D1DCE1B4E336E00DE37DF /* TGCameraAuthorizationViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

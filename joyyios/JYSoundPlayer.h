@@ -8,9 +8,10 @@
 
 @interface JYSoundPlayer : NSObject
 
-+ (void)playVibrate;
-+ (void)playMessageReceivedAlertWithVibrate:(BOOL)vibrate;
-+ (void)playAudioRecordingStartedAlert;
-+ (void)playAudioRecordingCanceledAlert;
++ (JYSoundPlayer *)sharedInstance;
+- (void)playVibrate;
+- (void)playMessageReceivedAlertWithVibrate:(BOOL)vibrate;
+- (void)playStartWithVibrate:(BOOL)vibrate;
+- (void)playCancelWithVibrate:(BOOL)vibrate;
 
 @end

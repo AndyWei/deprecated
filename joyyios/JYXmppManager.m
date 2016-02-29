@@ -309,7 +309,7 @@
     // If there is a viewController to show the message, then no vibrate
     NSString *fromJid = msg.from.bare;
     BOOL willShowMessage = self.currentRemoteJid && [self.currentRemoteJid.bare isEqualToString:fromJid];
-    [JYSoundPlayer playMessageReceivedAlertWithVibrate:!willShowMessage];
+    [[JYSoundPlayer sharedInstance] playMessageReceivedAlertWithVibrate:!willShowMessage];
 }
 
 - (void)xmppStream:(XMPPStream *)sender didReceivePresence:(XMPPPresence *)presence

@@ -260,35 +260,40 @@
 
 - (void)_playStopAnimation
 {
-    self.imageView.image = [UIImage imageNamed:@"sound2" maskedWithColor:JoyyBlue];
-    self.imageView.backgroundColor = ClearColor;
 
-    CAKeyframeAnimation *animation = [CAKeyframeAnimation animationWithKeyPath:@"position"];
-    animation.calculationMode = kCAAnimationPaced;
-    animation.fillMode = kCAFillModeForwards;
-    animation.removedOnCompletion = YES;
-    animation.repeatCount = 1;
-    animation.rotationMode = @"auto";
-    animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionLinear];
-    animation.duration = 1.0;
-
-    // path
-    CGPoint startPoint = self.imageView.center;
-    CGPoint endPoint = CGPointMake(SCREEN_WIDTH - 130, 0);
-    CGPoint centerPoint = CGPointMake((startPoint.x + endPoint.x)/2, (startPoint.y + endPoint.y)/2);
-    CGFloat radius = (endPoint.x - startPoint.x) / 2;
-    UIBezierPath *path = [UIBezierPath bezierPath];
-    [path moveToPoint:startPoint];
-
-    [path addArcWithCenter:centerPoint radius:radius startAngle:(M_PI) endAngle:0 clockwise:YES];
-    animation.path = path.CGPath;
-
-    [CATransaction begin];
-    [CATransaction setCompletionBlock:^{
-        [self removeFromSuperview];
-    }];
-    [self.imageView.layer addAnimation:animation forKey:@"recordingDoneAnimation"];
-    [CATransaction commit];
 }
+
+//- (void)_playStopAnimation
+//{
+//    self.imageView.image = [UIImage imageNamed:@"sound2" maskedWithColor:JoyyBlue];
+//    self.imageView.backgroundColor = ClearColor;
+//
+//    CAKeyframeAnimation *animation = [CAKeyframeAnimation animationWithKeyPath:@"position"];
+//    animation.calculationMode = kCAAnimationPaced;
+//    animation.fillMode = kCAFillModeForwards;
+//    animation.removedOnCompletion = YES;
+//    animation.repeatCount = 1;
+//    animation.rotationMode = @"auto";
+//    animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionLinear];
+//    animation.duration = 1.0;
+//
+//    // path
+//    CGPoint startPoint = self.imageView.center;
+//    CGPoint endPoint = CGPointMake(SCREEN_WIDTH - 130, 0);
+//    CGPoint centerPoint = CGPointMake((startPoint.x + endPoint.x)/2, (startPoint.y + endPoint.y)/2);
+//    CGFloat radius = (endPoint.x - startPoint.x) / 2;
+//    UIBezierPath *path = [UIBezierPath bezierPath];
+//    [path moveToPoint:startPoint];
+//
+//    [path addArcWithCenter:centerPoint radius:radius startAngle:(M_PI) endAngle:0 clockwise:YES];
+//    animation.path = path.CGPath;
+//
+//    [CATransaction begin];
+//    [CATransaction setCompletionBlock:^{
+//        [self removeFromSuperview];
+//    }];
+//    [self.imageView.layer addAnimation:animation forKey:@"recordingDoneAnimation"];
+//    [CATransaction commit];
+//}
 
 @end
