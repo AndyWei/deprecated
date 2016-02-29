@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		743498E564A05714440866C9 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8E034C4F8FC61E210B60EDCC /* libPods.a */; };
+		D603575F1C85108100F4ED3A /* cancel.wav in Resources */ = {isa = PBXBuildFile; fileRef = D603575E1C85108100F4ED3A /* cancel.wav */; };
 		D60726AE1C18179500A43717 /* JYMonth.m in Sources */ = {isa = PBXBuildFile; fileRef = D60726AD1C18179500A43717 /* JYMonth.m */; };
 		D60726B41C18FBFE00A43717 /* JYCardView.m in Sources */ = {isa = PBXBuildFile; fileRef = D60726B31C18FBFE00A43717 /* JYCardView.m */; };
 		D60E1D3B1C73B6F500C17C53 /* UIImage+Joyy.m in Sources */ = {isa = PBXBuildFile; fileRef = D60E1D3A1C73B6F500C17C53 /* UIImage+Joyy.m */; };
@@ -158,6 +159,7 @@
 /* Begin PBXFileReference section */
 		47240DA3592328D7C382C992 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		8E034C4F8FC61E210B60EDCC /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		D603575E1C85108100F4ED3A /* cancel.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = cancel.wav; sourceTree = "<group>"; };
 		D60726AC1C18179500A43717 /* JYMonth.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYMonth.h; sourceTree = "<group>"; };
 		D60726AD1C18179500A43717 /* JYMonth.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JYMonth.m; sourceTree = "<group>"; };
 		D60726B21C18FBFE00A43717 /* JYCardView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JYCardView.h; sourceTree = "<group>"; };
@@ -813,6 +815,7 @@
 		D66368081C7FE323009159B2 /* Sound */ = {
 			isa = PBXGroup;
 			children = (
+				D603575E1C85108100F4ED3A /* cancel.wav */,
 				D663680E1C80DDC6009159B2 /* beep_short_on.wav */,
 				D66368101C80DE45009159B2 /* beep_short_off.wav */,
 			);
@@ -1214,6 +1217,7 @@
 				D66368111C80DE45009159B2 /* beep_short_off.wav in Resources */,
 				D69202C31AC4C7C0001C1C3D /* LaunchScreen.xib in Resources */,
 				D61D1DD61B4E336E00DE37DF /* TGCameraViewController.xcassets in Resources */,
+				D603575F1C85108100F4ED3A /* cancel.wav in Resources */,
 				D69202C01AC4C7C0001C1C3D /* Images.xcassets in Resources */,
 				D663680F1C80DDC6009159B2 /* beep_short_on.wav in Resources */,
 				D61D1DCE1B4E336E00DE37DF /* TGCameraAuthorizationViewController.xib in Resources */,

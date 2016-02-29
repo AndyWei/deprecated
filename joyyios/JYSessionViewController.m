@@ -651,7 +651,7 @@ static NSString *const kOutgoingTextCell  = @"outgoingTextCell";
 {
     NSLog(@"Release");
     self.panRecognizerEnabled = NO;
-//    [[JYSoundPlayer sharedInstance] playEndWithVibrate:YES];
+    [[JYSoundPlayer sharedInstance] playFinishWithVibrate:YES];
     [self.recorder stop];
 }
 

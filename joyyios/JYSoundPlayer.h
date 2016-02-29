@@ -12,6 +12,7 @@
 - (void)playVibrate;
 - (void)playMessageReceivedAlertWithVibrate:(BOOL)vibrate;
 - (void)playStartWithVibrate:(BOOL)vibrate;
+- (void)playFinishWithVibrate:(BOOL)vibrate;
 - (void)playCancelWithVibrate:(BOOL)vibrate;
 
 @end

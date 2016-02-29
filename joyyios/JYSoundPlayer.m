@@ -58,21 +58,26 @@
     [self playFile:url withVibrate:vibrate];
 }
 
-- (void)playCancelWithVibrate:(BOOL)vibrate
+- (void)playFinishWithVibrate:(BOOL)vibrate
 {
     NSURL *url = [[NSBundle mainBundle] URLForResource:@"beep_short_off" withExtension:@"wav"];
+    [self playFile:url withVibrate:vibrate];
+}
+
+- (void)playCancelWithVibrate:(BOOL)vibrate
+{
+    NSURL *url = [[NSBundle mainBundle] URLForResource:@"cancel" withExtension:@"wav"];
     [self playFile:url withVibrate:vibrate];
 }
 
 - (void)playFile:(NSURL *)fileURL withVibrate:(BOOL)vibrate
 {
     AVAudioSession *audioSession = [AVAudioSession sharedInstance];
-    NSError *err = nil;
-    [audioSession setCategory: AVAudioSessionCategoryPlayback  error:&err];
-
     NSError *error = nil;
+    [audioSession setCategory: AVAudioSessionCategoryPlayback error:&error];
+
     self.player = [[AVAudioPlayer alloc] initWithContentsOfURL:fileURL error:&error];
-    self.player.volume = 1.5;
+    self.player.volume = 2.0;
     [self.player play];
 
     if (vibrate)
