@@ -149,7 +149,7 @@ const CGFloat kButtonWidth = 60;
     }
 
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-    self.detectorAwakeTimer = [MSWeakTimer scheduledTimerWithTimeInterval:2.0f target:self selector:@selector(_awakeDetector) userInfo:nil repeats:NO dispatchQueue:queue];
+    self.detectorAwakeTimer = [MSWeakTimer scheduledTimerWithTimeInterval:1.0f target:self selector:@selector(_awakeDetector) userInfo:nil repeats:NO dispatchQueue:queue];
 }
 
 - (void)_stopDetectorAwakeTimer
@@ -455,7 +455,7 @@ const CGFloat kButtonWidth = 60;
       parameters:parameters
         progress:nil
          success:^(NSURLSessionTask *operation, id responseObject) {
-             NSLog(@"POST wink success. that username = %@", user.username);
+//             NSLog(@"POST wink success. that username = %@", user.username);
              [weakSelf _networkThreadEnd];
          }
          failure:^(NSURLSessionTask *operation, NSError *error) {

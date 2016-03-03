@@ -16,7 +16,7 @@
 @property (nonatomic) AVCaptureVideoPreviewLayer *layer;
 @property (nonatomic) BOOL isUsingFrontCamera;
 @property (nonatomic) CFTimeInterval lastSampleTimestamp;
-@property (nonatomic) CFTimeInterval stampPeriod;
+@property (nonatomic) CFTimeInterval samplePeriod;
 @property (nonatomic) dispatch_queue_t videoDataOutputQueue;
 @end
 
@@ -25,7 +25,7 @@
 
 - (void)startWithPeriod:(CFTimeInterval)period previewView:(UIView *)previewView withError:(NSError **)error
 {
-    self.stampPeriod = period;
+    self.samplePeriod = period;
     self.session = [AVCaptureSession new];
     self.session.sessionPreset = AVCaptureSessionPreset352x288;
     AVCaptureDeviceInput *deviceInput = [self _captureDeviceInput:error];
@@ -125,7 +125,7 @@
     CFTimeInterval now = CACurrentMediaTime();
     CFTimeInterval timePassed = now - self.lastSampleTimestamp;
 
-    if (timePassed < self.stampPeriod)
+    if (timePassed < self.samplePeriod)
     {
         return;
     }

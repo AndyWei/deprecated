@@ -68,18 +68,14 @@ const CFTimeInterval kReportingPeriod = 1.2f;
         return;
     }
 
-    id orientation = nil;
-    if([[image properties] valueForKey:(NSString *)kCGImagePropertyOrientation] == nil)
+    NSNumber *orientation = [[image properties] valueForKey:(NSString *)kCGImagePropertyOrientation];;
+    if(orientation == nil)
     {
         orientation = [NSNumber numberWithInt:6];
     }
-    else
-    {
-        orientation = [[image properties] valueForKey:(NSString *)kCGImagePropertyOrientation];
-    }
 
-    id detectSmile = self.detectSmile? @(YES): @(NO);
-    id detectBlink = (self.detectLeftWink || self.detectRightWink)? @(YES): @(NO);
+    NSNumber *detectSmile = self.detectSmile? @(YES): @(NO);
+    NSNumber *detectBlink = (self.detectLeftWink || self.detectRightWink)? @(YES): @(NO);
 
     NSDictionary *detectionOtions = @{ CIDetectorImageOrientation:orientation,
                                        CIDetectorSmile:detectSmile,
@@ -144,7 +140,7 @@ const CFTimeInterval kReportingPeriod = 1.2f;
 
     if (faceFeature.leftEyeClosed && faceFeature.rightEyeClosed)
     {
-        NSLog(@"Detected blink");
+        NSLog(@"blink detected");
 
         self.lastBlinkTimestamp = CACurrentMediaTime();
         // Blink is not left or right wink, so return now
@@ -155,7 +151,7 @@ const CFTimeInterval kReportingPeriod = 1.2f;
     // So faceFeature.rightEyeClosed actually means the user's left eye is closed, which is defined as left wink
     if (faceFeature.rightEyeClosed)
     {
-        NSLog(@"Detected left wink");
+        NSLog(@"left wink detected");
         self.lastReportingTimestamp = CACurrentMediaTime();
 
         if ([self.delegate respondsToSelector:@selector(detectorDidDetectLeftWink:)])
@@ -165,7 +161,7 @@ const CFTimeInterval kReportingPeriod = 1.2f;
     }
     else if (faceFeature.leftEyeClosed)
     {
-        NSLog(@"Detected right wink");
+        NSLog(@"right wink detected");
         self.lastReportingTimestamp = CACurrentMediaTime();
 
         if ([self.delegate respondsToSelector:@selector(detectorDidDetectRightWink:)])
