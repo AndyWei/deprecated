@@ -1,0 +1,48 @@
+### This file contains all curl commands used for manual test
+
+## credential
+# signup
+curl -i -X POST --data "phone=1-7891234567&password=password" "http://localhost:8000/v1/credential/signup"
+
+# signin
+curl -i -u andy:password "http://localhost:8000/v1/credential/signin"
+
+
+## person
+# GET a person's own profile
+curl -i -H "Authorization: Bearer XtLn28StytiaIavlMymz" "http://localhost:8000/v1/person/profile"
+
+# GET a list of people's profile
+curl -i -H "Authorization: Bearer WiYdpKAfwDOAd5BKDGqx" "http://localhost:8000/v1/person?id=1&id=2&id=3&id=4&cell=94555"
+
+# GET person nearby
+curl -i -H "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6ImFuZHkiLCJpYXQiOjE0NDI5MDkyMTQsImV4cCI6MTQ0MjkxMjgxNH0.XYdeN2Fvkj9BW_2Q_xq6E-a4_pWhrJNquBxXp_94uLQ" "http://localhost:8000/v1/person/nearby?zip=US94102&max=5000"
+
+# Update a person's profile
+curl -i -H "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6ImFuZHkiLCJpYXQiOjE0NDI5MDkyMTQsImV4cCI6MTQ0MjkxMjgxNH0.XYdeN2Fvkj9BW_2Q_xq6E-a4_pWhrJNquBxXp_94uLQ" --data "yob=1995&gender=M&avatar=avatar" "http://localhost:8000/v1/person/me"
+
+
+
+## comment
+# POST a comment
+curl -i -X POST -H "Authorization: Bearer 1:XID5YykTQGYKit1Mmca9" --data "post=2&content=comment from curl" "http://localhost:8000/v1/comment"
+
+# GET Recent comments
+curl -i "http://localhost:8000/v1/comment/recent?post=1&post=2&post=3"
+
+## Post
+# GET post/nearby
+curl -i "http://localhost:8000/v1/post/nearby?lon=-122.062168&lat=37.5584429&cell_id=94103"
+
+
+# Like a post
+curl -i -X POST -H "Authorization: Bearer XID5YykTQGYKit1Mmca9" --data "id=2" "http://localhost:8000/v1/post/like"
+
+
+# Heart a person
+curl -i -X POST -H "Authorization: Bearer Gfw2iS937jlyeuSzlB21" --data "receiver=3" "http://localhost:8000/v1/heart"
+
+## XMPP
+curl -i "http://localhost:8000/v1/xmpp/check_password?user=1&server=joyy.im&pass=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjEiLCJpYXQiOjE0NDAzNzM1MTcsImV4cCI6MTQ0MDM3NTM3N30.HmtFHuLPjGAKllWMtUbiyZp9rZYiaQRixC3kvF2VMHo"
+
+
