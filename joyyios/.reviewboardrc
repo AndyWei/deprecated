@@ -1,0 +1,5 @@
+REVIEWBOARD_URL = "http://reviewboard.joyy.biz/"
+REPOSITORY = "joyyios"
+BRANCH = "master"
+LAND_DEST_BRANCH = "master"
+TARGET_PEOPLE = "ping"

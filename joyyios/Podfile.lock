@@ -1,0 +1,309 @@
+PODS:
+  - AFNetworking (3.0.4):
+    - AFNetworking/NSURLSession (= 3.0.4)
+    - AFNetworking/Reachability (= 3.0.4)
+    - AFNetworking/Security (= 3.0.4)
+    - AFNetworking/Serialization (= 3.0.4)
+    - AFNetworking/UIKit (= 3.0.4)
+  - AFNetworking/NSURLSession (3.0.4):
+    - AFNetworking/Reachability
+    - AFNetworking/Security
+    - AFNetworking/Serialization
+  - AFNetworking/Reachability (3.0.4)
+  - AFNetworking/Security (3.0.4)
+  - AFNetworking/Serialization (3.0.4)
+  - AFNetworking/UIKit (3.0.4):
+    - AFNetworking/NSURLSession
+  - AMPopTip (0.10.1)
+  - AWSCore (2.3.5)
+  - AWSS3 (2.3.5):
+    - AWSCore (= 2.3.5)
+  - ChameleonFramework (2.0.4):
+    - ChameleonFramework/Default (= 2.0.4)
+  - ChameleonFramework/Default (2.0.4)
+  - CocoaAsyncSocket (7.4.2)
+  - CocoaLumberjack (1.9.2):
+    - CocoaLumberjack/Extensions (= 1.9.2)
+  - CocoaLumberjack/Core (1.9.2)
+  - CocoaLumberjack/Extensions (1.9.2):
+    - CocoaLumberjack/Core
+  - Crashlytics (3.6.0):
+    - Fabric (~> 1.6.3)
+  - DACircularProgress (2.3.1)
+  - Fabric (1.6.5)
+  - FDFullscreenPopGesture (1.1)
+  - FMDB (2.6):
+    - FMDB/standard (= 2.6)
+  - FMDB/standard (2.6)
+  - IDMPhotoBrowser (1.8.1):
+    - DACircularProgress
+    - pop
+    - SDWebImage
+  - JazzHands (2.0.8)
+  - JVFloatLabeledTextField (1.1.0)
+  - KVNProgress (2.2.2)
+  - KVOController (1.0.3)
+  - libextobjc (0.4.1):
+    - libextobjc/EXTADT (= 0.4.1)
+    - libextobjc/EXTConcreteProtocol (= 0.4.1)
+    - libextobjc/EXTKeyPathCoding (= 0.4.1)
+    - libextobjc/EXTNil (= 0.4.1)
+    - libextobjc/EXTSafeCategory (= 0.4.1)
+    - libextobjc/EXTScope (= 0.4.1)
+    - libextobjc/EXTSelectorChecking (= 0.4.1)
+    - libextobjc/EXTSynthesize (= 0.4.1)
+    - libextobjc/NSInvocation+EXT (= 0.4.1)
+    - libextobjc/NSMethodSignature+EXT (= 0.4.1)
+    - libextobjc/RuntimeExtensions (= 0.4.1)
+    - libextobjc/UmbrellaHeader (= 0.4.1)
+  - libextobjc/EXTADT (0.4.1):
+    - libextobjc/RuntimeExtensions
+  - libextobjc/EXTConcreteProtocol (0.4.1):
+    - libextobjc/RuntimeExtensions
+  - libextobjc/EXTKeyPathCoding (0.4.1):
+    - libextobjc/RuntimeExtensions
+  - libextobjc/EXTNil (0.4.1):
+    - libextobjc/RuntimeExtensions
+  - libextobjc/EXTSafeCategory (0.4.1):
+    - libextobjc/RuntimeExtensions
+  - libextobjc/EXTScope (0.4.1):
+    - libextobjc/RuntimeExtensions
+  - libextobjc/EXTSelectorChecking (0.4.1):
+    - libextobjc/RuntimeExtensions
+  - libextobjc/EXTSynthesize (0.4.1):
+    - libextobjc/RuntimeExtensions
+  - libextobjc/NSInvocation+EXT (0.4.1):
+    - libextobjc/RuntimeExtensions
+  - libextobjc/NSMethodSignature+EXT (0.4.1):
+    - libextobjc/RuntimeExtensions
+  - libextobjc/RuntimeExtensions (0.4.1)
+  - libextobjc/UmbrellaHeader (0.4.1)
+  - libPhoneNumber-iOS (0.8.10)
+  - M13ProgressSuite (1.2.7)
+  - Mantle (2.0.6):
+    - Mantle/extobjc (= 2.0.6)
+  - Mantle/extobjc (2.0.6)
+  - MJRefresh (3.1.0)
+  - MSWeakTimer (1.1.0)
+  - pop (1.0.9)
+  - RKDropdownAlert (0.3.0)
+  - SDWebImage (3.7.5):
+    - SDWebImage/Core (= 3.7.5)
+  - SDWebImage/Core (3.7.5)
+  - SlackTextViewController (1.9)
+  - TTTAttributedLabel (1.13.4)
+  - UICKeyChainStore (2.1.0)
+  - UIView+Positioning (1.1)
+  - VMaskTextField (1.0.8)
+  - XMPPFramework (3.6.5):
+    - XMPPFramework/Authentication (= 3.6.5)
+    - XMPPFramework/BandwidthMonitor (= 3.6.5)
+    - XMPPFramework/Categories (= 3.6.5)
+    - XMPPFramework/Core (= 3.6.5)
+    - XMPPFramework/CoreDataStorage (= 3.6.5)
+    - XMPPFramework/GoogleSharedStatus (= 3.6.5)
+    - XMPPFramework/KissXML (= 3.6.5)
+    - XMPPFramework/ProcessOne (= 3.6.5)
+    - XMPPFramework/Reconnect (= 3.6.5)
+    - XMPPFramework/Roster (= 3.6.5)
+    - XMPPFramework/SystemInputActivityMonitor (= 3.6.5)
+    - XMPPFramework/Utilities (= 3.6.5)
+    - XMPPFramework/XEP-0009 (= 3.6.5)
+    - XMPPFramework/XEP-0012 (= 3.6.5)
+    - XMPPFramework/XEP-0016 (= 3.6.5)
+    - XMPPFramework/XEP-0045 (= 3.6.5)
+    - XMPPFramework/XEP-0054 (= 3.6.5)
+    - XMPPFramework/XEP-0059 (= 3.6.5)
+    - XMPPFramework/XEP-0060 (= 3.6.5)
+    - XMPPFramework/XEP-0065 (= 3.6.5)
+    - XMPPFramework/XEP-0066 (= 3.6.5)
+    - XMPPFramework/XEP-0082 (= 3.6.5)
+    - XMPPFramework/XEP-0085 (= 3.6.5)
+    - XMPPFramework/XEP-0092 (= 3.6.5)
+    - XMPPFramework/XEP-0100 (= 3.6.5)
+    - XMPPFramework/XEP-0106 (= 3.6.5)
+    - XMPPFramework/XEP-0115 (= 3.6.5)
+    - XMPPFramework/XEP-0136 (= 3.6.5)
+    - XMPPFramework/XEP-0153 (= 3.6.5)
+    - XMPPFramework/XEP-0172 (= 3.6.5)
+    - XMPPFramework/XEP-0184 (= 3.6.5)
+    - XMPPFramework/XEP-0191 (= 3.6.5)
+    - XMPPFramework/XEP-0198 (= 3.6.5)
+    - XMPPFramework/XEP-0199 (= 3.6.5)
+    - XMPPFramework/XEP-0202 (= 3.6.5)
+    - XMPPFramework/XEP-0203 (= 3.6.5)
+    - XMPPFramework/XEP-0223 (= 3.6.5)
+    - XMPPFramework/XEP-0224 (= 3.6.5)
+    - XMPPFramework/XEP-0280 (= 3.6.5)
+    - XMPPFramework/XEP-0297 (= 3.6.5)
+    - XMPPFramework/XEP-0308 (= 3.6.5)
+    - XMPPFramework/XEP-0333 (= 3.6.5)
+    - XMPPFramework/XEP-0335 (= 3.6.5)
+  - XMPPFramework/Authentication (3.6.5):
+    - XMPPFramework/Core
+  - XMPPFramework/BandwidthMonitor (3.6.5):
+    - XMPPFramework/Core
+  - XMPPFramework/Categories (3.6.5):
+    - XMPPFramework/Core
+  - XMPPFramework/Core (3.6.5):
+    - CocoaAsyncSocket (~> 7.4.1)
+    - CocoaLumberjack (~> 1.9)
+    - XMPPFramework/KissXML
+  - XMPPFramework/CoreDataStorage (3.6.5):
+    - XMPPFramework/Core
+  - XMPPFramework/GoogleSharedStatus (3.6.5):
+    - XMPPFramework/Core
+  - XMPPFramework/KissXML (3.6.5)
+  - XMPPFramework/ProcessOne (3.6.5):
+    - XMPPFramework/Core
+  - XMPPFramework/Reconnect (3.6.5):
+    - XMPPFramework/Core
+  - XMPPFramework/Roster (3.6.5):
+    - XMPPFramework/Core
+    - XMPPFramework/CoreDataStorage
+  - XMPPFramework/SystemInputActivityMonitor (3.6.5):
+    - XMPPFramework/Core
+  - XMPPFramework/Utilities (3.6.5):
+    - XMPPFramework/Core
+  - XMPPFramework/XEP-0009 (3.6.5):
+    - XMPPFramework/Core
+  - XMPPFramework/XEP-0012 (3.6.5):
+    - XMPPFramework/Core
+  - XMPPFramework/XEP-0016 (3.6.5):
+    - XMPPFramework/Core
+  - XMPPFramework/XEP-0045 (3.6.5):
+    - XMPPFramework/Core
+    - XMPPFramework/CoreDataStorage
+    - XMPPFramework/XEP-0203
+  - XMPPFramework/XEP-0054 (3.6.5):
+    - XMPPFramework/Core
+    - XMPPFramework/Roster
+  - XMPPFramework/XEP-0059 (3.6.5):
+    - XMPPFramework/Core
+  - XMPPFramework/XEP-0060 (3.6.5):
+    - XMPPFramework/Core
+  - XMPPFramework/XEP-0065 (3.6.5):
+    - XMPPFramework/Core
+  - XMPPFramework/XEP-0066 (3.6.5):
+    - XMPPFramework/Core
+  - XMPPFramework/XEP-0082 (3.6.5):
+    - XMPPFramework/Core
+  - XMPPFramework/XEP-0085 (3.6.5):
+    - XMPPFramework/Core
+  - XMPPFramework/XEP-0092 (3.6.5):
+    - XMPPFramework/Core
+  - XMPPFramework/XEP-0100 (3.6.5):
+    - XMPPFramework/Core
+  - XMPPFramework/XEP-0106 (3.6.5):
+    - XMPPFramework/Core
+  - XMPPFramework/XEP-0115 (3.6.5):
+    - XMPPFramework/Core
+    - XMPPFramework/CoreDataStorage
+  - XMPPFramework/XEP-0136 (3.6.5):
+    - XMPPFramework/CoreDataStorage
+    - XMPPFramework/XEP-0085
+    - XMPPFramework/XEP-0203
+  - XMPPFramework/XEP-0153 (3.6.5):
+    - XMPPFramework/Core
+    - XMPPFramework/XEP-0054
+  - XMPPFramework/XEP-0172 (3.6.5):
+    - XMPPFramework/Core
+  - XMPPFramework/XEP-0184 (3.6.5):
+    - XMPPFramework/Core
+  - XMPPFramework/XEP-0191 (3.6.5):
+    - XMPPFramework/Core
+  - XMPPFramework/XEP-0198 (3.6.5):
+    - XMPPFramework/Core
+  - XMPPFramework/XEP-0199 (3.6.5):
+    - XMPPFramework/Core
+  - XMPPFramework/XEP-0202 (3.6.5):
+    - XMPPFramework/Core
+    - XMPPFramework/XEP-0082
+  - XMPPFramework/XEP-0203 (3.6.5):
+    - XMPPFramework/Core
+    - XMPPFramework/XEP-0082
+  - XMPPFramework/XEP-0223 (3.6.5):
+    - XMPPFramework/Core
+  - XMPPFramework/XEP-0224 (3.6.5):
+    - XMPPFramework/Core
+  - XMPPFramework/XEP-0280 (3.6.5):
+    - XMPPFramework/Core
+  - XMPPFramework/XEP-0297 (3.6.5):
+    - XMPPFramework/Core
+    - XMPPFramework/XEP-0203
+  - XMPPFramework/XEP-0308 (3.6.5):
+    - XMPPFramework/Core
+  - XMPPFramework/XEP-0333 (3.6.5):
+    - XMPPFramework/Core
+  - XMPPFramework/XEP-0335 (3.6.5):
+    - XMPPFramework/Core
+  - YTKKeyValueStore (0.1.2):
+    - FMDB (~> 2.0)
+
+DEPENDENCIES:
+  - AFNetworking
+  - AMPopTip
+  - AWSCore
+  - AWSS3
+  - ChameleonFramework
+  - Crashlytics
+  - Fabric
+  - FDFullscreenPopGesture
+  - FMDB
+  - IDMPhotoBrowser
+  - JazzHands
+  - JVFloatLabeledTextField
+  - KVNProgress
+  - KVOController
+  - libextobjc
+  - libPhoneNumber-iOS (~> 0.8)
+  - M13ProgressSuite
+  - Mantle
+  - MJRefresh
+  - MSWeakTimer
+  - RKDropdownAlert
+  - SDWebImage
+  - SlackTextViewController
+  - TTTAttributedLabel
+  - UICKeyChainStore
+  - UIView+Positioning
+  - VMaskTextField
+  - XMPPFramework (= 3.6.5)
+  - YTKKeyValueStore
+
+SPEC CHECKSUMS:
+  AFNetworking: a0075feb321559dc78d9d85b55d11caa19eabb93
+  AMPopTip: b0b5d009f3ed47b10f118438a18e0ab5cd03c40d
+  AWSCore: 8022eda5778fd7b87c9182709d8a27388e1a31fb
+  AWSS3: 967f4ad3c91f1ed2c9dca09a9dcf905111232a87
+  ChameleonFramework: 5abe69b1f2a6cc79c3c435fcd9d3d855748225ee
+  CocoaAsyncSocket: f5783bdedd232d91b89769bc4b5a1580aed518ad
+  CocoaLumberjack: 628fca2e88ef06f7cf6817309aa405f325d9a6fa
+  Crashlytics: e4e8d02914f2608fbc7bf42b1a7af838b0db67a2
+  DACircularProgress: 4dd437c0fc3da5161cb289e07ac449493d41db71
+  Fabric: 338ffd3c2afcab120638907b4251189de9ad17b3
+  FDFullscreenPopGesture: a8a620179e3d9c40e8e00256dcee1c1a27c6d0f0
+  FMDB: c1968bab3ab0aed38f66cb778ae1e7fa9a652b6e
+  IDMPhotoBrowser: 99eccfe6431e182f64e2fe57ac654316fbf81576
+  JazzHands: 355dc5c2b6fc38ee460d0ed7836c69539263f477
+  JVFloatLabeledTextField: ea4a3d8387ddd43724c472bb2b8ab39b79af05d4
+  KVNProgress: 4697347e21e37fdaa5264ebc24e377c205a50328
+  KVOController: 9fd8f0343670994e4b6f9f0b31f5a45663f3e1cf
+  libextobjc: a650fc1bf489a3d3a9bc2e621efa3e1006fc5471
+  libPhoneNumber-iOS: 7bfd00f843fdcd82b5182b463e8eb3b27579f41d
+  M13ProgressSuite: 03d194af6359da440641ba758aed5a18b0386a86
+  Mantle: 299966b00759634931699f69cb6a30b9239b944d
+  MJRefresh: 743e6404967d1c2c688472ea3ecfde247d872db4
+  MSWeakTimer: 9426150f933b80ed3acf3f6d228e4b61f0e303c8
+  pop: f667631a5108a2e60d9e8797c9b32ddaf2080bce
+  RKDropdownAlert: f4b3364c251829ad439dc666836a1f2dad26f4c7
+  SDWebImage: 69c6303e3348fba97e03f65d65d4fbc26740f461
+  SlackTextViewController: d51503f7be846cb9976a273499dc90f2445e9447
+  TTTAttributedLabel: 0a2ac7b2dd726d32a070dafb01446026b11e624f
+  UICKeyChainStore: f1cbd42216a113f0165de1e733e62905b8823432
+  UIView+Positioning: e93fe9e3186d1ed7d60e344aa12787911e902056
+  VMaskTextField: e77fe33633f999c5c38e70bed0afece0625624a4
+  XMPPFramework: 7ae77710dd86f1826f5451dc5f3cf9f4d2a62072
+  YTKKeyValueStore: 4d002941540dd5108fa23009b71e0f2f937f7a0f
+
+COCOAPODS: 0.39.0

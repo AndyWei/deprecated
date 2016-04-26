@@ -1,0 +1,55 @@
+//
+//  Prefix.pch
+//  joyyios
+//
+//  Created by Ping Yang on 3/26/15.
+//  Copyright (c) 2015 Joyy Inc. All rights reserved.
+//
+
+#ifndef joyyios_Prefix_pch
+#define joyyios_Prefix_pch
+
+// Include any system framework and library headers here that should be included in all compilation units.
+// You will also need to set the Prefix Header build setting of one or more of your targets to reference this file.
+
+#ifdef __OBJC__
+
+#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
+#import <AFNetworking/AFNetworking.h>
+#import <ChameleonFramework/Chameleon.h>
+
+// XMPP XEPs
+#define HAVE_XMPP_SUBSPEC_RECONNECT
+//#define HAVE_XMPP_SUBSPEC_ROSTER
+//#define HAVE_XMPP_SUBSPEC_XEP_0054
+//#define HAVE_XMPP_SUBSPEC_XEP_0153
+#import <XMPPFramework/XMPPFramework.h>
+//#import <XMPPFramework/XMPPMessageArchiving.h>
+//#import <XMPPFramework/XMPPMessageArchivingCoreDataStorage.h>
+//#import <XMPPFramework/XMPPRosterCoreDataStorage.h>
+//#import <XMPPFramework/XMPPvCardCoreDataStorage.h>
+
+// Common
+#import "Constants.h"
+#import "NSNumber+Joyy.h"
+#import "NSString+Joyy.h"
+#import "NSIndexPath+Joyy.h"
+#import "NSURL+Joyy.h"
+#import "UIColor+Joyy.h"
+#import "UIImage+Joyy.h"
+#import "UIView+Joyy.h"
+#import "UIView+Positioning.h"
+
+#import "JYCredential.h"
+#import "JYUser.h"
+#import "JYFriend.h"
+#import "AFHTTPSessionManager+Joyy.h"
+
+#endif
+
+#ifdef NDEBUG
+#define NSLog(...) /* suppress NSLog when in release mode */
+#endif
+
+#endif
