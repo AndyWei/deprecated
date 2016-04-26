@@ -1,0 +1,67 @@
+### This file contains all curl commands used for manual test
+
+## credential
+# signup
+curl -i --data "username=andy&password=good" http://localhost:8000/v1/auth/signup
+curl -i --data "username=user0&password=password" http://localhost:8000/v1/auth/signup
+
+
+# signin
+curl -i --data "username=andy&password=good" http://localhost:8000/v1/auth/signin
+
+curl -i --data "username=andy&password=good" http://localhost:8000/v1/auth/signin -H "Accept-Encoding: gzip,deflate"
+curl -i --data "username=sign_up_user&password=dummy_password" http://localhost:8000/v1/auth/signin
+
+
+# check_existance
+curl -i "http://localhost:8000/v1/xmpp/user_exists?user=108004831012061184&server=joyy.im"
+
+# check_password
+curl -i "http://localhost:8000/v1/xmpp/check_password?user=108004831012061184&server=joyy.im&pass=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE0NDU4Mjc5NTgsImlkIjoiMTA4MDA0ODMxMDEyMDYxMTg0IiwidXNlcm5hbWUiOiJhbmR5In0.uguXBBlPSuZ0EpYSYJ66DMs7E0-WzdqV9pNNMKyChTI"
+
+# Get cognito id
+curl -i http://localhost:8000/v1/auth/cognito -H "Authorization: Bearer "
+
+## user
+# Update a user's profile
+curl -i --data "phone=123&region=1&sex=1&yob=1990&bio=what" "http://localhost:8000/v1/user/profile" -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE0NDU4Mjc5NTgsImlkIjoiMTA4MDA0ODMxMDEyMDYxMTg0IiwidXNlcm5hbWUiOiJhbmR5In0.uguXBBlPSuZ0EpYSYJ66DMs7E0-WzdqV9pNNMKyChTI"
+
+# GET a user's own profile
+curl -i http://localhost:8000/v1/user/profile -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE0NDU4NDc1ODIsImlkIjoiMTA4MDgzMzYxMzMwNzU3NjMyIiwidXNlcm5hbWUiOiJzaWduX3VwX3VzZXIifQ.M_veZIdghZRlRXEt6ptKR4KtAHmUGH8HyeD6UZriRdM"
+
+# GET user nearby
+curl -i -H "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6ImFuZHkiLCJpYXQiOjE0NDI5MDkyMTQsImV4cCI6MTQ0MjkxMjgxNH0.XYdeN2Fvkj9BW_2Q_xq6E-a4_pWhrJNquBxXp_94uLQ" "http://localhost:8000/v1/user/nearby?zip=US94102&max=5000"
+
+
+## friendship
+
+# create friendship
+curl -i --data "fid=123&fname=jack&fregion=1&region=0" "http://localhost:8000/v1/friendship/create" -H "Authorization: Bearer "
+
+# get all of current user's friendship
+curl -i "http://localhost:8000/v1/friendship" -H "Accept-Encoding: gzip,deflate" -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE0NDYxODcyOTQsImlkIjoiMTA5NTExOTk2MzM1OTgwNTQ0IiwidXNlcm5hbWUiOiJ1c2VyMCJ9.-b4lWRBOqE-dnD9OtVXuZ8mnBTk1sWaGacUkxAZH2w0"
+
+
+## comment
+# POST a comment
+curl -i -X POST -H "Authorization: Bearer 1:XID5YykTQGYKit1Mmca9" --data "post=2&content=comment from curl" "http://localhost:8000/v1/comment"
+
+# GET Recent comments
+curl -i "http://localhost:8000/v1/comment/recent?post=1&post=2&post=3"
+
+## Post
+# GET post/nearby
+curl -i "http://localhost:8000/v1/post/nearby?lon=-122.062168&lat=37.5584429&cell_id=94103"
+
+
+# Like a post
+curl -i -X POST -H "Authorization: Bearer XID5YykTQGYKit1Mmca9" --data "id=2" "http://localhost:8000/v1/post/like"
+
+
+# Heart a person
+curl -i -X POST -H "Authorization: Bearer Gfw2iS937jlyeuSzlB21" --data "receiver=3" "http://localhost:8000/v1/heart"
+
+## XMPP
+curl -i "http://localhost:8000/v1/xmpp/check_password?user=1&server=joyy.im&pass=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjEiLCJpYXQiOjE0NDAzNzM1MTcsImV4cCI6MTQ0MDM3NTM3N30.HmtFHuLPjGAKllWMtUbiyZp9rZYiaQRixC3kvF2VMHo"
+
+
